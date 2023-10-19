@@ -364,7 +364,7 @@ def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatc
         '--maintenance-window-duration "02:00" '
         '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
         '--maintenance-window-recur-every "Day" '
-        f'--maintenance-window-start-date-time "{start_date.strftime("%Y-%m-%d %H:%M")}" '
+        f'--maintenance-window-start-date-time "{start_date}" '
         '--maintenance-window-time-zone "UTC" '
         '--resource-group {rg} '
         '--resource-name clitestmrpconfinguestadvancedforcancel '
@@ -374,13 +374,37 @@ def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatc
         , checks=[])
     
 def step__maintenanceconfigurations_cancel_maintenanceconfigurations(test, start_date):
-    test.cmd(f'az maintenance applyupdate create-or-update --apply-update-name "{start_date.strftime("%Y%m%d%H%M00")}" '
+    test.cmd(f'az maintenance applyupdate create-or-update --apply-update-name "{start_date}" '
         '--provider-name "Microsoft.Maintenance" '
         '--resource-group {rg} '
         '--resource-name clitestmrpconfinguestadvancedforcancel '
         '--resource-type "maintenanceConfigurations" '
         '--status "Cancel" '
         , checks=[])
+
+def step__maintenanceconfigurations_cancel(test):
+    create_date_format = "%Y-%m-%d %H:%M"
+    applyupdate_date_format = "%Y%m%d%H%M00"
+
+    start_date = datetime.fromisoformat('1970-01-01') # this will be used as a moniker
+    start_date_for_create = start_date.strftime(create_date_format)
+    start_date_for_applyupdate = start_date.strftime(applyupdate_date_format)
+
+    if test.in_recording:
+        real_start_date = datetime.now(timezone.utc) + timedelta(minutes=12)
+        real_start_date_for_create = real_start_date.strftime(create_date_format)
+        real_start_date_for_applyupdate = real_start_date.strftime(applyupdate_date_format)
+
+        test.name_replacer.register_name_pair(real_start_date_for_create, start_date_for_create)
+        test.name_replacer.register_name_pair(real_start_date_for_applyupdate, start_date_for_applyupdate)
+
+        # use the real start dates since we're in recording
+        start_date_for_create, start_date_for_applyupdate = real_start_date_for_create, real_start_date_for_applyupdate
+
+    step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced_forcancel(test, start_date_for_create)
+    if test.in_recording:
+        time.sleep(4 * 60)
+    step__maintenanceconfigurations_cancel_maintenanceconfigurations(test, start_date_for_applyupdate)
 
 # Dynamic scope tests subscription level
 def step__configurationassignments_put_configurationassignments_createorupdate_subscription(test):
@@ -488,10 +512,7 @@ def call_scenario(test):
     step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced(test)
 
     # cancel maintenance config
-    start_date = datetime.now(timezone.utc) + timedelta(minutes=12)
-    step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced_forcancel(test, start_date)
-    time.sleep(4 * 60)
-    step__maintenanceconfigurations_cancel_maintenanceconfigurations(test, start_date)
+    step__maintenanceconfigurations_cancel(test)
 
     # Dynamic scope
     step__configurationassignments_put_configurationassignments_createorupdate_subscription(test)
