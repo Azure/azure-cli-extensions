@@ -8,6 +8,7 @@ import datetime
 import os
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
+from knack.util import CLIError
 
 from azure.mgmt.containerservice.models import KubernetesSupportPlan
 
@@ -64,6 +65,9 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_DATAPLANE_CILIUM,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+    CONST_SECRET_ROTATION_ENABLED,
+    CONST_ROTATION_POLL_INTERVAL
 )
 from azext_aks_preview._helpers import (
     check_is_private_cluster,
@@ -2408,8 +2412,36 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # because it's already checked in _get_enable_cost_analysis
         return self.raw_param.get("disable_cost_analysis")
 
+    def get_keyvault_id(self) -> str:
+        """Obtain the value of keyvault_id.
 
-class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
+        :return: str
+        """
+        return self.raw_param.get("keyvault_id")
+    
+    def get_enable_kv(self) -> bool:
+        """Obtain the value of enable_kv.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_kv")
+    
+    def get_attach_zones(self) -> bool:
+        """Obtain the value of attach_zones.
+
+        :return: bool
+        """
+        return self.raw_param.get("attach_zones")
+    
+    def get_enable_app_routing(self) -> bool:
+        """Obtain the value of enable_app_routing.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_app_routing")
+
+
+class AKSPreviewManagedClusterCreateDecosrator(AKSManagedClusterCreateDecorator):
     def __init__(
         self, cmd: AzCliCommand, client: ContainerServiceClient, raw_parameters: Dict, resource_type: ResourceType
     ):
@@ -2883,6 +2915,19 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_cost_analysis(mc)
 
         return mc
+    
+    def set_up_app_routing_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up app routing profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_approuting():
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()
+            mc.ingress_profile.app_routing = self.models.ManagedClusterIngressProfileAppRouting(enabled=True)
+        return mc
 
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
@@ -2907,8 +2952,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_cleaner(mc)
         # set up cluster snapshot
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
-        # set up ingress web app routing profile
-        mc = self.set_up_ingress_web_app_routing(mc)
+        # set up app routing profile
+        mc = self.set_up_app_routing_profile(mc)
         # set up workload auto scaler profile
         mc = self.set_up_workload_auto_scaler_profile(mc)
         # set up vpa
@@ -3828,6 +3873,68 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         mc = self.update_cost_analysis(mc)
 
+        return mc
+
+    def update_app_routing_profile(self, mc: ManagedCluster) -> ManagedCluster: 
+        """Update app routing profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        enable_app_routing = self.raw_param.get("enable_app_routing")
+        enable_keyvault_secret_provider = self.raw_param.get("enable_kv")
+        keyvault_id = self.raw_param.get("keyvault_id")
+       
+        if mc.ingress_profile is None:
+            mc.ingress_profile = self.models.ManagedClusterIngressProfile()
+        if mc.ingress_profile.web_app_routing is None:
+            mc.ingress_profile.web_app_routing = self.models.ManagedClusterIngressProfileWebAppRouting()
+        mc.ingress_profile.web_app_routing.enabled = enable_app_routing
+    
+        if enable_keyvault_secret_provider:
+            if mc.addon_profiles is None:
+                mc.addon_profiles = {}
+            if mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] is None:
+                mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] = self.models.ManagedClusterAddonProfile()
+            if not mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled:
+                mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] = self.models.ManagedClusterAddonProfile(
+                    enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"})
+            else:
+                raise CLIError('The azure-keyvault-secrets-provider addon is already enabled for this managed cluster.\n')
+            
+        dns_zone_resource_ids = self.raw_param.get("dns_zone_resource_ids")
+        dns_zone_resource_ids = [
+            x.strip()
+            for x in (
+                dns_zone_resource_ids.split(",")
+                if dns_zone_resource_ids
+                else []
+            )
+        ]
+        add_dns_zone= self.raw_param.get("add_dns_zone")
+        update_dns_zone = self.raw_param.get("update_dns_zone")
+
+        if dns_zone_resource_ids:
+            if add_dns_zone:
+                if not mc.ingress_profile or not mc.ingress_profile.web_app_routing:
+                    mc.ingress_profile = self.models.ManagedClusterIngressProfile()
+                    mc.ingress_profile.web_app_routing = self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True, dns_zone_resource_ids=dns_zone_resource_ids)
+                elif mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
+                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids.append(dns_zone_resource_ids)
+                elif mc.ingress_profile and mc.ingress_profile.web_app_routing and not mc.ingress_profile.web_app_routing.enabled:
+                    raise CLIError('App Routing must be enabled to add DNS zone resource ID.\n')
+            else:
+                if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
+                    dns_zone_resource_ids = list(filter(lambda x: x not in dns_zone_resource_ids, mc.ingress_profile.web_app_routing.dns_zone_resource_ids))
+                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
+                elif not mc.ingress_profile or not mc.ingress_profile.web_app_routing or not mc.ingress_profile.web_app_routing.enabled:
+                    raise CLIError('App Routing must be enabled to remove DNS zone resource ID.\n')
+            if update_dns_zone: 
+                if not mc.ingress_profile or not mc.ingress_profile.web_app_routing or not mc.ingress_profile.web_app_routing.enabled:
+                    raise CLIError('App Routing must be enabled to update DNS zone resource ID.\n')
+                else:
+                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
