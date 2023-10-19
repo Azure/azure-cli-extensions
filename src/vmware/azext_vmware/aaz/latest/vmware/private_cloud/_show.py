@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-05-01",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2023-03-01"],
         ]
     }
 
@@ -46,6 +46,9 @@ class Show(AAZCommand):
             help="Name of the private cloud",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[-\w\._]+$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -117,7 +120,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -188,6 +191,9 @@ class Show(AAZCommand):
             _ShowHelper._build_schema_circuit_read(properties.circuit)
             properties.encryption = AAZObjectType()
             properties.endpoints = AAZObjectType()
+            properties.extended_network_blocks = AAZListType(
+                serialized_name="extendedNetworkBlocks",
+            )
             properties.external_cloud_links = AAZListType(
                 serialized_name="externalCloudLinks",
                 flags={"read_only": True},
@@ -293,6 +299,9 @@ class Show(AAZCommand):
             endpoints.vcsa = AAZStrType(
                 flags={"read_only": True},
             )
+
+            extended_network_blocks = cls._schema_on_200.properties.extended_network_blocks
+            extended_network_blocks.Element = AAZStrType()
 
             external_cloud_links = cls._schema_on_200.properties.external_cloud_links
             external_cloud_links.Element = AAZStrType()

@@ -118,19 +118,24 @@ class TestLoadBalancer(unittest.TestCase):
             public_ip_prefixes="public_ip_prefixes"
         )
         err = "outbound ip/ipprefix and managed ip should be mutual exclusive."
-        with self.assertRaises(InvalidArgumentValueError) as cm:
-            loadbalancer.configure_load_balancer_profile(
-                managed_outbound_ip_count,
-                managed_outbound_ipv6_count,
-                outbound_ips,
-                outbound_ip_prefixes,
-                outbound_ports,
-                idle_timeout,
-                backend_pool_type,
-                profile,
-                self.load_balancer_models,
-            )
-        self.assertEqual(str(cm.exception), err)
+        p = loadbalancer.configure_load_balancer_profile(
+            managed_outbound_ip_count,
+            managed_outbound_ipv6_count,
+            outbound_ips,
+            outbound_ip_prefixes,
+            outbound_ports,
+            idle_timeout,
+            backend_pool_type,
+            profile,
+            self.load_balancer_models,
+        )
+        self.assertEqual(p.managed_outbound_i_ps.count, 5)
+        self.assertEqual(p.managed_outbound_i_ps.count_ipv6, 3)
+        self.assertEqual(p.outbound_i_ps.public_i_ps, [self.load_balancer_models.ResourceReference(id=x.strip()) for x in ["testpip1","testpip2"]])
+        self.assertEqual(p.outbound_ip_prefixes, None)
+        self.assertEqual(p.allocated_outbound_ports, 80)
+        self.assertEqual(p.idle_timeout_in_minutes, 3600)
+        self.assertEqual(p.backend_pool_type, "nodeIP")
 
 if __name__ == '__main__':
     unittest.main()

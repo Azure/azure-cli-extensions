@@ -20,9 +20,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-05-01",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2023-03-01"],
         ]
     }
 
@@ -47,6 +47,9 @@ class Create(AAZCommand):
             options=["-n", "--name", "--private-cloud-name"],
             help="Name of the private cloud",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[-\w\._]+$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -117,6 +120,11 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.extended_network_blocks = AAZListArg(
+            options=["--ext-nw-blocks", "--extended-network-blocks"],
+            arg_group="Properties",
+            help="Array of additional networks noncontiguous with networkBlock. Networks must be unique and non-overlapping across VNet in your subscription, on-premise, and this privateCloud networkBlock attribute. Make sure the CIDR format conforms to (A.B.C.D/X).",
+        )
         _args_schema.internet = AAZStrArg(
             options=["--internet"],
             arg_group="Properties",
@@ -148,6 +156,9 @@ class Create(AAZCommand):
                 confirm=True,
             ),
         )
+
+        extended_network_blocks = cls._args_schema.extended_network_blocks
+        extended_network_blocks.Element = AAZStrArg()
 
         # define Arg Group "Sku"
 
@@ -241,7 +252,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -279,6 +290,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("availability", AAZObjectType)
+                properties.set_prop("extendedNetworkBlocks", AAZListType, ".extended_network_blocks")
                 properties.set_prop("internet", AAZStrType, ".internet")
                 properties.set_prop("managementCluster", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkBlock", AAZStrType, ".network_block", typ_kwargs={"flags": {"required": True}})
@@ -290,6 +302,10 @@ class Create(AAZCommand):
                 availability.set_prop("secondaryZone", AAZIntType, ".secondary_zone")
                 availability.set_prop("strategy", AAZStrType, ".strategy")
                 availability.set_prop("zone", AAZIntType, ".zone")
+
+            extended_network_blocks = _builder.get(".properties.extendedNetworkBlocks")
+            if extended_network_blocks is not None:
+                extended_network_blocks.set_elements(AAZStrType, ".")
 
             management_cluster = _builder.get(".properties.managementCluster")
             if management_cluster is not None:
@@ -361,6 +377,9 @@ class Create(AAZCommand):
             _CreateHelper._build_schema_circuit_read(properties.circuit)
             properties.encryption = AAZObjectType()
             properties.endpoints = AAZObjectType()
+            properties.extended_network_blocks = AAZListType(
+                serialized_name="extendedNetworkBlocks",
+            )
             properties.external_cloud_links = AAZListType(
                 serialized_name="externalCloudLinks",
                 flags={"read_only": True},
@@ -466,6 +485,9 @@ class Create(AAZCommand):
             endpoints.vcsa = AAZStrType(
                 flags={"read_only": True},
             )
+
+            extended_network_blocks = cls._schema_on_200_201.properties.extended_network_blocks
+            extended_network_blocks.Element = AAZStrType()
 
             external_cloud_links = cls._schema_on_200_201.properties.external_cloud_links
             external_cloud_links.Element = AAZStrType()

@@ -9,6 +9,7 @@ import os.path
 import platform
 
 from argcomplete.completers import FilesCompleter
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._completers import (
     get_k8s_upgrades_completion_list,
     get_k8s_versions_completion_list,
@@ -21,6 +22,7 @@ from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
 )
 from azure.cli.command_modules.acs._validators import (
+    validate_image_cleaner_enable_disable_mutually_exclusive,
     validate_load_balancer_idle_timeout,
     validate_load_balancer_outbound_ip_prefixes,
     validate_load_balancer_outbound_ips,
@@ -32,8 +34,6 @@ from azext_aks_preview._consts import (
     CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
-    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
-    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
     CONST_CREDENTIAL_FORMAT_AZURE,
     CONST_CREDENTIAL_FORMAT_EXEC,
     CONST_DAILY_MAINTENANCE_SCHEDULE,
@@ -48,6 +48,7 @@ from azext_aks_preview._consts import (
     CONST_LOAD_BALANCER_SKU_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_NETWORK_DATAPLANE_AZURE,
     CONST_NETWORK_DATAPLANE_CILIUM,
     CONST_NETWORK_PLUGIN_AZURE,
@@ -123,7 +124,6 @@ from azext_aks_preview._validators import (
     validate_eviction_policy,
     validate_grafanaresourceid,
     validate_host_group_id,
-    validate_image_cleaner_enable_disable_mutually_exclusive,
     validate_ip_ranges,
     validate_k8s_version,
     validate_linux_host_name,
@@ -156,7 +156,8 @@ from azext_aks_preview._validators import (
     validate_utc_offset,
     validate_vm_set_type,
     validate_vnet_subnet_id,
-    validate_force_upgrade_disable_and_enable_parameters
+    validate_force_upgrade_disable_and_enable_parameters,
+    validate_azure_service_mesh_revision
 )
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
@@ -167,6 +168,21 @@ from azure.cli.core.commands.parameters import (
     name_type,
     tags_type,
     zones_type,
+)
+from azext_aks_preview.azurecontainerstorage._consts import (
+    CONST_STORAGE_POOL_TYPE_AZURE_DISK,
+    CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
+    CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
+    CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
+    CONST_STORAGE_POOL_SKU_STANDARD_LRS,
+    CONST_STORAGE_POOL_SKU_STANDARDSSD_LRS,
+    CONST_STORAGE_POOL_SKU_ULTRASSD_LRS,
+    CONST_STORAGE_POOL_SKU_PREMIUM_ZRS,
+    CONST_STORAGE_POOL_SKU_PREMIUMV2_LRS,
+    CONST_STORAGE_POOL_SKU_STANDARDSSD_ZRS,
+    CONST_STORAGE_POOL_OPTION_NVME,
+    CONST_STORAGE_POOL_OPTION_SSD,
+    CONST_STORAGE_POOL_DEFAULT_SIZE,
 )
 from knack.arguments import CLIArgumentType
 
@@ -190,7 +206,7 @@ gpu_instance_profiles = [
 
 # consts for ManagedCluster
 load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC, CONST_LOAD_BALANCER_SKU_STANDARD]
-sku_tiers = [CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD]
+sku_tiers = [CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD, CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM]
 network_plugins = [CONST_NETWORK_PLUGIN_KUBENET, CONST_NETWORK_PLUGIN_AZURE, CONST_NETWORK_PLUGIN_NONE]
 network_plugin_modes = [CONST_NETWORK_PLUGIN_MODE_OVERLAY]
 network_dataplanes = [CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM]
@@ -254,10 +270,33 @@ ingress_gateway_types = [
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
 ]
 
+# azure container storage
+storage_pool_types = [
+    CONST_STORAGE_POOL_TYPE_AZURE_DISK,
+    CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
+    CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
+]
+
+storage_pool_skus = [
+    CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
+    CONST_STORAGE_POOL_SKU_STANDARD_LRS,
+    CONST_STORAGE_POOL_SKU_STANDARDSSD_LRS,
+    CONST_STORAGE_POOL_SKU_ULTRASSD_LRS,
+    CONST_STORAGE_POOL_SKU_PREMIUM_ZRS,
+    CONST_STORAGE_POOL_SKU_PREMIUMV2_LRS,
+    CONST_STORAGE_POOL_SKU_STANDARDSSD_ZRS,
+]
+
+storage_pool_options = [
+    CONST_STORAGE_POOL_OPTION_NVME,
+    CONST_STORAGE_POOL_OPTION_SSD,
+]
+
 
 def load_arguments(self, _):
 
     acr_arg_type = CLIArgumentType(metavar='ACR_NAME_OR_RESOURCE_ID')
+    k8s_support_plans = self.get_models("KubernetesSupportPlan", resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='managed_clusters')
 
     # AKS command argument configuration
     with self.argument_context('aks') as c:
@@ -338,6 +377,7 @@ def load_arguments(self, _):
         c.argument('attach_acr', acr_arg_type)
         c.argument('skip_subnet_role_assignment', action='store_true')
         c.argument('node_resource_group')
+        c.argument('k8s_support_plan', arg_type=get_enum_type(k8s_support_plans))
         c.argument('enable_defender', action='store_true')
         c.argument('defender_config', validator=validate_defender_config_parameter)
         c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
@@ -410,12 +450,12 @@ def load_arguments(self, _):
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('enable_workload_identity', action='store_true', is_preview=True)
-        c.argument('enable_image_cleaner', action='store_true', is_preview=True)
+        c.argument('enable_image_cleaner', action='store_true')
         c.argument('enable_azure_service_mesh',
                    options_list=["--enable-azure-service-mesh", "--enable-asm"],
                    action='store_true',
                    is_preview=True)
-        c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
+        c.argument('image_cleaner_interval_hours', type=int)
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
@@ -451,6 +491,15 @@ def load_arguments(self, _):
         c.argument('grafana_resource_id', validator=validate_grafanaresourceid)
         c.argument('enable_windows_recording_rules', action='store_true')
         c.argument('enable_cost_analysis', is_preview=True, action='store_true')
+        # azure container storage
+        c.argument('enable_azure_container_storage', arg_type=get_enum_type(storage_pool_types),
+                   help='enable azure container storage and define storage pool type')
+        c.argument('storage_pool_name', help='set storage pool name for azure container storage')
+        c.argument('storage_pool_size', help='set storage pool size for azure container storage')
+        c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus),
+                   help='set azure disk type storage pool sku for azure container storage')
+        c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options),
+                   help='set ephemeral disk storage pool option for azure container storage')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -489,6 +538,7 @@ def load_arguments(self, _):
         c.argument('aad_tenant_id')
         c.argument('aad_admin_group_object_ids')
         c.argument('enable_oidc_issuer', action='store_true')
+        c.argument('k8s_support_plan', arg_type=get_enum_type(k8s_support_plans))
         c.argument('windows_admin_password')
         c.argument('enable_ahub')
         c.argument('disable_ahub')
@@ -546,9 +596,9 @@ def load_arguments(self, _):
         c.argument('disable_pod_identity', action='store_true')
         c.argument('enable_workload_identity', action='store_true', is_preview=True)
         c.argument('disable_workload_identity', action='store_true', is_preview=True)
-        c.argument('enable_image_cleaner', action='store_true', is_preview=True)
-        c.argument('disable_image_cleaner', action='store_true', validator=validate_image_cleaner_enable_disable_mutually_exclusive, is_preview=True)
-        c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
+        c.argument('enable_image_cleaner', action='store_true')
+        c.argument('disable_image_cleaner', action='store_true', validator=validate_image_cleaner_enable_disable_mutually_exclusive)
+        c.argument('image_cleaner_interval_hours', type=int)
         c.argument('disable_image_integrity', action='store_true', is_preview=True)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
@@ -578,6 +628,19 @@ def load_arguments(self, _):
         c.argument('enable_network_observability', action='store_true', is_preview=True, help="enable network observability for cluster")
         c.argument('enable_cost_analysis', is_preview=True, action='store_true')
         c.argument('disable_cost_analysis', is_preview=True, action='store_true')
+        # azure container storage
+        c.argument('enable_azure_container_storage', arg_type=get_enum_type(storage_pool_types),
+                   help='enable azure container storage and define storage pool type')
+        c.argument('disable_azure_container_storage', action='store_true',
+                   help='Flag to disable azure container storage')
+        c.argument('storage_pool_name', help='set storage pool name for azure container storage')
+        c.argument('storage_pool_size', help='set storage pool size for azure container storage')
+        c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus),
+                   help='set azure disk type storage pool sku for azure container storage')
+        c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options),
+                   help='set ephemeral disk storage pool option for azure container storage')
+        c.argument('azure_container_storage_nodepools',
+                   help='define the comma separated nodepool list to install azure container storage')
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
@@ -674,6 +737,13 @@ def load_arguments(self, _):
         c.argument('ignore_pod_disruption_budget', options_list=[
                    "--ignore-pod-disruption-budget", "-i"], action=get_three_state_flag(), is_preview=True,
                    help='delete an AKS nodepool by ignoring PodDisruptionBudget setting')
+
+    with self.argument_context('aks machine') as c:
+        c.argument('cluster_name', help='The cluster name.')
+        c.argument('nodepool_name', validator=validate_nodepool_name, help='The node pool name.')
+
+    with self.argument_context('aks machine show') as c:
+        c.argument('machine_name', help='to display specific information for all machines.')
 
     with self.argument_context('aks maintenanceconfiguration') as c:
         c.argument('cluster_name', help='The cluster name.')
@@ -923,11 +993,18 @@ def load_arguments(self, _):
                    options_list=["--egress-gateway-nodeselector", "--egx-gtw-ns"])
 
     with self.argument_context('aks mesh enable') as c:
+        c.argument('revision', validator=validate_azure_service_mesh_revision)
         c.argument('key_vault_id')
         c.argument('ca_cert_object_name')
         c.argument('ca_key_object_name')
         c.argument('root_cert_object_name')
         c.argument('cert_chain_object_name')
+
+    with self.argument_context('aks mesh get-revisions') as c:
+        c.argument('location', required=True, help='Location in which to discover available Azure Service Mesh revisions.')
+
+    with self.argument_context('aks mesh upgrade start') as c:
+        c.argument('revision', validator=validate_azure_service_mesh_revision, required=True)
 
 
 def _get_default_install_location(exe_name):
