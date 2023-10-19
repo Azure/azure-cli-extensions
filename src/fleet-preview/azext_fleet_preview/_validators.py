@@ -37,6 +37,11 @@ def validate_agent_subnet_id(namespace):
 def validate_update_strategy_name(namespace):
     if namespace.update_strategy_name is not None and not namespace.update_strategy_name.strip():
             raise CLIError("--update-strategy-name is not a valid name")
+    
+
+def validate_vm_size(namespace):
+    if namespace.vm_size is not None and not namespace.vm_size.strip():
+            raise CLIError("--vm-size is not a valid name")
 
 
 def _validate_subnet_id(subnet_id, name):

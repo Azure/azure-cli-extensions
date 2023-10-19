@@ -1,5 +1,5 @@
-Microsoft Azure CLI 'fleet' Extension
+Microsoft Azure CLI 'fleet-preview' Extension
 ==========================================
 
-This package is for the 'fleet' extension.
+This package is for the 'fleet-preview' extension.
 i.e. 'az fleet-preview'

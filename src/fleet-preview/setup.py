@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='fleet-preview',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Fleet Extension',
+    description='Microsoft Azure Command-Line Tools Fleet-Preview Extension',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
