@@ -87,6 +87,7 @@ EXTRA_VHD_PARAMETERS = [
     "image_disk_size_GB",
     "image_hyper_v_generation",
     "image_api_version",
+    "blob_sas_url"
 ]
 
 # For CNF NFD Generator
