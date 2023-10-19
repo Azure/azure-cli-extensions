@@ -19,9 +19,11 @@ from urllib.request import urlopen
 
 from azure.cli.command_modules.containerapp._utils import safe_get, _ensure_location_allowed
 from azure.cli.command_modules.containerapp._client_factory import handle_raw_exception
+from azure.cli.core._profile import Profile
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, CLIError, InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.mgmt.resource import ResourceManagementClient
+from azure.mgmt.servicelinker import ServiceLinkerManagementClient
 
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
@@ -35,6 +37,207 @@ from ._constants import (CONTAINER_APP_EXTENSION_TYPE,
                          MANAGED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APPS_RP)
 
 logger = get_logger(__name__)
+
+
+def process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name, name,
+                    binding_name, service_connector_def_list, service_bindings_def_list):
+    # Check if the service exists in the list of dict
+    for service in resource_list:
+        if service["name"] == service_name:
+            if service["type"] == "Microsoft.Cache/Redis":
+                service_connector_def_list.append(
+                    ManagedRedisUtils.build_redis_service_connector_def(subscription_id, resource_group_name,
+                                                                        service_name, arg_dict,
+                                                                        name, binding_name))
+            elif service["type"] == "Microsoft.DocumentDb/databaseAccounts":
+                service_connector_def_list.append(
+                    ManagedCosmosDBUtils.build_cosmosdb_service_connector_def(subscription_id, resource_group_name,
+                                                                              service_name, arg_dict,
+                                                                              name, binding_name))
+            elif service["type"] == "Microsoft.DBforPostgreSQL/flexibleServers":
+                service_connector_def_list.append(
+                    ManagedPostgreSQLFlexibleUtils.build_postgresql_service_connector_def(subscription_id, resource_group_name,
+                                                                                          service_name, arg_dict,
+                                                                                          name, binding_name))
+            elif service["type"] == "Microsoft.DBforMySQL/flexibleServers":
+                service_connector_def_list.append(
+                    ManagedMySQLFlexibleUtils.build_mysql_service_connector_def(subscription_id, resource_group_name,
+                                                                                service_name, arg_dict,
+                                                                                name, binding_name))
+            elif service["type"] == "Microsoft.App/containerApps":
+                containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name,
+                                                           name=service_name)
+
+                if not containerapp_def:
+                    raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
+
+                service_type = safe_get(containerapp_def, "properties", "configuration", "service", "type")
+
+                if service_type is None or service_type not in DEV_SERVICE_LIST:
+                    raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
+
+                service_bindings_def_list.append({
+                    "serviceId": containerapp_def["id"],
+                    "name": binding_name
+                })
+
+            else:
+                raise ValidationError("Service not supported")
+            break
+    else:
+        raise ResourceNotFoundError("Service with the given name does not exist")
+
+
+def get_linker_client(cmd):
+    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    credential, subscription_id, _ = profile.get_login_credentials(
+        subscription_id=get_subscription_id(cmd.cli_ctx), resource=resource)
+    linker_client = ServiceLinkerManagementClient(credential)
+    return linker_client
+
+
+def validate_binding_name(binding_name):
+    pattern = r'^(?=.{1,60}$)[a-zA-Z0-9._]+$'
+    return bool(re.match(pattern, binding_name))
+
+
+def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def_list, resource_group_name, name):
+    linker_client = get_linker_client(cmd)
+    containerapp_def = None
+
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:  # pylint: disable=bare-except
+        pass
+    all_bindings = []
+
+    if containerapp_def:
+        managed_bindings = linker_client.linker.list(resource_uri=containerapp_def["id"])
+        service_binds = containerapp_def["properties"].get("template", {}).get("serviceBinds", [])
+
+        if managed_bindings:
+            all_bindings.extend([item.name for item in managed_bindings])
+        if service_binds:
+            all_bindings.extend([item["name"] for item in service_binds])
+
+    service_binding_names = [service_bind["name"] for service_bind in service_bindings_def_list]
+    linker_names = [connector["linker_name"] for connector in service_connectors_def_list]
+
+    all_bindings_set = set(all_bindings)
+    service_binding_names_set = set(service_binding_names)
+    linker_names_set = set(linker_names)
+
+    if len(all_bindings_set | service_binding_names_set | linker_names_set) != len(all_bindings_set) + len(
+            service_binding_names_set) + len(linker_names_set):
+        # There are duplicate elements across the lists
+        return False
+    elif len(all_bindings_set) + len(service_binding_names_set) + len(linker_names_set) != len(all_bindings) + len(
+            service_binding_names) + len(linker_names):
+        # There are duplicate elements within one or more of the lists
+        return False
+    else:
+        # There are no duplicate elements among the lists or within any of the lists
+        return True
+
+
+def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name):
+    # Make it return both managed and dev bindings
+    service_bindings_def_list = []
+    service_connector_def_list = []
+
+    for service_binding_str in service_bindings_list:
+        parts = service_binding_str.split(",")
+        arg_dict = {}
+
+        for part in parts:
+            key_value = part.split("=")
+
+            if len(key_value) == 1:
+                # This means we don't have comma separated args
+                pass
+            else:
+                arg_dict[key_value[0]] = key_value[1]
+
+        service_binding = parts[0].split(':')
+        service_name = service_binding[0]
+
+        if len(service_binding) == 1:
+            binding_name = service_name
+        else:
+            binding_name = service_binding[1]
+
+        if not validate_binding_name(binding_name):
+            raise InvalidArgumentValueError("The Binding Name can only contain letters, numbers (0-9), periods ('.'), "
+                                            "and underscores ('_'). The length must not be more than 60 characters. "
+                                            "By default, the binding name is the same as the service name you specified "
+                                            "[my-aca-pgaddon], but you can override the default and specify your own "
+                                            "compliant binding name like this --bind my-aca-pgaddon[:my_aca_pgaddon].")
+
+        resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient)
+
+        if "resourcegroup" in arg_dict:
+            # Search in target rg
+            resources = resource_client.resources.list_by_resource_group(
+                arg_dict["resourcegroup"])
+            resource_group_name = arg_dict["resourcegroup"]
+        else:
+            # Search in current rg
+            resources = resource_client.resources.list_by_resource_group(
+                resource_group_name)
+
+        # Create a list with required items
+        resource_list = []
+        for item in resources:
+            resource_list.append({"name": item.name, "type": item.type, "id": item.id})
+
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+        # Will work for both create and update
+        process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name,
+                        name, binding_name, service_connector_def_list, service_bindings_def_list)
+
+    return service_connector_def_list, service_bindings_def_list
+
+
+def connected_env_check_cert_name_availability(cmd, resource_group_name, name, cert_name):
+    name_availability_request = {}
+    name_availability_request["name"] = cert_name
+    name_availability_request["type"] = CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE
+    try:
+        r = ConnectedEnvCertificateClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
+    except CLIError as e:
+        handle_raw_exception(e)
+    return r
+
+
+def validate_environment_location(cmd, location, resource_type=MANAGED_ENVIRONMENT_RESOURCE_TYPE):
+    res_locations = list_environment_locations(cmd, resource_type=resource_type)
+
+    allowed_locs = ", ".join(res_locations)
+
+    if location:
+        try:
+            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, resource_type)
+
+            return location
+        except Exception as e:  # pylint: disable=broad-except
+            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
+    else:
+        return res_locations[0]
+
+
+def list_environment_locations(cmd, resource_type=MANAGED_ENVIRONMENT_RESOURCE_TYPE):
+    providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
+    resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
+    res_locations = []
+    for res in resource_types:
+        if res and getattr(res, 'resource_type', "") == resource_type:
+            res_locations = getattr(res, 'locations', [])
+
+    res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+
+    return res_locations
 
 
 def is_docker_running():
@@ -210,158 +413,6 @@ def parse_oryx_mariner_tag(tag: str) -> OryxMarinerRunImgTagProperty:
     else:
         tag_obj = None
     return tag_obj
-
-
-def process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name, name,
-                    binding_name, service_connector_def_list, service_bindings_def_list):
-    # Check if the service exists in the list of dict
-    for service in resource_list:
-        if service["name"] == service_name:
-            if service["type"] == "Microsoft.Cache/Redis":
-                service_connector_def_list.append(
-                    ManagedRedisUtils.build_redis_service_connector_def(subscription_id, resource_group_name,
-                                                                        service_name, arg_dict,
-                                                                        name, binding_name))
-            elif service["type"] == "Microsoft.DocumentDb/databaseAccounts":
-                service_connector_def_list.append(
-                    ManagedCosmosDBUtils.build_cosmosdb_service_connector_def(subscription_id, resource_group_name,
-                                                                              service_name, arg_dict,
-                                                                              name, binding_name))
-            elif service["type"] == "Microsoft.DBforPostgreSQL/flexibleServers":
-                service_connector_def_list.append(
-                    ManagedPostgreSQLFlexibleUtils.build_postgresql_service_connector_def(subscription_id, resource_group_name,
-                                                                                          service_name, arg_dict,
-                                                                                          name, binding_name))
-            elif service["type"] == "Microsoft.DBforMySQL/flexibleServers":
-                service_connector_def_list.append(
-                    ManagedMySQLFlexibleUtils.build_mysql_service_connector_def(subscription_id, resource_group_name,
-                                                                                service_name, arg_dict,
-                                                                                name, binding_name))
-            elif service["type"] == "Microsoft.App/containerApps":
-                containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=service_name)
-
-                if not containerapp_def:
-                    raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
-
-                service_type = safe_get(containerapp_def, "properties", "configuration", "service", "type")
-
-                if service_type is None or service_type not in DEV_SERVICE_LIST:
-                    raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
-
-                service_bindings_def_list.append({
-                    "serviceId": containerapp_def["id"],
-                    "name": binding_name
-                })
-
-            else:
-                raise ValidationError("Service not supported")
-            break
-    else:
-        raise ResourceNotFoundError("Service with the given name does not exist")
-
-
-def validate_binding_name(binding_name):
-    pattern = r'^(?=.{1,60}$)[a-zA-Z0-9._]+$'
-    return bool(re.match(pattern, binding_name))
-
-
-def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name):
-    # Make it return both managed and dev bindings
-    service_bindings_def_list = []
-    service_connector_def_list = []
-
-    for service_binding_str in service_bindings_list:
-        parts = service_binding_str.split(",")
-        arg_dict = {}
-
-        for part in parts:
-            key_value = part.split("=")
-
-            if len(key_value) == 1:
-                # This means we don't have comma separated args
-                pass
-            else:
-                arg_dict[key_value[0]] = key_value[1]
-
-        service_binding = parts[0].split(':')
-        service_name = service_binding[0]
-
-        if len(service_binding) == 1:
-            binding_name = service_name
-        else:
-            binding_name = service_binding[1]
-
-        if not validate_binding_name(binding_name):
-            raise InvalidArgumentValueError("The Binding Name can only contain letters, numbers (0-9), periods ('.'), "
-                                            "and underscores ('_'). The length must not be more than 60 characters. "
-                                            "By default, the binding name is the same as the service name you specified "
-                                            "[my-aca-pgaddon], but you can override the default and specify your own "
-                                            "compliant binding name like this --bind my-aca-pgaddon[:my_aca_pgaddon].")
-
-        resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient)
-
-        if "resourcegroup" in arg_dict:
-            # Search in target rg
-            resources = resource_client.resources.list_by_resource_group(
-                arg_dict["resourcegroup"])
-            resource_group_name = arg_dict["resourcegroup"]
-        else:
-            # Search in current rg
-            resources = resource_client.resources.list_by_resource_group(
-                resource_group_name)
-
-        # Create a list with required items
-        resource_list = []
-        for item in resources:
-            resource_list.append({"name": item.name, "type": item.type, "id": item.id})
-
-        subscription_id = get_subscription_id(cmd.cli_ctx)
-
-        # Will work for both create and update
-        process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name,
-                        name, binding_name, service_connector_def_list, service_bindings_def_list)
-
-    return service_connector_def_list, service_bindings_def_list
-
-
-def validate_environment_location(cmd, location, resource_type=MANAGED_ENVIRONMENT_RESOURCE_TYPE):
-    res_locations = list_environment_locations(cmd, resource_type=resource_type)
-
-    allowed_locs = ", ".join(res_locations)
-
-    if location:
-        try:
-            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, resource_type)
-
-            return location
-        except Exception as e:  # pylint: disable=broad-except
-            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
-    else:
-        return res_locations[0]
-
-
-def list_environment_locations(cmd, resource_type=MANAGED_ENVIRONMENT_RESOURCE_TYPE):
-    providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
-    resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
-    res_locations = []
-    for res in resource_types:
-        if res and getattr(res, 'resource_type', "") == resource_type:
-            res_locations = getattr(res, 'locations', [])
-
-    res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
-
-    return res_locations
-
-
-def connected_env_check_cert_name_availability(cmd, resource_group_name, name, cert_name):
-    name_availability_request = {}
-    name_availability_request["name"] = cert_name
-    name_availability_request["type"] = CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE
-    try:
-        r = ConnectedEnvCertificateClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
-    except CLIError as e:
-        handle_raw_exception(e)
-    return r
 
 
 def get_custom_location(cmd, custom_location_id):

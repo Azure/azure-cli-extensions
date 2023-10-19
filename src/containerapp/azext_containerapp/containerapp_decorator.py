@@ -26,7 +26,7 @@ from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_r
                                                            is_registry_msi_system,
                                                            safe_set, parse_metadata_flags, parse_auth_flags,
                                                            ensure_workload_profile_supported, _generate_secret_volume_name,
-                                                           check_unique_bindings, get_linker_client,
+                                                           get_linker_client,
                                                            safe_get, _update_revision_env_secretrefs, _add_or_update_tags, _populate_secret_values,
                                                            clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred)
 
@@ -52,7 +52,7 @@ from ._models import (
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file)
-from ._utils import parse_service_bindings
+from ._utils import parse_service_bindings, check_unique_bindings
 from ._validators import validate_create
 
 from ._constants import (HELLO_WORLD_IMAGE,
