@@ -61,7 +61,6 @@ def validate_azure_container_storage_params(
     if disable_azure_container_storage:
         _validate_disable_azure_container_storage_params(
             storage_pool_name,
-            storage_pool_type,
             storage_pool_sku,
             storage_pool_option,
             storage_pool_size,
@@ -80,7 +79,6 @@ def validate_azure_container_storage_params(
 
 def _validate_disable_azure_container_storage_params(
     storage_pool_name,
-    storage_pool_type,
     storage_pool_sku,
     storage_pool_option,
     storage_pool_size,
