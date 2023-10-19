@@ -113,4 +113,5 @@ SOURCE_ACR_REGEX = (
 AOSM_FEATURE_NAMESPACE = "Microsoft.HybridNetwork"
 AOSM_REQUIRED_FEATURES = [
     "Allow-2023-09-01",
+    "Allow-Publisher",
 ]

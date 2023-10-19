@@ -81,8 +81,8 @@ class ArtifactManifestOperator:
         )
 
         # Instatiate an Artifact object for each artifact in the manifest.
-        if manifest.artifacts:
-            for artifact in manifest.artifacts:
+        if manifest.properties.artifacts:
+            for artifact in manifest.properties.artifacts:
                 if not (
                     artifact.artifact_name
                     and artifact.artifact_type

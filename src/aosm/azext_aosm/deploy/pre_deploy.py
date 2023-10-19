@@ -19,11 +19,14 @@ from azext_aosm._configuration import (
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks.models import (
     ArtifactStore,
+    ArtifactStorePropertiesFormat,
     ArtifactStoreType,
     NetworkFunctionDefinitionGroup,
     NetworkServiceDesignGroup,
     ProvisioningState,
     Publisher,
+    PublisherPropertiesFormat,
+    ManagedServiceIdentity
 )
 
 logger = get_logger(__name__)
@@ -56,13 +59,10 @@ class PreDeployerViaSDK:
 
     def ensure_resource_group_exists(self, resource_group_name: str) -> None:
         """
-        Checks whether a particular resource group exists on the subscription.
-        Copied from virtutils.
+        Checks whether a particular resource group exists on the subscription, and
+        attempts to create it if not.
 
-        :param resource_group_name: The name of the resource group          Raises a
-                NotFoundError exception if the resource group does not exist. Raises a
-                PermissionsError exception if we don't have permissions to check
-                resource group existence.
+        :param resource_group_name: The name of the resource group
         """
         if not self.api_clients.resource_client.resource_groups.check_existence(
             resource_group_name
@@ -108,16 +108,18 @@ class PreDeployerViaSDK:
                 f" {resource_group_name}"
             )
         except azure_exceptions.ResourceNotFoundError:
-            # Create the publisher
+            # Create the publisher with default SAMI and private scope
             logger.info("Creating publisher %s if it does not exist", publisher_name)
             print(
                 f"Creating publisher {publisher_name} in resource group"
                 f" {resource_group_name}"
             )
+            publisher_properties = PublisherPropertiesFormat(scope="Private")
+            publisher_sami = ManagedServiceIdentity(type="SystemAssigned")
             poller = self.api_clients.aosm_client.publishers.begin_create_or_update(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
-                parameters=Publisher(location=location, scope="Private"),
+                parameters=Publisher(location=location, properties=publisher_properties, identity=publisher_sami),
             )
             LongRunningOperation(self.cli_ctx, "Creating publisher...")(poller)
 
@@ -174,6 +176,7 @@ class PreDeployerViaSDK:
                 f"Create Artifact Store {artifact_store_name} of type"
                 f" {artifact_store_type}"
             )
+            artifact_store_properties = ArtifactStorePropertiesFormat(store_type=artifact_store_type)
             poller = (
                 self.api_clients.aosm_client.artifact_stores.begin_create_or_update(
                     resource_group_name=resource_group_name,
@@ -181,27 +184,27 @@ class PreDeployerViaSDK:
                     artifact_store_name=artifact_store_name,
                     parameters=ArtifactStore(
                         location=location,
-                        store_type=artifact_store_type,
+                        properties=artifact_store_properties,
                     ),
                 )
             )
             # LongRunningOperation waits for provisioning state Succeeded before
             # carrying on
-            arty: ArtifactStore = LongRunningOperation(
+            artifactStore: ArtifactStore = LongRunningOperation(
                 self.cli_ctx, "Creating Artifact Store..."
             )(poller)
 
-            if arty.provisioning_state != ProvisioningState.SUCCEEDED:
-                logger.debug("Failed to provision artifact store: %s", arty.name)
+            if artifactStore.properties.provisioning_state != ProvisioningState.SUCCEEDED:
+                logger.debug("Failed to provision artifact store: %s", artifactStore.name)
                 raise RuntimeError(
                     "Creation of artifact store proceeded, but the provisioning"
-                    f" state returned is {arty.provisioning_state}. "
+                    f" state returned is {artifactStore.properties.provisioning_state}. "
                     "\nAborting"
                 ) from ex
             logger.debug(
                 "Provisioning state of %s: %s",
                 artifact_store_name,
-                arty.provisioning_state,
+                artifactStore.properties.provisioning_state,
             )
 
     def ensure_acr_artifact_store_exists(self) -> None:
@@ -289,18 +292,18 @@ class PreDeployerViaSDK:
                 self.cli_ctx, "Creating Network Function Definition Group..."
             )(poller)
 
-            if nfdg.provisioning_state != ProvisioningState.SUCCEEDED:
+            if nfdg.properties.provisioning_state != ProvisioningState.SUCCEEDED:
                 logger.debug(
                     "Failed to provision Network Function Definition Group: %s",
                     nfdg.name,
                 )
                 raise RuntimeError(
                     "Creation of Network Function Definition Group proceeded, but the"
-                    f" provisioning state returned is {nfdg.provisioning_state}."
+                    f" provisioning state returned is {nfdg.properties.provisioning_state}."
                     " \nAborting"
                 ) from ex
             logger.debug(
-                "Provisioning state of %s: %s", nfdg_name, nfdg.provisioning_state
+                "Provisioning state of %s: %s", nfdg_name, nfdg.properties.provisioning_state
             )
 
     def ensure_config_nfdg_exists(

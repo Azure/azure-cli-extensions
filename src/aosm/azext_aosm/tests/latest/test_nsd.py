@@ -117,21 +117,24 @@ nginx_deploy_parameters = {
 # We don't want to get details from a real NFD (calling out to Azure) in a UT.
 # Therefore we pass in a fake client to supply the deployment parameters from the "NFD".
 @dataclass
-class NFDV:
+class NFDVProperties:
     deploy_parameters: str
 
+@dataclass
+class NFDV:
+    properties: NFDVProperties
 
 class NFDVs:
     def get(self, network_function_definition_group_name, **_):
         if "nginx" in network_function_definition_group_name:
-            return NFDV(json.dumps(nginx_deploy_parameters))
+            return NFDV(NFDVProperties(json.dumps(nginx_deploy_parameters)))
         else:
-            return NFDV(json.dumps(ubuntu_deploy_parameters))
+            return NFDV(NFDVProperties(json.dumps(ubuntu_deploy_parameters)))
 
 
 class AOSMClient:
     def __init__(self) -> None:
-        self.proxy_network_function_definition_versions = NFDVs()
+        self.network_function_definition_versions = NFDVs()
 
 
 mock_client = AOSMClient()

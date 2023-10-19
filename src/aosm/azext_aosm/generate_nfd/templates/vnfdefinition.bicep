@@ -3,7 +3,7 @@
 // This file creates an NF definition for a VNF
 param location string
 @description('Name of an existing publisher, expected to be in the resource group where you deploy the template')
-param publisherName string 
+param publisherName string
 @description('Name of an existing ACR-backed Artifact Store, deployed under the publisher.')
 param acrArtifactStoreName string
 @description('Name of an existing Storage Account-backed Artifact Store, deployed under the publisher.')
@@ -20,30 +20,30 @@ param vhdVersion string
 param armTemplateVersion string
 
 // Created by the az aosm definition publish command before the template is deployed
-resource publisher 'Microsoft.HybridNetwork/publishers@2023-04-01-preview' existing = {
+resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing = {
   name: publisherName
   scope: resourceGroup()
 }
 
 // Created by the az aosm definition publish command before the template is deployed
-resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-04-01-preview' existing = {
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
   parent: publisher
   name: acrArtifactStoreName
 }
 
 // Created by the az aosm definition publish command before the template is deployed
-resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-04-01-preview' existing = {
+resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
   parent: publisher
   name: saArtifactStoreName
 }
 
 // Created by the az aosm definition publish command before the template is deployed
-resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2023-04-01-preview' existing = {
+resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2023-09-01' existing = {
   parent: publisher
   name: nfDefinitionGroup
 }
 
-resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2023-04-01-preview' = {
+resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2023-09-01' = {
   parent: nfdg
   name: nfDefinitionVersion
   location: location

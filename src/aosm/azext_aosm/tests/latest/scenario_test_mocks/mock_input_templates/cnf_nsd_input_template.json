@@ -1,8 +1,8 @@
 {
     "location": "uaenorth",
-    "publisher_name": "nginx-publisher",
+    "publisher_name": "automated-tests-nginx-publisher",
     "publisher_resource_group_name": "{{publisher_resource_group_name}}",
-    "acr_artifact_store_name": "nginx-nsd-acr",
+    "acr_artifact_store_name": "nginx-acr",
     "network_functions": [
         {
             "name": "nginx-nfdg",
@@ -10,8 +10,7 @@
             "publisher_offering_location": "uaenorth",
             "type": "cnf",
             "multiple_instances": false,
-            "publisher": "nginx-publisher",
-            "publisher_scope": "private",
+            "publisher": "automated-tests-nginx-publisher",
             "publisher_resource_group": "{{publisher_resource_group_name}}"
         }
     ],

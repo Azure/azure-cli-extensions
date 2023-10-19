@@ -204,7 +204,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
             publisher_name=self.config.publisher_name,
             artifact_store_name=self.config.acr_artifact_store_name,
         )
-        if not acr_properties.storage_resource_id:
+        if not acr_properties.properties.storage_resource_id:
             raise CLIError(
                 f"Artifact store {self.config.acr_artifact_store_name} "
                 "has no storage resource id linked"

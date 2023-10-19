@@ -31,7 +31,6 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-# TODO: Add any additional SDK dependencies here
 DEPENDENCIES = ["oras~=0.1.19", "azure-storage-blob>=12.15.0", "jinja2>=3.1.2"]
 
 with open("README.md", "r", encoding="utf-8") as f:
@@ -43,10 +42,8 @@ setup(
     name="aosm",
     version=VERSION,
     description="Microsoft Azure Command-Line Tools Aosm Extension",
-    # TODO: Update author and email, if applicable
     author="Microsoft Corporation",
     author_email="azpycli@microsoft.com",
-    # TODO: change to your extension source code repo if the code will not be put in azure-cli-extensions repo
     url="https://github.com/Azure/azure-cli-extensions/tree/master/src/aosm",
     long_description=README + "\n\n" + HISTORY,
     license="MIT",

@@ -82,7 +82,8 @@ class Artifact:
                 "Copying artifacts is not implemented for ACR artifacts stores."
             )
 
-    def _call_subprocess_raise_output(self, cmd: list) -> None:
+    @staticmethod
+    def _call_subprocess_raise_output(cmd: list) -> None:
         """
         Call a subprocess and raise a CLIError with the output if it fails.
 
@@ -241,7 +242,8 @@ class Artifact:
             ]
             self._call_subprocess_raise_output(helm_logout_cmd)
 
-    def _convert_to_readable_size(self, size_in_bytes: Optional[int]) -> str:
+    @staticmethod
+    def _convert_to_readable_size(size_in_bytes: Optional[int]) -> str:
         """Converts a size in bytes to a human readable size."""
         if size_in_bytes is None:
             return "Unknown bytes"
@@ -329,7 +331,8 @@ class Artifact:
 
         return f"{self.artifact_name}:{self.artifact_version}"
 
-    def _check_tool_installed(self, tool_name: str) -> None:
+    @staticmethod
+    def _check_tool_installed(tool_name: str) -> None:
         """
         Check whether a tool such as docker or helm is installed.
 
@@ -518,7 +521,8 @@ class Artifact:
             ]
             self._call_subprocess_raise_output(docker_logout_cmd)
 
-    def _clean_name(self, registry_name: str) -> str:
+    @staticmethod
+    def _clean_name(registry_name: str) -> str:
         """Remove https:// from the registry name."""
         return registry_name.replace("https://", "")
 

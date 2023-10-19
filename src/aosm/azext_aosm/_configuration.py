@@ -525,7 +525,6 @@ class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
     name: str = ""
     version: str = ""
     publisher_offering_location: str = ""
-    publisher_scope: str = ""
     type: str = ""
     multiple_instances: Union[str, bool] = False
 
@@ -555,9 +554,6 @@ class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
                 "with this version."
             ),
             publisher_offering_location="The region that the NFDV is published to.",
-            publisher_scope=(
-                "The scope that the publisher is published under. Only 'private' is supported."
-            ),
             type="Type of Network Function. Valid values are 'cnf' or 'vnf'",
             multiple_instances=(
                 "Set to true or false.  Whether the NSD should allow arbitrary numbers of this "
@@ -595,17 +591,6 @@ class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
         if not self.publisher_offering_location:
             raise ValidationError(
                 f"Network function definition offering location must be set, for {self.name}"
-            )
-
-        if not self.publisher_scope:
-            raise ValidationError(
-                f"Network function definition publisher scope must be set, for {self.name}"
-            )
-
-        # Temporary validation while only private publishers exist
-        if self.publisher_scope not in ["private", "Private"]:
-            raise ValidationError(
-                "Only private publishers are currently supported"
             )
 
         if self.type not in [CNF, VNF]:

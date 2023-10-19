@@ -110,7 +110,7 @@ class CnfNsdTest(LiveScenarioTest):
         try:
             self.cmd(f'az aosm nsd publish -f "{nsd_input_file_path}" --debug')
         finally:
+            self.cmd(f'az aosm nsd delete -f "{nsd_input_file_path}" --debug --force')
             self.cmd(
                 f'az aosm nfd delete --definition-type cnf -f "{nfd_input_file_path}" --debug --force'
             )
-            self.cmd(f'az aosm nsd delete -f "{nsd_input_file_path}" --debug --force')

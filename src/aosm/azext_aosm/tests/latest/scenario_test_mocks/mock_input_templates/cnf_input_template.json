@@ -1,12 +1,12 @@
 {
-    "publisher_name": "nginx-publisher",
+    "publisher_name": "automated-tests-nginx-publisher",
     "publisher_resource_group_name": "{{publisher_resource_group_name}}",
     "nf_name": "nginx",
     "version": "1.0.0",
-    "acr_artifact_store_name": "nginx-nsd-acr",
+    "acr_artifact_store_name": "nginx-acr",
     "location": "uaenorth",
     "images":{
-        "source_registry": "{{source_registry_id}}",
+        "source_registry": "not-used-in-test-but-cannot-be-blank",
         "source_registry_namespace": ""
     },
     "helm_packages": [
