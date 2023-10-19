@@ -25,6 +25,7 @@ def call_scenario1(test):
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
+    step_update(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     step_update_admin_state_Enable(test, checks=[])
@@ -44,6 +45,12 @@ def step_show(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric l2domain show --resource-name {name} --resource-group {rg}')
+
+def step_update(test, checks=None):
+    '''l2domain update operation'''
+    if checks is None:
+        checks = []
+    test.cmd('az networkfabric l2domain update --resource-group {rg} --resource-name {name} --mtu {updated_mtu}', checks=checks)
 
 def step_list_resource_group(test, checks=None):
     '''l2domain list by resource group operation'''
@@ -88,6 +95,7 @@ class GA_L2DomainScenarioTest1(ScenarioTest):
             'nf_id': CONFIG.get('L2_ISOLATION_DOMAIN', 'nf_id'),
             'mtu': CONFIG.get('L2_ISOLATION_DOMAIN', 'mtu'),
             'vlan_id': CONFIG.get('L2_ISOLATION_DOMAIN', 'vlan_id'),
+            'updated_mtu': CONFIG.get('L2_ISOLATION_DOMAIN', 'updated_mtu'),
             'state_Enable': CONFIG.get('L2_ISOLATION_DOMAIN', 'state_Enable'),
             'state_Disable': CONFIG.get('L2_ISOLATION_DOMAIN', 'state_Disable')
         })
