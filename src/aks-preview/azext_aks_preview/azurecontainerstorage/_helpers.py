@@ -33,12 +33,13 @@ import time
 logger = get_logger(__name__)
 
 
-def register_dependent_rps(cmd, subscription_id):
+def register_dependent_rps(cmd, subscription_id) -> bool:
     required_rp = 'Microsoft.KubernetesConfiguration'
     from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
 
     properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(consent_to_authorization=False))
     client = get_providers_client_factory(cmd.cli_ctx)
+    is_registered = False
     try:
         is_registered = _is_rp_registered(cmd, required_rp, subscription_id)
         if is_registered:
@@ -52,16 +53,18 @@ def register_dependent_rps(cmd, subscription_id):
             is_registered = _is_rp_registered(cmd, required_rp, subscription_id)
             time.sleep(RP_REGISTRATION_POLLING_INTERVAL_IN_SEC)
             if (datetime.utcnow() - start).seconds >= timeout_secs:
-                raise UnknownError("Timed out while waiting for the {0} resource provider to be registered.".format(required_rp))
+                logger.error("Timed out while waiting for the {0} resource provider to be registered.".format(required_rp))
 
     except Exception as e:
-        raise UnknownError(
+        logger.error(
             "Installation of Azure Container Storage requires registering to the following resource provider: {0}. "
             "We were unable to perform the registration on your behalf due to the following error: {1}\n"
             "Please check with your admin on permissions, "
             "or try running registration manually with: `az provider register --namespace {0}` command."
             .format(required_rp, e.msg)
         )
+
+    return is_registered
 
 
 def should_create_storagepool(

@@ -52,15 +52,17 @@ def perform_enable_azure_container_storage(
 ):
     # Step 1: Check and register the dependent provider for ManagedClusters i.e.
     # Microsoft.KubernetesConfiguration
-    register_dependent_rps(cmd, subscription_id)
+    if not register_dependent_rps(cmd, subscription_id):
+        return
 
     # Step 2: Check if extension already installed incase of an update call
     if not is_cluster_create and check_if_extension_is_installed(cmd, resource_group, cluster_name):
-        raise UnknownError(
+        logger.error(
             "Extension type {0} already installed on cluster."
             "\nAborting installation of Azure Container Storage."
             .format(CONST_ACSTOR_K8S_EXTENSION_NAME)
         )
+        return
 
     if nodepool_names is None:
         nodepool_names = "nodepool1"
