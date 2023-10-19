@@ -15,3 +15,11 @@ def input_ack(ack: str, request_to_user: str) -> bool:
     """
     unsanitised_ans = input(request_to_user)
     return str(unsanitised_ans.strip().replace(" ", "").lower()) == ack
+
+
+def snake_case_to_camel_case(text):
+    """Converts snake case to camel case."""
+    components = text.split("_")
+    return components[0] + "".join(
+        x[0].upper() + x[1:] for x in components[1:]
+    )

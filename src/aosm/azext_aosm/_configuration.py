@@ -11,7 +11,10 @@ from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
+from azure.cli.core.azclierror import (
+    InvalidArgumentValueError,
+    ValidationError,
+)
 from azext_aosm.util.constants import (
     CNF,
     NF_DEFINITION_OUTPUT_BICEP_PREFIX,
@@ -59,9 +62,53 @@ class ArtifactConfig:
         if not self.version:
             raise ValidationError("version must be set.")
         if self.blob_sas_url and self.file_path:
-            raise ValidationError("Only one of file_path or blob_sas_url may be set.")
+            raise ValidationError(
+                "Only one of file_path or blob_sas_url may be set."
+            )
         if not (self.blob_sas_url or self.file_path):
-            raise ValidationError("One of file_path or sas_blob_url must be set.")
+            raise ValidationError(
+                "One of file_path or sas_blob_url must be set."
+            )
+
+
+@dataclass
+class VhdArtifactConfig(ArtifactConfig):
+    # If you add a new propert to this class, you must also update
+    # VHD_EXTRA_PARAMETERS in constants.py
+    image_disk_size_GB: Optional[Union[str, int]] = None
+    image_hyper_v_generation: Optional[str] = None
+    image_api_version: Optional[str] = None
+
+    def __post_init__(self):
+        """
+        Convert parameters to the correct types.
+        """
+        if (
+            isinstance(self.image_disk_size_GB, str)
+            and self.image_disk_size_GB.isdigit()
+        ):
+            self.image_disk_size_GB = int(self.image_disk_size_GB)
+
+    @classmethod
+    def helptext(cls) -> "VhdArtifactConfig":
+        """
+        Build an object where each value is helptext for that field.
+        """
+        return VhdArtifactConfig(
+            image_disk_size_GB=(
+                "Optional. Specifies the size of empty data disks in gigabytes. "
+                "This value cannot be larger than 1023 GB."
+            ),
+            image_hyper_v_generation=(
+                "Optional. Specifies the HyperVGenerationType of the VirtualMachine "
+                "created from the image. Valid values are V1 and V2. V1 is the default if "
+                "not specified."
+            ),
+            image_api_version=(
+                "Optional. The ARM API version used to create the Microsoft.Compute/images resource."
+            ),
+            **asdict(ArtifactConfig.helptext()),
+        )
 
 
 @dataclass
@@ -78,7 +125,9 @@ class Configuration(abc.ABC):
         """
         if self.publisher_name:
             if not self.publisher_resource_group_name:
-                self.publisher_resource_group_name = f"{self.publisher_name}-rg"
+                self.publisher_resource_group_name = (
+                    f"{self.publisher_name}-rg"
+                )
             if not self.acr_artifact_store_name:
                 self.acr_artifact_store_name = f"{self.publisher_name}-acr"
 
@@ -197,7 +246,9 @@ class NFConfiguration(Configuration):
         can be multiple ACR manifests.
         """
         sanitized_nf_name = self.nf_name.lower().replace("_", "-")
-        return [f"{sanitized_nf_name}-acr-manifest-{self.version.replace('.', '-')}"]
+        return [
+            f"{sanitized_nf_name}-acr-manifest-{self.version.replace('.', '-')}"
+        ]
 
 
 @dataclass
@@ -205,7 +256,7 @@ class VNFConfiguration(NFConfiguration):
     blob_artifact_store_name: str = ""
     image_name_parameter: str = ""
     arm_template: Union[Dict[str, str], ArtifactConfig] = ArtifactConfig()
-    vhd: Union[Dict[str, str], ArtifactConfig] = ArtifactConfig()
+    vhd: Union[Dict[str, str], VhdArtifactConfig] = VhdArtifactConfig()
 
     @classmethod
     def helptext(cls) -> "VNFConfiguration":
@@ -222,7 +273,7 @@ class VNFConfiguration(NFConfiguration):
                 "image to use for the VM."
             ),
             arm_template=ArtifactConfig.helptext(),
-            vhd=ArtifactConfig.helptext(),
+            vhd=VhdArtifactConfig.helptext(),
             **asdict(NFConfiguration.helptext()),
         )
 
@@ -244,8 +295,10 @@ class VNFConfiguration(NFConfiguration):
 
         if isinstance(self.vhd, dict):
             if self.vhd.get("file_path"):
-                self.vhd["file_path"] = self.path_from_cli_dir(self.vhd["file_path"])
-            self.vhd = ArtifactConfig(**self.vhd)
+                self.vhd["file_path"] = self.path_from_cli_dir(
+                    self.vhd["file_path"]
+                )
+            self.vhd = VhdArtifactConfig(**self.vhd)
 
     def validate(self) -> None:
         """
@@ -255,7 +308,7 @@ class VNFConfiguration(NFConfiguration):
         """
         super().validate()
 
-        assert isinstance(self.vhd, ArtifactConfig)
+        assert isinstance(self.vhd, VhdArtifactConfig)
         assert isinstance(self.arm_template, ArtifactConfig)
         self.vhd.validate()
         self.arm_template.validate()
@@ -268,7 +321,10 @@ class VNFConfiguration(NFConfiguration):
                 "Config validation error. VHD artifact version should be in format"
                 " A-B-C"
             )
-        if "." not in self.arm_template.version or "-" in self.arm_template.version:
+        if (
+            "." not in self.arm_template.version
+            or "-" in self.arm_template.version
+        ):
             raise ValidationError(
                 "Config validation error. ARM template artifact version should be in"
                 " format A.B.C"
@@ -278,7 +334,9 @@ class VNFConfiguration(NFConfiguration):
     def sa_manifest_name(self) -> str:
         """Return the Storage account manifest name from the NFD name."""
         sanitized_nf_name = self.nf_name.lower().replace("_", "-")
-        return f"{sanitized_nf_name}-sa-manifest-{self.version.replace('.', '-')}"
+        return (
+            f"{sanitized_nf_name}-sa-manifest-{self.version.replace('.', '-')}"
+        )
 
     @property
     def output_directory_for_build(self) -> Path:
@@ -420,7 +478,9 @@ class CNFConfiguration(NFConfiguration):
                 package["path_to_mappings"] = self.path_from_cli_dir(
                     package["path_to_mappings"]
                 )
-                self.helm_packages[package_index] = HelmPackageConfig(**dict(package))
+                self.helm_packages[package_index] = HelmPackageConfig(
+                    **dict(package)
+                )
         if isinstance(self.images, dict):
             self.images = CNFImageConfig(**self.images)
 
@@ -513,10 +573,14 @@ class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
         :raises ValidationError for any invalid config
         """
         if not self.name:
-            raise ValidationError("Network function definition name must be set")
+            raise ValidationError(
+                "Network function definition name must be set"
+            )
 
         if not self.publisher:
-            raise ValidationError(f"Publisher name must be set for {self.name}")
+            raise ValidationError(
+                f"Publisher name must be set for {self.name}"
+            )
 
         if not self.publisher_resource_group:
             raise ValidationError(
@@ -540,7 +604,9 @@ class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Temporary validation while only private publishers exist
         if self.publisher_scope not in ["private", "Private"]:
-            raise ValidationError("Only private publishers are currently supported")
+            raise ValidationError(
+                "Only private publishers are currently supported"
+            )
 
         if self.type not in [CNF, VNF]:
             raise ValueError(
@@ -600,9 +666,9 @@ class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
 
 @dataclass
 class NSConfiguration(Configuration):
-    network_functions: List[Union[NFDRETConfiguration, Dict[str, Any]]] = field(
-        default_factory=lambda: []
-    )
+    network_functions: List[
+        Union[NFDRETConfiguration, Dict[str, Any]]
+    ] = field(default_factory=lambda: [])
     nsd_name: str = ""
     nsd_version: str = ""
     nsdv_description: str = ""
@@ -610,9 +676,12 @@ class NSConfiguration(Configuration):
     def __post_init__(self):
         """Covert things to the correct format."""
         super().__post_init__()
-        if self.network_functions and isinstance(self.network_functions[0], dict):
+        if self.network_functions and isinstance(
+            self.network_functions[0], dict
+        ):
             nf_ret_list = [
-                NFDRETConfiguration(**config) for config in self.network_functions
+                NFDRETConfiguration(**config)
+                for config in self.network_functions
             ]
             self.network_functions = nf_ret_list
 
@@ -644,7 +713,9 @@ class NSConfiguration(Configuration):
         """
         super().validate()
         if not self.network_functions:
-            raise ValueError(("At least one network function must be included."))
+            raise ValueError(
+                ("At least one network function must be included.")
+            )
 
         for configuration in self.network_functions:
             configuration.validate()
@@ -681,7 +752,9 @@ class NSConfiguration(Configuration):
         return acr_manifest_names
 
 
-def get_configuration(configuration_type: str, config_file: str) -> Configuration:
+def get_configuration(
+    configuration_type: str, config_file: str
+) -> Configuration:
     """
     Return the correct configuration object based on the type.
 
@@ -700,9 +773,13 @@ def get_configuration(configuration_type: str, config_file: str) -> Configuratio
     config: Configuration
     try:
         if configuration_type == VNF:
-            config = VNFConfiguration(config_file=config_file, **config_as_dict)
+            config = VNFConfiguration(
+                config_file=config_file, **config_as_dict
+            )
         elif configuration_type == CNF:
-            config = CNFConfiguration(config_file=config_file, **config_as_dict)
+            config = CNFConfiguration(
+                config_file=config_file, **config_as_dict
+            )
         elif configuration_type == NSD:
             config = NSConfiguration(config_file=config_file, **config_as_dict)
         else:

@@ -13,10 +13,9 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import LiveScenarioTest, ResourceGroupPreparer
 from knack.log import get_logger
 from jinja2 import Template
-from .recording_processors import TokenReplacer, SasUriReplacer, BlobStoreUriReplacer
 
 
 logger = get_logger(__name__)
@@ -25,7 +24,9 @@ NFD_INPUT_TEMPLATE_NAME = "vnf_input_template.json"
 NFD_INPUT_FILE_NAME = "vnf_input.json"
 NSD_INPUT_TEMPLATE_NAME = "vnf_nsd_input_template.json"
 NSD_INPUT_FILE_NAME = "nsd_input.json"
-ARM_TEMPLATE_RELATIVE_PATH = "scenario_test_mocks/vnf_mocks/ubuntu_template.json"
+ARM_TEMPLATE_RELATIVE_PATH = (
+    "scenario_test_mocks/vnf_mocks/ubuntu_template.json"
+)
 
 
 def update_resource_group_in_input_file(
@@ -63,28 +64,12 @@ def update_resource_group_in_input_file(
     return output_path
 
 
-class VnfNsdTest(ScenarioTest):
+class VnfNsdTest(LiveScenarioTest):
     """This class contains the integration tests for the aosm extension for vnf definition type."""
 
-    def __init__(self, method_name):
-        """
-        This constructor initializes the class.
-
-        :param method_name: The name of the test method.
-        :param recording_processors: The recording processors to use for the test.
-        These recording processors modify the recording of a test before it is saved,
-        helping to remove sensitive information from the recording.
-        """
-        super(VnfNsdTest, self).__init__(
-            method_name,
-            recording_processors=[
-                TokenReplacer(),
-                SasUriReplacer(),
-                BlobStoreUriReplacer(),
-            ],
-        )
-
-    @ResourceGroupPreparer(name_prefix="cli_test_vnf_nsd_", location="uaenorth")
+    @ResourceGroupPreparer(
+        name_prefix="cli_test_vnf_nsd_", location="uaenorth"
+    )
     def test_vnf_nsd_publish_and_delete(self, resource_group):
         """
         This test creates a vnf nfd and nsd, publishes them, and then deletes them.
@@ -123,7 +108,9 @@ class VnfNsdTest(ScenarioTest):
         finally:
             # If the command fails, then the test should fail.
             # We still need to clean up the resources, so we run the delete command.
-            self.cmd(f'az aosm nsd delete -f "{nsd_input_file_path}" --clean --force')
+            self.cmd(
+                f'az aosm nsd delete -f "{nsd_input_file_path}" --clean --force'
+            )
             self.cmd(
                 f'az aosm nfd delete --definition-type vnf -f "{nfd_input_file_path}" --clean --force'
             )
