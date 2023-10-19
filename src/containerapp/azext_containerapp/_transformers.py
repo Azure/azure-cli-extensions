@@ -3,7 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.command_modules.containerapp._utils import safe_get
+from ._utils import safe_get
 
 def transform_containerapp_output(app):
     props = ['name', 'location', 'resourceGroup', 'provisioningState']
@@ -34,19 +34,7 @@ def clean_up_sensitive_values(response_json):
 
 
 def transform_sensitive_values_wrapper():
-
-    def transform_sensitive_values(response_json):
-        return clean_up_sensitive_values(response_json)
-    
-    return transform_sensitive_values
-
-
-def transform_sensitive_values_list_output_wrapper():
-
-    def transform_sensitive_values_list_output(apps):
-        return [clean_up_sensitive_values(a) for a in apps]
-    
-    return transform_sensitive_values_list_output
+    return clean_up_sensitive_values
 
 
 def transform_containerapp_list_output(apps):
