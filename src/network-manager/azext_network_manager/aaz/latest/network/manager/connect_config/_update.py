@@ -108,12 +108,12 @@ class Update(AAZCommand):
         _element = cls._args_schema.applies_to_groups.Element
         _element.group_connectivity = AAZStrArg(
             options=["group-connectivity"],
-            help="Group connectivity type.",
+            help="Group connectivity type. Only required if topology is Hub and Spoke.",
             enum={"DirectlyConnected": "DirectlyConnected", "None": "None"},
         )
         _element.is_global = AAZStrArg(
             options=["is-global"],
-            help="Flag if global is supported.",
+            help="Flag if global is supported. Only required if topology is Hub and Spoke.",
             nullable=True,
             enum={"False": "False", "True": "True"},
         )
@@ -123,7 +123,7 @@ class Update(AAZCommand):
         )
         _element.use_hub_gateway = AAZStrArg(
             options=["use-hub-gateway"],
-            help="Flag if need to use hub gateway.",
+            help="Flag if need to use hub gateway. Only required if topology is Hub and Spoke.",
             nullable=True,
             enum={"False": "False", "True": "True"},
         )
@@ -141,7 +141,7 @@ class Update(AAZCommand):
         )
         _element.resource_type = AAZStrArg(
             options=["resource-type"],
-            help="Resource Type.",
+            help="Resource Type, suggested value(s): 'Microsoft.Network/virtualNetworks'",
             nullable=True,
         )
         return cls._args_schema

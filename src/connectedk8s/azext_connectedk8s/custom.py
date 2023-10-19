@@ -155,38 +155,56 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     is_arm64_cluster = check_arm64_node(node_api_response)
 
     required_node_exists = check_linux_node(node_api_response)
-    # Pre onboarding checks
+
+    # check if this is aks_hci low bandwith scenario
+    lowbandwidth = False
+    lowbandwith_distros = ["aks_workload", "aks_management", "aks_edge_k3s", "aks_edge_k8s"]
+
+    if (infrastructure.lower() == 'azure_stack_hci') and (distribution.lower() in lowbandwith_distros):
+        lowbandwidth = True
+
+    # Install kubectl and helm
     try:
         kubectl_client_location = install_kubectl_client()
         helm_client_location = install_helm_client()
-        diagnostic_checks = "Failed"
-        batchv1_api_instance = kube_client.BatchV1Api()
-        storage_space_available = True
+    except Exception as e:
+        raise CLIInternalError("An exception has occured while trying to perform kubectl or helm install : {}".format(str(e)))
+    # Handling the user manual interrupt
+    except KeyboardInterrupt:
+        raise ManualInterrupt('Process terminated externally.')
 
-        current_time = time.ctime(time.time())
-        time_stamp = ""
-        for elements in current_time:
-            if(elements == ' '):
-                time_stamp += '-'
-                continue
-            elif(elements == ':'):
-                time_stamp += '.'
-                continue
-            time_stamp += elements
-        time_stamp = cluster_name + '-' + time_stamp
+    # Pre onboarding checks
+    diagnostic_checks = "Failed"
+    try:
+        # if aks_hci lowbandwidth scenario skip, otherwise continue to perform pre-onboarding check
+        if not lowbandwidth:
+            batchv1_api_instance = kube_client.BatchV1Api()
+            storage_space_available = True
 
-        # Generate the diagnostic folder in a given location
-        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Pre_Onboarding_Check_Logs)
+            current_time = time.ctime(time.time())
+            time_stamp = ""
+            for elements in current_time:
+                if(elements == ' '):
+                    time_stamp += '-'
+                    continue
+                elif(elements == ':'):
+                    time_stamp += '.'
+                    continue
+                time_stamp += elements
+            time_stamp = cluster_name + '-' + time_stamp
 
-        if(diagnostic_folder_status is not True):
-            storage_space_available = False
+            # Generate the diagnostic folder in a given location
+            filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Pre_Onboarding_Check_Logs)
 
-        # Performing cluster-diagnostic-checks
-        diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available)
-        precheckutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
+            if(diagnostic_folder_status is not True):
+                storage_space_available = False
 
-        if storage_space_available is False:
-            logger.warning("There is no storage space available on your device and hence not saving cluster diagnostic check logs on your device")
+            # Performing cluster-diagnostic-checks
+            diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available)
+            precheckutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
+
+            if storage_space_available is False:
+                logger.warning("There is no storage space available on your device and hence not saving cluster diagnostic check logs on your device")
 
     except Exception as e:
         telemetry.set_exception(exception="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)),
@@ -202,7 +220,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise ManualInterrupt('Process terminated externally.')
 
     # If the checks didnt pass then stop the onboarding
-    if diagnostic_checks != consts.Diagnostic_Check_Passed:
+    if diagnostic_checks != consts.Diagnostic_Check_Passed and lowbandwidth is False:
         if storage_space_available:
                 logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
         if(diagnostic_checks == consts.Diagnostic_Check_Incomplete):
@@ -212,7 +230,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             telemetry.set_exception(exception='Cluster Diagnostic Prechecks Failed', fault_type=consts.Cluster_Diagnostic_Prechecks_Failed, summary="Cluster Diagnostic Prechecks Failed in the cluster")
             raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
 
-    print("The required pre-checks for onboarding have succeeded.")
+    if lowbandwidth is False:
+        print("The required pre-checks for onboarding have succeeded.")
+    else:
+        print("Skipped onboarding pre-checks for AKS-HCI low bandwidth scenario. Continuing...")
 
     if not required_node_exists:
         telemetry.set_user_fault()

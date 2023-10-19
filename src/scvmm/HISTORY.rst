@@ -3,6 +3,17 @@
 Release History
 ===============
 
+0.2.0
+++++++
+* Using New Resource Model for all VM operations:
+    * `vm` command : Create, Update, Delete, Show, VirtualMachineInstance and Perform Operations on VM Instance
+    * `vm guest-agent` command : Enable, Show VMInstanceGuestAgent
+    * `vm extension` command : Create, Update, Delete, Show, List MachineExtensions
+* If underlying machine is not present, it gets created during vm create
+* Added delete-from-host flag for `vm delete`
+* Deprecated VM List option as VM Instance is a child resource of Machines.
+* Updated tests and helps accordingly.
+
 0.1.8
 ++++++
 * Added support for checkpoint operations to create, delete and restore checkpoints

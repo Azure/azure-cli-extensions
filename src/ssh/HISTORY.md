@@ -1,9 +1,12 @@
 Release History
 ===============
+2.0.2
+-----
+* [Bug Fix] Fix logic that checks for the OS of the target machine to avoid "cannot unpack non-iterable NoneType object" error
+
 2.0.1
 -----
 * [Bug fix] For connections to arc resources, stop attempting to create new service configuration if user has no permission to read service configuration.
-
 
 2.0.0
 -----

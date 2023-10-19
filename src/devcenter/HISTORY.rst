@@ -2,6 +2,12 @@
 
 Release History
 ===============
+3.0.0
+++++++
+* Update control plane API to v2023-06-01-preview
+* Update data plane API to v2023-07-01-preview
+
+=======
 2.0.0
 ++++++
 * Update dev-box-definition to devbox-definition parameter
