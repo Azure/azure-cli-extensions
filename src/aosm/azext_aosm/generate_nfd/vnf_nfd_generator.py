@@ -294,6 +294,10 @@ class VnfNfdGenerator(NFDGenerator):
         :param directory: The directory to put this file in.
         """
         vhd_config = self.config.vhd
+        # vhdImageMappingRuleProfile userConfiguration within the NFDV API accepts azureDeployLocation
+        # as the location where the image resource should be created from the VHD. The CLI does not
+        # expose this as it defaults to the NF deploy location, and we can't think of situations where
+        # it should be different.
         vhd_parameters = {
             "imageName": self.image_name,
             **{

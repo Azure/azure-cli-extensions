@@ -73,6 +73,8 @@ class ArtifactConfig:
 
 @dataclass
 class VhdArtifactConfig(ArtifactConfig):
+    # If you add a new propert to this class, you must also update
+    # VHD_EXTRA_PARAMETERS in constants.py
     image_disk_size_GB: Optional[Union[str, int]] = None
     image_hyper_v_generation: Optional[str] = None
     image_api_version: Optional[str] = None
