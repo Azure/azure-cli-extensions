@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+
+0.5.165
++++++++
+* Update "VirtualMachines" agent pool type as Public Preview feature.
+
 0.5.164
 +++++++
 * Add option `--enable-azure-container-storage` and supporting options `--storage-pool-name`, `--storage-pool-type`, `--storage-pool-sku`, `--storage-pool-size` for `az aks create` and `az aks update`. `az aks update` also supports `--azure-container-storage-nodepools` option.

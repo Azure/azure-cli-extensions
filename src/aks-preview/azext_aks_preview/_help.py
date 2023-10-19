@@ -294,7 +294,7 @@ helps['aks create'] = """
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000].
         - name: --vm-set-type
           type: string
-          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only).
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview).
         - name: --enable-pod-security-policy
           type: bool
           short-summary: Enable pod security policy.
@@ -1534,7 +1534,7 @@ helps['aks nodepool add'] = """
           long-summary: If not specified, defaults based on network-plugin. 30 for "azure", 110 for "kubenet", or 250 for "none".
         - name: --zones -z
           type: string array
-          short-summary: Space-separated list of availability zones where agent nodes will be placed.
+          short-summary: Space-separated list of availability zones where agent nodes will be placed. Must use VMSS agent pool type.
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
@@ -1543,10 +1543,10 @@ helps['aks nodepool add'] = """
           short-summary: The ID of a subnet in an existing VNet into which to assign pods in the cluster (requires azure network-plugin)
         - name: --ppg
           type: string
-          short-summary: The ID of a PPG.
+          short-summary: The ID of a PPG. Must use VMSS agent pool type.
         - name: --os-type
           type: string
-          short-summary: The OS Type. Linux or Windows.
+          short-summary: The OS Type. Linux or Windows. Windows not supported yet for "VirtualMachines" VM set type.
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner when os-type is Linux, default is Ubuntu if not set; Windows2019 or Windows2022 when os-type is Windows, the current default is Windows2019 if not set, and the default will be changed to Windows2022 after Windows2019 is deprecated.
@@ -1555,7 +1555,7 @@ helps['aks nodepool add'] = """
           short-summary: Use FIPS-enabled OS on agent nodes.
         - name: --enable-cluster-autoscaler -e
           type: bool
-          short-summary: Enable cluster autoscaler.
+          short-summary: Enable cluster autoscaler. Must use VMSS agent pool type.
         - name: --min-count
           type: int
           short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
@@ -1579,10 +1579,10 @@ helps['aks nodepool add'] = """
           short-summary: It can only be set when --priority is Spot. Specify the maximum price you are willing to pay in US Dollars. Possible values are any decimal value greater than zero or -1 which indicates default price to be up-to on-demand. It can only include up to 5 decimal places.
         - name: --enable-node-public-ip
           type: bool
-          short-summary: Enable VMSS node public IP.
+          short-summary: Enable VMSS node public IP. Must use VMSS agent pool type.
         - name: --node-public-ip-prefix-id
           type: string
-          short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
+          short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes. Must use VMSS agent pool type.
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
@@ -1591,7 +1591,7 @@ helps['aks nodepool add'] = """
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
         - name: --vm-set-type
           type: string
-          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only).
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview).
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -1609,7 +1609,7 @@ helps['aks nodepool add'] = """
           short-summary: Enable EncryptionAtHost on agent node pool.
         - name: --enable-ultra-ssd
           type: bool
-          short-summary: Enable UltraSSD on agent node pool.
+          short-summary: Enable UltraSSD on agent node pool. Must use VMSS agent pool type.
         - name: --workload-runtime
           type: string
           short-summary: Determines the type of workload a node can run. Defaults to OCIContainer.
@@ -1618,13 +1618,13 @@ helps['aks nodepool add'] = """
           short-summary: GPU instance profile to partition multi-gpu Nvidia GPUs.
         - name: --snapshot-id
           type: string
-          short-summary: The source snapshot id used to create this nodepool.
+          short-summary: The source snapshot id used to create this nodepool. Must use VMSS agent pool type.
         - name: --crg-id
           type: string
-          short-summary: The crg-id used to associate the new nodepool with the existed Capacity Reservation Group resource.
+          short-summary: The crg-id used to associate the new nodepool with the existed Capacity Reservation Group resource. Must use VMSS agent pool type.
         - name: --host-group-id
           type: string
-          short-summary: (PREVIEW) The fully qualified dedicated host group id used to provision agent node pool.
+          short-summary: (PREVIEW) The fully qualified dedicated host group id used to provision agent node pool. Must use VMSS agent pool type.
         - name: --message-of-the-day
           type: string
           short-summary: Path to a file containing the desired message of the day. Only valid for linux nodes. Will be written to /etc/motd.
@@ -1633,16 +1633,16 @@ helps['aks nodepool add'] = """
           short-summary: Enable Custom CA Trust on agent node pool.
         - name: --disable-windows-outbound-nat
           type: bool
-          short-summary: Disable Windows OutboundNAT on Windows agent node pool.
+          short-summary: Disable Windows OutboundNAT on Windows agent node pool. Must use VMSS agent pool type.
         - name: --allowed-host-ports
           type: string
-          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP. Must use VMSS agent pool type.
         - name: --asg-ids
           type: string
-          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs. Must use VMSS agent pool type.
         - name: --node-public-ip-tags
           type: string
-          short-summary: The ipTags of the node public IPs.
+          short-summary: The ipTags of the node public IPs. Must use VMSS agent pool type.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1690,7 +1690,7 @@ helps['aks nodepool upgrade'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --snapshot-id
           type: string
-          short-summary: The source snapshot id used to upgrade this nodepool.
+          short-summary: The source snapshot id used to upgrade this nodepool. Must use VMSS agent pool type.
 """
 
 helps['aks nodepool update'] = """
@@ -1700,7 +1700,7 @@ helps['aks nodepool update'] = """
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
-          short-summary: Enable cluster autoscaler.
+          short-summary: Enable cluster autoscaler. Must use VMSS agent pool type.
         - name: --disable-cluster-autoscaler -d
           type: bool
           short-summary: Disable cluster autoscaler.
@@ -1739,10 +1739,10 @@ helps['aks nodepool update'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --allowed-host-ports
           type: string
-          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP. Must use VMSS agent pool type.
         - name: --asg-ids
           type: string
-          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs. Must use VMSS agent pool type.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
