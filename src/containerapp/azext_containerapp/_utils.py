@@ -2060,9 +2060,7 @@ def patchable_check(base_run_image_name, oryx_run_images, inspect_result):
         latest_post_ver = matching_version_info[0]["version"].post
 
         # Check if the current image can be updated to the latest image available on MCR for the given version key
-        if current_minor_ver < latest_minor_ver or \
-          (current_minor_ver == latest_minor_ver and current_patch_ver < latest_patch_ver) or \
-          (current_patch_ver == latest_patch_ver and current_post_ver < latest_post_ver):
+        if current_minor_ver < latest_minor_ver or (current_minor_ver == latest_minor_ver and current_patch_ver < latest_patch_ver) or (current_patch_ver == latest_patch_ver and current_post_ver < latest_post_ver):
             result["newRunImage"] = "{}:{}".format(base_run_image_no_tag, matching_version_info[0]["fullTag"])
             result["id"] = hashlib.md5(str(result["oldRunImage"] + result["targetContainerName"] + result["targetContainerAppName"] + result["targetResourceGroup"] + result["newRunImage"]).encode()).hexdigest()
             result["reason"] = "New security patch released for your current run image."
