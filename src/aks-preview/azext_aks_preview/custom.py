@@ -514,6 +514,7 @@ def aks_create(
     enable_sgxquotehelper=False,
     enable_secret_rotation=False,
     rotation_poll_interval=None,
+    enable_app_routing=False,
     # nodepool paramerters
     nodepool_name="nodepool1",
     node_vm_size=None,
@@ -1619,7 +1620,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
         enable_msi_auth_for_monitoring = False
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
-    instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
+    instance = _update_addons(cmd,  , subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
                               enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
@@ -2569,6 +2570,48 @@ def _aks_mesh_update(
     try:
         mc = aks_update_decorator.update_mc_profile_default()
         mc = aks_update_decorator.update_azure_service_mesh_profile(mc)
+    except DecoratorEarlyExitException:
+        return None
+
+    return aks_update_decorator.update_mc(mc)
+
+def aks_approuting_enable(cmd, client, enable_kv=False):
+    return _aks_approuting_update(cmd, client, enable_app_routing=True, enable_kv=enable_kv)
+
+def aks_approuting_disable(cmd, client):
+    return _aks_approuting_update(cmd, client, enable_app_routing=False)
+
+def _aks_approuting_update(cmd, client, keyvault_id):
+    return _aks_approuting_update(cmd, client, keyvault_id=keyvault_id)
+
+def aks_approuting_zone_add(cmd, client, dns_zone_resource_ids, attach_zones=False):
+    return _aks_approuting_update(cmd, client, dns_zone_resource_ids, add_dns_zone=True, attach_zones=attach_zones)
+
+def aks_approuting_zone_delete(cmd, client, dns_zone_resource_ids):
+    return _aks_approuting_update(cmd, client, dns_zone_resource_ids, add_dns_zone=False)
+
+def aks_approuting_zone_update(cmd, client, dns_zone_resource_ids, attach_zones=False):
+    return _aks_approuting_update(cmd, client, dns_zone_resource_ids, update_dns_zone=True, attach_zones=attach_zones)
+
+def aks_approuting_zone_list(cmd, client):
+    return _aks_approuting_update(cmd, client)
+
+def _aks_approuting_update(cmd, client, enable_app_routing=None, enable_kv=None, keyvault_id=None):
+    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
+
+    raw_parameters = locals()
+
+    aks_update_decorator = AKSPreviewManagedClusterUpdateDecorator(
+        cmd=cmd,
+        client=client,
+        raw_parameters=raw_parameters,
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+    )
+
+    try:
+        mc = aks_update_decorator.update_mc_profile_default()
+        mc = aks_update_decorator.update_app_routing_profile(mc)
     except DecoratorEarlyExitException:
         return None
 
