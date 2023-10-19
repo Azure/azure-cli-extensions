@@ -13,6 +13,7 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_DEFAULT_SIZE,
     CONST_STORAGE_POOL_DEFAULT_SIZE_ESAN,
     CONST_STORAGE_POOL_OPTION_NVME,
+    CONST_STORAGE_POOL_OPTION_SSD,
     CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
@@ -66,6 +67,8 @@ def perform_enable_azure_container_storage(
     if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
         if storage_pool_option is None:
             storage_pool_option = CONST_STORAGE_POOL_OPTION_NVME
+        if storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
+            storage_pool_option = "temp"
 
     validate_nodepool_names_with_cluster_nodepools(nodepool_names, agentpool_details)
 
