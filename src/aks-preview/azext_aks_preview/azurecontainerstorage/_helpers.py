@@ -54,6 +54,7 @@ def register_dependent_rps(cmd, subscription_id) -> bool:
             time.sleep(RP_REGISTRATION_POLLING_INTERVAL_IN_SEC)
             if (datetime.utcnow() - start).seconds >= timeout_secs:
                 logger.error("Timed out while waiting for the {0} resource provider to be registered.".format(required_rp))
+                break
 
     except Exception as e:
         logger.error(
