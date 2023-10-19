@@ -404,7 +404,7 @@ def setup_scenario(test, rg):
         "--level 200 --sku CapacityReservation").get_output_in_json()
     test.kwargs['workspace3_id'] = workspace3_json['id']
 
-    vm_json = test.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-password TestPassword11!! '
+    vm_json = test.cmd('vm create -g {rg} -n {vm} --image Ubuntu2204 --admin-password TestPassword11!! '
                        '--admin-username testadmin --authentication-type password').get_output_in_json()
     test.kwargs['vm_id'] = vm_json['id']
 
@@ -573,7 +573,7 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
         self.cmd('monitor data-collection rule update --resource-group {rg} --name {name} '
                  '--performance-counters name="perfCounter02" '
                  'counter-specifiers=["\\Processor Information(_Total)\\% Processor Time"] '
-                 'sampling-frequency=20 transfer-period="PT1M" streams="Microsoft-InsightsMetrics"',
+                 'sampling-frequency=60 transfer-period="PT1M" streams="Microsoft-InsightsMetrics"',
                  checks=[self.check('provisioningState', 'Succeeded')])
 
         self.cmd('monitor data-collection rule show -g {rg} -n {name}', checks=[
