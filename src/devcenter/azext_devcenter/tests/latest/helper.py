@@ -228,8 +228,10 @@ def get_endpoint(self):
 
 
 def create_network_connection(self):
-    subnet = create_virtual_network_with_subnet(self)
-
+    if (self.kwargs.get('location', '') == "centraluseuap"):
+        subnet = create_virtual_network_with_subnet_euap(self)
+    else: 
+        subnet = create_virtual_network_with_subnet(self)
     self.kwargs.update(
         {
             "subnetId": subnet["id"],
@@ -494,6 +496,12 @@ def catalog_create_and_sync_cmds(self):
         '--name "{catalogName}" '
         '--resource-group "{rg}" '
     )
+
+def create_catalog_control_plane(self):
+    create_dev_center_with_identity(self)
+    create_kv_policy(self)
+    create_project(self)
+    catalog_create_and_sync_cmds(self)
 
 
 def create_catalog(self):

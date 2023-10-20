@@ -28,6 +28,7 @@ from .helper import (
     create_env_type,
     add_dev_box_user_role_to_project,
     create_catalog,
+    create_catalog_control_plane,
     create_proj_env_type,
     create_environment_dependencies,
     create_pool,
@@ -888,7 +889,7 @@ class DevcenterScenarioTest(ScenarioTest):
     def test_pool_scenario(self):
         self.kwargs.update(
             {
-                "location": "canadacentral",
+                "location": "centraluseuap",
             }
         )
         create_attached_network_dev_box_definition(self)
@@ -913,7 +914,10 @@ class DevcenterScenarioTest(ScenarioTest):
             '--name "{poolName}" '
             '-c "{attachedNetworkName}" '
             '--project-name "{projectName}" '
-            '--resource-group "{rg}" ',
+            '--resource-group "{rg}" '
+            '--virtual-network-type "Unmanaged" '
+            '--single-sign-on-status "Enabled" '
+            '--display-name "poolDisplay" ',
             checks=[
                 self.check("name", "{poolName}"),
                 self.check("resourceGroup", "{rg}"),
@@ -921,6 +925,9 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("localAdministrator", "Disabled"),
                 self.check("networkConnectionName", "{attachedNetworkName}"),
                 self.check("location", "{location}"),
+                self.check("virtualNetworkType", "Unmanaged"),
+                self.check("singleSignOnStatus", "Enabled"),
+
             ],
         )
 
@@ -937,7 +944,11 @@ class DevcenterScenarioTest(ScenarioTest):
             '-d "{devBoxDefinitionName2}" '
             '--name "{poolName}" '
             '--project-name "{projectName}" '
-            '--resource-group "{rg}" ',
+            '--resource-group "{rg}" '
+            '--virtual-network-type "Managed" '
+            '--single-sign-on-status "Disabled" '
+            '--display-name "poolDisplay2" '
+            '--managed-virtual-network-regions ["canadacentral"]',
             checks=[
                 self.check("name", "{poolName}"),
                 self.check("resourceGroup", "{rg}"),
@@ -945,6 +956,10 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("localAdministrator", "Enabled"),
                 self.check("networkConnectionName", "{attachedNetworkName}"),
                 self.check("location", "{location}"),
+                self.check("virtualNetworkType", "Managed"),
+                self.check("singleSignOnStatus", "Disabled"),
+                self.check("managedVirtualNetworkRegions[0]", "canadacentral"),
+                self.check("healthStatus", "Warning")
             ],
         )
 
@@ -963,6 +978,15 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("devBoxCount", 0)
             ],
         )
+
+        self.cmd(
+            "az devcenter admin pool run-health-check "
+            '--name "{poolName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" ',
+            checks=[],
+        )
+
 
         self.cmd(
             "az devcenter admin schedule create "
@@ -1180,6 +1204,60 @@ class DevcenterScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" ',
             checks=[
                 self.check("length(@)", 0),
+            ],
+        )
+
+    @ResourceGroupPreparer(
+        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+    )
+    def test_env_definition_scenario(self):
+        self.kwargs.update(
+            {
+                "location": "centraluseuap",
+            }
+        )
+
+        create_catalog_control_plane(self)
+        sandbox_id = f"{self.kwargs.get('devCenterId', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/Sandbox"
+
+        self.kwargs.update(
+            {
+                "sandboxName": "Sandbox",
+                "sandboxId": sandbox_id,
+            }
+        )
+
+        self.cmd(
+            "az devcenter admin environment-definition list "
+            '--dev-center "{devcenterName}" '
+            '--resource-group "{rg}" '
+            '--catalog-name  "{catalogName}" ',
+            checks=[
+                self.check("length(@)", 3),
+                self.check("[0].resourceGroup", "{rg}"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter admin environment-definition show "
+            '--dev-center "{devcenterName}" '
+            '--resource-group "{rg}" '
+            '--catalog-name  "{catalogName}" '
+            '--name "{sandboxName}"',
+            checks=[
+                self.check("name", "{sandboxName}"),
+                self.check("id", "{sandboxId}"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter admin environment-definition get-error-detail "
+            '--dev-center "{devcenterName}" '
+            '--resource-group "{rg}" '
+            '--catalog-name  "{catalogName}" '
+            '--name "{sandboxName}"',
+            checks=[
+                self.check("errors", []),
             ],
         )
 

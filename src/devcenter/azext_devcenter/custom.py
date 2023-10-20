@@ -5,6 +5,7 @@
 # pylint: disable=protected-access
 
 from datetime import datetime
+from azure.cli.core.aaz import has_value
 from azure.cli.core.aaz import register_callback
 from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.util import sdk_no_wait
@@ -94,6 +95,7 @@ from ._validators import (
     validate_attached_network_or_dev_box_def,
     validate_env_name_already_exists,
     validate_repo_git,
+    validate_pool_create
 )
 
 # Control plane
@@ -373,13 +375,15 @@ class PoolCreate(_PoolCreate):
         args_schema.license_type._registered = False
         args_schema.devbox_definition_name._required = True
         args_schema.local_administrator._required = True
-        args_schema.network_connection_name._required = True
         return args_schema
 
     @register_callback
     def pre_operations(self):
         args = self.ctx.args
         args.license_type = "Windows_Client"
+        if args.virtual_network_type == "Managed" and not has_value(args.network_connection_name):
+            args.network_connection_name = "managedNetwork"
+        validate_pool_create(args.virtual_network_type, args.network_connection_name, args.managed_virtual_network_regions)
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
