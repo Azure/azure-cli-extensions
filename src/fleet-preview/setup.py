@@ -54,5 +54,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_fleet_preview_preview': ['azext_metadata.json']},
+    package_data={'azext_fleet_preview': ['azext_metadata.json']},
 )
