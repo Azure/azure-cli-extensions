@@ -588,7 +588,7 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
                         "--namespace", "{}".format(consts.Release_Install_Namespace),
                         "--create-namespace",
                         "--output", "json"]
-    
+        
     # Special configurations from 2022-09-01 ARM metadata.
     if "dataplaneEndpoints" in arm_metadata:
         notification_endpoint = arm_metadata["dataplaneEndpoints"]["arcGlobalNotificationServiceEndpoint"]
