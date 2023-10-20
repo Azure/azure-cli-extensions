@@ -41,7 +41,7 @@ def validate_update_strategy_name(namespace):
 
 def validate_vm_size(namespace):
     if namespace.vm_size is not None and not namespace.vm_size.strip():
-            raise CLIError("--vm-size is not a valid name")
+            raise CLIError("--vm-size is not a valid value")
 
 
 def _validate_subnet_id(subnet_id, name):
