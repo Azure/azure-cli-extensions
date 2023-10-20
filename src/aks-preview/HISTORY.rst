@@ -12,9 +12,18 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-0.5.164
+0.5.166
 +++++++
 * Add `--node-soak-duration` to the `az aks nodepool add/update/upgrade` commands.
+
+0.5.165
++++++++
+* Rearrange the storagepool SKU related helm values set for Azure Container Storage.
+
+0.5.164
++++++++
+* Add option `--enable-azure-container-storage` and supporting options `--storage-pool-name`, `--storage-pool-type`, `--storage-pool-sku`, `--storage-pool-size` for `az aks create` and `az aks update`. `az aks update` also supports `--azure-container-storage-nodepools` option.
+* Add option `--disable-azure-container-storage` to `az aks create` and `az aks update`.
 
 0.5.163
 +++++++
