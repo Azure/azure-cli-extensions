@@ -26,25 +26,9 @@ def validate_kubernetes_version(namespace):
                 '--kubernetes-version should be the full version number or alias minor version, such as "1.7.12" or "1.7"')
 
 
-def validate_apiserver_subnet_id(namespace):
-    _validate_subnet_id(namespace.apiserver_subnet_id, "--apiserver-subnet-id")
-
-
-def validate_agent_subnet_id(namespace):
-    _validate_subnet_id(namespace.agent_subnet_id, "--agent-subnet-id")
-
-
 def validate_update_strategy_name(namespace):
     if namespace.update_strategy_name is not None and not namespace.update_strategy_name.strip():
             raise CLIError("--update-strategy-name is not a valid name")
-
-
-def _validate_subnet_id(subnet_id, name):
-    if subnet_id is None or subnet_id == '':
-        return
-    from msrestazure.tools import is_valid_resource_id
-    if not is_valid_resource_id(subnet_id):
-        raise CLIError(name + " is not a valid Azure resource ID.")
 
 
 def validate_assign_identity(namespace):

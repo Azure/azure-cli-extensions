@@ -58,5 +58,6 @@ Release History
 
 1.0.0
 ++++++
+* Removed preview capabilities, migrating them into a new `fleet-preview` extension. See https://github.com/Azure/azure-cli-extensions/tree/main/src/fleet-preview.
 * Promoted extension to GA.
 * Updated SDK to v2023-10-15

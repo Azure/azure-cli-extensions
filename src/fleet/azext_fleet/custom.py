@@ -23,12 +23,6 @@ def create_fleet(cmd,
                  name,
                  location=None,
                  tags=None,
-                 enable_hub=False,
-                 dns_name_prefix=None,
-                 enable_private_cluster=False,
-                 enable_vnet_integration=False,
-                 apiserver_subnet_id=None,
-                 agent_subnet_id=None,
                  enable_managed_identity=False,
                  assign_identity=None,
                  no_wait=False):
@@ -40,54 +34,6 @@ def create_fleet(cmd,
     )
 
     poll_interval = 5
-    if enable_hub:
-        poll_interval = 30
-        fleet_hub_profile_model = cmd.get_models(
-            "FleetHubProfile",
-            resource_type=CUSTOM_MGMT_FLEET,
-            operation_group="fleets"
-        )
-        api_server_access_profile_model = cmd.get_models(
-            "APIServerAccessProfile",
-            resource_type=CUSTOM_MGMT_FLEET,
-            operation_group="fleets"
-        )
-        agent_profile_model = cmd.get_models(
-            "AgentProfile",
-            resource_type=CUSTOM_MGMT_FLEET,
-            operation_group="fleets"
-        )
-        if dns_name_prefix is None:
-            subscription_id = get_subscription_id(cmd.cli_ctx)
-            # Use subscription id to provide uniqueness and prevent DNS name clashes
-            name_part = re.sub('[^A-Za-z0-9-]', '', name)[0:10]
-            if not name_part[0].isalpha():
-                name_part = (str('a') + name_part)[0:10]
-            resource_group_part = re.sub('[^A-Za-z0-9-]', '', resource_group_name)[0:16]
-            dns_name_prefix = f'{name_part}-{resource_group_part}-{subscription_id[0:6]}'
-
-        api_server_access_profile = api_server_access_profile_model(
-            enable_private_cluster=enable_private_cluster,
-            enable_vnet_integration=enable_vnet_integration,
-            subnet_id=apiserver_subnet_id
-        )
-        agent_profile = agent_profile_model(
-            subnet_id=agent_subnet_id
-        )
-        fleet_hub_profile = fleet_hub_profile_model(
-            dns_prefix=dns_name_prefix,
-            api_server_access_profile=api_server_access_profile,
-            agent_profile=agent_profile)
-    else:
-        if dns_name_prefix is not None or \
-           enable_private_cluster or \
-           enable_vnet_integration or \
-           apiserver_subnet_id is not None or \
-           agent_subnet_id is not None:
-            raise CLIError(
-                "The parameters for private cluster, vnet & subnet integration are only valid if hub is enabled.")
-        fleet_hub_profile = None
-
     fleet_managed_service_identity_model = cmd.get_models(
         "ManagedServiceIdentity",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -110,7 +56,6 @@ def create_fleet(cmd,
     fleet = fleet_model(
         location=location,
         tags=tags,
-        hub_profile=fleet_hub_profile,
         identity=managed_service_identity
     )
 

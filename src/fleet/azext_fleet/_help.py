@@ -23,8 +23,6 @@ helps['fleet create'] = """
     examples:
         - name: Create a hubless fleet
           text: az fleet create -g MyResourceGroup -l MyLocation -n MyFleetName --tags "TagKey=TagValue"
-        - name: Create a hubful fleet
-          text: az fleet create -g MyResourceGroup -l MyLocation -n MyFleetName --enable-hub --tags "TagKey=TagValue"
 
 """
 
