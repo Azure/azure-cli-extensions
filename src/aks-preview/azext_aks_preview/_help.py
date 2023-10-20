@@ -1598,6 +1598,9 @@ helps['aks nodepool add'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --drain-timeout
+          type: int
+          short-summary: When nodes are drain how many minutes to wait for all pods to be evicted
         - name: --node-soak-duration
           type: int
           short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
@@ -1688,6 +1691,9 @@ helps['aks nodepool upgrade'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --drain-timeout
+          type: int
+          short-summary: When nodes are drain how many minutes to wait for all pods to be evicted
         - name: --node-soak-duration
           type: int
           short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
@@ -1725,6 +1731,9 @@ helps['aks nodepool update'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --drain-timeout
+          type: int
+          short-summary: When nodes are drain how many minutes to wait for all pods to be evicted
         - name: --node-soak-duration
           type: int
           short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
