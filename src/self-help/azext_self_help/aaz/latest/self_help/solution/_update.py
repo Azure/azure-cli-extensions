@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update a solution for the specific Azure resource or subscription using the triggering criteria from discovery solutions.
 
     :example: Update Solution at Resource Level
-        az self-help solution update --solution-name {solution-name} --trigger-criteria {trigger-criteria} --parameters {parameters} --scope {scope}
+        az self-help solution update --solution-name solution-name --trigger-criteria [{name:ReplacementKey,value:<!--56ee7509-92e1-4b9e-97c2-dda53065294c-->}] --parameters {SearchText:CanNotRDP,SymptomId:KeyVaultVaultNotFoundInsight} --scope  'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
     """
 
     _aaz_info = {
@@ -509,7 +509,7 @@ class Update(AAZCommand):
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.SolutionUpdate(ctx=self.ctx)()
+        yield self.SolutionCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -612,7 +612,7 @@ class Update(AAZCommand):
 
             return cls._schema_on_200
 
-    class SolutionUpdate(AAZHttpOperation):
+    class SolutionCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -648,7 +648,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PATCH"
+            return "PUT"
 
         @property
         def error_format(self):

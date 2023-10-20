@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Creates a diagnostics that will help you troubleshoot an issue with your azure resource.
 
     :example: Create Diagnostic at Resource Level
-        az self-help diagnostic create --diagnostic-name {diagnostic-name}  --insights [{solutionId:Demo2InsightV2}] --scope {scope}
+        az self-help diagnostic create --diagnostic-name diagnostic-name  --insights [{solutionId:Demo2InsightV2}] --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
     """
 
     _aaz_info = {

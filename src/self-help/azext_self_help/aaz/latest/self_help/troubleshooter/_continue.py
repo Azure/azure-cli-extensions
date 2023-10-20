@@ -19,7 +19,7 @@ class Continue(AAZCommand):
     """Uses stepId and responses as the trigger to continue the troubleshooting steps for the respective troubleshooter resource name.
 
     :example: Continue Troubleshooter at Resource Level
-        az self-help troubleshooter continue --troubleshooter-name {troubleshooter-name} --step-id {step-id} --responses [] --scope {scope}
+        az self-help troubleshooter continue --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789012 --step-id step-id --responses [] --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
     """
 
     _aaz_info = {

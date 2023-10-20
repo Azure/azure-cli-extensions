@@ -19,7 +19,7 @@ class List(AAZCommand):
     """List the relevant Azure diagnostics and solutions using problemClassificationId API AND resourceUri or resourceType.
 
     :example: List DiscoverySolution results for a resource
-        az self-help discovery-solution list --scope {scope}
+        az self-help discovery-solution list --filter "ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'" --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
     """
 
     _aaz_info = {

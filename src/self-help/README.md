@@ -20,7 +20,7 @@ az extension add --name self-help
 
   ```
   # Gets list of solution metadata for an azure resource.
-  az self-help discovery-solution list --scope {scope}
+  az self-help discovery-solution list --filter "ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'" --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
   ```
 
 ### _"Diagnostic"_ commands
@@ -31,7 +31,7 @@ az extension add --name self-help
 
   ```
   # Creates a diagnostic for a resource
-  az self-help diagnostic create --diagnostic-name {diagnostic-name}  --insights [{solutionId:Demo2InsightV2}] --scope {scope}
+  az self-help diagnostic create --diagnostic-name diagnostic-name  --insights [{solutionId:Demo2InsightV2}] --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
   ```
 
 - #### Show Diagnostic for a resource
@@ -40,7 +40,7 @@ az extension add --name self-help
 
   ```
   # Shows diagnostic for a resource.
-  az self-help diagnostic show --diagnostic-name {diagnostic-name} --scope {scope}
+  az self-help diagnostic show --diagnostic-name diagnostic-name --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
   ```
 
 ### _"Solution"_ commands
@@ -51,7 +51,7 @@ az extension add --name self-help
 
   ```
   # Creates a solution for a resource
-  az self-help solution create --solution-name {solution-name} --trigger-criteria {trigger-criteria} --parameters {parameters} --scope {scope}
+  az self-help solution create --solution-name solution-name --trigger-criteria [{name:solutionid,value:Demo2InsightV2}] --parameters {} --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
   ```
 
 - #### Show Solution for a resource
@@ -60,7 +60,7 @@ az extension add --name self-help
 
   ```
   # Shows solution for a resource.
-  az self-help solution show --solution-name {solution-name} --scope {scope}
+  az elf-help solution show --solution-name solution-name --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
   ```
 
 - #### Update Solution for a resource
@@ -69,7 +69,7 @@ az extension add --name self-help
 
   ```
   # Updates solution for a resource.
-  az self-help solution update --solution-name {solution-name} --trigger-criteria {trigger-criteria} --parameters {parameters} --scope {scope}
+  az self-help solution update --solution-name solution-name --trigger-criteria [{name:ReplacementKey,value:<!--56ee7509-92e1-4b9e-97c2-dda53065294c-->}] --parameters {SearchText:CanNotRDP,SymptomId:KeyVaultVaultNotFoundInsight} --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
   ```
 
 ### _"Troubleshooter"_ commands
@@ -80,7 +80,7 @@ az extension add --name self-help
 
   ```
   # Creates a troubleshooter for a resource
-  az self-help troubleshooter create --troubleshooter-name {troubleshooter-name} --solution-id {solution-id} --parameters {parameters} --scope {scope}
+  az self-help troubleshooter create --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789012 --solution-id e104dbdf-9e14-4c9f-bc78-21ac90382231 --parameters {ResourceUri:'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'} --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
   ```
 
 - #### Show troubleshooter for a resource
@@ -89,7 +89,7 @@ az extension add --name self-help
 
   ```
   # Show troubleshooter for a resource.
-  az self-help troubleshooter show --troubleshooter-name {troubleshooter-name} --scope {scope}
+  az self-help troubleshooter show --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789012 --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
   ```
 
 - #### Restart troubleshooter for a resource
@@ -98,7 +98,7 @@ az extension add --name self-help
 
   ```
   # Restarts troubleshooter for a resource.
-  az self-help troubleshooter restart --troubleshooter-name {troubleshooter-name} --scope {scope}
+  az self-help troubleshooter restart --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789012 --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
   ```
 
 - #### End troubleshooter for a resource
@@ -107,7 +107,7 @@ az extension add --name self-help
 
   ```
   # Ends troubleshooter for a resource.
-  az self-help troubleshooter show --troubleshooter-name {troubleshooter-name} --scope {scope}
+  az self-help troubleshooter end --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789012 --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
   ```
 
 - #### Continue troubleshooter for a resource
@@ -116,7 +116,7 @@ az extension add --name self-help
 
   ```
   # Continues troubleshooter for a resource.
-  az self-help troubleshooter continue --troubleshooter-name {troubleshooter-name} --step-id {step-id} --responses [] --scope {scope}
+  az self-help troubleshooter continue --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789012 --step-id step-id --responses [] --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
   ```
 
 ### _"Check-Name-Availability"_ commands
@@ -127,7 +127,7 @@ az extension add --name self-help
 
   ```
   # Check Resource Uniqueness
-  az self-help check-name-availability --scope subscriptions/{subId} --name {diagnostic-name} --type 'Microsoft.Help/diagnostics'
-  az self-help check-name-availability --scope subscriptions/{subId} --name {solution-name} --type 'Microsoft.Help/solutions'
-  az self-help check-name-availability --scope subscriptions/{subId} --name {troubleshooter-name} --type 'Microsoft.Help/troubleshooters'
+  az self-help check-name-availability --scope subscriptions/12345678-BBBb-cCCCC-0000-123456789012 --name diagnostic-name --type 'Microsoft.Help/diagnostics'
+  az self-help check-name-availability --scope subscriptions/12345678-BBBb-cCCCC-0000-123456789012 --name solution-name --type 'Microsoft.Help/solutions'
+  az self-help check-name-availability --scope subscriptions/12345678-BBBb-cCCCC-0000-123456789012 --name abf168ed-1b54-454a-86f6-e4b62253d3b1 --type 'Microsoft.Help/troubleshooters'
   ```

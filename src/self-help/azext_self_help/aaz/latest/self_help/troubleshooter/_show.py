@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get troubleshooter instance result which includes the step status/result of the troubleshooter resource name that is being executed.
 
     :example: Show Troubleshooter at Resource Level
-        az self-help troubleshooter show --troubleshooter-name {troubleshooter-name} --scope {scope}
+        az self-help troubleshooter show --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789012 --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
     """
 
     _aaz_info = {

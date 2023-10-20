@@ -19,9 +19,9 @@ class CheckNameAvailability(AAZCommand):
     """This API is used to check the uniqueness of a resource name used for a diagnostic, troubleshooter or solutions
 
     :example: Check Resource Uniqueness
-        az self-help check-name-availability --scope subscriptions/{subId} --name {diagnostic-name} --type 'Microsoft.Help/diagnostics'
-        az self-help check-name-availability --scope subscriptions/{subId} --name {solution-name} --type 'Microsoft.Help/solutions'
-        az self-help check-name-availability --scope subscriptions/{subId} --name {troubleshooter-name} --type 'Microsoft.Help/troubleshooters'
+        az self-help check-name-availability --scope subscriptions/12345678-BBBb-cCCCC-0000-123456789012 --name diagnostic-name --type 'Microsoft.Help/diagnostics'
+        az self-help check-name-availability --scope subscriptions/12345678-BBBb-cCCCC-0000-123456789012 --name solution-name --type 'Microsoft.Help/solutions'
+        az self-help check-name-availability --scope subscriptions/12345678-BBBb-cCCCC-0000-123456789012 --name abf168ed-1b54-454a-86f6-e4b62253d3b1 --type 'Microsoft.Help/troubleshooters'
     """
 
     _aaz_info = {
