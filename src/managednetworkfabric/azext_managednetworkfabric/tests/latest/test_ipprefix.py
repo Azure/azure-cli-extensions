@@ -26,6 +26,7 @@ def call_scenario1(test):
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
+    step_update(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     step_delete(test, checks=[])
@@ -44,6 +45,13 @@ def step_show(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric ipprefix show --resource-name {name} --resource-group {rg}')
+
+def step_update(test, checks=None):
+    '''ipprefix update operation'''
+    if checks is None:
+        checks = []
+    test.cmd(
+        'az networkfabric ipprefix create --resource-group {rg} --location {location} --resource-name {name} --ip-prefix-rules {updatedIpPrefixRules} ', checks=checks)
 
 def step_list_resource_group(test, checks=None):
     '''ipprefix list by resource group operation'''
@@ -74,7 +82,8 @@ class GA_IpPrefixScenarioTest1(ScenarioTest):
             'name': CONFIG.get('IP_PREFIX', 'name'),
             'rg': CONFIG.get('IP_PREFIX', 'resource_group'),
             'location': CONFIG.get('IP_PREFIX', 'location'),
-            'ipPrefixRules': CONFIG.get('IP_PREFIX', 'ip_prefix_rules')
+            'ipPrefixRules': CONFIG.get('IP_PREFIX', 'ip_prefix_rules'),
+            'updatedIpPrefixRules': CONFIG.get('IP_PREFIX', 'updated_ip_prefix_rules')
         })
 
     @AllowLargeResponse()
