@@ -5,6 +5,7 @@
 # --------------------------------------------------------------------------------------------
 from ._utils import safe_get
 
+
 def transform_containerapp_output(app):
     props = ['name', 'location', 'resourceGroup', 'provisioningState']
     result = {k: app[k] for k in app if k in props}
@@ -31,10 +32,6 @@ def clean_up_sensitive_values(response_json):
                     val["metadata"] = dict((k, "") for k, v in val["metadata"].items())
 
     return response_json
-
-
-def transform_sensitive_values_wrapper():
-    return clean_up_sensitive_values
 
 
 def transform_containerapp_list_output(apps):
