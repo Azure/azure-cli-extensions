@@ -15,6 +15,7 @@ Pending
 0.5.166
 +++++++
 * Add `--node-soak-duration` to the `az aks nodepool add/update/upgrade` commands.
+* Add `--drain-timeout` to the `az aks nodepool add/update/upgrade` commands (already in [azure-cli](https://github.com/Azure/azure-cli/pull/27475)).
 
 0.5.165
 +++++++
