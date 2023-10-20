@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a Network Tap Rule resource
 
     :example: Create a Network Tap Rule with Configuration type as "File".
-        az networkfabric taprule create --resource-group "example-rg" --location "westus3" --resource-name "example-networktaprule" --polling-interval-in-seconds 30 --configuration-type "File" --tap-rules-url "https://microsoft.com/<FileName>"
+        az networkfabric taprule create --resource-group "example-rg" --location "westus3" --resource-name "example-networktaprule" --polling-interval 30 --configuration-type "File" --tap-rules-url "https://microsoft.com/<FileName>"
 
     :example: Create a Network Tap Rule with Configuration type as "Inline".
-        az networkfabric taprule create --resource-group "example-rg" --location "westus3" --resource-name "example-networktaprule" --configuration-type "Inline" --match-configurations "[{matchConfigurationName:config1,sequenceNumber:10,ipAddressType:IPv4,matchConditions:[{encapsulationType:None,portCondition:{portType:SourcePort,layer4Protocol:TCP,ports:[100],portGroupNames:['example-portGroup1']},protocolTypes:[TCP],vlanMatchCondition:{vlans:['10'],innerVlans:['11-20']},ipCondition:{type:SourceIP,prefixType:Prefix,ipPrefixValues:['10.10.10.10/20']}}],actions:[{type:Drop,truncate:100,isTimestampEnabled:True,destinationId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourcegroups/example-rg/providers/Microsoft.ManagedNetworkFabric/neighborGroups/example-neighborGroup',matchConfigurationName:match1}]}]" --dynamic-match-configurations "[{ipGroups:[{name:'example-ipGroup1',ipAddressType:IPv4,ipPrefixes:['10.10.10.10/30']}],vlanGroups:[{name:'exmaple-vlanGroup',vlans:['10']}],portGroups:[{name:'example-portGroup1',ports:['100-200']}]}]"
+        az networkfabric taprule create --resource-group "example-rg" --location "westus3" --resource-name "example-networktaprule" --configuration-type "Inline" --match-conf "[{matchConfigurationName:config1,sequenceNumber:10,ipAddressType:IPv4,matchConditions:[{encapsulationType:None,portCondition:{portType:SourcePort,layer4Protocol:TCP,ports:[100],portGroupNames:['example-portGroup1']},protocolTypes:[TCP],vlanMatchCondition:{vlans:['10'],innerVlans:['11-20']},ipCondition:{type:SourceIP,prefixType:Prefix,ipPrefixValues:['10.10.10.10/20']}}],actions:[{type:Drop,truncate:100,isTimestampEnabled:True,destinationId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourcegroups/example-rg/providers/Microsoft.ManagedNetworkFabric/neighborGroups/example-neighborGroup',matchConfigurationName:match1}]}]" --dynamic-match-conf "[{ipGroups:[{name:'example-ipGroup1',ipAddressType:IPv4,ipPrefixes:['10.10.10.10/30']}],vlanGroups:[{name:'exmaple-vlanGroup',vlans:['10']}],portGroups:[{name:'example-portGroup1',ports:['100-200']}]}]"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric taprule create --match-configurations "??"
+        az networkfabric taprule create --match-conf "??"
     """
 
     _aaz_info = {
@@ -96,18 +96,18 @@ class Create(AAZCommand):
             required=True,
             enum={"File": "File", "Inline": "Inline"},
         )
-        _args_schema.dynamic_match_configurations = AAZListArg(
-            options=["--dynamic-match-configurations"],
+        _args_schema.dynamic_match_conf = AAZListArg(
+            options=["--dynamic-match-conf"],
             arg_group="Properties",
             help="List of dynamic match configurations.",
         )
         _args_schema.match_configurations = AAZListArg(
-            options=["--match-configurations"],
+            options=["--match-conf"],
             arg_group="Properties",
             help="List of match configurations.",
         )
-        _args_schema.polling_interval_in_seconds = AAZIntArg(
-            options=["--polling-interval-in-seconds"],
+        _args_schema.polling_interval = AAZIntArg(
+            options=["--polling-interval"],
             arg_group="Properties",
             help="Polling interval in seconds. Default value is 30. Example: 60.",
             enum={"120": 120, "30": 30, "60": 60, "90": 90},
@@ -121,10 +121,10 @@ class Create(AAZCommand):
             ),
         )
 
-        dynamic_match_configurations = cls._args_schema.dynamic_match_configurations
-        dynamic_match_configurations.Element = AAZObjectArg()
+        dynamic_match_conf = cls._args_schema.dynamic_match_conf
+        dynamic_match_conf.Element = AAZObjectArg()
 
-        _element = cls._args_schema.dynamic_match_configurations.Element
+        _element = cls._args_schema.dynamic_match_conf.Element
         _element.ip_groups = AAZListArg(
             options=["ip-groups"],
             help="List of IP Groups.",
@@ -138,10 +138,10 @@ class Create(AAZCommand):
             help="List of vlan groups.",
         )
 
-        ip_groups = cls._args_schema.dynamic_match_configurations.Element.ip_groups
+        ip_groups = cls._args_schema.dynamic_match_conf.Element.ip_groups
         ip_groups.Element = AAZObjectArg()
 
-        _element = cls._args_schema.dynamic_match_configurations.Element.ip_groups.Element
+        _element = cls._args_schema.dynamic_match_conf.Element.ip_groups.Element
         _element.ip_address_type = AAZStrArg(
             options=["ip-address-type"],
             help="IP Address type. Example: IPv4.",
@@ -162,17 +162,17 @@ class Create(AAZCommand):
             ),
         )
 
-        ip_prefixes = cls._args_schema.dynamic_match_configurations.Element.ip_groups.Element.ip_prefixes
+        ip_prefixes = cls._args_schema.dynamic_match_conf.Element.ip_groups.Element.ip_prefixes
         ip_prefixes.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        port_groups = cls._args_schema.dynamic_match_configurations.Element.port_groups
+        port_groups = cls._args_schema.dynamic_match_conf.Element.port_groups
         port_groups.Element = AAZObjectArg()
 
-        _element = cls._args_schema.dynamic_match_configurations.Element.port_groups.Element
+        _element = cls._args_schema.dynamic_match_conf.Element.port_groups.Element
         _element.name = AAZStrArg(
             options=["name"],
             help="The name of the port group.",
@@ -185,17 +185,17 @@ class Create(AAZCommand):
             help="List of the ports that needs to be matched.",
         )
 
-        ports = cls._args_schema.dynamic_match_configurations.Element.port_groups.Element.ports
+        ports = cls._args_schema.dynamic_match_conf.Element.port_groups.Element.ports
         ports.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        vlan_groups = cls._args_schema.dynamic_match_configurations.Element.vlan_groups
+        vlan_groups = cls._args_schema.dynamic_match_conf.Element.vlan_groups
         vlan_groups.Element = AAZObjectArg()
 
-        _element = cls._args_schema.dynamic_match_configurations.Element.vlan_groups.Element
+        _element = cls._args_schema.dynamic_match_conf.Element.vlan_groups.Element
         _element.name = AAZStrArg(
             options=["name"],
             help="Vlan group name.",
@@ -208,7 +208,7 @@ class Create(AAZCommand):
             help="List of vlans.",
         )
 
-        vlans = cls._args_schema.dynamic_match_configurations.Element.vlan_groups.Element.vlans
+        vlans = cls._args_schema.dynamic_match_conf.Element.vlan_groups.Element.vlans
         vlans.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -554,9 +554,9 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("configurationType", AAZStrType, ".configuration_type", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("dynamicMatchConfigurations", AAZListType, ".dynamic_match_configurations")
+                properties.set_prop("dynamicMatchConfigurations", AAZListType, ".dynamic_match_conf")
                 properties.set_prop("matchConfigurations", AAZListType, ".match_configurations")
-                properties.set_prop("pollingIntervalInSeconds", AAZIntType, ".polling_interval_in_seconds")
+                properties.set_prop("pollingIntervalInSeconds", AAZIntType, ".polling_interval")
                 properties.set_prop("tapRulesUrl", AAZStrType, ".tap_rules_url")
 
             dynamic_match_configurations = _builder.get(".properties.dynamicMatchConfigurations")
