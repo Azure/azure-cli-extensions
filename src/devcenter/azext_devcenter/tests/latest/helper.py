@@ -497,6 +497,12 @@ def catalog_create_and_sync_cmds(self):
         '--resource-group "{rg}" '
     )
 
+def create_catalog_control_plane(self):
+    create_dev_center_with_identity(self)
+    create_kv_policy(self)
+    create_project(self)
+    catalog_create_and_sync_cmds(self)
+
 
 def create_catalog(self):
     create_dev_center_with_identity(self)
