@@ -15,11 +15,6 @@ helps['fleet'] = """
 helps['fleet create'] = """
     type: command
     short-summary: Creates or updates a Fleet.
-    parameters:
-        - name: --dns-name-prefix -p
-          type: string
-          short-summary: Prefix for hostnames that are created. If not specified, generate a hostname using the
-                         managed cluster and resource group names.
     examples:
         - name: Create a hubless fleet
           text: az fleet create -g MyResourceGroup -l MyLocation -n MyFleetName --tags "TagKey=TagValue"
