@@ -38,7 +38,7 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az networkfabric ipcommunity create --resource-group {rg} --location {location} --resource-name {name}'
-             ' --ip-community-rules {ipCommunityRules}', checks=checks)
+             ' --ip-comm-rules {ipCommunityRules}', checks=checks)
 
 def step_show(test, checks=None):
     '''ipcommunity show operation'''
@@ -53,7 +53,7 @@ def step_update(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric ipcommunity create --resource-group {rg} --location {location} --resource-name {name}'
-            ' --ip-community-rules {updatedIpCommunityRules}', checks=checks)
+            ' --ip-comm-rules {updatedIpCommunityRules}', checks=checks)
 
 @AllowLargeResponse()
 def step_list_resource_group(test, checks=None):

@@ -5,8 +5,8 @@ Release History
 
 4.1.0
 ++++++
-* Supported added for fabric commit-configuration functionality
-* PATCH support added for following resoures
+* Supported for fabric commit-configuration functionality
+* PATCH support added for
 *	- Route Policy,
 *	- Access Control List,
 *	- IPCommunity,

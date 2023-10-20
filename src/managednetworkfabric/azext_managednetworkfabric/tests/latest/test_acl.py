@@ -38,7 +38,7 @@ def step_create(test, checks=None):
     test.cmd(
         'az networkfabric acl create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configuration_type}'
         ' --default-action {default_action} '
-        ' --match-configurations {match_configurations}', checks=checks)
+        ' --match-conf {match_configurations}', checks=checks)
 
 def step_show(test, checks=None):
     '''Access Control List show operation'''
@@ -54,7 +54,7 @@ def step_update(test, checks=None):
     test.cmd(
         'az networkfabric acl update --resource-group {rg} --resource-name {name}'
         ' --configuration-type "Inline" --default-action {default_action}'
-        ' --match-configurations {updated_match_configurations}', checks=checks)
+        ' --match-conf {updated_match_configurations}', checks=checks)
 
 def step_list_resource_group(test, checks=None):
     '''Access Control List list by resource group operation'''

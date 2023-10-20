@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update to update certain properties of the IP Community resource.
 
     :example: Update IP Community
-        az networkfabric ipcommunity update --resource-group "example-rg" --resource-name "example-ipcommunity" --ip-community-rules "[{action:Permit,communityMembers:['1:1'],sequenceNumber:1234,wellKnownCommunities:[Internet,GShut]}]"
+        az networkfabric ipcommunity update --resource-group "example-rg" --resource-name "example-ipcommunity" --ip-comm-rules "[{action:Permit,communityMembers:['1:1'],sequenceNumber:1234,wellKnownCommunities:[Internet,GShut]}]"
     """
 
     _aaz_info = {
@@ -71,16 +71,16 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.ip_community_rules = AAZListArg(
-            options=["--ip-community-rules"],
+        _args_schema.ip_comm_rules = AAZListArg(
+            options=["--ip-comm-rules"],
             arg_group="Properties",
             help="List of IP Community Rules.",
         )
 
-        ip_community_rules = cls._args_schema.ip_community_rules
-        ip_community_rules.Element = AAZObjectArg()
+        ip_comm_rules = cls._args_schema.ip_comm_rules
+        ip_comm_rules.Element = AAZObjectArg()
 
-        _element = cls._args_schema.ip_community_rules.Element
+        _element = cls._args_schema.ip_comm_rules.Element
         _element.action = AAZStrArg(
             options=["action"],
             help="Action to be taken on the configuration. Example: Permit.",
@@ -109,14 +109,14 @@ class Update(AAZCommand):
             ),
         )
 
-        community_members = cls._args_schema.ip_community_rules.Element.community_members
+        community_members = cls._args_schema.ip_comm_rules.Element.community_members
         community_members.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        well_known_communities = cls._args_schema.ip_community_rules.Element.well_known_communities
+        well_known_communities = cls._args_schema.ip_comm_rules.Element.well_known_communities
         well_known_communities.Element = AAZStrArg(
             enum={"GShut": "GShut", "Internet": "Internet", "LocalAS": "LocalAS", "NoAdvertise": "NoAdvertise", "NoExport": "NoExport"},
             fmt=AAZStrArgFormat(
@@ -236,7 +236,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("ipCommunityRules", AAZListType, ".ip_community_rules")
+                properties.set_prop("ipCommunityRules", AAZListType, ".ip_comm_rules")
 
             ip_community_rules = _builder.get(".properties.ipCommunityRules")
             if ip_community_rules is not None:
