@@ -327,6 +327,26 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return node_taints
 
+    def get_drain_timeout(self):
+        """Obtain the value of drain_timeout.
+
+        :return: int
+        """
+        # read the original value passed by the command
+        drain_timeout = self.raw_param.get("drain_timeout")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings and
+                self.agentpool.upgrade_settings.drain_timeout_in_minutes is not None
+            ):
+                drain_timeout = self.agentpool.upgrade_settings.drain_timeout_in_minutes
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return drain_timeout
+
     def get_node_soak_duration(self):
         """Obtain the value of node_soak_duration.
 
