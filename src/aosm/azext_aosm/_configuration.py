@@ -292,9 +292,10 @@ class VNFConfiguration(NFConfiguration):
             self.blob_artifact_store_name = f"{self.publisher_name}-sa"
 
         if isinstance(self.arm_template, dict):
-            self.arm_template["file_path"] = self.path_from_cli_dir(
-                self.arm_template["file_path"]
-            )
+            if self.arm_template.get("file_path"):
+                self.arm_template["file_path"] = self.path_from_cli_dir(
+                    self.arm_template["file_path"]
+                )
             self.arm_template = ArtifactConfig(**self.arm_template)
 
         if isinstance(self.vhd, dict):
