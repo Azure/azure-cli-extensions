@@ -16,9 +16,10 @@ from msrestazure.tools import parse_resource_id
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION
-from .utils import create_containerapp_env
+from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
 
 class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -26,13 +27,12 @@ class ContainerappIdentityTests(ScenarioTest):
     def test_containerapp_identity_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env))
 
         self.cmd('containerapp identity assign --system-assigned -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('type', 'SystemAssigned'),
@@ -63,6 +63,7 @@ class ContainerappIdentityTests(ScenarioTest):
         self.cmd('containerapp identity show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('type', 'None'),
         ])
+        self.cmd('containerapp delete  -g {} -n {} --yes'.format(resource_group, ca_name), expect_failure=False)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="canadacentral")
@@ -107,14 +108,13 @@ class ContainerappIdentityTests(ScenarioTest):
     def test_containerapp_identity_user(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name1 = self.create_random_name(prefix='containerapp-user1', length=24)
         user_identity_name2 = self.create_random_name(prefix='containerapp-user2', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env))
 
         self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name1))
 
@@ -158,37 +158,36 @@ class ContainerappIngressTests(ScenarioTest):
     def test_containerapp_ingress_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --allow-insecure'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --allow-insecure'.format(resource_group, ca_name, env))
 
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
             JMESPathCheck('targetPort', 80),
             JMESPathCheck('allowInsecure', True),
         ])
 
-        self.cmd('containerapp ingress disable -g {} -n {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp ingress disable -g {} -n {}'.format(resource_group, ca_name))
 
         containerapp_def = self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
 
         self.assertEqual("fqdn" in containerapp_def["properties"]["configuration"], False)
 
-        self.cmd('containerapp ingress enable -g {} -n {} --type internal --target-port 81 --allow-insecure --transport http2'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp ingress enable -g {} -n {} --type internal --target-port 81 --allow-insecure --transport http2'.format(resource_group, ca_name))
 
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', False),
             JMESPathCheck('targetPort', 81),
             JMESPathCheck('allowInsecure', True),
             JMESPathCheck('transport', "Http2"),
         ])
 
-        self.cmd('containerapp ingress update -g {} -n {} --type external --allow-insecure=False'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp ingress update -g {} -n {} --type external --allow-insecure=False'.format(resource_group, ca_name))
 
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
             JMESPathCheck('targetPort', 81),
             JMESPathCheck('allowInsecure', False),
@@ -200,12 +199,11 @@ class ContainerappIngressTests(ScenarioTest):
     def test_containerapp_ingress_traffic_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --revisions-mode multiple'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --revisions-mode multiple'.format(resource_group, ca_name, env))
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
@@ -422,13 +420,12 @@ class ContainerappIngressTests(ScenarioTest):
     def test_containerapp_ip_restrictions(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         # self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env))
 
         self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name --ip-address 192.168.1.1/32 --description "Description here." --action Allow'.format(resource_group, ca_name), checks=[
             JMESPathCheck('[0].name', "name"),
@@ -496,10 +493,10 @@ class ContainerappIngressTests(ScenarioTest):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         # self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env))
 
         self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name --ip-address 192.168.1.1/32 --description "Description here." --action Deny'.format(resource_group, ca_name), checks=[
             JMESPathCheck('[0].name', "name"),
@@ -564,12 +561,11 @@ class ContainerappIngressTests(ScenarioTest):
     def test_containerapp_cors_policy(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env))
 
         self.cmd('containerapp ingress cors enable -g {} -n {} --allowed-origins "http://www.contoso.com" "https://www.contoso.com" --allowed-methods "GET" "POST" --allowed-headers "header1" "header2" --expose-headers "header3" "header4" --allow-credentials true --max-age 100'.format(resource_group, ca_name), checks=[
             JMESPathCheck('length(allowedOrigins)', 2),
@@ -623,12 +619,11 @@ class ContainerappDaprTests(ScenarioTest):
     def test_containerapp_dapr_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --dapr-app-id containerapp --dapr-app-port 800 --dapr-app-protocol grpc --dhmrs 4 --dhrbs 50 --dapr-log-level debug --enable-dapr'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp create -g {} -n {} --environment {} --dapr-app-id containerapp --dapr-app-port 800 --dapr-app-protocol grpc --dhmrs 4 --dhrbs 50 --dapr-log-level debug --enable-dapr'.format(resource_group, ca_name, env), checks=[
             JMESPathCheck('properties.configuration.dapr.appId', "containerapp"),
             JMESPathCheck('properties.configuration.dapr.appPort', 800),
             JMESPathCheck('properties.configuration.dapr.appProtocol', "grpc"),
@@ -639,7 +634,7 @@ class ContainerappDaprTests(ScenarioTest):
             JMESPathCheck('properties.configuration.dapr.enableApiLogging', False),
         ])
 
-        self.cmd('containerapp dapr enable -g {} -n {} --dapr-app-id containerapp1 --dapr-app-port 80 --dapr-app-protocol http --dal --dhmrs 6 --dhrbs 60 --dapr-log-level warn'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp dapr enable -g {} -n {} --dapr-app-id containerapp1 --dapr-app-port 80 --dapr-app-protocol http --dal --dhmrs 6 --dhrbs 60 --dapr-log-level warn'.format(resource_group, ca_name, env), checks=[
             JMESPathCheck('appId', "containerapp1"),
             JMESPathCheck('appPort', 80),
             JMESPathCheck('appProtocol', "http"),
@@ -661,7 +656,7 @@ class ContainerappDaprTests(ScenarioTest):
             JMESPathCheck('properties.configuration.dapr.enableApiLogging', True),
         ])
 
-        self.cmd('containerapp dapr disable -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp dapr disable -g {} -n {}'.format(resource_group, ca_name, env), checks=[
             JMESPathCheck('appId', "containerapp1"),
             JMESPathCheck('appPort', 80),
             JMESPathCheck('appProtocol', "http"),
@@ -690,19 +685,18 @@ class ContainerappDaprTests(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         image = 'mcr.microsoft.com/azuredocs/aks-helloworld:v1'
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(
             'containerapp up -g {} -n {} --environment {} --image {}'.format(
-                resource_group, ca_name, env_name, image))
+                resource_group, ca_name, env, image))
 
         self.cmd(
             'containerapp dapr enable -g {} -n {} --dapr-app-id containerapp1 --dapr-app-port 80 '
             '--dapr-app-protocol http --dal --dhmrs 6 --dhrbs 60 --dapr-log-level warn'.format(
-                resource_group, ca_name, env_name), checks=[
+                resource_group, ca_name), checks=[
                 JMESPathCheck('appId', "containerapp1"),
                 JMESPathCheck('enabled', True)
             ])
@@ -869,21 +863,20 @@ class ContainerappRevisionTests(ScenarioTest):
     def test_containerapp_revision_label_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80'.format(resource_group, ca_name, env))
 
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
             JMESPathCheck('targetPort', 80),
         ])
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --image nginx'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --image nginx'.format(resource_group, ca_name, env))
 
-        self.cmd('containerapp revision set-mode -g {} -n {} --mode multiple'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp revision set-mode -g {} -n {} --mode multiple'.format(resource_group, ca_name, env))
 
         revision_names = self.cmd(f"containerapp revision list -g {resource_group} -n {ca_name} --all --query '[].name'").get_output_in_json()
 
@@ -936,11 +929,10 @@ class ContainerappAnonymousRegistryTests(ScenarioTest):
     def test_containerapp_anonymous_registry(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         image = "mcr.microsoft.com/k8se/quickstart:latest"
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env}')
 
@@ -954,14 +946,13 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
     def test_containerapp_registry_identity_user(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         identity = self.create_random_name(prefix='id', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         identity_rid = self.cmd(f'identity create -g {resource_group} -n {identity}').get_output_in_json()["id"]
 
@@ -987,13 +978,12 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
     def test_containerapp_registry_identity_system(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
         self.cmd(f'acr import -n {acr} --source {image_source}')
@@ -1015,13 +1005,12 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_private_registry_port(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io:443/k8se/quickstart:latest"
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
         self.cmd(f'acr import -n {acr} --source {image_source}')
@@ -1052,13 +1041,12 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_registry_acr_look_up_credentical(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
         self.cmd(f'acr import -n {acr} --source {image_source}')
@@ -1074,17 +1062,15 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         ])
 
 
-
 class ContainerappScaleTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_scale_create(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value')
 
@@ -1116,10 +1102,9 @@ class ContainerappScaleTests(ScenarioTest):
     def test_containerapp_scale_update(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value')
 
@@ -1166,10 +1151,9 @@ class ContainerappScaleTests(ScenarioTest):
     def test_containerapp_scale_revision_copy(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value')
 
@@ -1198,15 +1182,38 @@ class ContainerappScaleTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_replica_commands(self, resource_group):
+        self.cmd(f'configure --defaults location={TEST_LOCATION}')
+
+        env_name = self.create_random_name(prefix='env', length=24)
+        app_name = self.create_random_name(prefix='aca', length=24)
+        replica_count = 3
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app_name} --environment {env_name} --ingress external --target-port 80 --min-replicas {replica_count}').get_output_in_json()
+
+        count = self.cmd(f"containerapp replica count -g {resource_group} -n {app_name}").output
+        self.assertEqual(int(count), replica_count)
+
+        self.cmd(f'containerapp replica list -g {resource_group} -n {app_name}', checks=[
+            JMESPathCheck('length(@)', replica_count),
+        ])
+
+        self.cmd(f'containerapp delete -g {resource_group} -n {app_name} --yes')
+        self.cmd(f'containerapp env delete -n {env_name} -g {resource_group} --yes')
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_preview_create_with_yaml(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='yaml', length=24)
 
-        create_containerapp_env(self, env, resource_group)
-        containerapp_env = self.cmd(
-            'containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
 
         user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
         user_identity = self.cmd(
@@ -1277,7 +1284,7 @@ class ContainerappScaleTests(ScenarioTest):
 
         write_test_file(containerapp_file_name, containerapp_yaml_text)
         self.cmd(
-            f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
+            f'containerapp create -n {app} -g {resource_group} --environment {env_id} --yaml {containerapp_file_name}')
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
@@ -1337,11 +1344,12 @@ class ContainerappScaleTests(ScenarioTest):
     def test_containerapp_create_with_yaml(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='yaml', length=24)
 
-        create_containerapp_env(self, env, resource_group)
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
 
         user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
         user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
@@ -1407,7 +1415,7 @@ class ContainerappScaleTests(ScenarioTest):
         containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
 
         write_test_file(containerapp_file_name, containerapp_yaml_text)
-        self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
+        self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env_id} --yaml {containerapp_file_name}')
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
@@ -1796,11 +1804,10 @@ class ContainerappOtherPropertyTests(ScenarioTest):
     def test_containerapp_termination_grace_period_seconds(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         image = "mcr.microsoft.com/k8se/quickstart:latest"
         terminationGracePeriodSeconds = 90
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env} --termination-grace-period {terminationGracePeriodSeconds}')
 

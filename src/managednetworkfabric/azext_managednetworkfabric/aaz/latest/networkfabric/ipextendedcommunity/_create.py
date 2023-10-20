@@ -18,10 +18,10 @@ class Create(AAZCommand):
     """Create a Ip Extended Community resource
 
     :example: Create a Ip Extended Community
-        az networkfabric ipextendedcommunity create --resource-group "example-rg" --location "westus3" --resource-name "example-ipextendedcommunity" --ip-extended-community-rules "[{action:Permit,sequenceNumber:1234,routeTargets:['1024:219','1001:200']}]"
+        az networkfabric ipextendedcommunity create --resource-group "example-rg" --location "westus3" --resource-name "example-ipextendedcommunity" --ip-ext-comm-rules "[{action:Permit,sequenceNumber:1234,routeTargets:['1024:219','1001:200']}]"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric ipextendedcommunity create --ip-extended-community-rules "??"
+        az networkfabric ipextendedcommunity create --ip-ext-comm-rules "??"
     """
 
     _aaz_info = {
@@ -86,17 +86,17 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Description for underlying resource.",
         )
-        _args_schema.ip_extended_community_rules = AAZListArg(
-            options=["--ip-extended-community-rules"],
+        _args_schema.ip_ext_comm_rules = AAZListArg(
+            options=["--ip-ext-comm-rules"],
             arg_group="Properties",
             help="List of IP Extended Community Rules.",
             required=True,
         )
 
-        ip_extended_community_rules = cls._args_schema.ip_extended_community_rules
-        ip_extended_community_rules.Element = AAZObjectArg()
+        ip_ext_comm_rules = cls._args_schema.ip_ext_comm_rules
+        ip_ext_comm_rules.Element = AAZObjectArg()
 
-        _element = cls._args_schema.ip_extended_community_rules.Element
+        _element = cls._args_schema.ip_ext_comm_rules.Element
         _element.action = AAZStrArg(
             options=["action"],
             help="Action to be taken on the configuration. Example: Permit.",
@@ -118,7 +118,7 @@ class Create(AAZCommand):
             ),
         )
 
-        route_targets = cls._args_schema.ip_extended_community_rules.Element.route_targets
+        route_targets = cls._args_schema.ip_ext_comm_rules.Element.route_targets
         route_targets.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -239,7 +239,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("annotation", AAZStrType, ".annotation")
-                properties.set_prop("ipExtendedCommunityRules", AAZListType, ".ip_extended_community_rules", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("ipExtendedCommunityRules", AAZListType, ".ip_ext_comm_rules", typ_kwargs={"flags": {"required": True}})
 
             ip_extended_community_rules = _builder.get(".properties.ipExtendedCommunityRules")
             if ip_extended_community_rules is not None:

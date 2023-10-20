@@ -184,11 +184,6 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
         validate_container_app_name(self.get_argument_name(), AppType.ContainerAppJob.name)
         validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait())
         if self.get_argument_yaml() is None:
-            if self.get_argument_replica_timeout() is None:
-                raise RequiredArgumentMissingError('Usage error: --replica-timeout is required')
-
-            if self.get_argument_replica_retry_limit() is None:
-                raise RequiredArgumentMissingError('Usage error: --replica-retry-limit is required')
 
             if self.get_argument_managed_env() is None:
                 raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
@@ -223,7 +218,7 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
             r = self.create()
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not self.get_argument_no_wait():
-            not self.get_argument_disable_warnings() and logger.warning('Containerapp job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(self.get_argument_name, self.get_argument_resource_group_name()))
+            not self.get_argument_disable_warnings() and logger.warning('Containerapp job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(self.get_argument_name(), self.get_argument_resource_group_name()))
 
         return r
 
@@ -268,7 +263,7 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
             manualTriggerConfig_def["parallelism"] = 0 if self.get_argument_parallelism() is None else self.get_argument_parallelism()
 
         scheduleTriggerConfig_def = None
-        if self.get_argument_trigger_type is not None and self.get_argument_trigger_type().lower() == "schedule":
+        if self.get_argument_trigger_type() is not None and self.get_argument_trigger_type().lower() == "schedule":
             scheduleTriggerConfig_def = ScheduleTriggerModel
             scheduleTriggerConfig_def[
                 "replicaCompletionCount"] = 0 if self.get_argument_replica_completion_count() is None else self.get_argument_replica_completion_count()
@@ -276,9 +271,9 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
             scheduleTriggerConfig_def["cronExpression"] = self.get_argument_cron_expression()
 
         eventTriggerConfig_def = None
-        if self.get_argument_trigger_type is not None and self.get_argument_trigger_type().lower() == "event":
+        if self.get_argument_trigger_type() is not None and self.get_argument_trigger_type().lower() == "event":
             scale_def = None
-            if self.get_argument_min_executions() is not None or self.get_argument_max_executions() is not None or self.get_argument_polling_interval() is not None:
+            if self.get_argument_min_executions() or self.get_argument_max_executions() or self.get_argument_polling_interval():
                 scale_def = JobScaleModel
                 scale_def["pollingInterval"] = self.get_argument_polling_interval()
                 scale_def["minExecutions"] = self.get_argument_min_executions()
@@ -498,6 +493,12 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
     def construct_payload(self):
         super().construct_payload()
         self.set_up_extended_location()
+
+    def validate_arguments(self):
+        super().validate_arguments()
+        if self.get_argument_yaml() is None:
+            if self.get_argument_trigger_type() is None:
+                raise RequiredArgumentMissingError('Usage error: --trigger-type is required')
 
     def set_up_extended_location(self):
         if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:

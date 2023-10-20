@@ -5,24 +5,21 @@
 
 import os
 import time
-import yaml
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-from .utils import create_containerapp_env
 
 class ContainerAppWorkloadProfilesTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_env_workload_profiles_e2e(self, resource_group):
-        import requests
 
         env = self.create_random_name(prefix='env', length=24)
         vnet = self.create_random_name(prefix='name', length=24)
@@ -92,7 +89,6 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
     @ResourceGroupPreparer(location="eastus")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_env_workload_profiles_delete(self, resource_group):
-        import requests
 
         env = self.create_random_name(prefix='env', length=24)
         vnet = self.create_random_name(prefix='name', length=24)
@@ -278,7 +274,6 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_env_workload_profiles_e2e_no_waits(self, resource_group):
-        import requests
 
         env = self.create_random_name(prefix='env', length=24)
         vnet = self.create_random_name(prefix='name', length=24)

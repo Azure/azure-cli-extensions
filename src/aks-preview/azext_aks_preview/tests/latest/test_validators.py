@@ -6,9 +6,15 @@ import unittest
 from types import SimpleNamespace
 
 from azure.cli.core.util import CLIError
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError,
+)
 import azext_aks_preview._validators as validators
 from azext_aks_preview._consts import ADDONS
+import azext_aks_preview.azurecontainerstorage._validators as acstor_validator
+import azext_aks_preview.azurecontainerstorage._consts as acstor_consts
 
 
 class TestValidateIPRanges(unittest.TestCase):
@@ -426,29 +432,6 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
             validators.validate_azure_keyvault_kms_key_id(namespace)
         self.assertEqual(str(cm.exception), err)
 
-class ImageCleanerNamespace:
-    def __init__(
-        self,
-        enable_image_cleaner=False,
-        disable_image_cleaner=False,
-        image_cleaner_interval_hours=None,
-    ):
-        self.enable_image_cleaner = enable_image_cleaner 
-        self.disable_image_cleaner = disable_image_cleaner 
-        self.image_cleaner_interval_hours = image_cleaner_interval_hours 
-
-class TestValidateImageCleanerEnableDiasble(unittest.TestCase):
-    def test_invalid_image_cleaner_enable_disable_not_existing_together(self):
-        namespace = ImageCleanerNamespace(
-            enable_image_cleaner=True,
-            disable_image_cleaner=True,
-        )
-        err = 'Cannot specify --enable-image-cleaner and --disable-image-cleaner at the same time.'
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_image_cleaner_enable_disable_mutually_exclusive(namespace)
-        self.assertEqual(str(cm.exception), err)
-
 class AzureKeyVaultKmsKeyVaultResourceIdNamespace:
 
     def __init__(self, azure_keyvault_kms_key_vault_resource_id):
@@ -636,6 +619,154 @@ class TestValidateMaintenanceWindow(unittest.TestCase):
     def test_valid_start_time(self):        
         namespace = MaintenanceWindowNameSpace(start_date="00:30")
         validators.validate_start_time(namespace)
+
+
+class TestValidateAzureContainerStorage(unittest.TestCase):
+    def test_conflicting_flags_for_enable_disable(self):
+        err = 'Conflicting flags. Cannot set --enable-azure-container-storage '\
+              'and --disable-azure-container-storage together.'
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            acstor_validator.validate_azure_container_storage_params(True, True, None, None, None, None, None, None)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_storage_pool_name(self):
+        storage_pool_name = "pool-name"
+        err = 'Conflicting flags. Cannot define --storage-pool-name value '\
+              'when --disable-azure-container-storage is set.'
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            acstor_validator.validate_azure_container_storage_params(None, True, storage_pool_name, None, None, None, None, None)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_storage_pool_sku(self):
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        err = 'Conflicting flags. Cannot define --storage-pool-sku value ' \
+              'when --disable-azure-container-storage is set.'
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            acstor_validator.validate_azure_container_storage_params(None, True, None, None, storage_pool_sku, None, None, None)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_storage_pool_size(self):
+        storage_pool_size = "5Gi"
+        err = 'Conflicting flags. Cannot define --storage-pool-size value ' \
+              'when --disable-azure-container-storage is set.'
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            acstor_validator.validate_azure_container_storage_params(None, True, None, None, None, None, storage_pool_size, None)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_storage_pool_option(self):
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
+        err = 'Conflicting flags. Cannot define --storage-pool-option value ' \
+              'when --disable-azure-container-storage is set.'
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            acstor_validator.validate_azure_container_storage_params(None, True, None, None, None, storage_pool_option, None, None)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_nodepool_list(self):
+        nodepool_list = "test,test1"
+        err = 'Conflicting flags. Cannot define --azure-container-storage-nodepools value ' \
+              'when --disable-azure-container-storage is set.'
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            acstor_validator.validate_azure_container_storage_params(None, True, None, None, None, None, None, nodepool_list)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_disable(self):
+        acstor_validator.validate_azure_container_storage_params(None, True, None, None, None, None, None, None)
+
+    def test_enable_with_invalid_storage_pool_name(self):
+        storage_pool_name = "my_test_pool"
+        err = "Invalid --storage-pool-name value. " \
+              "Accepted values are lowercase alphanumeric characters, " \
+              "'-' or '.', and must start and end with an alphanumeric character."
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, None, None, None, None, None)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_sku_and_ephemeral_disk_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        err = 'Cannot set --storage-pool-sku when --enable-azure-container-storage is ephemeralDisk.'
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, storage_pool_sku, None, None, None)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_sku_and_elastic_san_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUMV2_LRS
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_ELASTIC_SAN
+        supported_skus = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS + ", " + \
+            acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_ZRS
+        err = 'Invalid --storage-pool-sku value. ' \
+              'Supported value for --storage-pool-sku are {0} ' \
+              'when --enable-azure-container-storage is set to elasticSan.' \
+              .format(supported_skus)
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, storage_pool_sku, None, None, None)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_option_and_non_ephemeral_disk_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        err = 'Cannot set --storage-pool-option when --enable-azure-container-storage is not ephemeralDisk.'
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, None, storage_pool_option, None, None)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_ssd_option_and_ephemeral_disk_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_SSD
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        err = '--storage-pool-option Temp storage (SSD) currently not supported.'
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, None, storage_pool_option, None, None)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_invalid_storage_pool_size(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5"
+        err = 'Value for --storage-pool-size should be defined with size followed by Gi or Ti e.g. 512Gi or 2Ti.'
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, None, None, None, storage_pool_size, None)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_invalid_size_for_esan_storage_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "512Gi"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_ELASTIC_SAN
+        err = 'Value for --storage-pool-size must be at least 1Ti when --enable-azure-container-storage is elasticSan.'
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, None, None, storage_pool_size, None)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_enable_for_azure_disk_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, storage_pool_sku, None, storage_pool_size, None)
+
+    def test_valid_enable_for_ephemeral_disk_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
+        acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, None, storage_pool_option, storage_pool_size, None)
+
+    def test_missing_nodepool_from_cluster_nodepool_list(self):
+        nodepool_list = "pool1,pool2"
+        agentpools = {"nodepool1": "NODEPOOL1", "nodepool2": "NODEPOOL2"}
+        err = 'Nodepool: pool1 not found. Please provide existing nodepool names in --azure-container-storage-nodepools.' \
+              '\nUse command `az nodepool list` to get the list of nodepools in the cluster.' \
+              '\nAborting installation of Azure Container Storage.'
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_nodepool_names_with_cluster_nodepools(nodepool_list, agentpools)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_nodepool_list_in_cluster_nodepool(self):
+        nodepool_list = "nodepool1,nodepool2"
+        agentpools = {"nodepool1": "NODEPOOL1", "nodepool2": "NODEPOOL2"}
+        acstor_validator.validate_nodepool_names_with_cluster_nodepools(nodepool_list, agentpools)
 
 
 if __name__ == "__main__":
