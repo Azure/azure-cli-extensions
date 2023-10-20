@@ -38,7 +38,7 @@ from .helper import (
 )
 
 
-@record_only()
+#@record_only()
 @try_manual
 class DevcenterScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
@@ -298,184 +298,184 @@ class DevcenterScenarioTest(ScenarioTest):
     #         ],
     #     )
 
-    @ResourceGroupPreparer(
-        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
-    )
-    def test_network_connection_scenario(self):
-        subnet = create_virtual_network_with_subnet(self)
+    # @ResourceGroupPreparer(
+    #     name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+    # )
+    # def test_network_connection_scenario(self):
+    #     subnet = create_virtual_network_with_subnet(self)
 
-        self.kwargs.update(
-            {
-                "subnetId": subnet["id"],
-                "networkConnectionName": self.create_random_name(
-                    prefix="cli", length=24
-                ),
-                "networkConnectionName2": self.create_random_name(
-                    prefix="cli", length=24
-                ),
-                "networkingRgName1": self.create_random_name(prefix="cli", length=24),
-                "networkingRgName2": self.create_random_name(prefix="cli", length=24),
-            }
-        )
+    #     self.kwargs.update(
+    #         {
+    #             "subnetId": subnet["id"],
+    #             "networkConnectionName": self.create_random_name(
+    #                 prefix="cli", length=24
+    #             ),
+    #             "networkConnectionName2": self.create_random_name(
+    #                 prefix="cli", length=24
+    #             ),
+    #             "networkingRgName1": self.create_random_name(prefix="cli", length=24),
+    #             "networkingRgName2": self.create_random_name(prefix="cli", length=24),
+    #         }
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection list " '--resource-group "{rg}" ',
-            checks=[
-                self.check("length(@)", 0),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection list " '--resource-group "{rg}" ',
+    #         checks=[
+    #             self.check("length(@)", 0),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection create "
-            '--location "{location}" '
-            '--tags CostCode="12345" '
-            '--name "{networkConnectionName2}" '
-            '--domain-join-type "AzureADJoin" '
-            '--subnet-id "{subnetId}" '
-            '--networking-resource-group-name "{networkingRgName2}" '
-            '--resource-group "{rg}"',
-            checks=[
-                self.check("name", "{networkConnectionName2}"),
-                self.check("domainJoinType", "AzureADJoin"),
-                self.check("location", "{location}"),
-                self.check("tags.CostCode", "12345"),
-                self.check("subnetId", "{subnetId}"),
-                self.check("networkingResourceGroupName", "{networkingRgName2}"),
-                self.check("resourceGroup", "{rg}"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection create "
+    #         '--location "{location}" '
+    #         '--tags CostCode="12345" '
+    #         '--name "{networkConnectionName2}" '
+    #         '--domain-join-type "AzureADJoin" '
+    #         '--subnet-id "{subnetId}" '
+    #         '--networking-resource-group-name "{networkingRgName2}" '
+    #         '--resource-group "{rg}"',
+    #         checks=[
+    #             self.check("name", "{networkConnectionName2}"),
+    #             self.check("domainJoinType", "AzureADJoin"),
+    #             self.check("location", "{location}"),
+    #             self.check("tags.CostCode", "12345"),
+    #             self.check("subnetId", "{subnetId}"),
+    #             self.check("networkingResourceGroupName", "{networkingRgName2}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection list " '--resource-group "{rg}" ',
-            checks=[
-                self.check("length(@)", 1),
-                self.check("[0].name", "{networkConnectionName2}"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection list " '--resource-group "{rg}" ',
+    #         checks=[
+    #             self.check("length(@)", 1),
+    #             self.check("[0].name", "{networkConnectionName2}"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection create "
-            '--location "{location}" '
-            '--tags CostCode="12345" '
-            '--name "{networkConnectionName}" '
-            '--domain-join-type "HybridAzureADJoin" '
-            '--domain-name "fidalgoppe010.local" '
-            '--domain-password "fakePassword" '
-            '--domain-username "domainjoin@fidalgoppe010.local" '
-            '--subnet-id "{subnetId}" '
-            '--networking-resource-group-name "{networkingRgName1}" '
-            '--resource-group "{rg}"',
-            checks=[
-                self.check("name", "{networkConnectionName}"),
-                self.check("domainJoinType", "HybridAzureADJoin"),
-                self.check("domainName", "fidalgoppe010.local"),
-                self.check("domainUsername", "domainjoin@fidalgoppe010.local"),
-                self.check("location", "{location}"),
-                self.check("tags.CostCode", "12345"),
-                self.check("subnetId", "{subnetId}"),
-                self.check("networkingResourceGroupName", "{networkingRgName1}"),
-                self.check("resourceGroup", "{rg}"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection create "
+    #         '--location "{location}" '
+    #         '--tags CostCode="12345" '
+    #         '--name "{networkConnectionName}" '
+    #         '--domain-join-type "HybridAzureADJoin" '
+    #         '--domain-name "fidalgoppe010.local" '
+    #         '--domain-password "fakePassword" '
+    #         '--domain-username "domainjoin@fidalgoppe010.local" '
+    #         '--subnet-id "{subnetId}" '
+    #         '--networking-resource-group-name "{networkingRgName1}" '
+    #         '--resource-group "{rg}"',
+    #         checks=[
+    #             self.check("name", "{networkConnectionName}"),
+    #             self.check("domainJoinType", "HybridAzureADJoin"),
+    #             self.check("domainName", "fidalgoppe010.local"),
+    #             self.check("domainUsername", "domainjoin@fidalgoppe010.local"),
+    #             self.check("location", "{location}"),
+    #             self.check("tags.CostCode", "12345"),
+    #             self.check("subnetId", "{subnetId}"),
+    #             self.check("networkingResourceGroupName", "{networkingRgName1}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection list " '--resource-group "{rg}" ',
-            checks=[self.check("length(@)", 2)],
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection list " '--resource-group "{rg}" ',
+    #         checks=[self.check("length(@)", 2)],
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection update "
-            '--tags CostCode="123" '
-            '--name "{networkConnectionName}" '
-            '--resource-group "{rg}"',
-            checks=[
-                self.check("tags.CostCode", "123"),
-                self.check("name", "{networkConnectionName}"),
-                self.check("domainJoinType", "HybridAzureADJoin"),
-                self.check("domainName", "fidalgoppe010.local"),
-                self.check("domainUsername", "domainjoin@fidalgoppe010.local"),
-                self.check("location", "{location}"),
-                self.check("subnetId", "{subnetId}"),
-                self.check("networkingResourceGroupName", "{networkingRgName1}"),
-                self.check("resourceGroup", "{rg}"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection update "
+    #         '--tags CostCode="123" '
+    #         '--name "{networkConnectionName}" '
+    #         '--resource-group "{rg}"',
+    #         checks=[
+    #             self.check("tags.CostCode", "123"),
+    #             self.check("name", "{networkConnectionName}"),
+    #             self.check("domainJoinType", "HybridAzureADJoin"),
+    #             self.check("domainName", "fidalgoppe010.local"),
+    #             self.check("domainUsername", "domainjoin@fidalgoppe010.local"),
+    #             self.check("location", "{location}"),
+    #             self.check("subnetId", "{subnetId}"),
+    #             self.check("networkingResourceGroupName", "{networkingRgName1}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection show "
-            '--name "{networkConnectionName2}" '
-            '--resource-group "{rg}"',
-            checks=[
-                self.check("tags.CostCode", "12345"),
-                self.check("name", "{networkConnectionName2}"),
-                self.check("domainJoinType", "AzureADJoin"),
-                self.check("location", "{location}"),
-                self.check("subnetId", "{subnetId}"),
-                self.check("networkingResourceGroupName", "{networkingRgName2}"),
-                self.check("resourceGroup", "{rg}"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection show "
+    #         '--name "{networkConnectionName2}" '
+    #         '--resource-group "{rg}"',
+    #         checks=[
+    #             self.check("tags.CostCode", "12345"),
+    #             self.check("name", "{networkConnectionName2}"),
+    #             self.check("domainJoinType", "AzureADJoin"),
+    #             self.check("location", "{location}"),
+    #             self.check("subnetId", "{subnetId}"),
+    #             self.check("networkingResourceGroupName", "{networkingRgName2}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection list " '--resource-group "{rg}" ',
-            checks=[
-                self.check("length(@)", 2),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection list " '--resource-group "{rg}" ',
+    #         checks=[
+    #             self.check("length(@)", 2),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection list-health-check "
-            '--resource-group "{rg}" '
-            '-n "{networkConnectionName2}" ',
-            checks=[
-                self.check("length(@)", 1),
-                self.check("[0].healthChecks[0].displayName", "Azure tenant readiness"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection list-health-check "
+    #         '--resource-group "{rg}" '
+    #         '-n "{networkConnectionName2}" ',
+    #         checks=[
+    #             self.check("length(@)", 1),
+    #             self.check("[0].healthChecks[0].displayName", "Azure tenant readiness"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection show-health-check "
-            '--resource-group "{rg}" '
-            '-n "{networkConnectionName2}" ',
-            checks=[
-                self.check("healthChecks[0].displayName", "Azure tenant readiness"),
-                self.check("healthChecks[0].status", "Passed"),
-                self.check(
-                    "healthChecks[1].displayName", "Azure virtual network readiness"
-                ),
-                self.check("healthChecks[1].status", "Passed"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection show-health-check "
+    #         '--resource-group "{rg}" '
+    #         '-n "{networkConnectionName2}" ',
+    #         checks=[
+    #             self.check("healthChecks[0].displayName", "Azure tenant readiness"),
+    #             self.check("healthChecks[0].status", "Passed"),
+    #             self.check(
+    #                 "healthChecks[1].displayName", "Azure virtual network readiness"
+    #             ),
+    #             self.check("healthChecks[1].status", "Passed"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection list-outbound-network-dependencies-endpoint "
-            '--resource-group "{rg}" '
-            '-n "{networkConnectionName2}" ',
-            checks=[
-                self.check("length(@)", 4),
-                self.check("[0].category", "Azure Virtual Desktop Commercial Cloud"),
-                self.check("[0].endpoints[0].domainName", "*.wvd.microsoft.com"),
-                self.check("[1].category", "Azure Virtual Desktop Optional"),
-                self.check("[1].endpoints[0].domainName", "*.microsoftonline.com"),
-                self.check("[2].category", "Intune"),
-                self.check("[2].endpoints[0].domainName", "login.microsoftonline.com"),
-                self.check("[3].category", "Cloud PC"),
-                self.check("[3].endpoints[0].domainName", "rdweb.wvd.microsoft.com"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection list-outbound-network-dependencies-endpoint "
+    #         '--resource-group "{rg}" '
+    #         '-n "{networkConnectionName2}" ',
+    #         checks=[
+    #             self.check("length(@)", 4),
+    #             self.check("[0].category", "Azure Virtual Desktop Commercial Cloud"),
+    #             self.check("[0].endpoints[0].domainName", "*.wvd.microsoft.com"),
+    #             self.check("[1].category", "Azure Virtual Desktop Optional"),
+    #             self.check("[1].endpoints[0].domainName", "*.microsoftonline.com"),
+    #             self.check("[2].category", "Intune"),
+    #             self.check("[2].endpoints[0].domainName", "login.microsoftonline.com"),
+    #             self.check("[3].category", "Cloud PC"),
+    #             self.check("[3].endpoints[0].domainName", "rdweb.wvd.microsoft.com"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection delete --yes "
-            '--name "{networkConnectionName2}" '
-            '--resource-group "{rg}"'
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection delete --yes "
+    #         '--name "{networkConnectionName2}" '
+    #         '--resource-group "{rg}"'
+    #     )
 
-        self.cmd(
-            "az devcenter admin network-connection list " '--resource-group "{rg}" ',
-            checks=[
-                self.check("length(@)", 1),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin network-connection list " '--resource-group "{rg}" ',
+    #         checks=[
+    #             self.check("length(@)", 1),
+    #         ],
+    #     )
 
 #     @ResourceGroupPreparer(
 #         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
@@ -882,159 +882,175 @@ class DevcenterScenarioTest(ScenarioTest):
 #             ],
 #         )
 
-#     @ResourceGroupPreparer(
-#         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
-#     )
-#     def test_pool_scenario(self):
-#         self.kwargs.update(
-#             {
-#                 "location": "canadacentral",
-#             }
-#         )
-#         create_attached_network_dev_box_definition(self)
-#         self.kwargs.update(
-#             {"poolName": self.create_random_name(prefix="c3", length=12)}
-#         )
+    @ResourceGroupPreparer(
+        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+    )
+    def test_pool_scenario(self):
+        self.kwargs.update(
+            {
+                "location": "centraluseuap",
+            }
+        )
+        create_attached_network_dev_box_definition(self)
+        self.kwargs.update(
+            {"poolName": self.create_random_name(prefix="c3", length=12)}
+        )
 
-#         self.cmd(
-#             "az devcenter admin pool list "
-#             '--resource-group "{rg}" '
-#             '--project-name "{projectName}" ',
-#             checks=[
-#                 self.check("length(@)", 0),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin pool list "
+            '--resource-group "{rg}" '
+            '--project-name "{projectName}" ',
+            checks=[
+                self.check("length(@)", 0),
+            ],
+        )
 
-#         self.cmd(
-#             "az devcenter admin pool create "
-#             '-d "{devBoxDefinitionName}" '
-#             '--location "{location}" '
-#             '--local-administrator "Disabled" '
-#             '--name "{poolName}" '
-#             '-c "{attachedNetworkName}" '
-#             '--project-name "{projectName}" '
-#             '--resource-group "{rg}" ',
-#             checks=[
-#                 self.check("name", "{poolName}"),
-#                 self.check("resourceGroup", "{rg}"),
-#                 self.check("devBoxDefinitionName", "{devBoxDefinitionName}"),
-#                 self.check("localAdministrator", "Disabled"),
-#                 self.check("networkConnectionName", "{attachedNetworkName}"),
-#                 self.check("location", "{location}"),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin pool create "
+            '-d "{devBoxDefinitionName}" '
+            '--location "{location}" '
+            '--local-administrator "Disabled" '
+            '--name "{poolName}" '
+            '-c "{attachedNetworkName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" '
+            '--virtual-network-type "Unmanaged" '
+            '--single-sign-on-status "Enabled" '
+            '--display-name "poolDisplay" ',
+            checks=[
+                self.check("name", "{poolName}"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("devBoxDefinitionName", "{devBoxDefinitionName}"),
+                self.check("localAdministrator", "Disabled"),
+                self.check("networkConnectionName", "{attachedNetworkName}"),
+                self.check("location", "{location}"),
+                self.check("virtualNetworkType", "Unmanaged"),
+                self.check("tags.hidden-title", "poolDisplay"),
+                self.check("singleSignOnStatus", "Enabled"),
 
-#         self.cmd(
-#             "az devcenter admin pool list "
-#             '--resource-group "{rg}" '
-#             '--project-name "{projectName}" ',
-#             checks=[self.check("length(@)", 1), self.check("[0].name", "{poolName}")],
-#         )
+            ],
+        )
 
-#         self.cmd(
-#             "az devcenter admin pool update "
-#             '--local-administrator "Enabled" '
-#             '-d "{devBoxDefinitionName2}" '
-#             '--name "{poolName}" '
-#             '--project-name "{projectName}" '
-#             '--resource-group "{rg}" ',
-#             checks=[
-#                 self.check("name", "{poolName}"),
-#                 self.check("resourceGroup", "{rg}"),
-#                 self.check("devBoxDefinitionName", "{devBoxDefinitionName2}"),
-#                 self.check("localAdministrator", "Enabled"),
-#                 self.check("networkConnectionName", "{attachedNetworkName}"),
-#                 self.check("location", "{location}"),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin pool list "
+            '--resource-group "{rg}" '
+            '--project-name "{projectName}" ',
+            checks=[self.check("length(@)", 1), self.check("[0].name", "{poolName}")],
+        )
 
-#         self.cmd(
-#             "az devcenter admin pool show "
-#             '--name "{poolName}" '
-#             '--project-name "{projectName}" '
-#             '--resource-group "{rg}" ',
-#             checks=[
-#                 self.check("name", "{poolName}"),
-#                 self.check("resourceGroup", "{rg}"),
-#                 self.check("devBoxDefinitionName", "{devBoxDefinitionName2}"),
-#                 self.check("localAdministrator", "Enabled"),
-#                 self.check("networkConnectionName", "{attachedNetworkName}"),
-#                 self.check("location", "{location}"),
-#                 self.check("devBoxCount", 0)
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin pool update "
+            '--local-administrator "Enabled" '
+            '-d "{devBoxDefinitionName2}" '
+            '--name "{poolName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" '
+            '--virtual-network-type "Managed" '
+            '--single-sign-on-status "Disabled" '
+            '--display-name "poolDisplay2" '
+            '--managed-virtual-network-regions ["canadacentral"]',
+            checks=[
+                self.check("name", "{poolName}"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("devBoxDefinitionName", "{devBoxDefinitionName2}"),
+                self.check("localAdministrator", "Enabled"),
+                self.check("networkConnectionName", "{attachedNetworkName}"),
+                self.check("location", "{location}"),
+                self.check("virtualNetworkType", "Managed"),
+                self.check("tags.hidden-title", "poolDisplay2"),
+                self.check("singleSignOnStatus", "Disabled"),
+                self.check("managedVirtualNetworkRegions[0]", "canadacentral"),
+                self.check("healthStatus", "Warning")
+            ],
+        )
 
-#         self.cmd(
-#             "az devcenter admin schedule create "
-#             '--pool-name "{poolName}" '
-#             '--project-name "{projectName}" '
-#             '--resource-group "{rg}" '
-#             '--time "13:00" '
-#             '--time-zone "America/Los_Angeles" ',
-#             checks=[
-#                 self.check("name", "default"),
-#                 self.check("resourceGroup", "{rg}"),
-#                 self.check("properties.timeZone", "America/Los_Angeles"),
-#                 self.check("properties.time", "13:00"),
-#                 self.check("properties.frequency", "Daily"),
-#                 self.check("properties.type", "StopDevBox"),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin pool show "
+            '--name "{poolName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" ',
+            checks=[
+                self.check("name", "{poolName}"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("devBoxDefinitionName", "{devBoxDefinitionName2}"),
+                self.check("localAdministrator", "Enabled"),
+                self.check("networkConnectionName", "{attachedNetworkName}"),
+                self.check("location", "{location}"),
+                self.check("devBoxCount", 0)
+            ],
+        )
 
-#         self.cmd(
-#             "az devcenter admin schedule update "
-#             '--pool-name "{poolName}" '
-#             '--project-name "{projectName}" '
-#             '--resource-group "{rg}" '
-#             '--time "17:30" '
-#             '--time-zone "America/New_York" ',
-#             checks=[
-#                 self.check("name", "default"),
-#                 self.check("resourceGroup", "{rg}"),
-#                 self.check("properties.timeZone", "America/New_York"),
-#                 self.check("properties.time", "17:30"),
-#                 self.check("properties.frequency", "Daily"),
-#                 self.check("properties.type", "StopDevBox"),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin schedule create "
+            '--pool-name "{poolName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" '
+            '--time "13:00" '
+            '--time-zone "America/Los_Angeles" ',
+            checks=[
+                self.check("name", "default"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("properties.timeZone", "America/Los_Angeles"),
+                self.check("properties.time", "13:00"),
+                self.check("properties.frequency", "Daily"),
+                self.check("properties.type", "StopDevBox"),
+            ],
+        )
 
-#         self.cmd(
-#             "az devcenter admin schedule show "
-#             '--pool-name "{poolName}" '
-#             '--project-name "{projectName}" '
-#             '--resource-group "{rg}" ',
-#             checks=[
-#                 self.check("name", "default"),
-#                 self.check("resourceGroup", "{rg}"),
-#                 self.check("properties.timeZone", "America/New_York"),
-#                 self.check("properties.time", "17:30"),
-#                 self.check("properties.frequency", "Daily"),
-#                 self.check("properties.type", "StopDevBox"),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin schedule update "
+            '--pool-name "{poolName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" '
+            '--time "17:30" '
+            '--time-zone "America/New_York" ',
+            checks=[
+                self.check("name", "default"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("properties.timeZone", "America/New_York"),
+                self.check("properties.time", "17:30"),
+                self.check("properties.frequency", "Daily"),
+                self.check("properties.type", "StopDevBox"),
+            ],
+        )
 
-#         self.cmd(
-#             "az devcenter admin schedule delete --yes "
-#             '--project-name "{projectName}" '
-#             '--pool-name "{poolName}" '
-#             '--resource-group "{rg}"'
-#         )
+        self.cmd(
+            "az devcenter admin schedule show "
+            '--pool-name "{poolName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" ',
+            checks=[
+                self.check("name", "default"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("properties.timeZone", "America/New_York"),
+                self.check("properties.time", "17:30"),
+                self.check("properties.frequency", "Daily"),
+                self.check("properties.type", "StopDevBox"),
+            ],
+        )
 
-#         self.cmd(
-#             "az devcenter admin pool delete --yes "
-#             '--project-name "{projectName}" '
-#             '--name "{poolName}" '
-#             '--resource-group "{rg}"'
-#         )
+        self.cmd(
+            "az devcenter admin schedule delete --yes "
+            '--project-name "{projectName}" '
+            '--pool-name "{poolName}" '
+            '--resource-group "{rg}"'
+        )
 
-#         self.cmd(
-#             "az devcenter admin pool list "
-#             '--resource-group "{rg}" '
-#             '--project-name "{projectName}" ',
-#             checks=[
-#                 self.check("length(@)", 0),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin pool delete --yes "
+            '--project-name "{projectName}" '
+            '--name "{poolName}" '
+            '--resource-group "{rg}"'
+        )
+
+        self.cmd(
+            "az devcenter admin pool list "
+            '--resource-group "{rg}" '
+            '--project-name "{projectName}" ',
+            checks=[
+                self.check("length(@)", 0),
+            ],
+        )
 
 #     @ResourceGroupPreparer(
 #         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"

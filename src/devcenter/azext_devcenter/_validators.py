@@ -33,6 +33,20 @@ def validate_repo_git(ado_git, git_hub):
 or GitHub source control definition (--git-hub) should be set."""
         raise RequiredArgumentMissingError(error_message)
 
+def validate_pool_create(virtual_network_type, network_connection_name, managed_virtual_network_regions):
+    if not has_value(managed_virtual_network_regions) and virtual_network_type == "Managed":
+        error_message = """When virtual-network-type is set to "Managed", \
+managed virtual network regions (--managed-virtual-network-regions) should be set."""
+        raise RequiredArgumentMissingError(error_message)
+    if not has_value(network_connection_name) and (virtual_network_type == "Unmanaged" or not has_value(virtual_network_type)):
+        error_message = """When virtual-network-type is not used or set to "Unmanaged", \
+a network connection name (--network-connection) should be set."""
+        raise RequiredArgumentMissingError(error_message)
+    if has_value(managed_virtual_network_regions) and (virtual_network_type == "Unmanaged" or not has_value(virtual_network_type)):
+        print(managed_virtual_network_regions[0])
+        error_message = """When virtual-network-type is not used or set to "Unmanaged", \
+managed virtual network regions (--managed-virtual-network-regions) should not be set."""
+        raise RequiredArgumentMissingError(error_message)
 
 # Data plane
 def validate_dev_box_list(namespace):
