@@ -12,22 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric ipextendedcommunity create",
+    "networkfabric ipcommunity update",
 )
-class Create(AAZCommand):
-    """Create a Ip Extended Community resource
+class Update(AAZCommand):
+    """Update to update certain properties of the IP Community resource.
 
-    :example: Create a Ip Extended Community
-        az networkfabric ipextendedcommunity create --resource-group "example-rg" --location "westus3" --resource-name "example-ipextendedcommunity" --ip-ext-comm-rules "[{action:Permit,sequenceNumber:1234,routeTargets:['1024:219','1001:200']}]"
-
-    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric ipextendedcommunity create --ip-ext-comm-rules "??"
+    :example: Update IP Community
+        az networkfabric ipcommunity update --resource-group "example-rg" --resource-name "example-ipcommunity" --ip-comm-rules "[{action:Permit,communityMembers:['1:1'],sequenceNumber:1234,wellKnownCommunities:[Internet,GShut]}]"
     """
 
     _aaz_info = {
         "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipcommunities/{}", "2023-06-15"],
         ]
     }
 
@@ -50,8 +47,9 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the IP Extended Community.",
+            help="Name of the IP Community.",
             required=True,
+            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of the resource group",
@@ -61,18 +59,10 @@ class Create(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
-            help="Location of Azure region",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
-            help="Resource tags.",
+            help="Resource tags",
         )
 
         tags = cls._args_schema.tags
@@ -81,31 +71,25 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.annotation = AAZStrArg(
-            options=["--annotation"],
+        _args_schema.ip_comm_rules = AAZListArg(
+            options=["--ip-comm-rules"],
             arg_group="Properties",
-            help="Description for underlying resource.",
-        )
-        _args_schema.ip_ext_comm_rules = AAZListArg(
-            options=["--ip-ext-comm-rules"],
-            arg_group="Properties",
-            help="List of IP Extended Community Rules.",
-            required=True,
+            help="List of IP Community Rules.",
         )
 
-        ip_ext_comm_rules = cls._args_schema.ip_ext_comm_rules
-        ip_ext_comm_rules.Element = AAZObjectArg()
+        ip_comm_rules = cls._args_schema.ip_comm_rules
+        ip_comm_rules.Element = AAZObjectArg()
 
-        _element = cls._args_schema.ip_ext_comm_rules.Element
+        _element = cls._args_schema.ip_comm_rules.Element
         _element.action = AAZStrArg(
             options=["action"],
             help="Action to be taken on the configuration. Example: Permit.",
             required=True,
             enum={"Deny": "Deny", "Permit": "Permit"},
         )
-        _element.route_targets = AAZListArg(
-            options=["route-targets"],
-            help="Route Target List.The expected formats are ASN(plain):NN >> example 4294967294:50, ASN.ASN:NN >> example 65533.65333:40, IP-address:NN >> example 10.10.10.10:65535. The possible values of ASN,NN are in range of 0-65535, ASN(plain) is in range of 0-4294967295.",
+        _element.community_members = AAZListArg(
+            options=["community-members"],
+            help="List the community members of IP Community.",
             required=True,
         )
         _element.sequence_number = AAZIntArg(
@@ -117,9 +101,24 @@ class Create(AAZCommand):
                 minimum=1,
             ),
         )
+        _element.well_known_communities = AAZListArg(
+            options=["well-known-communities"],
+            help="Supported well known Community List.",
+            fmt=AAZListArgFormat(
+                unique=True,
+            ),
+        )
 
-        route_targets = cls._args_schema.ip_ext_comm_rules.Element.route_targets
-        route_targets.Element = AAZStrArg(
+        community_members = cls._args_schema.ip_comm_rules.Element.community_members
+        community_members.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        well_known_communities = cls._args_schema.ip_comm_rules.Element.well_known_communities
+        well_known_communities.Element = AAZStrArg(
+            enum={"GShut": "GShut", "Internet": "Internet", "LocalAS": "LocalAS", "NoAdvertise": "NoAdvertise", "NoExport": "NoExport"},
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
@@ -128,7 +127,7 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.IpExtendedCommunitiesCreate(ctx=self.ctx)()
+        yield self.IpCommunitiesUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -143,7 +142,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class IpExtendedCommunitiesCreate(AAZHttpOperation):
+    class IpCommunitiesUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -153,18 +152,18 @@ class Create(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -173,13 +172,13 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/ipExtendedCommunities/{ipExtendedCommunityName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/ipCommunities/{ipCommunityName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -189,7 +188,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "ipExtendedCommunityName", self.ctx.args.resource_name,
+                    "ipCommunityName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -232,28 +231,31 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("annotation", AAZStrType, ".annotation")
-                properties.set_prop("ipExtendedCommunityRules", AAZListType, ".ip_ext_comm_rules", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("ipCommunityRules", AAZListType, ".ip_comm_rules")
 
-            ip_extended_community_rules = _builder.get(".properties.ipExtendedCommunityRules")
-            if ip_extended_community_rules is not None:
-                ip_extended_community_rules.set_elements(AAZObjectType, ".")
+            ip_community_rules = _builder.get(".properties.ipCommunityRules")
+            if ip_community_rules is not None:
+                ip_community_rules.set_elements(AAZObjectType, ".")
 
-            _elements = _builder.get(".properties.ipExtendedCommunityRules[]")
+            _elements = _builder.get(".properties.ipCommunityRules[]")
             if _elements is not None:
                 _elements.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("routeTargets", AAZListType, ".route_targets", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("communityMembers", AAZListType, ".community_members", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("sequenceNumber", AAZIntType, ".sequence_number", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("wellKnownCommunities", AAZListType, ".well_known_communities")
 
-            route_targets = _builder.get(".properties.ipExtendedCommunityRules[].routeTargets")
-            if route_targets is not None:
-                route_targets.set_elements(AAZStrType, ".")
+            community_members = _builder.get(".properties.ipCommunityRules[].communityMembers")
+            if community_members is not None:
+                community_members.set_elements(AAZStrType, ".")
+
+            well_known_communities = _builder.get(".properties.ipCommunityRules[].wellKnownCommunities")
+            if well_known_communities is not None:
+                well_known_communities.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -261,46 +263,46 @@ class Create(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
+            cls._schema_on_200 = AAZObjectType()
 
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.location = AAZStrType(
+            _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
-            _schema_on_200_201.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"required": True, "client_flatten": True},
             )
-            _schema_on_200_201.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200_201.properties
+            properties = cls._schema_on_200.properties
             properties.administrative_state = AAZStrType(
                 serialized_name="administrativeState",
                 flags={"read_only": True},
@@ -310,8 +312,8 @@ class Create(AAZCommand):
                 serialized_name="configurationState",
                 flags={"read_only": True},
             )
-            properties.ip_extended_community_rules = AAZListType(
-                serialized_name="ipExtendedCommunityRules",
+            properties.ip_community_rules = AAZListType(
+                serialized_name="ipCommunityRules",
                 flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
@@ -319,26 +321,32 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            ip_extended_community_rules = cls._schema_on_200_201.properties.ip_extended_community_rules
-            ip_extended_community_rules.Element = AAZObjectType()
+            ip_community_rules = cls._schema_on_200.properties.ip_community_rules
+            ip_community_rules.Element = AAZObjectType()
 
-            _element = cls._schema_on_200_201.properties.ip_extended_community_rules.Element
+            _element = cls._schema_on_200.properties.ip_community_rules.Element
             _element.action = AAZStrType(
                 flags={"required": True},
             )
-            _element.route_targets = AAZListType(
-                serialized_name="routeTargets",
+            _element.community_members = AAZListType(
+                serialized_name="communityMembers",
                 flags={"required": True},
             )
             _element.sequence_number = AAZIntType(
                 serialized_name="sequenceNumber",
                 flags={"required": True},
             )
+            _element.well_known_communities = AAZListType(
+                serialized_name="wellKnownCommunities",
+            )
 
-            route_targets = cls._schema_on_200_201.properties.ip_extended_community_rules.Element.route_targets
-            route_targets.Element = AAZStrType()
+            community_members = cls._schema_on_200.properties.ip_community_rules.Element.community_members
+            community_members.Element = AAZStrType()
 
-            system_data = cls._schema_on_200_201.system_data
+            well_known_communities = cls._schema_on_200.properties.ip_community_rules.Element.well_known_communities
+            well_known_communities.Element = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -358,14 +366,14 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200_201.tags
+            tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _UpdateHelper:
+    """Helper class for Update"""
 
 
-__all__ = ["Create"]
+__all__ = ["Update"]

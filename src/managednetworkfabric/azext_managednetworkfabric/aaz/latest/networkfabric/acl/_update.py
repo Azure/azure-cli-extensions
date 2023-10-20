@@ -12,22 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric taprule update",
+    "networkfabric acl update",
 )
 class Update(AAZCommand):
-    """Update the Network Tap Rule resource.
+    """Update the Access Control List resource
 
-    :example: Update the Network Tap Rule
-        az networkfabric taprule update --resource-group "example-rg" --resource-name "example-networktaprule" --configuration-type "Inline" --match-conf "[{matchConfigurationName:config1,sequenceNumber:10,ipAddressType:IPv4,matchConditions:[{encapsulationType:None,portCondition:{portType:SourcePort,layer4Protocol:TCP,ports:[100]},protocolTypes:[TCP],vlanMatchCondition:{vlans:['10'],innerVlans:['11-20']},ipCondition:{type:SourceIP,prefixType:Prefix,ipPrefixValues:['10.10.10.10/20']}}],actions:[{type:Drop,truncate:100,isTimestampEnabled:True,destinationId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourcegroups/example-rg/providers/Microsoft.ManagedNetworkFabric/neighborGroups/example-neighborGroup',matchConfigurationName:match1}]}]" --dynamic-match-conf "[{ipGroups:[{name:'example-ipGroup1',ipAddressType:IPv4,ipPrefixes:['10.10.10.10/30']}],vlanGroups:[{name:'exmaple-vlanGroup',vlans:['10']}],portGroups:[{name:'example-portGroup1',ports:['100-200']}]}]"
-
-    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric taprule update --match-conf "??"
+    :example: Update ACL with Inline configuration type
+        az networkfabric acl update -g "example-rg" --resource-name "example-acl" --configuration-type "Inline" --default-action "Permit"  --dynamic-match-conf "[{ipGroups:[{name:'example-ipGroup',ipAddressType:IPv4,ipPrefixes:['10.20.3.1/20']}],vlanGroups:[{name:'example-vlanGroup',vlans:['20-30']}],portGroups:[{name:'example-portGroup',ports:['100-200']}]}]" --match-conf "[{matchConfigurationName:'example-match',sequenceNumber:123,ipAddressType:IPv4,matchConditions:[{etherTypes:['0x1'],fragments:['0xff00-0xffff'],ipLengths:['4094-9214'],ttlValues:[23],dscpMarkings:[32],portCondition:{flags:[established],portType:SourcePort,layer4Protocol:TCP,ports:['1-20'],portGroupNames:['example-portGroup']},protocolTypes:[TCP],vlanMatchCondition:{vlans:['20-30'],innerVlans:[30],vlanGroupNames:['example-vlanGroup']},ipCondition:{type:SourceIP,prefixType:Prefix,ipPrefixValues:['10.20.20.20/12'],ipGroupNames:['example-ipGroup']}}],actions:[{type:Count,counterName:'example-counter'}]}]"
     """
 
     _aaz_info = {
         "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules/{}", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists/{}", "2023-06-15"],
         ]
     }
 
@@ -50,7 +47,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Network Tap Rule.",
+            help="Name of the Access Control List",
             required=True,
             id_part="name",
         )
@@ -74,6 +71,14 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.acls_url = AAZStrArg(
+            options=["--acls-url"],
+            arg_group="Properties",
+            help="Access Control List file URL.",
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
@@ -82,26 +87,24 @@ class Update(AAZCommand):
         _args_schema.configuration_type = AAZStrArg(
             options=["--configuration-type"],
             arg_group="Properties",
-            help="Input method to configure Network Tap Rule. Example: File.",
+            help="Input method to configure Access Control List. Example: File.",
             enum={"File": "File", "Inline": "Inline"},
+        )
+        _args_schema.default_action = AAZStrArg(
+            options=["--default-action"],
+            arg_group="Properties",
+            help="Default action that needs to be applied when no condition is matched. Example: Permit.",
+            enum={"Deny": "Deny", "Permit": "Permit"},
         )
         _args_schema.dynamic_match_conf = AAZListArg(
             options=["--dynamic-match-conf"],
             arg_group="Properties",
             help="List of dynamic match configurations.",
         )
-        _args_schema.match_configurations = AAZListArg(
+        _args_schema.match_conf = AAZListArg(
             options=["--match-conf"],
             arg_group="Properties",
             help="List of match configurations.",
-        )
-        _args_schema.tap_rules_url = AAZStrArg(
-            options=["--tap-rules-url"],
-            arg_group="Properties",
-            help="Network Tap Rules file URL.",
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
         )
 
         dynamic_match_conf = cls._args_schema.dynamic_match_conf
@@ -114,7 +117,7 @@ class Update(AAZCommand):
         )
         _element.port_groups = AAZListArg(
             options=["port-groups"],
-            help="List of the port group.",
+            help="List of the port groups.",
         )
         _element.vlan_groups = AAZListArg(
             options=["vlan-groups"],
@@ -165,7 +168,7 @@ class Update(AAZCommand):
         )
         _element.ports = AAZListArg(
             options=["ports"],
-            help="List of the ports that needs to be matched.",
+            help="List of the ports that need to be matched.",
         )
 
         ports = cls._args_schema.dynamic_match_conf.Element.port_groups.Element.ports
@@ -198,10 +201,10 @@ class Update(AAZCommand):
             ),
         )
 
-        match_configurations = cls._args_schema.match_configurations
-        match_configurations.Element = AAZObjectArg()
+        match_conf = cls._args_schema.match_conf
+        match_conf.Element = AAZObjectArg()
 
-        _element = cls._args_schema.match_configurations.Element
+        _element = cls._args_schema.match_conf.Element
         _element.actions = AAZListArg(
             options=["actions"],
             help="List of actions that need to be performed for the matched conditions.",
@@ -234,83 +237,100 @@ class Update(AAZCommand):
             ),
         )
 
-        actions = cls._args_schema.match_configurations.Element.actions
+        actions = cls._args_schema.match_conf.Element.actions
         actions.Element = AAZObjectArg()
 
-        _element = cls._args_schema.match_configurations.Element.actions.Element
-        _element.destination_id = AAZResourceIdArg(
-            options=["destination-id"],
-            help="Destination Id. The ARM resource Id may be either Network To Network Interconnect or NeighborGroup.",
-        )
-        _element.is_timestamp_enabled = AAZStrArg(
-            options=["is-timestamp-enabled"],
-            help="The parameter to enable or disable the timestamp. Example: False.",
-            enum={"False": "False", "True": "True"},
-        )
-        _element.match_configuration_name = AAZStrArg(
-            options=["match-configuration-name"],
-            help="The name of the match configuration. This is used when Goto type is provided. If Goto type is selected and no match configuration name is provided. It goes to next configuration.",
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
-        )
-        _element.truncate = AAZStrArg(
-            options=["truncate"],
-            help="Truncate. 0 indicates do not truncate.",
+        _element = cls._args_schema.match_conf.Element.actions.Element
+        _element.counter_name = AAZStrArg(
+            options=["counter-name"],
+            help="Name of the counter block to get match count information.",
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
         _element.type = AAZStrArg(
             options=["type"],
-            help="Type of actions that can be performed. Example: Log.",
-            enum={"Count": "Count", "Drop": "Drop", "Goto": "Goto", "Log": "Log", "Mirror": "Mirror", "Redirect": "Redirect", "Replicate": "Replicate"},
+            help="Type of actions that can be performed.",
+            enum={"Count": "Count", "Drop": "Drop", "Log": "Log"},
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        match_conditions = cls._args_schema.match_configurations.Element.match_conditions
+        match_conditions = cls._args_schema.match_conf.Element.match_conditions
         match_conditions.Element = AAZObjectArg()
 
-        _element = cls._args_schema.match_configurations.Element.match_conditions.Element
-        _element.encapsulation_type = AAZStrArg(
-            options=["encapsulation-type"],
-            help="Encapsulation Type that needs to be matched. Example: None.",
-            enum={"GTPv1": "GTPv1", "None": "None"},
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
+        _element = cls._args_schema.match_conf.Element.match_conditions.Element
+        _element.dscp_markings = AAZListArg(
+            options=["dscp-markings"],
+            help="List of DSCP Markings that need to be matched.",
+        )
+        _element.ether_types = AAZListArg(
+            options=["ether-types"],
+            help="List of ether type values that need to be matched.",
+        )
+        _element.fragments = AAZListArg(
+            options=["fragments"],
+            help="List of IP fragment packets that need to be matched.",
         )
         _element.ip_condition = AAZObjectArg(
             options=["ip-condition"],
-            help="IP conditions that need to be matched.",
+            help="IP condition that needs to be matched.",
+        )
+        _element.ip_lengths = AAZListArg(
+            options=["ip-lengths"],
+            help="List of IP Lengths that need to be matched.",
         )
         _element.port_condition = AAZObjectArg(
             options=["port-condition"],
-            help="Port conditions that need to be matched.",
+            help="Defines the port condition that needs to be matched.",
         )
         _element.protocol_types = AAZListArg(
             options=["protocol-types"],
             help="List of the protocols that need to be matched.",
         )
+        _element.ttl_values = AAZListArg(
+            options=["ttl-values"],
+            help="List of TTL [Time To Live] values that need to be matched.",
+        )
         _element.vlan_match_condition = AAZObjectArg(
             options=["vlan-match-condition"],
-            help="Vlan match conditions that need to be matched.",
+            help="Vlan match condition that needs to be matched.",
         )
 
-        ip_condition = cls._args_schema.match_configurations.Element.match_conditions.Element.ip_condition
+        dscp_markings = cls._args_schema.match_conf.Element.match_conditions.Element.dscp_markings
+        dscp_markings.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        ether_types = cls._args_schema.match_conf.Element.match_conditions.Element.ether_types
+        ether_types.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        fragments = cls._args_schema.match_conf.Element.match_conditions.Element.fragments
+        fragments.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        ip_condition = cls._args_schema.match_conf.Element.match_conditions.Element.ip_condition
         ip_condition.ip_group_names = AAZListArg(
             options=["ip-group-names"],
             help="The List of IP Group Names that need to be matched.",
         )
         ip_condition.ip_prefix_values = AAZListArg(
             options=["ip-prefix-values"],
-            help="The list of IP Prefixes.",
+            help="The list of IP Prefixes that need to be matched.",
         )
         ip_condition.prefix_type = AAZStrArg(
             options=["prefix-type"],
-            help="IP Prefix Type. Example: SourcePort.",
+            help="IP Prefix Type that needs to be matched. Example: Prefix.",
             enum={"LongestPrefix": "LongestPrefix", "Prefix": "Prefix"},
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -318,31 +338,42 @@ class Update(AAZCommand):
         )
         ip_condition.type = AAZStrArg(
             options=["type"],
-            help="IP Address type. Example: DestinationIP.",
+            help="IP Address type that needs to be matched. Example: SourceIP.",
             enum={"DestinationIP": "DestinationIP", "SourceIP": "SourceIP"},
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        ip_group_names = cls._args_schema.match_configurations.Element.match_conditions.Element.ip_condition.ip_group_names
+        ip_group_names = cls._args_schema.match_conf.Element.match_conditions.Element.ip_condition.ip_group_names
         ip_group_names.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        ip_prefix_values = cls._args_schema.match_configurations.Element.match_conditions.Element.ip_condition.ip_prefix_values
+        ip_prefix_values = cls._args_schema.match_conf.Element.match_conditions.Element.ip_condition.ip_prefix_values
         ip_prefix_values.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        port_condition = cls._args_schema.match_configurations.Element.match_conditions.Element.port_condition
+        ip_lengths = cls._args_schema.match_conf.Element.match_conditions.Element.ip_lengths
+        ip_lengths.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        port_condition = cls._args_schema.match_conf.Element.match_conditions.Element.port_condition
+        port_condition.flags = AAZListArg(
+            options=["flags"],
+            help="List of protocol flags that need to be matched. Example: established | initial | <List-of-TCP-flags>. List of eligible TCP Flags are \"ack, fin, not-ack, not-fin, not-psh, not-rst, not-syn, not-urg, psh, rst, syn, urg\"",
+        )
         port_condition.layer4_protocol = AAZStrArg(
             options=["layer4-protocol"],
-            help="Layer4 protocol type that needs to be matched. Example: TCP.",
+            help="Layer4 protocol type that needs to be matched. Example: UDP.",
             required=True,
             enum={"TCP": "TCP", "UDP": "UDP"},
             fmt=AAZStrArgFormat(
@@ -355,7 +386,7 @@ class Update(AAZCommand):
         )
         port_condition.port_type = AAZStrArg(
             options=["port-type"],
-            help="Port type that needs to be matched. Example: SourcePort.",
+            help="Port type that needs to be matched. Example: SourceIP.",
             enum={"DestinationPort": "DestinationPort", "SourcePort": "SourcePort"},
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -366,28 +397,38 @@ class Update(AAZCommand):
             help="List of the Ports that need to be matched.",
         )
 
-        port_group_names = cls._args_schema.match_configurations.Element.match_conditions.Element.port_condition.port_group_names
+        flags = cls._args_schema.match_conf.Element.match_conditions.Element.port_condition.flags
+        flags.Element = AAZStrArg()
+
+        port_group_names = cls._args_schema.match_conf.Element.match_conditions.Element.port_condition.port_group_names
         port_group_names.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        ports = cls._args_schema.match_configurations.Element.match_conditions.Element.port_condition.ports
+        ports = cls._args_schema.match_conf.Element.match_conditions.Element.port_condition.ports
         ports.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        protocol_types = cls._args_schema.match_configurations.Element.match_conditions.Element.protocol_types
+        protocol_types = cls._args_schema.match_conf.Element.match_conditions.Element.protocol_types
         protocol_types.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        vlan_match_condition = cls._args_schema.match_configurations.Element.match_conditions.Element.vlan_match_condition
+        ttl_values = cls._args_schema.match_conf.Element.match_conditions.Element.ttl_values
+        ttl_values.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        vlan_match_condition = cls._args_schema.match_conf.Element.match_conditions.Element.vlan_match_condition
         vlan_match_condition.inner_vlans = AAZListArg(
             options=["inner-vlans"],
             help="List of inner vlans that need to be matched.",
@@ -401,21 +442,21 @@ class Update(AAZCommand):
             help="List of vlans that need to be matched.",
         )
 
-        inner_vlans = cls._args_schema.match_configurations.Element.match_conditions.Element.vlan_match_condition.inner_vlans
+        inner_vlans = cls._args_schema.match_conf.Element.match_conditions.Element.vlan_match_condition.inner_vlans
         inner_vlans.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        vlan_group_names = cls._args_schema.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlan_group_names
+        vlan_group_names = cls._args_schema.match_conf.Element.match_conditions.Element.vlan_match_condition.vlan_group_names
         vlan_group_names.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        vlans = cls._args_schema.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlans
+        vlans = cls._args_schema.match_conf.Element.match_conditions.Element.vlan_match_condition.vlans
         vlans.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -425,7 +466,7 @@ class Update(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkTapRulesUpdate(ctx=self.ctx)()
+        yield self.AccessControlListsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -440,7 +481,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NetworkTapRulesUpdate(AAZHttpOperation):
+    class AccessControlListsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -470,7 +511,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkTapRules/{networkTapRuleName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/accessControlLists/{accessControlListName}",
                 **self.url_parameters
             )
 
@@ -486,7 +527,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkTapRuleName", self.ctx.args.resource_name,
+                    "accessControlListName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -534,11 +575,12 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("aclsUrl", AAZStrType, ".acls_url")
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("configurationType", AAZStrType, ".configuration_type")
+                properties.set_prop("defaultAction", AAZStrType, ".default_action")
                 properties.set_prop("dynamicMatchConfigurations", AAZListType, ".dynamic_match_conf")
-                properties.set_prop("matchConfigurations", AAZListType, ".match_configurations")
-                properties.set_prop("tapRulesUrl", AAZStrType, ".tap_rules_url")
+                properties.set_prop("matchConfigurations", AAZListType, ".match_conf")
 
             dynamic_match_configurations = _builder.get(".properties.dynamicMatchConfigurations")
             if dynamic_match_configurations is not None:
@@ -608,10 +650,7 @@ class Update(AAZCommand):
 
             _elements = _builder.get(".properties.matchConfigurations[].actions[]")
             if _elements is not None:
-                _elements.set_prop("destinationId", AAZStrType, ".destination_id")
-                _elements.set_prop("isTimestampEnabled", AAZStrType, ".is_timestamp_enabled")
-                _elements.set_prop("matchConfigurationName", AAZStrType, ".match_configuration_name")
-                _elements.set_prop("truncate", AAZStrType, ".truncate")
+                _elements.set_prop("counterName", AAZStrType, ".counter_name")
                 _elements.set_prop("type", AAZStrType, ".type")
 
             match_conditions = _builder.get(".properties.matchConfigurations[].matchConditions")
@@ -620,11 +659,27 @@ class Update(AAZCommand):
 
             _elements = _builder.get(".properties.matchConfigurations[].matchConditions[]")
             if _elements is not None:
-                _elements.set_prop("encapsulationType", AAZStrType, ".encapsulation_type")
+                _elements.set_prop("dscpMarkings", AAZListType, ".dscp_markings")
+                _elements.set_prop("etherTypes", AAZListType, ".ether_types")
+                _elements.set_prop("fragments", AAZListType, ".fragments")
                 _elements.set_prop("ipCondition", AAZObjectType, ".ip_condition")
+                _elements.set_prop("ipLengths", AAZListType, ".ip_lengths")
                 _elements.set_prop("portCondition", AAZObjectType, ".port_condition")
                 _elements.set_prop("protocolTypes", AAZListType, ".protocol_types")
+                _elements.set_prop("ttlValues", AAZListType, ".ttl_values")
                 _elements.set_prop("vlanMatchCondition", AAZObjectType, ".vlan_match_condition")
+
+            dscp_markings = _builder.get(".properties.matchConfigurations[].matchConditions[].dscpMarkings")
+            if dscp_markings is not None:
+                dscp_markings.set_elements(AAZStrType, ".")
+
+            ether_types = _builder.get(".properties.matchConfigurations[].matchConditions[].etherTypes")
+            if ether_types is not None:
+                ether_types.set_elements(AAZStrType, ".")
+
+            fragments = _builder.get(".properties.matchConfigurations[].matchConditions[].fragments")
+            if fragments is not None:
+                fragments.set_elements(AAZStrType, ".")
 
             ip_condition = _builder.get(".properties.matchConfigurations[].matchConditions[].ipCondition")
             if ip_condition is not None:
@@ -641,12 +696,21 @@ class Update(AAZCommand):
             if ip_prefix_values is not None:
                 ip_prefix_values.set_elements(AAZStrType, ".")
 
+            ip_lengths = _builder.get(".properties.matchConfigurations[].matchConditions[].ipLengths")
+            if ip_lengths is not None:
+                ip_lengths.set_elements(AAZStrType, ".")
+
             port_condition = _builder.get(".properties.matchConfigurations[].matchConditions[].portCondition")
             if port_condition is not None:
+                port_condition.set_prop("flags", AAZListType, ".flags")
                 port_condition.set_prop("layer4Protocol", AAZStrType, ".layer4_protocol", typ_kwargs={"flags": {"required": True}})
                 port_condition.set_prop("portGroupNames", AAZListType, ".port_group_names")
                 port_condition.set_prop("portType", AAZStrType, ".port_type")
                 port_condition.set_prop("ports", AAZListType, ".ports")
+
+            flags = _builder.get(".properties.matchConfigurations[].matchConditions[].portCondition.flags")
+            if flags is not None:
+                flags.set_elements(AAZStrType, ".")
 
             port_group_names = _builder.get(".properties.matchConfigurations[].matchConditions[].portCondition.portGroupNames")
             if port_group_names is not None:
@@ -659,6 +723,10 @@ class Update(AAZCommand):
             protocol_types = _builder.get(".properties.matchConfigurations[].matchConditions[].protocolTypes")
             if protocol_types is not None:
                 protocol_types.set_elements(AAZStrType, ".")
+
+            ttl_values = _builder.get(".properties.matchConfigurations[].matchConditions[].ttlValues")
+            if ttl_values is not None:
+                ttl_values.set_elements(AAZStrType, ".")
 
             vlan_match_condition = _builder.get(".properties.matchConfigurations[].matchConditions[].vlanMatchCondition")
             if vlan_match_condition is not None:
@@ -724,6 +792,9 @@ class Update(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.acls_url = AAZStrType(
+                serialized_name="aclsUrl",
+            )
             properties.administrative_state = AAZStrType(
                 serialized_name="administrativeState",
                 flags={"read_only": True},
@@ -737,6 +808,9 @@ class Update(AAZCommand):
                 serialized_name="configurationType",
                 flags={"required": True},
             )
+            properties.default_action = AAZStrType(
+                serialized_name="defaultAction",
+            )
             properties.dynamic_match_configurations = AAZListType(
                 serialized_name="dynamicMatchConfigurations",
             )
@@ -747,19 +821,9 @@ class Update(AAZCommand):
             properties.match_configurations = AAZListType(
                 serialized_name="matchConfigurations",
             )
-            properties.network_tap_id = AAZStrType(
-                serialized_name="networkTapId",
-                flags={"read_only": True},
-            )
-            properties.polling_interval_in_seconds = AAZIntType(
-                serialized_name="pollingIntervalInSeconds",
-            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
-            )
-            properties.tap_rules_url = AAZStrType(
-                serialized_name="tapRulesUrl",
             )
 
             dynamic_match_configurations = cls._schema_on_200.properties.dynamic_match_configurations
@@ -833,27 +897,27 @@ class Update(AAZCommand):
             actions.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.match_configurations.Element.actions.Element
-            _element.destination_id = AAZStrType(
-                serialized_name="destinationId",
+            _element.counter_name = AAZStrType(
+                serialized_name="counterName",
             )
-            _element.is_timestamp_enabled = AAZStrType(
-                serialized_name="isTimestampEnabled",
-            )
-            _element.match_configuration_name = AAZStrType(
-                serialized_name="matchConfigurationName",
-            )
-            _element.truncate = AAZStrType()
             _element.type = AAZStrType()
 
             match_conditions = cls._schema_on_200.properties.match_configurations.Element.match_conditions
             match_conditions.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element
-            _element.encapsulation_type = AAZStrType(
-                serialized_name="encapsulationType",
+            _element.dscp_markings = AAZListType(
+                serialized_name="dscpMarkings",
             )
+            _element.ether_types = AAZListType(
+                serialized_name="etherTypes",
+            )
+            _element.fragments = AAZListType()
             _element.ip_condition = AAZObjectType(
                 serialized_name="ipCondition",
+            )
+            _element.ip_lengths = AAZListType(
+                serialized_name="ipLengths",
             )
             _element.port_condition = AAZObjectType(
                 serialized_name="portCondition",
@@ -861,9 +925,21 @@ class Update(AAZCommand):
             _element.protocol_types = AAZListType(
                 serialized_name="protocolTypes",
             )
+            _element.ttl_values = AAZListType(
+                serialized_name="ttlValues",
+            )
             _element.vlan_match_condition = AAZObjectType(
                 serialized_name="vlanMatchCondition",
             )
+
+            dscp_markings = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.dscp_markings
+            dscp_markings.Element = AAZStrType()
+
+            ether_types = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.ether_types
+            ether_types.Element = AAZStrType()
+
+            fragments = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.fragments
+            fragments.Element = AAZStrType()
 
             ip_condition = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.ip_condition
             ip_condition.ip_group_names = AAZListType(
@@ -883,7 +959,11 @@ class Update(AAZCommand):
             ip_prefix_values = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.ip_condition.ip_prefix_values
             ip_prefix_values.Element = AAZStrType()
 
+            ip_lengths = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.ip_lengths
+            ip_lengths.Element = AAZStrType()
+
             port_condition = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.port_condition
+            port_condition.flags = AAZListType()
             port_condition.layer4_protocol = AAZStrType(
                 serialized_name="layer4Protocol",
                 flags={"required": True},
@@ -896,6 +976,9 @@ class Update(AAZCommand):
             )
             port_condition.ports = AAZListType()
 
+            flags = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.port_condition.flags
+            flags.Element = AAZStrType()
+
             port_group_names = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.port_condition.port_group_names
             port_group_names.Element = AAZStrType()
 
@@ -904,6 +987,9 @@ class Update(AAZCommand):
 
             protocol_types = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.protocol_types
             protocol_types.Element = AAZStrType()
+
+            ttl_values = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.ttl_values
+            ttl_values.Element = AAZStrType()
 
             vlan_match_condition = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition
             vlan_match_condition.inner_vlans = AAZListType(

@@ -27,8 +27,7 @@ def call_scenario1(test):
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
-    step_provision(test)
-    step_deprovision(test)
+    step_commit(test)
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
@@ -59,26 +58,19 @@ def step_list_subscription(test, checks=None):
         checks = []
     test.cmd('az networkfabric fabric list')
 
-def step_provision(test, checks=None):
-    '''nf provision operation'''
+def step_commit(test, checks=None):
+    '''nf commit configuration operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric fabric provision --resource-name {name} --resource-group {rg}')
-
-def step_deprovision(test, checks=None):
-    '''nf deprovision operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric fabric deprovision --resource-name {name} --resource-group {rg}')
+        'az networkfabric fabric commit-configuration --subscription {commitNFSubscription} --resource-name {commitNFName} --resource-group {commitNFRGName}')
 
 def step_delete(test, checks=None):
     '''nf delete operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric fabric delete --resource-name {name} --resource-group {rg}')
+        'az networkfabric fabric delete --resource-name {deleteNFName} --resource-group {deleteNFRGName}')
 
 class GA_NFScenarioTest1(ScenarioTest):
     ''' NFScenario test'''
@@ -97,7 +89,12 @@ class GA_NFScenarioTest1(ScenarioTest):
             'rack_count': CONFIG.get('NETWORK_FABRIC', 'rack_count'),
             'server_count_per_rack': CONFIG.get('NETWORK_FABRIC', 'server_count_per_rack'),
             'terminalServerConf': CONFIG.get('NETWORK_FABRIC', 'terminalServerConf'),
-            'managedNetworkConf': CONFIG.get('NETWORK_FABRIC', 'managedNetworkConf')
+            'deleteNFRGName': CONFIG.get('NETWORK_FABRIC', 'delete_nf_resource_group'),
+            'deleteNFName': CONFIG.get('NETWORK_FABRIC', 'delete_nf_name'),
+            'managedNetworkConf': CONFIG.get('NETWORK_FABRIC', 'managedNetworkConf'),
+            'commitNFSubscription': CONFIG.get('NETWORK_FABRIC', 'commit_nf_subscription'),
+            'commitNFRGName': CONFIG.get('NETWORK_FABRIC', 'commit_nf_resource_group'),
+            'commitNFName': CONFIG.get('NETWORK_FABRIC', 'commit_nf_name')
         })
 
     def test_GA_nf_scenario1(self):

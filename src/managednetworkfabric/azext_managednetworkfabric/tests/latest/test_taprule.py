@@ -35,7 +35,7 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType} --match-configurations {matchConfigurations} --dynamic-match-configurations {dynamicMatchConfigurations}', checks=checks)
+        'az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType} --match-conf {matchConfigurations} --dynamic-match-conf {dynamicMatchConfigurations}', checks=checks)
 
 def step_show(test, checks=None):
     ''' Network Tap Rule show operation'''
@@ -70,7 +70,7 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric taprule delete --resource-name {name} --resource-group {rg}')
+        'az networkfabric taprule delete --resource-name {deleteName} --resource-group {rg}')
 
 class GA_TapRuleScenarioTest1(ScenarioTest):
     ''' Network Tap Rule Scenario test'''
@@ -79,6 +79,7 @@ class GA_TapRuleScenarioTest1(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update({
             'name': CONFIG.get('NETWORK_TAP_RULE', 'name'),
+            'deleteName': CONFIG.get('NETWORK_TAP_RULE', 'delete_name'),
             'rg': CONFIG.get('NETWORK_TAP_RULE', 'resource_group'),
             'location': CONFIG.get('NETWORK_TAP_RULE', 'location'),
             'pollingIntervalInSeconds': CONFIG.get('NETWORK_TAP_RULE', 'polling_interval_in_seconds'),
