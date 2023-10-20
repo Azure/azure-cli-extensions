@@ -39,10 +39,6 @@ class GitHubActionPreviewClient(GitHubActionClient):
     api_version = PREVIEW_API_VERSION
 
 
-class WorkloadProfilePreviewClient(WorkloadProfileClient):
-    api_version = PREVIEW_API_VERSION
-
-
 # Clients for preview
 class ContainerAppPreviewClient(ContainerAppClient):
     api_version = PREVIEW_API_VERSION
