@@ -55,3 +55,8 @@ Release History
 * Resolved issues related to system & user assigned MSI.
 * UpdateRun now takes a Strategy name in lieu of resource Id, e.g., `az fleet updaterun create --update_strategy_name UpdateStrategyName`
 * Deletes now require confirmation.
+
+1.0.0
+++++++
+* Promoted extension to GA.
+* Updated SDK to v2023-10-15
