@@ -7,7 +7,7 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['fleet-preview'] = """
+helps['fleet'] = """
     type: group
     short-summary: Commands to manage fleet.
 """

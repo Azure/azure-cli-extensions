@@ -13,7 +13,7 @@ from azure.cli.core.commands.parameters import (
     get_three_state_flag
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_fleet_preview._validators import validate_member_cluster_id, validate_kubernetes_version, validate_apiserver_subnet_id, validate_agent_subnet_id, validate_assign_identity, validate_update_strategy_name
+from azext_fleet_preview._validators import validate_member_cluster_id, validate_kubernetes_version, validate_apiserver_subnet_id, validate_agent_subnet_id, validate_assign_identity, validate_update_strategy_name, validate_vm_size
 
 
 def load_arguments(self, _):
@@ -32,6 +32,7 @@ def load_arguments(self, _):
         c.argument('enable_managed_identity', action='store_true', is_preview=True, help='Enable system assigned managed identity (MSI) on the Fleet resource.')
         c.argument('assign_identity', validator=validate_assign_identity, is_preview=True, help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource. Specify the existing user assigned identity resource.')
         c.argument('enable_hub', action='store_true', is_preview=True, help='If set, the Fleet will be created with a hub cluster.')
+        c.argument('vm_size', is_preview=True, validator=validate_vm_size, help='The virtual machine size of the Fleet hub.')
 
     with self.argument_context('fleet update') as c:
         c.argument('tags', tags_type)
