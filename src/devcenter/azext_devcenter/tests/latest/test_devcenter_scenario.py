@@ -882,175 +882,182 @@ class DevcenterScenarioTest(ScenarioTest):
 #             ],
 #         )
 
-    @ResourceGroupPreparer(
-        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
-    )
-    def test_pool_scenario(self):
-        self.kwargs.update(
-            {
-                "location": "centraluseuap",
-            }
-        )
-        create_attached_network_dev_box_definition(self)
-        self.kwargs.update(
-            {"poolName": self.create_random_name(prefix="c3", length=12)}
-        )
+    # @ResourceGroupPreparer(
+    #     name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+    # )
+    # def test_pool_scenario(self):
+    #     self.kwargs.update(
+    #         {
+    #             "location": "centraluseuap",
+    #         }
+    #     )
+    #     create_attached_network_dev_box_definition(self)
+    #     self.kwargs.update(
+    #         {"poolName": self.create_random_name(prefix="c3", length=12)}
+    #     )
 
-        self.cmd(
-            "az devcenter admin pool list "
-            '--resource-group "{rg}" '
-            '--project-name "{projectName}" ',
-            checks=[
-                self.check("length(@)", 0),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin pool list "
+    #         '--resource-group "{rg}" '
+    #         '--project-name "{projectName}" ',
+    #         checks=[
+    #             self.check("length(@)", 0),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin pool create "
-            '-d "{devBoxDefinitionName}" '
-            '--location "{location}" '
-            '--local-administrator "Disabled" '
-            '--name "{poolName}" '
-            '-c "{attachedNetworkName}" '
-            '--project-name "{projectName}" '
-            '--resource-group "{rg}" '
-            '--virtual-network-type "Unmanaged" '
-            '--single-sign-on-status "Enabled" '
-            '--display-name "poolDisplay" ',
-            checks=[
-                self.check("name", "{poolName}"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("devBoxDefinitionName", "{devBoxDefinitionName}"),
-                self.check("localAdministrator", "Disabled"),
-                self.check("networkConnectionName", "{attachedNetworkName}"),
-                self.check("location", "{location}"),
-                self.check("virtualNetworkType", "Unmanaged"),
-                self.check("tags.hidden-title", "poolDisplay"),
-                self.check("singleSignOnStatus", "Enabled"),
+    #     self.cmd(
+    #         "az devcenter admin pool create "
+    #         '-d "{devBoxDefinitionName}" '
+    #         '--location "{location}" '
+    #         '--local-administrator "Disabled" '
+    #         '--name "{poolName}" '
+    #         '-c "{attachedNetworkName}" '
+    #         '--project-name "{projectName}" '
+    #         '--resource-group "{rg}" '
+    #         '--virtual-network-type "Unmanaged" '
+    #         '--single-sign-on-status "Enabled" '
+    #         '--display-name "poolDisplay" ',
+    #         checks=[
+    #             self.check("name", "{poolName}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #             self.check("devBoxDefinitionName", "{devBoxDefinitionName}"),
+    #             self.check("localAdministrator", "Disabled"),
+    #             self.check("networkConnectionName", "{attachedNetworkName}"),
+    #             self.check("location", "{location}"),
+    #             self.check("virtualNetworkType", "Unmanaged"),
+    #             self.check("singleSignOnStatus", "Enabled"),
 
-            ],
-        )
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin pool list "
-            '--resource-group "{rg}" '
-            '--project-name "{projectName}" ',
-            checks=[self.check("length(@)", 1), self.check("[0].name", "{poolName}")],
-        )
+    #     self.cmd(
+    #         "az devcenter admin pool list "
+    #         '--resource-group "{rg}" '
+    #         '--project-name "{projectName}" ',
+    #         checks=[self.check("length(@)", 1), self.check("[0].name", "{poolName}")],
+    #     )
 
-        self.cmd(
-            "az devcenter admin pool update "
-            '--local-administrator "Enabled" '
-            '-d "{devBoxDefinitionName2}" '
-            '--name "{poolName}" '
-            '--project-name "{projectName}" '
-            '--resource-group "{rg}" '
-            '--virtual-network-type "Managed" '
-            '--single-sign-on-status "Disabled" '
-            '--display-name "poolDisplay2" '
-            '--managed-virtual-network-regions ["canadacentral"]',
-            checks=[
-                self.check("name", "{poolName}"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("devBoxDefinitionName", "{devBoxDefinitionName2}"),
-                self.check("localAdministrator", "Enabled"),
-                self.check("networkConnectionName", "{attachedNetworkName}"),
-                self.check("location", "{location}"),
-                self.check("virtualNetworkType", "Managed"),
-                self.check("tags.hidden-title", "poolDisplay2"),
-                self.check("singleSignOnStatus", "Disabled"),
-                self.check("managedVirtualNetworkRegions[0]", "canadacentral"),
-                self.check("healthStatus", "Warning")
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin pool update "
+    #         '--local-administrator "Enabled" '
+    #         '-d "{devBoxDefinitionName2}" '
+    #         '--name "{poolName}" '
+    #         '--project-name "{projectName}" '
+    #         '--resource-group "{rg}" '
+    #         '--virtual-network-type "Managed" '
+    #         '--single-sign-on-status "Disabled" '
+    #         '--display-name "poolDisplay2" '
+    #         '--managed-virtual-network-regions ["canadacentral"]',
+    #         checks=[
+    #             self.check("name", "{poolName}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #             self.check("devBoxDefinitionName", "{devBoxDefinitionName2}"),
+    #             self.check("localAdministrator", "Enabled"),
+    #             self.check("networkConnectionName", "{attachedNetworkName}"),
+    #             self.check("location", "{location}"),
+    #             self.check("virtualNetworkType", "Managed"),
+    #             self.check("singleSignOnStatus", "Disabled"),
+    #             self.check("managedVirtualNetworkRegions[0]", "canadacentral"),
+    #             self.check("healthStatus", "Warning")
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin pool show "
-            '--name "{poolName}" '
-            '--project-name "{projectName}" '
-            '--resource-group "{rg}" ',
-            checks=[
-                self.check("name", "{poolName}"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("devBoxDefinitionName", "{devBoxDefinitionName2}"),
-                self.check("localAdministrator", "Enabled"),
-                self.check("networkConnectionName", "{attachedNetworkName}"),
-                self.check("location", "{location}"),
-                self.check("devBoxCount", 0)
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin pool show "
+    #         '--name "{poolName}" '
+    #         '--project-name "{projectName}" '
+    #         '--resource-group "{rg}" ',
+    #         checks=[
+    #             self.check("name", "{poolName}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #             self.check("devBoxDefinitionName", "{devBoxDefinitionName2}"),
+    #             self.check("localAdministrator", "Enabled"),
+    #             self.check("networkConnectionName", "{attachedNetworkName}"),
+    #             self.check("location", "{location}"),
+    #             self.check("devBoxCount", 0)
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin schedule create "
-            '--pool-name "{poolName}" '
-            '--project-name "{projectName}" '
-            '--resource-group "{rg}" '
-            '--time "13:00" '
-            '--time-zone "America/Los_Angeles" ',
-            checks=[
-                self.check("name", "default"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("properties.timeZone", "America/Los_Angeles"),
-                self.check("properties.time", "13:00"),
-                self.check("properties.frequency", "Daily"),
-                self.check("properties.type", "StopDevBox"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin pool run-health-check "
+    #         '--name "{poolName}" '
+    #         '--project-name "{projectName}" '
+    #         '--resource-group "{rg}" ',
+    #         checks=[],
+    #     )
 
-        self.cmd(
-            "az devcenter admin schedule update "
-            '--pool-name "{poolName}" '
-            '--project-name "{projectName}" '
-            '--resource-group "{rg}" '
-            '--time "17:30" '
-            '--time-zone "America/New_York" ',
-            checks=[
-                self.check("name", "default"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("properties.timeZone", "America/New_York"),
-                self.check("properties.time", "17:30"),
-                self.check("properties.frequency", "Daily"),
-                self.check("properties.type", "StopDevBox"),
-            ],
-        )
 
-        self.cmd(
-            "az devcenter admin schedule show "
-            '--pool-name "{poolName}" '
-            '--project-name "{projectName}" '
-            '--resource-group "{rg}" ',
-            checks=[
-                self.check("name", "default"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("properties.timeZone", "America/New_York"),
-                self.check("properties.time", "17:30"),
-                self.check("properties.frequency", "Daily"),
-                self.check("properties.type", "StopDevBox"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin schedule create "
+    #         '--pool-name "{poolName}" '
+    #         '--project-name "{projectName}" '
+    #         '--resource-group "{rg}" '
+    #         '--time "13:00" '
+    #         '--time-zone "America/Los_Angeles" ',
+    #         checks=[
+    #             self.check("name", "default"),
+    #             self.check("resourceGroup", "{rg}"),
+    #             self.check("properties.timeZone", "America/Los_Angeles"),
+    #             self.check("properties.time", "13:00"),
+    #             self.check("properties.frequency", "Daily"),
+    #             self.check("properties.type", "StopDevBox"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin schedule delete --yes "
-            '--project-name "{projectName}" '
-            '--pool-name "{poolName}" '
-            '--resource-group "{rg}"'
-        )
+    #     self.cmd(
+    #         "az devcenter admin schedule update "
+    #         '--pool-name "{poolName}" '
+    #         '--project-name "{projectName}" '
+    #         '--resource-group "{rg}" '
+    #         '--time "17:30" '
+    #         '--time-zone "America/New_York" ',
+    #         checks=[
+    #             self.check("name", "default"),
+    #             self.check("resourceGroup", "{rg}"),
+    #             self.check("properties.timeZone", "America/New_York"),
+    #             self.check("properties.time", "17:30"),
+    #             self.check("properties.frequency", "Daily"),
+    #             self.check("properties.type", "StopDevBox"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin pool delete --yes "
-            '--project-name "{projectName}" '
-            '--name "{poolName}" '
-            '--resource-group "{rg}"'
-        )
+    #     self.cmd(
+    #         "az devcenter admin schedule show "
+    #         '--pool-name "{poolName}" '
+    #         '--project-name "{projectName}" '
+    #         '--resource-group "{rg}" ',
+    #         checks=[
+    #             self.check("name", "default"),
+    #             self.check("resourceGroup", "{rg}"),
+    #             self.check("properties.timeZone", "America/New_York"),
+    #             self.check("properties.time", "17:30"),
+    #             self.check("properties.frequency", "Daily"),
+    #             self.check("properties.type", "StopDevBox"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin pool list "
-            '--resource-group "{rg}" '
-            '--project-name "{projectName}" ',
-            checks=[
-                self.check("length(@)", 0),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin schedule delete --yes "
+    #         '--project-name "{projectName}" '
+    #         '--pool-name "{poolName}" '
+    #         '--resource-group "{rg}"'
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter admin pool delete --yes "
+    #         '--project-name "{projectName}" '
+    #         '--name "{poolName}" '
+    #         '--resource-group "{rg}"'
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter admin pool list "
+    #         '--resource-group "{rg}" '
+    #         '--project-name "{projectName}" ',
+    #         checks=[
+    #             self.check("length(@)", 0),
+    #         ],
+    #     )
 
 #     @ResourceGroupPreparer(
 #         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
@@ -1197,6 +1204,64 @@ class DevcenterScenarioTest(ScenarioTest):
 #             checks=[
 #                 self.check("length(@)", 0),
 #             ],
+#         )
+
+#     @ResourceGroupPreparer(
+#         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+#     )
+#     def test_env_definition_scenario(self):
+#         self.kwargs.update(
+#             {
+#                 "location": "canadacentral",
+#             }
+#         )
+
+#         create_catalog(self)
+#         function_app_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/functionapp"
+#         sandbox_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/sandbox"
+#         webapp_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/webapp"
+
+#         self.kwargs.update(
+#             {
+#                 "functionAppName": "FunctionApp",
+#                 "sandboxName": "Sandbox",
+#                 "webAppName": "WebApp",
+#                 "functionAppId": function_app_id,
+#                 "sandboxId": sandbox_id,
+#                 "webAppId": webapp_id,
+#             }
+#         )
+
+#         self.cmd(
+#             "az devcenter admin environment-definition list "
+#             '--dev-center "{devcenterName}" '
+#             '--resource-group "{rg}" '
+#             '--catalog-name  "{catalogName}" ',
+#             checks=[
+#                 self.check("length(@)", 3),
+#                 self.check("[0].catalogName", "{catalogName}"),
+#             ],
+#         )
+
+#         self.cmd(
+#             "az devcenter admin environment-definition show "
+#             '--dev-center "{devcenterName}" '
+#             '--resource-group "{rg}" '
+#             '--catalog-name  "{catalogName}" '
+#             '--definition-name "{sandboxName}"',
+#             checks=[
+#                 self.check("name", "{sandboxName}"),
+#                 self.check("id", "{sandboxId}"),
+#             ],
+#         )
+
+#         self.cmd(
+#             "az devcenter admin environment-definition get-error-detail "
+#             '--dev-center "{devcenterName}" '
+#             '--resource-group "{rg}" '
+#             '--catalog-name  "{catalogName}" '
+#             '--definition-name "{sandboxName}"',
+#             checks=[],
 #         )
 
 

@@ -228,8 +228,10 @@ def get_endpoint(self):
 
 
 def create_network_connection(self):
-    subnet = create_virtual_network_with_subnet(self)
-
+    if (self.kwargs.get('location', '') == "centraluseuap"):
+        subnet = create_virtual_network_with_subnet_euap(self)
+    else: 
+        subnet = create_virtual_network_with_subnet(self)
     self.kwargs.update(
         {
             "subnetId": subnet["id"],
