@@ -24,6 +24,7 @@ def create_fleet(cmd,
                  location=None,
                  tags=None,
                  enable_hub=False,
+                 vm_size=None
                  dns_name_prefix=None,
                  enable_private_cluster=False,
                  enable_vnet_integration=False,
@@ -55,7 +56,8 @@ def create_fleet(cmd,
         agent_profile_model = cmd.get_models(
             "AgentProfile",
             resource_type=CUSTOM_MGMT_FLEET,
-            operation_group="fleets"
+            operation_group="fleets",
+            vm_size=vm_size
         )
         if dns_name_prefix is None:
             subscription_id = get_subscription_id(cmd.cli_ctx)
