@@ -24,7 +24,7 @@ def create_fleet(cmd,
                  location=None,
                  tags=None,
                  enable_hub=False,
-                 vm_size=None
+                 vm_size=None,
                  dns_name_prefix=None,
                  enable_private_cluster=False,
                  enable_vnet_integration=False,
