@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update to update certain properties of the IP Extended Community resource.
 
     :example: Update IP Extended Community
-        az networkfabric ipextendedcommunity update --resource-group "example-rg" --resource-name "example-ipextendedcommunity" --ip-ext-comm-rules "[{action:Permit,sequenceNumber:1234,routeTargets:['1024:219','1001:200']}]"
+        az networkfabric ipextendedcommunity update --resource-group "example-rg" --resource-name "example-ipextendedcommunity" --ip-extended-community-rules "[{action:Permit,sequenceNumber:1234,routeTargets:['1024:219','1001:200']}]"
     """
 
     _aaz_info = {
@@ -76,16 +76,16 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Description for underlying resource.",
         )
-        _args_schema.ip_ext_comm_rules = AAZListArg(
-            options=["--ip-ext-comm-rules"],
+        _args_schema.ip_extended_community_rules = AAZListArg(
+            options=["--ip-extended-community-rules"],
             arg_group="Properties",
             help="List of IP Extended Community Rules.",
         )
 
-        ip_ext_comm_rules = cls._args_schema.ip_ext_comm_rules
-        ip_ext_comm_rules.Element = AAZObjectArg()
+        ip_extended_community_rules = cls._args_schema.ip_extended_community_rules
+        ip_extended_community_rules.Element = AAZObjectArg()
 
-        _element = cls._args_schema.ip_ext_comm_rules.Element
+        _element = cls._args_schema.ip_extended_community_rules.Element
         _element.action = AAZStrArg(
             options=["action"],
             help="Action to be taken on the configuration. Example: Permit.",
@@ -107,7 +107,7 @@ class Update(AAZCommand):
             ),
         )
 
-        route_targets = cls._args_schema.ip_ext_comm_rules.Element.route_targets
+        route_targets = cls._args_schema.ip_extended_community_rules.Element.route_targets
         route_targets.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -227,7 +227,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("annotation", AAZStrType, ".annotation")
-                properties.set_prop("ipExtendedCommunityRules", AAZListType, ".ip_ext_comm_rules", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("ipExtendedCommunityRules", AAZListType, ".ip_extended_community_rules", typ_kwargs={"flags": {"required": True}})
 
             ip_extended_community_rules = _builder.get(".properties.ipExtendedCommunityRules")
             if ip_extended_community_rules is not None:

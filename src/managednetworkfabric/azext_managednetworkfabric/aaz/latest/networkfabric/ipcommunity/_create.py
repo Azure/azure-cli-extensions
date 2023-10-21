@@ -18,10 +18,10 @@ class Create(AAZCommand):
     """Create a Ip Community resource
 
     :example: Create a Ip Community
-        az networkfabric ipcommunity create --resource-group "example-rg" --location "westus3" --resource-name "example-ipcommunity" --ip-comm-rules "[{action:Permit,communityMembers:['1:1'],sequenceNumber:1234,wellKnownCommunities:[Internet,GShut]}]"
+        az networkfabric ipcommunity create --resource-group "example-rg" --location "westus3" --resource-name "example-ipcommunity" --ip-community-rules "[{action:Permit,communityMembers:['1:1'],sequenceNumber:1234,wellKnownCommunities:[Internet,GShut]}]"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric ipcommunity create --ip-comm-rules "??"
+        az networkfabric ipcommunity create --ip-community-rules "??"
     """
 
     _aaz_info = {
@@ -86,17 +86,17 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Description for underlying resource.",
         )
-        _args_schema.ip_comm_rules = AAZListArg(
-            options=["--ip-comm-rules"],
+        _args_schema.ip_community_rules = AAZListArg(
+            options=["--ip-community-rules"],
             arg_group="Properties",
             help="List of IP Community Rules.",
             required=True,
         )
 
-        ip_comm_rules = cls._args_schema.ip_comm_rules
-        ip_comm_rules.Element = AAZObjectArg()
+        ip_community_rules = cls._args_schema.ip_community_rules
+        ip_community_rules.Element = AAZObjectArg()
 
-        _element = cls._args_schema.ip_comm_rules.Element
+        _element = cls._args_schema.ip_community_rules.Element
         _element.action = AAZStrArg(
             options=["action"],
             help="Action to be taken on the configuration. Example: Permit.",
@@ -125,14 +125,14 @@ class Create(AAZCommand):
             ),
         )
 
-        community_members = cls._args_schema.ip_comm_rules.Element.community_members
+        community_members = cls._args_schema.ip_community_rules.Element.community_members
         community_members.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        well_known_communities = cls._args_schema.ip_comm_rules.Element.well_known_communities
+        well_known_communities = cls._args_schema.ip_community_rules.Element.well_known_communities
         well_known_communities.Element = AAZStrArg(
             enum={"GShut": "GShut", "Internet": "Internet", "LocalAS": "LocalAS", "NoAdvertise": "NoAdvertise", "NoExport": "NoExport"},
             fmt=AAZStrArgFormat(
@@ -254,7 +254,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("annotation", AAZStrType, ".annotation")
-                properties.set_prop("ipCommunityRules", AAZListType, ".ip_comm_rules", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("ipCommunityRules", AAZListType, ".ip_community_rules", typ_kwargs={"flags": {"required": True}})
 
             ip_community_rules = _builder.get(".properties.ipCommunityRules")
             if ip_community_rules is not None:
