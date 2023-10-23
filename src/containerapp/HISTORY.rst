@@ -10,6 +10,7 @@ upcoming
 * 'az containerapp compose create': fixed an issue where the environment's resource group was not resolved from --environment when the input value was a resource id.
 * 'az containerapp replica count', returns the replica count of a container app
 * [Breaking Change] 'az containerapp job create': add default values for container app job properties --replica-completion-count, --replica-retry-limit, --replica-timeout, --parallelism, --min-executions, --max-executions, --polling-interval
+* [Breaking Change] 'az containerapp env create': update the default value of --enable-workload-profiles to `True`
 
 0.3.41
 ++++++

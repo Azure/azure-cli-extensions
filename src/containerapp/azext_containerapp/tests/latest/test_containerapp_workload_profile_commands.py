@@ -148,6 +148,19 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.workloadProfiles", None),
         ])
+        self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env), expect_failure=False)
+
+        env1 = self.create_random_name(prefix='env4', length=24)
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(
+            resource_group, env1), expect_failure=False, checks=[
+            JMESPathCheck("name", env1),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("length(properties.workloadProfiles)", 1),
+            JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
+            JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
+        ])
+        self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env1), expect_failure=False)
+
         env2 = self.create_random_name(prefix='env2', length=24)
         self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles'.format(
             resource_group, env2), expect_failure=False, checks=[
