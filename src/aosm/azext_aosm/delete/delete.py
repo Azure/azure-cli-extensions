@@ -137,7 +137,6 @@ class ResourceDeleter:
                 network_function_definition_version_name=self.config.version,
             )
             LongRunningOperation(self.cli_ctx, "Deleting NFDV...")(poller)
-            print("Deleted NFDV.")
         except Exception:
             logger.error(
                 "Failed to delete NFDV %s from group %s",
