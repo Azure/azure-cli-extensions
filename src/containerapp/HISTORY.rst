@@ -3,6 +3,13 @@
 Release History
 ===============
 upcoming
+++++++
+* 'az containerapp service': add support for creation and deletion of milvus vector database as a dev service
+* 'az containerapp job create': Fix AttributeError when --trigger-type is None
+* 'az containerapp update': fix bug for mounting secret volumes using --secret-volume-mount
+* 'az containerapp compose create': fixed an issue where the environment's resource group was not resolved from --environment when the input value was a resource id.
+* 'az containerapp replica count', returns the replica count of a container app
+* [Breaking Change] 'az containerapp job create': add default values for container app job properties --replica-completion-count, --replica-retry-limit, --replica-timeout, --parallelism, --min-executions, --max-executions, --polling-interval
 
 0.3.41
 ++++++

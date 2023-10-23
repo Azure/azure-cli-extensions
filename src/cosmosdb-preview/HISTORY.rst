@@ -2,6 +2,12 @@
 
 Release History
 ===============
+0.26.0
+* Add '--enable-priority-based-execution' and '--default-priority-level' parameter for create/update database account.
+* Add support for cross account container copy
+* Add Non-CMK to CMK support
+* Removed preview tag from CMK related properties
+
 0.25.0
 * Add support for performing database merge for Sql and MongoDB database account.
 
