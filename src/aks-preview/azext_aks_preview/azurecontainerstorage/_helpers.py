@@ -43,7 +43,7 @@ def register_dependent_rps(cmd, subscription_id) -> bool:
     try:
         is_registered = _is_rp_registered(cmd, required_rp, subscription_id)
         if is_registered:
-            return
+            return True
         client.register(required_rp, properties=properties)
         # wait for registration to finish
         timeout_secs = 120
