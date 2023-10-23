@@ -33,6 +33,7 @@ from azext_aks_preview._format import (
     aks_show_table_format,
     aks_upgrades_table_format,
     aks_versions_table_format,
+    aks_approuting_show_table_format
 )
 from knack.log import get_logger
 
