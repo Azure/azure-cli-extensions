@@ -1620,7 +1620,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
         enable_msi_auth_for_monitoring = False
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
-    instance = _update_addons(cmd,  , subscription_id, resource_group_name, name, addons, enable=True,
+    instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
                               enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
