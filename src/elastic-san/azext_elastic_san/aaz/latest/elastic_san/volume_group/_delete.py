@@ -20,13 +20,13 @@ class Delete(AAZCommand):
     """Delete a Volume Group.
 
     :example: Delete a Volume Group.
-        az elastic-san volume-group delete -g {rg} -e {san_name} -n {vg_name}
+        az elastic-san volume-group delete -g "rg" -e "san_name" -n "vg_name"
     """
 
     _aaz_info = {
-        "version": "2022-12-01-preview",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2022-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2023-01-01"],
         ]
     }
 
@@ -48,7 +48,7 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",
@@ -164,7 +164,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01-preview",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
