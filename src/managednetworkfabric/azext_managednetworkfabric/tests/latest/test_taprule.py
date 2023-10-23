@@ -35,7 +35,7 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType} --match-conf {matchConfigurations} --dynamic-match-conf {dynamicMatchConfigurations}', checks=checks)
+        'az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType} --match-configurations {matchConfigurations} --dynamic-match-configurations {dynamicMatchConfigurations}', checks=checks)
 
 def step_show(test, checks=None):
     ''' Network Tap Rule show operation'''
