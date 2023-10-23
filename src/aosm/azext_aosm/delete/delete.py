@@ -62,7 +62,7 @@ class ResourceDeleter:
                     "Only do this if you are SURE you are not sharing the publisher and"
                     " artifact stores with other NFDs"
                 )
-                print("There is no undo.  Type the publisher name to confirm.")
+                print("There is no undo. Type the publisher name to confirm.")
                 if not input_ack(self.config.publisher_name.lower(), "Confirm delete:"):
                     print("Not proceeding with delete")
                     return
