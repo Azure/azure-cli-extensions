@@ -269,7 +269,6 @@ helps['webpubsub service permission check'] = """
     short-summary: Check if a connection has permission to the specified group.
 """
 
-
 helps['webpubsub replica show'] = """
 type: command
 short-summary: Show the details of a replica
