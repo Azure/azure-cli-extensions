@@ -3880,61 +3880,88 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         :return: the ManagedCluster object
         """
+        from azure.cli.core.commands.client_factory import get_mgmt_service_client
+        from azure.cli.command_modules.keyvault.custom import set_policy
+        
         self._ensure_mc(mc)
 
+        # get parameters from raw_param
         enable_app_routing = self.raw_param.get("enable_app_routing")
         enable_keyvault_secret_provider = self.raw_param.get("enable_kv")
         keyvault_id = self.raw_param.get("keyvault_id")
-       
-        if mc.ingress_profile is None:
-            mc.ingress_profile = self.models.ManagedClusterIngressProfile()
-        if mc.ingress_profile.web_app_routing is None:
-            mc.ingress_profile.web_app_routing = self.models.ManagedClusterIngressProfileWebAppRouting()
+        dns_zone_resource_ids = self.raw_param.get("dns_zone_resource_ids")
+        add_dns_zone = self.raw_param.get("add_dns_zone")
+        delete_dns_zone = self.raw_param.get("delete_dns_zone")
+        update_dns_zone = self.raw_param.get("update_dns_zone")
+        attach_zones = self.raw_param.get("attach_zones")
+
+        # update ManagedCluster object with app routing settings
+        mc.ingress_profile = mc.ingress_profile or self.models.ManagedClusterIngressProfile()
+        mc.ingress_profile.web_app_routing = mc.ingress_profile.web_app_routing or self.models.ManagedClusterIngressProfileWebAppRouting()
         mc.ingress_profile.web_app_routing.enabled = enable_app_routing
-    
+
+        # update ManagedCluster object with keyvault-secret-provider settings
         if enable_keyvault_secret_provider:
-            if mc.addon_profiles is None:
-                mc.addon_profiles = {}
-            if mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] is None:
-                mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] = self.models.ManagedClusterAddonProfile()
-            if not mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled:
+            mc.addon_profiles = mc.addon_profiles or {}
+            if not mc.addon_profiles.get(CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME):
                 mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] = self.models.ManagedClusterAddonProfile(
                     enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"})
-            else:
-                raise CLIError('The azure-keyvault-secrets-provider addon is already enabled for this managed cluster.\n')
+            elif not mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled:
+                mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled = True
             
-        dns_zone_resource_ids = self.raw_param.get("dns_zone_resource_ids")
-        dns_zone_resource_ids = [
-            x.strip()
-            for x in (
-                dns_zone_resource_ids.split(",")
-                if dns_zone_resource_ids
-                else []
-            )
-        ]
-        add_dns_zone= self.raw_param.get("add_dns_zone")
-        update_dns_zone = self.raw_param.get("update_dns_zone")
+        # check keyvault authorization sytem
+        if keyvault_id:
+            if not is_valid_resource_id(keyvault_id):
+                raise InvalidArgumentValueError("Please provide a valid keyvault ID")
+                
+            if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
+                keyvault_params = parse_resource_id(keyvault_id)
+                keyvault_subscription = keyvault_params['subscription']
+                keyvault_name = keyvault_params['name']
+                keyvault_rg = keyvault_params['resource_group']
 
-        if dns_zone_resource_ids:
-            if add_dns_zone:
-                if not mc.ingress_profile or not mc.ingress_profile.web_app_routing:
-                    mc.ingress_profile = self.models.ManagedClusterIngressProfile()
-                    mc.ingress_profile.web_app_routing = self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True, dns_zone_resource_ids=dns_zone_resource_ids)
-                elif mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
-                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids.append(dns_zone_resource_ids)
-                elif mc.ingress_profile and mc.ingress_profile.web_app_routing and not mc.ingress_profile.web_app_routing.enabled:
-                    raise CLIError('App Routing must be enabled to add DNS zone resource ID.\n')
+                keyvault_client = getattr(get_mgmt_service_client(self.cmd.cli_ctx, ResourceType.MGMT_KEYVAULT, subscription_id=keyvault_subscription), Clients.vaults)
+
+                keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
+
+                managed_identity_object_id = mc.ingress_profile.web_app_routing.identity.object_id
+                is_service_principal = False
+
+                try:
+                    if keyvault.properties.enable_rbac_authorization:
+                        if not add_role_assignment(self.cmd, 'Key Vault Secrets User', managed_identity_object_id, is_service_principal, scope=keyvault_id):
+                            logger.warning('Could not create a role assignment for App Routing. '
+                                'Are you an Owner on this subscription?')
+                    else:
+                        keyvault = set_policy(self.cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=managed_identity_object_id, secret_permissions=['Get'], certificate_permissions=['Get'])
+                except Exception as ex:
+                    raise CLIError(f'Error checking keyvault authorization: {ex}\n')
             else:
-                if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
-                    dns_zone_resource_ids = list(filter(lambda x: x not in dns_zone_resource_ids, mc.ingress_profile.web_app_routing.dns_zone_resource_ids))
+                raise CLIError('App Routing is not enabled.\n')
+
+        # modify DNS zone resource IDs
+        if dns_zone_resource_ids:
+            if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
+                dns_zone_resource_ids = [x.strip() for x in (dns_zone_resource_ids.split(",") if dns_zone_resource_ids else [])]
+                if add_dns_zone:
+                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids.append(dns_zone_resource_ids)
+                    if attach_zones:
+                        for dns_zone in dns_zone_resource_ids:
+                            add_role_assignment(self.cmd, 'DNS Zone Contributor', mc.ingress_profile.web_app_routing.identity.object_id, False, scope=dns_zone)
+                elif delete_dns_zone:
+                    if mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
+                        dns_zone_resource_ids = [x for x in mc.ingress_profile.web_app_routing.dns_zone_resource_ids if x not in dns_zone_resource_ids]
+                        mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
+                    else:
+                        raise CLIError('No DNS zone is used by App Routing.\n')
+                elif update_dns_zone:
                     mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
-                elif not mc.ingress_profile or not mc.ingress_profile.web_app_routing or not mc.ingress_profile.web_app_routing.enabled:
-                    raise CLIError('App Routing must be enabled to remove DNS zone resource ID.\n')
-            if update_dns_zone: 
-                if not mc.ingress_profile or not mc.ingress_profile.web_app_routing or not mc.ingress_profile.web_app_routing.enabled:
-                    raise CLIError('App Routing must be enabled to update DNS zone resource ID.\n')
-                else:
-                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
+                    if attach_zones:
+                        for dns_zone in dns_zone_resource_ids:
+                            add_role_assignment(self.cmd, 'DNS Zone Contributor', mc.ingress_profile.web_app_routing.identity.object_id, False, scope=dns_zone)
+            else:
+                raise CLIError('App Routing must be enabled to modify DNS zone resource IDs.\n')
+                
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
