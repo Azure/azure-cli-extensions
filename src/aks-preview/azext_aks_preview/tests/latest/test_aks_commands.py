@@ -8092,8 +8092,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # enable app routing with keyvault secrets provider addon enabled
-        enable_approuting_cmd = 'aks approuting enable --enable-kv --resource-group={resource_group} --name={aks_name}'
-        self.cmd(enable_approuting_cmd, checks=[
+        enable_app_routing_cmd = 'aks approuting enable --enable-kv --resource-group={resource_group} --name={aks_name}'
+        self.cmd(enable_app_routing_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('ingressProfile.webAppRouting.enabled', True),
             self.check('addonProfiles.azureKeyvaultSecretsProvider.enabled', True)

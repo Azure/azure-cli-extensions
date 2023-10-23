@@ -97,7 +97,7 @@ from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolUpdateDecorator,
 )
 from azext_aks_preview._roleassignments import add_role_assignment
-from msrestazure.tools import is_valid_resource_id
+from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 from dateutil.parser import parse
 
@@ -2425,6 +2425,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self.raw_param.get("enable_app_routing")
+    
+    def disable_app_routing(self) -> bool:
+        """Obtain the value of disable_app_routing.
+
+        :return: bool
+        """
+        return bool(self.raw_param.get("disable_app_routing"))
 
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -2912,10 +2919,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
 
-        if self.context.get_enable_approuting():
+        if self.context.get_enable_app_routing():
             if mc.ingress_profile is None:
                 mc.ingress_profile = self.models.ManagedClusterIngressProfile()
-            mc.ingress_profile.app_routing = self.models.ManagedClusterIngressProfileAppRouting(enabled=True)
+            mc.ingress_profile.web_app_routing = self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)
         return mc
 
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
@@ -3930,21 +3937,23 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         
         self._ensure_mc(mc)
 
-        # get parameters from raw_param
-        enable_app_routing = self.raw_param.get("enable_app_routing")
-        enable_keyvault_secret_provider = self.raw_param.get("enable_kv")
-        keyvault_id = self.raw_param.get("keyvault_id")
-        dns_zone_resource_ids = self.raw_param.get("dns_zone_resource_ids")
-        add_dns_zone = self.raw_param.get("add_dns_zone")
-        delete_dns_zone = self.raw_param.get("delete_dns_zone")
-        update_dns_zone = self.raw_param.get("update_dns_zone")
-        attach_zones = self.raw_param.get("attach_zones")
+        # get parameters from context
+        enable_app_routing = self.context.get_enable_app_routing()
+        enable_keyvault_secret_provider = self.context.get_enable_kv()
+        keyvault_id = self.context.get_keyvault_id()
+        attach_zones = self.context.get_attach_zones()
+        dns_zone_resource_ids = self.context.raw_param.get("dns_zone_resource_ids")
+        add_dns_zone = self.context.raw_param.get("add_dns_zone")
+        delete_dns_zone = self.context.raw_param.get("delete_dns_zone")
+        update_dns_zone = self.context.raw_param.get("update_dns_zone")
+        
 
         # update ManagedCluster object with app routing settings
         mc.ingress_profile = mc.ingress_profile or self.models.ManagedClusterIngressProfile()
         mc.ingress_profile.web_app_routing = mc.ingress_profile.web_app_routing or self.models.ManagedClusterIngressProfileWebAppRouting()
-        mc.ingress_profile.web_app_routing.enabled = enable_app_routing
-
+        if enable_app_routing is not None:
+            mc.ingress_profile.web_app_routing.enabled = enable_app_routing
+        
         # update ManagedCluster object with keyvault-secret-provider settings
         if enable_keyvault_secret_provider:
             mc.addon_profiles = mc.addon_profiles or {}
