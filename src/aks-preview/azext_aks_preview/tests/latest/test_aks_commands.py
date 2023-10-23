@@ -8025,7 +8025,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     
-    @AllowLargeResponse
+    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
     def test_aks_approuting_enable_disable(self, resource_group, resource_group_location):
         """ This test case exercises enabling and disabling app routing addon in an AKS cluster.
@@ -8066,7 +8066,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         delete_cmd = 'aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait'
         self.cmd(delete_cmd, checks=[self.is_empty()])
 
-    @AllowLargeResponse
+    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
     def test_aks_approuting_enable_with_keyvault_secrets_provider_addon(self, resource_group, resource_group_location):
         """ This test case exercises enabling app routing addon in an AKS cluster along with keyvault secrets provider addon.
@@ -8103,7 +8103,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         delete_cmd = 'aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait'
         self.cmd(delete_cmd, checks=[self.is_empty()])
     
-    @AllowLargeResponse
+    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
     def test_aks_approuting_update(self, resource_group, resource_group_location):
         """ This test case exercises updating app routing addon in an AKS cluster.
@@ -8157,7 +8157,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         delete_cmd = 'aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait'
         self.cmd(delete_cmd, checks=[self.is_empty()])
 
-    @AllowLargeResponse
+    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
     def test_aks_approuting_zone_add_delete_list(self, resource_group, resource_group_location):
         """ This test case exercises adding and deleting zones to app routing addon in an AKS cluster.
@@ -8245,7 +8245,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         delete_cmd = 'aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait'
         self.cmd(delete_cmd, checks=[self.is_empty()])
 
-    @AllowLargeResponse
+    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
     def test_aks_approuting_zone_update(self, resource_group, resource_group_location):
         """ This test case exercises updating zones to app routing addon in an AKS cluster.
