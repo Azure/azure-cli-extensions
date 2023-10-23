@@ -137,6 +137,7 @@ class ResourceDeleter:
                 network_function_definition_version_name=self.config.version,
             )
             LongRunningOperation(self.cli_ctx, "Deleting NFDV...")(poller)
+            logger.info("Deleted NFDV.")
         except Exception:
             logger.error(
                 "Failed to delete NFDV %s from group %s",
@@ -161,7 +162,7 @@ class ResourceDeleter:
                 network_service_design_version_name=self.config.nsd_version,
             )
             LongRunningOperation(self.cli_ctx, "Deleting NSDV...")(poller)
-            print("Deleted NSDV.")
+            logger.info("Deleted NSDV.")
         except Exception:
             logger.error(
                 "Failed to delete NSDV %s from group %s",
@@ -207,7 +208,7 @@ class ResourceDeleter:
                 LongRunningOperation(self.cli_ctx, "Deleting Artifact manifest...")(
                     poller
                 )  # noqa: E501
-                print("Deleted Artifact Manifest")
+                logger.info("Deleted Artifact Manifest")
             except Exception:
                 logger.error(
                     "Failed to delete Artifact manifest %s from artifact store %s",
@@ -231,7 +232,7 @@ class ResourceDeleter:
                 )
             )
             LongRunningOperation(self.cli_ctx, "Deleting NSD...")(poller)
-            print("Deleted NSD")
+            logger.info("Deleted NSD")
         except Exception:
             logger.error("Failed to delete NSD.")
             raise
@@ -249,7 +250,7 @@ class ResourceDeleter:
                 network_function_definition_group_name=self.config.nfdg_name,
             )
             LongRunningOperation(self.cli_ctx, "Deleting NFD Group...")(poller)
-            print("Deleted NFD Group")
+            logger.info("Deleted NFD Group")
         except Exception:
             logger.error("Failed to delete NFDG.")
             raise
@@ -281,7 +282,7 @@ class ResourceDeleter:
                 artifact_store_name=store_name,
             )
             LongRunningOperation(self.cli_ctx, "Deleting Artifact store...")(poller)
-            print("Deleted Artifact Store")
+            logger.info("Deleted Artifact Store")
         except Exception:
             logger.error("Failed to delete Artifact store %s", store_name)
             raise
@@ -301,7 +302,7 @@ class ResourceDeleter:
                 publisher_name=self.config.publisher_name,
             )
             LongRunningOperation(self.cli_ctx, "Deleting Publisher...")(poller)
-            print("Deleted Publisher")
+            logger.info("Deleted Publisher")
         except Exception:
             logger.error("Failed to delete publisher")
             raise
@@ -323,7 +324,7 @@ class ResourceDeleter:
             LongRunningOperation(
                 self.cli_ctx, "Deleting Configuration Group Schema..."
             )(poller)
-            print("Deleted Configuration Group Schema")
+            logger.info("Deleted Configuration Group Schema")
         except Exception:
             logger.error("Failed to delete the Configuration Group Schema")
             raise
