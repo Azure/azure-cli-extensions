@@ -82,11 +82,18 @@ SCHEMA_PREFIX = {
 }
 
 # For VNF NFD Generator
-# To check whether extra VHD parameters have been provided
+# Additional config fields from VHD artifact config in input.json that are
+# converted to camel case and end up within configMappings/vhdParameters.json
+# These become part of the vnfdefinition.bicep, namely:
+#   deployParametersMappingRuleProfile: {
+#     vhdImageMappingRuleProfile: {
+#       userConfiguration: string(loadJsonContent('configMappings/vhdParameters.json'))
+#     }
+# Add new config fields to this list if they should also end up there.
 EXTRA_VHD_PARAMETERS = [
     "image_disk_size_GB",
     "image_hyper_v_generation",
-    "image_api_version",
+    "image_api_version"
 ]
 
 # For CNF NFD Generator

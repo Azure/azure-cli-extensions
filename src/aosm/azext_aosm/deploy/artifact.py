@@ -17,7 +17,12 @@ from knack.log import get_logger
 from knack.util import CLIError
 from oras.client import OrasClient
 
-from azext_aosm._configuration import ArtifactConfig, HelmPackageConfig, CNFImageConfig
+from azext_aosm._configuration import (
+    ArtifactConfig,
+    CNFImageConfig,
+    HelmPackageConfig,
+    VhdArtifactConfig,
+)
 
 logger = get_logger(__name__)
 
@@ -289,6 +294,7 @@ class Artifact:
             )
         else:
             # Config Validation will raise error if not true
+            assert isinstance(artifact_config, VhdArtifactConfig)
             assert artifact_config.blob_sas_url
             logger.info("Copy from SAS URL to blob store")
             source_blob = BlobClient.from_blob_url(artifact_config.blob_sas_url)
