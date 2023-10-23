@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get the solution using the applicable solutionResourceName while creating the solution.
 
     :example: Show Solution at Resource Level
-        az self-help solution show --solution-name solution-name --scope 'subscriptions/0d0fcd2e-c4fd-4349-8497-200edb3923c6/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
+        az self-help solution show --solution-name solution-name --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
     """
 
     _aaz_info = {
