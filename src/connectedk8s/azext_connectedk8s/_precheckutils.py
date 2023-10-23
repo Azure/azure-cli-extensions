@@ -60,6 +60,7 @@ def configure_kube_client_proxy():
     elif os.environ.get('HTTP_PROXY'):
         kube_client.Configuration._default.proxy = os.environ.get('HTTP_PROXY')
 
+
 def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available):
     global diagnoser_output
     try:
