@@ -2427,7 +2427,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         return self.raw_param.get("enable_app_routing")
 
 
-class AKSPreviewManagedClusterCreateDecosrator(AKSManagedClusterCreateDecorator):
+class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
         self, cmd: AzCliCommand, client: ContainerServiceClient, raw_parameters: Dict, resource_type: ResourceType
     ):
