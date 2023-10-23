@@ -6575,13 +6575,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             dec_6.update_metrics_profile(mc_6)
 
     def test_update_app_routing_profile(self):
-        #enable app routing with key vault
+
+        # enable app routing 
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {
                 "enable_app_routing": True,
-                "enable_kv": True
+                "enable_kv": False
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -6595,22 +6596,16 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ingress_profile=self.models.ManagedClusterIngressProfile(
                 enabled=True,
                 )
-            addon_profiles={
-                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
-                    enabled=True,   
-                    config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"}
-                )
-            }
         ),    
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-        #enable app routing without key vault
+        # enable app routing with key vault
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {
                 "enable_app_routing": True,
-                "enable_kv": False
+                "enable_kv": True
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -6623,11 +6618,17 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             ingress_profile=self.models.ManagedClusterIngressProfile(
                 enabled=True,
+                ),
+            addon_profiles={
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,   
+                    config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"}
                 )
+            }
         ),    
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
-        #disable app routing
+        # disable app routing
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -6649,7 +6650,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
-        #update app routing with key vault id
+        # update app routing with key vault id
         dec_4 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -6674,7 +6675,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_4, ground_truth_mc_4)
 
-        #add dns zone resource ids
+        # add dns zone resource ids
         dec_5 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -6701,7 +6702,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
-        #delete dns zone resource ids
+        # delete dns zone resource ids
         dec_6 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -6729,7 +6730,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_6, ground_truth_mc_6)
 
-        #update dns zone resource ids
+        # update dns zone resource ids
         dec_7 = AKSPreviewManagedClusterUpdateDecorator( 
             self.cmd,
             self.client,
@@ -6758,7 +6759,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
 
-        #list dns zone resource ids
+        # list dns zone resource ids
         dec_8 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -6783,6 +6784,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 dns_zone_resource_ids=["test_dns_zone_resource_id_1","test_dns_zone_resource_id_2"]
             )
         )
+        self.assertEqual(dec_mc_8, ground_truth_mc_8)
 
     def test_update_mc_profile_preview(self):
         import inspect
