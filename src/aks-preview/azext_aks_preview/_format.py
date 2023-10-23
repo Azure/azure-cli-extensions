@@ -314,3 +314,18 @@ def _aks_snapshot_table_format(result):
     }""")
     # use ordered dicts so headers are predictable
     return parsed.search(result, Options(dict_cls=OrderedDict))
+
+def aks_approuting_dns_zones_list_table_format(results):
+    """Format an approuting dns zones list for display with "-o table"."""
+    from msrestazure.tools import parse_resource_id
+    def parser(entry):
+        parsed_dns_zone = parse_resource_id(entry) 
+        parsed = compile_jmes("""{
+            id: {},
+            subscription: subscription,
+            resourceGroup: resource_group,
+            type: type,
+            name: name,
+        }""".format(entry))
+        return parsed.search(parsed_dns_zone, Options(dict_cls=OrderedDict))
+    return [parser(r) for r in results]
