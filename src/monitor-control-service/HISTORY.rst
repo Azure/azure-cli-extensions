@@ -4,7 +4,7 @@ Release History
 ===============
 0.4.0
 ++++++
-* Bump api version from 2022_09_01_preview to 2022_06_01
+* Bump api version to `2022-06-01`
 
 0.3.1
 ++++++
