@@ -42,6 +42,11 @@ class UpdateStrategyNamespace:
     def __init__(self, update_strategy_name):
         self.update_strategy_name = update_strategy_name
 
+class VMSizeNamespace:
+
+    def __init__(self, vm_size):
+        self.vm_size = vm_size
+
 class TestValidateMemberClusterId(unittest.TestCase):
     def test_invalid_member_cluster_id(self):
         invalid_member_cluster_id = "dummy cluster id"
@@ -159,6 +164,22 @@ class TestValidateUpdateStrategyName(unittest.TestCase):
         namespace = UpdateStrategyNamespace(update_strategy_name=valid_update_strategy_name)
 
         self.assertIsNone(validators.validate_update_strategy_name(namespace))
+
+class TestValidateVmSize(unittest.TestCase):
+    def test_invalid_vm_size(self):
+        invalid_vm_size = ""
+        namespace = VMSizeNamespace(vm_size=invalid_vm_size)
+        err = ("--vm-size is not a valid value")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_vm_size(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_vm_size(self):
+        valid_vm_size = "a_valid_vm_size_sku"
+        namespace = VMSizeNamespace(vm_size=valid_vm_size)
+
+        self.assertIsNone(validators.validate_vm_size(namespace))
 
 if __name__ == "__main__":
     unittest.main()
