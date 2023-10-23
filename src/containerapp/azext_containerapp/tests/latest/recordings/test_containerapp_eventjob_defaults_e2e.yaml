@@ -223,7 +223,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 Oct 2023 22:50:46 GMT
+      - Wed, 18 Oct 2023 22:50:47 GMT
       expires:
       - '-1'
       pragma:
@@ -255,7 +255,8 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --environment --trigger-type
+      - --resource-group --name --environment --trigger-type --scale-rule-name --scale-rule-type
+        --scale-rule-metadata --scale-rule-auth --secrets --env-vars
       User-Agent:
       - AZURECLI/2.53.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.12 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -420,7 +421,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 Oct 2023 22:50:48 GMT
+      - Wed, 18 Oct 2023 22:50:47 GMT
       expires:
       - '-1'
       pragma:
@@ -446,7 +447,8 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --environment --trigger-type
+      - --resource-group --name --environment --trigger-type --scale-rule-name --scale-rule-type
+        --scale-rule-metadata --scale-rule-auth --secrets --env-vars
       User-Agent:
       - python/3.10.12 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.53.0
@@ -499,7 +501,8 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --environment --trigger-type
+      - --resource-group --name --environment --trigger-type --scale-rule-name --scale-rule-type
+        --scale-rule-metadata --scale-rule-auth --secrets --env-vars
       User-Agent:
       - AZURECLI/2.53.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.12 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
@@ -681,13 +684,22 @@ interactions:
 - request:
     body: '{"location": "East US", "identity": {"type": "None", "userAssignedIdentities":
       null}, "properties": {"environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus",
-      "configuration": {"secrets": null, "triggerType": "manual", "replicaTimeout":
-      1800, "replicaRetryLimit": 0, "manualTriggerConfig": {"replicaCompletionCount":
-      1, "parallelism": 1}, "scheduleTriggerConfig": null, "eventTriggerConfig": null,
-      "registries": null, "dapr": null}, "template": {"containers": [{"image": "mcr.microsoft.com/k8se/quickstart:latest",
-      "name": "job4000002", "command": null, "args": null, "env": null, "resources":
-      null, "volumeMounts": null}], "initContainers": null, "volumes": null}, "workloadProfileName":
-      null}, "tags": null}'
+      "configuration": {"secrets": [{"name": "connection-string-secret", "value":
+      "testConnString", "keyVaultUrl": "", "identity": ""}], "triggerType": "event",
+      "replicaTimeout": 1800, "replicaRetryLimit": 0, "manualTriggerConfig": null,
+      "scheduleTriggerConfig": null, "eventTriggerConfig": {"replicaCompletionCount":
+      1, "parallelism": 1, "scale": {"minExecutions": 0, "maxExecutions": 100, "pollingInterval":
+      30, "rules": [{"name": "queue", "azureQueue": null, "custom": null, "http":
+      null, "type": "azure-queue", "metadata": {"accountName": "containerappextension",
+      "queueName": "testeventdrivenjobs", "queueLength": "1", "connectionFromEnv":
+      "AZURE_STORAGE_CONNECTION_STRING"}, "auth": [{"triggerParameter": "connection",
+      "secretRef": "connection-string-secret"}]}]}}, "registries": null, "dapr": null},
+      "template": {"containers": [{"image": "mcr.microsoft.com/k8se/quickstart:latest",
+      "name": "job3000002", "command": null, "args": null, "env": [{"name": "AZURE_STORAGE_QUEUE_NAME",
+      "value": "testeventdrivenjobs"}, {"name": "AZURE_STORAGE_CONNECTION_STRING",
+      "secretRef": "connection-string-secret"}], "resources": null, "volumeMounts":
+      null}], "initContainers": null, "volumes": null}, "workloadProfileName": null},
+      "tags": null}'
     headers:
       Accept:
       - '*/*'
@@ -698,29 +710,30 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '814'
+      - '1493'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --resource-group --name --environment --trigger-type
+      - --resource-group --name --environment --trigger-type --scale-rule-name --scale-rule-type
+        --scale-rule-metadata --scale-rule-auth --secrets --env-vars
       User-Agent:
       - python/3.10.12 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.53.0
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002?api-version=2023-05-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002?api-version=2023-05-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002","name":"job4000002","type":"Microsoft.App/jobs","location":"East
-        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:50.7172127Z","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:50.7172127Z"},"properties":{"provisioningState":"InProgress","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":null,"triggerType":"Manual","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":{"replicaCompletionCount":1,"parallelism":1},"scheduleTriggerConfig":null,"eventTriggerConfig":null,"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job4000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job4000002/eventstream"},"identity":{"type":"None"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002","name":"job3000002","type":"Microsoft.App/jobs","location":"East
+        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:51.0880648Z","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:51.0880648Z"},"properties":{"provisioningState":"InProgress","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":[{"name":"connection-string-secret","keyVaultUrl":"","identity":""}],"triggerType":"Event","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":null,"scheduleTriggerConfig":null,"eventTriggerConfig":{"replicaCompletionCount":1,"parallelism":1,"scale":{"minExecutions":0,"maxExecutions":100,"pollingInterval":30,"rules":[{"name":"queue","type":"azure-queue","metadata":{"accountName":"containerappextension","connectionFromEnv":"AZURE_STORAGE_CONNECTION_STRING","queueLength":"1","queueName":"testeventdrivenjobs"},"auth":[{"secretRef":"connection-string-secret","triggerParameter":"connection"}]}]}},"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job3000002","env":[{"name":"AZURE_STORAGE_QUEUE_NAME","value":"testeventdrivenjobs"},{"name":"AZURE_STORAGE_CONNECTION_STRING","secretRef":"connection-string-secret"}],"resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job3000002/eventstream"},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-11-01-preview, 2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappsjobOperationStatuses/77933334-4365-456d-a5b7-11a67a447541?api-version=2023-05-02-preview&azureAsyncOperation=true&t=638332662514359728&c=MIIHHjCCBgagAwIBAgITfwHPmO-HOYY8_rHKfgAEAc-Y7zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjMwODAyMTQ0MjUwWhcNMjQwNzI3MTQ0MjUwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPF9yfupPTuTedlcgZAZX2oSAEYZ7qdZw3ysEqw2CwPezis3X8QxHp2PMAXADeKQVFz4_V8JBJcK-QWaR4sxUdneihRK8hnhfUeGd7U3q7WPOQ2N60F3e3bPgTnhOSsM7yQSzwNrFswnjbBlzV2anb0rKwZvkf5XlbjNH-OAsz1BYFBYAWgt_LQ8dkt-aMguHncA8_ps01XPfCEpCYaqCYlpbkEJVsoToz2Wn8KYdaw9KkAWfe5P1YTHpg0V_dfTLkG7Jp0Jz7J-Jh0fo60JNh9FRQPmmZcwScoMBZul8ZPVmsex97-W11i6GYKgO9TocqqJkzhwjqV8_R3o6S202qECAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQo2jZniAgXOG1RyM1WtoBV7LkTQTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAB0sqlpvJuTdwQr4YuxbnEsUlXL2o10CAOfMkcLOkMa3Dnr4X8hleEBLlXbeaDAwOeGkwN11HkwRWF3h6YrWKjqa8zoYA3C_dkh6k7cllKBDOgqyyACzz9b5hff3BXNCsYOHqnu_8CxaKXvJnAis5oD_dcRWwHQ-mzo_-pwsr2YZjScUFe7Yr9OvcfXrQEyqajp76b7yxhPiQlueh74bxg4qoMIDar2oj3BwszvPzY06PkS4KJLni81AwmL7RBvBkOYunG5ERgTanTdJAeVulseRs4XwySSZ0iT69ZLO9YkMUxFYtRIsh8yxCL6iNSXOBR0056tZv_d4EVn4x92nDEc&s=wvRXNG5Q0Uj3S0QdqqSqt4yEZ53S0yhCBldz1RwIPxQeGuVD7qoLrle4QeVklfilLMohi6DiTPTyvEr9TRo0smxvA2pQRmFuu_nOaoA1pPGRDFavNb28VF0l37QvSZFuQTNHs-h1LX4nC-nL0hhBJ4-CbTkkNySOL_tsO7jY-fc4kkCNl39_g1k9_qEzDaui66647OQFxiyqtTr-Mxq1EvYnI4bBt00LMHafhV59EQao5hGTV6LOGbqS_51RsqW0akkoDZkRM74b5EJpzlZZIIvyAIN6sZOSemJ_kqmDn0NhmHJcx_E-oPMkEUDKlypjQOPbJohPc-8XVnvWYWbL4A&h=L_hHEr2rlIZK1PqZbTMxnx7SJby-ez-x3kyhaFQBCgE
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappsjobOperationStatuses/3cbf9f07-30f5-4d1e-8769-2fd245ee8821?api-version=2023-05-02-preview&azureAsyncOperation=true&t=638332662516818144&c=MIIHHjCCBgagAwIBAgITfwHPmO-HOYY8_rHKfgAEAc-Y7zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjMwODAyMTQ0MjUwWhcNMjQwNzI3MTQ0MjUwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPF9yfupPTuTedlcgZAZX2oSAEYZ7qdZw3ysEqw2CwPezis3X8QxHp2PMAXADeKQVFz4_V8JBJcK-QWaR4sxUdneihRK8hnhfUeGd7U3q7WPOQ2N60F3e3bPgTnhOSsM7yQSzwNrFswnjbBlzV2anb0rKwZvkf5XlbjNH-OAsz1BYFBYAWgt_LQ8dkt-aMguHncA8_ps01XPfCEpCYaqCYlpbkEJVsoToz2Wn8KYdaw9KkAWfe5P1YTHpg0V_dfTLkG7Jp0Jz7J-Jh0fo60JNh9FRQPmmZcwScoMBZul8ZPVmsex97-W11i6GYKgO9TocqqJkzhwjqV8_R3o6S202qECAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQo2jZniAgXOG1RyM1WtoBV7LkTQTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAB0sqlpvJuTdwQr4YuxbnEsUlXL2o10CAOfMkcLOkMa3Dnr4X8hleEBLlXbeaDAwOeGkwN11HkwRWF3h6YrWKjqa8zoYA3C_dkh6k7cllKBDOgqyyACzz9b5hff3BXNCsYOHqnu_8CxaKXvJnAis5oD_dcRWwHQ-mzo_-pwsr2YZjScUFe7Yr9OvcfXrQEyqajp76b7yxhPiQlueh74bxg4qoMIDar2oj3BwszvPzY06PkS4KJLni81AwmL7RBvBkOYunG5ERgTanTdJAeVulseRs4XwySSZ0iT69ZLO9YkMUxFYtRIsh8yxCL6iNSXOBR0056tZv_d4EVn4x92nDEc&s=UAJiJ6K94wX7q2CAmXy5jVn4BPUhQNjuTrkmXwmQQdn2SDaGRZXgqJmviDXIif2fK6sltAIzjrDFmctijrDXQo1fidxt7Rv1Ll2ttfrv9kLJK-Kn4emtai-Y4J64jXt6os4RXcpNb-kiazBqgTI_vE28CgtfjxLlIn5GQgScNz2RK7kX8HwXFkZQBJjcKOTaQRNwPf5I9VmWveuv52_MqLqXwDfkbrNeCD3qM7iinOt3vLxrMw1Xc22WHd3MftIKsyrb53G9mud1hwqDLWhivXPBkAKu-g13x97j9CnER7gSbH2dv9Q2c1d-5HnprJB6t59GRMpntmSmDafvgo2qoA&h=I9tU7ymymIyOajw6v54XXTqa7UQXrwP0PisBT8SMpOE
       cache-control:
       - no-cache
       content-length:
-      - '1336'
+      - '1911'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -756,23 +769,24 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --environment --trigger-type
+      - --resource-group --name --environment --trigger-type --scale-rule-name --scale-rule-type
+        --scale-rule-metadata --scale-rule-auth --secrets --env-vars
       User-Agent:
       - python/3.10.12 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002?api-version=2023-05-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002?api-version=2023-05-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002","name":"job4000002","type":"Microsoft.App/jobs","location":"East
-        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:50.7172127","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:50.7172127"},"properties":{"provisioningState":"InProgress","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":null,"triggerType":"Manual","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":{"replicaCompletionCount":1,"parallelism":1},"scheduleTriggerConfig":null,"eventTriggerConfig":null,"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job4000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job4000002/eventstream"},"identity":{"type":"None"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002","name":"job3000002","type":"Microsoft.App/jobs","location":"East
+        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:51.0880648","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:51.0880648"},"properties":{"provisioningState":"InProgress","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":[{"name":"connection-string-secret","keyVaultUrl":"","identity":""}],"triggerType":"Event","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":null,"scheduleTriggerConfig":null,"eventTriggerConfig":{"replicaCompletionCount":1,"parallelism":1,"scale":{"minExecutions":0,"maxExecutions":100,"pollingInterval":30,"rules":[{"name":"queue","type":"azure-queue","metadata":{"accountName":"containerappextension","connectionFromEnv":"AZURE_STORAGE_CONNECTION_STRING","queueLength":"1","queueName":"testeventdrivenjobs"},"auth":[{"secretRef":"connection-string-secret","triggerParameter":"connection"}]}]}},"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job3000002","env":[{"name":"AZURE_STORAGE_QUEUE_NAME","value":"testeventdrivenjobs"},{"name":"AZURE_STORAGE_CONNECTION_STRING","secretRef":"connection-string-secret"}],"resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job3000002/eventstream"},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-11-01-preview, 2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1334'
+      - '1909'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -808,27 +822,28 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --environment --trigger-type
+      - --resource-group --name --environment --trigger-type --scale-rule-name --scale-rule-type
+        --scale-rule-metadata --scale-rule-auth --secrets --env-vars
       User-Agent:
       - python/3.10.12 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002?api-version=2023-05-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002?api-version=2023-05-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002","name":"job4000002","type":"Microsoft.App/jobs","location":"East
-        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:50.7172127","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:50.7172127"},"properties":{"provisioningState":"InProgress","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":null,"triggerType":"Manual","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":{"replicaCompletionCount":1,"parallelism":1},"scheduleTriggerConfig":null,"eventTriggerConfig":null,"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job4000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job4000002/eventstream"},"identity":{"type":"None"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002","name":"job3000002","type":"Microsoft.App/jobs","location":"East
+        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:51.0880648","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:51.0880648"},"properties":{"provisioningState":"InProgress","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":[{"name":"connection-string-secret","keyVaultUrl":"","identity":""}],"triggerType":"Event","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":null,"scheduleTriggerConfig":null,"eventTriggerConfig":{"replicaCompletionCount":1,"parallelism":1,"scale":{"minExecutions":0,"maxExecutions":100,"pollingInterval":30,"rules":[{"name":"queue","type":"azure-queue","metadata":{"accountName":"containerappextension","connectionFromEnv":"AZURE_STORAGE_CONNECTION_STRING","queueLength":"1","queueName":"testeventdrivenjobs"},"auth":[{"secretRef":"connection-string-secret","triggerParameter":"connection"}]}]}},"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job3000002","env":[{"name":"AZURE_STORAGE_QUEUE_NAME","value":"testeventdrivenjobs"},{"name":"AZURE_STORAGE_CONNECTION_STRING","secretRef":"connection-string-secret"}],"resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job3000002/eventstream"},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-11-01-preview, 2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1334'
+      - '1909'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 Oct 2023 22:50:54 GMT
+      - Wed, 18 Oct 2023 22:50:55 GMT
       expires:
       - '-1'
       pragma:
@@ -860,23 +875,24 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --environment --trigger-type
+      - --resource-group --name --environment --trigger-type --scale-rule-name --scale-rule-type
+        --scale-rule-metadata --scale-rule-auth --secrets --env-vars
       User-Agent:
       - python/3.10.12 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002?api-version=2023-05-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002?api-version=2023-05-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002","name":"job4000002","type":"Microsoft.App/jobs","location":"East
-        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:50.7172127","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:50.7172127"},"properties":{"provisioningState":"Succeeded","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":null,"triggerType":"Manual","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":{"replicaCompletionCount":1,"parallelism":1},"scheduleTriggerConfig":null,"eventTriggerConfig":null,"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job4000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job4000002/eventstream"},"identity":{"type":"None"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002","name":"job3000002","type":"Microsoft.App/jobs","location":"East
+        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:51.0880648","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:51.0880648"},"properties":{"provisioningState":"Succeeded","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":[{"name":"connection-string-secret","keyVaultUrl":"","identity":""}],"triggerType":"Event","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":null,"scheduleTriggerConfig":null,"eventTriggerConfig":{"replicaCompletionCount":1,"parallelism":1,"scale":{"minExecutions":0,"maxExecutions":100,"pollingInterval":30,"rules":[{"name":"queue","type":"azure-queue","metadata":{"accountName":"containerappextension","connectionFromEnv":"AZURE_STORAGE_CONNECTION_STRING","queueLength":"1","queueName":"testeventdrivenjobs"},"auth":[{"secretRef":"connection-string-secret","triggerParameter":"connection"}]}]}},"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job3000002","env":[{"name":"AZURE_STORAGE_QUEUE_NAME","value":"testeventdrivenjobs"},{"name":"AZURE_STORAGE_CONNECTION_STRING","secretRef":"connection-string-secret"}],"resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job3000002/eventstream"},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-11-01-preview, 2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1333'
+      - '1908'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -1108,22 +1124,22 @@ interactions:
       - python/3.10.12 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002","name":"job4000002","type":"Microsoft.App/jobs","location":"East
-        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:50.7172127","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:50.7172127"},"properties":{"provisioningState":"Succeeded","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":null,"triggerType":"Manual","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":{"replicaCompletionCount":1,"parallelism":1},"scheduleTriggerConfig":null,"eventTriggerConfig":null,"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job4000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job4000002/eventstream"},"identity":{"type":"None"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002","name":"job3000002","type":"Microsoft.App/jobs","location":"East
+        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:51.0880648","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:51.0880648"},"properties":{"provisioningState":"Succeeded","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":[{"name":"connection-string-secret","keyVaultUrl":"","identity":""}],"triggerType":"Event","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":null,"scheduleTriggerConfig":null,"eventTriggerConfig":{"replicaCompletionCount":1,"parallelism":1,"scale":{"minExecutions":0,"maxExecutions":100,"pollingInterval":30,"rules":[{"name":"queue","type":"azure-queue","metadata":{"accountName":"containerappextension","connectionFromEnv":"AZURE_STORAGE_CONNECTION_STRING","queueLength":"1","queueName":"testeventdrivenjobs"},"auth":[{"secretRef":"connection-string-secret","triggerParameter":"connection"}]}]}},"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job3000002","env":[{"name":"AZURE_STORAGE_QUEUE_NAME","value":"testeventdrivenjobs"},{"name":"AZURE_STORAGE_CONNECTION_STRING","secretRef":"connection-string-secret"}],"resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job3000002/eventstream"},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-11-01-preview, 2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1333'
+      - '1908'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 Oct 2023 22:50:58 GMT
+      - Wed, 18 Oct 2023 22:50:59 GMT
       expires:
       - '-1'
       pragma:
@@ -1353,7 +1369,7 @@ interactions:
       - python/3.10.12 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.53.0
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002?api-version=2023-05-01
   response:
     body:
       string: ''
@@ -1365,11 +1381,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 18 Oct 2023 22:51:00 GMT
+      - Wed, 18 Oct 2023 22:51:01 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappsjobOperationResults/77933334-4365-456d-a5b7-11a67a447541?api-version=2023-05-01&t=638332662608691059&c=MIIHHjCCBgagAwIBAgITfwHPmO-HOYY8_rHKfgAEAc-Y7zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjMwODAyMTQ0MjUwWhcNMjQwNzI3MTQ0MjUwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPF9yfupPTuTedlcgZAZX2oSAEYZ7qdZw3ysEqw2CwPezis3X8QxHp2PMAXADeKQVFz4_V8JBJcK-QWaR4sxUdneihRK8hnhfUeGd7U3q7WPOQ2N60F3e3bPgTnhOSsM7yQSzwNrFswnjbBlzV2anb0rKwZvkf5XlbjNH-OAsz1BYFBYAWgt_LQ8dkt-aMguHncA8_ps01XPfCEpCYaqCYlpbkEJVsoToz2Wn8KYdaw9KkAWfe5P1YTHpg0V_dfTLkG7Jp0Jz7J-Jh0fo60JNh9FRQPmmZcwScoMBZul8ZPVmsex97-W11i6GYKgO9TocqqJkzhwjqV8_R3o6S202qECAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQo2jZniAgXOG1RyM1WtoBV7LkTQTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAB0sqlpvJuTdwQr4YuxbnEsUlXL2o10CAOfMkcLOkMa3Dnr4X8hleEBLlXbeaDAwOeGkwN11HkwRWF3h6YrWKjqa8zoYA3C_dkh6k7cllKBDOgqyyACzz9b5hff3BXNCsYOHqnu_8CxaKXvJnAis5oD_dcRWwHQ-mzo_-pwsr2YZjScUFe7Yr9OvcfXrQEyqajp76b7yxhPiQlueh74bxg4qoMIDar2oj3BwszvPzY06PkS4KJLni81AwmL7RBvBkOYunG5ERgTanTdJAeVulseRs4XwySSZ0iT69ZLO9YkMUxFYtRIsh8yxCL6iNSXOBR0056tZv_d4EVn4x92nDEc&s=DvJSedidlFRQedHOQxGCEW7LjjBLp2lJTy2_c97TCN8XjijVquSlw1XOME0-kCPAp7BnK5728HK85oTbrpSxGTKcT4LqCeZ8RG37ydsZgzTBwbW6ctRoCdb6rT7mwimTk4TeHBC3B0AMp3F7cEyM1volXLPwqFM578nuRBA3AhnS5ykJ_gb8qfEiCB6Pb3EW3swk7odJEPLFUT5EsqarPThWQN21HoVujtZbDZ09vwWw2gR-51s9YynwhOdx4M2OLCnkginDB2KH4VWPMmxeDc_9S980ZWwryibo4iCZyG6kNhElZhWaPof_GjJEWlsCES5pUMgyZdsejSZMYK79OA&h=9sENPY22H4lPxh5--jJdIqCIgQksL5N57KSjMkJRXqw
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappsjobOperationResults/3cbf9f07-30f5-4d1e-8769-2fd245ee8821?api-version=2023-05-01&t=638332662613411430&c=MIIHHjCCBgagAwIBAgITfwHPmO-HOYY8_rHKfgAEAc-Y7zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjMwODAyMTQ0MjUwWhcNMjQwNzI3MTQ0MjUwWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPF9yfupPTuTedlcgZAZX2oSAEYZ7qdZw3ysEqw2CwPezis3X8QxHp2PMAXADeKQVFz4_V8JBJcK-QWaR4sxUdneihRK8hnhfUeGd7U3q7WPOQ2N60F3e3bPgTnhOSsM7yQSzwNrFswnjbBlzV2anb0rKwZvkf5XlbjNH-OAsz1BYFBYAWgt_LQ8dkt-aMguHncA8_ps01XPfCEpCYaqCYlpbkEJVsoToz2Wn8KYdaw9KkAWfe5P1YTHpg0V_dfTLkG7Jp0Jz7J-Jh0fo60JNh9FRQPmmZcwScoMBZul8ZPVmsex97-W11i6GYKgO9TocqqJkzhwjqV8_R3o6S202qECAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQo2jZniAgXOG1RyM1WtoBV7LkTQTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAB0sqlpvJuTdwQr4YuxbnEsUlXL2o10CAOfMkcLOkMa3Dnr4X8hleEBLlXbeaDAwOeGkwN11HkwRWF3h6YrWKjqa8zoYA3C_dkh6k7cllKBDOgqyyACzz9b5hff3BXNCsYOHqnu_8CxaKXvJnAis5oD_dcRWwHQ-mzo_-pwsr2YZjScUFe7Yr9OvcfXrQEyqajp76b7yxhPiQlueh74bxg4qoMIDar2oj3BwszvPzY06PkS4KJLni81AwmL7RBvBkOYunG5ERgTanTdJAeVulseRs4XwySSZ0iT69ZLO9YkMUxFYtRIsh8yxCL6iNSXOBR0056tZv_d4EVn4x92nDEc&s=tNjj_goBHMd5OilZtvYi6ayfJerOPYD24zZy2luzWsH4PWUgMmhYXQTlAw_tGjPwz75sfP_7vFWIK3kYsT7xD8qQ46s9paRj8pMHEiRa_pt_epfkD1WQkk570EEYui830-1UZQ5KrwDzDN5cfo7bSRS92JwOdxzPqtPhIR4nA-Efpho7U-RkjIk_tOtn0KxPDmpJqew0oMjFZan3PdVgdqHlThvHAA-g6Gl2LD6tugdCCsZ2MYxnOV6vMOA_QrSoOjm6A3M9AWlPkd8iw4lbahMJYKpe6DhSRmYqE3CSU5ZtPeruDb5N3wSeVkMMaAkwe-3IZw5oqdDGsrU9p6g_pw&h=CYLp7NKO14mo0M_PywQtzUcZnAEG5fb4fUOihEpehB0
       pragma:
       - no-cache
       server:
@@ -1379,7 +1395,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
       x-powered-by:
       - ASP.NET
     status:
@@ -1402,18 +1418,18 @@ interactions:
       - python/3.10.12 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002","name":"job4000002","type":"Microsoft.App/jobs","location":"East
-        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:50.7172127","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:50.7172127"},"properties":{"provisioningState":"Deleting","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":null,"triggerType":"Manual","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":{"replicaCompletionCount":1,"parallelism":1},"scheduleTriggerConfig":null,"eventTriggerConfig":null,"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job4000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job4000002/eventstream"},"identity":{"type":"None"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002","name":"job3000002","type":"Microsoft.App/jobs","location":"East
+        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:51.0880648","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:51.0880648"},"properties":{"provisioningState":"Deleting","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":[{"name":"connection-string-secret","keyVaultUrl":"","identity":""}],"triggerType":"Event","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":null,"scheduleTriggerConfig":null,"eventTriggerConfig":{"replicaCompletionCount":1,"parallelism":1,"scale":{"minExecutions":0,"maxExecutions":100,"pollingInterval":30,"rules":[{"name":"queue","type":"azure-queue","metadata":{"accountName":"containerappextension","connectionFromEnv":"AZURE_STORAGE_CONNECTION_STRING","queueLength":"1","queueName":"testeventdrivenjobs"},"auth":[{"secretRef":"connection-string-secret","triggerParameter":"connection"}]}]}},"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job3000002","env":[{"name":"AZURE_STORAGE_QUEUE_NAME","value":"testeventdrivenjobs"},{"name":"AZURE_STORAGE_CONNECTION_STRING","secretRef":"connection-string-secret"}],"resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job3000002/eventstream"},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-11-01-preview, 2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1332'
+      - '1907'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -1454,22 +1470,22 @@ interactions:
       - python/3.10.12 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002","name":"job4000002","type":"Microsoft.App/jobs","location":"East
-        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:50.7172127","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:50.7172127"},"properties":{"provisioningState":"Deleting","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":null,"triggerType":"Manual","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":{"replicaCompletionCount":1,"parallelism":1},"scheduleTriggerConfig":null,"eventTriggerConfig":null,"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job4000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job4000002/eventstream"},"identity":{"type":"None"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002","name":"job3000002","type":"Microsoft.App/jobs","location":"East
+        US","systemData":{"createdBy":"pbouchon@microsoft.com","createdByType":"User","createdAt":"2023-10-18T22:50:51.0880648","lastModifiedBy":"pbouchon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T22:50:51.0880648"},"properties":{"provisioningState":"Deleting","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"configuration":{"secrets":[{"name":"connection-string-secret","keyVaultUrl":"","identity":""}],"triggerType":"Event","replicaTimeout":1800,"replicaRetryLimit":0,"manualTriggerConfig":null,"scheduleTriggerConfig":null,"eventTriggerConfig":{"replicaCompletionCount":1,"parallelism":1,"scale":{"minExecutions":0,"maxExecutions":100,"pollingInterval":30,"rules":[{"name":"queue","type":"azure-queue","metadata":{"accountName":"containerappextension","connectionFromEnv":"AZURE_STORAGE_CONNECTION_STRING","queueLength":"1","queueName":"testeventdrivenjobs"},"auth":[{"secretRef":"connection-string-secret","triggerParameter":"connection"}]}]}},"registries":null,"dapr":null},"template":{"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"job3000002","env":[{"name":"AZURE_STORAGE_QUEUE_NAME","value":"testeventdrivenjobs"},{"name":"AZURE_STORAGE_CONNECTION_STRING","secretRef":"connection-string-secret"}],"resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"volumes":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/job3000002/eventstream"},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-11-01-preview, 2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1332'
+      - '1907'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 Oct 2023 22:51:03 GMT
+      - Wed, 18 Oct 2023 22:51:04 GMT
       expires:
       - '-1'
       pragma:
@@ -1506,11 +1522,11 @@ interactions:
       - python/3.10.12 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job4000002?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/jobs/job3000002?api-version=2023-05-01
   response:
     body:
       string: '{"error":{"code":"ContainerAppsJobNotFound","message":"Container apps
-        job ''job4000002'' was not found."}}'
+        job ''job3000002'' was not found."}}'
     headers:
       api-supported-versions:
       - 2022-11-01-preview, 2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
@@ -1521,7 +1537,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 Oct 2023 22:51:05 GMT
+      - Wed, 18 Oct 2023 22:51:07 GMT
       expires:
       - '-1'
       pragma:
@@ -1714,7 +1730,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 Oct 2023 22:51:06 GMT
+      - Wed, 18 Oct 2023 22:51:07 GMT
       expires:
       - '-1'
       pragma:
@@ -1750,8 +1766,6 @@ interactions:
     body:
       string: '{"value":[]}'
     headers:
-      api-supported-versions:
-      - 2022-11-01-preview, 2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1764,18 +1778,12 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
