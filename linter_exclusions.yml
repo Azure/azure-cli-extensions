@@ -3035,3 +3035,39 @@ scenario guide:
     search_keyword:
       rule_exclusions:
         - no_positional_parameters
+eventgrid namespace client create:
+  parameters:
+    client_certificate_authentication:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid namespace client update:
+  parameters:
+    client_certificate_authentication:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid namespace create:
+  parameters:
+    minimum_tls_version_allowed:
+      rule_exclusions:
+      - option_length_too_long
+    private_endpoint_connections:
+       rule_exclusions:
+        - option_length_too_long
+    topic_spaces_configuration:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid namespace update:
+  parameters:
+    topic_spaces_configuration:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid namespace topic create:
+  parameters:
+    event_retention_in_days:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid namespace topic update:
+  parameters:
+    event_retention_in_days:
+      rule_exclusions:
+      - option_length_too_long
