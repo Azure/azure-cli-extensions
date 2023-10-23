@@ -648,9 +648,9 @@ def get_kubernetes_distro(api_response):  # Heuristic
                 return "eks"
             if labels.get("minikube.k8s.io/version"):
                 return "minikube"
-            if annotations.get("node.aksedge.io/distro: aks_edge_k3s"):
+            if annotations.get("node.aksedge.io/distro") == 'aks_edge_k3s':
                 return "aks_edge_k3s"
-            if annotations.get("node.aksedge.io/distro: aks_edge_k8s"):
+            if annotations.get("node.aksedge.io/distro") == 'aks_edge_k8s':
                 return "aks_edge_k8s"
             if provider_id.startswith("kind://"):
                 return "kind"
