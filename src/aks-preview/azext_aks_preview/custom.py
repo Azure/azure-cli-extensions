@@ -2588,14 +2588,23 @@ def aks_approuting_zone_add(cmd, client, dns_zone_resource_ids, attach_zones=Fal
     return _aks_approuting_update(cmd, client, dns_zone_resource_ids, add_dns_zone=True, attach_zones=attach_zones)
 
 def aks_approuting_zone_delete(cmd, client, dns_zone_resource_ids):
-    return _aks_approuting_update(cmd, client, dns_zone_resource_ids, add_dns_zone=False)
+    return _aks_approuting_update(cmd, client, dns_zone_resource_ids, delete_dns_zone=True)
 
 def aks_approuting_zone_update(cmd, client, dns_zone_resource_ids, attach_zones=False):
     return _aks_approuting_update(cmd, client, dns_zone_resource_ids, update_dns_zone=True, attach_zones=attach_zones)
-
-def aks_approuting_zone_list(cmd, client):
-    return _aks_approuting_update(cmd, client)
-
+    
+def aks_approuting_zone_list(cmd, client, resource_group_name, name):
+   
+    mc = client.get(resource_group_name, name)
+    
+    if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
+        if mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
+            return mc.ingress_profile.web_app_routing.dns_zone_resource_ids
+        else:
+            raise CLIError('No dns zone attached to the cluster')
+    else:
+        raise CLIError('App routing addon is not enabled')
+    
 def _aks_approuting_update(cmd, client, enable_app_routing=None, enable_kv=None, keyvault_id=None):
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
