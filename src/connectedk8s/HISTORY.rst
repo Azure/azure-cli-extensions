@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.5.1
+++++++
+* Fix an issue where the agents could not be installed on a cluster behind a proxy.
+
 1.5.0
 ++++++
 * Enforce valid custom locations service principal application object id passed in by the user for enabling custom locations feature.
