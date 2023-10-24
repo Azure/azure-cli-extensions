@@ -7876,9 +7876,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # update to disable network observability
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} --disable-network-observability ' \
+        update_cmd_two = 'aks update --resource-group={resource_group} --name={name} --disable-network-observability ' \
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkObservabilityPreview '
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd_two, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.monitoring.enabled', False),
         ])
