@@ -3,6 +3,10 @@
 Release History
 ===============
 
+4.1.1
+++++++
+* Revered the attribute renaming changes done in previous commit.
+
 4.1.0
 ++++++
 * Supported for fabric commit-configuration functionality
