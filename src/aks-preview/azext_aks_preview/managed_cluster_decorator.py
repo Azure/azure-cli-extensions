@@ -600,7 +600,19 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool or None
         """
-        return self.raw_param.get("enable_network_observability")
+        enable_network_observability = self.raw_param.get("enable_network_observability")
+        disable_network_observability = self.raw_param.get("disable_network_observability")
+        if enable_network_observability and disable_network_observability:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-network-observability and "
+                "--disable-network-observability at the same time."
+            )
+        if enable_network_observability is False and disable_network_observability is False:
+            return None
+        if enable_network_observability is not None:
+            return enable_network_observability
+        if disable_network_observability is not None:
+            return not disable_network_observability
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of load_balancer_managed_outbound_ip_count.
