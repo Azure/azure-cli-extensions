@@ -46,21 +46,6 @@ logger = get_logger(__name__)
 diagnoser_output = []
 
 
-# Configure proxy settings for kube client
-def configure_kube_client_proxy():
-    # If NO_PROXY is set and the cluster is in the no proxy list, we don't need to set proxy
-    if os.environ.get('NO_PROXY'):
-        no_proxy_list = os.environ.get('NO_PROXY').split(',')
-        if kube_client.Configuration._default.host in no_proxy_list:
-            return
-
-    # Set the proxy settings for kube client
-    if os.environ.get('HTTPS_PROXY'):
-        kube_client.Configuration._default.proxy = os.environ.get('HTTPS_PROXY')
-    elif os.environ.get('HTTP_PROXY'):
-        kube_client.Configuration._default.proxy = os.environ.get('HTTP_PROXY')
-
-
 def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available):
     global diagnoser_output
     try:

@@ -18,8 +18,6 @@ class Connectedk8sCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_connectedk8s.custom#{}',
             client_factory=cf_connectedk8s)
 
-        precheckutils.configure_kube_client_proxy()
-
         super(Connectedk8sCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=connectedk8s_custom)
 
     def load_command_table(self, args):
