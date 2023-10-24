@@ -890,7 +890,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "enable_network_observability": True,
-                    "disable_network_observability": False,
+                    "disable_network_observability": True,
                 }
             ),
             self.models,
@@ -901,7 +901,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             ctx_4.get_enable_network_observability()
         
         # Flag set to False.
-        ctx_4 = AKSPreviewManagedClusterContext(
+        ctx_5 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
                 {
@@ -911,7 +911,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_3.get_enable_network_observability(), False)
+        self.assertEqual(ctx_5.get_enable_network_observability(), False)
 
     def test_get_enable_managed_identity(self):
         # custom value
