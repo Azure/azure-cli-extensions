@@ -20,7 +20,7 @@ from ._utils import (get_vnet_location,
                      safe_set,
                      get_default_workload_profiles,
                      _azure_monitor_quickstart, safe_get)
-from ._client_factory import handle_raw_exception
+from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from .base_resource import BaseResource
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
@@ -370,6 +370,16 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
     def set_up_workload_profiles(self):
         if self.get_argument_enable_workload_profiles():
+            # If the environment exists, infer the environment type
+            existing_environment = None
+            try:
+                existing_environment = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+            except Exception as e:
+                handle_non_404_status_code_exception(e)
+
+            if existing_environment and safe_get(existing_environment, "properties", "workloadProfiles") is None:
+                return
+
             self.managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(self.cmd, self.get_argument_location())
 
     def get_argument_enable_workload_profiles(self):
