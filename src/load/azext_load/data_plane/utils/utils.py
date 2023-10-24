@@ -369,12 +369,15 @@ def create_or_update_test_with_config(
     else:
         new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
     if new_body["keyvaultReferenceIdentityType"] == IdentityType.UserAssigned:
-        if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", "none"]:
+        if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", ""]:
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
             new_body.pop("keyvaultReferenceIdentityId")
     subnet_id = subnet_id or yaml_test_body.get("subnetId")
     if subnet_id:
-        new_body["subnetId"] = subnet_id
+        if subnet_id.casefold() in ["null",""]:
+            new_body["subnetId"] = None
+        else:
+            new_body["subnetId"] = subnet_id
     new_body["environmentVariables"] = {}
     if body.get("environmentVariables") is not None:
         for key in body.get("environmentVariables"):
@@ -467,12 +470,15 @@ def create_or_update_test_without_config(
             "keyvaultReferenceIdentityType", IdentityType.UserAssigned
         )
     if new_body["keyvaultReferenceIdentityType"] == IdentityType.UserAssigned:
-        if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", "none"]:
+        if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", ""]:
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
             new_body.pop("keyvaultReferenceIdentityId")
     subnet_id = subnet_id or body.get("subnetId")
     if subnet_id:
-        new_body["subnetId"] = subnet_id
+        if subnet_id.casefold() in ["null",""]:
+            new_body["subnetId"] = None
+        else:
+            new_body["subnetId"] = subnet_id
     if body.get("environmentVariables") is not None:
         new_body["environmentVariables"] = body.get("environmentVariables", {})
     else:
@@ -486,7 +492,10 @@ def create_or_update_test_without_config(
     if secrets is not None:
         new_body["secrets"].update(secrets)
     if certificate is not None:
-        new_body["certificate"] = certificate
+        if certificate == "null":
+            new_body["certificate"] = None
+        else:
+            new_body["certificate"] = certificate
     elif body.get("certificate"):
         new_body["certificate"] = body.get("certificate")
     new_body["loadTestConfiguration"] = body.get("loadTestConfiguration", {})
