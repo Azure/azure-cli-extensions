@@ -25,7 +25,6 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-CURRENT_API_VERSION = "2023-05-01"
 PREVIEW_API_VERSION = "2023-05-02-preview"
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
@@ -48,11 +47,7 @@ class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
     api_version = PREVIEW_API_VERSION
 
 
-class SubscriptionClient():
-    api_version = CURRENT_API_VERSION
-
-
-class SubscriptionPreviewClient(SubscriptionClient):
+class SubscriptionPreviewClient():
     api_version = PREVIEW_API_VERSION
 
     @classmethod
