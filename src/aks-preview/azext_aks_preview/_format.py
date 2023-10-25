@@ -370,17 +370,3 @@ def _format_mesh_revision_entry(revision):
         }
         flattened.append(item)
     return flattened
-
-def aks_approuting_zone_list_table_format(results):
-    """Format an approuting dns zones list for display with "-o table"."""
-    print('inside aks_approuting_zone_list_table_format')
-    print(results)
-    def parser(entry):
-        parsed = compile_jmes("""{
-            subscription: subscription,
-            resourceGroup: resource_group,
-            type: type,
-            name: name,
-        }""")
-        return parsed.search(entry, Options(dict_cls=OrderedDict))
-    return [parser(r) for r in results]
