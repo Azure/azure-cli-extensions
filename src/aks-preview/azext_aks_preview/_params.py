@@ -1019,7 +1019,7 @@ def load_arguments(self, _):
     with self.argument_context('aks approuting zone add') as c:
         c.argument('dns_zone_resource_ids', options_list=[
                    '--ids'], required=True)
-        c.argument('attach-zones', options_list=[
+        c.argument('attach_zones', options_list=[
             '--attach-zones'], required=False)
 
     with self.argument_context('aks approuting zone delete') as c:
@@ -1029,7 +1029,7 @@ def load_arguments(self, _):
     with self.argument_context('aks approuting zone update') as c:
         c.argument('dns_zone_resource_ids', options_list=[
                    '--ids'], required=True)
-        c.argument('attach-zones', options_list=[
+        c.argument('attach_zones', options_list=[
             '--attach-zones'], required=False)
 
 
