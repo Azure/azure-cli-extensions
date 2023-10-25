@@ -277,7 +277,12 @@ def valid_resource_settings():
     }
 
 
-def validate_memory_and_cpu_setting(cpu, memory):
+def validate_memory_and_cpu_setting(cpu, memory, managed_environment):
+    # only v1 cluster do the validation
+    from ._utils import safe_get
+    if safe_get(managed_environment, "properties", "workloadProfiles"):
+        return (cpu, f"{memory}Gi")
+
     settings = valid_resource_settings()
 
     if cpu in settings.keys():  # pylint: disable=C0201

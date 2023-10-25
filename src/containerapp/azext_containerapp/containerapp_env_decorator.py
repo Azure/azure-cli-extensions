@@ -378,6 +378,9 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                 handle_non_404_status_code_exception(e)
 
             if existing_environment and safe_get(existing_environment, "properties", "workloadProfiles") is None:
+                # check if input params include -w/--enable-workload-profiles
+                if self.cmd.cli_ctx.data.get('safe_params') and ('-w' in self.cmd.cli_ctx.data.get('safe_params') or '--enable-workload-profiles' in self.cmd.cli_ctx.data.get('safe_params')):
+                    raise ValidationError(f"Existing environment {self.get_argument_name()} cannot enable workload profiles. If you want to use Consumption and Dedicated environment, please create a new one with 'az containerapp env create --enable-workload-profiles'.")
                 return
 
             self.managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(self.cmd, self.get_argument_location())
