@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.167
++++++++
+* Add `az aks approuting` and `az aks approuting zone` commands for managing App Routing.
+
 0.5.166
 +++++++
 * Add `--network-policy` to the `az aks update` command.
