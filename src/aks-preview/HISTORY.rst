@@ -12,9 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-0.5.166
+0.5.167
 +++++++
 * Add --disable-network-observability to `az aks update` cluster command.
+
+0.5.166
++++++++
+* Add `--network-policy` to the `az aks update` command.
 
 0.5.165
 +++++++

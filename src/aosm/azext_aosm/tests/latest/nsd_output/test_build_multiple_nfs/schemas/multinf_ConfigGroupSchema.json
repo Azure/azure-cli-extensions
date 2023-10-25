@@ -1,0 +1,75 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "title": "multinf_ConfigGroupSchema",
+    "type": "object",
+    "properties": {
+        "nginx-nfdg": {
+            "type": "object",
+            "properties": {
+                "deploymentParameters": {
+                    "type": "object",
+                    "properties": {
+                        "serviceAccount_create": {
+                            "type": "boolean"
+                        },
+                        "service_port": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "nginx_nfdg_nfd_version": {
+                    "type": "string",
+                    "description": "The version of the nginx-nfdg NFD to use.  This version must be compatible with (have the same parameters exposed as) nginx-nfdg."
+                },
+                "customLocationId": {
+                    "type": "string",
+                    "description": "The custom location ID of the ARC-Enabled AKS Cluster to deploy the CNF to. Should be of the form '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.extendedlocation/customlocations/{customLocationName}'"
+                }
+            },
+            "required": [
+                "deploymentParameters",
+                "nginx_nfdg_nfd_version",
+                "customLocationId"
+            ]
+        },
+        "ubuntu-nfdg": {
+            "type": "object",
+            "properties": {
+                "deploymentParameters": {
+                    "type": "object",
+                    "properties": {
+                        "location": {
+                            "type": "string"
+                        },
+                        "subnetName": {
+                            "type": "string"
+                        },
+                        "virtualNetworkId": {
+                            "type": "string"
+                        },
+                        "sshPublicKeyAdmin": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "ubuntu_nfdg_nfd_version": {
+                    "type": "string",
+                    "description": "The version of the ubuntu-nfdg NFD to use.  This version must be compatible with (have the same parameters exposed as) ubuntu-nfdg."
+                }
+            },
+            "required": [
+                "deploymentParameters",
+                "ubuntu_nfdg_nfd_version"
+            ]
+        },
+        "managedIdentity": {
+            "type": "string",
+            "description": "The managed identity to use to deploy NFs within this SNS.  This should be of the form '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}.  If you wish to use a system assigned identity, set this to a blank string."
+        }
+    },
+    "required": [
+        "nginx-nfdg",
+        "ubuntu-nfdg",
+        "managedIdentity"
+    ]
+}
