@@ -2655,6 +2655,7 @@ def _aks_mesh_update(
 
     return aks_update_decorator.update_mc(mc)
 
+
 def aks_approuting_enable(
         cmd,
         client,
@@ -2670,6 +2671,7 @@ def aks_approuting_enable(
         enable_app_routing=True,
         enable_kv=enable_kv)
 
+
 def aks_approuting_disable(
         cmd,
         client,
@@ -2682,6 +2684,7 @@ def aks_approuting_disable(
         resource_group_name,
         name,
         enable_app_routing=False)
+
 
 def aks_approuting_update(
         cmd,
@@ -2696,6 +2699,7 @@ def aks_approuting_update(
         resource_group_name,
         name,
         keyvault_id=keyvault_id)
+
 
 def aks_approuting_zone_add(
         cmd,
@@ -2714,6 +2718,7 @@ def aks_approuting_zone_add(
         add_dns_zone=True,
         attach_zones=attach_zones)
 
+
 def aks_approuting_zone_delete(
         cmd,
         client,
@@ -2728,6 +2733,7 @@ def aks_approuting_zone_delete(
         name,
         dns_zone_resource_ids=dns_zone_resource_ids,
         delete_dns_zone=True)
+
 
 def aks_approuting_zone_update(
         cmd,
@@ -2745,6 +2751,7 @@ def aks_approuting_zone_update(
         dns_zone_resource_ids=dns_zone_resource_ids,
         update_dns_zone=True,
         attach_zones=attach_zones)
+
 
 def aks_approuting_zone_list(
         cmd,
@@ -2770,6 +2777,7 @@ def aks_approuting_zone_list(
             return dns_zone_list
         raise CLIError('No dns zone attached to the cluster')
     raise CLIError('App routing addon is not enabled')
+
 
 def _aks_approuting_update(
         cmd,

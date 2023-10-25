@@ -3959,7 +3959,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         delete_dns_zone = self.context.raw_param.get("delete_dns_zone")
         update_dns_zone = self.context.raw_param.get("update_dns_zone")
 
-
         # update ManagedCluster object with app routing settings
         mc.ingress_profile = mc.ingress_profile or self.models.ManagedClusterIngressProfile()
         mc.ingress_profile.web_app_routing = mc.ingress_profile.web_app_routing or self.models.ManagedClusterIngressProfileWebAppRouting()
@@ -3994,7 +3993,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 try:
                     if keyvault.properties.enable_rbac_authorization:
                         if not add_role_assignment(self.cmd, 'Key Vault Secrets User', managed_identity_object_id, is_service_principal, scope=keyvault_id):
-                            logger.warning('Could not create a role assignment for App Routing. '
+                            logger.warning(
+                                'Could not create a role assignment for App Routing. '
                                 'Are you an Owner on this subscription?')
                     else:
                         keyvault = set_policy(self.cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=managed_identity_object_id, secret_permissions=['Get'], certificate_permissions=['Get'])
