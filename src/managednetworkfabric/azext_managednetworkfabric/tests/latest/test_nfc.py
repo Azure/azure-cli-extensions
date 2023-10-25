@@ -62,7 +62,7 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric controller delete --resource-name {name} --resource-group {rg}')
+        'az networkfabric controller delete --resource-name {deleteNFCName} --resource-group {rg}')
 
 class GA_NFCScenarioTest1(ScenarioTest):
     ''' NFCScenario test'''
@@ -77,6 +77,7 @@ class GA_NFCScenarioTest1(ScenarioTest):
             'workloadERConnections': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'workload_ER_Connections'),
             'ipv4AddressSpace': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'ipv4_address_space'),
             'isWorkloadManagementNetworkEnabled': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'is_workload_management_network_enabled'),
+            'deleteNFCName': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'delete_nfc_name'),
             'nfcSku': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'nfc_sku')
         })
 

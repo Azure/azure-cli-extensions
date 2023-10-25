@@ -32,6 +32,7 @@ def call_scenario1(test):
     ''' # Testcase: scenario1'''
     setup_scenario1(test)
     step_create_s1(test, checks=[])
+    step_update_s1(test, checks=[])
     common_methods(test)
     cleanup_scenario1(test)
 
@@ -39,6 +40,7 @@ def call_scenario2(test):
     ''' # Testcase: scenario2'''
     setup_scenario2(test)
     step_create_s2(test, checks=[])
+    step_update_s2(test, checks=[])
     common_methods(test)
     cleanup_scenario2(test)
 
@@ -65,6 +67,18 @@ def step_show(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric externalnetwork show --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
+
+def step_update_s1(test, checks=None):
+    '''externalnetwork update operation'''
+    if checks is None:
+        checks = []
+    test.cmd('az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s1_peering_option} --option-b-properties {updatedOptionBProperties}', checks=checks)
+
+def step_update_s2(test, checks=None):
+    '''externalnetwork update operation'''
+    if checks is None:
+        checks = []
+    test.cmd('az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {updatedOptionAProperties}', checks=checks)
 
 def step_list_resource_group(test, checks=None):
     '''externalnetwork list by resource group operation'''
@@ -93,7 +107,10 @@ class GA_ExternalNetworkScenarioTest1(ScenarioTest):
             'importRoutePolicy': CONFIG.get('EXTERNAL_NETWORK', 'import_route_policy'),
             'exportRoutePolicy': CONFIG.get('EXTERNAL_NETWORK', 'export_route_policy'),
             'optionBProperties': CONFIG.get('EXTERNAL_NETWORK', 'option_b_properties'),
-            'optionAProperties': CONFIG.get('EXTERNAL_NETWORK', 'option_a_properties')
+            'updatedOptionBProperties': CONFIG.get('EXTERNAL_NETWORK', 'updated_option_b_properties'),
+            'optionAProperties': CONFIG.get('EXTERNAL_NETWORK', 'option_a_properties'),
+            'updatedOptionAProperties': CONFIG.get('EXTERNAL_NETWORK', 'updated_option_a_properties')
+            
         })
 
     def test_GA_externalnetwork_scenario1(self):

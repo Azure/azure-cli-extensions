@@ -13,6 +13,8 @@ upcoming
 * 'az containerapp update': hide environment variables
 * 'az containerapp job create': hide environment variables
 * 'az containerapp job update': hide environment variables
+* [Breaking Change] 'az containerapp env create': update the default value of --enable-workload-profiles to `True`
+* 'az containerapp compose create': fix containerapp invalid memory resource
 
 0.3.41
 ++++++

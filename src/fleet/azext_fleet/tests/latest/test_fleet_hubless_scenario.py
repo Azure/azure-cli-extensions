@@ -6,6 +6,7 @@ import os
 import tempfile
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
@@ -40,6 +41,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             key_file.write(TEST_SSH_KEY_PUB)
         return pathname.replace('\\', '\\\\')
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8)
     def test_fleet_hubless(self):
 
