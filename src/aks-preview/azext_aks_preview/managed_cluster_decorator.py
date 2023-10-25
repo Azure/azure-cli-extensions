@@ -585,6 +585,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return network_plugin_mode
 
+    def get_network_policy(self) -> Union[str, None]:
+        """Get the value of network_dataplane.
+
+        :return: str or None
+        """
+        return self.raw_param.get("network_policy")
+
     def get_network_dataplane(self) -> Union[str, None]:
         """Get the value of network_dataplane.
 
@@ -3290,6 +3297,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         pod_cidr = self.context.get_pod_cidr()
         if pod_cidr:
             mc.network_profile.pod_cidr = pod_cidr
+
+        network_policy = self.context.get_network_policy()
+        if network_policy:
+            mc.network_profile.network_policy = network_policy
+
         return mc
 
     def update_enable_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:

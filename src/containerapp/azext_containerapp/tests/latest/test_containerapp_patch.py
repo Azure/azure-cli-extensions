@@ -116,7 +116,6 @@ class ContainerAppPatchTest(ScenarioTest):
         self._retag_image_to_older_version_and_push(resource_group=resource_group,app_name=app_name,old_tag=old_tag)
 
         # Execute and verify patch list command
-        self.cmd(f'configure --defaults group={resource_group}')
         patch_cmd = f'containerapp patch list'
         patchable_images = self.cmd(patch_cmd).get_output_in_json()
         newRunImageTag = patchable_images[0]["newRunImage"].split(':')[1]
