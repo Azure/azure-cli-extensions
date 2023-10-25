@@ -1,0 +1,81 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Highly Confidential Material
+//
+// The template that the NSD invokes to create the Network Function from a published NFDV.
+
+@description('Publisher where the NFD is published')
+param publisherName string = '{{publisher_name}}'
+
+@description('Resource group where the NFD publisher exists')
+param publisherResourceGroup string = '{{publisher_resource_group}}'
+
+@description('NFD Group name for the Network Function')
+param networkFunctionDefinitionGroupName string = '{{network_function_definition_group_name}}'
+
+@description('NFD version')
+param {{network_function_definition_version_parameter}} string
+
+@description('The managed identity that should be used to create the NF.')
+param managedIdentity string
+
+{%- if CNF %}
+@description('The custom location of the ARC-enabled AKS cluster to create the NF.')
+param customLocationId string
+{%- endif %}
+
+param location string = '{{location}}'
+
+param nfviType string = '{{nfvi_type}}'
+
+param resourceGroupId string = resourceGroup().id
+
+@secure()
+param deploymentParametersObject object
+
+var deploymentParameters = deploymentParametersObject.deploymentParameters
+
+var identityObject = (managedIdentity == '')  ? {
+  type: 'SystemAssigned'
+} : {
+  type: 'UserAssigned'
+  userAssignedIdentities: {
+    '${managedIdentity}': {}
+  }
+}
+
+resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing = {
+  name: publisherName
+  scope: resourceGroup(publisherResourceGroup)
+}
+
+resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2023-09-01' existing = {
+  parent: publisher
+  name: networkFunctionDefinitionGroupName
+}
+
+resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2023-09-01' existing = {
+  parent: nfdg
+  name: {{network_function_definition_version_parameter}}
+
+}
+
+resource nf_resource 'Microsoft.HybridNetwork/networkFunctions@2023-09-01' = [for (values, i) in deploymentParameters: {
+  name: '{{network_function_name}}${i}'
+  location: location
+  identity: identityObject
+  properties: {
+    networkFunctionDefinitionVersionResourceReference: {
+      id: nfdv.id
+      idType: 'Open'
+    }
+    nfviType: nfviType
+{%- if CNF %}
+    nfviId: customLocationId
+{%- else %}
+    nfviId: resourceGroupId
+{%- endif %}
+    allowSoftwareUpdate: true
+    configurationType: 'Secret'
+    secretDeploymentValues: string(values)
+  }
+}]
