@@ -114,7 +114,7 @@ def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definiti
     import time
     from azure.core.exceptions import ResourceExistsError
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 api_version="2020-04-01-preview").role_assignments
+                                                 api_version="2022-04-01").role_assignments
     RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                              'RoleAssignmentCreateParameters', mod='models',
                                              operation_group='role_assignments')
