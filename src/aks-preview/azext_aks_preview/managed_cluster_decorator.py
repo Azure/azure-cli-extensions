@@ -2404,28 +2404,28 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: str
         """
         return self.raw_param.get("keyvault_id")
-    
+
     def get_enable_kv(self) -> bool:
         """Obtain the value of enable_kv.
 
         :return: bool
         """
         return self.raw_param.get("enable_kv")
-    
+
     def get_attach_zones(self) -> bool:
         """Obtain the value of attach_zones.
 
         :return: bool
         """
         return self.raw_param.get("attach_zones")
-    
+
     def get_enable_app_routing(self) -> bool:
         """Obtain the value of enable_app_routing.
 
         :return: bool
         """
         return self.raw_param.get("enable_app_routing")
-    
+
     def disable_app_routing(self) -> bool:
         """Obtain the value of disable_app_routing.
 
@@ -2911,7 +2911,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_cost_analysis(mc)
 
         return mc
-    
+
     def set_up_app_routing_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up app routing profile for the ManagedCluster object.
 
@@ -3927,15 +3927,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
-    def update_app_routing_profile(self, mc: ManagedCluster) -> ManagedCluster: 
+    def update_app_routing_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update app routing profile for the ManagedCluster object.
 
         :return: the ManagedCluster object
         """
-        from azure.cli.core.commands.client_factory import get_mgmt_service_client
-        from azure.cli.command_modules.keyvault._client_factory import Clients
         from azure.cli.command_modules.keyvault.custom import set_policy
-        
+        from azext_aks_preview._client_factory import get_keyvault_client
+
         self._ensure_mc(mc)
 
         # get parameters from context
@@ -3947,14 +3946,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         add_dns_zone = self.context.raw_param.get("add_dns_zone")
         delete_dns_zone = self.context.raw_param.get("delete_dns_zone")
         update_dns_zone = self.context.raw_param.get("update_dns_zone")
-        
+
 
         # update ManagedCluster object with app routing settings
         mc.ingress_profile = mc.ingress_profile or self.models.ManagedClusterIngressProfile()
         mc.ingress_profile.web_app_routing = mc.ingress_profile.web_app_routing or self.models.ManagedClusterIngressProfileWebAppRouting()
         if enable_app_routing is not None:
             mc.ingress_profile.web_app_routing.enabled = enable_app_routing
-        
+
         # update ManagedCluster object with keyvault-secret-provider settings
         if enable_keyvault_secret_provider:
             mc.addon_profiles = mc.addon_profiles or {}
@@ -3963,20 +3962,18 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"})
             elif not mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled:
                 mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled = True
-            
+
         # check keyvault authorization sytem
         if keyvault_id:
             if not is_valid_resource_id(keyvault_id):
                 raise InvalidArgumentValueError("Please provide a valid keyvault ID")
-                
+
             if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
                 keyvault_params = parse_resource_id(keyvault_id)
                 keyvault_subscription = keyvault_params['subscription']
                 keyvault_name = keyvault_params['name']
                 keyvault_rg = keyvault_params['resource_group']
-
-                keyvault_client = getattr(get_mgmt_service_client(self.cmd.cli_ctx, ResourceType.MGMT_KEYVAULT, subscription_id=keyvault_subscription), Clients.vaults)
-
+                keyvault_client = get_keyvault_client(self.cmd.cli_ctx, subscription_id=keyvault_subscription)
                 keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
 
                 managed_identity_object_id = mc.ingress_profile.web_app_routing.identity.object_id
@@ -4018,7 +4015,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                             add_role_assignment(self.cmd, 'DNS Zone Contributor', mc.ingress_profile.web_app_routing.identity.object_id, False, scope=dns_zone)
             else:
                 raise CLIError('App Routing must be enabled to modify DNS zone resource IDs.\n')
-                
+
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:

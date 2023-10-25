@@ -2654,28 +2654,106 @@ def _aks_mesh_update(
 
     return aks_update_decorator.update_mc(mc)
 
-def aks_approuting_enable(cmd, client, resource_group_name, name, enable_kv=False):
-    return _aks_approuting_update(cmd, client,  resource_group_name, name, enable_app_routing=True, enable_kv=enable_kv)
+def aks_approuting_enable(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_kv=False
+):
+    return _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_app_routing=True,
+        enable_kv=enable_kv)
 
-def aks_approuting_disable(cmd, client, resource_group_name, name):
-    return _aks_approuting_update(cmd, client, resource_group_name, name, enable_app_routing=False)
+def aks_approuting_disable(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_app_routing=False)
 
-def aks_approuting_update(cmd, client, resource_group_name, name, keyvault_id):
-    return _aks_approuting_update(cmd, client, resource_group_name, name, keyvault_id=keyvault_id)
+def aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        keyvault_id
+):
+    return _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        keyvault_id=keyvault_id)
 
-def aks_approuting_zone_add(cmd, client, resource_group_name, name, dns_zone_resource_ids, attach_zones=False):
-    return _aks_approuting_update(cmd, client, resource_group_name, name, dns_zone_resource_ids=dns_zone_resource_ids, add_dns_zone=True, attach_zones=attach_zones)
+def aks_approuting_zone_add(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        dns_zone_resource_ids,
+        attach_zones=False
+):
+    return _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        dns_zone_resource_ids=dns_zone_resource_ids,
+        add_dns_zone=True,
+        attach_zones=attach_zones)
 
-def aks_approuting_zone_delete(cmd, client, resource_group_name, name, dns_zone_resource_ids):
-    return _aks_approuting_update(cmd, client, resource_group_name, name, dns_zone_resource_ids=dns_zone_resource_ids, delete_dns_zone=True)
+def aks_approuting_zone_delete(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        dns_zone_resource_ids
+):
+    return _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        dns_zone_resource_ids=dns_zone_resource_ids,
+        delete_dns_zone=True)
 
-def aks_approuting_zone_update(cmd, client, resource_group_name, name, dns_zone_resource_ids, attach_zones=False):
-    return _aks_approuting_update(cmd, client, resource_group_name, name, dns_zone_resource_ids=dns_zone_resource_ids, update_dns_zone=True, attach_zones=attach_zones)
-    
-def aks_approuting_zone_list(cmd, client, resource_group_name, name):
+def aks_approuting_zone_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        dns_zone_resource_ids,
+        attach_zones=False
+):
+    return _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        dns_zone_resource_ids=dns_zone_resource_ids,
+        update_dns_zone=True,
+        attach_zones=attach_zones)
+
+def aks_approuting_zone_list(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
     from msrestazure.tools import parse_resource_id
     mc = client.get(resource_group_name, name)
-    
+
     if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
         if mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
             dns_zone_resource_ids = mc.ingress_profile.web_app_routing.dns_zone_resource_ids
@@ -2684,15 +2762,26 @@ def aks_approuting_zone_list(cmd, client, resource_group_name, name):
                 parsed_dns_zone = parse_resource_id(dns_zone)
                 dns_zone_list.append(parsed_dns_zone)
             return dns_zone_list
-        else:
-            raise CLIError('No dns zone attached to the cluster')
-    else:
-        raise CLIError('App routing addon is not enabled')
-    
-def _aks_approuting_update(cmd, client, resource_group_name, name, enable_app_routing=None, enable_kv=None, keyvault_id=None, add_dns_zone=None, delete_dns_zone=None, update_dns_zone=None, dns_zone_resource_ids=None, attach_zones=None):
+        raise CLIError('No dns zone attached to the cluster')
+    raise CLIError('App routing addon is not enabled')
+
+def _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_app_routing=None,
+        enable_kv=None,
+        keyvault_id=None,
+        add_dns_zone=None,
+        delete_dns_zone=None,
+        update_dns_zone=None,
+        dns_zone_resource_ids=None,
+        attach_zones=None
+):
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
-    
+
     raw_parameters = locals()
 
     aks_update_decorator = AKSPreviewManagedClusterUpdateDecorator(

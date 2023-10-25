@@ -1011,11 +1011,11 @@ def load_arguments(self, _):
     with self.argument_context('aks approuting enable') as c:
         c.argument('enable_kv', options_list=[
                    '--enable-kv'], required=False, action='store_true')
-        
+
     with self.argument_context('aks approuting update') as c:
         c.argument('keyvault_id', options_list=[
                    '--attach-kv'], required=True)
-        
+
     with self.argument_context('aks approuting zone add') as c:
         c.argument('dns_zone_resource_ids', options_list=[
                    '--ids'], required=True)
@@ -1025,7 +1025,7 @@ def load_arguments(self, _):
     with self.argument_context('aks approuting zone delete') as c:
         c.argument('dns_zone_resource_ids', options_list=[
                    '--ids'], required=True)
-        
+
     with self.argument_context('aks approuting zone update') as c:
         c.argument('dns_zone_resource_ids', options_list=[
                    '--ids'], required=True)

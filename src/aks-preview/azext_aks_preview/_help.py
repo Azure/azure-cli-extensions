@@ -2812,7 +2812,7 @@ helps['aks approuting zone'] = """
     long-summary: A group of commands to manage App Routing DNS zones in given cluster.
 """
 
-helps['aks approuting zone add'] = """  
+helps['aks approuting zone add'] = """
     type: command
     short-summary: Add DNS Zone(s) to App Routing.
     long-summary: This command adds multiple DNS zone resource IDs to App Routing.
@@ -2822,10 +2822,10 @@ helps['aks approuting zone add'] = """
         short-summary: Comma-separated list of DNS zone resource IDs to add to App Routing.
       - name: --attach-zones
         type: bool
-        short-summary: Grants DNS zone Contributor permissions on all zone IDs specified in --ids. 
+        short-summary: Grants DNS zone Contributor permissions on all zone IDs specified in --ids.
 """
 
-helps['aks approuting zone delete'] = """ 
+helps['aks approuting zone delete'] = """
     type: command
     short-summary: Delete DNS Zone(s) from App Routing.
     long-summary: This command deletes DNS zone resource IDs from App Routing in given cluster.

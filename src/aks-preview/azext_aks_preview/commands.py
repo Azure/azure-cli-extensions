@@ -317,7 +317,7 @@ def load_command_table(self, _):
             'rollback',
             'aks_mesh_upgrade_rollback',
             supports_no_wait=True)
-        
+
     # AKS approuting commands
     with self.command_group('aks approuting', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
         g.custom_command(
@@ -329,7 +329,7 @@ def load_command_table(self, _):
         g.custom_command(
             'update',
             'aks_approuting_update')
-        
+
     # AKS approuting dns-zone commands
     with self.command_group('aks approuting zone', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
         g.custom_command(
