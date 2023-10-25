@@ -35,7 +35,6 @@ from azext_aks_preview._format import (
     aks_versions_table_format,
     aks_mesh_revisions_table_format,
     aks_mesh_upgrades_table_format,
-    aks_approuting_zone_list_table_format
 )
 from knack.log import get_logger
 
@@ -343,4 +342,4 @@ def load_command_table(self, _):
             'aks_approuting_zone_update')
         g.custom_command(
             'list',
-            'aks_approuting_zone_list', table_transformer=aks_approuting_zone_list_table_format)
+            'aks_approuting_zone_list')
