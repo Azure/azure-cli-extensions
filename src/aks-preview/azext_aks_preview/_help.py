@@ -2793,7 +2793,7 @@ helps['aks approuting enable'] = """
       - name: --enable-kv
         type: bool
         short-summary: Enables the keyvault-secrets-provider addon.
-        long-summary: This optional command enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
+        long-summary: This optional flag enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
 """
 
 helps['aks approuting disable'] = """
@@ -2809,7 +2809,7 @@ helps['aks approuting update'] = """
     parameters:
       - name: --attach-kv
         type: string
-        short-summary: Attach a keyvault id to the cluster to access secrets and certificates..
+        short-summary: Attach a keyvault id to the cluster to access secrets and certificates.
 """
 
 helps['aks approuting zone'] = """
@@ -2857,5 +2857,5 @@ helps['aks approuting zone update'] = """
 helps['aks approuting zone list'] = """
     type: command
     short-summary: List DNS zone IDs in App Routing.
-    long-summary: This command lists the resource IDs of the DNS zone resource in App Routing.
+    long-summary: This command lists the DNS zone resources used in App Routing.
 """
