@@ -6866,8 +6866,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 )
             )
         )
-        print('##################################')
-        print(mc_3.ingress_profile.web_app_routing)
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
         # update app routing with key vault id

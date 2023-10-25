@@ -8056,7 +8056,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # disable app routing
-        disable_app_routing_cmd = 'aks approuting disable --resource-group={resource_group} --name={aks_name}'
+        disable_app_routing_cmd = 'aks approuting disable --resource-group={resource_group} --name={aks_name} --yes'
         self.cmd(disable_app_routing_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('ingressProfile.webAppRouting.enabled', False)
@@ -8125,7 +8125,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # create keyvault with rbac auth enabled
-        create_keyvault_cmd = 'keyvault create --resource-group={resource_group} --location={location} --name={kv_name} --enable-rbac-authorization=true}'
+        create_keyvault_cmd = 'keyvault create --resource-group={resource_group} --location={location} --name={kv_name} --enable-rbac-authorization=true'
         keyvault = self.cmd(create_keyvault_cmd, checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', kv_name)
@@ -8160,9 +8160,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
     def test_aks_approuting_zone_add_delete_list(self, resource_group, resource_group_location):
-        """ This test case exercises adding and deleting zones to app routing addon in an AKS cluster.
+        """ This test case exercises adding, deleting and listing zones to app routing addon in an AKS cluster.
         """
-
+        from azext_aks_preview._format import ( 
+            aks_approuting_zone_list_table_format
+        )
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
 
@@ -8173,24 +8175,24 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.kwargs.update({
             'resource_group': resource_group,
             'aks_name': aks_name,
-            'dns_zone_1' : dns_zone_1,
-            'dns_zone_2' : dns_zone_2,
+            'dns_zone_1': dns_zone_1,
+            'dns_zone_2': dns_zone_2,
             'location': resource_group_location,
             'ssh_key_value': self.generate_ssh_keys(),
         })
 
 
         create_dns_zone_cmd_1 = 'network dns zone create --resource-group={resource_group} --name {dns_zone_1}'
-        dns_zone_1 = self.cmd(create_dns_zone_cmd_1, checks=[
+        dns_zone_result = self.cmd(create_dns_zone_cmd_1, checks=[
             self.check('name', dns_zone_1),
         ]).get_output_in_json()
-        dns_zone_id_1 = dns_zone_1['id']
+        dns_zone_id_1 = dns_zone_result['id']
 
         create_dns_zone_cmd_2 = 'network dns zone create --resource-group={resource_group} --name {dns_zone_2}'
-        dns_zone_2 = self.cmd(create_dns_zone_cmd_2, checks=[
+        dns_zone_result = self.cmd(create_dns_zone_cmd_2, checks=[
             self.check('name', dns_zone_2),
         ]).get_output_in_json()
-        dns_zone_id_2 = dns_zone_2['id']
+        dns_zone_id_2 = dns_zone_result['id']
 
         self.kwargs.update({
             'dns_zone_id_1': dns_zone_id_1,
@@ -8207,38 +8209,37 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # add dns zone
-        add_dns_zone_cmd = 'aks approuting zone add --resource-group={resource_group} --name={aks_name} --ids {dns_zone_id_1},{dns_zone_id_2}'
+        add_dns_zone_cmd = 'aks approuting zone add --resource-group={resource_group} --name={aks_name} --ids {dns_zone_id_1}'
         self.cmd(add_dns_zone_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('ingressProfile.webAppRouting.dnsZoneResourceIds[0]', dns_zone_1),
+            self.check('ingressProfile.webAppRouting.dnsZoneResourceIds[0]', dns_zone_id_1),
         ])
 
         # add dns zone with --atach-zones flag
-        add_dns_zone_cmd = 'aks approuting zone add --resource-group={resource_group} --name={aks_name} --ids {dns_zone_2} --attach-zones'
+        add_dns_zone_cmd = 'aks approuting zone add --resource-group={resource_group} --name={aks_name} --ids {dns_zone_id_2} --attach-zones'
         self.cmd(add_dns_zone_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('ingressProfile.webAppRouting.dnsZoneResourceIds[0]', dns_zone_1),
-            self.check('ingressProfile.webAppRouting.dnsZoneResourceIds[1]', dns_zone_2)
+            self.check('ingressProfile.webAppRouting.dnsZoneResourceIds[0]', dns_zone_id_1),
+            self.check('ingressProfile.webAppRouting.dnsZoneResourceIds[1]', dns_zone_id_2)
         ])
 
         # list dns zone
         list_dns_zone_cmd = 'aks approuting zone list --resource-group={resource_group} --name={aks_name}'
-        dns_zone_list = self.cmd(list_dns_zone_cmd).get_output_in_json()
-        assert len(dns_zone_list) == 2
-        assert dns_zone_list[0]['id'] == dns_zone_id_1
-        assert dns_zone_list[0]['resourceGroup'] == resource_group
-        assert dns_zone_list[0]['type'] == "dnsZones"
-        assert dns_zone_list[0]['name'] == dns_zone_1
-        assert dns_zone_list[1]['id'] == dns_zone_id_2
-        assert dns_zone_list[1]['resourceGroup'] == resource_group
-        assert dns_zone_list[1]['type'] == "dnsZones"
-        assert dns_zone_list[1]['name'] == dns_zone_2
+        self.cmd(list_dns_zone_cmd, checks=[
+            self.check('length(@)', 2),
+            self.check('[0].resource_group', resource_group),
+            self.check('[0].type', "dnszones"),
+            self.check('[0].name', dns_zone_1),
+            self.check('[1].resource_group', resource_group),
+            self.check('[1].type', "dnszones"),
+            self.check('[1].name', dns_zone_2)
+        ])
 
         # delete dns zone
-        delete_dns_zone_cmd = 'aks approuting zone delete --resource-group={resource_group} --name={aks_name} --ids {dns_zone_id_1}'
+        delete_dns_zone_cmd = 'aks approuting zone delete --resource-group={resource_group} --name={aks_name} --ids {dns_zone_id_1} --yes'
         self.cmd(delete_dns_zone_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('ingressProfile.webAppRouting.dnsZoneResourceIds[0]', dns_zone_2)
+            self.check('ingressProfile.webAppRouting.dnsZoneResourceIds[0]', dns_zone_id_2)
         ])
 
         # delete cluster
@@ -8274,7 +8275,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ]).get_output_in_json()
         dns_zone_id_1 = dns_zone_1['id']
 
-        create_dns_zone_cmd_2 = 'network dns zone create --resource-group={resource_group} --name {dns_zone_1}'
+        create_dns_zone_cmd_2 = 'network dns zone create --resource-group={resource_group} --name {dns_zone_2}'
         dns_zone_2 = self.cmd(create_dns_zone_cmd_2,checks=[
             self.check('name', dns_zone_2),
         ]).get_output_in_json()

@@ -3933,6 +3933,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: the ManagedCluster object
         """
         from azure.cli.core.commands.client_factory import get_mgmt_service_client
+        from azure.cli.command_modules.keyvault._client_factory import Clients
         from azure.cli.command_modules.keyvault.custom import set_policy
         
         self._ensure_mc(mc)
@@ -3998,7 +3999,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
                 dns_zone_resource_ids = [x.strip() for x in (dns_zone_resource_ids.split(",") if dns_zone_resource_ids else [])]
                 if add_dns_zone:
-                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids.append(dns_zone_resource_ids)
+                    if mc.ingress_profile.web_app_routing.dns_zone_resource_ids is None:
+                        mc.ingress_profile.web_app_routing.dns_zone_resource_ids = []
+                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids.extend(dns_zone_resource_ids)
                     if attach_zones:
                         for dns_zone in dns_zone_resource_ids:
                             add_role_assignment(self.cmd, 'DNS Zone Contributor', mc.ingress_profile.web_app_routing.identity.object_id, False, scope=dns_zone)
