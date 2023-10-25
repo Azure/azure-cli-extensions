@@ -371,17 +371,16 @@ def _format_mesh_revision_entry(revision):
         flattened.append(item)
     return flattened
 
-def aks_approuting_dns_zones_list_table_format(results):
+def aks_approuting_zone_list_table_format(results):
     """Format an approuting dns zones list for display with "-o table"."""
-    from msrestazure.tools import parse_resource_id
+    print('inside aks_approuting_zone_list_table_format')
+    print(results)
     def parser(entry):
-        parsed_dns_zone = parse_resource_id(entry) 
         parsed = compile_jmes("""{
-            id: {},
             subscription: subscription,
             resourceGroup: resource_group,
             type: type,
             name: name,
-        }""".format(entry))
-        return parsed.search(parsed_dns_zone, Options(dict_cls=OrderedDict))
+        }""")
+        return parsed.search(entry, Options(dict_cls=OrderedDict))
     return [parser(r) for r in results]
