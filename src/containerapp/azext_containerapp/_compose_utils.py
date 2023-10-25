@@ -281,7 +281,9 @@ def validate_memory_and_cpu_setting(cpu, memory, managed_environment):
     # only v1 cluster do the validation
     from ._utils import safe_get
     if safe_get(managed_environment, "properties", "workloadProfiles"):
-        return (cpu, f"{memory}Gi")
+        if memory:
+            return cpu, f"{memory}Gi"
+        return cpu, memory
 
     settings = valid_resource_settings()
 
