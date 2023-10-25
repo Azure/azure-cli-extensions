@@ -1436,7 +1436,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'node_pool_name': node_pool_name,
             'ssh_key_value': self.generate_ssh_keys(),
             'machine_name': machine_name,
-        })    
+        })
         show_cmd = 'aks machine show '\
             '--resource-group={resource_group} --cluster-name={name} ' \
             '--nodepool-name={node_pool_name} --machine-name={machine_name} -o json'
@@ -4517,7 +4517,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--network-plugin azure --ssh-key-value={ssh_key_value} --kubernetes-version {k8s_version} ' \
                      '--network-plugin-mode=overlay'
-        
+
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.networkPlugin', 'azure'),
@@ -7743,8 +7743,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
-        
-    
+
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_premium_sku(self, resource_group, resource_group_location):
@@ -8025,7 +8025,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
-    
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
     def test_aks_approuting_enable_disable(self, resource_group, resource_group_location):
@@ -8103,7 +8103,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
        # delete cluster
         delete_cmd = 'aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait'
         self.cmd(delete_cmd, checks=[self.is_empty()])
-    
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
     def test_aks_approuting_update(self, resource_group, resource_group_location):
@@ -8113,7 +8113,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
 
-    
+
         aks_name = self.create_random_name('cliakstest', 16)
         kv_name = self.create_random_name('cliakstestkv', 16)
 
@@ -8148,10 +8148,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update
         update_cmd = 'aks approuting update --resource-group={resource_group} --name={aks_name} ' \
                      '--attach-kv {keyvault_id}'
-        
+
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('ingressProfile.webAppRouting.enabled', True)          
+            self.check('ingressProfile.webAppRouting.enabled', True)
         ])
 
         # delete cluster
@@ -8163,9 +8163,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_approuting_zone_add_delete_list(self, resource_group, resource_group_location):
         """ This test case exercises adding, deleting and listing zones to app routing addon in an AKS cluster.
         """
-        from azext_aks_preview._format import ( 
-            aks_approuting_zone_list_table_format
-        )
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
 
@@ -8314,6 +8311,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         delete_cmd = 'aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait'
         self.cmd(delete_cmd, checks=[self.is_empty()])
 
-    
-    
+
+
 
