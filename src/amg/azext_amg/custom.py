@@ -25,8 +25,8 @@ logger = get_logger(__name__)
 grafana_endpoints = {}
 
 
-def create_grafana(cmd, resource_group_name, grafana_name,
-                   location=None, skip_system_assigned_identity=False, skip_role_assignments=False,
+def create_grafana(cmd, resource_group_name, grafana_name, location=None,
+                   deterministic_outbound_ip=None, skip_system_assigned_identity=False, skip_role_assignments=False,
                    tags=None, zone_redundancy=None, principal_ids=None, principal_types=None):
     from azure.cli.core.commands.arm import resolve_role_id
 
@@ -43,7 +43,8 @@ def create_grafana(cmd, resource_group_name, grafana_name,
         "tags": tags
     }
     resource["properties"] = {
-        "zoneRedundancy": zone_redundancy
+        "zoneRedundancy": zone_redundancy,
+        "deterministicOutboundIP": deterministic_outbound_ip
     }
 
     poller = client.grafana.begin_create(resource_group_name, grafana_name, resource)
