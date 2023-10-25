@@ -2760,8 +2760,13 @@ def aks_approuting_zone_list(
             dns_zone_resource_ids = mc.ingress_profile.web_app_routing.dns_zone_resource_ids
             dns_zone_list = []
             for dns_zone in dns_zone_resource_ids:
+                dns_zone_dict = {}
                 parsed_dns_zone = parse_resource_id(dns_zone)
-                dns_zone_list.append(parsed_dns_zone)
+                dns_zone_dict['subscription'] = parsed_dns_zone['subscription']
+                dns_zone_dict['resource_group'] = parsed_dns_zone['resource_group']
+                dns_zone_dict['name'] = parsed_dns_zone['name']
+                dns_zone_dict['type'] = parsed_dns_zone['type']
+                dns_zone_list.append(dns_zone_dict)
             return dns_zone_list
         raise CLIError('No dns zone attached to the cluster')
     raise CLIError('App routing addon is not enabled')
