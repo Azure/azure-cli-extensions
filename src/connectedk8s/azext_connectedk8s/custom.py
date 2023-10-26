@@ -482,6 +482,7 @@ def install_helm_client():
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.MachineType': machine_type})
 
     # Set helm binary download & install locations
+    # TODO: [Kit] Move helm binaries to internal endpoints
     if(operating_system == 'windows'):
         download_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
         install_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe'
@@ -1064,7 +1065,6 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
                                     summary='Error while doing helm get values azure-arc')
             raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")))
 
-    #TODO: Upgrade Helm here
     cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "-f",
                         user_values_location, "--wait", "--output", "json"]
@@ -1246,7 +1246,6 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
                                 summary='Problem loading the helm existing user supplied values')
         raise CLIInternalError("Problem loading the helm existing user supplied values: " + str(e))
 
-    #TODO: Upgrade Helm here
     # Change --timeout format for helm client to understand
     upgrade_timeout = upgrade_timeout + "s"
     cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
