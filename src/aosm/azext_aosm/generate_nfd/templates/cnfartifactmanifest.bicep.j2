@@ -1,0 +1,39 @@
+// Copyright (c) Microsoft Corporation.
+
+// This file creates an Artifact Manifest for a CNF
+param location string
+@description('Name of an existing publisher, expected to be in the resource group where you deploy the template')
+param publisherName string
+@description('Name of an existing ACR-backed Artifact Store, deployed under the publisher.')
+param acrArtifactStoreName string
+@description('Name of the manifest to deploy for the ACR-backed Artifact Store')
+param acrManifestName string
+
+// Created by the az aosm definition publish command before the template is deployed
+resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing = {
+  name: publisherName
+  scope: resourceGroup()
+}
+
+// Created by the az aosm definition publish command before the template is deployed
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+  parent: publisher
+  name: acrArtifactStoreName
+}
+
+resource acrArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2023-09-01' = {
+  parent: acrArtifactStore
+  name: acrManifestName
+  location: location
+  properties: {
+    artifacts: [
+    {%- for artifact in artifacts %}
+      {
+        artifactName: '{{ artifact.name }}'
+        artifactType: 'OCIArtifact'
+        artifactVersion: '{{ artifact.version }}'
+      }
+    {%- endfor %}
+    ]
+  }
+}

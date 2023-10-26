@@ -20,10 +20,9 @@ class ContainerappComposePreviewTransportOverridesScenarioTest(ContainerappCompo
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_transport_arg(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composescale', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     ports: 8080:80
 """
@@ -34,7 +33,7 @@ services:
         self.kwargs.update({
             'environment': env_id,
             'compose': compose_file_name,
-            'transport': f"{app}=http2 bar=auto",
+            'transport': f"foo=http2 bar=auto",
             'second_transport': "baz=http",
         })
         
@@ -45,8 +44,9 @@ services:
         command_string += ' --transport-mapping {transport}'
         command_string += ' --transport-mapping {second_transport}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.configuration.ingress.transport', ["Http2"]),
+            self.check(f'[?name==`foo`].properties.configuration.ingress.transport', ["Http2"]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -54,10 +54,9 @@ services:
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_transport_mapping_arg(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composescale', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/k8se/quickstart:latest
     ports: 8080:80
 """
@@ -68,7 +67,7 @@ services:
         self.kwargs.update({
             'environment': env_id,
             'compose': compose_file_name,
-            'transport': f"{app}=http2 bar=auto",
+            'transport': f"foo=http2 bar=auto",
             'second_transport': "baz=http",
         })
 
@@ -79,7 +78,8 @@ services:
         command_string += ' --transport-mapping {transport}'
         command_string += ' --transport-mapping {second_transport}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.configuration.ingress.transport', ["Http2"]),
+            self.check(f'[?name==`foo`].properties.configuration.ingress.transport', ["Http2"]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)

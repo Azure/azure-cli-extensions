@@ -206,6 +206,8 @@ class ContainerappScenarioTest(ScenarioTest):
             JMESPathCheck('properties.template.scale.minReplicas', '0'),
             JMESPathCheck('properties.template.scale.maxReplicas', '1'),
             JMESPathCheck('length(properties.template.containers[0].env)', 1),
+            JMESPathCheck('properties.template.containers[0].env[0].name', "testenv"),
+            JMESPathCheck('properties.template.containers[0].env[0].value', None),
         ])
 
         # Add secrets to Container App with ACR

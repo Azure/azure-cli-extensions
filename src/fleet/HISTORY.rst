@@ -45,3 +45,18 @@ Release History
 0.2.7
 ++++++
 * Fix for `az fleet updaterun --node-image-selection` argument.
+
+0.2.8
+++++++
+* Updates to Fleet identity options.
+
+0.3.0
+++++++
+* Resolved issues related to system & user assigned MSI.
+* UpdateRun now takes a Strategy name in lieu of resource Id, e.g., `az fleet updaterun create --update_strategy_name UpdateStrategyName`
+* Deletes now require confirmation.
+
+1.0.0
+++++++
+* Promoted extension to GA.
+* Added `az fleet create` preview parameter `vm-size` for Hubful fleets.

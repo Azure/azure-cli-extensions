@@ -34,8 +34,6 @@ from azext_aks_preview._consts import (
     CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
-    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
-    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
     CONST_CREDENTIAL_FORMAT_AZURE,
     CONST_CREDENTIAL_FORMAT_EXEC,
     CONST_DAILY_MAINTENANCE_SCHEDULE,
@@ -57,6 +55,10 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_PLUGIN_KUBENET,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_NETWORK_PLUGIN_NONE,
+    CONST_NETWORK_POLICY_AZURE,
+    CONST_NETWORK_POLICY_CALICO,
+    CONST_NETWORK_POLICY_CILIUM,
+    CONST_NETWORK_POLICY_NONE,
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NODE_OS_CHANNEL_NODE_IMAGE,
     CONST_NODE_OS_CHANNEL_NONE,
@@ -158,7 +160,8 @@ from azext_aks_preview._validators import (
     validate_utc_offset,
     validate_vm_set_type,
     validate_vnet_subnet_id,
-    validate_force_upgrade_disable_and_enable_parameters
+    validate_force_upgrade_disable_and_enable_parameters,
+    validate_azure_service_mesh_revision
 )
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
@@ -170,7 +173,21 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     zones_type,
 )
-from azure.cli.core.profiles import ResourceType
+from azext_aks_preview.azurecontainerstorage._consts import (
+    CONST_STORAGE_POOL_TYPE_AZURE_DISK,
+    CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
+    CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
+    CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
+    CONST_STORAGE_POOL_SKU_STANDARD_LRS,
+    CONST_STORAGE_POOL_SKU_STANDARDSSD_LRS,
+    CONST_STORAGE_POOL_SKU_ULTRASSD_LRS,
+    CONST_STORAGE_POOL_SKU_PREMIUM_ZRS,
+    CONST_STORAGE_POOL_SKU_PREMIUMV2_LRS,
+    CONST_STORAGE_POOL_SKU_STANDARDSSD_ZRS,
+    CONST_STORAGE_POOL_OPTION_NVME,
+    CONST_STORAGE_POOL_OPTION_SSD,
+    CONST_STORAGE_POOL_DEFAULT_SIZE,
+)
 from knack.arguments import CLIArgumentType
 
 # candidates for enumeration
@@ -255,6 +272,28 @@ guardrails_levels = [
 ingress_gateway_types = [
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
+]
+
+# azure container storage
+storage_pool_types = [
+    CONST_STORAGE_POOL_TYPE_AZURE_DISK,
+    CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
+    CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
+]
+
+storage_pool_skus = [
+    CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
+    CONST_STORAGE_POOL_SKU_STANDARD_LRS,
+    CONST_STORAGE_POOL_SKU_STANDARDSSD_LRS,
+    CONST_STORAGE_POOL_SKU_ULTRASSD_LRS,
+    CONST_STORAGE_POOL_SKU_PREMIUM_ZRS,
+    CONST_STORAGE_POOL_SKU_PREMIUMV2_LRS,
+    CONST_STORAGE_POOL_SKU_STANDARDSSD_ZRS,
+]
+
+storage_pool_options = [
+    CONST_STORAGE_POOL_OPTION_NVME,
+    CONST_STORAGE_POOL_OPTION_SSD,
 ]
 
 
@@ -456,6 +495,15 @@ def load_arguments(self, _):
         c.argument('grafana_resource_id', validator=validate_grafanaresourceid)
         c.argument('enable_windows_recording_rules', action='store_true')
         c.argument('enable_cost_analysis', is_preview=True, action='store_true')
+        # azure container storage
+        c.argument('enable_azure_container_storage', arg_type=get_enum_type(storage_pool_types),
+                   help='enable azure container storage and define storage pool type')
+        c.argument('storage_pool_name', help='set storage pool name for azure container storage')
+        c.argument('storage_pool_size', help='set storage pool size for azure container storage')
+        c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus),
+                   help='set azure disk type storage pool sku for azure container storage')
+        c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options),
+                   help='set ephemeral disk storage pool option for azure container storage')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -471,6 +519,7 @@ def load_arguments(self, _):
         c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('network_dataplane', arg_type=get_enum_type(network_dataplanes))
+        c.argument('network_policy')
         c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
@@ -584,6 +633,19 @@ def load_arguments(self, _):
         c.argument('enable_network_observability', action='store_true', is_preview=True, help="enable network observability for cluster")
         c.argument('enable_cost_analysis', is_preview=True, action='store_true')
         c.argument('disable_cost_analysis', is_preview=True, action='store_true')
+        # azure container storage
+        c.argument('enable_azure_container_storage', arg_type=get_enum_type(storage_pool_types),
+                   help='enable azure container storage and define storage pool type')
+        c.argument('disable_azure_container_storage', action='store_true',
+                   help='Flag to disable azure container storage')
+        c.argument('storage_pool_name', help='set storage pool name for azure container storage')
+        c.argument('storage_pool_size', help='set storage pool size for azure container storage')
+        c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus),
+                   help='set azure disk type storage pool sku for azure container storage')
+        c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options),
+                   help='set ephemeral disk storage pool option for azure container storage')
+        c.argument('azure_container_storage_nodepools',
+                   help='define the comma separated nodepool list to install azure container storage')
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
@@ -936,11 +998,18 @@ def load_arguments(self, _):
                    options_list=["--egress-gateway-nodeselector", "--egx-gtw-ns"])
 
     with self.argument_context('aks mesh enable') as c:
+        c.argument('revision', validator=validate_azure_service_mesh_revision)
         c.argument('key_vault_id')
         c.argument('ca_cert_object_name')
         c.argument('ca_key_object_name')
         c.argument('root_cert_object_name')
         c.argument('cert_chain_object_name')
+
+    with self.argument_context('aks mesh get-revisions') as c:
+        c.argument('location', required=True, help='Location in which to discover available Azure Service Mesh revisions.')
+
+    with self.argument_context('aks mesh upgrade start') as c:
+        c.argument('revision', validator=validate_azure_service_mesh_revision, required=True)
 
 
 def _get_default_install_location(exe_name):

@@ -708,7 +708,7 @@ def create_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
-                               enable_workload_profiles=False,
+                               enable_workload_profiles=True,
                                mtls_enabled=None,
                                no_wait=False):
     raw_parameters = locals()
@@ -807,10 +807,10 @@ def create_containerappsjob(cmd,
                             container_name=None,
                             managed_env=None,
                             trigger_type=None,
-                            replica_timeout=None,
-                            replica_retry_limit=None,
-                            replica_completion_count=None,
-                            parallelism=None,
+                            replica_timeout=1800,
+                            replica_retry_limit=0,
+                            replica_completion_count=1,
+                            parallelism=1,
                             cron_expression=None,
                             secrets=None,
                             env_vars=None,
@@ -825,9 +825,9 @@ def create_containerappsjob(cmd,
                             scale_rule_name=None,
                             scale_rule_type=None,
                             scale_rule_auth=None,
-                            polling_interval=None,
-                            min_executions=None,
-                            max_executions=None,
+                            polling_interval=30,
+                            min_executions=0,
+                            max_executions=10,
                             tags=None,
                             no_wait=False,
                             system_assigned=False,
@@ -4786,7 +4786,8 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         startup_command, startup_args = resolve_service_startup_command(service)
         cpu, memory = validate_memory_and_cpu_setting(
             resolve_cpu_configuration_from_service(service),
-            resolve_memory_configuration_from_service(service)
+            resolve_memory_configuration_from_service(service),
+            managed_environment
         )
         replicas = resolve_replicas_from_service(service)
         environment = resolve_environment_from_service(service)

@@ -1,4 +1,5 @@
 # --------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
@@ -48,7 +49,10 @@ from azext_aks_preview._consts import (
     CONST_SPOT_EVICTION_POLICY_DELETE,
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
-    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
 )
 from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
@@ -594,6 +598,12 @@ def aks_create(
     enable_windows_recording_rules=False,
     # metrics profile
     enable_cost_analysis=False,
+    # azure container storage
+    enable_azure_container_storage=None,
+    storage_pool_name=None,
+    storage_pool_size=None,
+    storage_pool_sku=None,
+    storage_pool_option=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -721,6 +731,7 @@ def aks_update(
     load_balancer_managed_outbound_ipv6_count=None,
     outbound_type=None,
     network_plugin_mode=None,
+    network_policy=None,
     network_dataplane=None,
     pod_cidr=None,
     enable_pod_security_policy=False,
@@ -764,6 +775,14 @@ def aks_update(
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
+    # azure container storage
+    enable_azure_container_storage=None,
+    disable_azure_container_storage=False,
+    storage_pool_name=None,
+    storage_pool_size=None,
+    storage_pool_sku=None,
+    storage_pool_option=None,
+    azure_container_storage_nodepools=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2436,6 +2455,7 @@ def aks_mesh_enable(
         client,
         resource_group_name,
         name,
+        revision=None,
         key_vault_id=None,
         ca_cert_object_name=None,
         ca_key_object_name=None,
@@ -2457,6 +2477,7 @@ def aks_mesh_enable(
                             ca_key_object_name,
                             root_cert_object_name,
                             cert_chain_object_name,
+                            revision=revision,
                             enable_azure_service_mesh=True)
 
 
@@ -2481,7 +2502,6 @@ def aks_mesh_enable_ingress_gateway(
         client,
         resource_group_name,
         name,
-        enable_azure_service_mesh=True,
         enable_ingress_gateway=True,
         ingress_gateway_type=ingress_gateway_type)
 
@@ -2514,7 +2534,6 @@ def aks_mesh_enable_egress_gateway(
         client,
         resource_group_name,
         name,
-        enable_azure_service_mesh=True,
         enable_egress_gateway=True,
         egx_gtw_nodeselector=egx_gtw_nodeselector)
 
@@ -2530,9 +2549,68 @@ def aks_mesh_disable_egress_gateway(
         client,
         resource_group_name,
         name,
-        enable_azure_service_mesh=True,
         disable_egress_gateway=True,
         egx_gtw_nodeselector=None)
+
+
+def aks_mesh_get_revisions(
+        cmd,
+        client,
+        location
+):
+    return client.list_mesh_revision_profiles(location)
+
+
+def aks_mesh_get_upgrades(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return client.list_mesh_upgrade_profiles(resource_group_name, name)
+
+
+def aks_mesh_upgrade_start(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        revision
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        revision=revision,
+        mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START)
+
+
+def aks_mesh_upgrade_complete(
+        cmd,
+        client,
+        resource_group_name,
+        name):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE)
+
+
+def aks_mesh_upgrade_rollback(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK)
 
 
 def _aks_mesh_update(
@@ -2553,6 +2631,8 @@ def _aks_mesh_update(
         enable_egress_gateway=None,
         egx_gtw_nodeselector=None,
         disable_egress_gateway=None,
+        revision=None,
+        mesh_upgrade_command=None,
 ):
     raw_parameters = locals()
 

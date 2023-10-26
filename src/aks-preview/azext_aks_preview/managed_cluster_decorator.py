@@ -6,6 +6,7 @@
 import copy
 import datetime
 import os
+import semver
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
@@ -29,6 +30,10 @@ from azure.cli.command_modules.acs._validators import (
 )
 from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
     ensure_azure_monitor_profile_prerequisites
+)
+from azext_aks_preview.azurecontainerstorage.acstor_ops import (
+    perform_enable_azure_container_storage,
+    perform_disable_azure_container_storage,
 )
 from azure.cli.command_modules.acs.managed_cluster_decorator import (
     AKSManagedClusterContext,
@@ -64,6 +69,9 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_DATAPLANE_CILIUM,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
 )
 from azext_aks_preview._helpers import (
     check_is_private_cluster,
@@ -164,6 +172,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             ] = ensure_azure_monitor_profile_prerequisites
             # temp workaround for the breaking change caused by default API version bump of the auth SDK
             external_functions["add_role_assignment"] = add_role_assignment
+            # azure container storage functions
+            external_functions["perform_enable_azure_container_storage"] = perform_enable_azure_container_storage
+            external_functions["perform_disable_azure_container_storage"] = perform_disable_azure_container_storage
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
@@ -569,6 +580,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return network_plugin_mode
+
+    def get_network_policy(self) -> Union[str, None]:
+        """Get the value of network_dataplane.
+
+        :return: str or None
+        """
+        return self.raw_param.get("network_policy")
 
     def get_network_dataplane(self) -> Union[str, None]:
         """Get the value of network_dataplane.
@@ -2008,7 +2026,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: updated service mesh profile
         """
-
         updated = False
         new_profile = self.models.ServiceMeshProfile(mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED) \
             if self.mc.service_mesh_profile is None else copy.deepcopy(self.mc.service_mesh_profile)
@@ -2016,6 +2033,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # enable/disable
         enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
         disable_asm = self.raw_param.get("disable_azure_service_mesh", False)
+        mesh_upgrade_command = self.raw_param.get("mesh_upgrade_command", None)
 
         if enable_asm and disable_asm:
             raise MutuallyExclusiveArgumentError(
@@ -2023,12 +2041,25 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
 
         if disable_asm:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
             new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_DISABLED
             updated = True
         elif enable_asm:
+            if new_profile is not None and new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_ISTIO:
+                raise ArgumentUsageError(
+                    "Istio has already been enabled for this cluster, please refer to https://aka.ms/asm-aks-upgrade-docs "
+                    "for more details on updating the mesh profile."
+                )
+            requested_revision = self.raw_param.get("revision", None)
             new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
             if new_profile.istio is None:
                 new_profile.istio = self.models.IstioServiceMesh()
+            if mesh_upgrade_command is None and requested_revision is not None:
+                new_profile.istio.revisions = [requested_revision]
             updated = True
 
         enable_ingress_gateway = self.raw_param.get("enable_ingress_gateway", False)
@@ -2169,10 +2200,52 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             new_profile.istio.certificate_authority.plugin.cert_chain_object_name = cert_chain_object_name
             updated = True
 
+        # deal with mesh upgrade commands
+        if mesh_upgrade_command is not None:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
+            requested_revision = self.raw_param.get("revision", None)
+            if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE or mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK:
+                if len(new_profile.istio.revisions) < 2:
+                    raise ArgumentUsageError('Azure Service Mesh upgrade is not in progress.')
+
+                sorted_revisons = self._sort_revisions(new_profile.istio.revisions)
+                if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE:
+                    revision_to_remove = sorted_revisons[0]
+                    revision_to_keep = sorted_revisons[-1]
+                else:
+                    revision_to_remove = sorted_revisons[-1]
+                    revision_to_keep = sorted_revisons[0]
+                msg = (f"This operation will remove Istio control plane for revision {revision_to_remove}. "
+                       f"Please ensure all data plane workloads have been rolled over to revision {revision_to_keep} so that they are still part of the mesh. "
+                       "\nAre you sure you want to proceed?")
+                if prompt_y_n(msg, default="y"):
+                    new_profile.istio.revisions.remove(revision_to_remove)
+                    updated = True
+            elif mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START and requested_revision is not None:
+                if new_profile.istio.revisions is None:
+                    new_profile.istio.revisions = []
+                new_profile.istio.revisions.append(requested_revision)
+                updated = True
+
         if updated:
             return new_profile
         else:
             return self.mc.service_mesh_profile
+
+    def _sort_revisions(self, revisions):
+        def _convert_revision_to_semver(rev):
+            sr = rev.replace("asm-", "")
+            sv = sr.replace("-", ".", 1)
+            # Add a custom patch version of 0
+            sv += ".0"
+            return semver.VersionInfo.parse(sv)
+
+        sorted_revisions = sorted(revisions, key=_convert_revision_to_semver)
+        return sorted_revisions
 
     def _get_k8s_support_plan(self) -> KubernetesSupportPlan:
         support_plan = self.raw_param.get("k8s_support_plan")
@@ -2686,6 +2759,34 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             self.context.set_intermediate("azuremonitormetrics_addon_enabled", True, overwrite_exists=True)
         return mc
 
+    def set_up_azure_container_storage(self, mc: ManagedCluster) -> None:
+        """Set up azure container storage for the Managed Cluster object
+        :return: None
+        """
+        self._ensure_mc(mc)
+        # read the azure container storage values passed
+        pool_type = self.context.raw_param.get("enable_azure_container_storage")
+        enable_azure_container_storage = pool_type is not None
+        if enable_azure_container_storage:
+            pool_name = self.context.raw_param.get("storage_pool_name")
+            pool_option = self.context.raw_param.get("storage_pool_option")
+            pool_sku = self.context.raw_param.get("storage_pool_sku")
+            pool_size = self.context.raw_param.get("storage_pool_size")
+            from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
+            validate_azure_container_storage_params(
+                True,
+                None,
+                pool_name,
+                pool_type,
+                pool_sku,
+                pool_option,
+                pool_size,
+                None,
+            )
+
+            # set intermediates
+            self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
+
     def set_up_auto_upgrade_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up auto upgrade profile for the ManagedCluster object.
         :return: the ManagedCluster object
@@ -2826,6 +2927,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_monitor_profile(mc)
         # set up metrics profile
         mc = self.set_up_metrics_profile(mc)
+        # set up for azure container storage
+        self.set_up_azure_container_storage(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -2849,6 +2952,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         need_grant_vnet_permission_to_cluster_identity = self.context.get_intermediate(
             "need_post_creation_vnet_permission_granting", default_value=False
         )
+        enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage", default_value=False)
 
         if (
             monitoring_addon_enabled or
@@ -2856,7 +2960,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             virtual_node_addon_enabled or
             azuremonitormetrics_addon_enabled or
             (enable_managed_identity and attach_acr) or
-            need_grant_vnet_permission_to_cluster_identity
+            need_grant_vnet_permission_to_cluster_identity or
+            enable_azure_container_storage
         ):
             return True
         return False
@@ -2983,6 +3088,53 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 True
             )
 
+        # enable azure container storage
+        enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage")
+        if enable_azure_container_storage:
+            if cluster.identity_profile is None or cluster.identity_profile["kubeletidentity"] is None:
+                logger.warning(
+                    "Unexpected error getting kubelet's identity for the cluster. "
+                    "Unable to perform the azure container storage operation."
+                )
+                return
+
+            # Get the node_resource_group from the cluster object since
+            # `mc` in `context` still doesn't have the updated node_resource_group.
+            if cluster.node_resource_group is None:
+                logger.warning(
+                    "Unexpected error getting cluster's node resource group. "
+                    "Unable to perform the azure container storage operation."
+                )
+                return
+
+            pool_name = self.context.raw_param.get("storage_pool_name")
+            pool_type = self.context.raw_param.get("enable_azure_container_storage")
+            pool_option = self.context.raw_param.get("storage_pool_option")
+            pool_sku = self.context.raw_param.get("storage_pool_sku")
+            pool_size = self.context.raw_param.get("storage_pool_size")
+            kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
+            node_resource_group = cluster.node_resource_group
+            agent_pool_details = {}
+            for agentpool_profile in cluster.agent_pool_profiles:
+                agent_pool_details[agentpool_profile.name] = agentpool_profile.vm_size
+
+            self.context.external_functions.perform_enable_azure_container_storage(
+                self.cmd,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                node_resource_group,
+                kubelet_identity_object_id,
+                pool_name,
+                pool_type,
+                pool_size,
+                pool_sku,
+                pool_option,
+                "nodepool1",
+                agent_pool_details,
+                True,
+            )
+
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     def __init__(
@@ -3093,6 +3245,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         pod_cidr = self.context.get_pod_cidr()
         if pod_cidr:
             mc.network_profile.pod_cidr = pod_cidr
+
+        network_policy = self.context.get_network_policy()
+        if network_policy:
+            mc.network_profile.network_policy = network_policy
+
         return mc
 
     def update_enable_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3108,6 +3265,50 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 enabled=network_observability
             )
         return mc
+
+    def update_azure_container_storage(self, mc: ManagedCluster) -> None:
+        """Update azure container storage for the Managed Cluster object
+        :return: None
+        """
+        self._ensure_mc(mc)
+        # read the azure container storage values passed
+        pool_type = self.context.raw_param.get("enable_azure_container_storage")
+        disable_azure_container_storage = self.context.raw_param.get("disable_azure_container_storage")
+        enable_azure_container_storage = pool_type is not None
+        if enable_azure_container_storage or disable_azure_container_storage:
+            pool_name = self.context.raw_param.get("storage_pool_name")
+            pool_option = self.context.raw_param.get("storage_pool_option")
+            pool_sku = self.context.raw_param.get("storage_pool_sku")
+            pool_size = self.context.raw_param.get("storage_pool_size")
+            nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
+            from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
+            validate_azure_container_storage_params(
+                enable_azure_container_storage,
+                disable_azure_container_storage,
+                pool_name,
+                pool_type,
+                pool_sku,
+                pool_option,
+                pool_size,
+                nodepool_list,
+            )
+
+        if enable_azure_container_storage:
+            # set intermediates
+            self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
+
+        if disable_azure_container_storage:
+            pre_uninstall_validate = False
+            msg = 'Disabling Azure Container Storage will forcefully delete all the storagepools on the cluster and ' \
+                  'affect the applications using these storagepools. Forceful deletion of storagepools can also lead to ' \
+                  'leaking of storage resources which are being consumed. Do you want to validate whether any of ' \
+                  'the storagepools are being used before disabling Azure Container Storage?'
+            if self.context.get_yes() or prompt_y_n(msg, default="y"):
+                pre_uninstall_validate = True
+
+            # set intermediate
+            self.context.set_intermediate("disable_azure_container_storage", True, overwrite_exists=True)
+            self.context.set_intermediate("pre_uninstall_validate_azure_container_storage", pre_uninstall_validate, overwrite_exists=True)
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
@@ -3745,5 +3946,82 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_k8s_support_plan(mc)
         # update metrics profile
         mc = self.update_metrics_profile(mc)
+        # update azure container storage
+        self.update_azure_container_storage(mc)
 
         return mc
+
+    def check_is_postprocessing_required(self, mc: ManagedCluster) -> bool:
+        """Helper function to check if postprocessing is required after sending a PUT request to create the cluster.
+
+        :return: bool
+        """
+        postprocessing_required = super().check_is_postprocessing_required(mc)
+        if not postprocessing_required:
+            enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage", default_value=False)
+            disable_azure_container_storage = self.context.get_intermediate("disable_azure_container_storage", default_value=False)
+
+            if (enable_azure_container_storage or disable_azure_container_storage):
+                return True
+        return postprocessing_required
+
+    def postprocessing_after_mc_created(self, cluster: ManagedCluster) -> None:
+        """Postprocessing performed after the cluster is created.
+
+        :return: None
+        """
+        super().postprocessing_after_mc_created(cluster)
+        enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage")
+        disable_azure_container_storage = self.context.get_intermediate("disable_azure_container_storage")
+
+        if enable_azure_container_storage or disable_azure_container_storage:
+            if cluster.identity_profile is None or cluster.identity_profile["kubeletidentity"] is None:
+                logger.warning(
+                    "Unexpected error getting kubelet's identity for the cluster."
+                    "Unable to perform azure container storage operation."
+                )
+                return
+
+        # enable azure container storage
+        if enable_azure_container_storage:
+            pool_name = self.context.raw_param.get("storage_pool_name")
+            pool_type = self.context.raw_param.get("enable_azure_container_storage")
+            pool_option = self.context.raw_param.get("storage_pool_option")
+            pool_sku = self.context.raw_param.get("storage_pool_sku")
+            pool_size = self.context.raw_param.get("storage_pool_size")
+            nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
+            kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
+            agent_pool_details = {}
+            for agentpool_profile in cluster.agent_pool_profiles:
+                agent_pool_details[agentpool_profile.name] = agentpool_profile.vm_size
+
+            self.context.external_functions.perform_enable_azure_container_storage(
+                self.cmd,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.get_node_resource_group(),
+                kubelet_identity_object_id,
+                pool_name,
+                pool_type,
+                pool_size,
+                pool_sku,
+                pool_option,
+                nodepool_list,
+                agent_pool_details,
+                False,
+            )
+
+        # disable azure container storage
+        if disable_azure_container_storage:
+            kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
+            pre_uninstall_validate = self.context.get_intermediate("pre_uninstall_validate_azure_container_storage")
+            self.context.external_functions.perform_disable_azure_container_storage(
+                self.cmd,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.get_node_resource_group(),
+                kubelet_identity_object_id,
+                pre_uninstall_validate,
+            )
