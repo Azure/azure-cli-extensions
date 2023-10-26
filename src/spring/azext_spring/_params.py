@@ -16,7 +16,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
                           validate_remote_debugging_port, validate_ingress_client_auth_certificates,
-                          validate_managed_environment, validate_dataplane_public_endpoint, validate_server_version)
+                          validate_managed_environment, validate_dataplane_public_endpoint, validate_server_version,
+                          validate_planned_maintenance_start_hour)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_source_path, validate_artifact_path, validate_build_create,
                                      validate_build_update, validate_container_registry_create,
@@ -250,6 +251,20 @@ def load_arguments(self, _):
                    validator=validate_dataplane_public_endpoint,
                    options_list=['--enable-dataplane-public-endpoint', '--enable-dppa'],
                    help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
+
+        c.argument('enable_planned_maintenance',
+                   action='store_true',
+                   options_list=['--enable-planned-maintenance', '--enable-pm'],
+                   help='If set, enable planned maintenance for the instance.')
+        c.argument('planned_maintenance_day',
+                   arg_type=get_enum_type(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']),
+                   options_list=['--planned-maintenance-day', '--pm-day'],
+                   help='Day of the week which planned maintenance will be scheduled on. Must be one of Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.')
+        c.argument('planned_maintenance_start_hour',
+                   type=int,
+                   validator=validate_planned_maintenance_start_hour,
+                   options_list=['--planned-maintenance-start-hour', '--pm-start-hour'],
+                   help='Start time of the planned maintenance window in UTC. Must be between 0 and 23.')
 
     for scope in ['spring create', 'spring update']:
         with self.argument_context(scope) as c:
