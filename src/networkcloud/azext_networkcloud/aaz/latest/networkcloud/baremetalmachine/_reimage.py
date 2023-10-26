@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine reimage",
+    is_preview=True,
 )
 class Reimage(AAZCommand):
     """Reimage the provided bare metal machine.

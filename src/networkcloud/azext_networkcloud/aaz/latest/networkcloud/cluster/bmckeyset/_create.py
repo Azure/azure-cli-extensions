@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster bmckeyset create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new baseboard management controller key set or update the existing one for the provided cluster.

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud volume list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List volumes in the provided resource group or subscription.

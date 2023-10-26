@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud trunkednetwork update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update tags associated with the provided trunked network.

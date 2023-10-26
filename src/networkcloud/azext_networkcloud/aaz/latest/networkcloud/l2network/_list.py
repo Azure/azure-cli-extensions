@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud l2network list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List layer 2 (L2) networks in the provided resource group or subscription.

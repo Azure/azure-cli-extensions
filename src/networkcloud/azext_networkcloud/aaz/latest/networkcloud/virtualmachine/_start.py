@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine start",
+    is_preview=True,
 )
 class Start(AAZCommand):
     """Start the provided virtual machine.

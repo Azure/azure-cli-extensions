@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster agentpool create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new Kubernetes cluster agent pool or update the properties of the existing one.

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cloudservicesnetwork update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update properties of the provided cloud services network, or update the tags associated with it. Properties and tag updates can be done independently.

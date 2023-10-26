@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine uncordon",
+    is_preview=True,
 )
 class Uncordon(AAZCommand):
     """Uncordon the provided bare metal machine's Kubernetes node.

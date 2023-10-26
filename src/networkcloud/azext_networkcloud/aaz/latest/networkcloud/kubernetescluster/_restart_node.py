@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster restart-node",
+    is_preview=True,
 )
 class RestartNode(AAZCommand):
     """Restart a targeted node of a Kubernetes cluster.

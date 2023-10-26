@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster update-version",
+    is_preview=True,
 )
 class UpdateVersion(AAZCommand):
     """Update the version of the provided cluster to one of the available supported versions.

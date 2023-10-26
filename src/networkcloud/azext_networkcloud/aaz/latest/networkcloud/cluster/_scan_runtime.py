@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster scan-runtime",
+    is_preview=True,
 )
 class ScanRuntime(AAZCommand):
     """Trigger the execution of a runtime protection scan to detect and remediate detected issues, in accordance with the cluster configuration.

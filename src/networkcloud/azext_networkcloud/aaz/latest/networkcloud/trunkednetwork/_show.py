@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud trunkednetwork show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get properties of the provided trunked network.

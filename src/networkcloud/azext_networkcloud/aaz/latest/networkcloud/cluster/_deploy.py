@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster deploy",
+    is_preview=True,
 )
 class Deploy(AAZCommand):
     """Deploy the cluster.

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine restart",
+    is_preview=True,
 )
 class Restart(AAZCommand):
     """Restart the provided bare metal machine.

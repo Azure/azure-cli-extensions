@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine replace",
+    is_preview=True,
 )
 class Replace(AAZCommand):
     """Replace the provided bare metal machine.

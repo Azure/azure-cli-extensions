@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the properties of the provided virtual machine, or update the tags associated with the virtual machine. Properties and tag updates can be done independently.

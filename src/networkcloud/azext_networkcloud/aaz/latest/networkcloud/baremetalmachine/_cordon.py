@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine cordon",
+    is_preview=True,
 )
 class Cordon(AAZCommand):
     """Cordon the provided bare metal machine's Kubernetes node.

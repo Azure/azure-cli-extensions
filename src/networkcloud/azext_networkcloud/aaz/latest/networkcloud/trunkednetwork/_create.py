@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud trunkednetwork create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new trunked network or update the properties of the existing trunked network.

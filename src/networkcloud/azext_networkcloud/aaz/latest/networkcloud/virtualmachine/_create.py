@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new virtual machine or update the properties of the existing virtual machine.

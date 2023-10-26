@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud l3network update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update tags associated with the provided layer 3 (L3) network.
