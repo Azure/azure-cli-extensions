@@ -48,6 +48,12 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.vault_name = AAZStrArg(
+            options=["-v", "--vault-name"],
+            help="The name of the backup vault.",
+            required=True,
+            id_part="name",
+        )
 
         # define Arg Group "Resource Id Arguments"
 
@@ -65,13 +71,6 @@ class Show(AAZCommand):
             help="Id of the recovery point.",
             required=True,
             id_part="child_name_2",
-        )
-        _args_schema.vault_name = AAZStrArg(
-            options=["--vault-name"],
-            arg_group="Resource Id Arguments",
-            help="The name of the backup vault.",
-            required=True,
-            id_part="name",
         )
         return cls._args_schema
 
