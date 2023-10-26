@@ -20,7 +20,7 @@ from ._utils import (get_vnet_location,
                      safe_set,
                      get_default_workload_profiles,
                      _azure_monitor_quickstart, safe_get)
-from ._client_factory import handle_raw_exception
+from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from .base_resource import BaseResource
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
@@ -211,10 +211,10 @@ class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
         if self.get_argument_infrastructure_subnet_resource_id() or self.get_argument_docker_bridge_cidr() or self.get_argument_platform_reserved_cidr() or self.get_argument_platform_reserved_dns_ip():
             vnet_config_def = VnetConfigurationModel
 
-            if self.get_argument_infrastructure_subnet_resource_id is not None:
+            if self.get_argument_infrastructure_subnet_resource_id() is not None:
                 vnet_config_def["infrastructureSubnetId"] = self.get_argument_infrastructure_subnet_resource_id()
 
-            if self.get_argument_docker_bridge_cidr is not None:
+            if self.get_argument_docker_bridge_cidr() is not None:
                 vnet_config_def["dockerBridgeCidr"] = self.get_argument_docker_bridge_cidr()
 
             if self.get_argument_platform_reserved_cidr() is not None:
@@ -344,9 +344,45 @@ class ContainerAppEnvUpdateDecorator(ContainerAppEnvDecorator):
 
 
 class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
+    def get_argument_infrastructure_resource_group(self):
+        return self.get_param("infrastructure_resource_group")
+
+    def construct_payload(self):
+        super().construct_payload()
+
+        self.set_up_infrastructure_resource_group()
+
+    def validate_arguments(self):
+        super().validate_arguments()
+
+        # Infrastructure Resource Group
+        if self.get_argument_infrastructure_resource_group() is not None:
+            if not self.get_argument_infrastructure_subnet_resource_id():
+                raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
+                                                   "--infrastructure-subnet-resource-id/-s")
+            if not self.get_argument_enable_workload_profiles():
+                raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
+                                                   "--enable-workload-profiles/-w")
+
+    def set_up_infrastructure_resource_group(self):
+        if self.get_argument_enable_workload_profiles() and self.get_argument_infrastructure_subnet_resource_id() is not None:
+            self.managed_env_def["properties"]["InfrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
 
     def set_up_workload_profiles(self):
         if self.get_argument_enable_workload_profiles():
+            # If the environment exists, infer the environment type
+            existing_environment = None
+            try:
+                existing_environment = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+            except Exception as e:
+                handle_non_404_status_code_exception(e)
+
+            if existing_environment and safe_get(existing_environment, "properties", "workloadProfiles") is None:
+                # check if input params include -w/--enable-workload-profiles
+                if self.cmd.cli_ctx.data.get('safe_params') and ('-w' in self.cmd.cli_ctx.data.get('safe_params') or '--enable-workload-profiles' in self.cmd.cli_ctx.data.get('safe_params')):
+                    raise ValidationError(f"Existing environment {self.get_argument_name()} cannot enable workload profiles. If you want to use Consumption and Dedicated environment, please create a new one.")
+                return
+
             self.managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(self.cmd, self.get_argument_location())
 
     def get_argument_enable_workload_profiles(self):

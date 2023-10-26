@@ -441,7 +441,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         vnet = self.create_random_name(prefix='name', length=24)
 
         self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
-        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
 
         logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs} -l eastus").get_output_in_json()["customerId"]
         logs_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {logs}').get_output_in_json()["primarySharedKey"]
@@ -458,6 +458,34 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('name', env),
             JMESPathCheck('properties.vnetConfiguration.internal', True),
         ])
+
+
+    @ResourceGroupPreparer(location="eastus")
+    @live_only()  # passes live but hits CannotOverwriteExistingCassetteException when run from recording
+    def test_containerapp_env_infrastructure_rg(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        vnet = self.create_random_name(prefix='name', length=24)
+        infra_rg = self.create_random_name(prefix='irg', length=24)
+
+        self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
+        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {sub_id} -i {infra_rg} --enable-workload-profiles true')
+
+        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        self.cmd(f'containerapp env show -n {env} -g {resource_group}', checks=[
+            JMESPathCheck('name', env),
+            JMESPathCheck('properties.infrastructureResourceGroup', infra_rg),
+        ])
+
+        self.cmd(f'containerapp env delete -n {env} -g {resource_group} --yes')
 
 
     @AllowLargeResponse(8192)
@@ -529,6 +557,6 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         result = self.cmd('containerapp env list-usages --id {}'.format(containerapp_env["id"])).get_output_in_json()
         usages = result["value"]
-        self.assertEqual(len(usages), 4)
+        self.assertEqual(len(usages), 3)
         self.assertGreater(usages[0]["limit"], 0)
         self.assertGreaterEqual(usages[0]["usage"], 0)

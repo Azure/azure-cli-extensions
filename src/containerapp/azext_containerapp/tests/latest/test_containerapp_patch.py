@@ -4,17 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from unittest import mock
-import time
-import requests
+
 import docker
 
-from azure.cli.testsdk.reverse_dependency import get_dummy_cli
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
-from knack.util import CLIError
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
-from azext_containerapp.tests.latest.common import TEST_LOCATION
 from azext_containerapp import _utils
 from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_up
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -122,7 +116,6 @@ class ContainerAppPatchTest(ScenarioTest):
         self._retag_image_to_older_version_and_push(resource_group=resource_group,app_name=app_name,old_tag=old_tag)
 
         # Execute and verify patch list command
-        self.cmd(f'configure --defaults group={resource_group}')
         patch_cmd = f'containerapp patch list'
         patchable_images = self.cmd(patch_cmd).get_output_in_json()
         newRunImageTag = patchable_images[0]["newRunImage"].split(':')[1]

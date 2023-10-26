@@ -826,7 +826,6 @@ def get_metadata(arm_endpoint, api_version="2022-09-01"):
         import requests
         session = requests.Session()
         metadata_endpoint = arm_endpoint + metadata_url_suffix
-        print(f"Retrieving ARM metadata from: {metadata_endpoint}")
         response = session.get(metadata_endpoint)
         if response.status_code == 200:
             return response.json()

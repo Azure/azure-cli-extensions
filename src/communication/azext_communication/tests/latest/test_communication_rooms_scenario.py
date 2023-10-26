@@ -133,6 +133,75 @@ class CommunicationRoomsScenarios(ScenarioTest):
         assert 'Bad Request' in str(raises.exception.reason)
         assert raises.exception.status_code == 400       
         assert 'The request could not be understood by the server due to malformed syntax.' in str(raises.exception)
+    
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_rooms_create_with_pstn_dial_out_enabled(self, communication_resource_info):
+        # sourcery skip: aware-datetime-for-utc
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+        pstnEnabled = True
+        self.kwargs.update({          
+            'pstnEnabled': pstnEnabled})
+        room = self.cmd('az communication rooms create --pstn-dial-out-enabled {pstnEnabled}').get_output_in_json()
+
+        id = room['id']
+        pstnEnabled = room['pstnDialOutEnabled']
+        assert len(id) > 0
+        assert pstnEnabled is True
+        
+        pstnEnabled = False
+        self.kwargs.update({          
+            'pstnEnabled': pstnEnabled})
+        room = self.cmd('az communication rooms create --pstn-dial-out-enabled {pstnEnabled}').get_output_in_json()
+
+        id = room['id']
+        pstnEnabled = room['pstnDialOutEnabled']
+        assert len(id) > 0
+        assert pstnEnabled is False
+        
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_rooms_create_with_valid_time_pstn_dial_out_attributes(self, communication_resource_info):
+        # sourcery skip: aware-datetime-for-utc
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+
+        validFrom = (datetime.utcnow() + timedelta(minutes=60)).isoformat()
+        validUntil = (datetime.utcnow() + timedelta(minutes=120)).isoformat()
+        pstnEnabled = True
+        
+        self.kwargs.update({          
+            'validFrom': validFrom,
+            'validUntil': validUntil,
+            'pstnEnabled': pstnEnabled})
+                
+        room = self.cmd('az communication rooms create --valid-from {validFrom} --valid-until {validUntil} --pstn-dial-out-enabled {pstnEnabled} ').get_output_in_json()
+
+        id = room['id']
+        pstnEnabled = room['pstnDialOutEnabled']
+        
+        assert len(id) > 0
+        assert pstnEnabled is True
+    
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_rooms_create_with_valid_participants_pstn_dial_out_attributes(self, communication_resource_info):
+        # sourcery skip: aware-datetime-for-utc
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+
+        presenter_id = self.__create_user(communication_resource_info)
+        pstnEnabled = True
+        
+        self.kwargs.update({          
+            'pstnEnabled': pstnEnabled,
+            'presenter_id': presenter_id})
+                
+        room = self.cmd('az communication rooms create --pstn-dial-out-enabled {pstnEnabled} --presenter-participants {presenter_id}').get_output_in_json()
+
+        id = room['id']
+        pstnEnabled = room['pstnDialOutEnabled']
+        
+        assert len(id) > 0
+        assert pstnEnabled is True
         
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
@@ -143,13 +212,15 @@ class CommunicationRoomsScenarios(ScenarioTest):
         validFrom = (datetime.utcnow() + timedelta(minutes=60)).isoformat()
         validUntil = (datetime.utcnow() + timedelta(minutes=120)).isoformat() 
         presenter_id = self.__create_user(communication_resource_info)
+        pstnEnabled = True
         
         self.kwargs.update({          
             'validFrom': validFrom,
             'validUntil': validUntil,
+            'pstnEnabled': pstnEnabled,
             'presenter_id': presenter_id})
         
-        room = self.cmd('az communication rooms create --valid-from {validFrom} --valid-until {validUntil} --presenter-participants {presenter_id}').get_output_in_json()
+        room = self.cmd('az communication rooms create --valid-from {validFrom} --valid-until {validUntil} --pstn-dial-out-enabled {pstnEnabled} --presenter-participants {presenter_id}').get_output_in_json()
         
         id = room['id']
         assert len(id) > 0
@@ -299,6 +370,63 @@ class CommunicationRoomsScenarios(ScenarioTest):
         assert raises.exception.status_code == 400
         assert 'The request could not be understood by the server due to malformed syntax.' in str(raises.exception)
 
+    @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_rooms_update_pstn_dial_out_enabled(self, communication_resource_info):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+        
+        # create a room first
+        room = self.cmd('az communication rooms create').get_output_in_json()
+
+        # update the room with valid elapsed time
+        pstnEnabled = True
+        
+        self.kwargs.update({
+            'room_id': room['id'],
+            'pstnEnabled': pstnEnabled})
+        
+        updated_room = self.cmd('az communication rooms update --room {room_id} --pstn-dial-out-enabled {pstnEnabled}').get_output_in_json()
+
+        assert room['id'] == updated_room['id']
+        assert updated_room['pstnDialOutEnabled'] is True
+        
+        pstnEnabled = False
+        self.kwargs.update({
+            'room_id': room['id'],
+            'pstnEnabled': pstnEnabled})
+        
+        updated_room = self.cmd('az communication rooms update --room {room_id} --pstn-dial-out-enabled {pstnEnabled}').get_output_in_json()
+
+        assert room['id'] == updated_room['id']
+        assert updated_room['pstnDialOutEnabled'] is False
+    
+    @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_rooms_update_valid_elapsed_time_pstn_dial_out_enabled(self, communication_resource_info):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+        
+        # create a room first
+        room = self.cmd('az communication rooms create').get_output_in_json()
+
+        # update the room with valid elapsed time
+        validFrom = (datetime.utcnow() + timedelta(minutes=60)).isoformat()
+        validUntil = (datetime.utcnow() + timedelta(minutes=120)).isoformat()
+        pstnEnabled = True
+        
+        self.kwargs.update({
+            'room_id': room['id'],
+            'validFrom': validFrom,
+            'validUntil': validUntil,
+            'pstnEnabled': pstnEnabled})
+        
+        updated_room = self.cmd('az communication rooms update --room {room_id} --valid-from {validFrom} --valid-until {validUntil} --pstn-dial-out-enabled {pstnEnabled}').get_output_in_json()
+
+        assert room['id'] == updated_room['id']
+        assert room['validFrom'] != updated_room['validFrom']
+        assert room['validUntil'] != updated_room['validUntil']
+        assert room['pstnDialOutEnabled'] is False
+        assert updated_room['pstnDialOutEnabled'] is True
+		
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_rooms_list(self, communication_resource_info):

@@ -57,6 +57,11 @@ helps['webpubsub service permission'] = """
     short-summary: Commands to manage Webpubsub service permissions.
 """
 
+helps['webpubsub replica'] = """
+type: group
+short-summary: Manage replica settings.
+"""
+
 helps['webpubsub create'] = """
     type: command
     short-summary: Create a Webpubsub.
@@ -262,4 +267,40 @@ helps['webpubsub service permission revoke'] = """
 helps['webpubsub service permission check'] = """
     type: command
     short-summary: Check if a connection has permission to the specified group.
+"""
+
+helps['webpubsub replica show'] = """
+type: command
+short-summary: Show the details of a replica
+examples:
+  - name: Get the detail of a replica
+    text: >
+        az webpubsub replica show --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub replica delete'] = """
+type: command
+short-summary: Delete a replica of WebPubSub Service.
+examples:
+  - name: Delete a replica
+    text: >
+        az webpubsub replica delete --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub replica list'] = """
+type: command
+short-summary: List replicas of Webpubsub Service.
+examples:
+  - name: Get the detail of a replica
+    text: >
+        az webpubsub replica list --name MyWebPubSub -g MyResourceGroup -o table
+"""
+
+helps['webpubsub replica create'] = """
+type: command
+short-summary: Create a replica of Webpubsub Service.
+examples:
+  - name: Get the detail of a replica
+    text: >
+        az webpubsub replica create --sku Premium_P1 -l eastus --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
 """

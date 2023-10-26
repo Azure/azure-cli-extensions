@@ -215,10 +215,20 @@ class NetworkScenarioTest(ScenarioTest):
 
 
         self.cmd('network manager security-admin-config rule-collection rule create -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} '
-                 '--rule-name {rule_name} --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"')
+                 '--rule-name {rule_name} --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"',
+                 checks=[self.check('access', 'Allow'),
+                         self.check('direction', 'Inbound'),
+                         self.check('kind', 'Custom'),
+                         self.check('priority', '32'),
+                         self.check('protocol', 'Tcp')])
         self.cmd('network manager security-admin-config rule-collection rule show -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name}')
         self.cmd('network manager security-admin-config rule-collection rule update -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} '
-                 '--access "Deny"')
+                 '--access "Deny"',
+                 checks=[self.check('access', 'Deny'),
+                         self.check('direction', 'Inbound'),
+                         self.check('kind', 'Custom'),
+                         self.check('priority', '32'),
+                         self.check('protocol', 'Tcp')])
         self.cmd('network manager security-admin-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-admin-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --force --yes')
 
@@ -390,7 +400,16 @@ class NetworkScenarioTest(ScenarioTest):
                  'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub '
                  'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
                  'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration" --is-global true')
-        self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
+        config_id = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()["id"]
+        self.kwargs.update({"config_id": config_id})
+
+        # test nm connect-config commit
+        self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "Connectivity" '
+                 '--target-locations "eastus2" -g {rg} --configuration-ids {config_id}')
+        # test nm connect-config  uncommit
+        self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "Connectivity" '
+                 '--target-locations "eastus2" -g {rg}')
+
         self.cmd('network manager connect-config update --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager connect-config list --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager connect-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')
