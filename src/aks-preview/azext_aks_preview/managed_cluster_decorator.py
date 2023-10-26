@@ -3115,8 +3115,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
             node_resource_group = cluster.node_resource_group
             agent_pool_details = {}
+            nodepool_name = "nodepool1"
             for agentpool_profile in cluster.agent_pool_profiles:
                 agent_pool_details[agentpool_profile.name] = agentpool_profile.vm_size
+                nodepool_name = agentpool_profile.name
 
             self.context.external_functions.perform_enable_azure_container_storage(
                 self.cmd,
@@ -3130,7 +3132,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 pool_size,
                 pool_sku,
                 pool_option,
-                "nodepool1",
+                nodepool_name,
                 agent_pool_details,
                 True,
             )
