@@ -16,8 +16,8 @@ Release History
   * Additional status "Disconnected" is added to clusterConnectionStatus.
   * kubernetescluster update command allows modification of SSH keys for cluster administrator and control plane administrator.
   * kubernetescluster agentpool update command allows modification of SSH keys for the agent pool administrator.
-  * This version requires a minimum of 2.51 Azure core CLI.
-  * This version upgrades the internal generation tool aaz-dev-tools to 1.8.0. Refer to the release notes for more details: https://github.com/Azure/aaz-dev-tools/releases/tag/v1.8.0.
+* This version requires a minimum of 2.51 Azure core CLI.
+* This version upgrades the internal generation tool aaz-dev-tools to 1.8.0. Refer to the release notes for more details: https://github.com/Azure/aaz-dev-tools/releases/tag/v1.8.0.
 
 1.1.0
 ++++++++
