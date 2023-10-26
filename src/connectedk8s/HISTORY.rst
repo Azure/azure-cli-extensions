@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.5.4
+++++++
+
+* Updated Helm from 3.6.3 to 3.12.2
+
 1.5.3
 ++++++
 * Add support to get AKS-EE kubernetes distro
@@ -21,11 +26,6 @@ Release History
 1.4.0
 ++++++
 * Added support for reading ARM metadata 2022-09-01.
-
-1.3.21
-++++++
-
-* Updated Helm from 3.6.3 to 3.12.2
 
 1.3.20
 ++++++
