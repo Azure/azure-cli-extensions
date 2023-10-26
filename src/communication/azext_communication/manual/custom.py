@@ -7,6 +7,7 @@
 
 
 import sys
+import ast
 from azure.core.exceptions import HttpResponseError
 
 
@@ -189,6 +190,20 @@ def __to_room_participant(presenters, attendees, consumers):
     return participants
 
 
+def __to_room_pstn_dial_out_enabled(pstn_dial_out_enabled):
+    pstn_enabled_str = pstn_dial_out_enabled
+
+    if pstn_enabled_str is None:
+        return pstn_enabled_str
+
+    if pstn_dial_out_enabled.lower() == "false":
+        pstn_enabled_str = "False"
+    elif pstn_dial_out_enabled.lower() == "true":
+        pstn_enabled_str = "True"
+
+    return pstn_enabled_str
+
+
 def communication_rooms_get_room(client, room_id):
     try:
         return client.get_room(room_id)
@@ -201,15 +216,23 @@ def communication_rooms_get_room(client, room_id):
 def communication_rooms_create_room(client,
                                     valid_from=None,
                                     valid_until=None,
+                                    pstn_dial_out_enabled=None,
                                     presenters=None,
                                     attendees=None,
                                     consumers=None):
     try:
         room_participants = __to_room_participant(presenters, attendees, consumers)
+        pstn_dialed_out_enabled_str = __to_room_pstn_dial_out_enabled(pstn_dial_out_enabled)
+
+        if pstn_dialed_out_enabled_str is None:
+            pstn_dialed_out_enabled_str = "False"
+
+        pstn_enabled = ast.literal_eval(pstn_dialed_out_enabled_str)
 
         return client.create_room(
             valid_from=valid_from,
             valid_until=valid_until,
+            pstn_dial_out_enabled=pstn_enabled,
             participants=room_participants)
     except HttpResponseError:
         raise
@@ -228,12 +251,20 @@ def communication_rooms_delete_room(client, room_id):
 
 def communication_rooms_update_room(client, room_id,
                                     valid_from=None,
-                                    valid_until=None):
+                                    valid_until=None,
+                                    pstn_dial_out_enabled=None):
     try:
+        pstn_dialed_out_enabled_str = __to_room_pstn_dial_out_enabled(pstn_dial_out_enabled)
+        pstn_enabled = None
+
+        if pstn_dialed_out_enabled_str is not None:
+            pstn_enabled = ast.literal_eval(pstn_dialed_out_enabled_str)
+
         return client.update_room(
             room_id=room_id,
             valid_from=valid_from,
-            valid_until=valid_until)
+            valid_until=valid_until,
+            pstn_dial_out_enabled=pstn_enabled)
     except HttpResponseError:
         raise
     except Exception as ex:
@@ -352,12 +383,16 @@ def communication_email_send(client,
                 "html": html
             },
             "recipients": {
-                "to": None if recipients_to is None else [{"address": recipient} for recipient in recipients_to[0].split(',')],
-                "cc": None if recipients_cc is None else [{"address": recipient} for recipient in recipients_cc[0].split(',')],
-                "bcc": None if recipients_bcc is None else [{"address": recipient} for recipient in recipients_bcc[0].split(',')]
+                "to": None if recipients_to is None else [{"address": recipient}
+                                                          for recipient in recipients_to[0].split(',')],
+                "cc": None if recipients_cc is None else [{"address": recipient}
+                                                          for recipient in recipients_cc[0].split(',')],
+                "bcc": None if recipients_bcc is None else [{"address": recipient}
+                                                            for recipient in recipients_bcc[0].split(',')]
             },
             "replyTo": None if reply_to is None else [{"address": reply_to}],
-            "attachments": None if attachments_list is None else [json.loads(attachment) for attachment in attachments_list],
+            "attachments": None if attachments_list is None else [json.loads(attachment)
+                                                                  for attachment in attachments_list],
             "senderAddress": sender,
             "userEngagementTrackingDisabled": disable_tracking,
             "headers": {

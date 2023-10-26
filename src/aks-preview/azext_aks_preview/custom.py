@@ -598,6 +598,12 @@ def aks_create(
     enable_windows_recording_rules=False,
     # metrics profile
     enable_cost_analysis=False,
+    # azure container storage
+    enable_azure_container_storage=None,
+    storage_pool_name=None,
+    storage_pool_size=None,
+    storage_pool_sku=None,
+    storage_pool_option=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -725,6 +731,7 @@ def aks_update(
     load_balancer_managed_outbound_ipv6_count=None,
     outbound_type=None,
     network_plugin_mode=None,
+    network_policy=None,
     network_dataplane=None,
     pod_cidr=None,
     enable_pod_security_policy=False,
@@ -768,6 +775,14 @@ def aks_update(
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
+    # azure container storage
+    enable_azure_container_storage=None,
+    disable_azure_container_storage=False,
+    storage_pool_name=None,
+    storage_pool_size=None,
+    storage_pool_sku=None,
+    storage_pool_option=None,
+    azure_container_storage_nodepools=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

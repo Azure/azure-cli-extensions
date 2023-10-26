@@ -430,7 +430,7 @@ def create_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
-                               enable_workload_profiles=False,
+                               enable_workload_profiles=True,
                                mtls_enabled=None,
                                no_wait=False):
     raw_parameters = locals()
@@ -971,12 +971,12 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                                                        resolve_registry_from_cli_args,
                                                                        resolve_transport_from_cli_args,
                                                                        resolve_service_startup_command,
-                                                                       validate_memory_and_cpu_setting,
                                                                        resolve_cpu_configuration_from_service,
                                                                        resolve_memory_configuration_from_service,
                                                                        resolve_replicas_from_service,
                                                                        resolve_environment_from_service,
                                                                        resolve_secret_from_service)
+    from ._compose_utils import validate_memory_and_cpu_setting
 
     # Validate managed environment
     parsed_managed_env = parse_resource_id(managed_env)

@@ -55,7 +55,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.vault_name = AAZStrArg(
-            options=["--vault-name"],
+            options=["-v", "--vault-name"],
             help="The name of the backup vault.",
             required=True,
             id_part="name",
@@ -273,6 +273,7 @@ class Update(AAZCommand):
         base_resource_properties_update.object_type = AAZStrArg(
             options=["object-type"],
             help="Type of the specific object - used for deserializing",
+            enum={"DefaultResourceProperties": "DefaultResourceProperties"},
         )
 
         _schema.object_type = cls._args_base_resource_properties_update.object_type
