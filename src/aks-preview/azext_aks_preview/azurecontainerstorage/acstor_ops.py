@@ -21,7 +21,6 @@ from azext_aks_preview.azurecontainerstorage._consts import (
 )
 from azext_aks_preview.azurecontainerstorage._helpers import (
     check_if_extension_is_installed,
-    generate_random_storage_pool_name,
     get_k8s_extension_module,
     perform_role_operations_on_managed_rg,
     register_dependent_rps,
@@ -101,7 +100,7 @@ def perform_enable_azure_container_storage(
     config_settings = []
     if create_storage_pool:
         if storage_pool_name is None:
-            storage_pool_name = generate_random_storage_pool_name()
+            storage_pool_name = storage_pool_type.lower()
         if storage_pool_size is None:
             storage_pool_size = CONST_STORAGE_POOL_DEFAULT_SIZE_ESAN if \
                 storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN else \

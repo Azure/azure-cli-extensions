@@ -13,6 +13,10 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-09-02-preview.
 
+0.5.167
++++++++
+* Fix the default storagepool name value created for Azure Container Storage.
+
 0.5.166
 +++++++
 * Add `--network-policy` to the `az aks update` command.
