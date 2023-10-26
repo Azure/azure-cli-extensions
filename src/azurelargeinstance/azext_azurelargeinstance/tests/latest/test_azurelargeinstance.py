@@ -6,7 +6,6 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
-from azure.cli.core.commands.client_factory import get_subscription_id
 
 class AzurelargeinstanceScenario(ScenarioTest):
 
