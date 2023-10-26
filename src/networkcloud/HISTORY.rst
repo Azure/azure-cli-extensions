@@ -11,8 +11,6 @@ Release History
   * New configuration is added to cluster create and update commands for runtime protection scan, secret archive, and cluster update strategy.
   * New Cluster command scan-runtime is added to trigger the execution of a runtime protection scan.
   * baremetalmachine returns new properties with runtime protection status.
-  * baremetalmachinekeyset now requires a new property user-principal-name provided in the email format for validation of group membership.
-  * bmckeyset now requires a new property user-principal-name provided in the email format for validation of group membership.
   * Additional status "Disconnected" is added to clusterConnectionStatus.
   * kubernetescluster update command allows modification of SSH keys for cluster administrator and control plane administrator.
   * kubernetescluster agentpool update command allows modification of SSH keys for the agent pool administrator.
