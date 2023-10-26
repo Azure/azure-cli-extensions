@@ -11,10 +11,11 @@ It is integrated into the generated code via:
 cli-ext/v20221212preview/ext/src/networkcloud/azext_networkcloud/commands.py
 """
 
-from azure.cli.core.aaz import register_callback
 from azext_networkcloud.aaz.latest.networkcloud.cluster.metricsconfiguration._update import (
     Update as _Update,
 )
+from azure.cli.core.aaz import register_callback
+
 from .common import ClusterMetricsConfiguration
 
 

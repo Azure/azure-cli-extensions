@@ -20,30 +20,16 @@ def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
 
-def setup_scenario2(test):
-    ''' Env setup_scenario2 '''
-    pass
-
-def cleanup_scenario2(test):
-    '''Env cleanup_scenario2 '''
-    pass
-
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
-    step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
+    step_list_subscription(test, checks=[])
+    step_commit(test)
     step_delete(test, checks=[])
     cleanup_scenario1(test)
-
-def call_scenario2(test):
-    ''' # Testcase: scenario2'''
-    setup_scenario2(test)
-    step_provision(test)
-    step_deprovision(test)
-    cleanup_scenario2(test)
 
 def step_create(test, checks=None):
     '''nf create operation'''
@@ -59,13 +45,6 @@ def step_show(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric fabric show --resource-name {name} --resource-group {rg}')
-    
-def step_delete(test, checks=None):
-    '''nf delete operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric fabric delete --resource-name {name} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''nf list by resource group operation'''
@@ -74,26 +53,26 @@ def step_list_resource_group(test, checks=None):
     test.cmd('az networkfabric fabric list --resource-group {rg}')
 
 def step_list_subscription(test, checks=None):
-    '''nf list by subscription operation'''
+    '''nf list by subscription'''
     if checks is None:
         checks = []
     test.cmd('az networkfabric fabric list')
 
-def step_provision(test, checks=None):
-    '''nf provision operation'''
+def step_commit(test, checks=None):
+    '''nf commit configuration operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric fabric provision --resource-name {resource_name} --resource-group {rg}')
-    
-def step_deprovision(test, checks=None):
-    '''nf deprovision operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric fabric deprovision --resource-name {resource_name} --resource-group {rg}')
+        'az networkfabric fabric commit-configuration --subscription {commitNFSubscription} --resource-name {commitNFName} --resource-group {commitNFRGName}')
 
-class NFScenarioTest1(ScenarioTest):
+def step_delete(test, checks=None):
+    '''nf delete operation'''
+    if checks is None:
+        checks = []
+    test.cmd(
+        'az networkfabric fabric delete --resource-name {deleteNFName} --resource-group {deleteNFRGName}')
+
+class GA_NFScenarioTest1(ScenarioTest):
     ''' NFScenario test'''
 
     def __init__(self, *args, **kwargs):
@@ -110,14 +89,14 @@ class NFScenarioTest1(ScenarioTest):
             'rack_count': CONFIG.get('NETWORK_FABRIC', 'rack_count'),
             'server_count_per_rack': CONFIG.get('NETWORK_FABRIC', 'server_count_per_rack'),
             'terminalServerConf': CONFIG.get('NETWORK_FABRIC', 'terminalServerConf'),
+            'deleteNFRGName': CONFIG.get('NETWORK_FABRIC', 'delete_nf_resource_group'),
+            'deleteNFName': CONFIG.get('NETWORK_FABRIC', 'delete_nf_name'),
             'managedNetworkConf': CONFIG.get('NETWORK_FABRIC', 'managedNetworkConf'),
-            'resource_name': CONFIG.get('NETWORK_FABRIC', 'resource_name')
+            'commitNFSubscription': CONFIG.get('NETWORK_FABRIC', 'commit_nf_subscription'),
+            'commitNFRGName': CONFIG.get('NETWORK_FABRIC', 'commit_nf_resource_group'),
+            'commitNFName': CONFIG.get('NETWORK_FABRIC', 'commit_nf_name')
         })
 
-    def test_nf_scenario1(self):
+    def test_GA_nf_scenario1(self):
         ''' test scenario for NF CRUD operations'''
         call_scenario1(self)
-
-    def test_nf_scenario2(self):
-        ''' test scenario for NF Provision/Deprovision operations'''
-        call_scenario2(self)

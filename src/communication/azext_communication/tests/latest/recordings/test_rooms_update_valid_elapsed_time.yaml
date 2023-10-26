@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"validFrom": null, "validUntil": null}'
+    body: '{"validFrom": null, "validUntil": null, "pstnDialOutEnabled": false}'
     headers:
       Accept:
       - application/json
@@ -9,40 +9,41 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '39'
+      - '68'
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Mon, 10 Jul 2023 21:06:41 GMT
-      Repeatability-Request-ID:
-      - ab0c0658-1f65-11ee-b810-ef1ec79c5484
+      - Mon, 16 Oct 2023 16:46:17 GMT
+      Repeatability-Request-Id:
+      - 8709bbde-6c43-11ee-a57a-8cf8c5abc371
       User-Agent:
-      - AzureCli/1.7.0b1 azsdk-python-communication-rooms/1.0.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.7.2b1 azsdk-python-communication-rooms/1.1.0b1 Python/3.11.5 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - vBTkhrLFogng0nIWoP6/XqO3xl87GjFK9aShkzc8E3g=
+      - 2xVVJJKx5brgL5bSWgeu9hhccJP/PkHHEzXUfUClsMI=
       x-ms-date:
-      - Mon, 10 Jul 2023 21:06:41 GMT
+      - Mon, 16 Oct 2023 16:46:17 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-06-14
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-10-30-preview
   response:
     body:
-      string: '{"id": "sanitized", "createdAt": "2023-07-10T21:06:42.0048894+00:00",
-        "validFrom": "2023-07-10T21:06:41.4833904+00:00", "validUntil": "2024-01-06T21:06:41.4833904+00:00"}'
+      string: '{"id": "sanitized", "createdAt": "2023-10-16T16:46:19.1932148+00:00",
+        "validFrom": "2023-10-16T16:46:18.9300652+00:00", "validUntil": "2024-04-13T16:46:18.9300652+00:00",
+        "pstnDialOutEnabled": false}'
     headers:
       api-deprecated-versions:
       - 2021-04-07, 2022-02-01
       api-supported-versions:
-      - 2023-03-31-preview, 2023-06-14
+      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jul 2023 21:06:41 GMT
+      - Mon, 16 Oct 2023 16:46:19 GMT
       location:
-      - '99470461034746123'
+      - '99449228803743247'
       ms-cv:
-      - lm6xwO9yYk6QQOaMNHDCKw.0
+      - yEclhZy+zUCDfrbjTKctNQ.0
       repeatability-result:
       - accepted
       request-context:
@@ -50,14 +51,15 @@ interactions:
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 04XKsZAAAAABp68BvD9vrRaLvheZex5p+WVZSMzExMDAwMTE1MDUzADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 02mgtZQAAAAAA9vsCFmLKTLPnDlgjf/2BWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
     status:
       code: 201
       message: Created
 - request:
-    body: '{"validFrom": "2023-07-10T22:06:42.869580", "validUntil": "2023-07-10T23:06:42.869580"}'
+    body: '{"validFrom": "2023-10-16T17:46:19.246374", "validUntil": "2023-10-16T18:46:19.246374",
+      "pstnDialOutEnabled": null}'
     headers:
       Accept:
       - application/json
@@ -66,40 +68,41 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '87'
+      - '115'
       Content-Type:
       - application/merge-patch+json
       User-Agent:
-      - AzureCli/1.7.0b1 azsdk-python-communication-rooms/1.0.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.7.2b1 azsdk-python-communication-rooms/1.1.0b1 Python/3.11.5 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - 92zHOeQ3qrpF+O4GDNU71bzIvIOCAt3ddzQ12l+6jaw=
+      - l/Bm7HbdggQd0FbfQx+hXQ3R6lETwRqZcTRZ5tZzyYk=
       x-ms-date:
-      - Mon, 10 Jul 2023 21:06:43 GMT
+      - Mon, 16 Oct 2023 16:46:19 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: PATCH
-    uri: https://sanitized.communication.azure.com/rooms/sanitized?api-version=2023-06-14
+    uri: https://sanitized.communication.azure.com/rooms/sanitized?api-version=2023-10-30-preview
   response:
     body:
-      string: '{"id": "sanitized", "createdAt": "2023-07-10T21:06:42.0048894+00:00",
-        "validFrom": "2023-07-10T22:06:42.86958+00:00", "validUntil": "2023-07-10T23:06:42.86958+00:00"}'
+      string: '{"id": "sanitized", "createdAt": "2023-10-16T16:46:19.1932148+00:00",
+        "validFrom": "2023-10-16T17:46:19.246374+00:00", "validUntil": "2023-10-16T18:46:19.246374+00:00",
+        "pstnDialOutEnabled": false}'
     headers:
       api-deprecated-versions:
       - 2021-04-07, 2022-02-01
       api-supported-versions:
-      - 2023-03-31-preview, 2023-06-14
+      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jul 2023 21:06:42 GMT
+      - Mon, 16 Oct 2023 16:46:20 GMT
       ms-cv:
-      - gRvSH2BtVEm+mQHxkNUddg.0
+      - MDkTDI2irEe6t0lQYVJ6Cw.0
       request-context:
       - appId=
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 04nKsZAAAAAC4en6WspEVRpN7H8ApOW7lWVZSMzExMDAwMTE1MDI5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 03GgtZQAAAABhN06hCx0tR5yMsSAihbnGWVZSMzExMDAwMTE1MDQ1ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
     status:

@@ -38,6 +38,7 @@ CONST_OS_SKU_AZURELINUX = "AzureLinux"
 # vm set type
 CONST_VIRTUAL_MACHINE_SCALE_SETS = "VirtualMachineScaleSets"
 CONST_AVAILABILITY_SET = "AvailabilitySet"
+CONST_VIRTUAL_MACHINES = "VirtualMachines"
 
 # vm size
 CONST_DEFAULT_NODE_VM_SIZE = "Standard_DS2_v2"
@@ -63,12 +64,8 @@ CONST_LOAD_BALANCER_SKU_STANDARD = "standard"
 # ManagedClusterSKU Tier
 CONST_MANAGED_CLUSTER_SKU_TIER_FREE = "free"
 CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD = "standard"
+CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM = "premium"
 
-# outbound type
-CONST_OUTBOUND_TYPE_LOAD_BALANCER = "loadBalancer"
-CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING = "userDefinedRouting"
-CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY = "managedNATGateway"
-CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY = "userAssignedNATGateway"
 CONST_OUTBOUND_MIGRATION_MULTIZONE_TO_NATGATEWAY_MSG = "Warning: this AKS cluster has multi-zonal nodepools, but NAT Gateway is not currently zone redundant. Migrating outbound connectivity to NAT Gateway could lead to a reduction in zone redundancy for this cluster. Continue?"
 # load balancer backend pool type
 CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP = "nodeIP"
@@ -95,9 +92,6 @@ CONST_NODE_OS_CHANNEL_NONE = "None"
 CONST_NODE_OS_CHANNEL_SECURITY_PATCH = "SecurityPatch"
 CONST_NODE_OS_CHANNEL_UNMANAGED = "Unmanaged"
 
-# consts for cluster upgrade settings
-CONST_IGNORE_KUBERNETES_DEPRECATIONS = "IgnoreKubernetesDeprecations"
-
 # consts for nrg-lockdown restriction level
 CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY = "ReadOnly"
 CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED = "Unrestricted"
@@ -113,6 +107,12 @@ CONST_NETWORK_PLUGIN_MODE_OVERLAY = "overlay"
 # network dataplane
 CONST_NETWORK_DATAPLANE_AZURE = "azure"
 CONST_NETWORK_DATAPLANE_CILIUM = "cilium"
+
+# network policy
+CONST_NETWORK_POLICY_AZURE = "azure"
+CONST_NETWORK_POLICY_CALICO = "calico"
+CONST_NETWORK_POLICY_CILIUM = "cilium"
+CONST_NETWORK_POLICY_NONE = "none"
 
 # disk driver versions
 CONST_DISK_DRIVER_V1 = "v1"
@@ -259,3 +259,6 @@ CONST_AZURE_SERVICE_MESH_MODE_DISABLED = "Disabled"
 CONST_AZURE_SERVICE_MESH_MODE_ISTIO = "Istio"
 CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL = "External"
 CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL = "Internal"
+CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START = "Start"
+CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE = "Complete"
+CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK = "Rollback"

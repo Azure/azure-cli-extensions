@@ -16,22 +16,28 @@ helps['fleet create'] = """
     type: command
     short-summary: Creates or updates a Fleet.
     parameters:
-        - name: --tags
-          type: string
-          short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
         - name: --dns-name-prefix -p
           type: string
           short-summary: Prefix for hostnames that are created. If not specified, generate a hostname using the
                          managed cluster and resource group names.
+    examples:
+        - name: Create a hubless fleet
+          text: az fleet create -g MyResourceGroup -l MyLocation -n MyFleetName --tags "TagKey=TagValue"
+        - name: Create a hubful fleet
+          text: az fleet create -g MyResourceGroup -l MyLocation -n MyFleetName --enable-hub --tags "TagKey=TagValue"
+
 """
 
 helps['fleet update'] = """
     type: command
     short-summary: Patches a fleet resource.
-    parameters:
-        - name: --tags
-          type: string
-          short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
+    examples:
+        - name: Update a Fleet's tags
+          text: az fleet update -g MyResourceGroup -n MyFleetName --tags Key=Value
+        - name: Update a Fleet to use a system assigned managed service identity.
+          text: az fleet update -g MyResourceGroup -n MyFleetName --enable-managed-identity --tags Key=Value
+        - name: Update a Fleet to use a user assigned managed service identity.
+          text: az fleet update -g MyResourceGroup -n MyFleetName --enable-managed-identity --assign-identity "/subscription/00000000-0000-0000-0000-000000000000/resourcegroup/MyResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity" --tags Key=Value
 """
 
 helps['fleet show'] = """
@@ -134,12 +140,12 @@ helps['fleet updaterun create'] = """
           short-summary: Path to a json file that defines stages to upgrade a fleet. See examples for further reference.
     examples:
         - name: Create updaterun for a fleet with 'Full' upgrade type.
-          text: az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0
+          text: az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0 --node-image-selection Latest
         - name: Create updaterun for a fleet with 'NodeImageOnly' upgrade type.
-          text: az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type NodeImageOnly
+          text: az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type NodeImageOnly --node-image-selection Latest
         - name: Create updaterun for a fleet with 'Full' upgrade type & stages.
           text: |
-            az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0 --stages ./test/stages.json
+            az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0 --node-image-selection Latest --stages ./test/stages.json
 
                 A sample json to demonstrate the expected format. It takes a stages array. Each stage consists of the stage name, groups array and an optional afterStageWaitInSeconds integer.
                 Within groups, each group consists of group name, given to a fleet's member(s).
@@ -201,4 +207,45 @@ helps['fleet updaterun start'] = """
 helps['fleet updaterun stop'] = """
     type: command
     short-summary: Stops a fleet update run.
+"""
+
+helps['fleet updaterun wait'] = """
+    type: command
+    short-summary: Wait for a fleet updateraun resource to reach a desired state.
+    long-summary: If an operation on fleet updateraun was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
+"""
+
+helps['fleet updatestrategy'] = """
+    type: group
+    short-summary: Commands to manage a fleet update strategy.
+"""
+
+helps['fleet updatestrategy create'] = """
+    type: command
+    short-summary: Creates or updates a update strategy
+    parameters:
+        - name: --stages
+          type: string
+          short-summary: Path to a json file that defines the update strategy.
+"""
+
+helps['fleet updatestrategy show'] = """
+    type: command
+    short-summary: Shows a update strategy.
+"""
+
+helps['fleet updatestrategy list'] = """
+    type: command
+    short-summary: Lists the fleet's update strategies.
+"""
+
+helps['fleet updatestrategy delete'] = """
+    type: command
+    short-summary: Deletes a update strategy.
+"""
+
+helps['fleet updatestrategy wait'] = """
+    type: command
+    short-summary: Wait for a fleet updatestrategy resource to reach a desired state.
+    long-summary: If an operation on fleet updatestrategy was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
 """

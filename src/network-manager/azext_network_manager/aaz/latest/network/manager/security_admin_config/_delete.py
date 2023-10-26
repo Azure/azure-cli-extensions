@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete a network manager security admin configuration.
 
     :example: Delete a network manager security admin configuration.
-        az network manager security-admin-config delete --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --force
+        az network manager security-admin-config delete --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --force n
     """
 
     _aaz_info = {
@@ -64,6 +64,7 @@ class Delete(AAZCommand):
         _args_schema.force = AAZBoolArg(
             options=["--force"],
             help="Delete the resource even if it is part of a deployed configuration. If the configuration has been deployed, the service will do a cleanup deployment in the background, prior to the delete.",
+            default=False,
         )
         return cls._args_schema
 

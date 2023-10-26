@@ -1,4 +1,5 @@
 # --------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
@@ -21,6 +22,7 @@ from azext_aks_preview._client_factory import (
     cf_agent_pools,
     get_graph_rbac_management_client,
     get_msi_client,
+    cf_machines
 )
 from azext_aks_preview._consts import (
     ADDONS,
@@ -47,6 +49,10 @@ from azext_aks_preview._consts import (
     CONST_SPOT_EVICTION_POLICY_DELETE,
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
 )
 from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
@@ -483,6 +489,7 @@ def aks_create(
     attach_acr=None,
     skip_subnet_role_assignment=False,
     node_resource_group=None,
+    k8s_support_plan=None,
     nrg_lockdown_restriction_level=None,
     enable_defender=False,
     defender_config=None,
@@ -553,13 +560,14 @@ def aks_create(
     enable_pod_security_policy=False,
     enable_pod_identity=False,
     enable_pod_identity_with_kubenet=False,
-    enable_workload_identity=None,
+    enable_workload_identity=False,
     enable_image_cleaner=False,
     image_cleaner_interval_hours=None,
     cluster_snapshot_id=None,
     enable_apiserver_vnet_integration=False,
     apiserver_subnet_id=None,
     dns_zone_resource_id=None,
+    dns_zone_resource_ids=None,
     enable_keda=False,
     enable_vpa=False,
     enable_node_restriction=False,
@@ -588,6 +596,14 @@ def aks_create(
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     enable_windows_recording_rules=False,
+    # metrics profile
+    enable_cost_analysis=False,
+    # azure container storage
+    enable_azure_container_storage=None,
+    storage_pool_name=None,
+    storage_pool_size=None,
+    storage_pool_sku=None,
+    storage_pool_option=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -646,7 +662,8 @@ def aks_update(
     kube_proxy_config=None,
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
-    upgrade_settings=None,
+    enable_force_upgrade=False,
+    disable_force_upgrade=False,
     upgrade_override_until=None,
     cluster_autoscaler_profile=None,
     uptime_sla=False,
@@ -664,6 +681,7 @@ def aks_update(
     aad_tenant_id=None,
     aad_admin_group_object_ids=None,
     enable_oidc_issuer=False,
+    k8s_support_plan=None,
     windows_admin_password=None,
     enable_ahub=False,
     disable_ahub=False,
@@ -713,16 +731,20 @@ def aks_update(
     load_balancer_managed_outbound_ipv6_count=None,
     outbound_type=None,
     network_plugin_mode=None,
+    network_policy=None,
+    network_dataplane=None,
     pod_cidr=None,
     enable_pod_security_policy=False,
     disable_pod_security_policy=False,
     enable_pod_identity=False,
     enable_pod_identity_with_kubenet=False,
     disable_pod_identity=False,
-    enable_workload_identity=None,
+    enable_workload_identity=False,
+    disable_workload_identity=False,
     enable_image_cleaner=False,
     disable_image_cleaner=False,
     image_cleaner_interval_hours=None,
+    disable_image_integrity=False,
     enable_apiserver_vnet_integration=False,
     apiserver_subnet_id=None,
     enable_keda=False,
@@ -750,6 +772,17 @@ def aks_update(
     guardrails_version=None,
     guardrails_excluded_ns=None,
     enable_network_observability=None,
+    # metrics profile
+    enable_cost_analysis=False,
+    disable_cost_analysis=False,
+    # azure container storage
+    enable_azure_container_storage=None,
+    disable_azure_container_storage=False,
+    storage_pool_name=None,
+    storage_pool_size=None,
+    storage_pool_sku=None,
+    storage_pool_option=None,
+    azure_container_storage_nodepools=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1066,6 +1099,7 @@ def aks_agentpool_add(
     max_pods=0,
     zones=None,
     ppg=None,
+    vm_set_type=None,
     enable_encryption_at_host=False,
     enable_ultra_ssd=False,
     enable_fips_image=False,
@@ -1414,6 +1448,14 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_abort_latest_operation, resource_group_name, name, headers=headers)
 
 
+def aks_machine_list(cmd, client, resource_group_name, cluster_name, nodepool_name):
+    return client.list(resource_group_name, cluster_name, nodepool_name)
+
+
+def aks_machine_show(cmd, client, resource_group_name, cluster_name, nodepool_name, machine_name):
+    return client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+
+
 def aks_addon_list_available():
     available_addons = []
     for k, v in ADDONS.items():
@@ -1490,14 +1532,14 @@ def aks_addon_enable(cmd, client, resource_group_name, name, addon, workspace_re
                      appgw_subnet_id=None,
                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
                      no_wait=False, enable_msi_auth_for_monitoring=True,
-                     dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None):
+                     dns_zone_resource_id=None, dns_zone_resource_ids=None, enable_syslog=False, data_collection_settings=None):
     return enable_addons(cmd, client, resource_group_name, name, addon, workspace_resource_id=workspace_resource_id,
                          subnet_name=subnet_name, appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix,
                          appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
                          enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
                          enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring,
-                         dns_zone_resource_id=dns_zone_resource_id, enable_syslog=enable_syslog,
+                         dns_zone_resource_id=dns_zone_resource_id, dns_zone_resource_ids=dns_zone_resource_ids, enable_syslog=enable_syslog,
                          data_collection_settings=data_collection_settings)
 
 
@@ -1510,7 +1552,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                      appgw_subnet_id=None,
                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
                      no_wait=False, enable_msi_auth_for_monitoring=None,
-                     dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None):
+                     dns_zone_resource_id=None, dns_zone_resource_ids=None, enable_syslog=False, data_collection_settings=None):
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
 
@@ -1536,7 +1578,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
                          enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
                          enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring,
-                         dns_zone_resource_id=dns_zone_resource_id,
+                         dns_zone_resource_id=dns_zone_resource_id, dns_zone_resource_ids=dns_zone_resource_ids,
                          enable_syslog=enable_syslog, data_collection_settings=data_collection_settings)
 
 
@@ -1585,7 +1627,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None, appgw_subnet_id=None,
                       appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None, no_wait=False, enable_msi_auth_for_monitoring=True,
-                      dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None, aks_custom_headers=None):
+                      dns_zone_resource_id=None, dns_zone_resource_ids=None, enable_syslog=False, data_collection_settings=None, aks_custom_headers=None):
     headers = get_aks_custom_headers(aks_custom_headers)
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
@@ -1600,7 +1642,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                               workspace_resource_id=workspace_resource_id, enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
                               enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
-                              dns_zone_resource_id=dns_zone_resource_id, enable_syslog=enable_syslog, data_collection_settings=data_collection_settings)
+                              dns_zone_resource_id=dns_zone_resource_id, dns_zone_resource_ids=dns_zone_resource_ids, enable_syslog=enable_syslog, data_collection_settings=data_collection_settings)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
@@ -1699,6 +1741,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    disable_secret_rotation=False,
                    rotation_poll_interval=None,
                    dns_zone_resource_id=None,
+                   dns_zone_resource_ids=None,
                    no_wait=False,  # pylint: disable=unused-argument
                    enable_syslog=False,
                    data_collection_settings=None):
@@ -1736,8 +1779,19 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 instance.ingress_profile.web_app_routing = ManagedClusterIngressProfileWebAppRouting()
             instance.ingress_profile.web_app_routing.enabled = enable
 
-            if dns_zone_resource_id is not None:
-                instance.ingress_profile.web_app_routing.dns_zone_resource_id = dns_zone_resource_id
+            if dns_zone_resource_ids is not None:
+                instance.ingress_profile.web_app_routing.dns_zone_resource_ids = [
+                    x.strip()
+                    for x in (
+                        dns_zone_resource_ids.split(",")
+                        if dns_zone_resource_ids
+                        else []
+                    )
+                ]
+            # for backward compatibility, if --dns-zone-resource-ids is not specified,
+            # try to read from --dns-zone-resource-id
+            if not instance.ingress_profile.web_app_routing.dns_zone_resource_ids and dns_zone_resource_id:
+                instance.ingress_profile.web_app_routing.dns_zone_resource_ids = [dns_zone_resource_id]
             continue
 
         if addon_arg not in ADDONS:
@@ -2376,7 +2430,7 @@ def aks_trustedaccess_role_binding_create(cmd, client, resource_group_name, clus
 
     roleList = roles.split(',')
     roleBinding = TrustedAccessRoleBinding(source_resource_id=source_resource_id, roles=roleList)
-    return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
+    return client.begin_create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
 
 
 def aks_trustedaccess_role_binding_update(cmd, client, resource_group_name, cluster_name, role_binding_name, roles):
@@ -2389,11 +2443,11 @@ def aks_trustedaccess_role_binding_update(cmd, client, resource_group_name, clus
 
     roleList = roles.split(',')
     roleBinding = TrustedAccessRoleBinding(source_resource_id=existedBinding.source_resource_id, roles=roleList)
-    return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
+    return client.begin_create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
 
 
 def aks_trustedaccess_role_binding_delete(cmd, client, resource_group_name, cluster_name, role_binding_name):
-    return client.delete(resource_group_name, cluster_name, role_binding_name)
+    return client.begin_delete(resource_group_name, cluster_name, role_binding_name)
 
 
 def aks_mesh_enable(
@@ -2401,8 +2455,30 @@ def aks_mesh_enable(
         client,
         resource_group_name,
         name,
+        revision=None,
+        key_vault_id=None,
+        ca_cert_object_name=None,
+        ca_key_object_name=None,
+        root_cert_object_name=None,
+        cert_chain_object_name=None
 ):
-    return _aks_mesh_update(cmd, client, resource_group_name, name, enable_azure_service_mesh=True)
+    instance = client.get(resource_group_name, name)
+    addon_profiles = instance.addon_profiles
+    if key_vault_id is not None and ca_cert_object_name is not None and ca_key_object_name is not None and root_cert_object_name is not None and cert_chain_object_name is not None:
+        if not addon_profiles or not addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] or not addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled:
+            raise CLIError('AzureKeyvaultSecretsProvider addon is required for Azure Service Mesh plugin certificate authority feature.')
+
+    return _aks_mesh_update(cmd,
+                            client,
+                            resource_group_name,
+                            name,
+                            key_vault_id,
+                            ca_cert_object_name,
+                            ca_key_object_name,
+                            root_cert_object_name,
+                            cert_chain_object_name,
+                            revision=revision,
+                            enable_azure_service_mesh=True)
 
 
 def aks_mesh_disable(
@@ -2426,7 +2502,6 @@ def aks_mesh_enable_ingress_gateway(
         client,
         resource_group_name,
         name,
-        enable_azure_service_mesh=True,
         enable_ingress_gateway=True,
         ingress_gateway_type=ingress_gateway_type)
 
@@ -2447,16 +2522,117 @@ def aks_mesh_disable_ingress_gateway(
         ingress_gateway_type=ingress_gateway_type)
 
 
+def aks_mesh_enable_egress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        egx_gtw_nodeselector,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_egress_gateway=True,
+        egx_gtw_nodeselector=egx_gtw_nodeselector)
+
+
+def aks_mesh_disable_egress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        disable_egress_gateway=True,
+        egx_gtw_nodeselector=None)
+
+
+def aks_mesh_get_revisions(
+        cmd,
+        client,
+        location
+):
+    return client.list_mesh_revision_profiles(location)
+
+
+def aks_mesh_get_upgrades(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return client.list_mesh_upgrade_profiles(resource_group_name, name)
+
+
+def aks_mesh_upgrade_start(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        revision
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        revision=revision,
+        mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START)
+
+
+def aks_mesh_upgrade_complete(
+        cmd,
+        client,
+        resource_group_name,
+        name):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE)
+
+
+def aks_mesh_upgrade_rollback(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK)
+
+
 def _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
+        key_vault_id=None,
+        ca_cert_object_name=None,
+        ca_key_object_name=None,
+        root_cert_object_name=None,
+        cert_chain_object_name=None,
         enable_azure_service_mesh=None,
         disable_azure_service_mesh=None,
         enable_ingress_gateway=None,
         disable_ingress_gateway=None,
         ingress_gateway_type=None,
+        enable_egress_gateway=None,
+        egx_gtw_nodeselector=None,
+        disable_egress_gateway=None,
+        revision=None,
+        mesh_upgrade_command=None,
 ):
     raw_parameters = locals()
 

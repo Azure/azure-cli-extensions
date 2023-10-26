@@ -13,9 +13,10 @@ from knack.util import CLIError
 from knack.log import get_logger
 
 from azure.cli.core.util import sdk_no_wait
-
-from ._client_factory import network_client_factory, cf_virtual_hub_bgpconnections, cf_virtual_hub_connection
-
+from azure.cli.core.aaz import has_value
+from azure.cli.core.aaz.utils import assign_aaz_list_arg
+from .aaz.latest.network.vhub.connection import Create as _VHubConnectionCreate, Update as _VHubConnectionUpdate
+from ._client_factory import network_client_factory, cf_virtual_hub_bgpconnections
 from ._util import _get_property
 
 logger = get_logger(__name__)
@@ -183,57 +184,98 @@ def update_hub_vnet_connection(instance, cmd, associated_route_table=None, propa
 
 
 # pylint: disable=too-many-locals
-def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, connection_name,
-                               remote_virtual_network, allow_hub_to_remote_vnet_transit=None,
-                               allow_remote_vnet_to_use_hub_vnet_gateways=None, enable_internet_security=None,
-                               associated_route_table=None, propagated_route_tables=None, labels=None,
-                               route_name=None, address_prefixes=None, next_hop_ip_address=None,
-                               associated_inbound_routemap=None, associated_outbound_routemap=None, no_wait=False):
-    (HubVirtualNetworkConnection,
-     SubResource,
-     RoutingConfiguration,
-     PropagatedRouteTable,
-     VnetRoute,
-     StaticRoute) = cmd.get_models('HubVirtualNetworkConnection',
-                                   'SubResource',
-                                   'RoutingConfiguration',
-                                   'PropagatedRouteTable',
-                                   'VnetRoute',
-                                   'StaticRoute')
-
-    propagated_route_tables = PropagatedRouteTable(
-        labels=labels,
-        ids=[SubResource(id=propagated_route_table) for propagated_route_table in propagated_route_tables] if propagated_route_tables else None  # pylint: disable=line-too-long
-    )
-
-    routing_configuration = RoutingConfiguration(
-        associated_route_table=SubResource(id=associated_route_table) if associated_route_table else None,
-        propagated_route_tables=propagated_route_tables,
-        inbound_route_map=SubResource(id=associated_inbound_routemap) if associated_inbound_routemap else None,
-        outbound_route_map=SubResource(id=associated_outbound_routemap) if associated_outbound_routemap else None
-    )
-
-    if route_name is not None:
-        static_route = StaticRoute(
-            name=route_name,
-            address_prefixes=address_prefixes,
-            next_hop_ip_address=next_hop_ip_address
+class VHubConnectionCreate(_VHubConnectionCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZResourceIdArg, AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.propagated_route_tables = AAZListArg(
+            options=["--propagated-route-tables", "--propagated"],
+            arg_group="Routing Configuration",
+            help="Space-separated list of resource ID of propagated route tables.",
+            is_preview=True
         )
-        vnet_routes = VnetRoute(static_routes=[static_route])
-        routing_configuration.vnet_routes = vnet_routes
+        args_schema.propagated_route_tables.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
+                         "/virtualHubs/{vhub_name}/hubRouteTables/{}"
+            )
+        )
+        args_schema.address_prefixes = AAZListArg(
+            options=["--address-prefixes"],
+            arg_group="Routing Configuration",
+            help="Space-separated list of all address prefixes.",
+            is_preview=True
+        )
+        args_schema.address_prefixes.Element = AAZStrArg()
+        args_schema.remote_vnet._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
+                     "/virtualNetworks/{}"
+        )
+        args_schema.next_hop = AAZStrArg(
+            options=["--next-hop"],
+            arg_group="Routing Configuration",
+            help="IP address of the next hop.",
+            is_preview=True
+        )
+        args_schema.route_name = AAZStrArg(
+            options=["--route-name"],
+            arg_group="Routing Configuration",
+            help="Name of the static route that is unique within a VNet route.",
+            is_preview=True
+        )
+        args_schema.route_tables._registered = False
+        args_schema.static_routes._registered = False
+        args_schema.remote_vnet._required = True
 
-    connection = HubVirtualNetworkConnection(
-        name=connection_name,
-        remote_virtual_network=SubResource(id=remote_virtual_network),
-        allow_hub_to_remote_vnet_transit=allow_hub_to_remote_vnet_transit,
-        allow_remote_vnet_to_use_hub_vnet_gateway=allow_remote_vnet_to_use_hub_vnet_gateways,
-        enable_internet_security=enable_internet_security,
-        routing_configuration=routing_configuration
-    )
+        return args_schema
 
-    client = network_client_factory(cmd.cli_ctx).hub_virtual_network_connections
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name,
-                       virtual_hub_name, connection_name, connection)
+    def pre_operations(self):
+        args = self.ctx.args
+        args.route_tables = assign_aaz_list_arg(
+            args.route_tables,
+            args.propagated_route_tables,
+            element_transformer=lambda _, route_table_id: {"id": route_table_id}
+        )
+        if has_value(args.route_name):
+            static_route = {
+                "route_name": args.route_name,
+                "address_prefixes": args.address_prefixes if has_value(args.address_prefixes) else None,
+                "next_hop": args.next_hop if has_value(args.next_hop) else None
+            }
+            args.static_routes = [static_route]
+
+
+class VHubConnectionUpdate(_VHubConnectionUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZResourceIdArg, AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.propagated_route_tables = AAZListArg(
+            options=["--propagated-route-tables", "--propagated"],
+            arg_group="Routing Configuration",
+            help="Space-separated list of resource ID of propagated route tables.",
+            nullable=True,
+            is_preview=True
+        )
+        args_schema.propagated_route_tables.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
+                         "/virtualHubs/{vhub_name}/hubRouteTables/{}"
+            ),
+            nullable=True
+        )
+        args_schema.route_tables._registered = False
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.route_tables = assign_aaz_list_arg(
+            args.route_tables,
+            args.propagated_route_tables,
+            element_transformer=lambda _, route_table_id: {"id": route_table_id}
+        )
 
 
 def _bgp_connections_client(cli_ctx):

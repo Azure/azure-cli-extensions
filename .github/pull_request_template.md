@@ -9,7 +9,7 @@ This checklist is used to make sure that common guidelines for a pull request ar
 ### General Guidelines
 
 - [ ] Have you run `azdev style <YOUR_EXT>` locally? (`pip install azdev` required)
-- [ ] Have you run `python scripts/ci/test_index.py -q` locally?
+- [ ] Have you run `python scripts/ci/test_index.py -q` locally? (`pip install wheel==0.30.0` required)
 
 For new extensions:
 

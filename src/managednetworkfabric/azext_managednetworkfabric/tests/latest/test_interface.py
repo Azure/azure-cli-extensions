@@ -54,7 +54,7 @@ def step_update_admin_state_Disable(test, checks=None):
         checks = []
     test.cmd('az networkfabric interface update-admin-state --resource-group {rg} --device {device_name} --resource-name {name} --state {state_Disable}')
 
-class InterfaceScenarioTest1(ScenarioTest):
+class GA_InterfaceScenarioTest1(ScenarioTest):
     ''' InterfaceScenario test'''
 
     def __init__(self, *args, **kwargs):
@@ -67,6 +67,6 @@ class InterfaceScenarioTest1(ScenarioTest):
             'state_Disable': CONFIG.get('NETWORK_INTERFACE', 'state_Disable')
         })
 
-    def test_Interface_scenario1(self):
+    def test_GA_Interface_scenario1(self):
         ''' test scenario for Interface CRUD operations'''
         call_scenario1(self)

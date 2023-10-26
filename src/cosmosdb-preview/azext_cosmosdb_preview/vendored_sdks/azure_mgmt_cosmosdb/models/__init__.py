@@ -20,12 +20,14 @@ from ._models_py3 import BackupInformation
 from ._models_py3 import BackupPolicy
 from ._models_py3 import BackupPolicyMigrationState
 from ._models_py3 import BackupResource
-from ._models_py3 import BackupResourceProperties
+from ._models_py3 import BackupSchedule
+from ._models_py3 import BaseCosmosDataTransferDataSourceSink
 from ._models_py3 import Capability
 from ._models_py3 import Capacity
 from ._models_py3 import CassandraClusterDataCenterNodeItem
 from ._models_py3 import CassandraClusterPublicStatus
 from ._models_py3 import CassandraClusterPublicStatusDataCentersItem
+from ._models_py3 import CassandraError
 from ._models_py3 import CassandraKeyspaceCreateUpdateParameters
 from ._models_py3 import CassandraKeyspaceGetPropertiesOptions
 from ._models_py3 import CassandraKeyspaceGetPropertiesResource
@@ -149,6 +151,7 @@ from ._models_py3 import ManagedCassandraManagedServiceIdentity
 from ._models_py3 import ManagedCassandraReaperStatus
 from ._models_py3 import ManagedServiceIdentity
 from ._models_py3 import ManagedServiceIdentityUserAssignedIdentity
+from ._models_py3 import MaterializedViewDefinition
 from ._models_py3 import MaterializedViewsBuilderRegionalServiceResource
 from ._models_py3 import MaterializedViewsBuilderServiceResource
 from ._models_py3 import MaterializedViewsBuilderServiceResourceProperties
@@ -334,8 +337,10 @@ from ._cosmos_db_management_client_enums import ApiType
 from ._cosmos_db_management_client_enums import AuthenticationMethod
 from ._cosmos_db_management_client_enums import BackupPolicyMigrationStatus
 from ._cosmos_db_management_client_enums import BackupPolicyType
+from ._cosmos_db_management_client_enums import BackupState
 from ._cosmos_db_management_client_enums import BackupStorageRedundancy
 from ._cosmos_db_management_client_enums import CheckNameAvailabilityReason
+from ._cosmos_db_management_client_enums import ClusterType
 from ._cosmos_db_management_client_enums import CompositePathSortOrder
 from ._cosmos_db_management_client_enums import ConflictResolutionMode
 from ._cosmos_db_management_client_enums import ConnectionState
@@ -343,14 +348,17 @@ from ._cosmos_db_management_client_enums import ConnectorOffer
 from ._cosmos_db_management_client_enums import ContinuousTier
 from ._cosmos_db_management_client_enums import CreateMode
 from ._cosmos_db_management_client_enums import CreatedByType
+from ._cosmos_db_management_client_enums import CustomerManagedKeyStatus
 from ._cosmos_db_management_client_enums import DataTransferComponent
 from ._cosmos_db_management_client_enums import DataType
 from ._cosmos_db_management_client_enums import DatabaseAccountKind
 from ._cosmos_db_management_client_enums import DefaultConsistencyLevel
+from ._cosmos_db_management_client_enums import DefaultPriorityLevel
 from ._cosmos_db_management_client_enums import EnableFullTextQuery
 from ._cosmos_db_management_client_enums import IndexKind
 from ._cosmos_db_management_client_enums import IndexingMode
 from ._cosmos_db_management_client_enums import KeyKind
+from ._cosmos_db_management_client_enums import Kind
 from ._cosmos_db_management_client_enums import ManagedCassandraProvisioningState
 from ._cosmos_db_management_client_enums import ManagedCassandraResourceIdentityType
 from ._cosmos_db_management_client_enums import MinimalTlsVersion
@@ -374,9 +382,11 @@ from ._cosmos_db_management_client_enums import ServiceSize
 from ._cosmos_db_management_client_enums import ServiceStatus
 from ._cosmos_db_management_client_enums import ServiceType
 from ._cosmos_db_management_client_enums import SpatialType
+from ._cosmos_db_management_client_enums import Status
 from ._cosmos_db_management_client_enums import ThroughputPolicyType
 from ._cosmos_db_management_client_enums import TriggerOperation
 from ._cosmos_db_management_client_enums import TriggerType
+from ._cosmos_db_management_client_enums import Type
 from ._cosmos_db_management_client_enums import UnitType
 from ._patch import __all__ as _patch_all
 from ._patch import *  # pylint: disable=unused-wildcard-import
@@ -397,12 +407,14 @@ __all__ = [
     "BackupPolicy",
     "BackupPolicyMigrationState",
     "BackupResource",
-    "BackupResourceProperties",
+    "BackupSchedule",
+    "BaseCosmosDataTransferDataSourceSink",
     "Capability",
     "Capacity",
     "CassandraClusterDataCenterNodeItem",
     "CassandraClusterPublicStatus",
     "CassandraClusterPublicStatusDataCentersItem",
+    "CassandraError",
     "CassandraKeyspaceCreateUpdateParameters",
     "CassandraKeyspaceGetPropertiesOptions",
     "CassandraKeyspaceGetPropertiesResource",
@@ -526,6 +538,7 @@ __all__ = [
     "ManagedCassandraReaperStatus",
     "ManagedServiceIdentity",
     "ManagedServiceIdentityUserAssignedIdentity",
+    "MaterializedViewDefinition",
     "MaterializedViewsBuilderRegionalServiceResource",
     "MaterializedViewsBuilderServiceResource",
     "MaterializedViewsBuilderServiceResourceProperties",
@@ -710,8 +723,10 @@ __all__ = [
     "AuthenticationMethod",
     "BackupPolicyMigrationStatus",
     "BackupPolicyType",
+    "BackupState",
     "BackupStorageRedundancy",
     "CheckNameAvailabilityReason",
+    "ClusterType",
     "CompositePathSortOrder",
     "ConflictResolutionMode",
     "ConnectionState",
@@ -719,14 +734,17 @@ __all__ = [
     "ContinuousTier",
     "CreateMode",
     "CreatedByType",
+    "CustomerManagedKeyStatus",
     "DataTransferComponent",
     "DataType",
     "DatabaseAccountKind",
     "DefaultConsistencyLevel",
+    "DefaultPriorityLevel",
     "EnableFullTextQuery",
     "IndexKind",
     "IndexingMode",
     "KeyKind",
+    "Kind",
     "ManagedCassandraProvisioningState",
     "ManagedCassandraResourceIdentityType",
     "MinimalTlsVersion",
@@ -750,9 +768,11 @@ __all__ = [
     "ServiceStatus",
     "ServiceType",
     "SpatialType",
+    "Status",
     "ThroughputPolicyType",
     "TriggerOperation",
     "TriggerType",
+    "Type",
     "UnitType",
 ]
 __all__.extend([p for p in _patch_all if p not in __all__])

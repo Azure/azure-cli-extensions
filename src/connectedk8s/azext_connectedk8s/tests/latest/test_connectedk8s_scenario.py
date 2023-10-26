@@ -19,14 +19,31 @@ from azure.cli.core import get_default_cli
 import subprocess
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, live_only)  # pylint: disable=import-error
+from azure.cli.core.azclierror import RequiredArgumentMissingError
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 logger = get_logger(__name__)
 
+# Set up configuration file. If configuration file is not found, then auto-populate with fake values where allowed.
+CONFIG = {} # dictionary of configurations
+config_path = os.path.join(os.path.dirname(__file__), "config.json")
+if not os.path.isfile(config_path):
+    CONFIG["customLocationsOid"] = ""
+    CONFIG["rbacAppId"] = "fakeRbacAppId"
+    CONFIG["rbacAppSecret"] = "fakeRbacAppSecret"
+    CONFIG["location"] = "eastus2euap"
+else:
+    with open(config_path, 'r') as f:
+        CONFIG = json.load(f)
+    for key in CONFIG:
+        if not CONFIG[key]:
+            raise RequiredArgumentMissingError(f"Missing required configuration in {config_path} file. Make sure all properties are populated.")
 
 def _get_test_data_file(filename):
-    curr_dir = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(curr_dir, 'data', filename).replace('\\', '\\\\')
+    # Don't output temporary test data to "**/azext_connectedk8s/tests/latest/data/" as that location
+    # is for re-usable test data files by Azure CLI repositories convention.
+    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))))
+    return os.path.join(root, "temp", filename).replace('\\', '\\\\')
 
 
 def install_helm_client():
@@ -131,7 +148,7 @@ def install_kubectl_client():
 class Connectedk8sScenarioTest(LiveScenarioTest):
 
     @live_only()
-    @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
+    @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_connect(self,resource_group):
         # TODO: [Kit] Remove this
         os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
@@ -142,12 +159,13 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'rg': resource_group,
             'name': self.create_random_name(prefix='cc-', length=12),
             'kubeconfig': kubeconfig,
-            'managed_cluster_name': managed_cluster_name
+            'managed_cluster_name': managed_cluster_name,
+            'location': CONFIG['location']
         })
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('resourceGroup', '{rg}'),
             self.check('name', '{name}')
@@ -161,7 +179,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
 
     @live_only()
-    @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
+    @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_forcedelete(self,resource_group):
         # TODO: [Kit] Remove this
         os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
@@ -172,12 +190,13 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'rg': resource_group,
             'name': self.create_random_name(prefix='cc-', length=12),
             'kubeconfig': kubeconfig,
-            'managed_cluster_name': managed_cluster_name
+            'managed_cluster_name': managed_cluster_name,
+            'location': CONFIG['location']
         })
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -202,23 +221,35 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
 
     @live_only()
-    @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
+    @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_enable_disable_features(self,resource_group):
         # TODO: [Kit] Remove this
         os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
 
         managed_cluster_name = self.create_random_name(prefix='test-enable-disable', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
+
+        if CONFIG['customLocationsOid'] is None or CONFIG['customLocationsOid'] == "":
+            cli = get_default_cli()
+            cli.invoke(["ad", "sp", "list", "--filter", "displayName eq 'Custom Locations RP'"])
+            if cli.result.exit_code != 0:
+                raise cli.result.error
+            CONFIG['customLocationsOid'] = cli.result.result[0]["id"]
+
         self.kwargs.update({
             'rg': resource_group,
             'name': self.create_random_name(prefix='cc-', length=12),
             'kubeconfig': kubeconfig,
-            'managed_cluster_name': managed_cluster_name
+            'managed_cluster_name': managed_cluster_name,
+            'custom_locations_oid': CONFIG['customLocationsOid'],
+            'rbac_app_id': CONFIG['rbacAppId'],
+            'rbac_app_secret': CONFIG['rbacAppSecret'],
+            'location': CONFIG['location']
         })
-
+        
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -240,7 +271,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         changed_cmd = json.loads(cmd_output.communicate()[0].strip())
         assert(changed_cmd["systemDefaultValues"]['customLocations']['enabled'] == bool(0))
 
-        self.cmd('connectedk8s enable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
+        self.cmd('connectedk8s enable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --custom-locations-oid {custom_locations_oid}')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
@@ -266,7 +297,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(disabled_cmd1["systemDefaultValues"]['clusterconnect-agent']['enabled'] == bool(0))
 
-        self.cmd('connectedk8s enable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
+        self.cmd('connectedk8s enable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --custom-locations-oid {custom_locations_oid}')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
@@ -282,7 +313,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(disabled_cmd1["systemDefaultValues"]['guard']['enabled'] == bool(0))
 
-        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --features azure-rbac --app-id ffba4043-836e-4dcc-906c-fbf60bf54eef --app-secret="6a6ae7a7-4260-40d3-ba00-af909f2ca8f0"')
+        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --features azure-rbac --app-id {rbac_app_id} --app-secret {rbac_app_secret}')
 
         # deleting the cluster
         self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
@@ -293,7 +324,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
 
     @live_only()
-    @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
+    @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_connectedk8s_list(self,resource_group):
         # TODO: [Kit] Remove this
         os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
@@ -315,12 +346,13 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'kubeconfig': kubeconfig,
             'kubeconfigpls': kubeconfigpls,
             'managed_cluster_name': managed_cluster_name,
-            'managed_cluster_name_second': managed_cluster_name_second
+            'managed_cluster_name_second': managed_cluster_name_second,
+            'location': CONFIG['location']
         })
         # create two clusters and then list the cluster names
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -332,7 +364,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name_second} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name_second} -f {kubeconfigpls} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name_second} -l eastus --tags foo=doo --kube-config {kubeconfigpls} --kube-context {managed_cluster_name_second}-admin', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name_second} -l {location} --tags foo=doo --kube-config {kubeconfigpls} --kube-context {managed_cluster_name_second}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name_second}')
         ])
@@ -368,7 +400,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
 
     @live_only()
-    @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
+    @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_upgrade(self,resource_group):
 
         managed_cluster_name = self.create_random_name(prefix='test-upgrade', length=24)
@@ -377,13 +409,14 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'name': self.create_random_name(prefix='cc-', length=12),
             'rg': resource_group,
             'kubeconfig': kubeconfig,
-            'managed_cluster_name': managed_cluster_name
+            'managed_cluster_name': managed_cluster_name,
+            'location': CONFIG['location']
         })
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
 
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -409,7 +442,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(0))
 
         self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
-        response= requests.post('https://eastus.dp.kubernetesconfiguration.azure.com/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable')
+        response= requests.post(f'https://{CONFIG["location"]}.dp.kubernetesconfiguration.azure.com/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable')
         jsonData = json.loads(response.text)
         repo_path=jsonData['repositoryPath']
         index_value = 0
@@ -433,7 +466,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
 
     @live_only()
-    @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
+    @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_update(self,resource_group):
         # TODO: [Kit] Remove this
         os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
@@ -444,12 +477,13 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'name': self.create_random_name(prefix='cc-', length=12),
             'kubeconfig': kubeconfig,
             'rg':resource_group,
-            'managed_cluster_name': managed_cluster_name
+            'managed_cluster_name': managed_cluster_name,
+            'location': CONFIG['location']
         })
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -495,7 +529,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
 
     @live_only()
-    @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
+    @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_troubleshoot(self,resource_group):
         # TODO: [Kit] Remove this
         os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
@@ -506,12 +540,13 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'name': self.create_random_name(prefix='cc-', length=12),
             'kubeconfig': kubeconfig,
             'rg':resource_group,
-            'managed_cluster_name': managed_cluster_name
+            'managed_cluster_name': managed_cluster_name,
+            'location': CONFIG['location']
         })
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -530,7 +565,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
 
     @live_only()
-    @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
+    @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_proxy(self,resource_group):
         # TODO: [Kit] Remove this
         os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
@@ -544,12 +579,13 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'kubeconfig': kubeconfig,
             'kubeconfig2': kubeconfig2,
             'rg':resource_group,
-            'managed_cluster_name': managed_cluster_name
+            'managed_cluster_name': managed_cluster_name,
+            'location': CONFIG['location']
         })
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])

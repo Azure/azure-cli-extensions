@@ -1,7 +1,224 @@
 interactions:
 - request:
-    body: '{"location": "eastus", "sku": {"name": "A1", "tier": "PBIE_Azure"}, "properties":
-      {"administration": {"members": ["00000000-0000-0000-0000-000000000000"]}}}'
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --display-name --identifier-uris
+      User-Agent:
+      - python/3.9.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.49.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/applications?$filter=startswith%28displayName%2C%27azure-cli-test000002%27%29
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#applications","value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '87'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Wed, 12 Jul 2023 02:45:39 GMT
+      odata-version:
+      - '4.0'
+      request-id:
+      - ca175305-786a-442b-9194-fd31ac41d7b8
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"Korea Central","Slice":"E","Ring":"3","ScaleUnit":"001","RoleInstance":"SE1PEPF00007787"}}'
+      x-ms-resource-unit:
+      - '2'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"displayName": "azure-cli-test000002", "identifierUris": ["api://azure-cli-test000002"],
+      "keyCredentials": []}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad app create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '111'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --display-name --identifier-uris
+      User-Agent:
+      - python/3.9.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.49.0
+    method: POST
+    uri: https://graph.microsoft.com/v1.0/applications
+  response:
+    body:
+      string: '{"@odata.context": "https://graph.microsoft.com/v1.0/$metadata#applications/$entity",
+        "id": "61d001ae-f979-4539-9d22-4b0a30b1a1ed", "deletedDateTime": null, "appId":
+        "de901d11-4903-4c5b-abe9-77b3f9247403", "applicationTemplateId": null, "disabledByMicrosoftStatus":
+        null, "createdDateTime": "2023-07-12T02:45:41.4675549Z", "displayName": "azure-cli-test000002",
+        "description": null, "groupMembershipClaims": null, "identifierUris": ["api://azure-cli-test000002"],
+        "isDeviceOnlyAuthSupported": null, "isFallbackPublicClient": null, "notes":
+        null, "publisherDomain": "MicrosoftCustomerLed.onmicrosoft.com", "serviceManagementReference":
+        null, "signInAudience": "AzureADandPersonalMicrosoftAccount", "tags": [],
+        "tokenEncryptionKeyId": null, "samlMetadataUrl": null, "defaultRedirectUri":
+        null, "certification": null, "optionalClaims": null, "servicePrincipalLockConfiguration":
+        null, "requestSignatureVerification": null, "addIns": [], "api": {"acceptMappedClaims":
+        null, "knownClientApplications": [], "requestedAccessTokenVersion": 2, "oauth2PermissionScopes":
+        [], "preAuthorizedApplications": []}, "appRoles": [], "info": {"logoUrl":
+        null, "marketingUrl": null, "privacyStatementUrl": null, "supportUrl": null,
+        "termsOfServiceUrl": null}, "keyCredentials": [], "parentalControlSettings":
+        {"countriesBlockedForMinors": [], "legalAgeGroupRule": "Allow"}, "passwordCredentials":
+        [], "publicClient": {"redirectUris": []}, "requiredResourceAccess": [], "verifiedPublisher":
+        {"displayName": null, "verifiedPublisherId": null, "addedDateTime": null},
+        "web": {"homePageUrl": null, "logoutUrl": null, "redirectUris": [], "implicitGrantSettings":
+        {"enableAccessTokenIssuance": false, "enableIdTokenIssuance": false}, "redirectUriSettings":
+        []}, "spa": {"redirectUris": []}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1764'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Wed, 12 Jul 2023 02:45:43 GMT
+      location:
+      - https://graph.microsoft.com/v2/888d76fa-54b2-4ced-8ee5-aac1585adee7/directoryObjects/61d001ae-f979-4539-9d22-4b0a30b1a1ed/Microsoft.DirectoryServices.Application
+      odata-version:
+      - '4.0'
+      request-id:
+      - 1194927f-1728-4f5e-be6d-56a8309626e3
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"Korea Central","Slice":"E","Ring":"3","ScaleUnit":"001","RoleInstance":"SE1PEPF00001DBF"}}'
+      x-ms-resource-unit:
+      - '1'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --id
+      User-Agent:
+      - python/3.9.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.49.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/applications?$filter=appId%20eq%20%27de901d11-4903-4c5b-abe9-77b3f9247403%27
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#applications","value":[{"id":"61d001ae-f979-4539-9d22-4b0a30b1a1ed","deletedDateTime":null,"appId":"de901d11-4903-4c5b-abe9-77b3f9247403","applicationTemplateId":null,"disabledByMicrosoftStatus":null,"createdDateTime":"2023-07-12T02:45:41Z","displayName":"azure-cli-test000002","description":null,"groupMembershipClaims":null,"identifierUris":["api://azure-cli-test000002"],"isDeviceOnlyAuthSupported":null,"isFallbackPublicClient":null,"notes":null,"publisherDomain":"MicrosoftCustomerLed.onmicrosoft.com","serviceManagementReference":null,"signInAudience":"AzureADandPersonalMicrosoftAccount","tags":[],"tokenEncryptionKeyId":null,"samlMetadataUrl":null,"defaultRedirectUri":null,"certification":null,"optionalClaims":null,"servicePrincipalLockConfiguration":null,"requestSignatureVerification":null,"addIns":[],"api":{"acceptMappedClaims":null,"knownClientApplications":[],"requestedAccessTokenVersion":2,"oauth2PermissionScopes":[],"preAuthorizedApplications":[]},"appRoles":[],"info":{"logoUrl":null,"marketingUrl":null,"privacyStatementUrl":null,"supportUrl":null,"termsOfServiceUrl":null},"keyCredentials":[],"parentalControlSettings":{"countriesBlockedForMinors":[],"legalAgeGroupRule":"Allow"},"passwordCredentials":[],"publicClient":{"redirectUris":[]},"requiredResourceAccess":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null},"web":{"homePageUrl":null,"logoutUrl":null,"redirectUris":[],"implicitGrantSettings":{"enableAccessTokenIssuance":false,"enableIdTokenIssuance":false},"redirectUriSettings":[]},"spa":{"redirectUris":[]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1647'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Wed, 12 Jul 2023 02:45:44 GMT
+      odata-version:
+      - '4.0'
+      request-id:
+      - 20e823be-8930-4317-8101-31134aaadaa5
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"Korea Central","Slice":"E","Ring":"3","ScaleUnit":"001","RoleInstance":"SE1PEPF000019B9"}}'
+      x-ms-resource-unit:
+      - '2'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"appId": "de901d11-4903-4c5b-abe9-77b3f9247403", "accountEnabled": true}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '73'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --id
+      User-Agent:
+      - python/3.9.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.49.0
+    method: POST
+    uri: https://graph.microsoft.com/v1.0/servicePrincipals
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#servicePrincipals/$entity","id":"722e9ba7-c452-4ba2-84f0-bfbd79c2948c","deletedDateTime":null,"accountEnabled":true,"alternativeNames":[],"appDisplayName":"azure-cli-test000002","appDescription":null,"appId":"de901d11-4903-4c5b-abe9-77b3f9247403","applicationTemplateId":null,"appOwnerOrganizationId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","appRoleAssignmentRequired":false,"createdDateTime":null,"description":null,"disabledByMicrosoftStatus":null,"displayName":"azure-cli-test000002","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["de901d11-4903-4c5b-abe9-77b3f9247403","api://azure-cli-test000002"],"servicePrincipalType":"Application","signInAudience":"AzureADandPersonalMicrosoftAccount","tags":[],"tokenEncryptionKeyId":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"info":{"logoUrl":null,"marketingUrl":null,"privacyStatementUrl":null,"supportUrl":null,"termsOfServiceUrl":null},"keyCredentials":[],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1333'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Wed, 12 Jul 2023 02:45:46 GMT
+      location:
+      - https://graph.microsoft.com/v2/888d76fa-54b2-4ced-8ee5-aac1585adee7/directoryObjects/722e9ba7-c452-4ba2-84f0-bfbd79c2948c/Microsoft.DirectoryServices.ServicePrincipal
+      odata-version:
+      - '4.0'
+      request-id:
+      - 77e60a56-4e68-47fa-a3e2-df1b7330acee
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"Korea Central","Slice":"E","Ring":"3","ScaleUnit":"001","RoleInstance":"SE1PEPF00000820"}}'
+      x-ms-resource-unit:
+      - '1'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"location": "eastus", "properties": {"administration": {"members": ["722e9ba7-c452-4ba2-84f0-bfbd79c2948c"]}},
+      "sku": {"name": "A1", "tier": "PBIE_Azure"}}'
     headers:
       Accept:
       - application/json
@@ -12,36 +229,36 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '142'
+      - '156'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --name --sku-name --location --sku-tier --administration-members
         --no-wait
       User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003?api-version=2017-10-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Provisioning","state":"Provisioning","administration":{"members":["00000000-0000-0000-0000-000000000000"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"eastus","sku":{"name":"A1","tier":"PBIE_Azure"}}'
+      string: '{"properties":{"provisioningState":"Provisioning","state":"Provisioning","administration":{"members":["722e9ba7-c452-4ba2-84f0-bfbd79c2948c"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003","name":"clipowerbi000003","type":"Microsoft.PowerBIDedicated/capacities","location":"eastus","sku":{"name":"A1","tier":"PBIE_Azure"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/77E6CA68-F3B8-4634-9027-13A050AD1396?api-version=2017-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/AC051E0E-B731-48C2-A716-D3A910F3A621?api-version=2017-01-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '494'
+      - '448'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 May 2021 06:06:20 GMT
+      - Wed, 12 Jul 2023 02:46:55 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationresults/77E6CA68-F3B8-4634-9027-13A050AD1396?api-version=2017-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationresults/AC051E0E-B731-48C2-A716-D3A910F3A621?api-version=2017-01-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -51,9 +268,9 @@ interactions:
       x-frame-options:
       - deny
       x-ms-current-utc-date:
-      - 5/10/2021 6:06:08 AM
+      - 7/12/2023 2:46:50 AM
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-xss-protection:
       - 1; mode=block
     status:
@@ -73,24 +290,24 @@ interactions:
       ParameterSetName:
       - --resource-group --name --created
       User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003?api-version=2017-10-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Provisioning","state":"Provisioning","administration":{"members":["00000000-0000-0000-0000-000000000000"]},"mode":"Gen1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"East
-        US","sku":{"name":"A1","tier":"PBIE_Azure","capacity":1},"tags":{}}'
+      string: '{"properties":{"mode":"Gen2","provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["722e9ba7-c452-4ba2-84f0-bfbd79c2948c"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003","name":"clipowerbi000003","type":"Microsoft.PowerBIDedicated/capacities","location":"East
+        US","sku":{"name":"A1","tier":"PBIE_Azure"},"tags":{}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '532'
+      - '467'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 May 2021 06:06:23 GMT
+      - Wed, 12 Jul 2023 02:46:56 GMT
       expires:
       - '-1'
       pragma:
@@ -106,113 +323,7 @@ interactions:
       x-frame-options:
       - deny
       x-ms-current-utc-date:
-      - 5/10/2021 6:06:22 AM
-      x-xss-protection:
-      - 1; mode=block
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - powerbi embedded-capacity wait
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --created
-      User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
-  response:
-    body:
-      string: '{"properties":{"provisioningState":"Provisioning","state":"Provisioning","administration":{"members":["00000000-0000-0000-0000-000000000000"]},"mode":"Gen1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"East
-        US","sku":{"name":"A1","tier":"PBIE_Azure","capacity":1},"tags":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '532'
-      content-security-policy:
-      - script-src 'self'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 May 2021 06:06:53 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-frame-options:
-      - deny
-      x-ms-current-utc-date:
-      - 5/10/2021 6:06:53 AM
-      x-xss-protection:
-      - 1; mode=block
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - powerbi embedded-capacity wait
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --created
-      User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
-  response:
-    body:
-      string: '{"properties":{"provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["00000000-0000-0000-0000-000000000000"]},"mode":"Gen1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"East
-        US","sku":{"name":"A1","tier":"PBIE_Azure","capacity":1},"tags":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '526'
-      content-security-policy:
-      - script-src 'self'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 May 2021 06:07:23 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-frame-options:
-      - deny
-      x-ms-current-utc-date:
-      - 5/10/2021 6:07:24 AM
+      - 7/12/2023 2:46:57 AM
       x-xss-protection:
       - 1; mode=block
     status:
@@ -232,24 +343,24 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities?api-version=2017-10-01
   response:
     body:
-      string: '{"value":[{"properties":{"provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["00000000-0000-0000-0000-000000000000"]},"mode":"Gen1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"East
-        US","sku":{"name":"A1","tier":"PBIE_Azure","capacity":1},"tags":{}}]}'
+      string: '{"value":[{"properties":{"mode":"Gen2","provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["722e9ba7-c452-4ba2-84f0-bfbd79c2948c"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003","name":"clipowerbi000003","type":"Microsoft.PowerBIDedicated/capacities","location":"East
+        US","sku":{"name":"A1","tier":"PBIE_Azure"},"tags":{}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '538'
+      - '479'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 May 2021 06:07:26 GMT
+      - Wed, 12 Jul 2023 02:46:57 GMT
       expires:
       - '-1'
       pragma:
@@ -265,7 +376,7 @@ interactions:
       x-frame-options:
       - deny
       x-ms-current-utc-date:
-      - 5/10/2021 6:07:26 AM
+      - 7/12/2023 2:46:58 AM
       x-xss-protection:
       - 1; mode=block
     status:
@@ -285,24 +396,24 @@ interactions:
       ParameterSetName:
       - -g --name
       User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003?api-version=2017-10-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["00000000-0000-0000-0000-000000000000"]},"mode":"Gen1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"East
-        US","sku":{"name":"A1","tier":"PBIE_Azure","capacity":1},"tags":{}}'
+      string: '{"properties":{"mode":"Gen2","provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["722e9ba7-c452-4ba2-84f0-bfbd79c2948c"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003","name":"clipowerbi000003","type":"Microsoft.PowerBIDedicated/capacities","location":"East
+        US","sku":{"name":"A1","tier":"PBIE_Azure"},"tags":{}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '526'
+      - '467'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 May 2021 06:07:28 GMT
+      - Wed, 12 Jul 2023 02:46:59 GMT
       expires:
       - '-1'
       pragma:
@@ -318,14 +429,68 @@ interactions:
       x-frame-options:
       - deny
       x-ms-current-utc-date:
-      - 5/10/2021 6:07:28 AM
+      - 7/12/2023 2:47:00 AM
       x-xss-protection:
       - 1; mode=block
     status:
       code: 200
       message: OK
 - request:
-    body: '{"sku": {"name": "A2"}}'
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003?api-version=2017-10-01
+  response:
+    body:
+      string: '{"properties":{"mode":"Gen2","provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["722e9ba7-c452-4ba2-84f0-bfbd79c2948c"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003","name":"clipowerbi000003","type":"Microsoft.PowerBIDedicated/capacities","location":"East
+        US","sku":{"name":"A1","tier":"PBIE_Azure"},"tags":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '467'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 12 Jul 2023 02:47:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 7/12/2023 2:47:02 AM
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "East US", "properties": {"administration": {"members": ["722e9ba7-c452-4ba2-84f0-bfbd79c2948c"]}},
+      "sku": {"name": "A2", "tier": "PBIE_Azure"}, "tags": {}}'
     headers:
       Accept:
       - application/json
@@ -336,36 +501,36 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '23'
+      - '169'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --name --sku-name
       User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
-    method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003?api-version=2017-10-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Preparing","state":"Preparing","administration":{"members":["00000000-0000-0000-0000-000000000000"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"East
-        US","sku":{"name":"A2","tier":"PBIE_Azure","capacity":1},"tags":{}}'
+      string: '{"properties":{"provisioningState":"Preparing","state":"Preparing","administration":{"members":["722e9ba7-c452-4ba2-84f0-bfbd79c2948c"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003","name":"clipowerbi000003","type":"Microsoft.PowerBIDedicated/capacities","location":"East
+        US","sku":{"name":"A2","tier":"PBIE_Azure"},"tags":{}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/0BA08E09-BE7B-4301-885F-A851F2B0C220?api-version=2017-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/86A90429-3FD5-4077-8D8D-E3C6538BF33B?api-version=2017-01-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '512'
+      - '453'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 May 2021 06:07:33 GMT
+      - Wed, 12 Jul 2023 02:47:02 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationresults/0BA08E09-BE7B-4301-885F-A851F2B0C220?api-version=2017-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationresults/86A90429-3FD5-4077-8D8D-E3C6538BF33B?api-version=2017-01-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -375,7 +540,7 @@ interactions:
       x-frame-options:
       - deny
       x-ms-current-utc-date:
-      - 5/10/2021 6:07:33 AM
+      - 7/12/2023 2:47:03 AM
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-xss-protection:
@@ -397,116 +562,12 @@ interactions:
       ParameterSetName:
       - --resource-group --name --sku-name
       User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/0BA08E09-BE7B-4301-885F-A851F2B0C220?api-version=2017-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/86A90429-3FD5-4077-8D8D-E3C6538BF33B?api-version=2017-01-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastus/operationstatuses/0BA08E09-BE7B-4301-885F-A851F2B0C220","name":"0BA08E09-BE7B-4301-885F-A851F2B0C220","status":"Scaling","startTime":"2021-05-10T06:07:33.7630000Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '240'
-      content-security-policy:
-      - script-src 'self'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 May 2021 06:08:04 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-frame-options:
-      - deny
-      x-ms-current-utc-date:
-      - 5/10/2021 6:08:04 AM
-      x-xss-protection:
-      - 1; mode=block
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - powerbi embedded-capacity update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --sku-name
-      User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/0BA08E09-BE7B-4301-885F-A851F2B0C220?api-version=2017-01-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastus/operationstatuses/0BA08E09-BE7B-4301-885F-A851F2B0C220","name":"0BA08E09-BE7B-4301-885F-A851F2B0C220","status":"Scaling","startTime":"2021-05-10T06:07:33.7630000Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '240'
-      content-security-policy:
-      - script-src 'self'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 May 2021 06:08:35 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-frame-options:
-      - deny
-      x-ms-current-utc-date:
-      - 5/10/2021 6:08:35 AM
-      x-xss-protection:
-      - 1; mode=block
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - powerbi embedded-capacity update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --sku-name
-      User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/0BA08E09-BE7B-4301-885F-A851F2B0C220?api-version=2017-01-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastus/operationstatuses/0BA08E09-BE7B-4301-885F-A851F2B0C220","name":"0BA08E09-BE7B-4301-885F-A851F2B0C220","status":"Succeeded","startTime":"2021-05-10T06:07:33.7630000Z","endTime":"2021-05-10T06:08:43.0330000Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastus/operationstatuses/86A90429-3FD5-4077-8D8D-E3C6538BF33B","name":"86A90429-3FD5-4077-8D8D-E3C6538BF33B","status":"Succeeded","startTime":"2023-07-12T02:47:03.5230000Z","endTime":"2023-07-12T02:47:03.7730000Z"}'
     headers:
       cache-control:
       - no-cache
@@ -517,7 +578,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 May 2021 06:09:05 GMT
+      - Wed, 12 Jul 2023 02:47:03 GMT
       expires:
       - '-1'
       pragma:
@@ -533,7 +594,7 @@ interactions:
       x-frame-options:
       - deny
       x-ms-current-utc-date:
-      - 5/10/2021 6:09:05 AM
+      - 7/12/2023 2:47:04 AM
       x-xss-protection:
       - 1; mode=block
     status:
@@ -553,24 +614,24 @@ interactions:
       ParameterSetName:
       - --resource-group --name --sku-name
       User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003?api-version=2017-10-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["00000000-0000-0000-0000-000000000000"]},"mode":"Gen1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"East
-        US","sku":{"name":"A2","tier":"PBIE_Azure","capacity":1},"tags":{}}'
+      string: '{"properties":{"mode":"Gen2","provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["722e9ba7-c452-4ba2-84f0-bfbd79c2948c"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003","name":"clipowerbi000003","type":"Microsoft.PowerBIDedicated/capacities","location":"East
+        US","sku":{"name":"A2","tier":"PBIE_Azure"},"tags":{}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '526'
+      - '467'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 May 2021 06:09:05 GMT
+      - Wed, 12 Jul 2023 02:47:03 GMT
       expires:
       - '-1'
       pragma:
@@ -586,7 +647,7 @@ interactions:
       x-frame-options:
       - deny
       x-ms-current-utc-date:
-      - 5/10/2021 6:09:05 AM
+      - 7/12/2023 2:47:04 AM
       x-xss-protection:
       - 1; mode=block
     status:
@@ -606,24 +667,24 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003?api-version=2017-10-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["00000000-0000-0000-0000-000000000000"]},"mode":"Gen1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002","name":"clipowerbi000002","type":"Microsoft.PowerBIDedicated/capacities","location":"East
-        US","sku":{"name":"A2","tier":"PBIE_Azure","capacity":1},"tags":{}}'
+      string: '{"properties":{"mode":"Gen2","provisioningState":"Succeeded","state":"Succeeded","administration":{"members":["722e9ba7-c452-4ba2-84f0-bfbd79c2948c"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003","name":"clipowerbi000003","type":"Microsoft.PowerBIDedicated/capacities","location":"East
+        US","sku":{"name":"A2","tier":"PBIE_Azure"},"tags":{}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '526'
+      - '467'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 May 2021 06:09:08 GMT
+      - Wed, 12 Jul 2023 02:47:05 GMT
       expires:
       - '-1'
       pragma:
@@ -639,7 +700,7 @@ interactions:
       x-frame-options:
       - deny
       x-ms-current-utc-date:
-      - 5/10/2021 6:09:08 AM
+      - 7/12/2023 2:47:06 AM
       x-xss-protection:
       - 1; mode=block
     status:
@@ -649,7 +710,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -661,15 +722,15 @@ interactions:
       ParameterSetName:
       - -g -n -y
       User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000002?api-version=2017-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities/clipowerbi000003?api-version=2017-10-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/C7D10472-8DAB-4F76-B915-00F2E8695873?api-version=2017-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/735F4D94-50A4-4B7C-889F-24EC1686AD8E?api-version=2017-01-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -677,11 +738,11 @@ interactions:
       content-security-policy:
       - script-src 'self'
       date:
-      - Mon, 10 May 2021 06:09:14 GMT
+      - Wed, 12 Jul 2023 02:47:09 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationresults/C7D10472-8DAB-4F76-B915-00F2E8695873?api-version=2017-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationresults/735F4D94-50A4-4B7C-889F-24EC1686AD8E?api-version=2017-01-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -691,7 +752,7 @@ interactions:
       x-frame-options:
       - deny
       x-ms-current-utc-date:
-      - 5/10/2021 6:09:13 AM
+      - 7/12/2023 2:47:08 AM
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-xss-protection:
@@ -713,23 +774,23 @@ interactions:
       ParameterSetName:
       - -g -n -y
       User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/C7D10472-8DAB-4F76-B915-00F2E8695873?api-version=2017-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/735F4D94-50A4-4B7C-889F-24EC1686AD8E?api-version=2017-01-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastus/operationstatuses/C7D10472-8DAB-4F76-B915-00F2E8695873","name":"C7D10472-8DAB-4F76-B915-00F2E8695873","status":"Succeeded","startTime":"2021-05-10T06:09:13.6030000Z","endTime":"2021-05-10T06:09:31.8700000Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastus/operationstatuses/735F4D94-50A4-4B7C-889F-24EC1686AD8E","name":"735F4D94-50A4-4B7C-889F-24EC1686AD8E","status":"Deleting","startTime":"2023-07-12T02:47:08.9600000Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '283'
+      - '241'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 May 2021 06:09:44 GMT
+      - Wed, 12 Jul 2023 02:47:09 GMT
       expires:
       - '-1'
       pragma:
@@ -745,7 +806,59 @@ interactions:
       x-frame-options:
       - deny
       x-ms-current-utc-date:
-      - 5/10/2021 6:09:44 AM
+      - 7/12/2023 2:47:09 AM
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi embedded-capacity delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBIDedicated/locations/eastus/operationstatuses/735F4D94-50A4-4B7C-889F-24EC1686AD8E?api-version=2017-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/eastus/operationstatuses/735F4D94-50A4-4B7C-889F-24EC1686AD8E","name":"735F4D94-50A4-4B7C-889F-24EC1686AD8E","status":"Succeeded","startTime":"2023-07-12T02:47:08.9600000Z","endTime":"2023-07-12T02:47:12.6000000Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-security-policy:
+      - script-src 'self'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 12 Jul 2023 02:47:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-current-utc-date:
+      - 7/12/2023 2:47:40 AM
       x-xss-protection:
       - 1; mode=block
     status:
@@ -765,7 +878,7 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.23.0 azsdk-python-mgmt-powerbidedicated/2.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbidedicated000001/providers/Microsoft.PowerBIDedicated/capacities?api-version=2017-10-01
   response:
@@ -776,30 +889,20 @@ interactions:
       - no-cache
       content-length:
       - '12'
-      content-security-policy:
-      - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 May 2021 06:09:47 GMT
+      - Wed, 12 Jul 2023 02:47:41 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-frame-options:
-      - deny
-      x-ms-current-utc-date:
-      - 5/10/2021 6:09:47 AM
-      x-xss-protection:
-      - 1; mode=block
     status:
       code: 200
       message: OK

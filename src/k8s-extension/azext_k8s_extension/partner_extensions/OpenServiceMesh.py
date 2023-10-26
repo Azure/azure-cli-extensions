@@ -71,7 +71,6 @@ class OpenServiceMesh(DefaultExtension):
 
 def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, extension_version, extension_release_train):
 
-    logger.warning("Running validated distros...")
     field_unavailable_error = '\"testedDistros\" field unavailable for version {0} of microsoft.openservicemesh, ' \
         'cannot determine if this Kubernetes distribution has been properly tested'.format(extension_version)
 
@@ -104,7 +103,13 @@ def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, exte
 
         extension_version = tags[len(tags) - 1]
 
-    if version.parse(str(extension_version)) <= version.parse("0.8.3"):
+    ext_str = str(extension_version)
+
+    # Don't parse version for test and CI tags
+    if "pr" in ext_str or "release" in ext_str or "beta" in ext_str:
+        return
+
+    if version.parse(ext_str) <= version.parse("0.8.3"):
         logger.warning(field_unavailable_error)
         return
 

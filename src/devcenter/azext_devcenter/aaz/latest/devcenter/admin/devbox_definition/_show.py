@@ -15,20 +15,20 @@ from azure.cli.core.aaz import *
     "devcenter admin devbox-definition show",
 )
 class Show(AAZCommand):
-    """Get a dev box definition
+    """Get a dev box definition configured for a dev center or a project.
 
-    :example: Get dev center dev box definition
+    :example: Get a dev center dev box definition
         az devcenter admin devbox-definition show --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
 
-    :example: Get project dev box definition
+    :example: Get a project dev box definition
         az devcenter admin devbox-definition show --name "WebDevBox" --project-name "ContosoProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2023-04-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions/{}", "2023-06-01-preview"],
         ]
     }
 
@@ -48,9 +48,9 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dev_box_definition_name = AAZStrArg(
-            options=["-n", "--name", "--dev-box-definition-name"],
-            help="The name of the Dev Box definition.",
+        _args_schema.devbox_definition_name = AAZStrArg(
+            options=["-n", "--name", "--devbox-definition-name"],
+            help="The name of the dev box definition.",
             required=True,
             id_part="child_name_1",
         )
@@ -72,8 +72,8 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.dev_box_definition_name) and has_value(self.ctx.args.project_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.args.dev_box_definition_name) and has_value(self.ctx.args.dev_center_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.args.devbox_definition_name) and has_value(self.ctx.args.project_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_1 = has_value(self.ctx.args.devbox_definition_name) and has_value(self.ctx.args.dev_center_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_1:
             self.DevBoxDefinitionsGet(ctx=self.ctx)()
         elif condition_0:
@@ -122,7 +122,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devBoxDefinitionName", self.ctx.args.dev_box_definition_name,
+                    "devBoxDefinitionName", self.ctx.args.devbox_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -144,7 +144,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }
@@ -227,6 +227,13 @@ class Show(AAZCommand):
             properties.sku = AAZObjectType(
                 flags={"required": True},
             )
+            properties.validation_error_details = AAZListType(
+                serialized_name="validationErrorDetails",
+                flags={"read_only": True},
+            )
+            properties.validation_status = AAZStrType(
+                serialized_name="validationStatus",
+            )
 
             image_validation_error_details = cls._schema_on_200.properties.image_validation_error_details
             image_validation_error_details.code = AAZStrType()
@@ -240,6 +247,13 @@ class Show(AAZCommand):
             )
             sku.size = AAZStrType()
             sku.tier = AAZStrType()
+
+            validation_error_details = cls._schema_on_200.properties.validation_error_details
+            validation_error_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.validation_error_details.Element
+            _element.code = AAZStrType()
+            _element.message = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -296,7 +310,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devBoxDefinitionName", self.ctx.args.dev_box_definition_name,
+                    "devBoxDefinitionName", self.ctx.args.devbox_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -318,7 +332,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }
@@ -401,6 +415,13 @@ class Show(AAZCommand):
             properties.sku = AAZObjectType(
                 flags={"required": True},
             )
+            properties.validation_error_details = AAZListType(
+                serialized_name="validationErrorDetails",
+                flags={"read_only": True},
+            )
+            properties.validation_status = AAZStrType(
+                serialized_name="validationStatus",
+            )
 
             image_validation_error_details = cls._schema_on_200.properties.image_validation_error_details
             image_validation_error_details.code = AAZStrType()
@@ -414,6 +435,13 @@ class Show(AAZCommand):
             )
             sku.size = AAZStrType()
             sku.tier = AAZStrType()
+
+            validation_error_details = cls._schema_on_200.properties.validation_error_details
+            validation_error_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.validation_error_details.Element
+            _element.code = AAZStrType()
+            _element.message = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

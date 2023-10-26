@@ -5,6 +5,8 @@
 
 import base64
 from knack.log import get_logger
+from knack.util import todict
+from .track2_util import _encode_bytes
 
 storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 logger = get_logger(__name__)
@@ -125,3 +127,82 @@ def transform_storage_list_output(result):
 # pylint: disable=unused-argument
 def transform_file_upload(result):
     return None
+
+
+def transform_url_without_encode(result):
+    """ Ensures the resulting URL string does not contain extra / characters """
+    import re
+    result = re.sub('//', '/', result)
+    result = re.sub('/', '//', result, count=1)
+    return result
+
+
+def transform_share_directory_json_output(result):
+    result = todict(result)
+    new_result = {
+        "metadata": result.pop('metadata', None),
+        "name": result.pop('name', None),
+        "properties": {
+            "etag": result.pop('etag', None),
+            "lastModified": result.pop('lastModified', None),
+            "serverEncrypted": result.pop('serverEncrypted', None)
+        }
+    }
+    new_result.update(result)
+    return new_result
+
+
+def transform_share_file_json_output(result):
+    result = todict(result)
+    new_result = {
+        "metadata": result.pop('metadata', None),
+        "name": result.pop('name', None),
+        "properties": {
+            "etag": result.pop('etag', None),
+            "lastModified": result.pop('lastModified', None),
+            "serverEncrypted": result.pop('serverEncrypted', None),
+            "contentLength": result.pop('size', None),
+            "contentRange": result.pop('contentRange', None),
+            "contentSettings": result.pop('contentSettings', None),
+            "copy": result.pop("copy", None)
+        }
+    }
+    new_result.update(result)
+    return new_result
+
+
+def transform_file_show_result(result):
+    result = todict(result)
+    new_result = {
+        "content": result.pop('content', ""),
+        "properties": {
+            "contentLength": result.pop('contentLength', None),
+            "contentRange": result.pop('contentRange', None),
+            "contentSettings": result.pop('contentSettings', None),
+            "copy": result.pop('copy', None),
+            "etag": result.pop('etag', None),
+            "lastModified": result.pop('lastModified', None),
+            "serverEncrypted": result.pop('serverEncrypted', None)
+        }
+    }
+    if new_result['properties']['contentSettings'] and new_result['properties']['contentSettings']['contentMd5']:
+        new_result['properties']['contentSettings']['contentMd5'] = _encode_bytes(new_result['properties']
+                                                                                  ['contentSettings']['contentMd5'])
+    new_result.update(result)
+    _decode_bytearray(new_result)
+    return new_result
+
+
+def _decode_bytearray(result):
+    for k, v in result.items():
+        if isinstance(v, bytearray):
+            result[k] = base64.urlsafe_b64encode(v).decode()
+        elif isinstance(v, dict):
+            _decode_bytearray(v)
+
+
+def transform_share_list_handle(result):
+    for item in result["items"]:
+        item["handleId"] = item.id
+        delattr(item, "id")
+    return result

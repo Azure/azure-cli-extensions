@@ -39,6 +39,8 @@ class AddUserAssignedIdentityAuthInfo(argparse.Action):
                 d['client_id'] = v[0]
             elif kl == 'subs-id':
                 d['subscription_id'] = v[0]
+            elif kl == 'user-object-id':
+                d['user_object_id'] = v[0]
             elif is_mysql_target(command_name) and kl == 'mysql-identity-id':
                 d['mysql-identity-id'] = v[0]
             else:
@@ -71,6 +73,8 @@ class AddSystemAssignedIdentityAuthInfo(argparse.Action):
             v = properties[k]
             if is_mysql_target(command_name) and k.lower() == 'mysql-identity-id':
                 d['mysql-identity-id'] = v[0]
+            elif k.lower() == 'user-object-id':
+                d['user_object_id'] = v[0]
             else:
                 raise ValidationError(
                     'Unsupported Key {} is provided for parameter --system-identity')

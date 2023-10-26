@@ -2,6 +2,19 @@
 
 Release History
 ===============
+1.8.0b1
+++++++
+* Update ACS Rooms to use 1.1.0b1 version
+
+1.7.2b1
+++++++
+* Update Email to the latest 1.0.0 version
+
+
+1.7.2
+++++++
+* Add additional test cases for ACS Rooms
+
 
 1.7.1b1
 ++++++

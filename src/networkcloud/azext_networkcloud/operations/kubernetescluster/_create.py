@@ -12,9 +12,8 @@ Provides Kubernetescluster customization
 from azext_networkcloud.aaz.latest.networkcloud.kubernetescluster import (
     Create as _Create,
 )
-
-from azure.cli.core.aaz._base import has_value
 from azure.cli.core.aaz import AAZListArg, AAZStrArg, register_callback
+from azure.cli.core.aaz._base import has_value
 from knack.log import get_logger
 
 from ..common_ssh import CustomSshOptions

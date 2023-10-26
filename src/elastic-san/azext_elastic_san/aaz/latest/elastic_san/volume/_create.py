@@ -19,13 +19,16 @@ class Create(AAZCommand):
     """Create a Volume.
 
     :example: Create a Volume.
-        az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2
+        az elastic-san volume create -g "rg" -e "san_name" -v "vg_name" -n "volume_name" --size-gib 2
+
+    :example: Create a Volume from snapshot.
+        az elastic-san volume create -g "rg" -e "san_name" -v "vg_name" -n "volume_name_2" --size-gib 2 --creation-data '{source-id:"snapshot_id",create-source:VolumeSnapshot}'
     """
 
     _aaz_info = {
-        "version": "2021-11-20-preview",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2021-11-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2023-01-01"],
         ]
     }
 
@@ -47,10 +50,9 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]+((-|_)[a-z0-9A-Z]+)*$",
                 max_length=24,
@@ -61,10 +63,9 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["-v", "--volume-group-name"],
+            options=["-v", "--volume-group", "--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]+((-|_)[a-z0-9A-Z]+)*$",
                 max_length=63,
@@ -75,25 +76,12 @@ class Create(AAZCommand):
             options=["-n", "--name", "--volume-name"],
             help="The name of the Volume.",
             required=True,
-            id_part="child_name_2",
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]+(-[a-z0-9A-Z]+)*$",
                 max_length=63,
                 min_length=3,
             ),
         )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Azure resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -107,17 +95,18 @@ class Create(AAZCommand):
             options=["--size-gib"],
             arg_group="Properties",
             help="Volume size.",
+            required=True,
         )
 
         creation_data = cls._args_schema.creation_data
         creation_data.create_source = AAZStrArg(
             options=["create-source"],
             help="This enumerates the possible sources of a volume creation.",
-            enum={"None": "None"},
+            enum={"Disk": "Disk", "DiskRestorePoint": "DiskRestorePoint", "DiskSnapshot": "DiskSnapshot", "None": "None", "VolumeSnapshot": "VolumeSnapshot"},
         )
-        creation_data.source_uri = AAZStrArg(
-            options=["source-uri"],
-            help="If createOption is Copy, this is the ARM id of the source snapshot or disk. If createOption is Restore, this is the ARM-like id of the source disk restore point.",
+        creation_data.source_id = AAZStrArg(
+            options=["source-id"],
+            help="Fully qualified resource ID for the resource. E.g. \"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}\"",
         )
         return cls._args_schema
 
@@ -126,11 +115,11 @@ class Create(AAZCommand):
         yield self.VolumesCreate(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -148,18 +137,18 @@ class Create(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200]:
+            if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -210,7 +199,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-11-20-preview",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -235,161 +224,136 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("creationData", AAZObjectType, ".creation_data")
-                properties.set_prop("sizeGiB", AAZIntType, ".size_gib")
+                properties.set_prop("sizeGiB", AAZIntType, ".size_gib", typ_kwargs={"flags": {"required": True}})
 
             creation_data = _builder.get(".properties.creationData")
             if creation_data is not None:
                 creation_data.set_prop("createSource", AAZStrType, ".create_source")
-                creation_data.set_prop("sourceUri", AAZStrType, ".source_uri")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
+                creation_data.set_prop("sourceId", AAZStrType, ".source_id")
 
             return self.serialize_content(_content_value)
 
-        def on_200(self, session):
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
-            _build_schema_volume_read(cls._schema_on_200)
+            cls._schema_on_200_201 = AAZObjectType()
 
-            return cls._schema_on_200
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200_201.properties
+            properties.creation_data = AAZObjectType(
+                serialized_name="creationData",
+            )
+            properties.managed_by = AAZObjectType(
+                serialized_name="managedBy",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.size_gi_b = AAZIntType(
+                serialized_name="sizeGiB",
+                flags={"required": True},
+            )
+            properties.storage_target = AAZObjectType(
+                serialized_name="storageTarget",
+                flags={"read_only": True},
+            )
+            properties.volume_id = AAZStrType(
+                serialized_name="volumeId",
+                flags={"read_only": True},
+            )
+
+            creation_data = cls._schema_on_200_201.properties.creation_data
+            creation_data.create_source = AAZStrType(
+                serialized_name="createSource",
+            )
+            creation_data.source_id = AAZStrType(
+                serialized_name="sourceId",
+            )
+
+            managed_by = cls._schema_on_200_201.properties.managed_by
+            managed_by.resource_id = AAZStrType(
+                serialized_name="resourceId",
+            )
+
+            storage_target = cls._schema_on_200_201.properties.storage_target
+            storage_target.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            storage_target.status = AAZStrType()
+            storage_target.target_iqn = AAZStrType(
+                serialized_name="targetIqn",
+                flags={"read_only": True},
+            )
+            storage_target.target_portal_hostname = AAZStrType(
+                serialized_name="targetPortalHostname",
+                flags={"read_only": True},
+            )
+            storage_target.target_portal_port = AAZIntType(
+                serialized_name="targetPortalPort",
+                flags={"read_only": True},
+            )
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            return cls._schema_on_200_201
 
 
-_schema_volume_read = None
-
-
-def _build_schema_volume_read(_schema):
-    global _schema_volume_read
-    if _schema_volume_read is not None:
-        _schema.id = _schema_volume_read.id
-        _schema.name = _schema_volume_read.name
-        _schema.properties = _schema_volume_read.properties
-        _schema.system_data = _schema_volume_read.system_data
-        _schema.tags = _schema_volume_read.tags
-        _schema.type = _schema_volume_read.type
-        return
-
-    _schema_volume_read = AAZObjectType()
-
-    volume_read = _schema_volume_read
-    volume_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    volume_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    volume_read.properties = AAZObjectType(
-        flags={"client_flatten": True},
-    )
-    volume_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    volume_read.tags = AAZDictType()
-    volume_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
-
-    properties = _schema_volume_read.properties
-    properties.creation_data = AAZObjectType(
-        serialized_name="creationData",
-    )
-    properties.size_gi_b = AAZIntType(
-        serialized_name="sizeGiB",
-    )
-    properties.storage_target = AAZObjectType(
-        serialized_name="storageTarget",
-        flags={"read_only": True},
-    )
-    properties.volume_id = AAZStrType(
-        serialized_name="volumeId",
-        flags={"read_only": True},
-    )
-
-    creation_data = _schema_volume_read.properties.creation_data
-    creation_data.create_source = AAZStrType(
-        serialized_name="createSource",
-    )
-    creation_data.source_uri = AAZStrType(
-        serialized_name="sourceUri",
-    )
-
-    storage_target = _schema_volume_read.properties.storage_target
-    storage_target.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    storage_target.status = AAZStrType(
-        flags={"read_only": True},
-    )
-    storage_target.target_iqn = AAZStrType(
-        serialized_name="targetIqn",
-        flags={"read_only": True},
-    )
-    storage_target.target_portal_hostname = AAZStrType(
-        serialized_name="targetPortalHostname",
-        flags={"read_only": True},
-    )
-    storage_target.target_portal_port = AAZIntType(
-        serialized_name="targetPortalPort",
-        flags={"read_only": True},
-    )
-
-    system_data = _schema_volume_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-        flags={"read_only": True},
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-        flags={"read_only": True},
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-        flags={"read_only": True},
-    )
-
-    tags = _schema_volume_read.tags
-    tags.Element = AAZStrType()
-
-    _schema.id = _schema_volume_read.id
-    _schema.name = _schema_volume_read.name
-    _schema.properties = _schema_volume_read.properties
-    _schema.system_data = _schema_volume_read.system_data
-    _schema.tags = _schema_volume_read.tags
-    _schema.type = _schema_volume_read.type
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

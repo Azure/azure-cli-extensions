@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric interface list",
 )
 class List(AAZCommand):
-    """List all Network Interfaces in the provided resource group.
+    """List all Network Interfaces in the provided resource group
 
     :example: List the Network Interfaces for Resource Group
         az networkfabric interface list -g "example-rg" --network-device-name "example-device"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces", "2023-06-15"],
         ]
     }
 
@@ -45,7 +45,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_device_name = AAZStrArg(
             options=["--device", "--network-device-name"],
-            help="Name of the Network Device",
+            help="Name of the Network Device.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -56,7 +56,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NetworkInterfacesList(ctx=self.ctx)()
+        self.NetworkInterfacesListByNetworkDevice(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +72,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class NetworkInterfacesList(AAZHttpOperation):
+    class NetworkInterfacesListByNetworkDevice(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -120,7 +120,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }

@@ -211,6 +211,9 @@ class AuthenticationMethodLdapProperties(_serialization.Model):
     :vartype search_filter_template: str
     :ivar server_certificates:
     :vartype server_certificates: list[~azure.mgmt.cosmosdb.models.Certificate]
+    :ivar connection_timeout_in_ms: Timeout for connecting to the LDAP server in miliseconds. The
+     default is 5000 ms.
+    :vartype connection_timeout_in_ms: int
     """
 
     _attribute_map = {
@@ -221,6 +224,7 @@ class AuthenticationMethodLdapProperties(_serialization.Model):
         "search_base_distinguished_name": {"key": "searchBaseDistinguishedName", "type": "str"},
         "search_filter_template": {"key": "searchFilterTemplate", "type": "str"},
         "server_certificates": {"key": "serverCertificates", "type": "[Certificate]"},
+        "connection_timeout_in_ms": {"key": "connectionTimeoutInMs", "type": "int"},
     }
 
     def __init__(
@@ -233,6 +237,7 @@ class AuthenticationMethodLdapProperties(_serialization.Model):
         search_base_distinguished_name: Optional[str] = None,
         search_filter_template: Optional[str] = None,
         server_certificates: Optional[List["_models.Certificate"]] = None,
+        connection_timeout_in_ms: Optional[int] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -253,6 +258,9 @@ class AuthenticationMethodLdapProperties(_serialization.Model):
         :paramtype search_filter_template: str
         :keyword server_certificates:
         :paramtype server_certificates: list[~azure.mgmt.cosmosdb.models.Certificate]
+        :keyword connection_timeout_in_ms: Timeout for connecting to the LDAP server in miliseconds.
+         The default is 5000 ms.
+        :paramtype connection_timeout_in_ms: int
         """
         super().__init__(**kwargs)
         self.server_hostname = server_hostname
@@ -262,6 +270,7 @@ class AuthenticationMethodLdapProperties(_serialization.Model):
         self.search_base_distinguished_name = search_base_distinguished_name
         self.search_filter_template = search_filter_template
         self.server_certificates = server_certificates
+        self.connection_timeout_in_ms = connection_timeout_in_ms
 
 
 class AutoscaleSettings(_serialization.Model):
@@ -535,61 +544,120 @@ class BackupPolicyMigrationState(_serialization.Model):
         self.start_time = start_time
 
 
-class BackupResource(ARMProxyResource):
+class BackupResource(_serialization.Model):
     """A restorable backup of a Cassandra cluster.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: The unique resource identifier of the database account.
-    :vartype id: str
-    :ivar name: The name of the database account.
-    :vartype name: str
-    :ivar type: The type of Azure resource.
-    :vartype type: str
-    :ivar properties:
-    :vartype properties: ~azure.mgmt.cosmosdb.models.BackupResourceProperties
-    """
-
-    _validation = {
-        "id": {"readonly": True},
-        "name": {"readonly": True},
-        "type": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "id": {"key": "id", "type": "str"},
-        "name": {"key": "name", "type": "str"},
-        "type": {"key": "type", "type": "str"},
-        "properties": {"key": "properties", "type": "BackupResourceProperties"},
-    }
-
-    def __init__(self, *, properties: Optional["_models.BackupResourceProperties"] = None, **kwargs: Any) -> None:
-        """
-        :keyword properties:
-        :paramtype properties: ~azure.mgmt.cosmosdb.models.BackupResourceProperties
-        """
-        super().__init__(**kwargs)
-        self.properties = properties
-
-
-class BackupResourceProperties(_serialization.Model):
-    """BackupResourceProperties.
-
-    :ivar timestamp: The time this backup was taken, formatted like 2021-01-21T17:35:21.
-    :vartype timestamp: ~datetime.datetime
+    :ivar backup_id: The unique identifier of backup.
+    :vartype backup_id: str
+    :ivar backup_state: The current state of the backup. Known values are: "Initiated",
+     "InProgress", "Succeeded", and "Failed".
+    :vartype backup_state: str or ~azure.mgmt.cosmosdb.models.BackupState
+    :ivar backup_start_timestamp: The time at which the backup process begins.
+    :vartype backup_start_timestamp: ~datetime.datetime
+    :ivar backup_stop_timestamp: The time at which the backup process ends.
+    :vartype backup_stop_timestamp: ~datetime.datetime
+    :ivar backup_expiry_timestamp: The time at which the backup will expire.
+    :vartype backup_expiry_timestamp: ~datetime.datetime
     """
 
     _attribute_map = {
-        "timestamp": {"key": "timestamp", "type": "iso-8601"},
+        "backup_id": {"key": "backupId", "type": "str"},
+        "backup_state": {"key": "backupState", "type": "str"},
+        "backup_start_timestamp": {"key": "backupStartTimestamp", "type": "iso-8601"},
+        "backup_stop_timestamp": {"key": "backupStopTimestamp", "type": "iso-8601"},
+        "backup_expiry_timestamp": {"key": "backupExpiryTimestamp", "type": "iso-8601"},
     }
 
-    def __init__(self, *, timestamp: Optional[datetime.datetime] = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *,
+        backup_id: Optional[str] = None,
+        backup_state: Optional[Union[str, "_models.BackupState"]] = None,
+        backup_start_timestamp: Optional[datetime.datetime] = None,
+        backup_stop_timestamp: Optional[datetime.datetime] = None,
+        backup_expiry_timestamp: Optional[datetime.datetime] = None,
+        **kwargs: Any
+    ) -> None:
         """
-        :keyword timestamp: The time this backup was taken, formatted like 2021-01-21T17:35:21.
-        :paramtype timestamp: ~datetime.datetime
+        :keyword backup_id: The unique identifier of backup.
+        :paramtype backup_id: str
+        :keyword backup_state: The current state of the backup. Known values are: "Initiated",
+         "InProgress", "Succeeded", and "Failed".
+        :paramtype backup_state: str or ~azure.mgmt.cosmosdb.models.BackupState
+        :keyword backup_start_timestamp: The time at which the backup process begins.
+        :paramtype backup_start_timestamp: ~datetime.datetime
+        :keyword backup_stop_timestamp: The time at which the backup process ends.
+        :paramtype backup_stop_timestamp: ~datetime.datetime
+        :keyword backup_expiry_timestamp: The time at which the backup will expire.
+        :paramtype backup_expiry_timestamp: ~datetime.datetime
         """
         super().__init__(**kwargs)
-        self.timestamp = timestamp
+        self.backup_id = backup_id
+        self.backup_state = backup_state
+        self.backup_start_timestamp = backup_start_timestamp
+        self.backup_stop_timestamp = backup_stop_timestamp
+        self.backup_expiry_timestamp = backup_expiry_timestamp
+
+
+class BackupSchedule(_serialization.Model):
+    """BackupSchedule.
+
+    :ivar schedule_name: The unique identifier of backup schedule.
+    :vartype schedule_name: str
+    :ivar cron_expression: The cron expression that defines when you want to back up your data.
+    :vartype cron_expression: str
+    :ivar retention_in_hours: The retention period (hours) of the backups. If you want to retain
+     data forever, set retention to 0.
+    :vartype retention_in_hours: int
+    """
+
+    _attribute_map = {
+        "schedule_name": {"key": "scheduleName", "type": "str"},
+        "cron_expression": {"key": "cronExpression", "type": "str"},
+        "retention_in_hours": {"key": "retentionInHours", "type": "int"},
+    }
+
+    def __init__(
+        self,
+        *,
+        schedule_name: Optional[str] = None,
+        cron_expression: Optional[str] = None,
+        retention_in_hours: Optional[int] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword schedule_name: The unique identifier of backup schedule.
+        :paramtype schedule_name: str
+        :keyword cron_expression: The cron expression that defines when you want to back up your data.
+        :paramtype cron_expression: str
+        :keyword retention_in_hours: The retention period (hours) of the backups. If you want to retain
+         data forever, set retention to 0.
+        :paramtype retention_in_hours: int
+        """
+        super().__init__(**kwargs)
+        self.schedule_name = schedule_name
+        self.cron_expression = cron_expression
+        self.retention_in_hours = retention_in_hours
+
+
+class BaseCosmosDataTransferDataSourceSink(_serialization.Model):
+    """A base CosmosDB data source/sink.
+
+    :ivar remote_account_name:
+    :vartype remote_account_name: str
+    """
+
+    _attribute_map = {
+        "remote_account_name": {"key": "remoteAccountName", "type": "str"},
+    }
+
+    def __init__(self, *, remote_account_name: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword remote_account_name:
+        :paramtype remote_account_name: str
+        """
+        super().__init__(**kwargs)
+        self.remote_account_name = remote_account_name
 
 
 class Capability(_serialization.Model):
@@ -654,6 +722,8 @@ class CassandraClusterDataCenterNodeItem(_serialization.Model):  # pylint: disab
     :vartype state: str or ~azure.mgmt.cosmosdb.models.NodeState
     :ivar status:
     :vartype status: str
+    :ivar cassandra_process_status: Cassandra service status on this node.
+    :vartype cassandra_process_status: str
     :ivar load: The amount of file system data in the data directory (e.g., 47.66 kB), excluding
      all content in the snapshots subdirectories. Because all SSTable data files are included, any
      data that is not cleaned up (such as TTL-expired cells or tombstones) is counted.
@@ -666,7 +736,7 @@ class CassandraClusterDataCenterNodeItem(_serialization.Model):  # pylint: disab
     :vartype host_id: str
     :ivar rack: The rack this node is part of.
     :vartype rack: str
-    :ivar timestamp: The timestamp at which that snapshot of these usage statistics were taken.
+    :ivar timestamp: The timestamp when these statistics were captured.
     :vartype timestamp: str
     :ivar disk_used_kb: The amount of disk used, in kB, of the directory /var/lib/cassandra.
     :vartype disk_used_kb: int
@@ -683,12 +753,15 @@ class CassandraClusterDataCenterNodeItem(_serialization.Model):  # pylint: disab
     :vartype memory_total_kb: int
     :ivar cpu_usage: A float representing the current system-wide CPU utilization as a percentage.
     :vartype cpu_usage: float
+    :ivar is_latest_model: If node has been updated to latest model.
+    :vartype is_latest_model: bool
     """
 
     _attribute_map = {
         "address": {"key": "address", "type": "str"},
         "state": {"key": "state", "type": "str"},
         "status": {"key": "status", "type": "str"},
+        "cassandra_process_status": {"key": "cassandraProcessStatus", "type": "str"},
         "load": {"key": "load", "type": "str"},
         "tokens": {"key": "tokens", "type": "[str]"},
         "size": {"key": "size", "type": "int"},
@@ -702,6 +775,7 @@ class CassandraClusterDataCenterNodeItem(_serialization.Model):  # pylint: disab
         "memory_free_kb": {"key": "memoryFreeKB", "type": "int"},
         "memory_total_kb": {"key": "memoryTotalKB", "type": "int"},
         "cpu_usage": {"key": "cpuUsage", "type": "float"},
+        "is_latest_model": {"key": "isLatestModel", "type": "bool"},
     }
 
     def __init__(
@@ -710,6 +784,7 @@ class CassandraClusterDataCenterNodeItem(_serialization.Model):  # pylint: disab
         address: Optional[str] = None,
         state: Optional[Union[str, "_models.NodeState"]] = None,
         status: Optional[str] = None,
+        cassandra_process_status: Optional[str] = None,
         load: Optional[str] = None,
         tokens: Optional[List[str]] = None,
         size: Optional[int] = None,
@@ -723,6 +798,7 @@ class CassandraClusterDataCenterNodeItem(_serialization.Model):  # pylint: disab
         memory_free_kb: Optional[int] = None,
         memory_total_kb: Optional[int] = None,
         cpu_usage: Optional[float] = None,
+        is_latest_model: Optional[bool] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -733,6 +809,8 @@ class CassandraClusterDataCenterNodeItem(_serialization.Model):  # pylint: disab
         :paramtype state: str or ~azure.mgmt.cosmosdb.models.NodeState
         :keyword status:
         :paramtype status: str
+        :keyword cassandra_process_status: Cassandra service status on this node.
+        :paramtype cassandra_process_status: str
         :keyword load: The amount of file system data in the data directory (e.g., 47.66 kB), excluding
          all content in the snapshots subdirectories. Because all SSTable data files are included, any
          data that is not cleaned up (such as TTL-expired cells or tombstones) is counted.
@@ -745,7 +823,7 @@ class CassandraClusterDataCenterNodeItem(_serialization.Model):  # pylint: disab
         :paramtype host_id: str
         :keyword rack: The rack this node is part of.
         :paramtype rack: str
-        :keyword timestamp: The timestamp at which that snapshot of these usage statistics were taken.
+        :keyword timestamp: The timestamp when these statistics were captured.
         :paramtype timestamp: str
         :keyword disk_used_kb: The amount of disk used, in kB, of the directory /var/lib/cassandra.
         :paramtype disk_used_kb: int
@@ -764,11 +842,14 @@ class CassandraClusterDataCenterNodeItem(_serialization.Model):  # pylint: disab
         :keyword cpu_usage: A float representing the current system-wide CPU utilization as a
          percentage.
         :paramtype cpu_usage: float
+        :keyword is_latest_model: If node has been updated to latest model.
+        :paramtype is_latest_model: bool
         """
         super().__init__(**kwargs)
         self.address = address
         self.state = state
         self.status = status
+        self.cassandra_process_status = cassandra_process_status
         self.load = load
         self.tokens = tokens
         self.size = size
@@ -782,6 +863,7 @@ class CassandraClusterDataCenterNodeItem(_serialization.Model):  # pylint: disab
         self.memory_free_kb = memory_free_kb
         self.memory_total_kb = memory_total_kb
         self.cpu_usage = cpu_usage
+        self.is_latest_model = is_latest_model
 
 
 class CassandraClusterPublicStatus(_serialization.Model):
@@ -794,6 +876,9 @@ class CassandraClusterPublicStatus(_serialization.Model):
     :ivar connection_errors: List relevant information about any connection errors to the
      Datacenters.
     :vartype connection_errors: list[~azure.mgmt.cosmosdb.models.ConnectionError]
+    :ivar errors: List relevant information about any errors about cluster, data center and
+     connection error.
+    :vartype errors: list[~azure.mgmt.cosmosdb.models.CassandraError]
     :ivar data_centers: List of the status of each datacenter in this cluster.
     :vartype data_centers:
      list[~azure.mgmt.cosmosdb.models.CassandraClusterPublicStatusDataCentersItem]
@@ -803,6 +888,7 @@ class CassandraClusterPublicStatus(_serialization.Model):
         "e_tag": {"key": "eTag", "type": "str"},
         "reaper_status": {"key": "reaperStatus", "type": "ManagedCassandraReaperStatus"},
         "connection_errors": {"key": "connectionErrors", "type": "[ConnectionError]"},
+        "errors": {"key": "errors", "type": "[CassandraError]"},
         "data_centers": {"key": "dataCenters", "type": "[CassandraClusterPublicStatusDataCentersItem]"},
     }
 
@@ -812,6 +898,7 @@ class CassandraClusterPublicStatus(_serialization.Model):
         e_tag: Optional[str] = None,
         reaper_status: Optional["_models.ManagedCassandraReaperStatus"] = None,
         connection_errors: Optional[List["_models.ConnectionError"]] = None,
+        errors: Optional[List["_models.CassandraError"]] = None,
         data_centers: Optional[List["_models.CassandraClusterPublicStatusDataCentersItem"]] = None,
         **kwargs: Any
     ) -> None:
@@ -823,6 +910,9 @@ class CassandraClusterPublicStatus(_serialization.Model):
         :keyword connection_errors: List relevant information about any connection errors to the
          Datacenters.
         :paramtype connection_errors: list[~azure.mgmt.cosmosdb.models.ConnectionError]
+        :keyword errors: List relevant information about any errors about cluster, data center and
+         connection error.
+        :paramtype errors: list[~azure.mgmt.cosmosdb.models.CassandraError]
         :keyword data_centers: List of the status of each datacenter in this cluster.
         :paramtype data_centers:
          list[~azure.mgmt.cosmosdb.models.CassandraClusterPublicStatusDataCentersItem]
@@ -831,6 +921,7 @@ class CassandraClusterPublicStatus(_serialization.Model):
         self.e_tag = e_tag
         self.reaper_status = reaper_status
         self.connection_errors = connection_errors
+        self.errors = errors
         self.data_centers = data_centers
 
 
@@ -871,6 +962,52 @@ class CassandraClusterPublicStatusDataCentersItem(_serialization.Model):
         self.name = name
         self.seed_nodes = seed_nodes
         self.nodes = nodes
+
+
+class CassandraError(_serialization.Model):
+    """CassandraError.
+
+    :ivar code: The code of error that occurred.
+    :vartype code: str
+    :ivar message: The message of the error.
+    :vartype message: str
+    :ivar target: The target resource of the error.
+    :vartype target: str
+    :ivar additional_error_info: Additional information about the error.
+    :vartype additional_error_info: str
+    """
+
+    _attribute_map = {
+        "code": {"key": "code", "type": "str"},
+        "message": {"key": "message", "type": "str"},
+        "target": {"key": "target", "type": "str"},
+        "additional_error_info": {"key": "additionalErrorInfo", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        code: Optional[str] = None,
+        message: Optional[str] = None,
+        target: Optional[str] = None,
+        additional_error_info: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword code: The code of error that occurred.
+        :paramtype code: str
+        :keyword message: The message of the error.
+        :paramtype message: str
+        :keyword target: The target resource of the error.
+        :paramtype target: str
+        :keyword additional_error_info: Additional information about the error.
+        :paramtype additional_error_info: str
+        """
+        super().__init__(**kwargs)
+        self.code = code
+        self.message = message
+        self.target = target
+        self.additional_error_info = additional_error_info
 
 
 class CassandraKeyspaceCreateUpdateParameters(ARMResourceProperties):
@@ -2521,8 +2658,8 @@ class ClusterResourceProperties(_serialization.Model):  # pylint: disable=too-ma
     :vartype cluster_name_override: str
     :ivar authentication_method: Which authentication method Cassandra should use to authenticate
      clients. 'None' turns off authentication, so should not be used except in emergencies.
-     'Cassandra' is the default password based authentication. The default is 'Cassandra'. 'Ldap' is
-     in preview. Known values are: "None", "Cassandra", and "Ldap".
+     'Cassandra' is the default password based authentication. The default is 'Cassandra'. Known
+     values are: "None", "Cassandra", and "Ldap".
     :vartype authentication_method: str or ~azure.mgmt.cosmosdb.models.AuthenticationMethod
     :ivar initial_cassandra_admin_password: Initial password for clients connecting as admin to the
      cluster. Should be changed after cluster creation. Returns null on GET. This field only applies
@@ -2555,13 +2692,23 @@ class ClusterResourceProperties(_serialization.Model):  # pylint: disable=too-ma
     :ivar seed_nodes: List of IP addresses of seed nodes in the managed data centers. These should
      be added to the seed node lists of all unmanaged nodes.
     :vartype seed_nodes: list[~azure.mgmt.cosmosdb.models.SeedNode]
-    :ivar hours_between_backups: Number of hours to wait between taking a backup of the cluster. To
-     disable backups, set this property to 0.
+    :ivar hours_between_backups: (Deprecated) Number of hours to wait between taking a backup of
+     the cluster.
     :vartype hours_between_backups: int
     :ivar deallocated: Whether the cluster and associated data centers has been deallocated.
     :vartype deallocated: bool
     :ivar cassandra_audit_logging_enabled: Whether Cassandra audit logging is enabled.
     :vartype cassandra_audit_logging_enabled: bool
+    :ivar cluster_type: Type of the cluster. If set to Production, some operations might not be
+     permitted on cluster. Known values are: "Production" and "NonProduction".
+    :vartype cluster_type: str or ~azure.mgmt.cosmosdb.models.ClusterType
+    :ivar provision_error: Error related to resource provisioning.
+    :vartype provision_error: ~azure.mgmt.cosmosdb.models.CassandraError
+    :ivar extensions: Extensions to be added or updated on cluster.
+    :vartype extensions: list[str]
+    :ivar backup_schedules: List of backup schedules that define when you want to back up your
+     data.
+    :vartype backup_schedules: list[~azure.mgmt.cosmosdb.models.BackupSchedule]
     """
 
     _validation = {
@@ -2587,6 +2734,10 @@ class ClusterResourceProperties(_serialization.Model):  # pylint: disable=too-ma
         "hours_between_backups": {"key": "hoursBetweenBackups", "type": "int"},
         "deallocated": {"key": "deallocated", "type": "bool"},
         "cassandra_audit_logging_enabled": {"key": "cassandraAuditLoggingEnabled", "type": "bool"},
+        "cluster_type": {"key": "clusterType", "type": "str"},
+        "provision_error": {"key": "provisionError", "type": "CassandraError"},
+        "extensions": {"key": "extensions", "type": "[str]"},
+        "backup_schedules": {"key": "backupSchedules", "type": "[BackupSchedule]"},
     }
 
     def __init__(
@@ -2607,6 +2758,10 @@ class ClusterResourceProperties(_serialization.Model):  # pylint: disable=too-ma
         hours_between_backups: Optional[int] = None,
         deallocated: Optional[bool] = None,
         cassandra_audit_logging_enabled: Optional[bool] = None,
+        cluster_type: Optional[Union[str, "_models.ClusterType"]] = None,
+        provision_error: Optional["_models.CassandraError"] = None,
+        extensions: Optional[List[str]] = None,
+        backup_schedules: Optional[List["_models.BackupSchedule"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -2633,7 +2788,7 @@ class ClusterResourceProperties(_serialization.Model):  # pylint: disable=too-ma
         :keyword authentication_method: Which authentication method Cassandra should use to
          authenticate clients. 'None' turns off authentication, so should not be used except in
          emergencies. 'Cassandra' is the default password based authentication. The default is
-         'Cassandra'. 'Ldap' is in preview. Known values are: "None", "Cassandra", and "Ldap".
+         'Cassandra'. Known values are: "None", "Cassandra", and "Ldap".
         :paramtype authentication_method: str or ~azure.mgmt.cosmosdb.models.AuthenticationMethod
         :keyword initial_cassandra_admin_password: Initial password for clients connecting as admin to
          the cluster. Should be changed after cluster creation. Returns null on GET. This field only
@@ -2659,13 +2814,23 @@ class ClusterResourceProperties(_serialization.Model):  # pylint: disable=too-ma
         :keyword external_seed_nodes: List of IP addresses of seed nodes in unmanaged data centers.
          These will be added to the seed node lists of all managed nodes.
         :paramtype external_seed_nodes: list[~azure.mgmt.cosmosdb.models.SeedNode]
-        :keyword hours_between_backups: Number of hours to wait between taking a backup of the cluster.
-         To disable backups, set this property to 0.
+        :keyword hours_between_backups: (Deprecated) Number of hours to wait between taking a backup of
+         the cluster.
         :paramtype hours_between_backups: int
         :keyword deallocated: Whether the cluster and associated data centers has been deallocated.
         :paramtype deallocated: bool
         :keyword cassandra_audit_logging_enabled: Whether Cassandra audit logging is enabled.
         :paramtype cassandra_audit_logging_enabled: bool
+        :keyword cluster_type: Type of the cluster. If set to Production, some operations might not be
+         permitted on cluster. Known values are: "Production" and "NonProduction".
+        :paramtype cluster_type: str or ~azure.mgmt.cosmosdb.models.ClusterType
+        :keyword provision_error: Error related to resource provisioning.
+        :paramtype provision_error: ~azure.mgmt.cosmosdb.models.CassandraError
+        :keyword extensions: Extensions to be added or updated on cluster.
+        :paramtype extensions: list[str]
+        :keyword backup_schedules: List of backup schedules that define when you want to back up your
+         data.
+        :paramtype backup_schedules: list[~azure.mgmt.cosmosdb.models.BackupSchedule]
         """
         super().__init__(**kwargs)
         self.provisioning_state = provisioning_state
@@ -2685,6 +2850,10 @@ class ClusterResourceProperties(_serialization.Model):  # pylint: disable=too-ma
         self.hours_between_backups = hours_between_backups
         self.deallocated = deallocated
         self.cassandra_audit_logging_enabled = cassandra_audit_logging_enabled
+        self.cluster_type = cluster_type
+        self.provision_error = provision_error
+        self.extensions = extensions
+        self.backup_schedules = backup_schedules
 
 
 class Column(_serialization.Model):
@@ -3252,11 +3421,13 @@ class CorsPolicy(_serialization.Model):
         self.max_age_in_seconds = max_age_in_seconds
 
 
-class CosmosCassandraDataTransferDataSourceSink(DataTransferDataSourceSink):
+class CosmosCassandraDataTransferDataSourceSink(DataTransferDataSourceSink, BaseCosmosDataTransferDataSourceSink):
     """A CosmosDB Cassandra API data source/sink.
 
     All required parameters must be populated in order to send to Azure.
 
+    :ivar remote_account_name:
+    :vartype remote_account_name: str
     :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBSql", and
      "AzureBlobStorage".
     :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
@@ -3273,29 +3444,37 @@ class CosmosCassandraDataTransferDataSourceSink(DataTransferDataSourceSink):
     }
 
     _attribute_map = {
+        "remote_account_name": {"key": "remoteAccountName", "type": "str"},
         "component": {"key": "component", "type": "str"},
         "keyspace_name": {"key": "keyspaceName", "type": "str"},
         "table_name": {"key": "tableName", "type": "str"},
     }
 
-    def __init__(self, *, keyspace_name: str, table_name: str, **kwargs: Any) -> None:
+    def __init__(
+        self, *, keyspace_name: str, table_name: str, remote_account_name: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
+        :keyword remote_account_name:
+        :paramtype remote_account_name: str
         :keyword keyspace_name: Required.
         :paramtype keyspace_name: str
         :keyword table_name: Required.
         :paramtype table_name: str
         """
-        super().__init__(**kwargs)
+        super().__init__(remote_account_name=remote_account_name, **kwargs)
+        self.remote_account_name = remote_account_name
         self.component: str = "CosmosDBCassandra"
         self.keyspace_name = keyspace_name
         self.table_name = table_name
 
 
-class CosmosMongoDataTransferDataSourceSink(DataTransferDataSourceSink):
-    """A CosmosDB Cassandra API data source/sink.
+class CosmosMongoDataTransferDataSourceSink(DataTransferDataSourceSink, BaseCosmosDataTransferDataSourceSink):
+    """A CosmosDB Mongo API data source/sink.
 
     All required parameters must be populated in order to send to Azure.
 
+    :ivar remote_account_name:
+    :vartype remote_account_name: str
     :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBSql", and
      "AzureBlobStorage".
     :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
@@ -3312,29 +3491,37 @@ class CosmosMongoDataTransferDataSourceSink(DataTransferDataSourceSink):
     }
 
     _attribute_map = {
+        "remote_account_name": {"key": "remoteAccountName", "type": "str"},
         "component": {"key": "component", "type": "str"},
         "database_name": {"key": "databaseName", "type": "str"},
         "collection_name": {"key": "collectionName", "type": "str"},
     }
 
-    def __init__(self, *, database_name: str, collection_name: str, **kwargs: Any) -> None:
+    def __init__(
+        self, *, database_name: str, collection_name: str, remote_account_name: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
+        :keyword remote_account_name:
+        :paramtype remote_account_name: str
         :keyword database_name: Required.
         :paramtype database_name: str
         :keyword collection_name: Required.
         :paramtype collection_name: str
         """
-        super().__init__(**kwargs)
+        super().__init__(remote_account_name=remote_account_name, **kwargs)
+        self.remote_account_name = remote_account_name
         self.component: str = "CosmosDBMongo"
         self.database_name = database_name
         self.collection_name = collection_name
 
 
-class CosmosSqlDataTransferDataSourceSink(DataTransferDataSourceSink):
-    """A CosmosDB Cassandra API data source/sink.
+class CosmosSqlDataTransferDataSourceSink(DataTransferDataSourceSink, BaseCosmosDataTransferDataSourceSink):
+    """A CosmosDB No Sql API data source/sink.
 
     All required parameters must be populated in order to send to Azure.
 
+    :ivar remote_account_name:
+    :vartype remote_account_name: str
     :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBSql", and
      "AzureBlobStorage".
     :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
@@ -3351,19 +3538,25 @@ class CosmosSqlDataTransferDataSourceSink(DataTransferDataSourceSink):
     }
 
     _attribute_map = {
+        "remote_account_name": {"key": "remoteAccountName", "type": "str"},
         "component": {"key": "component", "type": "str"},
         "database_name": {"key": "databaseName", "type": "str"},
         "container_name": {"key": "containerName", "type": "str"},
     }
 
-    def __init__(self, *, database_name: str, container_name: str, **kwargs: Any) -> None:
+    def __init__(
+        self, *, database_name: str, container_name: str, remote_account_name: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
+        :keyword remote_account_name:
+        :paramtype remote_account_name: str
         :keyword database_name: Required.
         :paramtype database_name: str
         :keyword container_name: Required.
         :paramtype container_name: str
         """
-        super().__init__(**kwargs)
+        super().__init__(remote_account_name=remote_account_name, **kwargs)
+        self.remote_account_name = remote_account_name
         self.component: str = "CosmosDBSql"
         self.database_name = database_name
         self.container_name = container_name
@@ -3415,7 +3608,8 @@ class CreateUpdateOptions(_serialization.Model):
 
     :ivar throughput: Request Units per second. For example, "throughput": 10000.
     :vartype throughput: int
-    :ivar autoscale_settings: Specifies the Autoscale settings.
+    :ivar autoscale_settings: Specifies the Autoscale settings. Note: Either throughput or
+     autoscaleSettings is required, but not both.
     :vartype autoscale_settings: ~azure.mgmt.cosmosdb.models.AutoscaleSettings
     """
 
@@ -3434,7 +3628,8 @@ class CreateUpdateOptions(_serialization.Model):
         """
         :keyword throughput: Request Units per second. For example, "throughput": 10000.
         :paramtype throughput: int
-        :keyword autoscale_settings: Specifies the Autoscale settings.
+        :keyword autoscale_settings: Specifies the Autoscale settings. Note: Either throughput or
+         autoscaleSettings is required, but not both.
         :paramtype autoscale_settings: ~azure.mgmt.cosmosdb.models.AutoscaleSettings
         """
         super().__init__(**kwargs)
@@ -3451,16 +3646,27 @@ class DatabaseAccountConnectionString(_serialization.Model):
     :vartype connection_string: str
     :ivar description: Description of the connection string.
     :vartype description: str
+    :ivar key_kind: Kind of the connection string key. Known values are: "Primary", "Secondary",
+     "PrimaryReadonly", and "SecondaryReadonly".
+    :vartype key_kind: str or ~azure.mgmt.cosmosdb.models.Kind
+    :ivar type: Type of the connection string. Known values are: "Sql", "Table", "MongoDB",
+     "Cassandra", "CassandraConnectorMetadata", "Gremlin", "SqlDedicatedGateway", "GremlinV2", and
+     "Undefined".
+    :vartype type: str or ~azure.mgmt.cosmosdb.models.Type
     """
 
     _validation = {
         "connection_string": {"readonly": True},
         "description": {"readonly": True},
+        "key_kind": {"readonly": True},
+        "type": {"readonly": True},
     }
 
     _attribute_map = {
         "connection_string": {"key": "connectionString", "type": "str"},
         "description": {"key": "description", "type": "str"},
+        "key_kind": {"key": "keyKind", "type": "str"},
+        "type": {"key": "type", "type": "str"},
     }
 
     def __init__(self, **kwargs: Any) -> None:
@@ -3468,6 +3674,8 @@ class DatabaseAccountConnectionString(_serialization.Model):
         super().__init__(**kwargs)
         self.connection_string = None
         self.description = None
+        self.key_kind = None
+        self.type = None
 
 
 class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: disable=too-many-instance-attributes
@@ -3537,7 +3745,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
      "FirstPartyIdentity", "SystemAssignedIdentity" and more.
     :vartype default_identity: str
     :ivar public_network_access: Whether requests from Public Network are allowed. Known values
-     are: "Enabled" and "Disabled".
+     are: "Enabled", "Disabled", and "SecuredByPerimeter".
     :vartype public_network_access: str or ~azure.mgmt.cosmosdb.models.PublicNetworkAccess
     :ivar enable_free_tier: Flag to indicate whether Free Tier is enabled.
     :vartype enable_free_tier: bool
@@ -3589,6 +3797,55 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
      except for Cassandra and Mongo API's, which only work with Tls 1.2. Known values are: "Tls",
      "Tls11", and "Tls12".
     :vartype minimal_tls_version: str or ~azure.mgmt.cosmosdb.models.MinimalTlsVersion
+    :ivar customer_managed_key_status: Indicates the status of the Customer Managed Key feature on
+     the account. In case there are errors, the property provides troubleshooting guidance. Known
+     values are: "Access to your account is currently revoked because the Azure Cosmos DB service is
+     unable to obtain the AAD authentication token for the account's default identity; for more
+     details about this error and how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-active-directory-token-acquisition-error
+     (4000).", "Access to your account is currently revoked because the Azure Cosmos DB account's
+     key vault key URI does not follow the expected format; for more details about this error and
+     how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#improper-syntax-detected-on-the-key-vault-uri-property
+     (4006).", "Access to your account is currently revoked because the current default identity no
+     longer has permission to the associated Key Vault key; for more details about this error and
+     how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#default-identity-is-unauthorized-to-access-the-azure-key-vault-key
+     (4002).", "Access to your account is currently revoked because the Azure Key Vault DNS name
+     specified by the account's keyvaultkeyuri property could not be resolved; for more details
+     about this error and how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#unable-to-resolve-the-key-vaults-dns
+     (4009).", "Access to your account is currently revoked because the correspondent key is not
+     found on the specified Key Vault; for more details about this error and how to restore access
+     to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found
+     (4003).", "Access to your account is currently revoked because the Azure Cosmos DB service is
+     unable to wrap or unwrap the key; for more details about this error and how to restore access
+     to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#internal-unwrapping-procedure-error
+     (4005).", "Access to your account is currently revoked because the Azure Cosmos DB account has
+     an undefined default identity; for more details about this error and how to restore access to
+     your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#invalid-azure-cosmos-db-default-identity
+     (4015).", "Access to your account is currently revoked because the access rules are blocking
+     outbound requests to the Azure Key Vault service; for more details about this error and how to
+     restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide (4016).", "Access
+     to your account is currently revoked because the correspondent Azure Key Vault was not found;
+     for more details about this error and how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found
+     (4017).", "Access to your account is currently revoked; for more details about this error and
+     how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide", and "Access to
+     the configured customer managed key confirmed.".
+    :vartype customer_managed_key_status: str or
+     ~azure.mgmt.cosmosdb.models.CustomerManagedKeyStatus
+    :ivar enable_priority_based_execution: Flag to indicate enabling/disabling of Priority Based
+     Execution Preview feature on the account.
+    :vartype enable_priority_based_execution: bool
+    :ivar default_priority_level: Enum to indicate default Priority Level of request for Priority
+     Based Execution. Known values are: "High" and "Low".
+    :vartype default_priority_level: str or ~azure.mgmt.cosmosdb.models.DefaultPriorityLevel
     """
 
     _validation = {
@@ -3647,6 +3904,9 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
         "enable_partition_merge": {"key": "properties.enablePartitionMerge", "type": "bool"},
         "enable_burst_capacity": {"key": "properties.enableBurstCapacity", "type": "bool"},
         "minimal_tls_version": {"key": "properties.minimalTlsVersion", "type": "str"},
+        "customer_managed_key_status": {"key": "properties.customerManagedKeyStatus", "type": "str"},
+        "enable_priority_based_execution": {"key": "properties.enablePriorityBasedExecution", "type": "bool"},
+        "default_priority_level": {"key": "properties.defaultPriorityLevel", "type": "str"},
     }
 
     database_account_offer_type = "Standard"
@@ -3689,6 +3949,9 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
         enable_partition_merge: Optional[bool] = None,
         enable_burst_capacity: Optional[bool] = None,
         minimal_tls_version: Optional[Union[str, "_models.MinimalTlsVersion"]] = None,
+        customer_managed_key_status: Optional[Union[str, "_models.CustomerManagedKeyStatus"]] = None,
+        enable_priority_based_execution: Optional[bool] = None,
+        default_priority_level: Optional[Union[str, "_models.DefaultPriorityLevel"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3744,7 +4007,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
          "FirstPartyIdentity", "SystemAssignedIdentity" and more.
         :paramtype default_identity: str
         :keyword public_network_access: Whether requests from Public Network are allowed. Known values
-         are: "Enabled" and "Disabled".
+         are: "Enabled", "Disabled", and "SecuredByPerimeter".
         :paramtype public_network_access: str or ~azure.mgmt.cosmosdb.models.PublicNetworkAccess
         :keyword enable_free_tier: Flag to indicate whether Free Tier is enabled.
         :paramtype enable_free_tier: bool
@@ -3792,6 +4055,55 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
          1.0, except for Cassandra and Mongo API's, which only work with Tls 1.2. Known values are:
          "Tls", "Tls11", and "Tls12".
         :paramtype minimal_tls_version: str or ~azure.mgmt.cosmosdb.models.MinimalTlsVersion
+        :keyword customer_managed_key_status: Indicates the status of the Customer Managed Key feature
+         on the account. In case there are errors, the property provides troubleshooting guidance. Known
+         values are: "Access to your account is currently revoked because the Azure Cosmos DB service is
+         unable to obtain the AAD authentication token for the account's default identity; for more
+         details about this error and how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-active-directory-token-acquisition-error
+         (4000).", "Access to your account is currently revoked because the Azure Cosmos DB account's
+         key vault key URI does not follow the expected format; for more details about this error and
+         how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#improper-syntax-detected-on-the-key-vault-uri-property
+         (4006).", "Access to your account is currently revoked because the current default identity no
+         longer has permission to the associated Key Vault key; for more details about this error and
+         how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#default-identity-is-unauthorized-to-access-the-azure-key-vault-key
+         (4002).", "Access to your account is currently revoked because the Azure Key Vault DNS name
+         specified by the account's keyvaultkeyuri property could not be resolved; for more details
+         about this error and how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#unable-to-resolve-the-key-vaults-dns
+         (4009).", "Access to your account is currently revoked because the correspondent key is not
+         found on the specified Key Vault; for more details about this error and how to restore access
+         to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found
+         (4003).", "Access to your account is currently revoked because the Azure Cosmos DB service is
+         unable to wrap or unwrap the key; for more details about this error and how to restore access
+         to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#internal-unwrapping-procedure-error
+         (4005).", "Access to your account is currently revoked because the Azure Cosmos DB account has
+         an undefined default identity; for more details about this error and how to restore access to
+         your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#invalid-azure-cosmos-db-default-identity
+         (4015).", "Access to your account is currently revoked because the access rules are blocking
+         outbound requests to the Azure Key Vault service; for more details about this error and how to
+         restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide (4016).", "Access
+         to your account is currently revoked because the correspondent Azure Key Vault was not found;
+         for more details about this error and how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found
+         (4017).", "Access to your account is currently revoked; for more details about this error and
+         how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide", and "Access to
+         the configured customer managed key confirmed.".
+        :paramtype customer_managed_key_status: str or
+         ~azure.mgmt.cosmosdb.models.CustomerManagedKeyStatus
+        :keyword enable_priority_based_execution: Flag to indicate enabling/disabling of Priority Based
+         Execution Preview feature on the account.
+        :paramtype enable_priority_based_execution: bool
+        :keyword default_priority_level: Enum to indicate default Priority Level of request for
+         Priority Based Execution. Known values are: "High" and "Low".
+        :paramtype default_priority_level: str or ~azure.mgmt.cosmosdb.models.DefaultPriorityLevel
         """
         super().__init__(location=location, tags=tags, identity=identity, **kwargs)
         self.kind = kind
@@ -3827,6 +4139,9 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
         self.enable_partition_merge = enable_partition_merge
         self.enable_burst_capacity = enable_burst_capacity
         self.minimal_tls_version = minimal_tls_version
+        self.customer_managed_key_status = customer_managed_key_status
+        self.enable_priority_based_execution = enable_priority_based_execution
+        self.default_priority_level = default_priority_level
 
 
 class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-many-instance-attributes
@@ -3917,7 +4232,7 @@ class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-m
      "FirstPartyIdentity", "SystemAssignedIdentity" and more.
     :vartype default_identity: str
     :ivar public_network_access: Whether requests from Public Network are allowed. Known values
-     are: "Enabled" and "Disabled".
+     are: "Enabled", "Disabled", and "SecuredByPerimeter".
     :vartype public_network_access: str or ~azure.mgmt.cosmosdb.models.PublicNetworkAccess
     :ivar enable_free_tier: Flag to indicate whether Free Tier is enabled.
     :vartype enable_free_tier: bool
@@ -3970,6 +4285,55 @@ class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-m
      except for Cassandra and Mongo API's, which only work with Tls 1.2. Known values are: "Tls",
      "Tls11", and "Tls12".
     :vartype minimal_tls_version: str or ~azure.mgmt.cosmosdb.models.MinimalTlsVersion
+    :ivar customer_managed_key_status: Indicates the status of the Customer Managed Key feature on
+     the account. In case there are errors, the property provides troubleshooting guidance. Known
+     values are: "Access to your account is currently revoked because the Azure Cosmos DB service is
+     unable to obtain the AAD authentication token for the account's default identity; for more
+     details about this error and how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-active-directory-token-acquisition-error
+     (4000).", "Access to your account is currently revoked because the Azure Cosmos DB account's
+     key vault key URI does not follow the expected format; for more details about this error and
+     how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#improper-syntax-detected-on-the-key-vault-uri-property
+     (4006).", "Access to your account is currently revoked because the current default identity no
+     longer has permission to the associated Key Vault key; for more details about this error and
+     how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#default-identity-is-unauthorized-to-access-the-azure-key-vault-key
+     (4002).", "Access to your account is currently revoked because the Azure Key Vault DNS name
+     specified by the account's keyvaultkeyuri property could not be resolved; for more details
+     about this error and how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#unable-to-resolve-the-key-vaults-dns
+     (4009).", "Access to your account is currently revoked because the correspondent key is not
+     found on the specified Key Vault; for more details about this error and how to restore access
+     to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found
+     (4003).", "Access to your account is currently revoked because the Azure Cosmos DB service is
+     unable to wrap or unwrap the key; for more details about this error and how to restore access
+     to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#internal-unwrapping-procedure-error
+     (4005).", "Access to your account is currently revoked because the Azure Cosmos DB account has
+     an undefined default identity; for more details about this error and how to restore access to
+     your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#invalid-azure-cosmos-db-default-identity
+     (4015).", "Access to your account is currently revoked because the access rules are blocking
+     outbound requests to the Azure Key Vault service; for more details about this error and how to
+     restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide (4016).", "Access
+     to your account is currently revoked because the correspondent Azure Key Vault was not found;
+     for more details about this error and how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found
+     (4017).", "Access to your account is currently revoked; for more details about this error and
+     how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide", and "Access to
+     the configured customer managed key confirmed.".
+    :vartype customer_managed_key_status: str or
+     ~azure.mgmt.cosmosdb.models.CustomerManagedKeyStatus
+    :ivar enable_priority_based_execution: Flag to indicate enabling/disabling of Priority Based
+     Execution Preview feature on the account.
+    :vartype enable_priority_based_execution: bool
+    :ivar default_priority_level: Enum to indicate default Priority Level of request for Priority
+     Based Execution. Known values are: "High" and "Low".
+    :vartype default_priority_level: str or ~azure.mgmt.cosmosdb.models.DefaultPriorityLevel
     """
 
     _validation = {
@@ -4047,6 +4411,9 @@ class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-m
         "enable_partition_merge": {"key": "properties.enablePartitionMerge", "type": "bool"},
         "enable_burst_capacity": {"key": "properties.enableBurstCapacity", "type": "bool"},
         "minimal_tls_version": {"key": "properties.minimalTlsVersion", "type": "str"},
+        "customer_managed_key_status": {"key": "properties.customerManagedKeyStatus", "type": "str"},
+        "enable_priority_based_execution": {"key": "properties.enablePriorityBasedExecution", "type": "bool"},
+        "default_priority_level": {"key": "properties.defaultPriorityLevel", "type": "str"},
     }
 
     def __init__(  # pylint: disable=too-many-locals
@@ -4086,6 +4453,9 @@ class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-m
         enable_partition_merge: Optional[bool] = None,
         enable_burst_capacity: Optional[bool] = None,
         minimal_tls_version: Optional[Union[str, "_models.MinimalTlsVersion"]] = None,
+        customer_managed_key_status: Optional[Union[str, "_models.CustomerManagedKeyStatus"]] = None,
+        enable_priority_based_execution: Optional[bool] = None,
+        default_priority_level: Optional[Union[str, "_models.DefaultPriorityLevel"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -4138,7 +4508,7 @@ class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-m
          "FirstPartyIdentity", "SystemAssignedIdentity" and more.
         :paramtype default_identity: str
         :keyword public_network_access: Whether requests from Public Network are allowed. Known values
-         are: "Enabled" and "Disabled".
+         are: "Enabled", "Disabled", and "SecuredByPerimeter".
         :paramtype public_network_access: str or ~azure.mgmt.cosmosdb.models.PublicNetworkAccess
         :keyword enable_free_tier: Flag to indicate whether Free Tier is enabled.
         :paramtype enable_free_tier: bool
@@ -4186,6 +4556,55 @@ class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-m
          1.0, except for Cassandra and Mongo API's, which only work with Tls 1.2. Known values are:
          "Tls", "Tls11", and "Tls12".
         :paramtype minimal_tls_version: str or ~azure.mgmt.cosmosdb.models.MinimalTlsVersion
+        :keyword customer_managed_key_status: Indicates the status of the Customer Managed Key feature
+         on the account. In case there are errors, the property provides troubleshooting guidance. Known
+         values are: "Access to your account is currently revoked because the Azure Cosmos DB service is
+         unable to obtain the AAD authentication token for the account's default identity; for more
+         details about this error and how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-active-directory-token-acquisition-error
+         (4000).", "Access to your account is currently revoked because the Azure Cosmos DB account's
+         key vault key URI does not follow the expected format; for more details about this error and
+         how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#improper-syntax-detected-on-the-key-vault-uri-property
+         (4006).", "Access to your account is currently revoked because the current default identity no
+         longer has permission to the associated Key Vault key; for more details about this error and
+         how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#default-identity-is-unauthorized-to-access-the-azure-key-vault-key
+         (4002).", "Access to your account is currently revoked because the Azure Key Vault DNS name
+         specified by the account's keyvaultkeyuri property could not be resolved; for more details
+         about this error and how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#unable-to-resolve-the-key-vaults-dns
+         (4009).", "Access to your account is currently revoked because the correspondent key is not
+         found on the specified Key Vault; for more details about this error and how to restore access
+         to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found
+         (4003).", "Access to your account is currently revoked because the Azure Cosmos DB service is
+         unable to wrap or unwrap the key; for more details about this error and how to restore access
+         to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#internal-unwrapping-procedure-error
+         (4005).", "Access to your account is currently revoked because the Azure Cosmos DB account has
+         an undefined default identity; for more details about this error and how to restore access to
+         your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#invalid-azure-cosmos-db-default-identity
+         (4015).", "Access to your account is currently revoked because the access rules are blocking
+         outbound requests to the Azure Key Vault service; for more details about this error and how to
+         restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide (4016).", "Access
+         to your account is currently revoked because the correspondent Azure Key Vault was not found;
+         for more details about this error and how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found
+         (4017).", "Access to your account is currently revoked; for more details about this error and
+         how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide", and "Access to
+         the configured customer managed key confirmed.".
+        :paramtype customer_managed_key_status: str or
+         ~azure.mgmt.cosmosdb.models.CustomerManagedKeyStatus
+        :keyword enable_priority_based_execution: Flag to indicate enabling/disabling of Priority Based
+         Execution Preview feature on the account.
+        :paramtype enable_priority_based_execution: bool
+        :keyword default_priority_level: Enum to indicate default Priority Level of request for
+         Priority Based Execution. Known values are: "High" and "Low".
+        :paramtype default_priority_level: str or ~azure.mgmt.cosmosdb.models.DefaultPriorityLevel
         """
         super().__init__(location=location, tags=tags, identity=identity, **kwargs)
         self.kind = kind
@@ -4230,6 +4649,9 @@ class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-m
         self.enable_partition_merge = enable_partition_merge
         self.enable_burst_capacity = enable_burst_capacity
         self.minimal_tls_version = minimal_tls_version
+        self.customer_managed_key_status = customer_managed_key_status
+        self.enable_priority_based_execution = enable_priority_based_execution
+        self.default_priority_level = default_priority_level
 
 
 class DatabaseAccountKeysMetadata(_serialization.Model):
@@ -4467,7 +4889,7 @@ class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=
      "FirstPartyIdentity", "SystemAssignedIdentity" and more.
     :vartype default_identity: str
     :ivar public_network_access: Whether requests from Public Network are allowed. Known values
-     are: "Enabled" and "Disabled".
+     are: "Enabled", "Disabled", and "SecuredByPerimeter".
     :vartype public_network_access: str or ~azure.mgmt.cosmosdb.models.PublicNetworkAccess
     :ivar enable_free_tier: Flag to indicate whether Free Tier is enabled.
     :vartype enable_free_tier: bool
@@ -4513,6 +4935,55 @@ class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=
      except for Cassandra and Mongo API's, which only work with Tls 1.2. Known values are: "Tls",
      "Tls11", and "Tls12".
     :vartype minimal_tls_version: str or ~azure.mgmt.cosmosdb.models.MinimalTlsVersion
+    :ivar customer_managed_key_status: Indicates the status of the Customer Managed Key feature on
+     the account. In case there are errors, the property provides troubleshooting guidance. Known
+     values are: "Access to your account is currently revoked because the Azure Cosmos DB service is
+     unable to obtain the AAD authentication token for the account's default identity; for more
+     details about this error and how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-active-directory-token-acquisition-error
+     (4000).", "Access to your account is currently revoked because the Azure Cosmos DB account's
+     key vault key URI does not follow the expected format; for more details about this error and
+     how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#improper-syntax-detected-on-the-key-vault-uri-property
+     (4006).", "Access to your account is currently revoked because the current default identity no
+     longer has permission to the associated Key Vault key; for more details about this error and
+     how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#default-identity-is-unauthorized-to-access-the-azure-key-vault-key
+     (4002).", "Access to your account is currently revoked because the Azure Key Vault DNS name
+     specified by the account's keyvaultkeyuri property could not be resolved; for more details
+     about this error and how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#unable-to-resolve-the-key-vaults-dns
+     (4009).", "Access to your account is currently revoked because the correspondent key is not
+     found on the specified Key Vault; for more details about this error and how to restore access
+     to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found
+     (4003).", "Access to your account is currently revoked because the Azure Cosmos DB service is
+     unable to wrap or unwrap the key; for more details about this error and how to restore access
+     to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#internal-unwrapping-procedure-error
+     (4005).", "Access to your account is currently revoked because the Azure Cosmos DB account has
+     an undefined default identity; for more details about this error and how to restore access to
+     your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#invalid-azure-cosmos-db-default-identity
+     (4015).", "Access to your account is currently revoked because the access rules are blocking
+     outbound requests to the Azure Key Vault service; for more details about this error and how to
+     restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide (4016).", "Access
+     to your account is currently revoked because the correspondent Azure Key Vault was not found;
+     for more details about this error and how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found
+     (4017).", "Access to your account is currently revoked; for more details about this error and
+     how to restore access to your account please visit
+     https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide", and "Access to
+     the configured customer managed key confirmed.".
+    :vartype customer_managed_key_status: str or
+     ~azure.mgmt.cosmosdb.models.CustomerManagedKeyStatus
+    :ivar enable_priority_based_execution: Flag to indicate enabling/disabling of Priority Based
+     Execution Preview feature on the account.
+    :vartype enable_priority_based_execution: bool
+    :ivar default_priority_level: Enum to indicate default Priority Level of request for Priority
+     Based Execution. Known values are: "High" and "Low".
+    :vartype default_priority_level: str or ~azure.mgmt.cosmosdb.models.DefaultPriorityLevel
     """
 
     _validation = {
@@ -4559,6 +5030,9 @@ class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=
         "enable_partition_merge": {"key": "properties.enablePartitionMerge", "type": "bool"},
         "enable_burst_capacity": {"key": "properties.enableBurstCapacity", "type": "bool"},
         "minimal_tls_version": {"key": "properties.minimalTlsVersion", "type": "str"},
+        "customer_managed_key_status": {"key": "properties.customerManagedKeyStatus", "type": "str"},
+        "enable_priority_based_execution": {"key": "properties.enablePriorityBasedExecution", "type": "bool"},
+        "default_priority_level": {"key": "properties.defaultPriorityLevel", "type": "str"},
     }
 
     def __init__(  # pylint: disable=too-many-locals
@@ -4596,6 +5070,9 @@ class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=
         enable_partition_merge: Optional[bool] = None,
         enable_burst_capacity: Optional[bool] = None,
         minimal_tls_version: Optional[Union[str, "_models.MinimalTlsVersion"]] = None,
+        customer_managed_key_status: Optional[Union[str, "_models.CustomerManagedKeyStatus"]] = None,
+        enable_priority_based_execution: Optional[bool] = None,
+        default_priority_level: Optional[Union[str, "_models.DefaultPriorityLevel"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -4648,7 +5125,7 @@ class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=
          "FirstPartyIdentity", "SystemAssignedIdentity" and more.
         :paramtype default_identity: str
         :keyword public_network_access: Whether requests from Public Network are allowed. Known values
-         are: "Enabled" and "Disabled".
+         are: "Enabled", "Disabled", and "SecuredByPerimeter".
         :paramtype public_network_access: str or ~azure.mgmt.cosmosdb.models.PublicNetworkAccess
         :keyword enable_free_tier: Flag to indicate whether Free Tier is enabled.
         :paramtype enable_free_tier: bool
@@ -4691,6 +5168,55 @@ class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=
          1.0, except for Cassandra and Mongo API's, which only work with Tls 1.2. Known values are:
          "Tls", "Tls11", and "Tls12".
         :paramtype minimal_tls_version: str or ~azure.mgmt.cosmosdb.models.MinimalTlsVersion
+        :keyword customer_managed_key_status: Indicates the status of the Customer Managed Key feature
+         on the account. In case there are errors, the property provides troubleshooting guidance. Known
+         values are: "Access to your account is currently revoked because the Azure Cosmos DB service is
+         unable to obtain the AAD authentication token for the account's default identity; for more
+         details about this error and how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-active-directory-token-acquisition-error
+         (4000).", "Access to your account is currently revoked because the Azure Cosmos DB account's
+         key vault key URI does not follow the expected format; for more details about this error and
+         how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#improper-syntax-detected-on-the-key-vault-uri-property
+         (4006).", "Access to your account is currently revoked because the current default identity no
+         longer has permission to the associated Key Vault key; for more details about this error and
+         how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#default-identity-is-unauthorized-to-access-the-azure-key-vault-key
+         (4002).", "Access to your account is currently revoked because the Azure Key Vault DNS name
+         specified by the account's keyvaultkeyuri property could not be resolved; for more details
+         about this error and how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#unable-to-resolve-the-key-vaults-dns
+         (4009).", "Access to your account is currently revoked because the correspondent key is not
+         found on the specified Key Vault; for more details about this error and how to restore access
+         to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found
+         (4003).", "Access to your account is currently revoked because the Azure Cosmos DB service is
+         unable to wrap or unwrap the key; for more details about this error and how to restore access
+         to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#internal-unwrapping-procedure-error
+         (4005).", "Access to your account is currently revoked because the Azure Cosmos DB account has
+         an undefined default identity; for more details about this error and how to restore access to
+         your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#invalid-azure-cosmos-db-default-identity
+         (4015).", "Access to your account is currently revoked because the access rules are blocking
+         outbound requests to the Azure Key Vault service; for more details about this error and how to
+         restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide (4016).", "Access
+         to your account is currently revoked because the correspondent Azure Key Vault was not found;
+         for more details about this error and how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found
+         (4017).", "Access to your account is currently revoked; for more details about this error and
+         how to restore access to your account please visit
+         https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide", and "Access to
+         the configured customer managed key confirmed.".
+        :paramtype customer_managed_key_status: str or
+         ~azure.mgmt.cosmosdb.models.CustomerManagedKeyStatus
+        :keyword enable_priority_based_execution: Flag to indicate enabling/disabling of Priority Based
+         Execution Preview feature on the account.
+        :paramtype enable_priority_based_execution: bool
+        :keyword default_priority_level: Enum to indicate default Priority Level of request for
+         Priority Based Execution. Known values are: "High" and "Low".
+        :paramtype default_priority_level: str or ~azure.mgmt.cosmosdb.models.DefaultPriorityLevel
         """
         super().__init__(**kwargs)
         self.tags = tags
@@ -4726,6 +5252,9 @@ class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=
         self.enable_partition_merge = enable_partition_merge
         self.enable_burst_capacity = enable_burst_capacity
         self.minimal_tls_version = minimal_tls_version
+        self.customer_managed_key_status = customer_managed_key_status
+        self.enable_priority_based_execution = enable_priority_based_execution
+        self.default_priority_level = default_priority_level
 
 
 class DatabaseRestoreResource(_serialization.Model):
@@ -4835,15 +5364,19 @@ class DataCenterResourceProperties(_serialization.Model):  # pylint: disable=too
     :vartype sku: str
     :ivar disk_sku: Disk SKU used for data centers. Default value is P30.
     :vartype disk_sku: str
-    :ivar disk_capacity: Number of disk used for data centers. Default value is 4.
+    :ivar disk_capacity: Number of disks attached to each node. Default is 4.
     :vartype disk_capacity: int
-    :ivar availability_zone: If the data center has Availability Zone feature, apply it to the
+    :ivar availability_zone: If the data center has Availability Zone support, apply it to the
      Virtual Machine ScaleSet that host the cassandra data center virtual machines.
     :vartype availability_zone: bool
     :ivar authentication_method_ldap_properties: Ldap authentication method properties. This
      feature is in preview.
     :vartype authentication_method_ldap_properties:
      ~azure.mgmt.cosmosdb.models.AuthenticationMethodLdapProperties
+    :ivar deallocated: Whether the data center has been deallocated.
+    :vartype deallocated: bool
+    :ivar provision_error: Error related to resource provisioning.
+    :vartype provision_error: ~azure.mgmt.cosmosdb.models.CassandraError
     """
 
     _validation = {
@@ -4867,6 +5400,8 @@ class DataCenterResourceProperties(_serialization.Model):  # pylint: disable=too
             "key": "authenticationMethodLdapProperties",
             "type": "AuthenticationMethodLdapProperties",
         },
+        "deallocated": {"key": "deallocated", "type": "bool"},
+        "provision_error": {"key": "provisionError", "type": "CassandraError"},
     }
 
     def __init__(
@@ -4884,6 +5419,8 @@ class DataCenterResourceProperties(_serialization.Model):  # pylint: disable=too
         disk_capacity: Optional[int] = None,
         availability_zone: Optional[bool] = None,
         authentication_method_ldap_properties: Optional["_models.AuthenticationMethodLdapProperties"] = None,
+        deallocated: Optional[bool] = None,
+        provision_error: Optional["_models.CassandraError"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -4920,15 +5457,19 @@ class DataCenterResourceProperties(_serialization.Model):  # pylint: disable=too
         :paramtype sku: str
         :keyword disk_sku: Disk SKU used for data centers. Default value is P30.
         :paramtype disk_sku: str
-        :keyword disk_capacity: Number of disk used for data centers. Default value is 4.
+        :keyword disk_capacity: Number of disks attached to each node. Default is 4.
         :paramtype disk_capacity: int
-        :keyword availability_zone: If the data center has Availability Zone feature, apply it to the
+        :keyword availability_zone: If the data center has Availability Zone support, apply it to the
          Virtual Machine ScaleSet that host the cassandra data center virtual machines.
         :paramtype availability_zone: bool
         :keyword authentication_method_ldap_properties: Ldap authentication method properties. This
          feature is in preview.
         :paramtype authentication_method_ldap_properties:
          ~azure.mgmt.cosmosdb.models.AuthenticationMethodLdapProperties
+        :keyword deallocated: Whether the data center has been deallocated.
+        :paramtype deallocated: bool
+        :keyword provision_error: Error related to resource provisioning.
+        :paramtype provision_error: ~azure.mgmt.cosmosdb.models.CassandraError
         """
         super().__init__(**kwargs)
         self.provisioning_state = provisioning_state
@@ -4944,6 +5485,8 @@ class DataCenterResourceProperties(_serialization.Model):  # pylint: disable=too
         self.disk_capacity = disk_capacity
         self.availability_zone = availability_zone
         self.authentication_method_ldap_properties = authentication_method_ldap_properties
+        self.deallocated = deallocated
+        self.provision_error = provision_error
 
 
 class DataTransferJobFeedResults(_serialization.Model):
@@ -7425,8 +7968,6 @@ class LocationProperties(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar status: The current status of location in Azure.
-    :vartype status: str
     :ivar supports_availability_zone: Flag indicating whether the location supports availability
      zones or not.
     :vartype supports_availability_zone: bool
@@ -7435,29 +7976,50 @@ class LocationProperties(_serialization.Model):
     :ivar backup_storage_redundancies: The properties of available backup storage redundancies.
     :vartype backup_storage_redundancies: list[str or
      ~azure.mgmt.cosmosdb.models.BackupStorageRedundancy]
+    :ivar is_subscription_region_access_allowed_for_regular: Flag indicating whether the
+     subscription have access in region for Non-Availability Zones.
+    :vartype is_subscription_region_access_allowed_for_regular: bool
+    :ivar is_subscription_region_access_allowed_for_az: Flag indicating whether the subscription
+     have access in region for Availability Zones(Az).
+    :vartype is_subscription_region_access_allowed_for_az: bool
+    :ivar status: Enum to indicate current buildout status of the region. Known values are:
+     "Uninitialized", "Initializing", "InternallyReady", "Online", and "Deleting".
+    :vartype status: str or ~azure.mgmt.cosmosdb.models.Status
     """
 
     _validation = {
-        "status": {"readonly": True},
         "supports_availability_zone": {"readonly": True},
         "is_residency_restricted": {"readonly": True},
         "backup_storage_redundancies": {"readonly": True},
+        "is_subscription_region_access_allowed_for_regular": {"readonly": True},
+        "is_subscription_region_access_allowed_for_az": {"readonly": True},
+        "status": {"readonly": True},
     }
 
     _attribute_map = {
-        "status": {"key": "status", "type": "str"},
         "supports_availability_zone": {"key": "supportsAvailabilityZone", "type": "bool"},
         "is_residency_restricted": {"key": "isResidencyRestricted", "type": "bool"},
         "backup_storage_redundancies": {"key": "backupStorageRedundancies", "type": "[str]"},
+        "is_subscription_region_access_allowed_for_regular": {
+            "key": "isSubscriptionRegionAccessAllowedForRegular",
+            "type": "bool",
+        },
+        "is_subscription_region_access_allowed_for_az": {
+            "key": "isSubscriptionRegionAccessAllowedForAz",
+            "type": "bool",
+        },
+        "status": {"key": "status", "type": "str"},
     }
 
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.status = None
         self.supports_availability_zone = None
         self.is_residency_restricted = None
         self.backup_storage_redundancies = None
+        self.is_subscription_region_access_allowed_for_regular = None
+        self.is_subscription_region_access_allowed_for_az = None
+        self.status = None
 
 
 class ManagedCassandraManagedServiceIdentity(_serialization.Model):
@@ -7626,6 +8188,51 @@ class ManagedServiceIdentityUserAssignedIdentity(_serialization.Model):
         super().__init__(**kwargs)
         self.principal_id = None
         self.client_id = None
+
+
+class MaterializedViewDefinition(_serialization.Model):
+    """Materialized View definition for the container.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar source_collection_rid: An unique identifier for the source collection. This is a system
+     generated property.
+    :vartype source_collection_rid: str
+    :ivar source_collection_id: The name of the source container on which the Materialized View
+     will be created. Required.
+    :vartype source_collection_id: str
+    :ivar definition: The definition should be an SQL query which would be used to fetch data from
+     the source container to populate into the Materialized View container. Required.
+    :vartype definition: str
+    """
+
+    _validation = {
+        "source_collection_rid": {"readonly": True},
+        "source_collection_id": {"required": True},
+        "definition": {"required": True},
+    }
+
+    _attribute_map = {
+        "source_collection_rid": {"key": "sourceCollectionRid", "type": "str"},
+        "source_collection_id": {"key": "sourceCollectionId", "type": "str"},
+        "definition": {"key": "definition", "type": "str"},
+    }
+
+    def __init__(self, *, source_collection_id: str, definition: str, **kwargs: Any) -> None:
+        """
+        :keyword source_collection_id: The name of the source container on which the Materialized View
+         will be created. Required.
+        :paramtype source_collection_id: str
+        :keyword definition: The definition should be an SQL query which would be used to fetch data
+         from the source container to populate into the Materialized View container. Required.
+        :paramtype definition: str
+        """
+        super().__init__(**kwargs)
+        self.source_collection_rid = None
+        self.source_collection_id = source_collection_id
+        self.definition = definition
 
 
 class MaterializedViewsBuilderRegionalServiceResource(RegionalServiceResource):
@@ -11918,7 +12525,7 @@ class RestorableSqlContainerPropertiesResource(_serialization.Model):
         self.container = container
 
 
-class SqlContainerResource(_serialization.Model):
+class SqlContainerResource(_serialization.Model):  # pylint: disable=too-many-instance-attributes
     """Cosmos DB SQL container resource object.
 
     All required parameters must be populated in order to send to Azure.
@@ -11947,6 +12554,9 @@ class SqlContainerResource(_serialization.Model):
     :ivar create_mode: Enum to indicate the mode of resource creation. Known values are: "Default",
      "Restore", and "PointInTimeRestore".
     :vartype create_mode: str or ~azure.mgmt.cosmosdb.models.CreateMode
+    :ivar materialized_view_definition: The configuration for defining Materialized Views. This
+     must be specified only for creating a Materialized View container.
+    :vartype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
     """
 
     _validation = {
@@ -11964,6 +12574,7 @@ class SqlContainerResource(_serialization.Model):
         "analytical_storage_ttl": {"key": "analyticalStorageTtl", "type": "int"},
         "restore_parameters": {"key": "restoreParameters", "type": "ResourceRestoreParameters"},
         "create_mode": {"key": "createMode", "type": "str"},
+        "materialized_view_definition": {"key": "materializedViewDefinition", "type": "MaterializedViewDefinition"},
     }
 
     def __init__(
@@ -11979,6 +12590,7 @@ class SqlContainerResource(_serialization.Model):
         analytical_storage_ttl: Optional[int] = None,
         restore_parameters: Optional["_models.ResourceRestoreParameters"] = None,
         create_mode: Optional[Union[str, "_models.CreateMode"]] = None,
+        materialized_view_definition: Optional["_models.MaterializedViewDefinition"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -12006,6 +12618,9 @@ class SqlContainerResource(_serialization.Model):
         :keyword create_mode: Enum to indicate the mode of resource creation. Known values are:
          "Default", "Restore", and "PointInTimeRestore".
         :paramtype create_mode: str or ~azure.mgmt.cosmosdb.models.CreateMode
+        :keyword materialized_view_definition: The configuration for defining Materialized Views. This
+         must be specified only for creating a Materialized View container.
+        :paramtype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
         """
         super().__init__(**kwargs)
         self.id = id
@@ -12018,6 +12633,7 @@ class SqlContainerResource(_serialization.Model):
         self.analytical_storage_ttl = analytical_storage_ttl
         self.restore_parameters = restore_parameters
         self.create_mode = create_mode
+        self.materialized_view_definition = materialized_view_definition
 
 
 class RestorableSqlContainerPropertiesResourceContainer(
@@ -12060,6 +12676,9 @@ class RestorableSqlContainerPropertiesResourceContainer(
     :ivar create_mode: Enum to indicate the mode of resource creation. Known values are: "Default",
      "Restore", and "PointInTimeRestore".
     :vartype create_mode: str or ~azure.mgmt.cosmosdb.models.CreateMode
+    :ivar materialized_view_definition: The configuration for defining Materialized Views. This
+     must be specified only for creating a Materialized View container.
+    :vartype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
     :ivar self_property: A system generated property that specifies the addressable path of the
      container resource.
     :vartype self_property: str
@@ -12087,6 +12706,7 @@ class RestorableSqlContainerPropertiesResourceContainer(
         "analytical_storage_ttl": {"key": "analyticalStorageTtl", "type": "int"},
         "restore_parameters": {"key": "restoreParameters", "type": "ResourceRestoreParameters"},
         "create_mode": {"key": "createMode", "type": "str"},
+        "materialized_view_definition": {"key": "materializedViewDefinition", "type": "MaterializedViewDefinition"},
         "self_property": {"key": "_self", "type": "str"},
     }
 
@@ -12103,6 +12723,7 @@ class RestorableSqlContainerPropertiesResourceContainer(
         analytical_storage_ttl: Optional[int] = None,
         restore_parameters: Optional["_models.ResourceRestoreParameters"] = None,
         create_mode: Optional[Union[str, "_models.CreateMode"]] = None,
+        materialized_view_definition: Optional["_models.MaterializedViewDefinition"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -12130,6 +12751,9 @@ class RestorableSqlContainerPropertiesResourceContainer(
         :keyword create_mode: Enum to indicate the mode of resource creation. Known values are:
          "Default", "Restore", and "PointInTimeRestore".
         :paramtype create_mode: str or ~azure.mgmt.cosmosdb.models.CreateMode
+        :keyword materialized_view_definition: The configuration for defining Materialized Views. This
+         must be specified only for creating a Materialized View container.
+        :paramtype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
         """
         super().__init__(
             id=id,
@@ -12142,6 +12766,7 @@ class RestorableSqlContainerPropertiesResourceContainer(
             analytical_storage_ttl=analytical_storage_ttl,
             restore_parameters=restore_parameters,
             create_mode=create_mode,
+            materialized_view_definition=materialized_view_definition,
             **kwargs
         )
         self.rid = None
@@ -12158,6 +12783,7 @@ class RestorableSqlContainerPropertiesResourceContainer(
         self.analytical_storage_ttl = analytical_storage_ttl
         self.restore_parameters = restore_parameters
         self.create_mode = create_mode
+        self.materialized_view_definition = materialized_view_definition
 
 
 class RestorableSqlContainersListResult(_serialization.Model):
@@ -13184,6 +13810,9 @@ class SqlContainerGetPropertiesResource(
     :ivar create_mode: Enum to indicate the mode of resource creation. Known values are: "Default",
      "Restore", and "PointInTimeRestore".
     :vartype create_mode: str or ~azure.mgmt.cosmosdb.models.CreateMode
+    :ivar materialized_view_definition: The configuration for defining Materialized Views. This
+     must be specified only for creating a Materialized View container.
+    :vartype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
     """
 
     _validation = {
@@ -13207,6 +13836,7 @@ class SqlContainerGetPropertiesResource(
         "analytical_storage_ttl": {"key": "analyticalStorageTtl", "type": "int"},
         "restore_parameters": {"key": "restoreParameters", "type": "ResourceRestoreParameters"},
         "create_mode": {"key": "createMode", "type": "str"},
+        "materialized_view_definition": {"key": "materializedViewDefinition", "type": "MaterializedViewDefinition"},
     }
 
     def __init__(
@@ -13222,6 +13852,7 @@ class SqlContainerGetPropertiesResource(
         analytical_storage_ttl: Optional[int] = None,
         restore_parameters: Optional["_models.ResourceRestoreParameters"] = None,
         create_mode: Optional[Union[str, "_models.CreateMode"]] = None,
+        materialized_view_definition: Optional["_models.MaterializedViewDefinition"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -13249,6 +13880,9 @@ class SqlContainerGetPropertiesResource(
         :keyword create_mode: Enum to indicate the mode of resource creation. Known values are:
          "Default", "Restore", and "PointInTimeRestore".
         :paramtype create_mode: str or ~azure.mgmt.cosmosdb.models.CreateMode
+        :keyword materialized_view_definition: The configuration for defining Materialized Views. This
+         must be specified only for creating a Materialized View container.
+        :paramtype materialized_view_definition: ~azure.mgmt.cosmosdb.models.MaterializedViewDefinition
         """
         super().__init__(
             id=id,
@@ -13261,6 +13895,7 @@ class SqlContainerGetPropertiesResource(
             analytical_storage_ttl=analytical_storage_ttl,
             restore_parameters=restore_parameters,
             create_mode=create_mode,
+            materialized_view_definition=materialized_view_definition,
             **kwargs
         )
         self.rid = None
@@ -13276,6 +13911,7 @@ class SqlContainerGetPropertiesResource(
         self.analytical_storage_ttl = analytical_storage_ttl
         self.restore_parameters = restore_parameters
         self.create_mode = create_mode
+        self.materialized_view_definition = materialized_view_definition
 
 
 class SqlContainerGetResults(ARMResourceProperties):
@@ -15359,11 +15995,19 @@ class ThroughputSettingsResource(_serialization.Model):
     :vartype minimum_throughput: str
     :ivar offer_replace_pending: The throughput replace is pending.
     :vartype offer_replace_pending: str
+    :ivar instant_maximum_throughput: The offer throughput value to instantly scale up without
+     triggering splits.
+    :vartype instant_maximum_throughput: str
+    :ivar soft_allowed_maximum_throughput: The maximum throughput value or the maximum
+     maxThroughput value (for autoscale) that can be specified.
+    :vartype soft_allowed_maximum_throughput: str
     """
 
     _validation = {
         "minimum_throughput": {"readonly": True},
         "offer_replace_pending": {"readonly": True},
+        "instant_maximum_throughput": {"readonly": True},
+        "soft_allowed_maximum_throughput": {"readonly": True},
     }
 
     _attribute_map = {
@@ -15371,6 +16015,8 @@ class ThroughputSettingsResource(_serialization.Model):
         "autoscale_settings": {"key": "autoscaleSettings", "type": "AutoscaleSettingsResource"},
         "minimum_throughput": {"key": "minimumThroughput", "type": "str"},
         "offer_replace_pending": {"key": "offerReplacePending", "type": "str"},
+        "instant_maximum_throughput": {"key": "instantMaximumThroughput", "type": "str"},
+        "soft_allowed_maximum_throughput": {"key": "softAllowedMaximumThroughput", "type": "str"},
     }
 
     def __init__(
@@ -15393,6 +16039,8 @@ class ThroughputSettingsResource(_serialization.Model):
         self.autoscale_settings = autoscale_settings
         self.minimum_throughput = None
         self.offer_replace_pending = None
+        self.instant_maximum_throughput = None
+        self.soft_allowed_maximum_throughput = None
 
 
 class ThroughputSettingsGetPropertiesResource(ThroughputSettingsResource, ExtendedResourceProperties):
@@ -15417,6 +16065,12 @@ class ThroughputSettingsGetPropertiesResource(ThroughputSettingsResource, Extend
     :vartype minimum_throughput: str
     :ivar offer_replace_pending: The throughput replace is pending.
     :vartype offer_replace_pending: str
+    :ivar instant_maximum_throughput: The offer throughput value to instantly scale up without
+     triggering splits.
+    :vartype instant_maximum_throughput: str
+    :ivar soft_allowed_maximum_throughput: The maximum throughput value or the maximum
+     maxThroughput value (for autoscale) that can be specified.
+    :vartype soft_allowed_maximum_throughput: str
     """
 
     _validation = {
@@ -15425,6 +16079,8 @@ class ThroughputSettingsGetPropertiesResource(ThroughputSettingsResource, Extend
         "etag": {"readonly": True},
         "minimum_throughput": {"readonly": True},
         "offer_replace_pending": {"readonly": True},
+        "instant_maximum_throughput": {"readonly": True},
+        "soft_allowed_maximum_throughput": {"readonly": True},
     }
 
     _attribute_map = {
@@ -15435,6 +16091,8 @@ class ThroughputSettingsGetPropertiesResource(ThroughputSettingsResource, Extend
         "autoscale_settings": {"key": "autoscaleSettings", "type": "AutoscaleSettingsResource"},
         "minimum_throughput": {"key": "minimumThroughput", "type": "str"},
         "offer_replace_pending": {"key": "offerReplacePending", "type": "str"},
+        "instant_maximum_throughput": {"key": "instantMaximumThroughput", "type": "str"},
+        "soft_allowed_maximum_throughput": {"key": "softAllowedMaximumThroughput", "type": "str"},
     }
 
     def __init__(
@@ -15460,6 +16118,8 @@ class ThroughputSettingsGetPropertiesResource(ThroughputSettingsResource, Extend
         self.autoscale_settings = autoscale_settings
         self.minimum_throughput = None
         self.offer_replace_pending = None
+        self.instant_maximum_throughput = None
+        self.soft_allowed_maximum_throughput = None
 
 
 class ThroughputSettingsGetResults(ARMResourceProperties):

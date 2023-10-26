@@ -480,6 +480,9 @@ helps['communication rooms create'] = """
       - name: Create a room with valid-from and valid-until date/times
         text: |-
                az communication rooms create --valid-from "2022-07-14T10:21" --valid-until "2022-08-14T10:21"
+      - name: Create a room with valid-from, valid-until date/times and pstn-dial-out-enabled
+        text: |-
+               az communication rooms create --valid-from "2022-07-14T10:21" --valid-until "2022-08-14T10:21" --pstn-dial-out-enabled "True"
       - name: Create a room with a list of participants with presenter role
         text: |-
                az communication rooms create --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
@@ -564,25 +567,11 @@ helps['communication email'] = """
     short-summary: Commands to send emails and get the status of emails previously sent using Azure Communication Services Email service.
 """
 
-helps['communication email status'] = """
-    type: group
-    short-summary: Commands to get the status of emails previously sent using Azure Communication Services Email service.
-"""
-
 helps['communication email send'] = """
     type: command
-    short-summary: "Send an email."
+    short-summary: "Send an email and get final status."
     examples:
       - name: Send an email from an existing domain
         text: |-
                az communication email send --sender "NoReply@contoso.com" --subject "Contoso Update" --to "user1@user1-domain.com" "user2@user2-domain.com" --text "Hello valued client. There is an update."
-"""
-
-helps['communication email status get'] = """
-    type: command
-    short-summary: "Get status of an email previously sent."
-    examples:
-      - name: Get status of an email
-        text: |-
-               az communication email status get --message-id "01234567-89ab-cdef-0123-012345678901"
 """
