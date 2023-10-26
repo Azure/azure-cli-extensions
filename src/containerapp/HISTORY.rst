@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp up': update builder image used when --source is provided with no Dockerfile to support building applications targeting a wider range of platform versions
 
 0.3.42
 ++++++
@@ -16,7 +17,6 @@ upcoming
 * 'az containerapp job create/update': hide environment variables, scale rules metadata, eventTriggerConfig for job
 * [Breaking Change] 'az containerapp env create': update the default value of --enable-workload-profiles to `True`
 * 'az containerapp compose create': fix containerapp invalid memory resource
-* 'az containerapp up': update builder image used when --source is provided with no Dockerfile to support building applications targeting a wider range of platform versions
 
 0.3.41
 ++++++
