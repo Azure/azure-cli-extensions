@@ -9,9 +9,11 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
-Pending
+0.5.167
 +++++++
 * Vendor new SDK and bump API version to 2023-09-02-preview.
+* Add `--node-provisioning-mode` to the `az aks update` command.
+* Add `--node-provisioning-mode` to the `az aks create` command.
 
 0.5.167
 +++++++
