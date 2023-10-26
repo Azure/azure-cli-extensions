@@ -497,8 +497,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         # If the user specifies a target port, pass it to the buildpack
         if self.target_port:
-            command.extend(['--env', f"PORT={self.target_port}"])
+            command.extend(['--env', f"ORYX_RUNTIME_PORT={self.target_port}"])
 
+
+        logger.warning("Selecting a compatible builder for the provided application source...")
         could_build_image = False
         for builder_image in builder_image_list:
             # Run 'pack build' to produce a runnable application image for the Container App
@@ -511,6 +513,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 is_non_supported_os = False
                 with subprocess.Popen(command, stdout=subprocess.PIPE) as process:
 
+                    # Collect the standard output in a separate variable that will be printed when a builder
+                    # successfully builds the provided application source
+                    stdout_collection = []
+
                     # Stream output of 'pack build' to warning stream
                     while process.stdout.readable():
                         line = process.stdout.readline()
@@ -518,13 +524,17 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                             break
 
                         stdout_line = str(line.strip(), 'utf-8')
-                        logger.warning(stdout_line)
+                        stdout_collection.append(stdout_line)
 
-                        # Check if the application is targeting a platform that's found in the current builder
+                        # Check if the application is targeting a platform that's found in the current builder,
+                        # specifically, if none of the buildpacks in the current builder are able to detect a platform
+                        # for the given app source, then we are unable to build the app with the current builder
                         if not is_non_supported_platform and "No buildpack groups passed detection" in stdout_line:
                             is_non_supported_platform = True
 
-                        # Check if the application has a version that it can target from the current builder
+                        # Check if the application has a version that it can target from the current builder,
+                        # specifically, if we cannot find a valid Oryx runtime image for the given platform version and
+                        # Debian flavor combination, then we are unable to build the app with the current builder
                         if not is_non_supported_os and "failed to pull run image" in stdout_line:
                             is_non_supported_os = True
 
@@ -541,6 +551,9 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
                     could_build_image = True
                     logger.debug(f"Successfully built image {image_name} using buildpacks.")
+
+                    # Flush the stdout we've collected to the warning stream
+                    logger.warning("\n".join(stdout_collection))
                     break
             except Exception as ex:
                 logger.warning(f"Unable to run 'pack build' command to produce runnable application image: {ex}")

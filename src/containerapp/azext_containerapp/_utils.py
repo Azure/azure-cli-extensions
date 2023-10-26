@@ -1983,7 +1983,7 @@ def get_pack_exec_path():
                             with open(exec_zip_path, "wb") as f:
                                 f.write(tar.extractfile(tar_info).read())
 
-        # Rename the executable to include the CLI version (to ensure future CLI versions are installed and consumed)
+        # Rename the executable to include the pack CLI version (to ensure future pack CLI versions are installed and consumed)
         os.rename(exec_zip_path, exec_local_path)
 
         # Add executable permissions for the current user if they don't exist
