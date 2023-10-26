@@ -5,6 +5,8 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+
 """
 Ip Community tests scenarios
 """
@@ -25,6 +27,7 @@ def call_scenario1(test):
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
+    step_update(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     step_delete(test, checks=[])
@@ -44,12 +47,22 @@ def step_show(test, checks=None):
     test.cmd(
         'az networkfabric ipcommunity show --resource-name {name} --resource-group {rg}')
 
+def step_update(test, checks=None):
+    '''ipcommunity update operation'''
+    if checks is None:
+        checks = []
+    test.cmd(
+        'az networkfabric ipcommunity create --resource-group {rg} --location {location} --resource-name {name}'
+            ' --ip-community-rules {updatedIpCommunityRules}', checks=checks)
+
+@AllowLargeResponse()
 def step_list_resource_group(test, checks=None):
     '''ipcommunity list by resource group operation'''
     if checks is None:
         checks = []
     test.cmd('az networkfabric ipcommunity list --resource-group {rg}')
 
+@AllowLargeResponse()
 def step_list_subscription(test, checks=None):
     '''ipcommunity list by subscription'''
     if checks is None:
@@ -72,7 +85,8 @@ class GA_IpCommunityScenarioTest1(ScenarioTest):
             'name': CONFIG.get('IP_COMMUNITY', 'name'),
             'rg': CONFIG.get('IP_COMMUNITY', 'resource_group'),
             'location': CONFIG.get('IP_COMMUNITY', 'location'),
-            'ipCommunityRules': CONFIG.get('IP_COMMUNITY', 'ip_community_rules')
+            'ipCommunityRules': CONFIG.get('IP_COMMUNITY', 'ip_community_rules'),
+            'updatedIpCommunityRules': CONFIG.get('IP_COMMUNITY', 'updated_ip_community_rules')
         })
 
     def test_GA_ipcommunity_scenario1(self):

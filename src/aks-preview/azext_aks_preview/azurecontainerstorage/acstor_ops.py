@@ -117,11 +117,14 @@ def perform_enable_azure_container_storage(
         )
 
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-            config_settings.append({"cli.storagePool.ephemeralDiskOption": storage_pool_option.lower()})
+            config_settings.append({"cli.storagePool.ephemeralDisk.diskType": storage_pool_option.lower()})
         else:
             if storage_pool_sku is None:
                 storage_pool_sku = CONST_STORAGE_POOL_SKU_PREMIUM_LRS
-            config_settings.append({"cli.storagePool.sku": storage_pool_sku})
+            if storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
+                config_settings.append({"cli.storagePool.elasticSan.sku": storage_pool_sku})
+            elif storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
+                config_settings.append({"cli.storagePool.azureDisk.sku": storage_pool_sku})
     else:
         config_settings.append({"cli.storagePool.create": False})
 

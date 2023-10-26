@@ -6,7 +6,7 @@ import os
 import tempfile
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class FleetHubfulScenarioTest(ScenarioTest):
 
@@ -37,6 +37,7 @@ class FleetHubfulScenarioTest(ScenarioTest):
             key_file.write(TEST_SSH_KEY_PUB)
         return pathname.replace('\\', '\\\\')
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8)
     def test_fleet_hubful(self):
 
@@ -46,7 +47,7 @@ class FleetHubfulScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys()
         })
 
-        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub' , checks=[
+        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub  --vm-size Standard_DS1 ' , checks=[
             self.check('name', '{fleet_name}')
         ])
 

@@ -151,7 +151,6 @@ class ContainerAppPatchTest(ScenarioTest):
             create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name)
 
             # Execute and verify patch list command
-            self.cmd(f'configure --defaults group={resource_group}')
             patchable_images = self.cmd(f'containerapp patch list').get_output_in_json()
             self.assertTrue(len(patchable_images) == 1)
             self.assertEquals(patchable_images[0]["oldRunImage"], builder_runtime_image)
@@ -191,7 +190,6 @@ class ContainerAppPatchTest(ScenarioTest):
             create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name)
 
             # Execute and verify patch list command
-            self.cmd(f'configure --defaults group={resource_group}')
             patchable_images = self.cmd(f'containerapp patch list').get_output_in_json()
             self.assertTrue(len(patchable_images) == 1)
             self.assertEquals(patchable_images[0]["oldRunImage"], builder_runtime_image)
@@ -232,7 +230,6 @@ class ContainerAppPatchTest(ScenarioTest):
             create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name)
 
             # Execute and verify patch list command
-            self.cmd(f'configure --defaults group={resource_group}')
             patchable_images = self.cmd(f'containerapp patch list').get_output_in_json()
             self.assertTrue(len(patchable_images) == 1)
             self.assertEquals(patchable_images[0]["oldRunImage"], builder_runtime_image)

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.5.1
+++++++++++++++++++
+* microsoft.kubernetes.azuredefender: Fixed installation bug where LogAnalytics Workspace details were not being fetched correctly.
+
 1.5.0
 ++++++++++++++++++
 * add support for extensionsType api
