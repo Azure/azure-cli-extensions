@@ -13,17 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "azurelargeinstance list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """Gets a list of Azure Large Instances in the specified subscription
 
     Gets a list of Azure Large Instances in the specified subscription. The operations returns various properties of each Azure Large Instance.
 
-    :example: To list Azure Large Instances in a specific subscription
-        az azurelargeinstance list --subscription $SUBSCRIPTIONID
+    :example: To list Azure Large Instances in a subscription
+        az azurelargeinstance list
 
-    :example: To list Azure Large Instances in a specific subscription and resource group
-        az azurelargeinstance list --subscription $SUBSCRIPTIONID --resource-group $RESOURCE_GROUP
+    :example: To list Azure Large Instances in a subscription and resource group
+        az azurelargeinstance list --resource-group $RESOURCE_GROUP
     """
 
     _aaz_info = {

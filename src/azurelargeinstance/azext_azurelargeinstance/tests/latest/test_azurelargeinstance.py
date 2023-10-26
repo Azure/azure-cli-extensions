@@ -7,27 +7,86 @@
 
 from azure.cli.testsdk import *
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.core.decorators import Completer
 
 class AzurelargeinstanceScenario(ScenarioTest):
-    @Completer
-    def test_list_azurelargeinstance_in_subscription(self, cmd):
-        subscription = get_subscription_id(cmd.cli_ctx)
-        
-        self.kwargs.update({
-            'sub_id': subscription
-        })
 
-        self.cmd('az azurelargeinstance list --subscription {sub_id}').get_output_in_json()
-
-    @Completer
-    @ResourceGroupPreparer()
-    def test_list_azurelargeinstance_in_resourcegroup(self, resource_group, cmd):
-        subscription = get_subscription_id(cmd.cli_ctx)
-        
-        self.kwargs.update({
-            'sub_id': subscription
-        })
-
-        self.cmd('az azurelargeinstance list --subscription {sub_id} --resource-group {rg}').get_output_in_json()
+    def test_list_azurelargeinstances_in_subscription(self):
+        self.cmd('az azurelargeinstance list')
     
+    @ResourceGroupPreparer()
+    def test_list_azurelargeinstances_in_resourcegroup(self, resource_group):
+        self.cmd('az azurelargeinstance list --resource-group {rg}')
+
+    @ResourceGroupPreparer()
+    def test_restart_azurelargeinstance(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name(),
+            'force_state': 'active',
+        })
+        self.cmd('az azurelargeinstance restart --resource-group $RESOURCE_GROUP --instance-name {name}')
+    
+    @ResourceGroupPreparer()
+    def test_restart_azurelargeinstance_with_force(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name(),
+            'force_state': 'active',
+        })
+        force_state = 'active'
+        self.cmd('az azurelargeinstance restart --resource-group $RESOURCE_GROUP --instance-name {name} --force-state {force_state}')
+    
+    @ResourceGroupPreparer()
+    def test_show_azurelargeinstance(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name(),
+        })
+        self.cmd('az azurelargeinstance show --instance-name {name} --resource-group {rg}')
+    
+    @ResourceGroupPreparer()
+    def test_shutdown_azurelargeinstance(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name(),
+        })
+        self.cmd('az azurelargeinstance shutdown --instance-name {name} --resource-group {rg}')
+    
+    @ResourceGroupPreparer()
+    def test_start_azurelargeinstance(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name(),
+        })
+        self.cmd('az azurelargeinstance start --instance-name {name} --resource-group {rg}')
+    
+    @ResourceGroupPreparer()
+    def test_add_azurelargeinstance_tag(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name(),
+            'key': self.create_random_name(),
+            'value': self.create_random_name(),
+        })
+        self.cmd('az azurelargeinstance start --instance-name {name} --resource-group {rg} --tags {key}={value}')
+    
+    
+    def test_list_azurelargestorageinstances_in_subscription(self):
+        self.cmd('az azurelargestorageinstance list')
+    
+    @ResourceGroupPreparer()
+    def test_list_azurelargestorageinstances_in_resourcegroup(self, resource_group):
+        self.cmd('az azurelargestorageinstance list --resource-group {rg}')
+    
+    @ResourceGroupPreparer()
+    def test_show_azurelargestorageinstance(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name(),
+        })
+        self.cmd('az azurelargestorageinstance show --instance-name {name} --resource-group {rg}')
+    
+    @ResourceGroupPreparer()
+    def test_add_azurelargestorageinstance_tag(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name(),
+            'key': self.create_random_name(),
+            'value': self.create_random_name(),
+        })
+        self.cmd('az azurelargestorageinstance start --instance-name {name} --resource-group {rg} --tags {key}={value}')
+    
+
+

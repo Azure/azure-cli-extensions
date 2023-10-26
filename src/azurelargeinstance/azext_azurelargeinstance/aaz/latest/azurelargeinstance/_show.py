@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "azurelargeinstance show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get an Azure Large Instance for the specified subscription, resource group, and instance name.
 
-    :example: To show details about a specific AzureLargeInstance
-        az azurelargeinstance show --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTIONID
+    :example: To show details about a specific AzureLargeInstance in a resource group
+        az azurelargeinstance show --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP
     """
 
     _aaz_info = {

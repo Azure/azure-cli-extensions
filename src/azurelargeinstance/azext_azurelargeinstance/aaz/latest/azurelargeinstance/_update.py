@@ -13,15 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "azurelargeinstance update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the Tags field of an Azure Large Instance for the specified subscription, resource group, and instance name.
 
     :example: Add a key-value pair in the Tags field of a specific Azure Large Instance:
-        az azurelargeinstance update --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTIONID --tags newKey=value
+        az azurelargeinstance update --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --tags newKey=value
 
     :example: Update a key-value pair in the Tags field of a specific Azure Large Instance
-        az azurelargeinstance update --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTIONID --set tags.key=updatedValue
+        az azurelargeinstance update --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --tags key=updatedValue
     """
 
     _aaz_info = {

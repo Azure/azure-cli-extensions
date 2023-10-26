@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get an Azure Large Storage instance for the specified subscription, resource group, and instance name.
 
     :example: To show details about a specific AzureLargeStorageInstance
-        az azurelargestorageinstance show --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTIONID
+        az azurelargestorageinstance show --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP
     """
 
     _aaz_info = {

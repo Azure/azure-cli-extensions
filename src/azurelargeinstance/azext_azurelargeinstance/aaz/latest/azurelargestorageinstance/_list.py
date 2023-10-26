@@ -19,10 +19,10 @@ class List(AAZCommand):
     """List a list of AzureLargeStorageInstances in the specified subscription. The operations returns various properties of each Azure LargeStorage instance.
 
     :example: To list Azure Large Storage Instances in a specific subscription
-        az azurelargestorageinstance list --subscription $SUBSCRIPTIONID
+        az azurelargestorageinstance list
 
     :example: To list Azure Large Storage Instances in a specific subscription and resource group
-        az azurelargestorageinstance list --subscription $SUBSCRIPTIONID --resource-group $RESOURCE_GROUP
+        az azurelargestorageinstance list --resource-group $RESOURCE_GROUP
     """
 
     _aaz_info = {

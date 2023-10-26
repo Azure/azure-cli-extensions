@@ -19,10 +19,10 @@ class Update(AAZCommand):
     """Update the Tags field of a Azure Large Storage Instance for the specified subscription, resource group, and instance name.
 
     :example: Add a key-value pair in the Tags field of a specific Azure Large Storage Instance:
-        az azurelargestorageinstance update --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTIONID --tags newKey=value
+        az azurelargestorageinstance update --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --tags newKey=value
 
     :example: Update a key-value pair in the Tags field of a specific Azure Large Storage Instance
-        az azurelargestorageinstance update --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTIONID --set tags.key=updatedValue
+        az azurelargestorageinstance update --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --set tags.key=updatedValue
     """
 
     _aaz_info = {
