@@ -11,13 +11,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `--node-provisioning-mode` to the `az aks update` command.
+* Add `--node-provisioning-mode` to the `az aks create` command.
+
+0.5.169
++++++++
 * Add `--network-plugin` to the `az aks update` command.
 * Add the KataCcIsolation option to --workload-runtime.
 * Update "VirtualMachines" agent pool type as Public Preview feature.
 * Add --disable-network-observability to `az aks update` cluster command.
-
-0.5.169
-+++++++
 * Add `--node-soak-duration` to the `az aks nodepool add/update/upgrade` commands.
 * Add `--drain-timeout` to the `az aks nodepool add/update/upgrade` commands (already in [azure-cli](https://github.com/Azure/azure-cli/pull/27475)).
 
