@@ -499,7 +499,6 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         if self.target_port:
             command.extend(['--env', f"ORYX_RUNTIME_PORT={self.target_port}"])
 
-
         logger.warning("Selecting a compatible builder for the provided application source...")
         could_build_image = False
         for builder_image in builder_image_list:
