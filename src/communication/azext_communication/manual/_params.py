@@ -208,6 +208,10 @@ def _load_rooms_arguments(self):
         c.argument('valid_until',
                    help='The timestamp from when the room can no longer be joined,'
                    ' in ISO8601 format, ex: 2023-06-31T10:21. Optional.')
+        c.argument('pstn_dial_out_enabled',
+                   help='Set this flag to true if, at the time of the call, '
+                   'dial out to a PSTN number is enabled in a particular room. '
+                   'By default, this flag is set to false. Optional.')
         c.argument('presenters', options_list=['--presenter-participants'],
                    nargs='+', help='Collection of identities to be invited to the room as presenter. Optional.')
         c.argument('attendees', options_list=['--attendee-participants'],
@@ -227,6 +231,10 @@ def _load_rooms_arguments(self):
         c.argument('valid_until',
                    help='The timestamp from when the room can no longer be joined, in ISO8601 format, '
                    'ex: 2023-06-31T10:21. Should be used together with --valid-from. Optional.')
+        c.argument('pstn_dial_out_enabled',
+                   help='Set this flag to true if, at the time of the call, '
+                   'dial out to a PSTN number is enabled in a particular room. '
+                   'By default, this flag is set to false. Optional.')
 
     with self.argument_context('communication rooms participant get') as c:
         c.argument('room_id', options_list=['--room'],
@@ -254,17 +262,21 @@ def _load_email_arguments(self):
         c.argument('sender', options_list=['--sender'], type=str, help='Sender email address from a verified domain.')
         c.argument('subject', options_list=['--subject'], type=str, help='Subject of the email message.')
         c.argument('text', options_list=['--text'], type=str, help='Plain text version of the email message. Optional.')
-        c.argument('html', options_list=['--html'], type=str, help='Html version of the email message. Optional.')
-        c.argument('recipients_to', options_list=['--to'], nargs='+', help='Recepients email addresses comma seperated if more than one.')
+        c.argument('html', options_list=['--html'], type=str,
+                   help='Html version of the email message. Optional.')
+        c.argument('recipients_to', options_list=['--to'], nargs='+',
+                   help='Recepients email addresses comma seperated if more than one.')
         c.argument('importance', options_list=['--importance'], arg_type=get_enum_type(['normal', 'low', 'high']),
                    help='The importance type for the email. Known values are: high,'
                    ' normal, and low. Default is normal. Optional')
         c.argument('recipients_cc', options_list=['--cc'], nargs='+', help='Carbon copy email addresses.')
         c.argument('recipients_bcc', options_list=['--bcc'], nargs='+', help='Blind carbon copy email addresses.')
         c.argument('reply_to', options_list=['--reply-to'], type=str, help='Reply-to email address. Optional.')
-        c.argument('disable_tracking', options_list=['--disable-tracking'], arg_type=get_three_state_flag(),
+        c.argument('disable_tracking', options_list=['--disable-tracking'],
+                   arg_type=get_three_state_flag(),
                    help='Indicates whether user engagement tracking should be disabled for this specific request. '
-                   'This is only applicable if the resource-level user engagement tracking setting was already enabled in control plane. Optional.')
+                   'This is only applicable if the resource-level user engagement '
+                   'tracking setting was already enabled in control plane. Optional.')
         c.argument('attachments', options_list=['--attachments'], nargs='+',
                    help='List of email attachments. Optional.')
         c.argument('attachment_types', options_list=['--attachment-types'], nargs='+',
