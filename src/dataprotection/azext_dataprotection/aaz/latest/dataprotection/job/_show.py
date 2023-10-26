@@ -48,6 +48,12 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.vault_name = AAZStrArg(
+            options=["-v", "--vault-name"],
+            help="The name of the backup vault.",
+            required=True,
+            id_part="name",
+        )
 
         # define Arg Group "Resource Id Arguments"
 
@@ -58,13 +64,6 @@ class Show(AAZCommand):
             help="The Job ID. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000).",
             required=True,
             id_part="child_name_1",
-        )
-        _args_schema.vault_name = AAZStrArg(
-            options=["--vault-name"],
-            arg_group="Resource Id Arguments",
-            help="The name of the backup vault.",
-            required=True,
-            id_part="name",
         )
         return cls._args_schema
 
