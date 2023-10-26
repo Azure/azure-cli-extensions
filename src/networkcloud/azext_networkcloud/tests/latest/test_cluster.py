@@ -103,6 +103,23 @@ def call_scenario4(test):
     cleanup_scenario4(test)
 
 
+def setup_scenario5(test):
+    """Env setup_scenario5"""
+    pass
+
+
+def cleanup_scenario5(test):
+    """Env cleanup_scenario5"""
+    pass
+
+
+def call_scenario5(test):
+    """# Testcase: scenario5 temporary split of cluster scan runtime operation to work with the already created and deployed simulator"""
+    setup_scenario5(test)
+    step_scan_runtime(test, checks=[])
+    cleanup_scenario5(test)
+
+
 def step_create(test, checks=None):
     """cluster create operation"""
     if checks is None:
@@ -214,6 +231,15 @@ def step_update_version_sim(test, checks=None):
     )
 
 
+def step_scan_runtime(test, checks=None):
+    """cluster scan-runtime operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster scan-runtime --name {nameScanActivity} --resource-group {rgScanActivity} --scan-activity {scanActivity}"
+    )
+
+
 class ClusterScenarioTest(ScenarioTest):
     """Cluster scenario test"""
 
@@ -266,6 +292,9 @@ class ClusterScenarioTest(ScenarioTest):
                 "skipValidationForMachines": CONFIG.get(
                     "CLUSTER", "skip_validations_for_machines"
                 ),
+                "nameScanActivity": CONFIG.get("CLUSTER", "name_scan"),
+                "scanActivity": CONFIG.get("CLUSTER", "scan_activity"),
+                "rgScanActivity": CONFIG.get("CLUSTER", "rg_scan_activity"),
             }
         )
 
@@ -294,3 +323,8 @@ class ClusterScenarioTest(ScenarioTest):
     def test_cluster_scenario4(self):
         """test scenario for Cluster version update operation"""
         call_scenario4(self)
+
+    # scenario5 will use the existing cluster resources created outside of the testing framework because of the API limitations
+    def test_cluster_scenario5(self):
+        """test scenario for Cluster Scan Runtime operation"""
+        call_scenario5(self)

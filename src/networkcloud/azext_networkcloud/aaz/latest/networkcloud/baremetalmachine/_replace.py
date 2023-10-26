@@ -22,9 +22,9 @@ class Replace(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/replace", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/replace", "2023-10-01-preview"],
         ]
     }
 
@@ -212,7 +212,7 @@ class Replace(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -245,7 +245,7 @@ class Replace(AAZCommand):
 
             bmc_credentials = _builder.get(".bmcCredentials")
             if bmc_credentials is not None:
-                bmc_credentials.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"required": True, "secret": True}})
+                bmc_credentials.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
                 bmc_credentials.set_prop("username", AAZStrType, ".username", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
