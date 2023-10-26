@@ -27,7 +27,7 @@ class Update(AAZCommand):
         az networkcloud cluster update --name "clusterName"  --resource-group "resourceGroupName" --aggregator-or-single-rack-definition ./aggregator-or-single-rack-definition.json --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90 --tags key1="myvalue1" key2="myvalue2"
 
     :example: Patch cluster runtime protection configuration
-        az az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --runtime-protection-config enforcement-level="OnDemand"
+        az az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --runtime-protection enforcement-level="OnDemand"
 
     :example: Patch secret archive
         az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --secret-archive use-key-vault=True key-vault-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.KeyVault/vaults/keyVaultName"
@@ -114,8 +114,8 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="The list of rack definitions for the compute racks in a multi-rack cluster, or an empty list in a single-rack cluster.",
         )
-        _args_schema.runtime_protection_config = AAZObjectArg(
-            options=["--runtime-protection-config"],
+        _args_schema.runtime_protection = AAZObjectArg(
+            options=["--runtime-protection"],
             arg_group="Properties",
             help="The settings for cluster runtime protection.",
         )
@@ -178,8 +178,8 @@ class Update(AAZCommand):
         compute_rack_definitions.Element = AAZObjectArg()
         cls._build_args_rack_definition_update(compute_rack_definitions.Element)
 
-        runtime_protection_config = cls._args_schema.runtime_protection_config
-        runtime_protection_config.enforcement_level = AAZStrArg(
+        runtime_protection = cls._args_schema.runtime_protection
+        runtime_protection.enforcement_level = AAZStrArg(
             options=["enforcement-level"],
             help="The mode of operation for runtime protection.",
             default="Disabled",
@@ -543,7 +543,7 @@ class Update(AAZCommand):
                 properties.set_prop("clusterServicePrincipal", AAZObjectType, ".cluster_service_principal")
                 properties.set_prop("computeDeploymentThreshold", AAZObjectType, ".compute_deployment_threshold")
                 properties.set_prop("computeRackDefinitions", AAZListType, ".compute_rack_definitions")
-                properties.set_prop("runtimeProtectionConfiguration", AAZObjectType, ".runtime_protection_config")
+                properties.set_prop("runtimeProtectionConfiguration", AAZObjectType, ".runtime_protection")
                 properties.set_prop("secretArchive", AAZObjectType, ".secret_archive")
                 properties.set_prop("updateStrategy", AAZObjectType, ".update_strategy")
 

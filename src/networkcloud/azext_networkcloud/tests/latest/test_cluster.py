@@ -255,7 +255,7 @@ def step_update_runtime_protection(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --runtime-protection-config enforcement-level={enforcementLevel} "
+        "az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --runtime-protection enforcement-level={enforcementLevel} "
     )
 
 

@@ -160,8 +160,8 @@ class Create(AAZCommand):
             help="The resource ID of the Network Fabric associated with the cluster.",
             required=True,
         )
-        _args_schema.runtime_protection_config = AAZObjectArg(
-            options=["--runtime-protection-config"],
+        _args_schema.runtime_protection = AAZObjectArg(
+            options=["--runtime-protection"],
             arg_group="Properties",
             help="The settings for cluster runtime protection.",
         )
@@ -237,8 +237,8 @@ class Create(AAZCommand):
             ),
         )
 
-        runtime_protection_config = cls._args_schema.runtime_protection_config
-        runtime_protection_config.enforcement_level = AAZStrArg(
+        runtime_protection = cls._args_schema.runtime_protection
+        runtime_protection.enforcement_level = AAZStrArg(
             options=["enforcement-level"],
             help="The mode of operation for runtime protection.",
             default="Disabled",
@@ -614,7 +614,7 @@ class Create(AAZCommand):
                 properties.set_prop("computeRackDefinitions", AAZListType, ".compute_rack_definitions")
                 properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
                 properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("runtimeProtectionConfiguration", AAZObjectType, ".runtime_protection_config")
+                properties.set_prop("runtimeProtectionConfiguration", AAZObjectType, ".runtime_protection")
                 properties.set_prop("secretArchive", AAZObjectType, ".secret_archive")
                 properties.set_prop("updateStrategy", AAZObjectType, ".update_strategy")
 
