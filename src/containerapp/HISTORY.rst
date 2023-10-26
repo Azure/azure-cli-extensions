@@ -2,7 +2,7 @@
 
 Release History
 ===============
-upcoming
+0.3.42
 ++++++
 * 'az containerapp job create': Fix AttributeError when --trigger-type is None
 * 'az containerapp update': fix bug for mounting secret volumes using --secret-volume-mount
