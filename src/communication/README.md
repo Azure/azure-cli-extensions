@@ -152,11 +152,11 @@ az communication rooms get --room "roomId"
 ```
 ##### Create-Room #####
 ```
- az communication rooms create --valid-from "2023-03-31T10:20:30" --valid-to "2023-06-31T10:20:30" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+ az communication rooms create --valid-from "2023-03-31T10:20:30" --valid-to "2023-06-31T10:20:30" --pstn-dial-out-enabled "True" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
 ```
 ##### Update-Room #####
 ```
-az communication rooms update --room "roomId" --valid-from "2023-03-31T10:20:30" --valid-to "2023-06-31T10:20:30"
+az communication rooms update --room "roomId" --valid-from "2023-03-31T10:20:30" --valid-to "2023-06-31T10:20:30" --pstn-dial-out-enabled "True"
 ```
 ##### Delete-Room #####
 ```
