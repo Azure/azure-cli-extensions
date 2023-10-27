@@ -19,7 +19,7 @@ class AzurelargeinstanceScenario(ScenarioTest):
     @ResourceGroupPreparer()
     def test_restart_azurelargeinstance(self, resource_group):
         self.kwargs.update({
-            'name': self.create_random_name(),
+            'name': self.create_random_name('ALI-', 10),
             'force_state': 'active',
         })
         self.cmd('az azurelargeinstance restart --resource-group $RESOURCE_GROUP --instance-name {name}')
@@ -27,7 +27,7 @@ class AzurelargeinstanceScenario(ScenarioTest):
     @ResourceGroupPreparer()
     def test_restart_azurelargeinstance_with_force(self, resource_group):
         self.kwargs.update({
-            'name': self.create_random_name(),
+            'name': self.create_random_name('ALI-', 10),
             'force_state': 'active',
         })
         force_state = 'active'
@@ -36,30 +36,30 @@ class AzurelargeinstanceScenario(ScenarioTest):
     @ResourceGroupPreparer()
     def test_show_azurelargeinstance(self, resource_group):
         self.kwargs.update({
-            'name': self.create_random_name(),
+            'name': self.create_random_name('ALI-', 10),
         })
         self.cmd('az azurelargeinstance show --instance-name {name} --resource-group {rg}')
     
     @ResourceGroupPreparer()
     def test_shutdown_azurelargeinstance(self, resource_group):
         self.kwargs.update({
-            'name': self.create_random_name(),
+            'name': self.create_random_name('ALI-', 10),
         })
         self.cmd('az azurelargeinstance shutdown --instance-name {name} --resource-group {rg}')
     
     @ResourceGroupPreparer()
     def test_start_azurelargeinstance(self, resource_group):
         self.kwargs.update({
-            'name': self.create_random_name(),
+            'name': self.create_random_name('ALI-', 10),
         })
         self.cmd('az azurelargeinstance start --instance-name {name} --resource-group {rg}')
     
     @ResourceGroupPreparer()
     def test_add_azurelargeinstance_tag(self, resource_group):
         self.kwargs.update({
-            'name': self.create_random_name(),
-            'key': self.create_random_name(),
-            'value': self.create_random_name(),
+            'name': self.create_random_name('ALI-', 10),
+            'key': self.create_random_name('key', 10),
+            'value': self.create_random_name('val', 10),
         })
         self.cmd('az azurelargeinstance update --instance-name {name} --resource-group {rg} --tags {key}={value}')
     
@@ -74,16 +74,16 @@ class AzurelargeinstanceScenario(ScenarioTest):
     @ResourceGroupPreparer()
     def test_show_azurelargestorageinstance(self, resource_group):
         self.kwargs.update({
-            'name': self.create_random_name(),
+            'name': self.create_random_name('ALI-', 10),
         })
         self.cmd('az azurelargestorageinstance show --instance-name {name} --resource-group {rg}')
     
     @ResourceGroupPreparer()
     def test_add_azurelargestorageinstance_tag(self, resource_group):
         self.kwargs.update({
-            'name': self.create_random_name(),
-            'key': self.create_random_name(),
-            'value': self.create_random_name(),
+            'name': self.create_random_name('ALI-', 10),
+            'key': self.create_random_name('key', 10),
+            'value': self.create_random_name('val', 10),
         })
         self.cmd('az azurelargestorageinstance update --instance-name {name} --resource-group {rg} --tags {key}={value}')
     
