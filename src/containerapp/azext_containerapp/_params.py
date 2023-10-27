@@ -46,9 +46,6 @@ def load_arguments(self, _):
         c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
         c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services(bindings) to be removed from this app. e.g. BIND_NAME1...")
 
-    with self.argument_context('containerapp env create') as c:
-        c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
-
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
         c.argument('infrastructure_resource_group', options_list=['--infrastructure-resource-group', '-i'], help='Name for resource group that will contain infrastructure resources. If not provided, a resource group name will be generated.', is_preview=True)
 
@@ -56,6 +53,9 @@ def load_arguments(self, _):
         c.argument('service_name', options_list=['--name', '-n'], help="The service name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp env create') as c:
+        c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
 
     with self.argument_context('containerapp env certificate create') as c:
         c.argument('hostname', options_list=['--hostname'], help='The custom domain name.')
