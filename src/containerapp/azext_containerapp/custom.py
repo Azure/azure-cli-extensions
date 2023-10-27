@@ -36,7 +36,7 @@ from azure.cli.command_modules.containerapp._utils import (_validate_subscriptio
                                                            generate_randomized_cert_name, load_cert_file,
                                                            generate_randomized_managed_cert_name,
                                                            check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                                                           get_current_mariner_tags, trigger_workflow,
+                                                           trigger_workflow,
                                                            AppType)
 
 from knack.log import get_logger
