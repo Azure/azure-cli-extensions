@@ -190,7 +190,7 @@ class PlannedMaintenanceTest(ScenarioTest):
             'resource_group': resource_group,
         })
 
-        self.cmd('spring update -g {resource_group} -n {spring} --enable-planned-maintenance --planned-maintenance-day Friday --planned-maintenance-start-hour 10', checks=[
+        self.cmd('spring update -g {resource_group} -n {serviceName} --enable-planned-maintenance --planned-maintenance-day Friday --planned-maintenance-start-hour 10', checks=[
             self.check('properties.maintenanceScheduleConfiguration.day', 'Friday'),
             self.check('properties.maintenanceScheduleConfiguration.hour', 10)
         ])
