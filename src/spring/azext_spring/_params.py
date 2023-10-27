@@ -17,7 +17,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
                           validate_remote_debugging_port, validate_ingress_client_auth_certificates,
                           validate_managed_environment, validate_dataplane_public_endpoint, validate_server_version,
-                          validate_planned_maintenance_start_hour)
+                          validate_planned_maintenance)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_source_path, validate_artifact_path, validate_build_create,
                                      validate_build_update, validate_container_registry_create,
@@ -254,15 +254,20 @@ def load_arguments(self, _):
 
         c.argument('enable_planned_maintenance',
                    action='store_true',
+                   validator=validate_planned_maintenance,
+                   is_preview=True,
                    options_list=['--enable-planned-maintenance', '--enable-pm'],
                    help='If set, enable planned maintenance for the instance.')
         c.argument('planned_maintenance_day',
                    arg_type=get_enum_type(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']),
+                   validator=validate_planned_maintenance,
+                   is_preview=True,
                    options_list=['--planned-maintenance-day', '--pm-day'],
                    help='Day of the week which planned maintenance will be scheduled on. Must be one of Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.')
         c.argument('planned_maintenance_start_hour',
                    type=int,
-                   validator=validate_planned_maintenance_start_hour,
+                   validator=validate_planned_maintenance,
+                   is_preview=True,
                    options_list=['--planned-maintenance-start-hour', '--pm-start-hour'],
                    help='Start time of the planned maintenance window in UTC. Must be between 0 and 23.')
 
