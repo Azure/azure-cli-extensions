@@ -23,14 +23,8 @@ from azure.cli.command_modules.appservice._create_util import (
 )
 from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.mgmt.containerregistry import ContainerRegistryManagementClient
-from knack.log import get_logger
-
-from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
-
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, ContainerAppsJobClient
-
-from ._utils import (
+from azure.cli.command_modules.containerapp._github_oauth import load_github_token_from_cache, get_github_access_token
+from azure.cli.command_modules.containerapp._utils import (
     get_randomized_name,
     get_profile_username,
     create_resource_group,
@@ -49,10 +43,19 @@ from ._utils import (
     register_provider_if_needed,
     validate_environment_location,
     list_environment_locations,
-    format_location,
+    format_location
+)
+from azure.mgmt.containerregistry import ContainerRegistryManagementClient
+from knack.log import get_logger
+
+from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
+
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, ContainerAppsJobClient
+
+from ._utils import (
+    get_pack_exec_path,
     is_docker_running,
     get_pack_exec_path
-
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -72,8 +75,6 @@ from .custom import (
     list_managed_environments,
     create_or_update_github_action,
 )
-
-from ._github_oauth import load_github_token_from_cache, get_github_access_token
 
 logger = get_logger(__name__)
 
