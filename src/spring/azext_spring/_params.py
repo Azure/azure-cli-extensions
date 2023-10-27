@@ -253,18 +253,21 @@ def load_arguments(self, _):
                    help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
 
         c.argument('enable_planned_maintenance',
+                   arg_group='Planned Maintenance',
                    action='store_true',
                    validator=validate_planned_maintenance,
                    is_preview=True,
                    options_list=['--enable-planned-maintenance', '--enable-pm'],
                    help='If set, enable planned maintenance for the instance.')
         c.argument('planned_maintenance_day',
+                   arg_group='Planned Maintenance',
                    arg_type=get_enum_type(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']),
                    validator=validate_planned_maintenance,
                    is_preview=True,
                    options_list=['--planned-maintenance-day', '--pm-day'],
                    help='Day of the week which planned maintenance will be scheduled on. Must be one of Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.')
         c.argument('planned_maintenance_start_hour',
+                   arg_group='Planned Maintenance',
                    type=int,
                    validator=validate_planned_maintenance,
                    is_preview=True,
