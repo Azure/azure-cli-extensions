@@ -3116,7 +3116,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             node_resource_group = cluster.node_resource_group
             agent_pool_details = {}
             nodepool_name = "nodepool1"
-            for agentpool_profile in cluster.agent_pool_profiles:
+            if len(cluster.agent_pool_profiles) > 0:
+                # Cluster creation has only 1 agentpool
+                agentpool_profile = cluster.agent_pool_profiles[0]
                 agent_pool_details[agentpool_profile.name] = agentpool_profile.vm_size
                 nodepool_name = agentpool_profile.name
 
