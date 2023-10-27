@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "azurelargeinstance shutdown",
-    is_preview=True,
 )
 class Shutdown(AAZCommand):
     """The operation to shutdown an Azure Large Instance (only for compute instances)
 
-    :example: To shutdown a specific Azure Large Instance
+    :example: To shutdown an Azure Large Instance
         az azurelargeinstance shutdown --resource-group $RESOURCE_GROUP --instance-name $INSTANCE_NAME
     """
 
     _aaz_info = {
         "version": "2023-07-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstance/{}/shutdown", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}/shutdown", "2023-07-20-preview"],
         ]
     }
 
@@ -56,7 +55,6 @@ class Shutdown(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group. The name is case insensitive.",
             required=True,
         )
         return cls._args_schema
@@ -108,7 +106,7 @@ class Shutdown(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstance/{azureLargeInstanceName}/shutdown",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstances/{azureLargeInstanceName}/shutdown",
                 **self.url_parameters
             )
 

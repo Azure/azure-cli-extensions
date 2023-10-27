@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "azurelargeinstance show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get an Azure Large Instance for the specified subscription, resource group, and instance name.
 
-    :example: To show details about a specific AzureLargeInstance in a resource group
+    :example: To show details about an Azure Large Instance
         az azurelargeinstance show --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP
     """
 
     _aaz_info = {
         "version": "2023-07-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstance/{}", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}", "2023-07-20-preview"],
         ]
     }
 
@@ -55,7 +54,6 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group. The name is case insensitive.",
             required=True,
         )
         return cls._args_schema
@@ -91,7 +89,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstance/{azureLargeInstanceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstances/{azureLargeInstanceName}",
                 **self.url_parameters
             )
 

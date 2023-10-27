@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "azurelargeinstance start",
-    is_preview=True,
 )
 class Start(AAZCommand):
     """The operation to start an Azure Large Instance (only for compute instances)
 
-    :example: Start an Azure Large Instance
-        az start --resource-group $RESOURCE_GROUP --instance-name $INSTANCE_NAME
+    :example: To start an Azure Large Instance
+        az azurelargeinstance start --resource-group $RESOURCE_GROUP --instance-name $INSTANCE_NAME
     """
 
     _aaz_info = {
         "version": "2023-07-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstance/{}/start", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}/start", "2023-07-20-preview"],
         ]
     }
 
@@ -56,7 +55,6 @@ class Start(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group. The name is case insensitive.",
             required=True,
         )
         return cls._args_schema
@@ -108,7 +106,7 @@ class Start(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstance/{azureLargeInstanceName}/start",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstances/{azureLargeInstanceName}/start",
                 **self.url_parameters
             )
 

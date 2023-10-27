@@ -13,22 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "azurelargeinstance restart",
-    is_preview=True,
 )
 class Restart(AAZCommand):
     """The operation to restart an Azure Large Instance (only for compute instances)
 
-    :example: To restart an Azure Large Instance in a resource group
+    :example: To restart an Azure Large Instance
         az azurelargeinstance restart --resource-group $RESOURCE_GROUP --instance-name $INSTANCE_NAME
-
-    :example: To force restart an Azure Large Instance in a resource group
-        az azurelargeinstance restart --resource-group $RESOUCE_GROUP --instance-name $INSTANCE_NAME --force-state active
     """
 
     _aaz_info = {
         "version": "2023-07-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstance/{}/restart", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}/restart", "2023-07-20-preview"],
         ]
     }
 
@@ -59,7 +55,6 @@ class Restart(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group. The name is case insensitive.",
             required=True,
         )
 
@@ -69,7 +64,7 @@ class Restart(AAZCommand):
         _args_schema.force_state = AAZStrArg(
             options=["--force-state"],
             arg_group="ForceParameter",
-            help={"short-summary": "Whether to force restart by shutting all processes.", "long-summary": "When set to 'active', this parameter empowers the server with the ability to forcefully terminate and halt any existing processes that may be running on the server."},
+            help="Whether to force restart by shutting all processes.",
             enum={"active": "active", "inactive": "inactive"},
         )
         return cls._args_schema
@@ -121,7 +116,7 @@ class Restart(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstance/{azureLargeInstanceName}/restart",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstances/{azureLargeInstanceName}/restart",
                 **self.url_parameters
             )
 

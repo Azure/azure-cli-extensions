@@ -13,25 +13,24 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "azurelargeinstance list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """Gets a list of Azure Large Instances in the specified subscription
+    """Gets a list of Azure Large Instances in the specified subscription. The operations returns various properties of each Azure Large Instance.
 
     Gets a list of Azure Large Instances in the specified subscription. The operations returns various properties of each Azure Large Instance.
 
     :example: To list Azure Large Instances in a subscription
         az azurelargeinstance list
 
-    :example: To list Azure Large Instances in a subscription and resource group
+    :example: To list Azure Large Instances in a specific subscription and resource group
         az azurelargeinstance list --resource-group $RESOURCE_GROUP
     """
 
     _aaz_info = {
         "version": "2023-07-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.azurelargeinstance/azurelargeinstance", "2023-07-20-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstance", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.azurelargeinstance/azurelargeinstances", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances", "2023-07-20-preview"],
         ]
     }
 
@@ -52,9 +51,7 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group. The name is case insensitive.",
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -94,7 +91,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstance",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstances",
                 **self.url_parameters
             )
 
@@ -326,7 +323,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.AzureLargeInstance/azureLargeInstance",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.AzureLargeInstance/azureLargeInstances",
                 **self.url_parameters
             )
 

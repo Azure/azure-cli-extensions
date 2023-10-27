@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "azurelargestorageinstance show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get an Azure Large Storage instance for the specified subscription, resource group, and instance name.
 
-    :example: To show details about a specific AzureLargeStorageInstance
+    :example: To show details about a specific Azure Large Storage Instance
         az azurelargestorageinstance show --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP
     """
 
     _aaz_info = {
         "version": "2023-07-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstance/{}", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances/{}", "2023-07-20-preview"],
         ]
     }
 
@@ -55,7 +54,6 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group. The name is case insensitive.",
             required=True,
         )
         return cls._args_schema
@@ -91,7 +89,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstance/{azureLargeStorageInstanceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances/{azureLargeStorageInstanceName}",
                 **self.url_parameters
             )
 

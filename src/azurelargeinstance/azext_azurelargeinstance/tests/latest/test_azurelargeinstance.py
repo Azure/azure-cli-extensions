@@ -10,7 +10,7 @@ from azure.cli.testsdk import *
 class AzurelargeinstanceScenario(ScenarioTest):
 
     def test_list_azurelargeinstances_in_subscription(self):
-        self.cmd('az azurelargeinstance list')
+        self.cmd('az azurelargeinstance list --debug')
     
     @ResourceGroupPreparer()
     def test_list_azurelargeinstances_in_resourcegroup(self, resource_group):
@@ -61,7 +61,7 @@ class AzurelargeinstanceScenario(ScenarioTest):
             'key': self.create_random_name(),
             'value': self.create_random_name(),
         })
-        self.cmd('az azurelargeinstance start --instance-name {name} --resource-group {rg} --tags {key}={value}')
+        self.cmd('az azurelargeinstance update --instance-name {name} --resource-group {rg} --tags {key}={value}')
     
     
     def test_list_azurelargestorageinstances_in_subscription(self):
@@ -85,7 +85,7 @@ class AzurelargeinstanceScenario(ScenarioTest):
             'key': self.create_random_name(),
             'value': self.create_random_name(),
         })
-        self.cmd('az azurelargestorageinstance start --instance-name {name} --resource-group {rg} --tags {key}={value}')
+        self.cmd('az azurelargestorageinstance update --instance-name {name} --resource-group {rg} --tags {key}={value}')
     
 
 

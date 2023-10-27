@@ -13,22 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "azurelargestorageinstance update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the Tags field of a Azure Large Storage Instance for the specified subscription, resource group, and instance name.
 
-    :example: Add a key-value pair in the Tags field of a specific Azure Large Storage Instance:
+    :example: To add an Azure Large Storage Instance tag
         az azurelargestorageinstance update --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --tags newKey=value
-
-    :example: Update a key-value pair in the Tags field of a specific Azure Large Storage Instance
-        az azurelargestorageinstance update --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --set tags.key=updatedValue
     """
 
     _aaz_info = {
         "version": "2023-07-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstance/{}", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances/{}", "2023-07-20-preview"],
         ]
     }
 
@@ -58,7 +54,6 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group. The name is case insensitive.",
             required=True,
         )
 
@@ -106,7 +101,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstance/{azureLargeStorageInstanceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances/{azureLargeStorageInstanceName}",
                 **self.url_parameters
             )
 

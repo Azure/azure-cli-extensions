@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "azurelargeinstance",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Handle Operations for Compute Azure Large Instances.
