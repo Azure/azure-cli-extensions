@@ -11,6 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Vendor new SDK and bump API version to 2023-09-02-preview.
+
+0.5.166
++++++++
+* Add `--network-policy` to the `az aks update` command.
 
 0.5.165
 +++++++

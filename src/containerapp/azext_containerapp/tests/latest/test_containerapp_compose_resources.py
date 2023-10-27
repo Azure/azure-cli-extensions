@@ -26,6 +26,7 @@ services:
   foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     cpus: 1.25
+    mem_reservation: 2.5g
     expose:
       - "3000"
 """
@@ -62,6 +63,7 @@ services:
       resources:
         reservations:
           cpus: 1.25
+          memory: 2.5g
     expose:
       - "3000"
 """
@@ -98,6 +100,7 @@ services:
       resources:
         reservations:
           cpus: 1.25
+          memory: 2.5g
     expose:
       - "3000"
 """

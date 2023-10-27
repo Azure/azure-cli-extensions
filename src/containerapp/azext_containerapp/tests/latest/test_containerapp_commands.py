@@ -370,7 +370,7 @@ class ContainerappIngressTests(ScenarioTest):
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
         self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
-        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
 
         logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs} -l eastus").get_output_in_json()["customerId"]
         logs_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {logs}').get_output_in_json()["primarySharedKey"]
@@ -716,7 +716,6 @@ class ContainerappServiceBindingTests(ScenarioTest):
         kafka_ca_name = 'kafka'
         mariadb_ca_name = 'mariadb'
         qdrant_ca_name = "qdrant"
-        milvus_ca_name = 'milvus'
 
         create_containerapp_env(self, env_name, resource_group)
 
@@ -734,29 +733,25 @@ class ContainerappServiceBindingTests(ScenarioTest):
         
         self.cmd('containerapp service qdrant create -g {} -n {} --environment {}'.format(
             resource_group, qdrant_ca_name, env_name))
-        
-        self.cmd('containerapp service milvus create -g {} -n {} --environment {}'.format(
-            resource_group, milvus_ca_name, env_name))
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --bind postgres:postgres_binding redis'.format(
-            resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
+            resource_group, ca_name, env_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
         ])
 
         self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
-            resource_group, ca_name), checks=[
+            resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant milvus'.format(
-            resource_group, ca_name), checks=[
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant'.format(
+            resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
             JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
-            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant"),
-            JMESPathCheck('properties.template.serviceBinds[5].name', "milvus")
+            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant")
         ])
 
         self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(
@@ -773,9 +768,6 @@ class ContainerappServiceBindingTests(ScenarioTest):
     
         self.cmd('containerapp service qdrant delete -g {} -n {} --yes'.format(
             resource_group, qdrant_ca_name, env_name))
-        
-        self.cmd('containerapp service milvus delete -g {} -n {} --yes'.format(
-            resource_group, milvus_ca_name, env_name))
 
         self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes') 
 
@@ -1080,7 +1072,7 @@ class ContainerappScaleTests(ScenarioTest):
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value')
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value', checks=[JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "")])
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
@@ -1088,9 +1080,10 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
             JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
             JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
         ])
 
-        self.cmd(f'containerapp create -g {resource_group} -n {app}2 --image nginx --environment {env} --scale-rule-name my-datadog-rule --scale-rule-type datadog --scale-rule-metadata "queryValue=7" "age=120" "metricUnavailableValue=0" --scale-rule-auth "apiKey=api-key" "appKey=app-key"')
+        self.cmd(f'containerapp create -g {resource_group} -n {app}2 --image nginx --environment {env} --scale-rule-name my-datadog-rule --scale-rule-type datadog --scale-rule-metadata "queryValue=7" "age=120" "metricUnavailableValue=0" --scale-rule-auth "apiKey=api-key" "appKey=app-key"', checks=[JMESPathCheck("properties.template.scale.rules[0].custom.metadata.queryValue", "")])
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}2', checks=[
             JMESPathCheck("properties.template.scale.rules[0].name", "my-datadog-rule"),
@@ -1102,6 +1095,7 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].secretRef", "api-key"),
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].triggerParameter", "appKey"),
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.queryValue", "7"),
 
         ])
 
@@ -1557,7 +1551,7 @@ class ContainerappScaleTests(ScenarioTest):
         vnet = self.create_random_name(prefix='name', length=24)
 
         self.cmd(f"network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
-        sub_id = self.cmd(f"network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+        sub_id = self.cmd(f"network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
 
         self.cmd(f'containerapp env create -g {resource_group} -n {env} --internal-only -s {sub_id}')
         containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()

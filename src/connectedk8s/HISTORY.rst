@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.5.3
+++++++
+* Add support to get AKS-EE kubernetes distro
 
 1.5.3
 ++++++

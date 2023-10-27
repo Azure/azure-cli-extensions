@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"validFrom": null, "validUntil": null}'
+    body: '{"validFrom": null, "validUntil": null, "pstnDialOutEnabled": false}'
     headers:
       Accept:
       - application/json
@@ -9,40 +9,41 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '39'
+      - '68'
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Wed, 19 Jul 2023 21:11:15 GMT
-      Repeatability-Request-ID:
-      - cbc33833-2678-11ee-8f15-8cf8c5abc371
+      - Mon, 16 Oct 2023 16:24:44 GMT
+      Repeatability-Request-Id:
+      - 842abbd2-6c40-11ee-b2ec-8cf8c5abc371
       User-Agent:
-      - AzureCli/1.7.1b1 azsdk-python-communication-rooms/1.0.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.7.2b1 azsdk-python-communication-rooms/1.1.0b1 Python/3.11.5 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - vBTkhrLFogng0nIWoP6/XqO3xl87GjFK9aShkzc8E3g=
+      - 2xVVJJKx5brgL5bSWgeu9hhccJP/PkHHEzXUfUClsMI=
       x-ms-date:
-      - Wed, 19 Jul 2023 21:11:15 GMT
+      - Mon, 16 Oct 2023 16:24:44 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-06-14
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-10-30-preview
   response:
     body:
-      string: '{"id": "sanitized", "createdAt": "2023-07-19T21:11:17.0311331+00:00",
-        "validFrom": "2023-07-19T21:11:16.7165586+00:00", "validUntil": "2024-01-15T21:11:16.7165586+00:00"}'
+      string: '{"id": "sanitized", "createdAt": "2023-10-16T16:24:46.2988765+00:00",
+        "validFrom": "2023-10-16T16:24:46.0747179+00:00", "validUntil": "2024-04-13T16:24:46.0747179+00:00",
+        "pstnDialOutEnabled": false}'
     headers:
       api-deprecated-versions:
       - 2021-04-07, 2022-02-01
       api-supported-versions:
-      - 2023-03-31-preview, 2023-06-14
+      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Jul 2023 21:11:16 GMT
+      - Mon, 16 Oct 2023 16:24:45 GMT
       location:
-      - '99441250166242587'
+      - '99494278843105881'
       ms-cv:
-      - uXdePmUp/023BthgbMSjhA.0
+      - f8kZ6r/EK0mQfNjpf42vxg.0
       repeatability-result:
       - accepted
       request-context:
@@ -50,14 +51,15 @@ interactions:
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0dFG4ZAAAAADXqr9ScVPsTJjifspDbq15WVZSMzExMDAwMTE1MDM3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 0zWMtZQAAAAC5liSEyECdRJci/YCFj6uTWVZSMzExMDAwMTE1MDIxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
     status:
       code: 201
       message: Created
 - request:
-    body: '{"validFrom": "2022-11-22T19:14:59.829926+00:00", "validUntil": "2022-11-23"}'
+    body: '{"validFrom": "2022-11-22T19:14:59.829926+00:00", "validUntil": "2022-11-23",
+      "pstnDialOutEnabled": null}'
     headers:
       Accept:
       - application/json
@@ -66,19 +68,19 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '77'
+      - '105'
       Content-Type:
       - application/merge-patch+json
       User-Agent:
-      - AzureCli/1.7.1b1 azsdk-python-communication-rooms/1.0.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.7.2b1 azsdk-python-communication-rooms/1.1.0b1 Python/3.11.5 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - zlWO4EFhT1ervgHolxeGoDg90Trj1w0sz1JnhetMYZs=
+      - VztSYEdQgt6r3uF5baFbPI5NYeeCpmEDvnwtcY9SMtw=
       x-ms-date:
-      - Wed, 19 Jul 2023 21:11:16 GMT
+      - Mon, 16 Oct 2023 16:24:46 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: PATCH
-    uri: https://sanitized.communication.azure.com/rooms/sanitized?api-version=2023-06-14
+    uri: https://sanitized.communication.azure.com/rooms/sanitized?api-version=2023-10-30-preview
   response:
     body:
       string: '{"error": {"code": "BadRequest", "message": "The request could not
@@ -89,15 +91,15 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Jul 2023 21:11:16 GMT
+      - Mon, 16 Oct 2023 16:24:47 GMT
       ms-cv:
-      - fveBg+pHoUidZs4OHIB2Tw.0
+      - OuexVT0p1UyeWsA/XKQ/Tg.0
       request-context:
       - appId=
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0dVG4ZAAAAABEZZ37RsL5QpgEX0nqYbr5WVZSMzExMDAwMTE1MDIxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 00GMtZQAAAAAP4e5I1WjZR4loZ2QcdG+KWVZSMzExMDAwMTE1MDE3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
       x-ms-error-code:
