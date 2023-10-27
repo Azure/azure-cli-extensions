@@ -512,7 +512,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
 
-
     def set_up_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
         """Set up upgrade settings for the AgentPool object.
 
@@ -535,6 +534,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         agentpool.upgrade_settings = upgrade_settings
         return agentpool
+
 
 class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
     def __init__(
