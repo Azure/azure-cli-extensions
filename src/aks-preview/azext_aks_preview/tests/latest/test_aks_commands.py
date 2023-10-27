@@ -6742,7 +6742,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # add k8s-extension extension for azurecontainerstorage operations.
-        self.cmd('extension add --name k8s-extension')
+        self.cmd('extension add --upgrade --name k8s-extension')
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} ' \
                      '--node-count 3 --enable-managed-identity --enable-azure-container-storage azureDisk --output=json'
@@ -6782,7 +6782,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # add k8s-extension extension for azurecontainerstorage operations.
-        self.cmd('extension add --name k8s-extension')
+        self.cmd('extension add --upgrade --name k8s-extension')
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} ' \
                      '--node-count 3 --nodepool-name {nodepool_name} --enable-managed-identity --enable-azure-container-storage azureDisk --output=json'
@@ -6842,9 +6842,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
-    live only due to downloading k8s-extension extension
+    # live only due to downloading k8s-extension extension
     @live_only()
-    Introduce this test back once v1.0.3-preview version of Azure container storage is released
     @AllowLargeResponse(8192)
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_azurecontainerstorage(self, resource_group, resource_group_location):
@@ -6859,7 +6858,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # add k8s-extension extension for azurecontainerstorage operations.
-        self.cmd('extension add --name k8s-extension')
+        self.cmd('extension add --upgrade --name k8s-extension')
 
         # create: without enable-azure-container-storage
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 --enable-managed-identity --output=json'
