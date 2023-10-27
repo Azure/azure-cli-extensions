@@ -82,8 +82,8 @@ def _update_application_insights_asc_create(cmd,
 def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
                   disable_app_insights=None, sku=None, tags=None, build_pool_size=None,
                   enable_log_stream_public_endpoint=None, enable_dataplane_public_endpoint=None,
-                  ingress_read_timeout=None, enable_planned_maintenance=False, disable_planned_maintenance=False,
-                  planned_maintenance_day=None, planned_maintenance_start_hour=None, no_wait=False):
+                  ingress_read_timeout=None, enable_planned_maintenance=False, planned_maintenance_day=None,
+                  planned_maintenance_start_hour=None, no_wait=False):
     """
     TODO (jiec) app_insights_key, app_insights and disable_app_insights are marked as deprecated.
     Will be decommissioned in future releases.
