@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.5.4
+++++++
+* Fix an issue where the agents could not be installed on a cluster behind a proxy.
+
 1.5.3
 ++++++
 * Add support to get AKS-EE kubernetes distro
