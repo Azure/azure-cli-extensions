@@ -2433,14 +2433,33 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("enable_app_routing")
 
-    def disable_app_routing(self) -> bool:
-        """Obtain the value of disable_app_routing.
+    # def get_dns_zone_resource_ids(self) -> Union[str, None]:
+    #     """Obtain the value of dns_zone_resource_ids.
+
+    #     :return: string or None
+    #     """
+    #     return self.raw_param.get("dns_zone_resource_ids")
+
+    def get_add_dns_zone(self) -> bool:
+        """Obtain the value of add_dns_zone.
 
         :return: bool
         """
-        return bool(self.raw_param.get("disable_app_routing"))
+        return self.raw_param.get("add_dns_zone")
 
+    def get_delete_dns_zone(self) -> bool:
+        """Obtain the value of delete_dns_zone.
 
+        :return: bool
+        """
+        return self.raw_param.get("delete_dns_zone")
+
+    def get_update_dns_zone(self) -> bool:
+        """Obtain the value of update_dns_zone.
+
+        :return: bool
+        """
+        return self.raw_param.get("update_dns_zone")
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
         self, cmd: AzCliCommand, client: ContainerServiceClient, raw_parameters: Dict, resource_type: ResourceType
@@ -3999,7 +4018,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     else:
                         keyvault = set_policy(self.cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=managed_identity_object_id, secret_permissions=['Get'], certificate_permissions=['Get'])
                 except Exception as ex:
-                    raise CLIError(f'Error checking keyvault authorization: {ex}\n')
+                    raise CLIError(f'Error in granting keyvault permissions to managed identity: {ex}\n')
             else:
                 raise CLIError('App Routing is not enabled.\n')
 
@@ -4012,8 +4031,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         mc.ingress_profile.web_app_routing.dns_zone_resource_ids = []
                     mc.ingress_profile.web_app_routing.dns_zone_resource_ids.extend(dns_zone_resource_ids)
                     if attach_zones:
-                        for dns_zone in dns_zone_resource_ids:
-                            add_role_assignment(self.cmd, 'DNS Zone Contributor', mc.ingress_profile.web_app_routing.identity.object_id, False, scope=dns_zone)
+                        try:
+                            for dns_zone in dns_zone_resource_ids:
+                                if not add_role_assignment(self.cmd, 'DNS Zone Contributor', mc.ingress_profile.web_app_routing.identity.object_id, False, scope=dns_zone):
+                                    logger.warning(
+                                        'Could not create a role assignment for App Routing. '
+                                        'Are you an Owner on this subscription?')
+                        except Exception as ex:
+                            raise CLIError(f'Error in granting dns zone permisions to managed identity: {ex}\n')
                 elif delete_dns_zone:
                     if mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
                         dns_zone_resource_ids = [x for x in mc.ingress_profile.web_app_routing.dns_zone_resource_ids if x not in dns_zone_resource_ids]
@@ -4023,8 +4048,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 elif update_dns_zone:
                     mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
                     if attach_zones:
-                        for dns_zone in dns_zone_resource_ids:
-                            add_role_assignment(self.cmd, 'DNS Zone Contributor', mc.ingress_profile.web_app_routing.identity.object_id, False, scope=dns_zone)
+                        try:
+                            for dns_zone in dns_zone_resource_ids:
+                                if not add_role_assignment(self.cmd, 'DNS Zone Contributor', mc.ingress_profile.web_app_routing.identity.object_id, False, scope=dns_zone):
+                                    logger.warning(
+                                        'Could not create a role assignment for App Routing. '
+                                        'Are you an Owner on this subscription?')
+                        except Exception as ex:
+                            raise CLIError(f'Error in granting dns zone permisions to managed identity: {ex}\n')
             else:
                 raise CLIError('App Routing must be enabled to modify DNS zone resource IDs.\n')
 
