@@ -49,7 +49,7 @@ def datafactory_create(
     factory["global_parameters"] = global_parameters
     factory["encryption"] = {}
     if publicNetworkAccess is not None:
-        factory["publicNetworkAccess"] = publicNetworkAccess 
+        factory["publicNetworkAccess"] = publicNetworkAccess
     factory["identity"] = FactoryIdentity(type=FactoryIdentityType.SYSTEM_ASSIGNED)
     return client.create_or_update(
         resource_group_name=resource_group_name,
@@ -63,7 +63,7 @@ def datafactory_update(client, resource_group_name, factory_name, publicNetworkA
     factory_update_parameters = {}
     factory_update_parameters["tags"] = tags
     if publicNetworkAccess is not None:
-        factory_update_parameters["publicNetworkAccess"] = publicNetworkAccess 
+        factory_update_parameters["publicNetworkAccess"] = publicNetworkAccess
     return client.update(
         resource_group_name=resource_group_name,
         factory_name=factory_name,
