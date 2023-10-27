@@ -318,6 +318,18 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=['--avset-name', '-a'],
             help="Name of the Availabilty Set.",
         )
+        c.argument(
+            'availability_set_name',
+            help="Name of the AvailabilitySet."
+        )
+
+
+    with self.argument_context('scvmm cloud') as c:
+        c.argument(
+            'cloud_name',
+            help="Name of the Cloud."
+        )
+
 
     with self.argument_context('scvmm vm guest-agent enable') as c:
         c.argument(
