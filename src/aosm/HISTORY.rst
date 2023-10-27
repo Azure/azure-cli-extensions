@@ -12,3 +12,7 @@ Release History
 1.0.0b2
 ++++++++
 * Fixed: Use default_factory when a dataclass default is hashable (Python 3.11 compatibility)
+
+1.0.0b3
+++++++++
+* Move azure-storage-blob dependency to vendored_sdks (on advice from Azure CLI team to avoid 'azure' namespace issues)
