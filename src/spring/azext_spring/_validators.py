@@ -761,7 +761,8 @@ def validate_server_version(cmd, namespace):
     if namespace.server_version and is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
         raise ArgumentUsageError("'--server-version' only supports for Standard/Basic tier Spring instance.")
 
+
 def validate_planned_maintenance_start_hour(namespace):
-    if namespace.planned_maintenance_start_hour is not None and (namespace.planned_maintenance_start_hour < 0 or
-                                                           namespace.planned_maintenance_start_hour > 23):
+    if namespace.planned_maintenance_start_hour is not None \
+            and (namespace.planned_maintenance_start_hour < 0 or namespace.planned_maintenance_start_hour > 23):
         raise InvalidArgumentValueError("Invalid value: planned maintenance start hour must be in the range [0,23].")
