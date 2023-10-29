@@ -85,7 +85,8 @@ def perform_enable_azure_container_storage(
     )
 
     # Step 3: Configure the storagepool parameters
-    config_settings = []
+    # Setting nodepools as empty since CLI is handling nodepool labels
+    config_settings = [{"cli.node.nodepools": ""}]
     if create_storage_pool:
         if storage_pool_name is None:
             storage_pool_name = storage_pool_type.lower()
@@ -99,7 +100,6 @@ def perform_enable_azure_container_storage(
                 {"cli.storagePool.name": storage_pool_name},
                 {"cli.storagePool.size": storage_pool_size},
                 {"cli.storagePool.type": storage_pool_type},
-                {"cli.node.nodepools": nodepool_names},
             ]
         )
 
@@ -166,7 +166,13 @@ def perform_disable_azure_container_storage(
     no_wait_delete_op = False
     # Step 1: Perform validation if accepted by user
     if perform_validation:
-        config_settings = [{"cli.storagePool.uninstallValidation": True}]
+        # Set cli.node.nodepools to empty to ensure
+        # no post uninstall label removal takes place
+        # since we have added the labels to the nodepool.
+        config_settings = [
+            {"cli.storagePool.uninstallValidation": True},
+            {"cli.node.nodepools": ""},
+        ]
         try:
             update_result = k8s_extension_custom_mod.update_k8s_extension(
                 cmd,
