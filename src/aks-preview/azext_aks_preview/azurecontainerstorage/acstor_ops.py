@@ -26,7 +26,6 @@ from azext_aks_preview.azurecontainerstorage._helpers import (
     register_dependent_rps,
     should_create_storagepool,
 )
-from azext_aks_preview.azurecontainerstorage._validators import validate_nodepool_names_with_cluster_nodepools
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
@@ -70,8 +69,6 @@ def perform_enable_azure_container_storage(
             storage_pool_option = CONST_STORAGE_POOL_OPTION_NVME
         if storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
             storage_pool_option = "temp"
-
-    validate_nodepool_names_with_cluster_nodepools(nodepool_names, agentpool_details)
 
     # Step 3: Validate if storagepool should be created.
     # Depends on the following:

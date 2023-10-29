@@ -29,19 +29,6 @@ elastic_san_supported_skus = [
 logger = get_logger(__name__)
 
 
-def validate_nodepool_names_with_cluster_nodepools(nodepool_names, agentpool_details):
-    nodepool_list = nodepool_names.split(',')
-    for nodepool in nodepool_list:
-        if nodepool not in agentpool_details:
-            raise InvalidArgumentValueError(
-                'Nodepool: {} not found. '
-                'Please provide existing nodepool names in --azure-container-storage-nodepools.'
-                '\nUse command `az nodepool list` to get the list of nodepools in the cluster.'
-                '\nAborting installation of Azure Container Storage.'
-                .format(nodepool)
-            )
-
-
 def validate_azure_container_storage_params(
     enable_azure_container_storage,
     disable_azure_container_storage,
@@ -51,6 +38,7 @@ def validate_azure_container_storage_params(
     storage_pool_option,
     storage_pool_size,
     nodepool_list,
+    agentpool_names,
 ):
     if enable_azure_container_storage and disable_azure_container_storage:
         raise MutuallyExclusiveArgumentError(
@@ -75,6 +63,8 @@ def validate_azure_container_storage_params(
             storage_pool_option,
             storage_pool_size,
         )
+
+        _validate_nodepool_names(nodepool_list, agentpool_names)
 
 
 def _validate_disable_azure_container_storage_params(
@@ -180,4 +170,40 @@ def _validate_enable_azure_container_storage_params(
                 logger.warning(
                     'Storage pools using Ephemeral disk use all capacity available on the local device. '
                     ' --storage-pool-size will be ignored.'
+                )
+
+
+def _validate_nodepool_names(nodepool_names, agentpool_details):
+    # Validate that nodepool_list is a comma separated string
+    # consisting of valid nodepool names i.e. lower alphanumeric
+    # characters and the first character should be lowercase letter.
+    pattern = r'^[a-z][a-z0-9]*(?:,[a-z][a-z0-9]*)*$'
+    if re.fullmatch(pattern, nodepool_names) is None:
+        raise InvalidArgumentValueError(
+            "Invalid --azure-container-storage-nodepools value."
+            "Accepted value is a comma separated string of valid nodepool "
+            "names without any spaces. A valid nodepool name may only contain lowercase "
+            "alphanumeric characters and must begin with a lowercase letter."
+        )
+
+    nodepool_list = nodepool_names.split(',')
+    for nodepool in nodepool_list:
+        if nodepool not in agentpool_details:
+            if len(agentpool_details) > 1:
+                raise InvalidArgumentValueError(
+                    'Nodepool: {0} not found. '
+                    'Please provide a comma separated string of existing nodepool names '
+                    'in --azure-container-storage-nodepools.'
+                    '\nNodepools available in the cluster are: {1}.'
+                    '\nAborting installation of Azure Container Storage.'
+                    .format(nodepool, ', '.join(agentpool_details))
+                )
+            else:
+                raise InvalidArgumentValueError(
+                    'Nodepool: {0} not found. '
+                    'Please provide a comma separated string of existing nodepool names '
+                    'in --azure-container-storage-nodepools.'
+                    '\nNodepool available in the cluster is: {1}.'
+                    '\nAborting installation of Azure Container Storage.'
+                    .format(nodepool, agentpool_details[0])
                 )
