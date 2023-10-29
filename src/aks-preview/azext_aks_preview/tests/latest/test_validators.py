@@ -753,7 +753,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, None, None, storage_pool_size, nodepool_list, None)
         self.assertEqual(str(cm.exception), err)
 
-    def test_missing_nodepool_from_cluster_nodepool_list(self):
+    def test_missing_nodepool_from_cluster_nodepool_list_single(self):
         storage_pool_name = "valid-name"
         storage_pool_size = "5Ti"
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
@@ -767,7 +767,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, None, None, storage_pool_size, nodepool_list, agentpools)
         self.assertEqual(str(cm.exception), err)
 
-    def test_missing_nodepool_from_cluster_nodepool_list(self):
+    def test_missing_nodepool_from_cluster_nodepool_list_multiple(self):
         storage_pool_name = "valid-name"
         storage_pool_size = "5Ti"
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
@@ -796,7 +796,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
         nodepool_list = "nodepool1"
-        agentpools = {"nodepool1": "NODEPOOL1", "nodepool2": "NODEPOOL2"}
+        agentpools = ["nodepool1", "nodepool2"]
         acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools)
 
 
