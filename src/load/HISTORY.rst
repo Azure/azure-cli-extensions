@@ -4,8 +4,9 @@ Release History
 ===============
 0.3.2
 ++++++
-* Fix to enhance usage of config files in 'az load test create' and 'az load test update' commands when using --load-test-config-file option.
-* Fix to accept null or "" in arguments such as env, certificate, etc while using 'az load test create' and 'az load test update' commands.
+* Added null support for argument --certificate and --subnet in commands "az load update" and "az load create" to remove those properties from test.
+* Added support to remove certificate, subnet from config file when provided in commands "az load update" and "az load create".
+* Logical implementation changed when using config file using argument --load-test-config-file in commands "az load test update" and "az load test create".  
 * Added test cases test_load_test_update_with_config to test the new fixes.
 
 0.3.1

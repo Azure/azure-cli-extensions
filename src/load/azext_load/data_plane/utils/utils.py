@@ -398,7 +398,10 @@ def create_or_update_test_with_config(
         new_body["secrets"].update(secrets)
 
     if certificate is not None:
-        new_body["certificate"] = certificate
+        if certificate == "null":
+            new_body["certificate"] = None
+        else:
+            new_body["certificate"] = certificate
     elif yaml_test_body.get("certificate") is not None:
         new_body["certificate"] = yaml_test_body.get("certificate")
     else:

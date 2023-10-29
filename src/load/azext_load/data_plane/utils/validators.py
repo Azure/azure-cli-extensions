@@ -64,7 +64,7 @@ def _validate_env_var(string):
         comps = string.split("=", 1)
         if len(comps) != 2:
             raise InvalidArgumentValueError(f"Invalid env argument: {string}")
-        if comps[1].casefold() in ["null", ""]:
+        if comps[1] in ["null", ""]:
             result = {comps[0]: None}
         else:
             result = {comps[0]: comps[1]}
@@ -87,7 +87,7 @@ def _validate_secret(string):
         comps = string.split("=", 1)
         if len(comps) != 2:
             raise InvalidArgumentValueError(f"Invalid secret argument: {string}")
-        if comps[1].casefold() in ["null", ""]:
+        if comps[1] in ["null", ""]:
             result = {comps[0]: None}
         elif not _validate_akv_url(comps[1], "secrets"):
             raise InvalidArgumentValueError(
@@ -115,11 +115,11 @@ def validate_certificate(namespace):
     comps = certificate.split("=", 1)
     if len(comps) != 2:
         raise InvalidArgumentValueError(f"Invalid certificate argument: {certificate}")    
-    if (comps[1].casefold() not in ["", "null"]) and not _validate_akv_url(comps[1], "certificates"):
+    if (comps[1] not in ["", "null"]) and not _validate_akv_url(comps[1], "certificates"):
         raise InvalidArgumentValueError(
             f"Invalid Azure Key Vault Certificate URL: {comps[1]}"
         )
-    if comps[1].casefold() in ["null", ""]:
+    if comps[1] in ["null", ""]:
         namespace.certificate = "null"
     else:
         namespace.certificate = {
@@ -132,7 +132,7 @@ def validate_certificate(namespace):
 def validate_subnet_id(namespace):
     if namespace.subnet_id is None:
         return
-    if namespace.subnet_id.casefold() in ["null", ""]:
+    if namespace.subnet_id in ["null", ""]:
         namespace.subnet_id = "null"
         return
     if not is_valid_resource_id(namespace.subnet_id):
