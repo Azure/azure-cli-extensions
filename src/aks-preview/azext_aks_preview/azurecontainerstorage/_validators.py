@@ -39,6 +39,7 @@ def validate_azure_container_storage_params(
     storage_pool_size,
     nodepool_list,
     agentpool_names,
+    is_extension_installed,
 ):
     if enable_azure_container_storage and disable_azure_container_storage:
         raise MutuallyExclusiveArgumentError(
@@ -53,6 +54,7 @@ def validate_azure_container_storage_params(
             storage_pool_option,
             storage_pool_size,
             nodepool_list,
+            is_extension_installed,
         )
 
     elif enable_azure_container_storage:
@@ -62,6 +64,7 @@ def validate_azure_container_storage_params(
             storage_pool_sku,
             storage_pool_option,
             storage_pool_size,
+            is_extension_installed
         )
 
         _validate_nodepool_names(nodepool_list, agentpool_names)
@@ -73,7 +76,15 @@ def _validate_disable_azure_container_storage_params(
     storage_pool_option,
     storage_pool_size,
     nodepool_list,
+    is_extension_installed,
 ):
+    if not is_extension_installed:
+        raise InvalidArgumentValueError(
+            'Invalid usage of --disable-azure-container-storage. '
+            'Azure Container Storage is not enabled on the cluster. '
+            'Aborting disabling of Azure Container Storage.'
+        )
+
     if storage_pool_name is not None:
         raise MutuallyExclusiveArgumentError(
             'Conflicting flags. Cannot define --storage-pool-name value '
@@ -111,7 +122,15 @@ def _validate_enable_azure_container_storage_params(
     storage_pool_sku,
     storage_pool_option,
     storage_pool_size,
+    is_extension_installed,
 ):
+    if is_extension_installed:
+        raise InvalidArgumentValueError(
+            'Invalid usage of --enable-azure-container-storage. '
+            'Azure Container Storage is already enabled on the cluster. '
+            'Aborting installation of Azure Container Storage.'
+        )
+
     if storage_pool_name is not None:
         pattern = r'[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*'
         is_pool_name_valid = re.fullmatch(pattern, storage_pool_name)
@@ -180,9 +199,9 @@ def _validate_nodepool_names(nodepool_names, agentpool_details):
     pattern = r'^[a-z][a-z0-9]*(?:,[a-z][a-z0-9]*)*$'
     if re.fullmatch(pattern, nodepool_names) is None:
         raise InvalidArgumentValueError(
-            "Invalid --azure-container-storage-nodepools value."
+            "Invalid --azure-container-storage-nodepools value. "
             "Accepted value is a comma separated string of valid nodepool "
-            "names without any spaces. A valid nodepool name may only contain lowercase "
+            "names without any spaces.\nA valid nodepool name may only contain lowercase "
             "alphanumeric characters and must begin with a lowercase letter."
         )
 

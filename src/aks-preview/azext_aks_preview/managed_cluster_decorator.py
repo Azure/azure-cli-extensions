@@ -2780,6 +2780,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             # installing Azure Container Storage during `az aks create`
             nodepool_list = agentpool.name
 
+            from azext_aks_preview.azurecontainerstorage._helpers import check_if_extension_is_installed
+            is_extension_already_installed = check_if_extension_is_installed(
+                self.cmd,
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+            )
             from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
             validate_azure_container_storage_params(
                 True,
@@ -2791,6 +2797,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 pool_size,
                 nodepool_list,
                 agentpool_name_list,
+                is_extension_already_installed,
             )
 
             # Setup Azure Container Storage labels on the nodepool
@@ -3333,6 +3340,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     nodepool_list = "nodepool1"
                     if len(agentpool_names) == 1:
                         nodepool_list = agentpool_names[0]
+            from azext_aks_preview.azurecontainerstorage._helpers import check_if_extension_is_installed
+            is_extension_already_installed = check_if_extension_is_installed(
+                self.cmd,
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+            )
             from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
             validate_azure_container_storage_params(
                 enable_azure_container_storage,
@@ -3344,6 +3357,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 pool_size,
                 nodepool_list,
                 agentpool_names,
+                is_extension_already_installed,
             )
 
         if enable_azure_container_storage:
@@ -3356,14 +3370,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             for agentpool in mc.agent_pool_profiles:
                 labels = agentpool.node_labels
                 if agentpool.name in azure_container_storage_nodepools_list:
-                    nodepool_match_found = True
                     if labels is None:
                         labels = {}
                     labels[CONST_ACSTOR_IO_ENGINE_LABEL_KEY] = CONST_ACSTOR_IO_ENGINE_LABEL_VAL
                 else:
                     # Remove residual Azure Container Storage labels
                     # from any other nodepools where its not intended
-                    labels.pop(CONST_ACSTOR_IO_ENGINE_LABEL_KEY, None)
+                    if labels is not None:
+                        labels.pop(CONST_ACSTOR_IO_ENGINE_LABEL_KEY, None)
                 agentpool.node_labels = labels
 
             # set intermediates
