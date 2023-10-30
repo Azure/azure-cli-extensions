@@ -13,11 +13,15 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-09-02-preview.
 
-0.5.167
+0.5.168
 +++++++
 * Add `--node-soak-duration` to the `az aks nodepool add/update/upgrade` commands.
 * Add `--drain-timeout` to the `az aks nodepool add/update/upgrade` commands (already in [azure-cli](https://github.com/Azure/azure-cli/pull/27475)).
 
+0.5.167
++++++++
+* Fix the default storagepool name value created for Azure Container Storage.
+* Ensure the correct nodepool name is picked and labelled by Azure Container Storage while installing with `az aks create`.
 
 0.5.166
 +++++++

@@ -2759,9 +2759,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             self.context.set_intermediate("azuremonitormetrics_addon_enabled", True, overwrite_exists=True)
         return mc
 
-    def set_up_azure_container_storage(self, mc: ManagedCluster) -> None:
+    def set_up_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up azure container storage for the Managed Cluster object
-        :return: None
+        :return: ManagedCluster
         """
         self._ensure_mc(mc)
         # read the azure container storage values passed
@@ -2772,6 +2772,20 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
+            if not mc.agent_pool_profiles:
+                raise UnknownError("Encountered an unexpected error while getting the agent pools from the cluster.")
+            agentpool = mc.agent_pool_profiles[0]
+            agentpool_name_list = [agentpool.name]
+            # Marking the only agentpool name as the valid nodepool for
+            # installing Azure Container Storage during `az aks create`
+            nodepool_list = agentpool.name
+
+            from azext_aks_preview.azurecontainerstorage._helpers import check_if_extension_is_installed
+            is_extension_already_installed = check_if_extension_is_installed(
+                self.cmd,
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+            )
             from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
             validate_azure_container_storage_params(
                 True,
@@ -2781,11 +2795,27 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 pool_sku,
                 pool_option,
                 pool_size,
-                None,
+                nodepool_list,
+                agentpool_name_list,
+                is_extension_already_installed,
             )
+
+            # Setup Azure Container Storage labels on the nodepool
+            from azext_aks_preview.azurecontainerstorage._consts import (
+                CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
+                CONST_ACSTOR_IO_ENGINE_LABEL_VAL
+            )
+            nodepool_labels = agentpool.node_labels
+            if nodepool_labels is None:
+                nodepool_labels = {}
+            nodepool_labels[CONST_ACSTOR_IO_ENGINE_LABEL_KEY] = CONST_ACSTOR_IO_ENGINE_LABEL_VAL
+            agentpool.node_labels = nodepool_labels
 
             # set intermediates
             self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
+            self.context.set_intermediate("azure_container_storage_nodepools", nodepool_list, overwrite_exists=True)
+
+        return mc
 
     def set_up_auto_upgrade_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up auto upgrade profile for the ManagedCluster object.
@@ -2928,7 +2958,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # set up metrics profile
         mc = self.set_up_metrics_profile(mc)
         # set up for azure container storage
-        self.set_up_azure_container_storage(mc)
+        mc = self.set_up_azure_container_storage(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -3114,8 +3144,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             pool_size = self.context.raw_param.get("storage_pool_size")
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
             node_resource_group = cluster.node_resource_group
+            nodepool_name = self.context.get_intermediate("azure_container_storage_nodepools")
             agent_pool_details = {}
-            for agentpool_profile in cluster.agent_pool_profiles:
+            if len(cluster.agent_pool_profiles) > 0:
+                # Cluster creation has only 1 agentpool
+                agentpool_profile = cluster.agent_pool_profiles[0]
                 agent_pool_details[agentpool_profile.name] = agentpool_profile.vm_size
 
             self.context.external_functions.perform_enable_azure_container_storage(
@@ -3130,7 +3163,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 pool_size,
                 pool_sku,
                 pool_option,
-                "nodepool1",
+                nodepool_name,
                 agent_pool_details,
                 True,
             )
@@ -3266,21 +3299,53 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
         return mc
 
-    def update_azure_container_storage(self, mc: ManagedCluster) -> None:
+    def update_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure container storage for the Managed Cluster object
-        :return: None
+        :return: ManagedCluster
         """
         self._ensure_mc(mc)
         # read the azure container storage values passed
         pool_type = self.context.raw_param.get("enable_azure_container_storage")
         disable_azure_container_storage = self.context.raw_param.get("disable_azure_container_storage")
         enable_azure_container_storage = pool_type is not None
+        nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
         if enable_azure_container_storage or disable_azure_container_storage:
             pool_name = self.context.raw_param.get("storage_pool_name")
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
-            nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
+            agentpool_names = []
+            # Incase of enable_azure_container_storage,
+            # we will collect the agentpool_names and
+            # handle the default values of the nodepool
+            # on which we will install Azure Container Storage.
+            # Incase of disable_azure_container_storage,
+            # the expected value is None and no further
+            # processing is required on the nodepool list.
+            if enable_azure_container_storage:
+                if not mc.agent_pool_profiles:
+                    raise UnknownError(
+                        "Encounter an unexpected error while getting agent pool profiles from the cluster in the process of "
+                        "updating agentpool profile."
+                    )
+
+                for agentpool in mc.agent_pool_profiles:
+                    if agentpool.name is None:
+                        raise UnknownError("Unexpected error while getting agent pool name.")
+                    agentpool_names.append(agentpool.name)
+
+                if nodepool_list is None:
+                    # When not defined, either pick nodepool1 as default or if only
+                    # one nodepool exists. Choose the only nodepool by default.
+                    nodepool_list = "nodepool1"
+                    if len(agentpool_names) == 1:
+                        nodepool_list = agentpool_names[0]
+            from azext_aks_preview.azurecontainerstorage._helpers import check_if_extension_is_installed
+            is_extension_already_installed = check_if_extension_is_installed(
+                self.cmd,
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+            )
             from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
             validate_azure_container_storage_params(
                 enable_azure_container_storage,
@@ -3291,11 +3356,33 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 pool_option,
                 pool_size,
                 nodepool_list,
+                agentpool_names,
+                is_extension_already_installed,
             )
 
         if enable_azure_container_storage:
+            # Set Azure Container Storage labels on the required nodepools
+            azure_container_storage_nodepools_list = nodepool_list.split(',')
+            from azext_aks_preview.azurecontainerstorage._consts import (
+                CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
+                CONST_ACSTOR_IO_ENGINE_LABEL_VAL
+            )
+            for agentpool in mc.agent_pool_profiles:
+                labels = agentpool.node_labels
+                if agentpool.name in azure_container_storage_nodepools_list:
+                    if labels is None:
+                        labels = {}
+                    labels[CONST_ACSTOR_IO_ENGINE_LABEL_KEY] = CONST_ACSTOR_IO_ENGINE_LABEL_VAL
+                else:
+                    # Remove residual Azure Container Storage labels
+                    # from any other nodepools where its not intended
+                    if labels is not None:
+                        labels.pop(CONST_ACSTOR_IO_ENGINE_LABEL_KEY, None)
+                agentpool.node_labels = labels
+
             # set intermediates
             self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
+            self.context.set_intermediate("azure_container_storage_nodepools", nodepool_list, overwrite_exists=True)
 
         if disable_azure_container_storage:
             pre_uninstall_validate = False
@@ -3309,6 +3396,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # set intermediate
             self.context.set_intermediate("disable_azure_container_storage", True, overwrite_exists=True)
             self.context.set_intermediate("pre_uninstall_validate_azure_container_storage", pre_uninstall_validate, overwrite_exists=True)
+
+        return mc
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
@@ -3947,7 +4036,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # update metrics profile
         mc = self.update_metrics_profile(mc)
         # update azure container storage
-        self.update_azure_container_storage(mc)
+        mc = self.update_azure_container_storage(mc)
 
         return mc
 
@@ -3989,7 +4078,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
-            nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
+            nodepool_list = self.context.get_intermediate("azure_container_storage_nodepools")
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
             agent_pool_details = {}
             for agentpool_profile in cluster.agent_pool_profiles:
