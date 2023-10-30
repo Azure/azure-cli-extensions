@@ -6,7 +6,7 @@
 from typing import Dict
 from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
-from ._clients import ContainerAppClient, DaprComponentPreviewClient
+from ._clients import ContainerAppPreviewClient, DaprComponentPreviewClient
 from ._models import (
     DaprComponent as DaprComponentModel,
     DaprMetadata as DaprMetadataModel,
@@ -243,7 +243,7 @@ class DaprUtils:
         logger.debug("Looking up service %s of type %s", service_name, service_type)
         service_def = None
         try:
-            service_def = ContainerAppClient.show(
+            service_def = ContainerAppPreviewClient.show(
                 cmd, resource_group_name, service_name
             )
         except Exception:  # pylint: disable=broad-except
