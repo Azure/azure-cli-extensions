@@ -129,7 +129,7 @@ class DaprUtils:
             "metadata",
             DAPRCOMPONENTINIT_SERVICEBIND_METADATA_CREATEDBY_KEY,
         )
-        
+
         # If the component was created by dapr-component init, it will have the metadata key.
         # This can be created by the CLI or another source (like portal), so we skip the check for the value.
         if service_binding_metadata_created_by is not None:
@@ -162,7 +162,7 @@ class DaprUtils:
         :return: Dapr component definition of the component (whether it was created or not)
         """
         if (
-            component_type not in DaprUtils.supported_dapr_components.keys()
+            component_type not in DaprUtils.supported_dapr_components
             or service_type not in DaprUtils.supported_dapr_components[component_type]
         ):
             raise ValidationError(
@@ -236,7 +236,7 @@ class DaprUtils:
         :return: service definition of the service (whether it was created or not)
         """
         supported_services = DaprUtils._get_supported_services()
-        if service_type not in supported_services.keys():
+        if service_type not in supported_services:
             raise ValidationError(f"Service type {service_type} is not supported.")
 
         # Look up the service, if it already exists, return it.
