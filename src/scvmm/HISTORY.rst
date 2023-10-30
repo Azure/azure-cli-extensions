@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.2
+++++++
+* Extension release with GA status, removed preview flag.
+
 0.2.0
 ++++++
 * Using New Resource Model for all VM operations:
