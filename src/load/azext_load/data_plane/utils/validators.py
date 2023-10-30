@@ -114,7 +114,7 @@ def validate_certificate(namespace):
         )
     comps = certificate.split("=", 1)
     if len(comps) != 2:
-        raise InvalidArgumentValueError(f"Invalid certificate argument: {certificate}")    
+        raise InvalidArgumentValueError(f"Invalid certificate argument: {certificate}")
     if (comps[1] not in ["", "null"]) and not _validate_akv_url(comps[1], "certificates"):
         raise InvalidArgumentValueError(
             f"Invalid Azure Key Vault Certificate URL: {comps[1]}"

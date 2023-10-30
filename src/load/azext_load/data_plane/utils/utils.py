@@ -374,7 +374,7 @@ def create_or_update_test_with_config(
             new_body.pop("keyvaultReferenceIdentityId")
     subnet_id = subnet_id or yaml_test_body.get("subnetId")
     if subnet_id:
-        if subnet_id.casefold() in ["null",""]:
+        if subnet_id.casefold() in ["null", ""]:
             new_body["subnetId"] = None
         else:
             new_body["subnetId"] = subnet_id
@@ -478,7 +478,7 @@ def create_or_update_test_without_config(
             new_body.pop("keyvaultReferenceIdentityId")
     subnet_id = subnet_id or body.get("subnetId")
     if subnet_id:
-        if subnet_id.casefold() in ["null",""]:
+        if subnet_id.casefold() in ["null", ""]:
             new_body["subnetId"] = None
         else:
             new_body["subnetId"] = subnet_id
