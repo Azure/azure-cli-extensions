@@ -78,7 +78,8 @@ from ._constants import (CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
-                         DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
+                         DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
+                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST)
 
 logger = get_logger(__name__)
 
@@ -1597,3 +1598,40 @@ def connected_env_remove_storage(cmd, storage_name, name, resource_group_name):
         return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name)
     except CLIError as e:
         handle_raw_exception(e)
+
+
+def init_dapr_components(cmd, resource_group_name, environment_name, statestore="redis", pubsub="redis"):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if statestore not in DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST:
+        raise ValidationError(
+            f"Statestore {statestore} is not supported. Supported statestores are {', '.join(DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST)}."
+        )
+    if pubsub not in DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST:
+        raise ValidationError(
+            f"Pubsub {pubsub} is not supported. Supported pubsubs are {', '.join(DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST)}."
+        )
+
+    from ._dapr_utils import DaprUtils
+
+    statestore_metadata = {"actorStateStore": "true"}
+    statestore_service_id, statestore_component_id = DaprUtils.create_dapr_component_with_service(
+        cmd, "state", statestore, resource_group_name, environment_name, component_metadata=statestore_metadata)
+
+    if statestore == pubsub:
+        # For cases where statestore and pubsub are the same, we don't need to create another service.
+        # E.g. Redis can be used for both statestore and pubsub.
+        pubsub_service_id, pubsub_component_id = DaprUtils.create_dapr_component_with_service(
+            cmd, "pubsub", pubsub, resource_group_name, environment_name, service_id=statestore_service_id)
+    else:
+        pubsub_service_id, pubsub_component_id = DaprUtils.create_dapr_component_with_service(
+            cmd, "pubsub", pubsub, resource_group_name, environment_name)
+
+    return {
+        "message": "Operation successful.",
+        "resources": {
+            # Remove duplicates for services like Redis, which can be used for both statestore and pubsub
+            "devServices": list(set([statestore_service_id, pubsub_service_id])),
+            "daprComponents": [statestore_component_id, pubsub_component_id]
+        }
+    }

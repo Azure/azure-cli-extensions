@@ -198,6 +198,58 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
+        # Invalid pubsub service type should throw an error.
+        self.cmd('containerapp env dapr-component init -n {} -g {} --pubsub {}'.format(env_name, resource_group, "invalid1"), expect_failure=True)
+
+        # Invalid statestore service type should throw an error.
+        self.cmd('containerapp env dapr-component init -n {} -g {} --statestore {}'.format(env_name, resource_group, "invalid2"), expect_failure=True)
+
+        # Should create a Redis statestore and pubsub components as default.
+        output_json = self.cmd('containerapp env dapr-component init -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('length(@)', 2),
+            JMESPathCheck('message', "Operation successful."),
+            JMESPathCheck('length(resources.daprComponents)', 2), # Redis statestore and pubsub components
+            JMESPathCheck('length(resources.devServices)', 1), # Single Redis instance
+        ]).get_output_in_json()
+        self.assertIn("daprComponents/statestore", output_json["resources"]["daprComponents"][0])
+        self.assertIn("daprComponents/pubsub", output_json["resources"]["daprComponents"][1])
+        self.assertIn("containerapps/dapr-redis", output_json["resources"]["devServices"][0])
+
+        # Should not create a Redis statestore and pubsub components if they already exist.
+        output_json = self.cmd('containerapp env dapr-component init -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('length(@)', 2),
+            JMESPathCheck('message', "Operation successful."),
+            JMESPathCheck('length(resources.daprComponents)', 2), # Redis statestore and pubsub components
+            JMESPathCheck('length(resources.devServices)', 1), # Single Redis instance
+        ]).get_output_in_json()
+        self.assertIn("daprComponents/statestore", output_json["resources"]["daprComponents"][0])
+        self.assertIn("daprComponents/pubsub", output_json["resources"]["daprComponents"][1])
+        self.assertIn("containerapps/dapr-redis", output_json["resources"]["devServices"][0])
+
+        # Redis statestore should be correctly created.
+        self.cmd('containerapp env dapr-component show --dapr-component-name {} -n {} -g {}'.format("statestore", env_name, resource_group), checks=[
+            JMESPathCheck('name', "statestore"),
+            JMESPathCheck('properties.componentType', "state.redis"),
+            JMESPathCheck('length(properties.metadata)', 1),
+            JMESPathCheck('properties.metadata[0].name', "actorStateStore"),
+            JMESPathCheck('properties.metadata[0].value', "true"),
+            JMESPathCheck('properties.serviceComponentBind.name', "dapr-redis"),
+            JMESPathCheck('properties.serviceComponentBind.serviceId', output_json["resources"]["devServices"][0]),
+            JMESPathCheck('properties.serviceComponentBind.metadata.SB_CREATED_BY', "azext_containerapp_daprutils"),
+            JMESPathCheck('properties.version', "v1"),
+        ])
+
+        # Redis pubsub should be correctly created.
+        self.cmd('containerapp env dapr-component show --dapr-component-name {} -n {} -g {}'.format("pubsub", env_name, resource_group), checks=[
+            JMESPathCheck('name', "pubsub"),
+            JMESPathCheck('properties.componentType', "pubsub.redis"),
+            JMESPathCheck('length(properties.metadata)', 0),
+            JMESPathCheck('properties.serviceComponentBind.name', "dapr-redis"),
+            JMESPathCheck('properties.serviceComponentBind.serviceId', output_json["resources"]["devServices"][0]),
+            JMESPathCheck('properties.serviceComponentBind.metadata.SB_CREATED_BY', "azext_containerapp_daprutils"),
+            JMESPathCheck('properties.version', "v1"),
+        ])
+
     @AllowLargeResponse(8192)
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="northeurope")

@@ -6,6 +6,7 @@ upcoming
 ++++++
 * Update azure cli dependency version >= "2.53.0"
 * Remove GA commands which exists in azure-cli of version 2.53.0
+* 'az containerapp env dapr-component init': support initializing Dapr components and dev services for an environment
 
 0.3.42
 ++++++
