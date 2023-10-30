@@ -74,9 +74,9 @@ class DaprUtilsTest(unittest.TestCase):
         )
         self.assertEqual(
             component_model["properties"]["serviceComponentBind"]["metadata"][
-                "SB_CREATED_BY"
+                "DCI_SB_CREATED_BY"
             ],
-            "azext_containerapp_daprutils",
+            "azcli_azext_containerapp_daprutils",
         )
 
         component_model = DaprUtils._get_dapr_component_model_from_service(

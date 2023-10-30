@@ -235,7 +235,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.metadata[0].value', "true"),
             JMESPathCheck('properties.serviceComponentBind.name', "dapr-redis"),
             JMESPathCheck('properties.serviceComponentBind.serviceId', output_json["resources"]["devServices"][0]),
-            JMESPathCheck('properties.serviceComponentBind.metadata.SB_CREATED_BY', "azext_containerapp_daprutils"),
+            JMESPathCheck('properties.serviceComponentBind.metadata.DCI_SB_CREATED_BY', "azcli_azext_containerapp_daprutils"),
             JMESPathCheck('properties.version', "v1"),
         ])
 
@@ -246,7 +246,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('length(properties.metadata)', 0),
             JMESPathCheck('properties.serviceComponentBind.name', "dapr-redis"),
             JMESPathCheck('properties.serviceComponentBind.serviceId', output_json["resources"]["devServices"][0]),
-            JMESPathCheck('properties.serviceComponentBind.metadata.SB_CREATED_BY', "azext_containerapp_daprutils"),
+            JMESPathCheck('properties.serviceComponentBind.metadata.DCI_SB_CREATED_BY', "azcli_azext_containerapp_daprutils"),
             JMESPathCheck('properties.version', "v1"),
         ])
 
