@@ -3,16 +3,16 @@
 Release History
 ===============
 
-1.0.0b1
+1.0.0b3
 ++++++++
-* Initial release - beta quality
-    * `az aosm nfd|nsd generate-config` to generate an example config file to fill in for an NFD or NSD
-    * `az aosm nfd|nsd build|publish|delete` to prepare files for, publish or delete an NFD or NSD
+* Move azure-storage-blob dependency to vendored_sdks (on advice from Azure CLI team to avoid 'azure' namespace issues)
 
 1.0.0b2
 ++++++++
 * Fixed: Use default_factory when a dataclass default is hashable (Python 3.11 compatibility)
 
-1.0.0b3
+1.0.0b1
 ++++++++
-* Move azure-storage-blob dependency to vendored_sdks (on advice from Azure CLI team to avoid 'azure' namespace issues)
+* Initial release - beta quality
+    * `az aosm nfd|nsd generate-config` to generate an example config file to fill in for an NFD or NSD
+    * `az aosm nfd|nsd build|publish|delete` to prepare files for, publish or delete an NFD or NSD
