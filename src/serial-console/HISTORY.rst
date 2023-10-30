@@ -1,10 +1,6 @@
 Release History
 ===============
 
-0.1.7
-++++++
-* Support publicnetworkaccess in datafactory_create and datafactory_update
-
 0.1.6
 ++++++
 * Fix pair region mapping for eastus to westus
