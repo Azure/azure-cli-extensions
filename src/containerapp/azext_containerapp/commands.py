@@ -46,7 +46,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_managed_certificate', is_preview=True)
         g.custom_command('list', 'list_certificates', is_preview=True)
         g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory(), is_preview=True)
-    
+
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('init', 'init_dapr_components', is_preview=True)
 
