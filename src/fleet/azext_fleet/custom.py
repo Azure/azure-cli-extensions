@@ -16,6 +16,7 @@ from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
 
 
+# pylint: disable=too-many-locals
 def create_fleet(cmd,
                  client,
                  resource_group_name,
@@ -23,6 +24,7 @@ def create_fleet(cmd,
                  location=None,
                  tags=None,
                  enable_hub=False,
+                 vm_size=None,
                  dns_name_prefix=None,
                  enable_private_cluster=False,
                  enable_vnet_integration=False,
@@ -38,7 +40,9 @@ def create_fleet(cmd,
         operation_group="fleets"
     )
 
+    poll_interval = 5
     if enable_hub:
+        poll_interval = 30
         fleet_hub_profile_model = cmd.get_models(
             "FleetHubProfile",
             resource_type=CUSTOM_MGMT_FLEET,
@@ -52,7 +56,8 @@ def create_fleet(cmd,
         agent_profile_model = cmd.get_models(
             "AgentProfile",
             resource_type=CUSTOM_MGMT_FLEET,
-            operation_group="fleets"
+            operation_group="fleets",
+            vm_size=vm_size
         )
         if dns_name_prefix is None:
             subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -94,8 +99,13 @@ def create_fleet(cmd,
     if enable_managed_identity:
         managed_service_identity.type = "SystemAssigned"
         if assign_identity is not None:
+            user_assigned_identity_model = cmd.get_models(
+                "UserAssignedIdentity",
+                resource_type=CUSTOM_MGMT_FLEET,
+                operation_group="fleets"
+            )
             managed_service_identity.type = "UserAssigned"
-            managed_service_identity.user_assigned_identities = {assign_identity: None}
+            managed_service_identity.user_assigned_identities = {assign_identity: user_assigned_identity_model()}
     elif assign_identity is not None:
         raise CLIError("Cannot assign identity without enabling managed identity.")
 
@@ -106,14 +116,19 @@ def create_fleet(cmd,
         identity=managed_service_identity
     )
 
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, fleet)
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name,
+                       name,
+                       fleet,
+                       polling_interval=poll_interval)
 
 
 def update_fleet(cmd,
                  client,
                  resource_group_name,
                  name,
-                 enable_managed_identity=False,
+                 enable_managed_identity=None,
                  assign_identity=None,
                  tags=None,
                  no_wait=False):
@@ -128,20 +143,29 @@ def update_fleet(cmd,
         operation_group="fleets"
     )
 
-    managed_service_identity = fleet_managed_service_identity_model(type="None")
-    if enable_managed_identity:
-        managed_service_identity.type = "SystemAssigned"
+    if enable_managed_identity is None:
+        managed_service_identity = None
         if assign_identity is not None:
+            raise CLIError("Cannot assign identity without enabling managed identity.")
+    elif enable_managed_identity is False:
+        managed_service_identity = fleet_managed_service_identity_model(type="None")
+    else:
+        managed_service_identity = fleet_managed_service_identity_model(type="SystemAssigned")
+        if assign_identity is not None:
+            user_assigned_identity_model = cmd.get_models(
+                "UserAssignedIdentity",
+                resource_type=CUSTOM_MGMT_FLEET,
+                operation_group="fleets"
+            )
             managed_service_identity.type = "UserAssigned"
-            managed_service_identity.user_assigned_identities = {assign_identity: None}
+            managed_service_identity.user_assigned_identities = {assign_identity: user_assigned_identity_model()}
 
     fleet_patch = fleet_patch_model(
         tags=tags,
         identity=managed_service_identity
     )
 
-    fleet_patch = fleet_patch_model(tags=tags)
-    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch)
+    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch, polling_interval=5)
 
 
 def show_fleet(cmd,  # pylint: disable=unused-argument
@@ -164,7 +188,7 @@ def delete_fleet(cmd,  # pylint: disable=unused-argument
                  resource_group_name,
                  name,
                  no_wait=False):
-    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name, polling_interval=5)
 
 
 def get_credentials(cmd,  # pylint: disable=unused-argument
@@ -251,17 +275,17 @@ def create_update_run(cmd,
                       fleet_name,
                       name,
                       upgrade_type,
-                      node_image_selection,
+                      node_image_selection=None,
                       kubernetes_version=None,
                       stages=None,
-                      update_strategy_id=None,
+                      update_strategy_name=None,
                       no_wait=False):
     if upgrade_type == "Full" and kubernetes_version is None:
         raise CLIError("Please set kubernetes version when upgrade type is 'Full'.")
     if upgrade_type == "NodeImageOnly" and kubernetes_version is not None:
         raise CLIError("Cannot set kubernetes version when upgrade type is 'NodeImageOnly'.")
-    if stages is not None and update_strategy_id is not None:
-        raise CLIError("Cannot set stages when update strategy id is set.")
+    if stages is not None and update_strategy_name is not None:
+        raise CLIError("Cannot set stages when update strategy name is set.")
 
     update_run_strategy = get_update_run_strategy(cmd, "update_runs", stages)
 
@@ -288,18 +312,36 @@ def create_update_run(cmd,
 
     managed_cluster_upgrade_spec = managed_cluster_upgrade_spec_model(
         type=upgrade_type, kubernetes_version=kubernetes_version)
+    if node_image_selection is None:
+        node_image_selection = "Latest"
     node_image_selection_type = node_image_selection_model(type=node_image_selection)
 
     managed_cluster_update = managed_cluster_update_model(
         upgrade=managed_cluster_upgrade_spec,
         node_image_selection=node_image_selection_type)
 
+    updateStrategyId = None
+    if update_strategy_name is not None:
+        subId = get_subscription_id(cmd.cli_ctx)
+        updateStrategyId = (
+            f"/subscriptions/{subId}/resourceGroups/{resource_group_name}"
+            f"/providers/Microsoft.ContainerService/fleets/{fleet_name}/updateStrategies/{update_strategy_name}"
+        )
+
     update_run = update_run_model(
-        update_strategy_id=update_strategy_id,
+        update_strategy_id=updateStrategyId,
         strategy=update_run_strategy,
         managed_cluster_update=managed_cluster_update)
 
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
+    result = None
+    try:
+        result = sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
+        print("After successfully creating the run, you need to use the following command to start the run:"
+              f"az fleet updaterun start --resource-group={resource_group_name} --fleet={fleet_name} --name={name}")
+    except Exception as e:
+        return e
+
+    return result
 
 
 def show_update_run(cmd,  # pylint: disable=unused-argument
