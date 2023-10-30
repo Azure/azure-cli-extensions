@@ -18,14 +18,17 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a Volume Group.
 
-    :example: Create a Volume Group.
-        az elastic-san volume-group create -e {san_name} -n {vg_name} -g {rg} --tags "{key1910:bbbb}" --encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi --network-acls "{virtual-network-rules:["{id:{subnet_id},action:Allow}"]}"
+    :example: Create a Volume Group with PlaformManagedkey and SystemAssignedIdentity
+        az elastic-san volume-group create -e "san_name" -n "vg_name" -g "rg" --tags '{key1910:bbbb}' --encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi --network-acls '{virtual-network-rules:[{id:"subnet_id",action:Allow}]}' --identity '{type:SystemAssigned}'
+
+    :example: Create a volume group with CustomerManagedKey and UserAssignedIdentity
+        az elastic-san volume-group create -e "san_name" -n "vg_name" -g "rg" --encryption EncryptionAtRestWithCustomerManagedKey --protocol-type Iscsi --identity '{type:UserAssigned,user-assigned-identity:"uai_id"}' --encryption-properties '{key-vault-properties:{key-name:"key_name",key-vault-uri:"vault_uri"},identity:{user-assigned-identity:"uai_id"}}'
     """
 
     _aaz_info = {
-        "version": "2022-12-01-preview",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2022-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2023-01-01"],
         ]
     }
 
@@ -47,7 +50,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -70,6 +73,32 @@ class Create(AAZCommand):
             ),
         )
 
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="Parameters",
+            help="The identity of the resource.",
+        )
+
+        identity = cls._args_schema.identity
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="The identity type.",
+            required=True,
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
+        )
+        identity.user_assigned_identities = AAZDictArg(
+            options=["user-assigned-identities"],
+            help="Gets or sets a list of key value pairs that describe the set of User Assigned identities that will be used with this volume group. The key is the ARM resource identifier of the identity.",
+        )
+
+        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            blank={},
+        )
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -77,7 +106,12 @@ class Create(AAZCommand):
             options=["--encryption"],
             arg_group="Properties",
             help="Type of encryption",
-            enum={"EncryptionAtRestWithPlatformKey": "EncryptionAtRestWithPlatformKey"},
+            enum={"EncryptionAtRestWithCustomerManagedKey": "EncryptionAtRestWithCustomerManagedKey", "EncryptionAtRestWithPlatformKey": "EncryptionAtRestWithPlatformKey"},
+        )
+        _args_schema.encryption_properties = AAZObjectArg(
+            options=["--encryption-properties"],
+            arg_group="Properties",
+            help="Encryption Properties describing Key Vault and Identity information",
         )
         _args_schema.network_acls = AAZObjectArg(
             options=["--network-acls"],
@@ -89,6 +123,36 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Type of storage target",
             enum={"Iscsi": "Iscsi", "None": "None"},
+        )
+
+        encryption_properties = cls._args_schema.encryption_properties
+        encryption_properties.identity = AAZObjectArg(
+            options=["identity"],
+            help="The identity to be used with service-side encryption at rest.",
+        )
+        encryption_properties.key_vault_properties = AAZObjectArg(
+            options=["key-vault-properties"],
+            help="Properties provided by key vault.",
+        )
+
+        identity = cls._args_schema.encryption_properties.identity
+        identity.user_assigned_identity = AAZStrArg(
+            options=["user-assigned-identity"],
+            help="Resource identifier of the UserAssigned identity to be associated with server-side encryption on the volume group.",
+        )
+
+        key_vault_properties = cls._args_schema.encryption_properties.key_vault_properties
+        key_vault_properties.key_name = AAZStrArg(
+            options=["key-name"],
+            help="The name of KeyVault key.",
+        )
+        key_vault_properties.key_vault_uri = AAZStrArg(
+            options=["key-vault-uri"],
+            help="The Uri of KeyVault.",
+        )
+        key_vault_properties.key_version = AAZStrArg(
+            options=["key-version"],
+            help="The version of KeyVault key.",
         )
 
         network_acls = cls._args_schema.network_acls
@@ -199,7 +263,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01-preview",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -224,13 +288,39 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("encryption", AAZStrType, ".encryption")
+                properties.set_prop("encryptionProperties", AAZObjectType, ".encryption_properties")
                 properties.set_prop("networkAcls", AAZObjectType, ".network_acls")
                 properties.set_prop("protocolType", AAZStrType, ".protocol_type")
+
+            encryption_properties = _builder.get(".properties.encryptionProperties")
+            if encryption_properties is not None:
+                encryption_properties.set_prop("identity", AAZObjectType, ".identity")
+                encryption_properties.set_prop("keyVaultProperties", AAZObjectType, ".key_vault_properties")
+
+            identity = _builder.get(".properties.encryptionProperties.identity")
+            if identity is not None:
+                identity.set_prop("userAssignedIdentity", AAZStrType, ".user_assigned_identity")
+
+            key_vault_properties = _builder.get(".properties.encryptionProperties.keyVaultProperties")
+            if key_vault_properties is not None:
+                key_vault_properties.set_prop("keyName", AAZStrType, ".key_name")
+                key_vault_properties.set_prop("keyVaultUri", AAZStrType, ".key_vault_uri")
+                key_vault_properties.set_prop("keyVersion", AAZStrType, ".key_version")
 
             network_acls = _builder.get(".properties.networkAcls")
             if network_acls is not None:
@@ -268,6 +358,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.identity = AAZObjectType()
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -283,8 +374,40 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200_201.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200_201.properties
             properties.encryption = AAZStrType()
+            properties.encryption_properties = AAZObjectType(
+                serialized_name="encryptionProperties",
+            )
             properties.network_acls = AAZObjectType(
                 serialized_name="networkAcls",
             )
@@ -300,6 +423,40 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            encryption_properties = cls._schema_on_200_201.properties.encryption_properties
+            encryption_properties.identity = AAZObjectType()
+            encryption_properties.key_vault_properties = AAZObjectType(
+                serialized_name="keyVaultProperties",
+            )
+
+            identity = cls._schema_on_200_201.properties.encryption_properties.identity
+            identity.user_assigned_identity = AAZStrType(
+                serialized_name="userAssignedIdentity",
+            )
+
+            key_vault_properties = cls._schema_on_200_201.properties.encryption_properties.key_vault_properties
+            key_vault_properties.current_versioned_key_expiration_timestamp = AAZStrType(
+                serialized_name="currentVersionedKeyExpirationTimestamp",
+                flags={"read_only": True},
+            )
+            key_vault_properties.current_versioned_key_identifier = AAZStrType(
+                serialized_name="currentVersionedKeyIdentifier",
+                flags={"read_only": True},
+            )
+            key_vault_properties.key_name = AAZStrType(
+                serialized_name="keyName",
+            )
+            key_vault_properties.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+            )
+            key_vault_properties.key_version = AAZStrType(
+                serialized_name="keyVersion",
+            )
+            key_vault_properties.last_key_rotation_timestamp = AAZStrType(
+                serialized_name="lastKeyRotationTimestamp",
+                flags={"read_only": True},
+            )
+
             network_acls = cls._schema_on_200_201.properties.network_acls
             network_acls.virtual_network_rules = AAZListType(
                 serialized_name="virtualNetworkRules",
@@ -312,9 +469,6 @@ class Create(AAZCommand):
             _element.action = AAZStrType()
             _element.id = AAZStrType(
                 flags={"required": True},
-            )
-            _element.state = AAZStrType(
-                flags={"read_only": True},
             )
 
             private_endpoint_connections = cls._schema_on_200_201.properties.private_endpoint_connections

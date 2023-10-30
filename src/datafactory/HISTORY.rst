@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.8.0
++++++
+* Support publicnetworkaccess in datafactory_create and datafactory_update
+
 0.7.0
 +++++
 * az datafactory data-flow: Support create/update/list/show/delete data flows.

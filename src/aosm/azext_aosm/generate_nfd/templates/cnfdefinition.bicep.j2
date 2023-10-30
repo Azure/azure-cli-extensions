@@ -1,0 +1,79 @@
+// Copyright (c) Microsoft Corporation.
+
+// This file creates an NF definition for a CNF
+param location string
+@description('Name of an existing publisher, expected to be in the resource group where you deploy the template')
+param publisherName string
+@description('Name of an existing ACR-backed Artifact Store, deployed under the publisher.')
+param acrArtifactStoreName string
+@description('Name of an existing Network Function Definition Group')
+param nfDefinitionGroup string
+@description('The version of the NFDV you want to deploy, in format A.B.C')
+param nfDefinitionVersion string
+
+// Created by the az aosm definition publish command before the template is deployed
+resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing = {
+  name: publisherName
+  scope: resourceGroup()
+}
+
+// Created by the az aosm definition publish command before the template is deployed
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+  parent: publisher
+  name: acrArtifactStoreName
+}
+
+// Created by the az aosm definition publish command before the template is deployed
+resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2023-09-01' existing = {
+  parent: publisher
+  name: nfDefinitionGroup
+}
+
+resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2023-09-01' = {
+  parent: nfdg
+  name: nfDefinitionVersion
+  location: location
+  properties: {
+    // versionState should be changed to 'Active' once it is finalized.
+    versionState: 'Preview'
+    {#- Note that all paths in bicep must be specified using the forward slash #}
+    {#-  (/) character even if running on Windows. #}
+    {#- See https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/modules#local-file #}
+    deployParameters: string(loadJsonContent('schemas/deploymentParameters.json'))
+    networkFunctionType: 'ContainerizedNetworkFunction'
+    networkFunctionTemplate: {
+      nfviType: 'AzureArcKubernetes'
+      networkFunctionApplications: [
+      {%- for configuration in nf_application_configurations %}
+        {
+          artifactType: 'HelmPackage'
+          name: '{{ configuration.name }}'
+          dependsOnProfile: {
+            installDependsOn: {{ configuration.dependsOnProfile }}
+          }
+          artifactProfile: {
+            artifactStore: {
+              id: acrArtifactStore.id
+            }
+            helmArtifactProfile: {
+              helmPackageName: '{{ configuration.chartName }}'
+              helmPackageVersionRange: '{{ configuration.chartVersion }}'
+              registryValuesPaths: {{ configuration.registryValuesPaths }}
+              imagePullSecretsValuesPaths: {{ configuration.imagePullSecretsValuesPaths }}
+            }
+          }
+          deployParametersMappingRuleProfile: {
+            applicationEnablement: 'Enabled'
+            helmMappingRuleProfile: {
+              releaseNamespace: '{{ configuration.releaseName }}'
+              releaseName: '{{ configuration.releaseName }}'
+              helmPackageVersion: '{{ configuration.chartVersion }}'
+              values: string(loadJsonContent('configMappings/{{ configuration.valueMappingsFile }}'))
+            }
+          }
+        }
+      {%- endfor %}
+      ]
+    }
+  }
+}
