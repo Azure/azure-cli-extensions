@@ -247,5 +247,5 @@ def load_command_table(self: AzCommandsLoader, _):
         g.custom_command('update', 'scvmm_extension_update', supports_no_wait=True)
         g.custom_command('delete', 'scvmm_extension_delete', supports_no_wait=True, confirmation=True)
 
-    with self.command_group('scvmm', is_preview=True):
+    with self.command_group('scvmm', is_preview=False):
         pass
