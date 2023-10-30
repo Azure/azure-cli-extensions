@@ -55,6 +55,7 @@ def load_arguments(self, _):
         c.argument('association_name', options_list=['--name', '-n'], help='The name of the association.')
         c.argument('description', help='Description of the association.')
         c.argument('rule_id', help='The resource ID of the data collection rule that is to be associated.')
+        c.argument('endpoint_id', help='The resource ID of the data collection endpoint that is to be associated.')
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
 
     with self.argument_context('monitor data-collection rule association list') as c:
