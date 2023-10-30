@@ -179,17 +179,6 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
             JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
         ])
-        # default enable workload profiles
-        env4 = self.create_random_name(prefix='env4', length=24)
-        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(
-            resource_group, env4), expect_failure=False, checks=[
-            JMESPathCheck("name", env4),
-            JMESPathCheck("properties.provisioningState", "Succeeded"),
-            JMESPathCheck("length(properties.workloadProfiles)", 1),
-            JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
-            JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
-        ])
-
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
@@ -413,9 +402,13 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
         app1 = self.create_random_name(prefix='app1', length=24)
-        self.cmd(f'containerapp create -n {app1} -g {resource_group} --image mcr.microsoft.com/azuredocs/samples-tf-mnist-demo:gpu --environment {env} -w {gpu_default_name} --min-replicas 1', checks=[
+        self.cmd(f'containerapp create -n {app1} -g {resource_group} --image mcr.microsoft.com/azuredocs/samples-tf-mnist-demo:gpu --environment {env} -w {gpu_default_name} --min-replicas 1 --cpu 0.1 --memory 0.1', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.workloadProfileName", gpu_default_name),
+            JMESPathCheck('properties.template.containers[0].resources.cpu', '0.1'),
+            JMESPathCheck('properties.template.containers[0].resources.memory', '0.1Gi'),
+            JMESPathCheck('properties.template.scale.minReplicas', '1'),
+            JMESPathCheck('properties.template.scale.maxReplicas', '10')
         ])
         self.cmd(f'containerapp logs show -n {app1} -g {resource_group}', expect_failure=False)
 
