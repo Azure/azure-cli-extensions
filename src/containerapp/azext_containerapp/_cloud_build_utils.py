@@ -26,7 +26,7 @@ from ._utils import (
 class CloudBuildError(Exception):
     pass
 
-def run_cloud_build(cmd, image_name, source, location, subscription_id, resource_group_name, environment_name, run_full_id, logs_file, logs_file_path):
+def run_cloud_build(cmd, source, location, resource_group_name, environment_name, run_full_id, logs_file, logs_file_path):
     generated_build_name = 'build{}'.format(run_full_id)[:12]
     log_in_file(f"Starting the Cloud Build for build of id '{generated_build_name}'\n", logs_file, no_print=True)
 
@@ -43,6 +43,7 @@ def run_cloud_build(cmd, image_name, source, location, subscription_id, resource
         hide_cursor = "\033[?25l"
         display_cursor = "\033[?25h"
         substatus_indentation = "              "
+
         def display_spinner(task_title):
             # Hide the cursor
             print(hide_cursor, end="")
@@ -57,10 +58,10 @@ def run_cloud_build(cmd, image_name, source, location, subscription_id, resource
                     time_elapsed = time.time() - start_time
                     print(f"\r    {spinner} {task_title} ({time_elapsed:.1f}s)", end="", flush=True)
                     time.sleep(0.15)
-                if (cancel_spinner):
+                if cancel_spinner:
                     print(f"\r    {font_bold_yellow}Canceled:{font_default} {task_title} ({time_elapsed:.1f}s)")
                     log_in_file(f"Canceled: {task_title} ({time_elapsed:.1f}s)", logs_file, no_print=True)
-                elif (fail_spinner):
+                elif fail_spinner:
                     print(f"\r    {font_bold_red}(X) Fail:{font_default} {task_title} ({time_elapsed:.1f}s)")
                     log_in_file(f"Fail: {task_title} ({time_elapsed:.1f}s)", logs_file, no_print=True)
                 else:
@@ -176,7 +177,7 @@ def run_cloud_build(cmd, image_name, source, location, subscription_id, resource
         for line in response_log_streaming.iter_lines():
             log_line = remove_ansi_characters(line.decode("utf-8"))
             current_phase_logs += f"{log_line}\n{substatus_indentation}"
-            if ("ERROR:" in log_line or "Kubernetes error happened" in log_line):
+            if "ERROR:" in log_line or "Kubernetes error happened" in log_line:
                 raise CloudBuildError(current_phase_logs)
 
             log_execution_phase_match = re.search(log_execution_phase_pattern, log_line)

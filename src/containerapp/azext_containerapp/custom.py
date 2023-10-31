@@ -854,6 +854,7 @@ def containerapp_up(cmd,
             _get_registry_from_app(app, source)  # if the app exists, get the registry
         _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
+    used_default_container_registry = False
     if source:
         used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile)
     else:

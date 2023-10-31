@@ -493,6 +493,7 @@ class ConnectedEnvStorageClient():
 
         return env_list
 
+
 class BuilderClient():
     api_version = PREVIEW_API_VERSION
 
@@ -537,6 +538,7 @@ class BuilderClient():
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
+
 
 class BuildClient():
     api_version = PREVIEW_API_VERSION
