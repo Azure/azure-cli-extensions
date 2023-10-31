@@ -213,8 +213,8 @@ helps['aks create'] = """
           short-summary: (PREVIEW) The Kubernetes network policy to use.
           long-summary: |
               Using together with "azure" network plugin.
-              Specify "azure" for Azure network policy manager, "calico" for calico network policy controller, "cilium" for Azure CNI Overlay powered by Cilium.
-              Defaults to "" (network policy disabled).
+              Specify "azure" for Azure network policy manager, "calico" for calico network policy controller, "cilium" for Azure CNI Overlay powered by Cilium, "none" to not install Network Policy Manager.
+              Defaults to "none" (network policy disabled).
         - name: --network-dataplane
           type: string
           short-summary: The network dataplane to use.
@@ -864,8 +864,7 @@ helps['aks update'] = """
           type: string
           short-summary: Update the mode of a network policy.
           long-summary: |
-              Specify "azure" for Azure network policy manager, "cilium" for Azure CNI Overlay powered by Cilium.
-              Defaults to "" (network policy disabled).
+              Specify "azure" for Azure network policy manager, "cilium" for Azure CNI Overlay powered by Cilium, "calico" for Calico network policy manager, "none" to uninstall Azure or Calico network policy manager.
         - name: --network-dataplane
           type: string
           short-summary: The network dataplane to use.
