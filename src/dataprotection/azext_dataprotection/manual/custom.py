@@ -400,7 +400,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
                     if "UserAssigned" in aks_cluster.identity.type:
                         uami_key = list(aks_cluster.identity.user_assigned_identities.keys())[0]
-                        if uami_key == "" or uami_key == None:
+                        if uami_key == "" or uami_key is None:
                             raise CLIInternalError("User assigned identity not found for AKS Cluster")
                         datasource_principal_id = aks_cluster.identity.user_assigned_identities[uami_key].principal_id
                     else:
@@ -500,7 +500,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
                     if "UserAssigned" in aks_cluster.identity.type:
                         uami_key = list(aks_cluster.identity.user_assigned_identities.keys())[0]
-                        if uami_key == "" or uami_key == None:
+                        if uami_key == "" or uami_key is None:
                             raise CLIInternalError("User assigned identity not found for AKS Cluster")
                         datasource_principal_id = aks_cluster.identity.user_assigned_identities[uami_key].principal_id
                     else:
