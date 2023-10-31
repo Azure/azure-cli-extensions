@@ -40,10 +40,12 @@ def run_cloud_build(cmd, image_name, source, location, subscription_id, resource
         font_default = "\033[0m"
         font_bold = "\033[0;1m"
         font_blue = "\033[94m"
+        hide_cursor = "\033[?25l"
+        display_cursor = "\033[?25h"
         substatus_indentation = "              "
         def display_spinner(task_title):
             # Hide the cursor
-            print('\033[?25l', end="")
+            print(hide_cursor, end="")
             def spin():
                 loop_counter = 0
                 start_time = time.time()
@@ -65,7 +67,7 @@ def run_cloud_build(cmd, image_name, source, location, subscription_id, resource
                     print(f"\r    {font_bold_green}(✓) Done:{font_default} {task_title} ({time_elapsed:.1f}s)")
                     log_in_file(f"Done: {task_title} ({time_elapsed:.1f}s)", logs_file, no_print=True)
                 # Display the cursor
-                print('\033[?25h', end="")
+                print(display_cursor, end="")
             thread = Thread(target=spin)
             thread.start()
             return thread
@@ -75,11 +77,17 @@ def run_cloud_build(cmd, image_name, source, location, subscription_id, resource
         # List the builders in the resource group
         thread = display_spinner("Listing the builders available in the Container Apps environment")
         builders_list_json_content = BuilderClient.list(cmd, resource_group_name)
+        filtered_builders_list = [builder for builder in builders_list_json_content["value"] if builder["properties"]["environmentId"].endswith(f"/{environment_name}")]
+        builder_available = len(filtered_builders_list) > 0
+        if builder_available and filtered_builders_list[0]["properties"]["provisioningState"] != "Succeeded":
+            non_ready_builder_name = filtered_builders_list[0]["name"]
+            non_ready_provisioning_state = filtered_builders_list[0]["properties"]["provisioningState"]
+            raise ValidationError(f"The builder selected, {non_ready_builder_name}, isn't ready to build (current state: {non_ready_provisioning_state})")
         done_spinner = True
         thread.join()
 
-        if len(builders_list_json_content["value"]) > 0:
-            builder_name = builders_list_json_content["value"][0]["name"]
+        if builder_available:
+            builder_name = filtered_builders_list[0]["name"]
             log_in_file(f"{substatus_indentation}Builder selected: {builder_name}", logs_file)
         else:
             log_in_file(f"{substatus_indentation}No builder available in environment {font_bold}{environment_name}{font_default}", logs_file)
