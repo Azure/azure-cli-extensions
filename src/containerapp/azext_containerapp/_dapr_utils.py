@@ -7,6 +7,7 @@ from typing import Dict
 from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
 from ._clients import ContainerAppPreviewClient, DaprComponentPreviewClient
+from ._client_factory import handle_non_404_status_code_exception
 from ._models import (
     DaprComponent as DaprComponentModel,
     DaprMetadata as DaprMetadataModel,
@@ -176,8 +177,8 @@ class DaprUtils:
             component_def = DaprComponentPreviewClient.show(
                 cmd, resource_group_name, environment_name, component_name
             )
-        except Exception:  # pylint: disable=broad-except
-            pass
+        except Exception as e:  # pylint: disable=broad-except
+            handle_non_404_status_code_exception(e)
 
         # Throw an error if the component already exists, and was not created by the init command.
         # This is to prevent users from accidentally overwriting components that they have created.
@@ -246,8 +247,8 @@ class DaprUtils:
             service_def = ContainerAppPreviewClient.show(
                 cmd, resource_group_name, service_name
             )
-        except Exception:  # pylint: disable=broad-except
-            pass
+        except Exception as e:  # pylint: disable=broad-except
+            handle_non_404_status_code_exception(e)
 
         if service_def is not None:
             logger.warning(

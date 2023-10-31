@@ -66,7 +66,7 @@ def load_arguments(self, _):
         c.argument('managed_certificates_only', options_list=['--managed-certificates-only', '-m'], help='List managed certificates only.')
         c.argument('private_key_certificates_only', options_list=['--private-key-certificates-only', '-p'], help='List private-key certificates only.')
 
-    with self.argument_context('containerapp env dapr-component init', is_preview=True) as c:
+    with self.argument_context('containerapp env dapr-component init') as c:
         c.argument('statestore', help="The state store component and dev service to create.")
         c.argument('pubsub', help="The pubsub component and dev service to create.")
 
