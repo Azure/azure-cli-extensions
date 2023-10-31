@@ -6,6 +6,8 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+from knack.log import get_logger
+from knack.util import CLIError
 from azure.cli.core.commands.parameters import (
     tags_type,
     resource_group_name_type,
@@ -29,6 +31,14 @@ from azext_amcs.action import (
 from azext_amcs.vendored_sdks.amcs.models import KnownDataFlowStreams, KnownPerfCounterDataSourceStreams, \
     KnownWindowsEventLogDataSourceStreams, KnownSyslogDataSourceStreams, \
     KnownSyslogDataSourceFacilityNames, KnownSyslogDataSourceLogLevels
+
+logger = get_logger(__name__)
+
+
+def validate_association_name_with_endpoint(cmd, namespace):
+    if namespace.endpoint_id:
+        if namespace.association_name != "configurationAccessEndpoint":
+            raise CLIError("Association name for resource to endpoint must be configurationAccessEndpoint")
 
 
 def load_arguments(self, _):
@@ -55,7 +65,8 @@ def load_arguments(self, _):
         c.argument('association_name', options_list=['--name', '-n'], help='The name of the association.')
         c.argument('description', help='Description of the association.')
         c.argument('rule_id', help='The resource ID of the data collection rule that is to be associated.')
-        c.argument('endpoint_id', help='The resource ID of the data collection endpoint that is to be associated.')
+        c.argument('endpoint_id', help='The resource ID of the data collection endpoint that is to be associated.',
+                   validator=validate_association_name_with_endpoint)
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
 
     with self.argument_context('monitor data-collection rule association list') as c:
