@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create data product resource.
 
-    :example: DP create with all parameters
-        az network-analytics data-product create --name dpname --resource-group rgname --location westcentralus --publisher Microsoft --product MCC --major-version  2.0.0 --owners xyz@email --customer-managed-key-encryption-enabled Enabled --customer-managed-key-encryption-enabled Enabled --customer-encryption-key '{"keyVaultUri":"<vaulturi>","keyName":"<keyname>","keyVersion":"<version>"}' --managed-resource-group-configuration '{"location":"westcentralus","name":"<mrgname>"}' --networkacls '{"virtualNetworkRule":[{"id":"<ruleid>","action":"<action>","state":"<state>"}],"ipRules":[{"value":"<value>","action":"<action>"}],"allowedQueryIpRangeList":["1.2.3.4-1.2.3.10"],"defaultAction":"Allow"}' --private-links-enabled Enabled --public-network-access Enabled --purview-account perviewaccount --purview-collection collection --redundancy Enabled --identity '{"type":"userAssigned","userAssignedIdentities":{"/subscriptions/<subid>/resourceGroups/<rgname>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<idname>"}}' --tags '{"key1":"value1","key2":"value2"}'
+    :example: Create data product with all parameter
+        az network-analytics data-product create --name dpname --resource-group rgname --location westcentralus --publisher Microsoft --product MCC --major-version  2.0.0 --owners xyz@email --customer-managed-key-encryption-enabled Enabled --key-encryption-enable Enabled --encryption-key '{"keyVaultUri":"<vaulturi>","keyName":"<keyname>","keyVersion":"<version>"}' --managed-rg '{"location":"westcentralus","name":"<mrgname>"}' --networkacls '{"virtualNetworkRule":[{"id":"<ruleid>","action":"<action>","state":"<state>"}],"ipRules":[{"value":"<value>","action":"<action>"}],"allowedQueryIpRangeList":["1.2.3.4-1.2.3.10"],"defaultAction":"Allow"}' --private-links-enabled Enabled --public-network-access Enabled --purview-account perviewaccount --purview-collection collection --redundancy Enabled --identity '{"type":"userAssigned","userAssignedIdentities":{"/subscriptions/<subid>/resourceGroups/<rgname>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<idname>"}}' --tags '{"key1":"value1","key2":"value2"}'
     """
 
     _aaz_info = {
@@ -62,13 +62,13 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.customer_encryption_key = AAZObjectArg(
-            options=["--customer-encryption-key"],
+        _args_schema.encryption_key = AAZObjectArg(
+            options=["--encryption-key"],
             arg_group="Properties",
             help="Customer managed encryption key details for data product.",
         )
-        _args_schema.customer_managed_key_encryption_enabled = AAZStrArg(
-            options=["--customer-managed-key-encryption-enabled"],
+        _args_schema.key_encryption_enable = AAZStrArg(
+            options=["--key-encryption-enable"],
             arg_group="Properties",
             help="Flag to enable customer managed key encryption for data product.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
@@ -78,8 +78,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Major version of data product.",
         )
-        _args_schema.managed_resource_group_configuration = AAZObjectArg(
-            options=["--managed-resource-group-configuration"],
+        _args_schema.managed_rg = AAZObjectArg(
+            options=["--managed-rg"],
             arg_group="Properties",
             help="Managed resource group configuration.",
         )
@@ -132,30 +132,30 @@ class Create(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
-        customer_encryption_key = cls._args_schema.customer_encryption_key
-        customer_encryption_key.key_name = AAZStrArg(
+        encryption_key = cls._args_schema.encryption_key
+        encryption_key.key_name = AAZStrArg(
             options=["key-name"],
             help="The name of the key vault key.",
             required=True,
         )
-        customer_encryption_key.key_vault_uri = AAZStrArg(
+        encryption_key.key_vault_uri = AAZStrArg(
             options=["key-vault-uri"],
             help="The Uri of the key vault.",
             required=True,
         )
-        customer_encryption_key.key_version = AAZStrArg(
+        encryption_key.key_version = AAZStrArg(
             options=["key-version"],
             help="The version of the key vault key.",
             required=True,
         )
 
-        managed_resource_group_configuration = cls._args_schema.managed_resource_group_configuration
-        managed_resource_group_configuration.location = AAZStrArg(
+        managed_rg = cls._args_schema.managed_rg
+        managed_rg.location = AAZStrArg(
             options=["location"],
             help="Managed Resource Group location",
             required=True,
         )
-        managed_resource_group_configuration.name = AAZStrArg(
+        managed_rg.name = AAZStrArg(
             options=["name"],
             help="Name of managed resource group",
             required=True,
@@ -387,10 +387,10 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("customerEncryptionKey", AAZObjectType, ".customer_encryption_key")
-                properties.set_prop("customerManagedKeyEncryptionEnabled", AAZStrType, ".customer_managed_key_encryption_enabled")
+                properties.set_prop("customerEncryptionKey", AAZObjectType, ".encryption_key")
+                properties.set_prop("customerManagedKeyEncryptionEnabled", AAZStrType, ".key_encryption_enable")
                 properties.set_prop("majorVersion", AAZStrType, ".major_version", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
+                properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_rg")
                 properties.set_prop("networkacls", AAZObjectType, ".networkacls")
                 properties.set_prop("owners", AAZListType, ".owners")
                 properties.set_prop("privateLinksEnabled", AAZStrType, ".private_links_enabled")
