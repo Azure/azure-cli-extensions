@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
 
 from threading import Thread
 import os
@@ -23,8 +24,10 @@ from ._utils import (
     remove_ansi_characters
 )
 
+
 class CloudBuildError(Exception):
     pass
+
 
 def run_cloud_build(cmd, source, location, resource_group_name, environment_name, run_full_id, logs_file, logs_file_path):
     generated_build_name = 'build{}'.format(run_full_id)[:12]
@@ -39,7 +42,6 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         font_bold_yellow = "\033[33;1m"
         font_default = "\033[0m"
         font_bold = "\033[0;1m"
-        font_blue = "\033[94m"
         hide_cursor = "\033[?25l"
         display_cursor = "\033[?25h"
         substatus_indentation = "              "
@@ -47,13 +49,15 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         def display_spinner(task_title):
             # Hide the cursor
             print(hide_cursor, end="")
+
             def spin():
                 loop_counter = 0
                 start_time = time.time()
-                while (done_spinner == False and fail_spinner == False and cancel_spinner == False):
+                time_elapsed = 0
+                while done_spinner is False and fail_spinner is False and cancel_spinner is False:
                     loop_counter = (loop_counter + 1) % 17
-                    loading_bar_left_spaces_count =  loop_counter - 9 if loop_counter > 9 else 0
-                    loading_bar_right_spaces_count =  6 - loop_counter if loop_counter < 7 else 0
+                    loading_bar_left_spaces_count = loop_counter - 9 if loop_counter > 9 else 0
+                    loading_bar_right_spaces_count = 6 - loop_counter if loop_counter < 7 else 0
                     spinner = f"[{' ' * loading_bar_left_spaces_count}{'=' * (7 - loading_bar_left_spaces_count - loading_bar_right_spaces_count)}{' ' * loading_bar_right_spaces_count}]"
                     time_elapsed = time.time() - start_time
                     print(f"\r    {spinner} {task_title} ({time_elapsed:.1f}s)", end="", flush=True)
@@ -139,7 +143,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
             upload_endpoint,
             files=files,
             headers=headers)
-        if not (response_file_upload.ok):
+        if not response_file_upload.ok:
             raise ValidationError(f"Error when uploading the file, request exited with {response_file_upload.status_code}")
         done_spinner = True
         thread.join()
@@ -148,7 +152,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         done_spinner = False
         thread = display_spinner(f"Waiting for the Cloud Build agent to report status")
         build_provisioning = True
-        while (build_provisioning):
+        while build_provisioning:
             build_json_content = BuildClient.get(cmd, builder_name, build_name, resource_group_name)
             if build_json_content["properties"]["provisioningState"] == "Succeeded":
                 build_provisioning = False
@@ -164,7 +168,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
             log_streaming_endpoint,
             headers=headers,
             stream=True)
-        if not (response_log_streaming.ok):
+        if not response_log_streaming.ok:
             raise ValidationError(f"Error when streaming the logs, request exited with {response_log_streaming.status_code}")
         done_spinner = True
         thread.join()
@@ -196,7 +200,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         thread.join()
 
         # TODO: Delete local tar.gz file
-        #os.unlink(tar_file_path)
+        # os.unlink(tar_file_path)
 
         final_image = build_json_content["properties"]["destinationContainerRegistry"]["image"]
         log_in_file(f"{substatus_indentation}{font_bold}Successfully built and containerized image: {final_image}{font_default}", logs_file)

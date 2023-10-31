@@ -491,12 +491,14 @@ def validate_custom_location(cmd, custom_location=None):
         raise ValidationError('There is no Microsoft.App.Environment extension found associated with custom location {}'.format(custom_location))
     return r.location
 
+
 def log_in_file(log_text, opened_file, no_print=False):
     if not no_print:
         print(log_text)
 
     cleaned_log_text = remove_ansi_characters(log_text.strip())
     opened_file.write(f"{cleaned_log_text}\n")
+
 
 def remove_ansi_characters(text):
     regular_expression = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
