@@ -175,7 +175,9 @@ def load_arguments(self: AzCommandsLoader, _):
     with self.argument_context('scvmm vm stop') as c:
         c.argument(
             'skip_shutdown',
-            arg_type=get_three_state_flag(),
+            arg_type=get_three_state_flag(
+                positive_label='true', negative_label='false', return_label=True
+            ),
             help="Skip shutdown and power-off immediately.",
         )
 
