@@ -93,6 +93,10 @@ class RunJob(AAZCommand):
             options=["jar-name"],
             help="A string property that represents the name of the job JAR.",
         )
+        flink_job.type = AAZStrArg(
+            options=["type"],
+            help="A string property that run job type",
+        )
         flink_job.job_jar_directory = AAZStrArg(
             options=["job-jar-directory"],
             help="A string property that specifies the directory where the job JAR is located.",
