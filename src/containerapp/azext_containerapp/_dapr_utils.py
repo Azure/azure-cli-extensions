@@ -118,7 +118,7 @@ class DaprUtils:
 
         :return: True if the component was created by DaprUtils, False otherwise
         """
-        from .custom import safe_get
+        from azure.cli.command_modules.containerapp._utils import safe_get
 
         if component_def is None:
             raise ValidationError("Component definition cannot be None.")
@@ -302,7 +302,7 @@ class DaprUtils:
 
         :return: service id, component id
         """
-        from .custom import safe_get
+        from azure.cli.command_modules.containerapp._utils import safe_get
 
         service_name = DaprUtils._get_service_name(service_type)
         if service_id is None:
