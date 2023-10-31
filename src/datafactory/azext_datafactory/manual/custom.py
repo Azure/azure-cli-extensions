@@ -48,7 +48,7 @@ def datafactory_create(
     factory["repo_configuration"] = repo_configuration
     factory["global_parameters"] = global_parameters
     factory["encryption"] = {}
-    if publicnetworkaccess is not None:
+    if public_network_access is not None:
         factory["publicnetworkaccess"] = public_network_access
     factory["identity"] = FactoryIdentity(type=FactoryIdentityType.SYSTEM_ASSIGNED)
     return client.create_or_update(
@@ -62,7 +62,7 @@ def datafactory_create(
 def datafactory_update(client, resource_group_name, factory_name, public_network_access=None, tags=None):
     factory_update_parameters = {}
     factory_update_parameters["tags"] = tags
-    if publicnetworkaccess is not None:
+    if public_network_access is not None:
         factory_update_parameters["publicnetworkaccess"] = public_network_access
     return client.update(
         resource_group_name=resource_group_name,
