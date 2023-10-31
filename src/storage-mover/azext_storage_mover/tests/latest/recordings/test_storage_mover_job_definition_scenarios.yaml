@@ -120,7 +120,7 @@ interactions:
       - AZURECLI/2.53.0 (PIP) azsdk-python-azure-mgmt-storage/21.0.0 Python/3.9.13
         (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2?api-version=2023-01-01
   response:
     body:
       string: ''
@@ -263,7 +263,7 @@ interactions:
       - AZURECLI/2.53.0 (PIP) azsdk-python-azure-mgmt-storage/21.0.0 Python/3.9.13
         (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2/listKeys?api-version=2022-09-01&$expand=kerb
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2/listKeys?api-version=2023-01-01&$expand=kerb
   response:
     body:
       string: '{"keys":[{"creationTime":"2023-10-11T06:06:10.0778711Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2023-10-11T06:06:10.0778711Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
@@ -312,7 +312,7 @@ interactions:
       - AZURECLI/2.53.0 (PIP) azsdk-python-azure-mgmt-storage/21.0.0 Python/3.9.13
         (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2?api-version=2023-01-01
   response:
     body:
       string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-storagemover-rg2/providers/Microsoft.Storage/storageAccounts/testjobdefinitionsa2","name":"testjobdefinitionsa2","type":"Microsoft.Storage/storageAccounts","location":"eastus2euap","tags":{},"properties":{"keyCreationTime":{"key1":"2023-10-11T06:06:10.0778711Z","key2":"2023-10-11T06:06:10.0778711Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-10-11T06:06:10.1247573Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-10-11T06:06:10.1247573Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2023-10-11T06:06:09.9684981Z","primaryEndpoints":{"dfs":"https://testjobdefinitionsa2.dfs.core.windows.net/","web":"https://testjobdefinitionsa2.z3.web.core.windows.net/","blob":"https://testjobdefinitionsa2.blob.core.windows.net/","queue":"https://testjobdefinitionsa2.queue.core.windows.net/","table":"https://testjobdefinitionsa2.table.core.windows.net/","file":"https://testjobdefinitionsa2.file.core.windows.net/"},"primaryLocation":"eastus2euap","statusOfPrimary":"available","secondaryLocation":"centraluseuap","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://testjobdefinitionsa2-secondary.dfs.core.windows.net/","web":"https://testjobdefinitionsa2-secondary.z3.web.core.windows.net/","blob":"https://testjobdefinitionsa2-secondary.blob.core.windows.net/","queue":"https://testjobdefinitionsa2-secondary.queue.core.windows.net/","table":"https://testjobdefinitionsa2-secondary.table.core.windows.net/"}}}'
