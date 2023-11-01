@@ -8,10 +8,11 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from knack.log import get_logger
 from dataclasses import dataclass
+from knack.log import get_logger
 
 logger = get_logger(__name__)
+
 
 @dataclass
 class NodeProfile:
@@ -19,12 +20,14 @@ class NodeProfile:
     Type: str       # The node type.
     VMSize: str     # The virtual machine SKU.
 
+
 @dataclass
 class SecretReference:
     secret_name: str
     reference_name: str
     type: str
     version: str = ""
+
 
 @dataclass
 class TrinoHiveCatalog:
@@ -34,36 +37,44 @@ class TrinoHiveCatalog:
     metastore_db_connection_password_secret: str
     metastore_warehouse_dir: str
 
+
 # Create a node profile with SKU and worker count.
-def create_compute_node_profile(count, type, vm_size):
-    node_profile = NodeProfile(count, type, vm_size)
+def create_compute_node_profile(count, node_type, vm_size):
+    node_profile = NodeProfile(count, node_type, vm_size)
     nodes = [repr(node_profile.__dict__).replace(" ", "")]
     return nodes
 
+
 # Create a hive catalog configured as a Trino cluster.
-def create_trino_hive_catalog(catalog_name, metastore_db_connection_url, metastore_db_connection_user_name, metastore_db_connection_password_secret, metastore_warehouse_dir = None):
-    trino_hive_catalog = TrinoHiveCatalog(catalog_name, metastore_db_connection_url, metastore_db_connection_user_name, metastore_db_connection_password_secret, metastore_warehouse_dir)
-    return [repr(trino_hive_catalog.__dict__).replace(" ", "")] 
+def create_trino_hive_catalog(catalog_name, metastore_db_connection_url, metastore_db_connection_user_name,
+                              metastore_db_connection_password_secret, metastore_warehouse_dir=None):
+    trino_hive_catalog = TrinoHiveCatalog(catalog_name, metastore_db_connection_url,
+                                          metastore_db_connection_user_name,
+                                          metastore_db_connection_password_secret, metastore_warehouse_dir)
+    return [repr(trino_hive_catalog.__dict__).replace(" ", "")]
+
 
 # Create a reference to provide a secret to store the password for accessing the database.
-def create_secret_reference(secret_name, reference_name, version=None ):
+def create_secret_reference(secret_name, reference_name, version=None):
     secret_reference = SecretReference(secret_name, reference_name, "Secret", version)
     return [repr(secret_reference.__dict__).replace(" ", "")]
 
-# Create an object as a parameter for submitting cluster work.
-def create_flink_job_property(action, job_name,job_jar_directory=None,jar_name=None,entry_class=None,args=None,save_point_name=None,flink_configuration=None):
-    str = "{'action':'"+ action +"','job_name':'" + job_name+"','type':'FlinkJob'"  
-    if job_jar_directory is not None:
-        str = str + ",'job_jar_directory':'" + job_jar_directory +"'"
-    if jar_name is not None:
-        str = str + ",'jar_name':'" + jar_name +"'"
-    if entry_class is not None:
-        str = str + ",'entry_class':'" + entry_class +"'"
-    if args is not None:
-        str = str + ",'args':'" + args +"'"
-    if save_point_name is not None:
-        str = str + ",'save_point_name':'" + save_point_name +"'"
-    if flink_configuration is not None:
-        str = str + ",'flink_configuration':" + flink_configuration 
 
-    return str + "}"
+# Create an object as a parameter for submitting cluster work.
+def create_flink_job_property(action, job_name, job_jar_directory=None, jar_name=None, entry_class=None,
+                              args=None, save_point_name=None, flink_configuration=None):
+    result = "{'action':'" + action + "','job_name':'" + job_name + "','type':'FlinkJob'"
+    if job_jar_directory is not None:
+        result = result + ",'job_jar_directory':'" + job_jar_directory + "'"
+    if jar_name is not None:
+        result = result + ",'jar_name':'" + jar_name + "'"
+    if entry_class is not None:
+        result = result + ",'entry_class':'" + entry_class + "'"
+    if args is not None:
+        result = result + ",'args':'" + args + "'"
+    if save_point_name is not None:
+        result = result + ",'save_point_name':'" + save_point_name + "'"
+    if flink_configuration is not None:
+        result = result + ",'flink_configuration':" + flink_configuration
+
+    return result + "}"
