@@ -3627,8 +3627,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             return mc
         if enable_image_integrity and disable_image_integrity:
             raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-workload-identity and "
-                "--disable-workload-identity at the same time."
+                "Cannot specify --enable-image-integrity and "
+                "--disable-image-integrity at the same time."
             )
         shouldEnable_image_integrity = False
         if enable_image_integrity:
