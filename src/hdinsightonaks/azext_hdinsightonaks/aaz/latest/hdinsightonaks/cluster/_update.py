@@ -522,7 +522,7 @@ class Update(AAZCommand):
         _args_schema.history_server_cpu = AAZFloatArg(
             options=["--history-server-cpu"],
             arg_group="FlinkProfile",
-            help="History server cpu count.",
+            help="History server CPU count.",
         )
         _args_schema.history_server_memory = AAZIntArg(
             options=["--history-server-memory"],
@@ -549,9 +549,6 @@ class Update(AAZCommand):
             options=["--flink-storage-uri"],
             arg_group="FlinkProfile",
             help="Storage account uri which is used for savepoint and checkpoint state.",
-            fmt=AAZStrArgFormat(
-                pattern="^(\w{4,5})://(.*)@(.*).\b(blob|dfs)\b\.core\.windows\.net$",
-            ),
         )
         _args_schema.flink_storage_key = AAZStrArg(
             options=["--flink-storage-key"],
@@ -562,10 +559,12 @@ class Update(AAZCommand):
         _args_schema.task_manager_cpu = AAZFloatArg(
             options=["--task-manager-cpu"],
             arg_group="FlinkProfile",
+            help="Task manager CPU count.",
         )
         _args_schema.task_manager_memory = AAZIntArg(
             options=["--task-manager-memory"],
             arg_group="FlinkProfile",
+            help="The task manager memory size.",
         )
 
         # define Arg Group "HDInsightCluster"

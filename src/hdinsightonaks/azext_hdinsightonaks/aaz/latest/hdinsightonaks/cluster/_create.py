@@ -478,6 +478,7 @@ class Create(AAZCommand):
         _args_schema.history_server_cpu = AAZFloatArg(
             options=["--history-server-cpu"],
             arg_group="FlinkProfile",
+            help="History server CPU count.",
         )
         _args_schema.history_server_memory = AAZIntArg(
             options=["--history-server-memory"],
@@ -516,7 +517,7 @@ class Create(AAZCommand):
         _args_schema.task_manager_memory = AAZIntArg(
             options=["--task-manager-memory"],
             arg_group="FlinkProfile",
-            help="Task manager memory size.",
+            help="The task manager memory size.",
         )
 
         # define Arg Group "HDInsightCluster"
