@@ -5163,7 +5163,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--node-count {node_count}',
             '--enable-image-integrity',
             '-a azure-policy',
-            '--enable-oidc-issuer'
+            '--enable-oidc-issuer',
             '--ssh-key-value={ssh_key_value}',
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageIntegrityPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AzurePolicyExternalData',
         ])
