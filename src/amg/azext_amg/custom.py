@@ -174,7 +174,7 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
 
     client = cf_amg(cmd.cli_ctx, subscription=None)
     instance = client.grafana.get(resource_group_name, grafana_name)
-    
+
     resource = {}
     resourceProperties = {}
 
@@ -220,7 +220,7 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
 
     if resourceProperties:
         resource["properties"] = resourceProperties
-    
+
     # "update" uses PATCH
     return client.grafana.update(resource_group_name, grafana_name, resource)
 
