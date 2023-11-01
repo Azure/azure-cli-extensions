@@ -86,7 +86,7 @@ class Resize(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.target_worker_node_count = AAZIntArg(
-            options=["--target-worker-node-count"],
+            options=["--node-count", "--target-worker-node-count"],
             arg_group="Properties",
             help="Target node count of worker node.",
         )

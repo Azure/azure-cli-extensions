@@ -114,44 +114,44 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.loadbased_config_cooldown_period = AAZIntArg(
-            options=["--loadbased-config-cooldown-period"],
+            options=["--cooldown-period", "--loadbased-config-cooldown-period"],
             arg_group="ClusterProfile",
             help="This is a cool down period, this is a time period in seconds, which determines the amount of time that must elapse between a scaling activity started by a rule and the start of the next scaling activity, regardless of the rule that triggers it. The default value is 300 seconds.",
             nullable=True,
         )
         _args_schema.loadbased_config_max_nodes = AAZIntArg(
-            options=["--loadbased-config-max-nodes"],
+            options=["--loadbased-max-nodes", "--loadbased-config-max-nodes"],
             arg_group="ClusterProfile",
             help="User needs to set the maximum number of nodes for load based scaling, the load based scaling will use this to scale up and scale down between minimum and maximum number of nodes.",
         )
         _args_schema.loadbased_config_min_nodes = AAZIntArg(
-            options=["--loadbased-config-min-nodes"],
+            options=["--loadbased-min-nodes", "--loadbased-config-min-nodes"],
             arg_group="ClusterProfile",
             help="User needs to set the minimum number of nodes for load based scaling, the load based scaling will use this to scale up and scale down between minimum and maximum number of nodes.",
         )
         _args_schema.loadbased_config_poll_interval = AAZIntArg(
-            options=["--loadbased-config-poll-interval"],
+            options=["--loadbased-interval", "--loadbased-config-poll-interval"],
             arg_group="ClusterProfile",
             help="User can specify the poll interval, this is the time period (in seconds) after which scaling metrics are polled for triggering a scaling operation.",
             nullable=True,
         )
         _args_schema.loadbased_config_scaling_rules = AAZListArg(
-            options=["--loadbased-config-scaling-rules"],
+            options=["--loadbased-rules", "--loadbased-config-scaling-rules"],
             arg_group="ClusterProfile",
             help="The scaling rules.",
         )
         _args_schema.schedule_based_config_default_count = AAZIntArg(
-            options=["--schedule-based-config-default-count"],
+            options=["--schedule-default-count", "--schedule-based-config-default-count"],
             arg_group="ClusterProfile",
             help="Setting default node count of current schedule configuration. Default node count specifies the number of nodes which are default when an specified scaling operation is executed (scale up/scale down)",
         )
         _args_schema.schedule_based_config_schedule = AAZListArg(
-            options=["--schedule-based-config-schedule"],
+            options=["--schedule-schedule", "--schedule-based-config-schedule"],
             arg_group="ClusterProfile",
             help="This specifies the schedules where scheduled based Autoscale to be enabled, the user has a choice to set multiple rules within the schedule across days and times (start/end).",
         )
         _args_schema.schedule_based_config_time_zone = AAZStrArg(
-            options=["--schedule-based-config-time-zone"],
+            options=["--schedule-time-zone", "--schedule-based-config-time-zone"],
             arg_group="ClusterProfile",
             help="User has to specify the timezone on which the schedule has to be set for schedule based autoscale configuration.",
         )
@@ -201,12 +201,6 @@ class Update(AAZCommand):
             arg_group="ClusterProfile",
             help="True if log analytics is enabled for the cluster, otherwise false.",
         )
-        _args_schema.log_analytic_profile_metrics_enabled = AAZBoolArg(
-            options=["--log-analytic-profile-metrics-enabled"],
-            arg_group="ClusterProfile",
-            help="True if metrics are enabled, otherwise false.",
-            nullable=True,
-        )
         _args_schema.oss_version = AAZStrArg(
             options=["--oss-version"],
             arg_group="ClusterProfile",
@@ -215,11 +209,6 @@ class Update(AAZCommand):
                 pattern="^(0|[1-9][0-9]{0,18})\.(0|[1-9][0-9]{0,18})\.(0|[1-9][0-9]{0,18})$",
             ),
         )
-        _args_schema.prometheu_profile_enabled = AAZBoolArg(
-            options=["--prometheu-profile-enabled"],
-            arg_group="ClusterProfile",
-            help="Enable Prometheus for cluster or not.",
-        )
         _args_schema.script_action_profiles = AAZListArg(
             options=["--script-action-profiles"],
             arg_group="ClusterProfile",
@@ -227,7 +216,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.service_configs_profiles = AAZListArg(
-            options=["--service-configs-profiles"],
+            options=["--service-configs", "--service-configs-profiles"],
             arg_group="ClusterProfile",
             help="The service configs profiles.",
             nullable=True,
@@ -236,37 +225,6 @@ class Update(AAZCommand):
             options=["--spark-storage-url"],
             arg_group="ClusterProfile",
             help="The default storage URL.",
-            nullable=True,
-        )
-        _args_schema.spark_hive_catalog_db_name = AAZStrArg(
-            options=["--spark-hive-catalog-db-name"],
-            arg_group="ClusterProfile",
-            help="The database name.",
-        )
-        _args_schema.spark_hive_catalog_db_password_secret_name = AAZStrArg(
-            options=["--spark-hive-catalog-db-password-secret-name"],
-            arg_group="ClusterProfile",
-            help="The secret name which contains the database user password.",
-        )
-        _args_schema.spark_hive_catalog_db_server_name = AAZStrArg(
-            options=["--spark-hive-catalog-db-server-name"],
-            arg_group="ClusterProfile",
-            help="The database server host.",
-        )
-        _args_schema.spark_hive_catalog_db_user_name = AAZStrArg(
-            options=["--spark-hive-catalog-db-user-name"],
-            arg_group="ClusterProfile",
-            help="The database user name.",
-        )
-        _args_schema.spark_hive_catalog_key_vault_id = AAZStrArg(
-            options=["--spark-hive-catalog-key-vault-id"],
-            arg_group="ClusterProfile",
-            help="The key vault resource id.",
-        )
-        _args_schema.spark_hive_catalog_thrift_url = AAZStrArg(
-            options=["--spark-hive-catalog-thrift-url"],
-            arg_group="ClusterProfile",
-            help="The thrift url.",
             nullable=True,
         )
         _args_schema.user_plugins_spec = AAZObjectArg(
@@ -288,12 +246,6 @@ class Update(AAZCommand):
             options=["--stub-profile"],
             arg_group="ClusterProfile",
             help="Stub cluster profile.",
-            nullable=True,
-        )
-        _args_schema.trino_profile = AAZObjectArg(
-            options=["--trino-profile"],
-            arg_group="ClusterProfile",
-            help="Trino Cluster profile.",
             nullable=True,
         )
 
@@ -512,163 +464,6 @@ class Update(AAZCommand):
             ),
         )
 
-        trino_profile = cls._args_schema.trino_profile
-        trino_profile.catalog_options = AAZObjectArg(
-            options=["catalog-options"],
-            help="Trino cluster catalog options.",
-            nullable=True,
-        )
-        trino_profile.coordinator_high_availability_enabled = AAZBoolArg(
-            options=["coord-ha-enabled", "coordinator-high-availability-enabled"],
-            help="The flag that if enable coordinator HA, uses multiple coordinator replicas with auto failover, one per each head node. Default: true.",
-            nullable=True,
-        )
-        trino_profile.coordinator_debug_port = AAZIntArg(
-            options=["coord-debug-port", "coordinator-debug-port"],
-            help="The flag that if enable debug or not.",
-            nullable=True,
-        )
-        trino_profile.coordinator_debug_suspend = AAZBoolArg(
-            options=["coord-debug-suspend", "coordinator-debug-suspend"],
-            help="The flag that if suspend debug or not.",
-            nullable=True,
-        )
-        trino_profile.coordinator_debug_enabled = AAZBoolArg(
-            options=["coord-debug-enabled", "coordinator-debug-enabled"],
-            help="The flag that if enable coordinator HA, uses multiple coordinator replicas with auto failover, one per each head node. Default: true.",
-            nullable=True,
-        )
-        trino_profile.user_plugins_spec = AAZObjectArg(
-            options=["user-plugins-spec"],
-            help="Trino user plugins spec",
-            nullable=True,
-        )
-        trino_profile.user_telemetry_spec = AAZObjectArg(
-            options=["user-telemetry-spec"],
-            help="User telemetry",
-            nullable=True,
-        )
-        trino_profile.worker = AAZObjectArg(
-            options=["worker"],
-            help="Trino worker.",
-            nullable=True,
-        )
-
-        catalog_options = cls._args_schema.trino_profile.catalog_options
-        catalog_options.hive = AAZListArg(
-            options=["hive"],
-            help="hive catalog options.",
-            nullable=True,
-        )
-
-        hive = cls._args_schema.trino_profile.catalog_options.hive
-        hive.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.trino_profile.catalog_options.hive.Element
-        _element.catalog_name = AAZStrArg(
-            options=["catalog-name"],
-            help="Name of trino catalog which should use specified hive metastore.",
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
-        )
-        _element.metastore_db_connection_password_secret = AAZStrArg(
-            options=["metastore-db-connection-password-secret"],
-            help="Secret reference name from secretsProfile.secrets containing password for database connection.",
-        )
-        _element.metastore_db_connection_url = AAZStrArg(
-            options=["metastore-db-connection-url"],
-            help="Connection string for hive metastore database.",
-        )
-        _element.metastore_db_connection_user_name = AAZStrArg(
-            options=["metastore-db-connection-user-name"],
-            help="User name for database connection.",
-        )
-        _element.metastore_warehouse_dir = AAZStrArg(
-            options=["metastore-warehouse-dir"],
-            help="Metastore root directory URI, format: abfs[s]://<container>@<account_name>.dfs.core.windows.net/<path>. More details: https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction-abfs-uri",
-        )
-
-        user_plugins_spec = cls._args_schema.trino_profile.user_plugins_spec
-        user_plugins_spec.plugins = AAZListArg(
-            options=["plugins"],
-            help="Trino user plugins.",
-            nullable=True,
-        )
-
-        plugins = cls._args_schema.trino_profile.user_plugins_spec.plugins
-        plugins.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.trino_profile.user_plugins_spec.plugins.Element
-        _element.enabled = AAZBoolArg(
-            options=["enabled"],
-            help="Denotes whether the plugin is active or not.",
-            nullable=True,
-        )
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="This field maps to the sub-directory in trino plugins location, that will contain all the plugins under path.",
-            nullable=True,
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
-        )
-        _element.path = AAZStrArg(
-            options=["path"],
-            help="Fully qualified path to the folder containing the plugins.",
-            nullable=True,
-            fmt=AAZStrArgFormat(
-                pattern="^(https)|(abfss)://.*$",
-                min_length=1,
-            ),
-        )
-
-        user_telemetry_spec = cls._args_schema.trino_profile.user_telemetry_spec
-        user_telemetry_spec.storage = AAZObjectArg(
-            options=["storage"],
-            help="Trino user telemetry definition.",
-            nullable=True,
-        )
-
-        storage = cls._args_schema.trino_profile.user_telemetry_spec.storage
-        storage.hivecatalog_name = AAZStrArg(
-            options=["hivecatalog-name"],
-            help="Hive Catalog name used to mount external tables on the logs written by trino, if not specified there tables are not created.",
-            nullable=True,
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
-        )
-        storage.hivecatalog_schema = AAZStrArg(
-            options=["hivecatalog-schema"],
-            help="Schema of the above catalog to use, to mount query logs as external tables, if not specified tables will be mounted under schema trinologs.",
-            nullable=True,
-        )
-        storage.partition_retention_in_days = AAZIntArg(
-            options=["partition-retention-in-days"],
-            help="Retention period for query log table partitions, this doesn't have any affect on actual data.",
-            nullable=True,
-        )
-        storage.path = AAZStrArg(
-            options=["path"],
-            help="Azure storage location of the blobs.",
-            nullable=True,
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
-        )
-
-        worker = cls._args_schema.trino_profile.worker
-        worker.debug = AAZObjectArg(
-            options=["debug"],
-            nullable=True,
-        )
-        cls._build_args_trino_debug_config_update(worker.debug)
-
         # define Arg Group "ComputeProfile"
 
         _args_schema = cls._args_schema
@@ -788,6 +583,25 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define Arg Group "LogAnalyticsProfile"
+
+        _args_schema = cls._args_schema
+        _args_schema.log_analytic_profile_metrics_enabled = AAZBoolArg(
+            options=["--la-metrics-enabled", "--log-analytic-profile-metrics-enabled"],
+            arg_group="LogAnalyticsProfile",
+            help="True if metrics are enabled, otherwise false.",
+            nullable=True,
+        )
+
+        # define Arg Group "PrometheusProfile"
+
+        _args_schema = cls._args_schema
+        _args_schema.prometheu_enabled = AAZBoolArg(
+            options=["--prometheu-enabled"],
+            arg_group="PrometheusProfile",
+            help="Enable Prometheus for cluster or not.",
+        )
+
         # define Arg Group "SecretsProfile"
 
         _args_schema = cls._args_schema
@@ -830,42 +644,215 @@ class Update(AAZCommand):
             help="Version of the secret in key vault.",
             nullable=True,
         )
-        return cls._args_schema
 
-    _args_trino_debug_config_update = None
+        # define Arg Group "SparkProfile"
 
-    @classmethod
-    def _build_args_trino_debug_config_update(cls, _schema):
-        if cls._args_trino_debug_config_update is not None:
-            _schema.enable = cls._args_trino_debug_config_update.enable
-            _schema.port = cls._args_trino_debug_config_update.port
-            _schema.suspend = cls._args_trino_debug_config_update.suspend
-            return
-
-        cls._args_trino_debug_config_update = AAZObjectArg(
+        _args_schema = cls._args_schema
+        _args_schema.spark_hive_catalog_db_name = AAZStrArg(
+            options=["--spark-hive-db-name", "--spark-hive-catalog-db-name"],
+            arg_group="SparkProfile",
+            help="The database name.",
+        )
+        _args_schema.spark_hive_catalog_db_password_secret = AAZStrArg(
+            options=["--spark-hive-db-secret", "--spark-hive-catalog-db-password-secret"],
+            arg_group="SparkProfile",
+            help="The secret name which contains the database user password.",
+        )
+        _args_schema.spark_hive_catalog_db_server_name = AAZStrArg(
+            options=["--spark-hive-db-server", "--spark-hive-catalog-db-server-name"],
+            arg_group="SparkProfile",
+            help="The database server host.",
+        )
+        _args_schema.spark_hive_catalog_db_user_name = AAZStrArg(
+            options=["--spark-hive-db-user", "--spark-hive-catalog-db-user-name"],
+            arg_group="SparkProfile",
+            help="The database user name.",
+        )
+        _args_schema.spark_hive_catalog_key_vault_id = AAZStrArg(
+            options=["--spark-hive-kv-id", "--spark-hive-catalog-key-vault-id"],
+            arg_group="SparkProfile",
+            help="The key vault resource id.",
+        )
+        _args_schema.spark_hive_catalog_thrift_url = AAZStrArg(
+            options=["--spark-hive-thrift-url", "--spark-hive-catalog-thrift-url"],
+            arg_group="SparkProfile",
+            help="The thrift url.",
             nullable=True,
         )
 
-        trino_debug_config_update = cls._args_trino_debug_config_update
-        trino_debug_config_update.enable = AAZBoolArg(
-            options=["enable"],
+        # define Arg Group "TrinoHiveCatalog"
+
+        _args_schema = cls._args_schema
+        _args_schema.trino_hive_catalog = AAZListArg(
+            options=["--trino-hive-catalog"],
+            arg_group="TrinoHiveCatalog",
+            help="hive catalog options.",
+            nullable=True,
+        )
+
+        trino_hive_catalog = cls._args_schema.trino_hive_catalog
+        trino_hive_catalog.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.trino_hive_catalog.Element
+        _element.catalog_name = AAZStrArg(
+            options=["catalog-name"],
+            help="Name of trino catalog which should use specified hive metastore.",
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+        _element.metastore_db_connection_password_secret = AAZStrArg(
+            options=["metastore-db-connection-password-secret"],
+            help="Secret reference name from secretsProfile.secrets containing password for database connection.",
+        )
+        _element.metastore_db_connection_url = AAZStrArg(
+            options=["metastore-db-connection-url"],
+            help="Connection string for hive metastore database.",
+        )
+        _element.metastore_db_connection_user_name = AAZStrArg(
+            options=["metastore-db-connection-user-name"],
+            help="User name for database connection.",
+        )
+        _element.metastore_warehouse_dir = AAZStrArg(
+            options=["metastore-warehouse-dir"],
+            help="Metastore root directory URI, format: abfs[s]://<container>@<account_name>.dfs.core.windows.net/<path>. More details: https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction-abfs-uri",
+        )
+
+        # define Arg Group "TrinoProfile"
+
+        _args_schema = cls._args_schema
+        _args_schema.coordinator_high_availability_enabled = AAZBoolArg(
+            options=["--coord-ha-enabled", "--coordinator-high-availability-enabled"],
+            arg_group="TrinoProfile",
+            help="The flag that if enable coordinator HA, uses multiple coordinator replicas with auto failover, one per each head node. Default: true.",
+            nullable=True,
+        )
+        _args_schema.coordinator_debug_port = AAZIntArg(
+            options=["--coord-debug-port", "--coordinator-debug-port"],
+            arg_group="TrinoProfile",
             help="The flag that if enable debug or not.",
             nullable=True,
         )
-        trino_debug_config_update.port = AAZIntArg(
-            options=["port"],
-            help="The debug port.",
-            nullable=True,
-        )
-        trino_debug_config_update.suspend = AAZBoolArg(
-            options=["suspend"],
+        _args_schema.coordinator_debug_suspend = AAZBoolArg(
+            options=["--coord-debug-suspend", "--coordinator-debug-suspend"],
+            arg_group="TrinoProfile",
             help="The flag that if suspend debug or not.",
             nullable=True,
         )
+        _args_schema.coordinator_debug_enabled = AAZBoolArg(
+            options=["--coord-debug-enabled", "--coordinator-debug-enabled"],
+            arg_group="TrinoProfile",
+            help="The flag that if enable coordinator HA, uses multiple coordinator replicas with auto failover, one per each head node. Default: true.",
+            nullable=True,
+        )
+        _args_schema.trino_profile_user_plugins_plugin_spec = AAZObjectArg(
+            options=["--trino-plugins-spec", "--trino-profile-user-plugins-plugin-spec"],
+            arg_group="TrinoProfile",
+            help="Trino user plugins spec",
+            nullable=True,
+        )
+        _args_schema.trino_profile_user_plugins_telemetry_spec = AAZObjectArg(
+            options=["--trino-telemetry-spec", "--trino-profile-user-plugins-telemetry-spec"],
+            arg_group="TrinoProfile",
+            help="Trino user telemetry spec.",
+            nullable=True,
+        )
 
-        _schema.enable = cls._args_trino_debug_config_update.enable
-        _schema.port = cls._args_trino_debug_config_update.port
-        _schema.suspend = cls._args_trino_debug_config_update.suspend
+        trino_profile_user_plugins_plugin_spec = cls._args_schema.trino_profile_user_plugins_plugin_spec
+        trino_profile_user_plugins_plugin_spec.plugins = AAZListArg(
+            options=["plugins"],
+            help="Trino user plugins.",
+            nullable=True,
+        )
+
+        plugins = cls._args_schema.trino_profile_user_plugins_plugin_spec.plugins
+        plugins.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.trino_profile_user_plugins_plugin_spec.plugins.Element
+        _element.enabled = AAZBoolArg(
+            options=["enabled"],
+            help="Denotes whether the plugin is active or not.",
+            nullable=True,
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="This field maps to the sub-directory in trino plugins location, that will contain all the plugins under path.",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+        _element.path = AAZStrArg(
+            options=["path"],
+            help="Fully qualified path to the folder containing the plugins.",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                pattern="^(https)|(abfss)://.*$",
+                min_length=1,
+            ),
+        )
+
+        trino_profile_user_plugins_telemetry_spec = cls._args_schema.trino_profile_user_plugins_telemetry_spec
+        trino_profile_user_plugins_telemetry_spec.storage = AAZObjectArg(
+            options=["storage"],
+            help="Trino user telemetry definition.",
+            nullable=True,
+        )
+
+        storage = cls._args_schema.trino_profile_user_plugins_telemetry_spec.storage
+        storage.hivecatalog_name = AAZStrArg(
+            options=["hivecatalog-name"],
+            help="Hive Catalog name used to mount external tables on the logs written by trino, if not specified there tables are not created.",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+        storage.hivecatalog_schema = AAZStrArg(
+            options=["hivecatalog-schema"],
+            help="Schema of the above catalog to use, to mount query logs as external tables, if not specified tables will be mounted under schema trinologs.",
+            nullable=True,
+        )
+        storage.partition_retention_in_days = AAZIntArg(
+            options=["partition-retention-in-days"],
+            help="Retention period for query log table partitions, this doesn't have any affect on actual data.",
+            nullable=True,
+        )
+        storage.path = AAZStrArg(
+            options=["path"],
+            help="Azure storage location of the blobs.",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        # define Arg Group "Worker"
+
+        _args_schema = cls._args_schema
+        _args_schema.worker_debug_enable = AAZBoolArg(
+            options=["--worker-debug-enable"],
+            arg_group="Worker",
+            help="The flag that if trino cluster enable debug or not.",
+            nullable=True,
+        )
+        _args_schema.worker_debug_port = AAZIntArg(
+            options=["--worker-debug-port"],
+            arg_group="Worker",
+            help="The debug port.",
+            nullable=True,
+        )
+        _args_schema.worker_debug_suspend = AAZBoolArg(
+            options=["--worker-debug-suspend"],
+            arg_group="Worker",
+            help="The flag that if trino cluster suspend debug or not.",
+            nullable=True,
+        )
+        return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
@@ -1136,7 +1123,7 @@ class Update(AAZCommand):
                 cluster_profile.set_prop("sparkProfile", AAZObjectType)
                 cluster_profile.set_prop("sshProfile", AAZObjectType)
                 cluster_profile.set_prop("stubProfile", AAZFreeFormDictType, ".stub_profile")
-                cluster_profile.set_prop("trinoProfile", AAZObjectType, ".trino_profile")
+                cluster_profile.set_prop("trinoProfile", AAZObjectType)
 
             authorization_profile = _builder.get(".properties.clusterProfile.authorizationProfile")
             if authorization_profile is not None:
@@ -1270,7 +1257,7 @@ class Update(AAZCommand):
 
             prometheus_profile = _builder.get(".properties.clusterProfile.prometheusProfile")
             if prometheus_profile is not None:
-                prometheus_profile.set_prop("enabled", AAZBoolType, ".prometheu_profile_enabled", typ_kwargs={"flags": {"required": True}})
+                prometheus_profile.set_prop("enabled", AAZBoolType, ".prometheu_enabled", typ_kwargs={"flags": {"required": True}})
 
             script_action_profiles = _builder.get(".properties.clusterProfile.scriptActionProfiles")
             if script_action_profiles is not None:
@@ -1349,7 +1336,7 @@ class Update(AAZCommand):
             metastore_spec = _builder.get(".properties.clusterProfile.sparkProfile.metastoreSpec")
             if metastore_spec is not None:
                 metastore_spec.set_prop("dbName", AAZStrType, ".spark_hive_catalog_db_name", typ_kwargs={"flags": {"required": True}})
-                metastore_spec.set_prop("dbPasswordSecretName", AAZStrType, ".spark_hive_catalog_db_password_secret_name", typ_kwargs={"flags": {"required": True}})
+                metastore_spec.set_prop("dbPasswordSecretName", AAZStrType, ".spark_hive_catalog_db_password_secret", typ_kwargs={"flags": {"required": True}})
                 metastore_spec.set_prop("dbServerHost", AAZStrType, ".spark_hive_catalog_db_server_name", typ_kwargs={"flags": {"required": True}})
                 metastore_spec.set_prop("dbUserName", AAZStrType, ".spark_hive_catalog_db_user_name", typ_kwargs={"flags": {"required": True}})
                 metastore_spec.set_prop("keyVaultId", AAZStrType, ".spark_hive_catalog_key_vault_id", typ_kwargs={"flags": {"required": True}})
@@ -1377,15 +1364,15 @@ class Update(AAZCommand):
 
             trino_profile = _builder.get(".properties.clusterProfile.trinoProfile")
             if trino_profile is not None:
-                trino_profile.set_prop("catalogOptions", AAZObjectType, ".catalog_options")
+                trino_profile.set_prop("catalogOptions", AAZObjectType)
                 trino_profile.set_prop("coordinator", AAZObjectType)
-                trino_profile.set_prop("userPluginsSpec", AAZObjectType, ".user_plugins_spec")
-                trino_profile.set_prop("userTelemetrySpec", AAZObjectType, ".user_telemetry_spec")
-                trino_profile.set_prop("worker", AAZObjectType, ".worker")
+                trino_profile.set_prop("userPluginsSpec", AAZObjectType, ".trino_profile_user_plugins_plugin_spec")
+                trino_profile.set_prop("userTelemetrySpec", AAZObjectType, ".trino_profile_user_plugins_telemetry_spec")
+                trino_profile.set_prop("worker", AAZObjectType)
 
             catalog_options = _builder.get(".properties.clusterProfile.trinoProfile.catalogOptions")
             if catalog_options is not None:
-                catalog_options.set_prop("hive", AAZListType, ".hive")
+                catalog_options.set_prop("hive", AAZListType, ".trino_hive_catalog")
 
             hive = _builder.get(".properties.clusterProfile.trinoProfile.catalogOptions.hive")
             if hive is not None:
@@ -1437,7 +1424,13 @@ class Update(AAZCommand):
 
             worker = _builder.get(".properties.clusterProfile.trinoProfile.worker")
             if worker is not None:
-                _UpdateHelper._build_schema_trino_debug_config_update(worker.set_prop("debug", AAZObjectType, ".debug", typ_kwargs={"flags": {"client_flatten": True}}))
+                worker.set_prop("debug", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+
+            debug = _builder.get(".properties.clusterProfile.trinoProfile.worker.debug")
+            if debug is not None:
+                debug.set_prop("enable", AAZBoolType, ".worker_debug_enable")
+                debug.set_prop("port", AAZIntType, ".worker_debug_port")
+                debug.set_prop("suspend", AAZBoolType, ".worker_debug_suspend")
 
             compute_profile = _builder.get(".properties.computeProfile")
             if compute_profile is not None:
@@ -1470,14 +1463,6 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    @classmethod
-    def _build_schema_trino_debug_config_update(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("enable", AAZBoolType, ".enable")
-        _builder.set_prop("port", AAZIntType, ".port")
-        _builder.set_prop("suspend", AAZBoolType, ".suspend")
 
     _schema_cluster_read = None
 

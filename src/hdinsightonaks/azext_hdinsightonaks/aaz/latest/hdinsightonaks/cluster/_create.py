@@ -104,42 +104,42 @@ class Create(AAZCommand):
             help="This property is for graceful decommission timeout; It has a default setting of 3600 seconds before forced shutdown takes place. This is the maximal time to wait for running containers and applications to complete before transition a DECOMMISSIONING node into DECOMMISSIONED. The default value is 3600 seconds. Negative value (like -1) is handled as infinite timeout.",
         )
         _args_schema.loadbased_config_cooldown_period = AAZIntArg(
-            options=["--loadbased-config-cooldown-period"],
+            options=["--cooldown-period", "--loadbased-config-cooldown-period"],
             arg_group="ClusterProfile",
             help="This is a cool down period, this is a time period in seconds, which determines the amount of time that must elapse between a scaling activity started by a rule and the start of the next scaling activity, regardless of the rule that triggers it. The default value is 300 seconds.",
         )
         _args_schema.loadbased_config_max_nodes = AAZIntArg(
-            options=["--loadbased-config-max-nodes"],
+            options=["--loadbased-max-nodes", "--loadbased-config-max-nodes"],
             arg_group="ClusterProfile",
             help="User needs to set the maximum number of nodes for load based scaling, the load based scaling will use this to scale up and scale down between minimum and maximum number of nodes.",
         )
         _args_schema.loadbased_config_min_nodes = AAZIntArg(
-            options=["--loadbased-config-min-nodes"],
+            options=["--loadbased-min-nodes", "--loadbased-config-min-nodes"],
             arg_group="ClusterProfile",
             help="User needs to set the minimum number of nodes for load based scaling, the load based scaling will use this to scale up and scale down between minimum and maximum number of nodes.",
         )
         _args_schema.loadbased_config_poll_interval = AAZIntArg(
-            options=["--loadbased-config-poll-interval"],
+            options=["--loadbased-interval", "--loadbased-config-poll-interval"],
             arg_group="ClusterProfile",
             help="User can specify the poll interval, this is the time period (in seconds) after which scaling metrics are polled for triggering a scaling operation.",
         )
         _args_schema.loadbased_config_scaling_rules = AAZListArg(
-            options=["--loadbased-config-scaling-rules"],
+            options=["--loadbased-rules", "--loadbased-config-scaling-rules"],
             arg_group="ClusterProfile",
             help="The scaling rules.",
         )
         _args_schema.schedule_based_config_default_count = AAZIntArg(
-            options=["--schedule-based-config-default-count"],
+            options=["--schedule-default-count", "--schedule-based-config-default-count"],
             arg_group="ClusterProfile",
             help="Setting default node count of current schedule configuration. Default node count specifies the number of nodes which are default when an specified scaling operation is executed (scale up/scale down)",
         )
         _args_schema.schedule_based_config_schedule = AAZListArg(
-            options=["--schedule-based-config-schedule"],
+            options=["--schedule-schedule", "--schedule-based-config-schedule"],
             arg_group="ClusterProfile",
             help="This specifies the schedules where scheduled based Autoscale to be enabled, the user has a choice to set multiple rules within the schedule across days and times (start/end).",
         )
         _args_schema.schedule_based_config_time_zone = AAZStrArg(
-            options=["--schedule-based-config-time-zone"],
+            options=["--schedule-time-zone", "--schedule-based-config-time-zone"],
             arg_group="ClusterProfile",
             help="User has to specify the timezone on which the schedule has to be set for schedule based autoscale configuration.",
         )
@@ -196,7 +196,7 @@ class Create(AAZCommand):
             help="The script action profile list.",
         )
         _args_schema.service_configs_profiles = AAZListArg(
-            options=["--service-configs-profiles"],
+            options=["--service-configs", "--service-configs-profiles"],
             arg_group="ClusterProfile",
             help="The service configs profiles.",
         )
@@ -548,7 +548,7 @@ class Create(AAZCommand):
             help="True if log analytics is enabled for the cluster, otherwise false.",
         )
         _args_schema.log_analytic_profile_metrics_enabled = AAZBoolArg(
-            options=["--log-analytic-profile-metrics-enabled"],
+            options=["--la-metrics-enabled", "--log-analytic-profile-metrics-enabled"],
             arg_group="LogAnalyticsProfile",
             help="True if metrics are enabled, otherwise false.",
         )
@@ -556,8 +556,8 @@ class Create(AAZCommand):
         # define Arg Group "PrometheusProfile"
 
         _args_schema = cls._args_schema
-        _args_schema.prometheu_profile_enabled = AAZBoolArg(
-            options=["--prometheu-profile-enabled"],
+        _args_schema.prometheu_enabled = AAZBoolArg(
+            options=["--prometheu-enabled"],
             arg_group="PrometheusProfile",
             help="Enable Prometheus for cluster or not.",
             default=False,
@@ -626,32 +626,32 @@ class Create(AAZCommand):
             help="The default storage URL.",
         )
         _args_schema.spark_hive_catalog_db_name = AAZStrArg(
-            options=["--spark-hive-catalog-db-name"],
+            options=["--spark-hive-db-name", "--spark-hive-catalog-db-name"],
             arg_group="SparkProfile",
             help="The database name.",
         )
-        _args_schema.spark_hive_catalog_db_password_secret_name = AAZStrArg(
-            options=["--spark-hive-catalog-db-password-secret-name"],
+        _args_schema.spark_hive_catalog_db_password_secret = AAZStrArg(
+            options=["--spark-hive-db-secret", "--spark-hive-catalog-db-password-secret"],
             arg_group="SparkProfile",
             help="The secret name which contains the database user password.",
         )
         _args_schema.spark_hive_catalog_db_server_name = AAZStrArg(
-            options=["--spark-hive-catalog-db-server-name"],
+            options=["--spark-hive-db-server", "--spark-hive-catalog-db-server-name"],
             arg_group="SparkProfile",
             help="The database server host.",
         )
         _args_schema.spark_hive_catalog_db_user_name = AAZStrArg(
-            options=["--spark-hive-catalog-db-user-name"],
+            options=["--spark-hive-db-user", "--spark-hive-catalog-db-user-name"],
             arg_group="SparkProfile",
             help="The database user name.",
         )
         _args_schema.spark_hive_catalog_key_vault_id = AAZStrArg(
-            options=["--spark-hive-catalog-key-vault-id"],
+            options=["--spark-hive-kv-id", "--spark-hive-catalog-key-vault-id"],
             arg_group="SparkProfile",
             help="The key vault resource id.",
         )
         _args_schema.spark_hive_catalog_thrift_url = AAZStrArg(
-            options=["--spark-hive-catalog-thrift-url"],
+            options=["--spark-hive-thrift-url", "--spark-hive-catalog-thrift-url"],
             arg_group="SparkProfile",
             help="The thrift url.",
         )
@@ -700,7 +700,7 @@ class Create(AAZCommand):
         _args_schema.trino_hive_catalog = AAZListArg(
             options=["--trino-hive-catalog"],
             arg_group="TrinoHiveCatalog",
-            help="hive catalog options.",
+            help="Trino cluster hive catalog options.",
         )
 
         trino_hive_catalog = cls._args_schema.trino_hive_catalog
@@ -739,27 +739,27 @@ class Create(AAZCommand):
         # define Arg Group "TrinoProfile"
 
         _args_schema = cls._args_schema
-        _args_schema.trino_profile_user_plugins_spec_plugin = AAZObjectArg(
-            options=["--trino-profile-user-plugins-spec-plugin"],
+        _args_schema.trino_profile_user_plugins_plugin_spec = AAZObjectArg(
+            options=["--trino-plugins-spec", "--trino-profile-user-plugins-plugin-spec"],
             arg_group="TrinoProfile",
             help="Trino user plugins spec",
         )
         _args_schema.trino_profile_user_plugins_telemetry_spec = AAZObjectArg(
-            options=["--trino-profile-user-plugins-telemetry-spec"],
+            options=["--trino-telemetry-spec", "--trino-profile-user-plugins-telemetry-spec"],
             arg_group="TrinoProfile",
-            help="User telemetry",
+            help="Trino user telemetry spec.",
         )
 
-        trino_profile_user_plugins_spec_plugin = cls._args_schema.trino_profile_user_plugins_spec_plugin
-        trino_profile_user_plugins_spec_plugin.plugins = AAZListArg(
+        trino_profile_user_plugins_plugin_spec = cls._args_schema.trino_profile_user_plugins_plugin_spec
+        trino_profile_user_plugins_plugin_spec.plugins = AAZListArg(
             options=["plugins"],
             help="Trino user plugins.",
         )
 
-        plugins = cls._args_schema.trino_profile_user_plugins_spec_plugin.plugins
+        plugins = cls._args_schema.trino_profile_user_plugins_plugin_spec.plugins
         plugins.Element = AAZObjectArg()
 
-        _element = cls._args_schema.trino_profile_user_plugins_spec_plugin.plugins.Element
+        _element = cls._args_schema.trino_profile_user_plugins_plugin_spec.plugins.Element
         _element.enabled = AAZBoolArg(
             options=["enabled"],
             help="Denotes whether the plugin is active or not.",
@@ -818,16 +818,19 @@ class Create(AAZCommand):
         _args_schema.worker_debug_enable = AAZBoolArg(
             options=["--worker-debug-enable"],
             arg_group="Worker",
+            help="The flag that if trino cluster enable debug or not.",
             default=False,
         )
         _args_schema.worker_debug_port = AAZIntArg(
             options=["--worker-debug-port"],
             arg_group="Worker",
+            help="The debug port.",
             default=8008,
         )
         _args_schema.worker_debug_suspend = AAZBoolArg(
             options=["--worker-debug-suspend"],
             arg_group="Worker",
+            help="The flag that if trino cluster suspend debug or not.",
             default=False,
         )
         return cls._args_schema
@@ -1104,7 +1107,7 @@ class Create(AAZCommand):
 
             prometheus_profile = _builder.get(".properties.clusterProfile.prometheusProfile")
             if prometheus_profile is not None:
-                prometheus_profile.set_prop("enabled", AAZBoolType, ".prometheu_profile_enabled", typ_kwargs={"flags": {"required": True}})
+                prometheus_profile.set_prop("enabled", AAZBoolType, ".prometheu_enabled", typ_kwargs={"flags": {"required": True}})
 
             script_action_profiles = _builder.get(".properties.clusterProfile.scriptActionProfiles")
             if script_action_profiles is not None:
@@ -1183,7 +1186,7 @@ class Create(AAZCommand):
             metastore_spec = _builder.get(".properties.clusterProfile.sparkProfile.metastoreSpec")
             if metastore_spec is not None:
                 metastore_spec.set_prop("dbName", AAZStrType, ".spark_hive_catalog_db_name", typ_kwargs={"flags": {"required": True}})
-                metastore_spec.set_prop("dbPasswordSecretName", AAZStrType, ".spark_hive_catalog_db_password_secret_name", typ_kwargs={"flags": {"required": True}})
+                metastore_spec.set_prop("dbPasswordSecretName", AAZStrType, ".spark_hive_catalog_db_password_secret", typ_kwargs={"flags": {"required": True}})
                 metastore_spec.set_prop("dbServerHost", AAZStrType, ".spark_hive_catalog_db_server_name", typ_kwargs={"flags": {"required": True}})
                 metastore_spec.set_prop("dbUserName", AAZStrType, ".spark_hive_catalog_db_user_name", typ_kwargs={"flags": {"required": True}})
                 metastore_spec.set_prop("keyVaultId", AAZStrType, ".spark_hive_catalog_key_vault_id", typ_kwargs={"flags": {"required": True}})
@@ -1213,7 +1216,7 @@ class Create(AAZCommand):
             if trino_profile is not None:
                 trino_profile.set_prop("catalogOptions", AAZObjectType)
                 trino_profile.set_prop("coordinator", AAZObjectType)
-                trino_profile.set_prop("userPluginsSpec", AAZObjectType, ".trino_profile_user_plugins_spec_plugin")
+                trino_profile.set_prop("userPluginsSpec", AAZObjectType, ".trino_profile_user_plugins_plugin_spec")
                 trino_profile.set_prop("userTelemetrySpec", AAZObjectType, ".trino_profile_user_plugins_telemetry_spec")
                 trino_profile.set_prop("worker", AAZObjectType)
 

@@ -108,7 +108,7 @@ class Create(AAZCommand):
             help="True if log analytics is enabled for cluster pool, otherwise false.",
         )
         _args_schema.log_analytic_workspace_id = AAZResourceIdArg(
-            options=["--log-analytic-workspace-id"],
+            options=["--la-workspace", "--log-analytic-workspace-id"],
             arg_group="LogAnalyticsProfile",
             help="Log analytics workspace to associate with the OMS agent.",
         )
@@ -125,8 +125,8 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.managed_resource_group_name = AAZStrArg(
-            options=["--managed-resource-group-name"],
+        _args_schema.managed_resource_group = AAZStrArg(
+            options=["--managed-resource-group"],
             arg_group="Properties",
             help="A resource group created by RP, to hold the resources created by RP on-behalf of customers. It will also be used to generate aksManagedResourceGroupName by pattern: MC_{managedResourceGroupName}_{clusterPoolName}_{region}. Please make sure it meets resource group name restriction.",
             fmt=AAZStrArgFormat(
@@ -251,7 +251,7 @@ class Create(AAZCommand):
                 properties.set_prop("clusterPoolProfile", AAZObjectType)
                 properties.set_prop("computeProfile", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("logAnalyticsProfile", AAZObjectType)
-                properties.set_prop("managedResourceGroupName", AAZStrType, ".managed_resource_group_name")
+                properties.set_prop("managedResourceGroupName", AAZStrType, ".managed_resource_group")
                 properties.set_prop("networkProfile", AAZObjectType)
 
             cluster_pool_profile = _builder.get(".properties.clusterPoolProfile")
