@@ -498,7 +498,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # read the original value passed by the command
         network_plugin = self.raw_param.get("network_plugin")
         # try to read the property value corresponding to the parameter from the `mc` object
+        # but do not override if it was specified in the raw params since this property can be updated.
         if (
+            not network_plugin and
             self.mc and
             self.mc.network_profile and
             self.mc.network_profile.network_plugin is not None
@@ -3294,6 +3296,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
+
+        network_plugin = self.context._get_network_plugin()
+        if network_plugin:
+            mc.network_profile.network_plugin = network_plugin
 
         network_plugin_mode = self.context.get_network_plugin_mode()
         if network_plugin_mode:
