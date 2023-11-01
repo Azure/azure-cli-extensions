@@ -33,6 +33,9 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
     generated_build_name = 'build{}'.format(run_full_id)[:12]
     log_in_file(f"Starting the Cloud Build for build of id '{generated_build_name}'\n", logs_file, no_print=True)
 
+    if not os.path.exists(source):
+        raise ValidationError(f"Impossible to find the directory or file corresponding to {source}. Please make sure that this path exists.")
+
     try:
         done_spinner = False
         fail_spinner = False
@@ -110,7 +113,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         # Build creation
         done_spinner = False
         thread = display_spinner("Starting the Container Apps Cloud Build agent")
-        build_create_json_content = BuildClient.create(cmd, builder_name, generated_build_name, resource_group_name, location)
+        build_create_json_content = BuildClient.create(cmd, builder_name, generated_build_name, resource_group_name, location, True)
         build_name = build_create_json_content["name"]
         upload_endpoint = build_create_json_content["properties"]["uploadEndpoint"]
         log_streaming_endpoint = build_create_json_content["properties"]["logStreamEndpoint"]
@@ -138,25 +141,35 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         done_spinner = False
         thread = display_spinner(f"Uploading compressed data")
         headers = {'Authorization': 'Bearer ' + token}
-        files = [("file", ("build_data.tar.gz", open(tar_file_path, "rb"), "application/x-tar"))]
-        response_file_upload = requests.post(
-            upload_endpoint,
-            files=files,
-            headers=headers)
+        try:
+            tar_file = open(tar_file_path, "rb")
+            files = [("file", ("build_data.tar.gz", tar_file, "application/x-tar"))]
+            response_file_upload = requests.post(
+                upload_endpoint,
+                files=files,
+                headers=headers)
+        finally:
+            # Close and delete the file now that it was uploaded.
+            tar_file.close()
+            os.unlink(tar_file_path)
         if not response_file_upload.ok:
             raise ValidationError(f"Error when uploading the file, request exited with {response_file_upload.status_code}")
         done_spinner = True
         thread.join()
 
-        # Wait for provisioning state to succeed
+        # Wait for provisioning state to succeed and the build status to be InProgress
         done_spinner = False
         thread = display_spinner(f"Waiting for the Cloud Build agent to report status")
         build_provisioning = True
         while build_provisioning:
             build_json_content = BuildClient.get(cmd, builder_name, build_name, resource_group_name)
             if build_json_content["properties"]["provisioningState"] == "Succeeded":
-                build_provisioning = False
-            time.sleep(2)
+                build_status = build_json_content["properties"]["buildStatus"]
+                if build_status == "InProgress":
+                    build_provisioning = False
+                elif build_status == "Failed" or build_status == "Canceled":
+                    raise ValidationError(f"The build {build_name} was provisioned properly but its build status is {build_status}")
+            time.sleep(1)
         done_spinner = True
         thread.join()
 
@@ -198,9 +211,6 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
             log_in_file(log_line, logs_file, no_print=True)
         done_spinner = True
         thread.join()
-
-        # TODO: Delete local tar.gz file
-        # os.unlink(tar_file_path)
 
         final_image = build_json_content["properties"]["destinationContainerRegistry"]["image"]
         log_in_file(f"{substatus_indentation}{font_bold}Successfully built and containerized image: {final_image}{font_default}", logs_file)

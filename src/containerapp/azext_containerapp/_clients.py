@@ -25,7 +25,9 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2023-08-01-preview"
+PREVIEW_API_VERSION = "2023-05-02-preview"
+BUILDER_CLIENT_API_VERSION = "2023-08-01-preview"
+BUILD_CLIENT_API_VERSION = "2023-08-01-preview"
 POLLING_TIMEOUT = 1200  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -495,7 +497,7 @@ class ConnectedEnvStorageClient():
 
 
 class BuilderClient():
-    api_version = PREVIEW_API_VERSION
+    api_version = BUILDER_CLIENT_API_VERSION
 
     @classmethod
     def list(cls, cmd, resource_group_name):
@@ -524,7 +526,7 @@ class BuilderClient():
         body_data = {
             "location": location,
             "properties": {
-                "environmentId": f"/subscriptions/{sub_id}/resourcegroups/{resource_group_name}/providers/microsoft.app/managedenvironments/{environment_name}"
+                "environmentId": f"/subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/managedEnvironments/{environment_name}"
             }
         }
 
@@ -541,10 +543,10 @@ class BuilderClient():
 
 
 class BuildClient():
-    api_version = PREVIEW_API_VERSION
+    api_version = BUILD_CLIENT_API_VERSION
 
     @classmethod
-    def create(cls, cmd, builder_name, build_name, resource_group_name, location):
+    def create(cls, cmd, builder_name, build_name, resource_group_name, location, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/builders/{}/builds/{}?api-version={}"
@@ -559,7 +561,16 @@ class BuildClient():
             "location": location,
             "properties": {}
         }
+
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(body_data))
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
+            poll_status(cmd, operation_url)
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+
         return r.json()
 
     @classmethod
