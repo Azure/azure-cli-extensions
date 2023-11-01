@@ -64,6 +64,22 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "ApplicationLogs"
+
+        _args_schema = cls._args_schema
+        _args_schema.application_log_std_error_enabled = AAZBoolArg(
+            options=["--log-std-error-enabled", "--application-log-std-error-enabled"],
+            arg_group="ApplicationLogs",
+            help="True if stderror is enabled, otherwise false.",
+            nullable=True,
+        )
+        _args_schema.application_log_std_out_enabled = AAZBoolArg(
+            options=["--log-std-out-enabled", "--application-log-std-out-enabled"],
+            arg_group="ApplicationLogs",
+            help="True if stdout is enabled, otherwise false.",
+            nullable=True,
+        )
+
         # define Arg Group "ClusterProfile"
 
         _args_schema = cls._args_schema
@@ -86,13 +102,13 @@ class Update(AAZCommand):
             nullable=True,
             enum={"LoadBased": "LoadBased", "ScheduleBased": "ScheduleBased"},
         )
-        _args_schema.autoscale_profile_enabled = AAZBoolArg(
-            options=["--autoscale-profile-enabled"],
+        _args_schema.autoscale_enabled = AAZBoolArg(
+            options=["--autoscale-enabled"],
             arg_group="ClusterProfile",
             help="This indicates whether auto scale is enabled on HDInsight on AKS cluster.",
         )
         _args_schema.autoscale_profile_graceful_decommission_timeout = AAZIntArg(
-            options=["--autoscale-profile-graceful-decommission-timeout"],
+            options=["--decommission-time", "--autoscale-profile-graceful-decommission-timeout"],
             arg_group="ClusterProfile",
             help="This property is for graceful decommission timeout; It has a default setting of 3600 seconds before forced shutdown takes place. This is the maximal time to wait for running containers and applications to complete before transition a DECOMMISSIONING node into DECOMMISSIONED. The default value is 3600 seconds. Negative value (like -1) is handled as infinite timeout.",
             nullable=True,
@@ -148,7 +164,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.assigned_identity_client_id = AAZStrArg(
-            options=["--assigned-identity-client-id"],
+            options=["--msi-client-id", "--assigned-identity-client-id"],
             arg_group="ClusterProfile",
             help="ClientId of the MSI.",
             fmt=AAZStrArgFormat(
@@ -156,15 +172,15 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.assigned_identity_object_id = AAZStrArg(
-            options=["--assigned-identity-object-id"],
+            options=["--msi-object-id", "--assigned-identity-object-id"],
             arg_group="ClusterProfile",
             help="ObjectId of the MSI.",
             fmt=AAZStrArgFormat(
                 pattern="^[{(]?[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}[)}]?$",
             ),
         )
-        _args_schema.assigned_identity_resource_id = AAZResourceIdArg(
-            options=["--assigned-identity-resource-id"],
+        _args_schema.assigned_identity_id = AAZResourceIdArg(
+            options=["--msi-id", "--assigned-identity-id"],
             arg_group="ClusterProfile",
             help="ResourceId of the MSI.",
         )
@@ -178,18 +194,6 @@ class Update(AAZCommand):
             options=["--llap-profile"],
             arg_group="ClusterProfile",
             help="LLAP cluster profile.",
-            nullable=True,
-        )
-        _args_schema.application_log_std_error_enabled = AAZBoolArg(
-            options=["--application-log-std-error-enabled"],
-            arg_group="ClusterProfile",
-            help="True if stderror is enabled, otherwise false.",
-            nullable=True,
-        )
-        _args_schema.application_log_std_out_enabled = AAZBoolArg(
-            options=["--application-log-std-out-enabled"],
-            arg_group="ClusterProfile",
-            help="True if stdout is enabled, otherwise false.",
             nullable=True,
         )
         _args_schema.enable_log_analytics = AAZBoolArg(
@@ -515,19 +519,22 @@ class Update(AAZCommand):
             nullable=True,
         )
         trino_profile.coordinator_high_availability_enabled = AAZBoolArg(
-            options=["coordinator-high-availability-enabled"],
+            options=["coord-ha-enabled", "coordinator-high-availability-enabled"],
+            help="The flag that if enable coordinator HA, uses multiple coordinator replicas with auto failover, one per each head node. Default: true.",
             nullable=True,
         )
         trino_profile.coordinator_debug_port = AAZIntArg(
-            options=["coordinator-debug-port"],
+            options=["coord-debug-port", "coordinator-debug-port"],
+            help="The flag that if enable debug or not.",
             nullable=True,
         )
         trino_profile.coordinator_debug_suspend = AAZBoolArg(
-            options=["coordinator-debug-suspend"],
+            options=["coord-debug-suspend", "coordinator-debug-suspend"],
+            help="The flag that if suspend debug or not.",
             nullable=True,
         )
         trino_profile.coordinator_debug_enabled = AAZBoolArg(
-            options=["coordinator-debug-enabled"],
+            options=["coord-debug-enabled", "coordinator-debug-enabled"],
             help="The flag that if enable coordinator HA, uses multiple coordinator replicas with auto failover, one per each head node. Default: true.",
             nullable=True,
         )
@@ -703,17 +710,17 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.flink_hive_catalog_db_connection_password_secret = AAZStrArg(
-            options=["--flink-hive-catalog-db-connection-password-secret"],
+            options=["--flink-hive-db-secret", "--flink-hive-catalog-db-connection-password-secret"],
             arg_group="FlinkProfile",
             help="Secret reference name from secretsProfile.secrets containing password for database connection.",
         )
         _args_schema.flink_hive_catalog_db_connection_url = AAZStrArg(
-            options=["--flink-hive-catalog-db-connection-url"],
+            options=["--flink-hive-db-url", "--flink-hive-catalog-db-connection-url"],
             arg_group="FlinkProfile",
             help="Connection string for hive metastore database.",
         )
         _args_schema.flink_hive_catalog_db_connection_user_name = AAZStrArg(
-            options=["--flink-hive-catalog-db-connection-user-name"],
+            options=["--flink-hive-db-user", "--flink-hive-catalog-db-connection-user-name"],
             arg_group="FlinkProfile",
             help="User name for database connection.",
         )
@@ -1147,7 +1154,7 @@ class Update(AAZCommand):
             autoscale_profile = _builder.get(".properties.clusterProfile.autoscaleProfile")
             if autoscale_profile is not None:
                 autoscale_profile.set_prop("autoscaleType", AAZStrType, ".autoscale_profile_type")
-                autoscale_profile.set_prop("enabled", AAZBoolType, ".autoscale_profile_enabled", typ_kwargs={"flags": {"required": True}})
+                autoscale_profile.set_prop("enabled", AAZBoolType, ".autoscale_enabled", typ_kwargs={"flags": {"required": True}})
                 autoscale_profile.set_prop("gracefulDecommissionTimeout", AAZIntType, ".autoscale_profile_graceful_decommission_timeout")
                 autoscale_profile.set_prop("loadBasedConfig", AAZObjectType)
                 autoscale_profile.set_prop("scheduleBasedConfig", AAZObjectType)
@@ -1240,7 +1247,7 @@ class Update(AAZCommand):
             if identity_profile is not None:
                 identity_profile.set_prop("msiClientId", AAZStrType, ".assigned_identity_client_id", typ_kwargs={"flags": {"required": True}})
                 identity_profile.set_prop("msiObjectId", AAZStrType, ".assigned_identity_object_id", typ_kwargs={"flags": {"required": True}})
-                identity_profile.set_prop("msiResourceId", AAZStrType, ".assigned_identity_resource_id", typ_kwargs={"flags": {"required": True}})
+                identity_profile.set_prop("msiResourceId", AAZStrType, ".assigned_identity_id", typ_kwargs={"flags": {"required": True}})
 
             kafka_profile = _builder.get(".properties.clusterProfile.kafkaProfile")
             if kafka_profile is not None:

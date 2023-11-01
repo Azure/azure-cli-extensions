@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a cluster.
 
     :example: Create a Trino cluster.
-        az az hdinsightonaks cluster create -n clustername --cluster-pool-name clusterpoolname -g resourcesGroup -l westus3 --assigned-identity-object-id 00000000-0000-0000-0000-000000000000 --assigned-identity-client-id 00000000-0000-0000-0000-000000000000 --authorization-user-id 00000000-0000-0000-0000-000000000000 --assigned-identity-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi --cluster-type Trino --cluster-version 1.0.6 --oss-version 0.410.0 --nodes (az hdinsightonaks cluster node-profile create  --count 5 --type Worker --vm-size Standard_D8d_v5)
+        az az hdinsightonaks cluster create -n clustername --cluster-pool-name clusterpoolname -g resourcesGroup -l westus3 --assigned-identity-object-id 00000000-0000-0000-0000-000000000000 --assigned-identity-client-id 00000000-0000-0000-0000-000000000000 --authorization-user-id 00000000-0000-0000-0000-000000000000 --assigned-identity-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi --cluster-type Trino --cluster-version 1.0.6 --oss-version 0.410.0 --nodes (az hdinsightonaks cluster node-profile create  --count 5 --type Worker --vm-size Standard_D8d_v5)
     """
 
     _aaz_info = {
@@ -64,12 +64,12 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.application_log_std_error_enabled = AAZBoolArg(
-            options=["--application-log-std-error-enabled"],
+            options=["--log-std-error-enabled", "--application-log-std-error-enabled"],
             arg_group="ApplicationLogs",
             help="True if stderror is enabled, otherwise false.",
         )
         _args_schema.application_log_std_out_enabled = AAZBoolArg(
-            options=["--application-log-std-out-enabled"],
+            options=["--log-std-out-enabled", "--application-log-std-out-enabled"],
             arg_group="ApplicationLogs",
             help="True if stdout is enabled, otherwise false.",
         )
@@ -93,13 +93,13 @@ class Create(AAZCommand):
             help="User to specify which type of Autoscale to be implemented - Scheduled Based or Load Based.",
             enum={"LoadBased": "LoadBased", "ScheduleBased": "ScheduleBased"},
         )
-        _args_schema.autoscale_profile_enabled = AAZBoolArg(
-            options=["--autoscale-profile-enabled"],
+        _args_schema.autoscale_enabled = AAZBoolArg(
+            options=["--autoscale-enabled"],
             arg_group="ClusterProfile",
             help="This indicates whether auto scale is enabled on HDInsight on AKS cluster.",
         )
         _args_schema.autoscale_profile_graceful_decommission_timeout = AAZIntArg(
-            options=["--autoscale-profile-graceful-decommission-timeout"],
+            options=["--decommission-time", "--autoscale-profile-graceful-decommission-timeout"],
             arg_group="ClusterProfile",
             help="This property is for graceful decommission timeout; It has a default setting of 3600 seconds before forced shutdown takes place. This is the maximal time to wait for running containers and applications to complete before transition a DECOMMISSIONING node into DECOMMISSIONED. The default value is 3600 seconds. Negative value (like -1) is handled as infinite timeout.",
         )
@@ -152,7 +152,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.assigned_identity_client_id = AAZStrArg(
-            options=["--assigned-identity-client-id"],
+            options=["--msi-client-id", "--assigned-identity-client-id"],
             arg_group="ClusterProfile",
             help="ClientId of the MSI.",
             fmt=AAZStrArgFormat(
@@ -160,15 +160,15 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.assigned_identity_object_id = AAZStrArg(
-            options=["--assigned-identity-object-id"],
+            options=["--msi-object-id", "--assigned-identity-object-id"],
             arg_group="ClusterProfile",
             help="ObjectId of the MSI.",
             fmt=AAZStrArgFormat(
                 pattern="^[{(]?[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}[)}]?$",
             ),
         )
-        _args_schema.assigned_identity_resource_id = AAZResourceIdArg(
-            options=["--assigned-identity-resource-id"],
+        _args_schema.assigned_identity_id = AAZResourceIdArg(
+            options=["--msi-id", "--assigned-identity-id"],
             arg_group="ClusterProfile",
             help="ResourceId of the MSI.",
         )
@@ -433,22 +433,25 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.coordinator_high_availability_enabled = AAZBoolArg(
-            options=["--coordinator-high-availability-enabled"],
+            options=["--coord-ha-enabled", "--coordinator-high-availability-enabled"],
             arg_group="Coordinator",
+            help="The flag that if enable coordinator HA, uses multiple coordinator replicas with auto failover, one per each head node. Default: true.",
             default=False,
         )
         _args_schema.coordinator_debug_port = AAZIntArg(
-            options=["--coordinator-debug-port"],
+            options=["--coord-debug-port", "--coordinator-debug-port"],
             arg_group="Coordinator",
+            help="The flag that if enable debug or not.",
             default=8008,
         )
         _args_schema.coordinator_debug_suspend = AAZBoolArg(
-            options=["--coordinator-debug-suspend"],
+            options=["--coord-debug-suspend", "--coordinator-debug-suspend"],
             arg_group="Coordinator",
+            help="The flag that if suspend debug or not.",
             default=False,
         )
         _args_schema.coordinator_debug_enabled = AAZBoolArg(
-            options=["--coordinator-debug-enabled"],
+            options=["--coord-debug-enabled", "--coordinator-debug-enabled"],
             arg_group="Coordinator",
             help="The flag that if enable coordinator HA, uses multiple coordinator replicas with auto failover, one per each head node. Default: true.",
             default=True,
@@ -458,17 +461,17 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.flink_hive_catalog_db_connection_password_secret = AAZStrArg(
-            options=["--flink-hive-catalog-db-connection-password-secret"],
+            options=["--flink-hive-db-secret", "--flink-hive-catalog-db-connection-password-secret"],
             arg_group="FlinkProfile",
             help="Secret reference name from secretsProfile.secrets containing password for database connection.",
         )
         _args_schema.flink_hive_catalog_db_connection_url = AAZStrArg(
-            options=["--flink-hive-catalog-db-connection-url"],
+            options=["--flink-hive-db-url", "--flink-hive-catalog-db-connection-url"],
             arg_group="FlinkProfile",
             help="Connection string for hive metastore database.",
         )
         _args_schema.flink_hive_catalog_db_connection_user_name = AAZStrArg(
-            options=["--flink-hive-catalog-db-connection-user-name"],
+            options=["--flink-hive-db-user", "--flink-hive-catalog-db-connection-user-name"],
             arg_group="FlinkProfile",
             help="User name for database connection.",
         )
@@ -499,7 +502,6 @@ class Create(AAZCommand):
             options=["--flink-storage-uri"],
             arg_group="FlinkProfile",
             help="Storage account uri which is used for savepoint and checkpoint state.",
-
         )
         _args_schema.flink_storage_key = AAZStrArg(
             options=["--flink-storage-key"],
@@ -986,7 +988,7 @@ class Create(AAZCommand):
             autoscale_profile = _builder.get(".properties.clusterProfile.autoscaleProfile")
             if autoscale_profile is not None:
                 autoscale_profile.set_prop("autoscaleType", AAZStrType, ".autoscale_profile_type")
-                autoscale_profile.set_prop("enabled", AAZBoolType, ".autoscale_profile_enabled", typ_kwargs={"flags": {"required": True}})
+                autoscale_profile.set_prop("enabled", AAZBoolType, ".autoscale_enabled", typ_kwargs={"flags": {"required": True}})
                 autoscale_profile.set_prop("gracefulDecommissionTimeout", AAZIntType, ".autoscale_profile_graceful_decommission_timeout")
                 autoscale_profile.set_prop("loadBasedConfig", AAZObjectType)
                 autoscale_profile.set_prop("scheduleBasedConfig", AAZObjectType)
@@ -1079,7 +1081,7 @@ class Create(AAZCommand):
             if identity_profile is not None:
                 identity_profile.set_prop("msiClientId", AAZStrType, ".assigned_identity_client_id", typ_kwargs={"flags": {"required": True}})
                 identity_profile.set_prop("msiObjectId", AAZStrType, ".assigned_identity_object_id", typ_kwargs={"flags": {"required": True}})
-                identity_profile.set_prop("msiResourceId", AAZStrType, ".assigned_identity_resource_id", typ_kwargs={"flags": {"required": True}})
+                identity_profile.set_prop("msiResourceId", AAZStrType, ".assigned_identity_id", typ_kwargs={"flags": {"required": True}})
 
             kafka_profile = _builder.get(".properties.clusterProfile.kafkaProfile")
             if kafka_profile is not None:

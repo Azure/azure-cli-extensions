@@ -210,7 +210,7 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         authorizationUserId = '77e9262b-339d-4ac4-a044-8884fdf73071'
         identityProfileMsiResourceId = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/psmsi'
        
-        return '--assigned-identity-object-id {} --assigned-identity-client-id {} --authorization-user-id {} --assigned-identity-resource-id {}' \
+        return '--assigned-identity-object-id {} --assigned-identity-client-id {} --authorization-user-id {} --assigned-identity-id {}' \
     .format(msiObjectId, msiClientId, authorizationUserId, identityProfileMsiResourceId)
 
 
