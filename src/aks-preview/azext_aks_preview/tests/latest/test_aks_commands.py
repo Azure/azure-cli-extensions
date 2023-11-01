@@ -5199,7 +5199,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--node-count {node_count}',
             '-a azure-policy',
             '--enable-oidc-issuer',
-            '-k 1.26', #TOD remove when default version becomes 1.26
             '--ssh-key-value={ssh_key_value}',
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AzurePolicyExternalData',
         ])
@@ -5218,6 +5217,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         enable_cmd = ' '.join([
             'aks', 'update', '--resource-group={resource_group}', '--name={name}',
             '--enable-image-integrity',
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageIntegrityPreview',
         ])
         self.cmd(enable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
