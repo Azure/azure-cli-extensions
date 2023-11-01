@@ -3633,7 +3633,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         shouldEnable_image_integrity = False
         if enable_image_integrity:
             shouldEnable_image_integrity = True
-        
+
         if mc.security_profile is None:
             mc.security_profile = self.models.ManagedClusterSecurityProfile()
 
