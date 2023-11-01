@@ -35,6 +35,8 @@ class StorageMoverScenario(ScenarioTest):
     # need to manually register agent, first create the rg and the storagemover
     # az group create -n test-storagemover-rg2 -l eastus2euap
     # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
+    # https://www.microsoft.com/en-us/download/details.aspx?id=104590
+    # https://learn.microsoft.com/en-us/azure/storage-mover/agent-deploy?tabs=xdmshell
     def test_storage_mover_agent_scenarios(self):
         self.kwargs.update({
             "rg": "test-storagemover-rg2",
