@@ -6,8 +6,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from knack.log import get_logger
-from knack.util import CLIError
+
 from azure.cli.core.commands.parameters import (
     tags_type,
     resource_group_name_type,
@@ -26,19 +25,11 @@ from azext_amcs.action import (
     AddDataSourcesWindowsEventLogs,
     AddDataSourcesSyslog
 )
-
+from azext_amcs.manual._validators import validate_association_name_with_endpoint
 
 from azext_amcs.vendored_sdks.amcs.models import KnownDataFlowStreams, KnownPerfCounterDataSourceStreams, \
     KnownWindowsEventLogDataSourceStreams, KnownSyslogDataSourceStreams, \
     KnownSyslogDataSourceFacilityNames, KnownSyslogDataSourceLogLevels
-
-logger = get_logger(__name__)
-
-
-def validate_association_name_with_endpoint(cmd, namespace):
-    if namespace.endpoint_id:
-        if namespace.association_name != "configurationAccessEndpoint":
-            raise CLIError("Association name for resource to endpoint must be configurationAccessEndpoint")
 
 
 def load_arguments(self, _):
