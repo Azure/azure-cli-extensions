@@ -170,27 +170,21 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     # test for CRUD operations on Container App Job resource with trigger type as manual
-    def test_containerapp_manualjob_defaults_e2e(self, resource_group): 
+    def test_containerapp_eventjob_defaults_e2e(self, resource_group): 
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        job = self.create_random_name(prefix='job2', length=24)
+        job = self.create_random_name(prefix='job3', length=24)
 
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
-        env_rg = parse_resource_id(env_id).get('resource_group')
-        env_name = parse_resource_id(env_id).get('name')
-
-        # create a container app environment for a Container App Job resource
-        self.cmd('containerapp env show -n {} -g {}'.format(env_name, env_rg), checks=[
-            JMESPathCheck('name', env_name)
-        ])
 
         ## test for CRUD operations on Container App Job resource with trigger type as manual
         # create a Container App Job resource with trigger type as manual
-        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --trigger-type event".format(resource_group, job, env_id))
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --trigger-type event --scale-rule-name 'queue' --scale-rule-type 'azure-queue' --scale-rule-metadata 'accountName=containerappextension' 'queueName=testeventdrivenjobs' 'queueLength=1' 'connectionFromEnv=AZURE_STORAGE_CONNECTION_STRING' --scale-rule-auth 'connection=connection-string-secret' --secrets 'connection-string-secret=testConnString' --env-vars 'AZURE_STORAGE_QUEUE_NAME=testeventdrivenjobs' 'AZURE_STORAGE_CONNECTION_STRING=secretref:connection-string-secret'".format(resource_group, job, env_id))
 
         # verify the container app job resource
         self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
             JMESPathCheck('name', job),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck('properties.configuration.replicaTimeout', 1800),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 0),
             JMESPathCheck('properties.configuration.eventTriggerConfig.parallelism', 1),
@@ -199,6 +193,70 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck('properties.configuration.eventTriggerConfig.scale.maxExecutions', 100),
             JMESPathCheck('properties.configuration.eventTriggerConfig.scale.pollingInterval', 30),
             JMESPathCheck('properties.configuration.triggerType', "event", case_sensitive=False),
+        ])
+
+        # delete the Container App Job resource
+        self.cmd("az containerapp job delete --resource-group {} --name {} --yes".format(resource_group, job))
+
+        # verify the Container App Job resource is deleted
+        jobs_list = self.cmd("az containerapp job list --resource-group {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(jobs_list) == 0)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northcentralus")
+    # test for CRUD operations on Container App Job resource with trigger type as manual
+    def test_containerapp_manualjob_defaults_e2e(self, resource_group): 
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        job = self.create_random_name(prefix='job4', length=24)
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        ## test for CRUD operations on Container App Job resource with trigger type as manual
+        # create a Container App Job resource with trigger type as manual
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --trigger-type manual".format(resource_group, job, env_id))
+
+        # verify the container app job resource
+        self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
+            JMESPathCheck('name', job),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck('properties.configuration.replicaTimeout', 1800),
+            JMESPathCheck('properties.configuration.replicaRetryLimit', 0),
+            JMESPathCheck('properties.configuration.manualTriggerConfig.parallelism', 1),
+            JMESPathCheck('properties.configuration.manualTriggerConfig.replicaCompletionCount', 1),
+            JMESPathCheck('properties.configuration.triggerType', "manual", case_sensitive=False),
+        ])
+
+        # delete the Container App Job resource
+        self.cmd("az containerapp job delete --resource-group {} --name {} --yes".format(resource_group, job))
+
+        # verify the Container App Job resource is deleted
+        jobs_list = self.cmd("az containerapp job list --resource-group {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(jobs_list) == 0)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northcentralus")
+    # test for CRUD operations on Container App Job resource with trigger type as manual
+    def test_containerapp_cronjob_defaults_e2e(self, resource_group): 
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        job = self.create_random_name(prefix='job5', length=24)
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        ## test for CRUD operations on Container App Job resource with trigger type as manual
+        # create a Container App Job resource with trigger type as manual
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --trigger-type schedule --cron-expression \"*/1 * * * *\" ".format(resource_group, job, env_id))
+
+        # verify the container app job resource
+        self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
+            JMESPathCheck('name', job),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck('properties.configuration.replicaTimeout', 1800),
+            JMESPathCheck('properties.configuration.replicaRetryLimit', 0),
+            JMESPathCheck('properties.configuration.scheduleTriggerConfig.parallelism', 1),
+            JMESPathCheck('properties.configuration.scheduleTriggerConfig.replicaCompletionCount', 1),
+            JMESPathCheck('properties.configuration.triggerType', "schedule", case_sensitive=False),
         ])
 
         # delete the Container App Job resource

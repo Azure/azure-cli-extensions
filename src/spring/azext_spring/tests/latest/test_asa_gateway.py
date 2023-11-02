@@ -47,7 +47,7 @@ class GatewayTest(ScenarioTest):
             self.check('sku.capacity', 3),
             self.check('properties.operatorProperties.resourceRequests.cpu', "1"),
             self.check('properties.operatorProperties.resourceRequests.memory', "2Gi"),
-            self.check('properties.operatorProperties.resourceRequests.instanceCount', 2),
+            self.check('properties.operatorProperties.resourceRequests.instanceCount', 1),
             self.check('properties.apiMetadataProperties.title', "Pet clinic"),
             self.check('properties.apiMetadataProperties.description', "Demo for pet clinic"),
             self.check('properties.apiMetadataProperties.documentation', "doc"),
@@ -69,6 +69,12 @@ class GatewayTest(ScenarioTest):
             self.check('properties.environmentVariables.properties', {'a': 'b', 'c': 'd'}),
             self.check('properties.environmentVariables.secrets', None),
             self.check('properties.addonConfigs', {'javaOpts':'-Djava.awt.headless=true','sso':{'rolesAttributeName':'role','inactiveSessionExpirationInMinutes':1},'envs':[{'name':'xxx','value':'yyy'},{'name':'xxx1','value':'yyy'}]}),
+            self.check('properties.provisioningState', "Succeeded")
+        ])
+
+        self.cmd('spring gateway update -g {rg} -s {serviceName} '
+                 '--apm-types '' --apms test-ai', checks=[
+            self.check('properties.apms', [{'resourceId': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apms/test-ai'}]),
             self.check('properties.provisioningState', "Succeeded")
         ])
 

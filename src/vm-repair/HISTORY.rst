@@ -1,6 +1,10 @@
 
 Release History
 ===============
+0.5.7
+++++++
+Remove VM-repair SUSE image check
+
 0.5.6
 ++++++
 Renaming the Public IP resource.
