@@ -857,7 +857,6 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
     def validate_arguments(self):
         super().validate_arguments()
-        logger.warning(self.get_argument_customized_keys())
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError(
                 "--bind have mutiple values, but --customized-keys only can be set when --bind has single value.")
