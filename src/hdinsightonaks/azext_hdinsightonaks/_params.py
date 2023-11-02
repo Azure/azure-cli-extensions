@@ -20,7 +20,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('metastore_db_connection_password_secret',
                    options_list=['--metastore-db-connection-password-secret', '--secret'],
                    help='Password secret for hive metastore database.', required=True)
-        c.argument('metastore_warehouse_dir', options_list=['--metastore-warehouse-dir', '--warehouse_dir'],
+        c.argument('metastore_warehouse_dir', options_list=['--metastore-warehouse-dir', '--warehouse-dir'],
                    help='Warehouse directory for hive metastore database.')
 
     with self.argument_context('hdinsightonaks cluster node-profile create') as c:
