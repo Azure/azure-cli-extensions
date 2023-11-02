@@ -613,8 +613,6 @@ def validate_host_group_id(namespace):
 def validate_crg_id(namespace):
     if namespace.crg_id is None:
         return
-    if namespace.crg_id == '':
-        raise CLIError("--crg-id can't be set empty.")
     from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(namespace.crg_id):
         raise InvalidArgumentValueError(

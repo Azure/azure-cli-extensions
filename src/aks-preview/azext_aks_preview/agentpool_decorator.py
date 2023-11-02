@@ -361,16 +361,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             self.agentpool_decorator_mode,
         )
 
-    def set_up_preview_vm_properties(self, agentpool: AgentPool) -> AgentPool:
-        """Set up preview vm related properties for the AgentPool object.
-
-        :return: the AgentPool object
-        """
-        self._ensure_agentpool(agentpool)
-
-        agentpool.capacity_reservation_group_id = self.context.get_crg_id()
-        return agentpool
-
     def set_up_motd(self, agentpool: AgentPool) -> AgentPool:
         """Set up message of the day for the AgentPool object.
 
@@ -468,8 +458,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         # DO NOT MOVE: keep this on top, construct the default AgentPool profile
         agentpool = self.construct_agentpool_profile_default(bypass_restore_defaults=True)
 
-        # set up preview vm properties
-        agentpool = self.set_up_preview_vm_properties(agentpool)
         # set up message of the day
         agentpool = self.set_up_motd(agentpool)
         # set up custom ca trust

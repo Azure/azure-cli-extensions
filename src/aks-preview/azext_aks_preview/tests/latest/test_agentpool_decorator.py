@@ -349,26 +349,6 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
             self._restore_defaults_in_agentpool(agentpool)
         return agentpool
 
-    def common_set_up_preview_vm_properties(self):
-        dec_1 = AKSPreviewAgentPoolAddDecorator(
-            self.cmd,
-            self.client,
-            {"crg_id": "test_crg_id"},
-            self.resource_type,
-            self.agentpool_decorator_mode,
-        )
-        # fail on passing the wrong agentpool object
-        with self.assertRaises(CLIInternalError):
-            dec_1.set_up_preview_vm_properties(None)
-        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
-        dec_1.context.attach_agentpool(agentpool_1)
-        dec_agentpool_1 = dec_1.set_up_preview_vm_properties(agentpool_1)
-        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
-        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
-            capacity_reservation_group_id="test_crg_id"
-        )
-        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
-
     def common_set_up_motd(self):
         dec_1 = AKSPreviewAgentPoolAddDecorator(
             self.cmd,
@@ -441,9 +421,6 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(AKSPreviewAgentPoolA
         self.agentpool_decorator_mode = AgentPoolDecoratorMode.STANDALONE
         self.models = AKSPreviewAgentPoolModels(self.cmd, self.resource_type, self.agentpool_decorator_mode)
         self.client = MockClient()
-
-    def test_set_up_preview_vm_properties(self):
-        self.common_set_up_preview_vm_properties()
 
     def test_set_up_motd(self):
         self.common_set_up_motd()
@@ -534,9 +511,6 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(AKSPreviewAgentP
         self.agentpool_decorator_mode = AgentPoolDecoratorMode.MANAGED_CLUSTER
         self.models = AKSPreviewAgentPoolModels(self.cmd, self.resource_type, self.agentpool_decorator_mode)
         self.client = MockClient()
-
-    def test_set_up_preview_vm_properties(self):
-        self.common_set_up_preview_vm_properties()
 
     def test_set_up_motd(self):
         self.common_set_up_motd()
@@ -666,9 +640,6 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
             self.resource_type,
             self.agentpool_decorator_mode,
         )
-        # fail on passing the wrong agentpool object
-        with self.assertRaises(CLIInternalError):
-            dec_1.update_vm_properties(None)
         agentpool_1 = self.create_initialized_agentpool_instance(
             enable_custom_ca_trust=False,
         )
@@ -686,9 +657,6 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
             self.resource_type,
             self.agentpool_decorator_mode,
         )
-        # fail on passing the wrong agentpool object
-        with self.assertRaises(CLIInternalError):
-            dec_2.update_vm_properties(None)
         agentpool_2 = self.create_initialized_agentpool_instance(
             enable_custom_ca_trust=True,
         )

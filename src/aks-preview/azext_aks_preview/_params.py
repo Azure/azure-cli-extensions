@@ -433,7 +433,7 @@ def load_arguments(self, _):
         c.argument('enable_network_observability', action='store_true', is_preview=True, help="enable network observability for cluster")
         c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], is_preview=True, help="path to file containing list of new line separated CAs")
         # nodepool
-        c.argument('crg_id', validator=validate_crg_id, is_preview=True)
+        c.argument('crg_id', validator=validate_crg_id)
         # no validation for aks create because it already only supports Linux.
         c.argument('message_of_the_day')
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
@@ -639,7 +639,7 @@ def load_arguments(self, _):
         # misc
         c.argument('aks_custom_headers')
         # extensions
-        c.argument('crg_id', validator=validate_crg_id, is_preview=True)
+        c.argument('crg_id', validator=validate_crg_id)
         c.argument('message_of_the_day', validator=validate_message_of_the_day)
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         c.argument('enable_custom_ca_trust', action='store_true', validator=validate_enable_custom_ca_trust)

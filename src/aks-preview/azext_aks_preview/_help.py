@@ -1745,7 +1745,7 @@ helps['aks nodepool update'] = """
           short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
         - name: --crg-id
           type: string
-          short-summary: The crg-id used to associate the existing nodepool with a Capacity Reservation Group(CRG) resource.
+          short-summary: The crg-id used to update an existing nodepool with a Capacity Reservation Group(CRG) resource. It also can be used to disassociate the nodepool from the existed CRG resource by passing an empty string.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
