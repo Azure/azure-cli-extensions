@@ -11,6 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Vendor new SDK and bump API version to 2023-09-02-preview.
+
+0.5.167
++++++++
+* Fix the default storagepool name value created for Azure Container Storage.
+* Ensure the correct nodepool name is picked and labelled by Azure Container Storage while installing with `az aks create`.
 
 0.5.166
 +++++++
