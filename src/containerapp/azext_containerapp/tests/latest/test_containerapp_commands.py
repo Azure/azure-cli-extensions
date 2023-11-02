@@ -727,15 +727,17 @@ class ContainerappServiceBindingTests(ScenarioTest):
                 JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
             ])
         # For multi-bind with --customized-keys throw error out
+        ca_name2 = self.create_random_name(prefix='containerapp2', length=24)
         err_msg = None
         try:
             self.cmd(
                 'containerapp create -n {} -g  {} --environment {} --bind {},clientType=dotnet {} --customized-keys CACHE_1_ENDPOINT=REDIS_HOST CACHE_1_PASSWORD=REDIS_PASSWORD'.format(
-                ca_name, resource_group, env_name, redis_ca_name, postgres_ca_name))
+                ca_name2, resource_group, env_name, redis_ca_name, postgres_ca_name))
         except Exception as e:
             err_msg = e.error_msg
         self.assertIsNotNone(err_msg)
-        self.assertTrue(err_msg.__contains__('--bind have mutiple values, but --customized-keys only can be set when --bind has single value'))
+        self.assertTrue(err_msg.__contains__(
+            '--bind have multiple values, but --customized-keys only can be set when --bind has single value'))
         err_msg = None
         try:
             self.cmd(
@@ -744,7 +746,8 @@ class ContainerappServiceBindingTests(ScenarioTest):
         except Exception as e:
             err_msg = e.error_msg
         self.assertIsNotNone(err_msg)
-        self.assertTrue(err_msg.__contains__('--bind have mutiple values, but --customized-keys only can be set when --bind has single value'))
+        self.assertTrue(err_msg.__contains__(
+            '--bind have multiple values, but --customized-keys only can be set when --bind has single value'))
 
         # For single-bind with --customized-keys
         self.cmd(
@@ -757,7 +760,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
                 JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_ENDPOINT', "REDIS_HOST"),
                 JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_PASSWORD', "REDIS_PASSWORD")
             ])
-        ca_name2 = self.create_random_name(prefix='containerapp2', length=24)
+
         self.cmd(
             'containerapp create -n {} -g  {} --environment {} --bind {},clientType=dotnet --customized-keys CACHE_2_ENDPOINT=REDIS_HOST CACHE_2_PASSWORD=REDIS_PASSWORD'.format(
                 ca_name2, resource_group, env_name, redis_ca_name), expect_failure=False, checks=[
