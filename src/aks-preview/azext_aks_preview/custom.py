@@ -2664,7 +2664,7 @@ def aks_approuting_enable(
         enable_kv=False,
         keyvault_id=None
 ):
-     return _aks_approuting_update(
+    return _aks_approuting_update(
         cmd,
         client,
         resource_group_name,
@@ -2820,6 +2820,7 @@ def _aks_approuting_update(
     if keyvault_id:
         return _keyvault_update(poller, cmd, keyvault_id=keyvault_id)
     return poller
+
 
 def _keyvault_update(
         poller,

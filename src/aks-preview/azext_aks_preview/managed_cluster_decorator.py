@@ -2470,6 +2470,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self.raw_param.get("update_dns_zone")
+
+
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
         self, cmd: AzCliCommand, client: ContainerServiceClient, raw_parameters: Dict, resource_type: ResourceType
@@ -3981,7 +3983,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # get parameters from context
         enable_app_routing = self.context.get_enable_app_routing()
         enable_keyvault_secret_provider = self.context.get_enable_kv()
-        keyvault_id = self.context.get_keyvault_id()
         attach_zones = self.context.get_attach_zones()
         dns_zone_resource_ids = self.context.get_dns_zone_resource_ids_from_input()
         add_dns_zone = self.context.get_add_dns_zone()
