@@ -48,6 +48,12 @@ class Find(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.vault_name = AAZStrArg(
+            options=["-v", "--vault-name"],
+            help="The name of the backup vault.",
+            required=True,
+            id_part="name",
+        )
         _args_schema.end_time = AAZStrArg(
             options=["--end-time"],
             help="End time for the List Restore Ranges request. ISO 8601 format.",
@@ -72,13 +78,6 @@ class Find(AAZCommand):
             help="The name of the backup instance.",
             required=True,
             id_part="child_name_1",
-        )
-        _args_schema.vault_name = AAZStrArg(
-            options=["--vault-name"],
-            arg_group="Resource Id",
-            help="The name of the backup vault.",
-            required=True,
-            id_part="name",
         )
         return cls._args_schema
 

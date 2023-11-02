@@ -1,7 +1,7 @@
 interactions:
 - request:
-    body: '{"validFrom": null, "validUntil": null, "participants": {"acs:8-invalidMRI":
-      {"role": "Presenter"}}}'
+    body: '{"validFrom": null, "validUntil": null, "pstnDialOutEnabled": false, "participants":
+      {"acs:8-invalidMRI": {"role": "Presenter"}}}'
     headers:
       Accept:
       - application/json
@@ -10,23 +10,23 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '100'
+      - '129'
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Wed, 19 Jul 2023 21:09:39 GMT
-      Repeatability-Request-ID:
-      - 92b8c4c1-2678-11ee-b1ee-8cf8c5abc371
+      - Mon, 16 Oct 2023 16:13:36 GMT
+      Repeatability-Request-Id:
+      - f60b2688-6c3e-11ee-a48c-8cf8c5abc371
       User-Agent:
-      - AzureCli/1.7.1b1 azsdk-python-communication-rooms/1.0.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.7.2b1 azsdk-python-communication-rooms/1.1.0b1 Python/3.11.5 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - AAtYkVC5Fj2xxZgiwy2bs8TavUaAS5/r+ZKxxGIMwx4=
+      - StjPbZ+anErZes8IJRa2STDgsBYIizhcGHmw6U39sio=
       x-ms-date:
-      - Wed, 19 Jul 2023 21:09:39 GMT
+      - Mon, 16 Oct 2023 16:13:36 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-06-14
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-10-30-preview
   response:
     body:
       string: '{"error": {"code": "BadRequest", "message": "Invalid format for communication
@@ -35,19 +35,19 @@ interactions:
       api-deprecated-versions:
       - 2021-04-07, 2022-02-01
       api-supported-versions:
-      - 2023-03-31-preview, 2023-06-14
+      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Jul 2023 21:09:40 GMT
+      - Mon, 16 Oct 2023 16:13:38 GMT
       ms-cv:
-      - Ykg/CfkMEEmO7XTpAJY/Uw.0
+      - nrCnkTxJakqeNIc/ejuDtQ.0
       request-context:
       - appId=
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0FFG4ZAAAAACKpfsU1P7jSbFyxLYOcpw+WVZSMzExMDAwMTE1MDMxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 0MmEtZQAAAAAT5wbAanxtQqmg5expA2bEWVZSMzExMDAwMTE1MDE5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
       x-ms-error-code:
