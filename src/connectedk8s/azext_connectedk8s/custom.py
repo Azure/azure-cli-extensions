@@ -619,6 +619,19 @@ def get_public_key(key_pair):
 def load_kube_config(kube_config, kube_context):
     try:
         config.load_kube_config(config_file=kube_config, context=kube_context)
+
+        # if the user has set the NO_PROXY environment variable and the kubeconfig host is in the no_proxy list, then return
+        if os.environ.get('NO_PROXY'):
+            no_proxy_list = os.environ.get('NO_PROXY').split(',')
+            if kube_client.Configuration._default.host in no_proxy_list:
+                return
+
+        # Set the proxy settings for kube client
+        if os.environ.get('HTTPS_PROXY'):
+            kube_client.Configuration._default.proxy = os.environ.get('HTTPS_PROXY')
+        elif os.environ.get('HTTP_PROXY'):
+            kube_client.Configuration._default.proxy = os.environ.get('HTTP_PROXY')
+
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Problem loading the kubeconfig file')
