@@ -4,6 +4,9 @@ Release History
 ===============
 upcoming
 ++++++
+
+0.3.43
+++++++
 * Update azure cli dependency version >= "2.53.0"
 * Remove GA commands which exists in azure-cli of version 2.53.0
 * 'az containerapp create/update': fix an issue for transforming sensitive values when the scale rules metadata not exists
