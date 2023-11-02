@@ -270,7 +270,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         assert(enabled_cmd1["systemDefaultValues"]['customLocations']['enabled'] == bool(1))
         assert(enabled_cmd1["systemDefaultValues"]['clusterconnect-agent']['enabled'] == bool(1))
 
-        # scenario-4: azure rbac turned off and turning azure rbac on again using app id and app secret
+        # scenario-4: azure rbac turned off and turning azure rbac on again using 1P
         self.cmd('connectedk8s disable-features -n {name} -g {rg} --features azure-rbac --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
@@ -278,7 +278,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(disabled_cmd1["systemDefaultValues"]['guard']['enabled'] == bool(0))
 
-        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --features azure-rbac --app-id ffba4043-836e-4dcc-906c-fbf60bf54eef --app-secret="6a6ae7a7-4260-40d3-ba00-af909f2ca8f0"')
+        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --features azure-rbac')
 
         # deleting the cluster
         self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
