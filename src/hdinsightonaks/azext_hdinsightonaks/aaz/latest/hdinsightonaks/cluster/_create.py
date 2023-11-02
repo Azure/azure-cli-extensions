@@ -483,6 +483,7 @@ class Create(AAZCommand):
         _args_schema.history_server_memory = AAZIntArg(
             options=["--history-server-memory"],
             arg_group="FlinkProfile",
+            help="History server memory size.",
         )
         _args_schema.job_manager_cpu = AAZFloatArg(
             options=["--job-manager-cpu"],

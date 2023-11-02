@@ -10,22 +10,22 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-helps['cluster node-profile'] = """
+helps['hdinsightonaks cluster node-profile'] = """
 type: group
 short-summary: Manage compute node profile.
 """
 
-helps['cluster node-profile create'] = """
+helps['hdinsightonaks cluster node-profile create'] = """
 type: command
 short-summary: Create a node profile with SKU and worker count.
 """
 
-helps['cluster trino-hive-catalog'] = """
+helps['hdinsightonaks cluster trino-hive-catalog'] = """
 type: group
 short-summary: Manage hive catalog config.
 """
 
-helps['cluster trino-hive-catalog create'] = """
+helps['hdinsightonaks cluster trino-hive-catalog create'] = """
 type: command
 short-summary: Create a hive catalog configured as a Trino cluster.
 """
