@@ -8,6 +8,7 @@ upcoming
 * Remove GA commands which exists in azure-cli of version 2.53.0
 * 'az containerapp create/update': fix an issue for transforming sensitive values when the scale rules metadata not exists
 * 'az containerapp up': update builder image used when --source is provided with no Dockerfile to support building applications targeting a wider range of platform versions
+* Fix for 'az containerapp job create' command wherein the correct values for --min-executions, --max-executions are used from yaml to create Container App job
 
 0.3.42
 ++++++
