@@ -13,6 +13,10 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-09-02-preview.
 
+0.5.169
++++++++
+* Add `az aks approuting` and `az aks approuting zone` commands for managing App Routing.
+
 0.5.168
 +++++++
 * Add `--enable-image-integrity` to the `az aks update` command.
@@ -21,10 +25,6 @@ Pending
 +++++++
 * Fix the default storagepool name value created for Azure Container Storage.
 * Ensure the correct nodepool name is picked and labelled by Azure Container Storage while installing with `az aks create`.
-
-0.5.167
-+++++++
-* Add `az aks approuting` and `az aks approuting zone` commands for managing App Routing.
 
 0.5.166
 +++++++
