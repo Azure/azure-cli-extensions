@@ -1,5 +1,9 @@
 Release History
 ===============
+1.15.1
+---
+* Add arguments `--apms` for Spring Cloud Gateway.
+
 1.15.0
 ---
 * Add arguments `--type` and `--git-sub-path` in `spring application-accelerator customized-accelerator create` and `spring application-accelerator customized-accelerator update` for accelerator fragment support.

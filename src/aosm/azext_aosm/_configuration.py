@@ -268,8 +268,8 @@ class NFConfiguration(Configuration):
 class VNFConfiguration(NFConfiguration):
     blob_artifact_store_name: str = ""
     image_name_parameter: str = ""
-    arm_template: Union[Dict[str, str], ArtifactConfig] = ArtifactConfig()
-    vhd: Union[Dict[str, str], VhdArtifactConfig] = VhdArtifactConfig()
+    arm_template: Union[Dict[str, str], ArtifactConfig] = field(default_factory=ArtifactConfig)
+    vhd: Union[Dict[str, str], VhdArtifactConfig] = field(default_factory=VhdArtifactConfig)
 
     @classmethod
     def helptext(cls) -> "VNFConfiguration":
@@ -465,7 +465,7 @@ class CNFImageConfig:
 
 @dataclass
 class CNFConfiguration(NFConfiguration):
-    images: Union[Dict[str, str], CNFImageConfig] = CNFImageConfig()
+    images: Union[Dict[str, str], CNFImageConfig] = field(default_factory=CNFImageConfig)
     helm_packages: List[Union[Dict[str, Any], HelmPackageConfig]] = field(
         default_factory=lambda: []
     )

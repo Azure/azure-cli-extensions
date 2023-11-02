@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+CONST_ACSTOR_IO_ENGINE_LABEL_KEY = "acstor.azure.com/io-engine"
+CONST_ACSTOR_IO_ENGINE_LABEL_VAL = "acstor"
 CONST_ACSTOR_K8S_EXTENSION_NAME = "microsoft.azurecontainerstorage"
 CONST_EXT_INSTALLATION_NAME = "azurecontainerstorage"
 CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME = "azext_k8s_extension._client_factory"
@@ -24,5 +26,4 @@ CONST_STORAGE_POOL_TYPE_AZURE_DISK = "azureDisk"
 CONST_STORAGE_POOL_TYPE_ELASTIC_SAN = "elasticSan"
 CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK = "ephemeralDisk"
 
-CONST_STORAGE_POOL_RANDOM_LENGTH = 7
 RP_REGISTRATION_POLLING_INTERVAL_IN_SEC = 5

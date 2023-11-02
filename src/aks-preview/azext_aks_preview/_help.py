@@ -497,6 +497,9 @@ helps['aks create'] = """
         - name: --image-cleaner-interval-hours
           type: int
           short-summary: ImageCleaner scanning interval.
+        - name: --enable-image-integrity
+          type: bool
+          short-summary: Enable ImageIntegrity Service.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
@@ -983,6 +986,9 @@ helps['aks update'] = """
         - name: --image-cleaner-interval-hours
           type: int
           short-summary: ImageCleaner scanning interval.
+        - name: --enable-image-integrity
+          type: bool
+          short-summary: Enable ImageIntegrity Service.
         - name: --disable-image-integrity
           type: bool
           short-summary: Disable ImageIntegrity Service.
