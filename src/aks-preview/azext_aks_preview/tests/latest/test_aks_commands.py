@@ -5141,6 +5141,40 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_image_integrity_enabled(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'vm_size': 'Standard_D4s_v3',
+            'node_count': 1,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        create_cmd = ' '.join([
+            'aks', 'create', '--resource-group={resource_group}', '--name={name}', '--location={location}',
+            '--node-vm-size {vm_size}',
+            '--node-count {node_count}',
+            '--enable-image-integrity',
+            '-a azure-policy',
+            '--enable-oidc-issuer',
+            '--ssh-key-value={ssh_key_value}',
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageIntegrityPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AzurePolicyExternalData',
+        ])
+
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.imageIntegrity.enabled', True),
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_image_integrity(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
@@ -5165,7 +5199,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--node-count {node_count}',
             '-a azure-policy',
             '--enable-oidc-issuer',
-            '-k 1.26', #TOD remove when default version becomes 1.26
             '--ssh-key-value={ssh_key_value}',
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AzurePolicyExternalData',
         ])
@@ -5180,24 +5213,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
         sdk_profile = AZURE_API_PROFILES["latest"][CUSTOM_MGMT_AKS_PREVIEW]
         api_version = sdk_profile.default_api_version
-        url = 'https://management.azure.com/subscriptions/' + subscription + '/resourceGroups/' + resource_group + '/providers/Microsoft.ContainerService/managedClusters/' + aks_name + '?api-version=' + api_version
 
         enable_cmd = ' '.join([
-            'rest', '--method put', '--url ' + url,
-            '--body \'{request_body}\'',
-            '--headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageIntegrityPreview,Microsoft.ContainerService/AKS-AzurePolicyExternalData'
+            'aks', 'update', '--resource-group={resource_group}', '--name={name}',
+            '--enable-image-integrity',
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageIntegrityPreview',
         ])
-        self.cmd(enable_cmd, checks=[])
-        for i in range(0, 20):
-            get_cmd = ' '.join([
-                'aks', 'show', '--resource-group={resource_group}', '--name={name}',
-            ])
-            cluster = self.cmd(get_cmd, checks=[
-                self.check('securityProfile.imageIntegrity.enabled', True),
-            ]).get_output_in_json()
-            if cluster["provisioningState"] == "Succeeded":
-                break
-            time.sleep(30)
+        self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.imageIntegrity.enabled', True),
+        ])
 
         disable_cmd = ' '.join([
             'aks', 'update', '--resource-group={resource_group}', '--name={name}',
