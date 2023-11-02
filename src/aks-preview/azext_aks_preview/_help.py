@@ -2782,18 +2782,22 @@ helps['aks mesh disable-egress-gateway'] = """
 helps['aks approuting'] = """
     type: group
     short-summary: Commands to manage App Routing aadon.
-    long-summary: A group of commands to manage App Routing addon in given cluster.
+    long-summary: A group of commands to manage App Routing in given cluster.
 """
 
 helps['aks approuting enable'] = """
     type: command
-    short-summary: Enable App Routing addon.
-    long-summary: This command enables App Routing addon in given cluster.
+    short-summary: Enable App Routing.
+    long-summary: This command enables App Routing in given cluster.
     parameters:
       - name: --enable-kv
         type: bool
-        short-summary: Enables the keyvault-secrets-provider addon.
+        short-summary: Enables the keyvault-secrets-provider.
         long-summary: This optional flag enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
+      - name: --attach-kv
+        type: string
+        short-summary: Attach a keyvault id to access secrets and certificates.
+        long-summary: This optional flag attaches a keyvault id to access secrets and certificates.
 """
 
 helps['aks approuting disable'] = """
@@ -2809,7 +2813,12 @@ helps['aks approuting update'] = """
     parameters:
       - name: --attach-kv
         type: string
-        short-summary: Attach a keyvault id to the cluster to access secrets and certificates.
+        short-summary: Attach a keyvault id to access secrets and certificates.
+        long-summary: This optional flag attaches a keyvault id to access secrets and certificates.
+      - name: --enable-kv
+        type: bool
+        short-summary: Enables the keyvault-secrets-provider addon.
+        long-summary: This optional flag enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
 """
 
 helps['aks approuting zone'] = """

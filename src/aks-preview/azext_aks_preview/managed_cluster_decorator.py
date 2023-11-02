@@ -1677,10 +1677,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_api_server_authorized_ip_ranges(enable_validation=True)
 
-    def get_dns_zone_resource_ids(self) -> Union[str, None]:
+    def get_dns_zone_resource_ids(self) -> Union[list, None]:
         """Obtain the value of dns_zone_resource_ids.
 
-        :return: string or None
+        :return: list or None
         """
         # read the original value passed by the command
         dns_zone_resource_ids = self.raw_param.get("dns_zone_resource_ids")
@@ -2433,12 +2433,22 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("enable_app_routing")
 
-    # def get_dns_zone_resource_ids(self) -> Union[str, None]:
-    #     """Obtain the value of dns_zone_resource_ids.
+    def get_dns_zone_resource_ids_from_input(self) -> Union[List[str], None]:
+        """Obtain the value of dns_zone_resource_ids.
 
-    #     :return: string or None
-    #     """
-    #     return self.raw_param.get("dns_zone_resource_ids")
+        :return: list of str or None
+        """
+        dns_zone_resource_ids = self.raw_param.get("dns_zone_resource_ids")
+        dns_zone_resource_ids = [
+            x.strip()
+            for x in (
+                dns_zone_resource_ids.split(",")
+                if dns_zone_resource_ids
+                else []
+            )
+        ]
+
+        return dns_zone_resource_ids
 
     def get_add_dns_zone(self) -> bool:
         """Obtain the value of add_dns_zone.
@@ -3973,17 +3983,19 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         enable_keyvault_secret_provider = self.context.get_enable_kv()
         keyvault_id = self.context.get_keyvault_id()
         attach_zones = self.context.get_attach_zones()
-        dns_zone_resource_ids = self.context.raw_param.get("dns_zone_resource_ids")
-        add_dns_zone = self.context.raw_param.get("add_dns_zone")
-        delete_dns_zone = self.context.raw_param.get("delete_dns_zone")
-        update_dns_zone = self.context.raw_param.get("update_dns_zone")
+        dns_zone_resource_ids = self.context.get_dns_zone_resource_ids_from_input()
+        add_dns_zone = self.context.get_add_dns_zone()
+        delete_dns_zone = self.context.get_delete_dns_zone()
+        update_dns_zone = self.context.get_update_dns_zone()
 
         # update ManagedCluster object with app routing settings
         mc.ingress_profile = mc.ingress_profile or self.models.ManagedClusterIngressProfile()
         mc.ingress_profile.web_app_routing = mc.ingress_profile.web_app_routing or self.models.ManagedClusterIngressProfileWebAppRouting()
         if enable_app_routing is not None:
-            mc.ingress_profile.web_app_routing.enabled = enable_app_routing
-
+                if mc.ingress_profile.web_app_routing.enabled == enable_app_routing:
+                    error_message = 'App Routing is already enabled.\n' if enable_app_routing else 'App Routing is already disabled.\n'
+                    raise CLIError(error_message)
+                mc.ingress_profile.web_app_routing.enabled = enable_app_routing
         # update ManagedCluster object with keyvault-secret-provider settings
         if enable_keyvault_secret_provider:
             mc.addon_profiles = mc.addon_profiles or {}
@@ -3993,39 +4005,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             elif not mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled:
                 mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled = True
 
-        # check keyvault authorization sytem
-        if keyvault_id:
-            if not is_valid_resource_id(keyvault_id):
-                raise InvalidArgumentValueError("Please provide a valid keyvault ID")
-
-            if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
-                keyvault_params = parse_resource_id(keyvault_id)
-                keyvault_subscription = keyvault_params['subscription']
-                keyvault_name = keyvault_params['name']
-                keyvault_rg = keyvault_params['resource_group']
-                keyvault_client = get_keyvault_client(self.cmd.cli_ctx, subscription_id=keyvault_subscription)
-                keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
-
-                managed_identity_object_id = mc.ingress_profile.web_app_routing.identity.object_id
-                is_service_principal = False
-
-                try:
-                    if keyvault.properties.enable_rbac_authorization:
-                        if not add_role_assignment(self.cmd, 'Key Vault Secrets User', managed_identity_object_id, is_service_principal, scope=keyvault_id):
-                            logger.warning(
-                                'Could not create a role assignment for App Routing. '
-                                'Are you an Owner on this subscription?')
-                    else:
-                        keyvault = set_policy(self.cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=managed_identity_object_id, secret_permissions=['Get'], certificate_permissions=['Get'])
-                except Exception as ex:
-                    raise CLIError(f'Error in granting keyvault permissions to managed identity: {ex}\n')
-            else:
-                raise CLIError('App Routing is not enabled.\n')
-
         # modify DNS zone resource IDs
         if dns_zone_resource_ids:
             if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
-                dns_zone_resource_ids = [x.strip() for x in (dns_zone_resource_ids.split(",") if dns_zone_resource_ids else [])]
                 if add_dns_zone:
                     if mc.ingress_profile.web_app_routing.dns_zone_resource_ids is None:
                         mc.ingress_profile.web_app_routing.dns_zone_resource_ids = []

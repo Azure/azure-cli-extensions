@@ -2661,14 +2661,16 @@ def aks_approuting_enable(
         client,
         resource_group_name,
         name,
-        enable_kv=False
+        enable_kv=False,
+        keyvault_id=None
 ):
-    return _aks_approuting_update(
+     return _aks_approuting_update(
         cmd,
         client,
         resource_group_name,
         name,
         enable_app_routing=True,
+        keyvault_id=keyvault_id,
         enable_kv=enable_kv)
 
 
@@ -2691,14 +2693,16 @@ def aks_approuting_update(
         client,
         resource_group_name,
         name,
-        keyvault_id
+        keyvault_id=None,
+        enable_kv=False
 ):
     return _aks_approuting_update(
         cmd,
         client,
         resource_group_name,
         name,
-        keyvault_id=keyvault_id)
+        keyvault_id=keyvault_id,
+        enable_kv=enable_kv)
 
 
 def aks_approuting_zone_add(
@@ -2769,6 +2773,7 @@ def aks_approuting_zone_list(
             for dns_zone in dns_zone_resource_ids:
                 dns_zone_dict = {}
                 parsed_dns_zone = parse_resource_id(dns_zone)
+                dns_zone_dict['id'] = dns_zone
                 dns_zone_dict['subscription'] = parsed_dns_zone['subscription']
                 dns_zone_dict['resource_group'] = parsed_dns_zone['resource_group']
                 dns_zone_dict['name'] = parsed_dns_zone['name']
@@ -2806,9 +2811,59 @@ def _aks_approuting_update(
     )
 
     try:
-        mc = aks_update_decorator.update_mc_profile_default()
+        mc = aks_update_decorator.update_mc_profile_preview()
         mc = aks_update_decorator.update_app_routing_profile(mc)
     except DecoratorEarlyExitException:
         return None
 
-    return aks_update_decorator.update_mc(mc)
+    poller = aks_update_decorator.update_mc(mc)
+    if keyvault_id:
+        return _keyvault_update(poller, cmd, keyvault_id=keyvault_id)
+    return poller
+
+def _keyvault_update(
+        poller,
+        cmd,
+        keyvault_id=None
+):
+
+    from msrestazure.tools import is_valid_resource_id, parse_resource_id
+    from azure.cli.command_modules.keyvault.custom import set_policy
+    from azext_aks_preview._client_factory import get_keyvault_client
+    from azext_aks_preview._roleassignments import add_role_assignment
+
+    while not poller.done():
+        poller.wait()
+
+    # Get the final result
+    mc = poller.result()
+
+    # check keyvault authorization sytem
+    if keyvault_id:
+        if not is_valid_resource_id(keyvault_id):
+            raise InvalidArgumentValueError("Please provide a valid keyvault ID")
+
+        if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
+            keyvault_params = parse_resource_id(keyvault_id)
+            keyvault_subscription = keyvault_params['subscription']
+            keyvault_name = keyvault_params['name']
+            keyvault_rg = keyvault_params['resource_group']
+            keyvault_client = get_keyvault_client(cmd.cli_ctx, subscription_id=keyvault_subscription)
+            keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
+            managed_identity_object_id = mc.ingress_profile.web_app_routing.identity.object_id
+            is_service_principal = False
+
+            try:
+                if keyvault.properties.enable_rbac_authorization:
+                    if not add_role_assignment(cmd, 'Key Vault Secrets User', managed_identity_object_id, is_service_principal, scope=keyvault_id):
+                        logger.warning(
+                            'Could not create a role assignment for App Routing. '
+                            'Are you an Owner on this subscription?')
+                else:
+                    keyvault = set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=managed_identity_object_id, secret_permissions=['Get'], certificate_permissions=['Get'])
+            except Exception as ex:
+                raise CLIError(f'Error in granting keyvault permissions to managed identity: {ex}\n')
+        else:
+            raise CLIError('App Routing is not enabled.\n')
+
+    return mc
