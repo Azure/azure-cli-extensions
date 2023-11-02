@@ -16,7 +16,8 @@ from azure.cli.core.azclierror import (
     ValidationError,
     ArgumentUsageError,
     ResourceNotFoundError,
-    MutuallyExclusiveArgumentError)
+    MutuallyExclusiveArgumentError,
+    InvalidArgumentValueError)
 from azure.cli.command_modules.containerapp.containerapp_decorator import BaseContainerAppDecorator, ContainerAppCreateDecorator
 from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
 from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -584,6 +585,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_service_bindings(self):
         return self.get_param("service_bindings")
 
+    def get_argument_customized_keys(self):
+        return self.get_param("customized_keys")
+
     def get_argument_service_connectors_def_list(self):
         return self.get_param("service_connectors_def_list")
 
@@ -601,6 +605,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def validate_arguments(self):
         super().validate_arguments()
         validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
+        if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
+            raise InvalidArgumentValueError("--bind have mutiple values, but --customized-keys only can be set when --bind has single value.")
 
     def set_up_source(self):
         if self.get_argument_source():
@@ -759,7 +765,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd,
                                                                                             self.get_argument_service_bindings(),
                                                                                             self.get_argument_resource_group_name(),
-                                                                                            self.get_argument_name())
+                                                                                            self.get_argument_name(),
+                                                                                            self.get_argument_customized_keys())
             self.set_argument_service_connectors_def_list(service_connectors_def_list)
             unique_bindings = check_unique_bindings(self.cmd, service_connectors_def_list, service_bindings_def_list,
                                                     self.get_argument_resource_group_name(), self.get_argument_name())
@@ -833,6 +840,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_service_bindings(self):
         return self.get_param("service_bindings")
 
+    def get_argument_customized_keys(self):
+        return self.get_param("customized_keys")
+
     def get_argument_service_connectors_def_list(self):
         return self.get_param("service_connectors_def_list")
 
@@ -844,6 +854,13 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
     def get_argument_source(self):
         return self.get_param("source")
+
+    def validate_arguments(self):
+        super().validate_arguments()
+        logger.warning(self.get_argument_customized_keys())
+        if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
+            raise InvalidArgumentValueError(
+                "--bind have mutiple values, but --customized-keys only can be set when --bind has single value.")
 
     def construct_payload(self):
         super().construct_payload()
@@ -948,7 +965,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         if self.get_argument_service_bindings() is not None:
             linker_client = get_linker_client(self.cmd)
 
-            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd, self.get_argument_service_bindings(), self.get_argument_resource_group_name(), self.get_argument_name())
+            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd, self.get_argument_service_bindings(), self.get_argument_resource_group_name(), self.get_argument_name(), self.get_argument_customized_keys())
             self.set_argument_service_connectors_def_list(service_connectors_def_list)
             service_bindings_used_map = {update_item["name"]: False for update_item in service_bindings_def_list}
 
@@ -961,6 +978,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                 for update_item in service_bindings_def_list:
                     if update_item["name"] in item.values():
                         item["serviceId"] = update_item["serviceId"]
+                        item["clientType"] = update_item.get("clientType")
+                        item["customizedKeys"] = update_item.get("customizedKeys")
                         service_bindings_used_map[update_item["name"]] = True
 
             for update_item in service_bindings_def_list:

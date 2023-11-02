@@ -10,6 +10,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
                                                 file_type,
                                                 get_three_state_flag, get_enum_type, tags_type)
 
+from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id,
                           validate_custom_location_name_or_id)
 from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH
@@ -23,8 +24,9 @@ def load_arguments(self, _):
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.", is_preview=True)
 
     # Springboard
-    with self.argument_context('containerapp create', arg_group='Service Binding') as c:
+    with self.argument_context('containerapp create', arg_group='Service Binding', is_preview=True) as c:
         c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('customized_keys', options_list=['--customized-keys'], action=AddCustomizedKeys, nargs='*', help='The customized keys used to change default configuration names. Key is the customized desired name, value is the original name.')
         c.argument('service_type', help="The service information for dev services.")
         c.ignore('service_type')
 
@@ -42,8 +44,9 @@ def load_arguments(self, _):
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.", is_preview=True)
 
     # Springboard
-    with self.argument_context('containerapp update', arg_group='Service Binding') as c:
+    with self.argument_context('containerapp update', arg_group='Service Binding', is_preview=True) as c:
         c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('customized_keys', options_list=['--customized-keys'], action=AddCustomizedKeys, nargs='*', help='The customized keys used to change default configuration names. Key is the customized desired name, value is the original name.')
         c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services(bindings) to be removed from this app. e.g. BIND_NAME1...")
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:

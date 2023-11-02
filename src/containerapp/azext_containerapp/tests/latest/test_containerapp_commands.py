@@ -8,7 +8,7 @@ import os
 import time
 import unittest
 
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, CLIInternalError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
@@ -703,6 +703,72 @@ class ContainerappDaprTests(ScenarioTest):
 
 
 class ContainerappServiceBindingTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_dev_service_binding_customized_keys_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        redis_ca_name = 'redis'
+        postgres_ca_name = 'postgres'
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(resource_group, redis_ca_name, env))
+        self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(resource_group, postgres_ca_name, env))
+        self.cmd(
+            'containerapp create -n {} -g  {} --environment {} --bind redis,clientType=dotnet postgres,clientType=none'.format(
+                ca_name, resource_group, redis_ca_name, env),expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+                # JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', "postgres"),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
+            ])
+        # For multi-bind with --customized-keys throw error out
+        err_msg = None
+        try:
+            self.cmd(
+                'containerapp create -n {} -g  {} --environment {} --bind redis:clientType=dotnet postgres --customized-keys CACHE_1_ENDPOINT=REDIS_HOST CACHE_1_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name, resource_group, redis_ca_name, env), expect_failure=True)
+        except Exception as e:
+            err_msg = e.error_msg
+
+        self.assertTrue(err_msg.__contains__('--bind have mutiple values, but --customized-keys only can be set when --bind has single value'))
+        err_msg = None
+        try:
+            self.cmd(
+            'containerapp update -n {} -g  {} --bind redis:clientType=dotnet postgres --customized-keys CACHE_1_ENDPOINT=REDIS_HOST CACHE_1_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name, resource_group, redis_ca_name), expect_failure=True)
+        except Exception as e:
+            err_msg = e.error_msg
+
+        self.assertTrue(err_msg.__contains__('--bind have mutiple values, but --customized-keys only can be set when --bind has single value'))
+
+        # For single-bind with --customized-keys
+        self.cmd(
+            'containerapp update -n {} -g  {} --environment {} --bind redis:clientType=dotnet CACHE_1_ENDPOINT=REDIS_HOST CACHE_1_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name, resource_group, redis_ca_name, env), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+                # JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_PASSWORD', "REDIS_PASSWORD")
+            ])
+
+        self.cmd(
+            'containerapp create -n {} -g  {} --environment {} --bind redis:clientType=dotnet CACHE_2_ENDPOINT=REDIS_HOST CACHE_2_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name, resource_group, redis_ca_name, env), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 1),
+                JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+                # JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_2_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_2_PASSWORD', "REDIS_PASSWORD")
+            ])
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_service_binding_e2e(self, resource_group):
