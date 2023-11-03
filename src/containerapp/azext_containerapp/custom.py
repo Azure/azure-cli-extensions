@@ -856,7 +856,7 @@ def containerapp_up(cmd,
 
     used_default_container_registry = False
     if source:
-        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile)
+        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=True, registry_server=registry_server)
     else:
         app.create_acr_if_needed()
 

@@ -629,7 +629,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         for k, v in old_command_kwargs.items():
             self.cmd.command_kwargs[k] = v
 
-    def run_source_to_cloud_flow(self, source, dockerfile):
+    def run_source_to_cloud_flow(self, source, dockerfile, can_create_acr_if_needed, registry_server):
         image_name = self.image if self.image is not None else self.name
         from datetime import datetime
 
@@ -638,10 +638,15 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         tag_cli_prefix = "cli-containerapp"
         tag_now_suffix = str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
         image_name_with_tag = image_name + ":{}-{}".format(tag_cli_prefix, tag_now_suffix)
+        self.image = self.registry_server + "/" + image_name_with_tag
 
         if _has_dockerfile(source, dockerfile):
+            logger.warning("Dockerfile detected. Running the build through ACR.")
             # ACR Task is the only way we have for now to build a Dockerfile using Docker.
-            self.create_acr_if_needed()
+            if can_create_acr_if_needed:
+                self.create_acr_if_needed()
+            elif not registry_server:
+                raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source with a Dockerfile")
             self.image = self.registry_server + "/" + image_name_with_tag
             queue_acr_build(
                 self.cmd,
@@ -664,7 +669,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             self.image = self.build_container_from_source_with_cloud_build_service(source, location)
             return True
 
-        self.create_acr_if_needed()
+        if can_create_acr_if_needed:
+            self.create_acr_if_needed()
+        elif not registry_server:
+            raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source")
 
         # At this point in the logic, we know that the customer doesn't have a Dockerfile but has a container registry.
         # Cloud Build is not an option anymore as we don't support BYO container registry yet.

@@ -607,7 +607,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             app, env = self._construct_app_and_env_for_source_or_repo()
             dockerfile = "Dockerfile"
             # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
-            app.run_source_to_cloud_flow(self.get_argument_source(), dockerfile)
+            app.run_source_to_cloud_flow(self.get_argument_source(), dockerfile, can_create_acr_if_needed=False, registry_server=self.get_argument_registry_server())
             # Validate containers exist
             containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
             if containers is None or len(containers) == 0:
@@ -905,7 +905,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         _get_registry_details(cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments
 
         # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
-        app.run_source_to_cloud_flow(self.get_argument_source(), dockerfile)
+        app.run_source_to_cloud_flow(self.get_argument_source(), dockerfile, can_create_acr_if_needed=False, registry_server=registry_server)
 
         # Validate an image associated with the container app exists
         containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
