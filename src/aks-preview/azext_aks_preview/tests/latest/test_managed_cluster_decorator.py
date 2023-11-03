@@ -6908,7 +6908,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             {
                 "k8s_support_plan": "AKSLongTermSupport"
             },
-            ResourceType.MGMT_CONTAINERSERVICE,
+            CUSTOM_MGMT_AKS_PREVIEW,
         )
 
         premiumSKU = self.models.ManagedClusterSKU(
@@ -6939,7 +6939,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             {
                 "k8s_support_plan": "KubernetesOfficial"
             },
-            ResourceType.MGMT_CONTAINERSERVICE,
+            CUSTOM_MGMT_AKS_PREVIEW,
         )
         nonLTSDecorator.context.attach_mc(premiumCluster)
         nonLTSClusterCalculated = nonLTSDecorator.set_up_k8s_support_plan(premiumCluster)
@@ -6956,7 +6956,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {},
-            ResourceType.MGMT_CONTAINERSERVICE,
+            CUSTOM_MGMT_AKS_PREVIEW,
         )
 
         premiumSKU = self.models.ManagedClusterSKU(
@@ -6982,7 +6982,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             {
                 "k8s_support_plan": "KubernetesOfficial"
             },
-            ResourceType.MGMT_CONTAINERSERVICE,
+            CUSTOM_MGMT_AKS_PREVIEW,
         )
         disableLTSDecorator.context.attach_mc(ltsCluster)
         nonLTSClusterCalculated = disableLTSDecorator.update_k8s_support_plan(ltsCluster)
@@ -7004,7 +7004,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {},
-            ResourceType.MGMT_CONTAINERSERVICE,
+            CUSTOM_MGMT_AKS_PREVIEW,
         )
         noopDecorator3.context.attach_mc(normalCluster)
         normalClusterCalculated = noopDecorator3.update_k8s_support_plan(normalCluster)
