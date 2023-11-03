@@ -604,12 +604,10 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def set_up_source(self):
         if self.get_argument_source():
-            from ._up_utils import _has_dockerfile
             app, env = self._construct_app_and_env_for_source_or_repo()
             dockerfile = "Dockerfile"
-            has_dockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
-            # Uses buildpacks or an ACR Task to generate image if Dockerfile was not provided by the user
-            app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not has_dockerfile)
+            # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
+            app.run_source_to_cloud_flow(self.get_argument_source(), dockerfile, can_create_acr_if_needed=False, registry_server=self.get_argument_registry_server())
             # Validate containers exist
             containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
             if containers is None or len(containers) == 0:
@@ -893,8 +891,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
         # Check if source contains a Dockerfile
         # and ignore checking if Dockerfile exists in repo since GitHub action inherently checks for it.
-        has_dockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
-        if has_dockerfile:
+        if _has_dockerfile(self.get_argument_source(), dockerfile):
             dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=self.get_argument_source(), context_path=None, dockerfile=dockerfile)
             ingress, target_port = _get_ingress_and_target_port(self.get_argument_ingress(), self.get_argument_target_port(), dockerfile_content)
 
@@ -907,8 +904,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         # Fetch registry credentials
         _get_registry_details(cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments
 
-        # Uses buildpacks or an ACR Task to generate image if Dockerfile was not provided by the user
-        app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not has_dockerfile)
+        # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
+        app.run_source_to_cloud_flow(self.get_argument_source(), dockerfile, can_create_acr_if_needed=False, registry_server=registry_server)
 
         # Validate an image associated with the container app exists
         containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])

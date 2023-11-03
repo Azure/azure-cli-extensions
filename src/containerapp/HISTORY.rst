@@ -4,11 +4,15 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp patch apply': support image patching for java application
+
+0.3.43
+++++++
 * Update azure cli dependency version >= "2.53.0"
 * Remove GA commands which exists in azure-cli of version 2.53.0
 * 'az containerapp create/update': fix an issue for transforming sensitive values when the scale rules metadata not exists
 * 'az containerapp up': update builder image used when --source is provided with no Dockerfile to support building applications targeting a wider range of platform versions
-* 'az containerapp patch apply': support java application patching
+* Add Cloud Build support (build without Dockerfile or Docker) in Stage/Canary regions to the 'az containerapp up'/'az containerapp create' and 'az containerapp update' commands
 
 0.3.42
 ++++++
