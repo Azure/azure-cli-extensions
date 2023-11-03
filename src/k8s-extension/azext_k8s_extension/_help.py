@@ -16,6 +16,10 @@ helps[f'{consts.EXTENSION_NAME}'] = """
 helps[f'{consts.EXTENSION_NAME} create'] = f"""
     type: command
     short-summary: Create a Kubernetes Cluster Extension, including purchasing an extension Offer from Azure Marketplace (AKS only). Please refer to the example at the end to see how to create an extension or purchase an extension offer.
+    long-summary: Create a Kubernetes Extension.
+'The output includes secrets that you must protect. Be sure that you do not include these secrets in your ' 
+ 'source control. Also verify that no secrets are present in the logs of your command or script. ' 
+ 'For additional information, see http://aka.ms/clisecrets.'
     examples:
       - name: Create a Kubernetes Extension
         text: |-
@@ -33,6 +37,10 @@ helps[f'{consts.EXTENSION_NAME} create'] = f"""
 helps[f'{consts.EXTENSION_NAME} list'] = f"""
     type: command
     short-summary: List Kubernetes Extensions.
+    long-summary: List all Kubernetes Extensions in a cluster, including their properties.
+'The output includes secrets that you must protect. Be sure that you do not include these secrets in your ' 
+ 'source control. Also verify that no secrets are present in the logs of your command or script. ' 
+ 'For additional information, see http://aka.ms/clisecrets.'
     examples:
       - name: List all Kubernetes Extensions on a cluster
         text: |-
@@ -53,6 +61,10 @@ helps[f'{consts.EXTENSION_NAME} delete'] = f"""
 helps[f'{consts.EXTENSION_NAME} show'] = f"""
     type: command
     short-summary: Show a Kubernetes Extension.
+    long-summary: Show a Kubernetes Extension including its properties.
+'The output includes secrets that you must protect. Be sure that you do not include these secrets in your ' 
+ 'source control. Also verify that no secrets are present in the logs of your command or script. ' 
+ 'For additional information, see http://aka.ms/clisecrets.'
     examples:
       - name: Show details of a Kubernetes Extension
         text: |-
@@ -66,6 +78,9 @@ helps[f'{consts.EXTENSION_NAME} update'] = f"""
     long-summary: For update to ConfigSettings and ConfigProtectedSettings, please \
 refer to documentation of the cluster extension service to check update to these \
 properties is supported before updating these properties.
+'The output includes secrets that you must protect. Be sure that you do not include these secrets in your ' 
+ 'source control. Also verify that no secrets are present in the logs of your command or script. ' 
+ 'For additional information, see http://aka.ms/clisecrets.'
     examples:
       - name: Update a Kubernetes Extension
         text: |-
