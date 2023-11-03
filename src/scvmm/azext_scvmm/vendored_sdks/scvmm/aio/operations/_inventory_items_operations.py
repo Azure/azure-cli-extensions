@@ -30,7 +30,7 @@ class InventoryItemsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~scvmm.models
+    :type models: ~azure.mgmt.scvmm.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -50,7 +50,7 @@ class InventoryItemsOperations:
         self,
         resource_group_name: str,
         vmm_server_name: str,
-        inventory_item_name: str,
+        inventory_item_resource_name: str,
         body: Optional["_models.InventoryItem"] = None,
         **kwargs: Any
     ) -> "_models.InventoryItem":
@@ -58,17 +58,17 @@ class InventoryItemsOperations:
 
         Create Or Update InventoryItem.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param vmm_server_name: Name of the VMMServer.
         :type vmm_server_name: str
-        :param inventory_item_name: Name of the inventoryItem.
-        :type inventory_item_name: str
+        :param inventory_item_resource_name: Name of the inventoryItem.
+        :type inventory_item_resource_name: str
         :param body: Request payload.
-        :type body: ~scvmm.models.InventoryItem
+        :type body: ~azure.mgmt.scvmm.models.InventoryItem
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: InventoryItem, or the result of cls(response)
-        :rtype: ~scvmm.models.InventoryItem
+        :rtype: ~azure.mgmt.scvmm.models.InventoryItem
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItem"]
@@ -77,7 +77,7 @@ class InventoryItemsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -89,7 +89,7 @@ class InventoryItemsOperations:
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             vmm_server_name=vmm_server_name,
-            inventory_item_name=inventory_item_name,
+            inventory_item_resource_name=inventory_item_resource_name,
             api_version=api_version,
             content_type=content_type,
             json=_json,
@@ -105,19 +105,23 @@ class InventoryItemsOperations:
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('InventoryItem', pipeline_response)
+        if response.status_code == 200:
+            deserialized = self._deserialize('InventoryItem', pipeline_response)
+
+        if response.status_code == 201:
+            deserialized = self._deserialize('InventoryItem', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    create.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemName}"}  # type: ignore
+    create.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}"}  # type: ignore
 
 
     @distributed_trace_async
@@ -125,22 +129,22 @@ class InventoryItemsOperations:
         self,
         resource_group_name: str,
         vmm_server_name: str,
-        inventory_item_name: str,
+        inventory_item_resource_name: str,
         **kwargs: Any
     ) -> "_models.InventoryItem":
         """Implements GET InventoryItem method.
 
         Shows an inventory item.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param vmm_server_name: Name of the VMMServer.
         :type vmm_server_name: str
-        :param inventory_item_name: Name of the inventoryItem.
-        :type inventory_item_name: str
+        :param inventory_item_resource_name: Name of the inventoryItem.
+        :type inventory_item_resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: InventoryItem, or the result of cls(response)
-        :rtype: ~scvmm.models.InventoryItem
+        :rtype: ~azure.mgmt.scvmm.models.InventoryItem
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItem"]
@@ -149,14 +153,14 @@ class InventoryItemsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         
         request = build_get_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             vmm_server_name=vmm_server_name,
-            inventory_item_name=inventory_item_name,
+            inventory_item_resource_name=inventory_item_resource_name,
             api_version=api_version,
             template_url=self.get.metadata['url'],
         )
@@ -182,7 +186,7 @@ class InventoryItemsOperations:
 
         return deserialized
 
-    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemName}"}  # type: ignore
+    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}"}  # type: ignore
 
 
     @distributed_trace_async
@@ -190,19 +194,19 @@ class InventoryItemsOperations:
         self,
         resource_group_name: str,
         vmm_server_name: str,
-        inventory_item_name: str,
+        inventory_item_resource_name: str,
         **kwargs: Any
     ) -> None:
         """Implements inventoryItem DELETE method.
 
         Deletes an inventoryItem.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param vmm_server_name: Name of the VMMServer.
         :type vmm_server_name: str
-        :param inventory_item_name: Name of the inventoryItem.
-        :type inventory_item_name: str
+        :param inventory_item_resource_name: Name of the inventoryItem.
+        :type inventory_item_resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -214,14 +218,14 @@ class InventoryItemsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         
         request = build_delete_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             vmm_server_name=vmm_server_name,
-            inventory_item_name=inventory_item_name,
+            inventory_item_resource_name=inventory_item_resource_name,
             api_version=api_version,
             template_url=self.delete.metadata['url'],
         )
@@ -243,7 +247,7 @@ class InventoryItemsOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemName}"}  # type: ignore
+    delete.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}"}  # type: ignore
 
 
     @distributed_trace
@@ -257,16 +261,16 @@ class InventoryItemsOperations:
 
         Returns the list of inventoryItems in the given VMMServer.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param vmm_server_name: Name of the VMMServer.
         :type vmm_server_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either InventoryItemsList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~scvmm.models.InventoryItemsList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.scvmm.models.InventoryItemsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItemsList"]
         error_map = {
