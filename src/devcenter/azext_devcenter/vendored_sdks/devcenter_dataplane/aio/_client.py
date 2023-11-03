@@ -10,16 +10,17 @@ from copy import deepcopy
 from typing import Any, Awaitable, TYPE_CHECKING
 
 from azure.core import AsyncPipelineClient
+from azure.core.pipeline import policies
 from azure.core.rest import AsyncHttpResponse, HttpRequest
 
 from .._serialization import Deserializer, Serializer
 from ._configuration import DevCenterClientConfiguration
 from .operations import (
-    DevBoxOperationsOperations,
+    DeploymentEnvironmentsOperations,
     DevBoxesOperations,
     DevCenterOperations,
-    EnvironmentOperationsOperations,
     EnvironmentsOperations,
+    ProjectsOperations,
 )
 
 if TYPE_CHECKING:
@@ -34,19 +35,18 @@ class DevCenterClient:  # pylint: disable=client-accepts-api-version-keyword
     :vartype dev_center: azure.developer.devcenter.aio.operations.DevCenterOperations
     :ivar dev_boxes: DevBoxesOperations operations
     :vartype dev_boxes: azure.developer.devcenter.aio.operations.DevBoxesOperations
-    :ivar dev_box_operations: DevBoxOperationsOperations operations
-    :vartype dev_box_operations:
-     azure.developer.devcenter.aio.operations.DevBoxOperationsOperations
+    :ivar projects: ProjectsOperations operations
+    :vartype projects: azure.developer.devcenter.aio.operations.ProjectsOperations
+    :ivar deployment_environments: DeploymentEnvironmentsOperations operations
+    :vartype deployment_environments:
+     azure.developer.devcenter.aio.operations.DeploymentEnvironmentsOperations
     :ivar environments: EnvironmentsOperations operations
     :vartype environments: azure.developer.devcenter.aio.operations.EnvironmentsOperations
-    :ivar environment_operations: EnvironmentOperationsOperations operations
-    :vartype environment_operations:
-     azure.developer.devcenter.aio.operations.EnvironmentOperationsOperations
     :param endpoint: The DevCenter-specific URI to operate on. Required.
     :type endpoint: str
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
-    :keyword api_version: Api Version. Default value is "2023-07-01-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2023-10-01-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -56,22 +56,39 @@ class DevCenterClient:  # pylint: disable=client-accepts-api-version-keyword
     def __init__(self, endpoint: str, credential: "AsyncTokenCredential", **kwargs: Any) -> None:
         _endpoint = "{endpoint}"
         self._config = DevCenterClientConfiguration(endpoint=endpoint, credential=credential, **kwargs)
-        self._client: AsyncPipelineClient = AsyncPipelineClient(base_url=_endpoint, config=self._config, **kwargs)
+        _policies = kwargs.pop("policies", None)
+        if _policies is None:
+            _policies = [
+                policies.RequestIdPolicy(**kwargs),
+                self._config.headers_policy,
+                self._config.user_agent_policy,
+                self._config.proxy_policy,
+                policies.ContentDecodePolicy(**kwargs),
+                self._config.redirect_policy,
+                self._config.retry_policy,
+                self._config.authentication_policy,
+                self._config.custom_hook_policy,
+                self._config.logging_policy,
+                policies.DistributedTracingPolicy(**kwargs),
+                policies.SensitiveHeaderCleanupPolicy(**kwargs) if self._config.redirect_policy else None,
+                self._config.http_logging_policy,
+            ]
+        self._client: AsyncPipelineClient = AsyncPipelineClient(base_url=_endpoint, policies=_policies, **kwargs)
 
         self._serialize = Serializer()
         self._deserialize = Deserializer()
         self._serialize.client_side_validation = False
         self.dev_center = DevCenterOperations(self._client, self._config, self._serialize, self._deserialize)
         self.dev_boxes = DevBoxesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.dev_box_operations = DevBoxOperationsOperations(
+        self.projects = ProjectsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.deployment_environments = DeploymentEnvironmentsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.environments = EnvironmentsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.environment_operations = EnvironmentOperationsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
 
-    def send_request(self, request: HttpRequest, **kwargs: Any) -> Awaitable[AsyncHttpResponse]:
+    def send_request(
+        self, request: HttpRequest, *, stream: bool = False, **kwargs: Any
+    ) -> Awaitable[AsyncHttpResponse]:
         """Runs the network request through the client's chained policies.
 
         >>> from azure.core.rest import HttpRequest
@@ -95,7 +112,7 @@ class DevCenterClient:  # pylint: disable=client-accepts-api-version-keyword
         }
 
         request_copy.url = self._client.format_url(request_copy.url, **path_format_arguments)
-        return self._client.send_request(request_copy, **kwargs)
+        return self._client.send_request(request_copy, stream=stream, **kwargs)  # type: ignore
 
     async def close(self) -> None:
         await self._client.close()
