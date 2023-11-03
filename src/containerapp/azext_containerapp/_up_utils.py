@@ -8,10 +8,10 @@
 from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
 import os
-import requests
 import subprocess
 import tempfile
 import uuid
+import requests
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -589,7 +589,6 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
         from azure.cli.command_modules.acr._client_factory import cf_acr_tasks, cf_acr_runs
         from azure.cli.core.profiles import ResourceType
-        import os
 
         task_name = "cli_build_containerapp"
         registry_name = (self.registry_server[: self.registry_server.rindex(ACR_IMAGE_SUFFIX)]).lower()

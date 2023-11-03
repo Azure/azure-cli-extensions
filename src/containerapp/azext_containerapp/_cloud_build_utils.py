@@ -2,20 +2,20 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long, too-many-locals, missing-timeout, too-many-statements, consider-using-with
 
 from threading import Thread
 import os
 import re
-import requests
 import tempfile
 import time
-
-from ._archive_utils import archive_source_code
+import requests
 
 from azure.cli.core.azclierror import (
     ValidationError
 )
+
+from ._archive_utils import archive_source_code
 
 from ._clients import BuilderClient, BuildClient
 
@@ -30,7 +30,7 @@ class CloudBuildError(Exception):
 
 
 def run_cloud_build(cmd, source, location, resource_group_name, environment_name, run_full_id, logs_file, logs_file_path):
-    generated_build_name = 'build{}'.format(run_full_id)[:12]
+    generated_build_name = f"build{run_full_id}"[:12]
     log_in_file(f"Starting the Cloud Build for build of id '{generated_build_name}'\n", logs_file, no_print=True)
 
     if not os.path.exists(source):
@@ -102,7 +102,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
             # Builder creation
             done_spinner = False
             thread = display_spinner("Creating the builder in the Container Apps environment")
-            builder_name = 'builder{}'.format(run_full_id)[:12]
+            builder_name = f"builder{run_full_id}"[:12]
             BuilderClient.create(cmd, builder_name, resource_group_name, environment_name, location)
             done_spinner = True
             thread.join()
@@ -139,7 +139,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
 
         # File upload
         done_spinner = False
-        thread = display_spinner(f"Uploading compressed data")
+        thread = display_spinner("Uploading compressed data")
         headers = {'Authorization': 'Bearer ' + token}
         try:
             tar_file = open(tar_file_path, "rb")
@@ -159,7 +159,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
 
         # Wait for provisioning state to succeed and the build status to be InProgress
         done_spinner = False
-        thread = display_spinner(f"Waiting for the Cloud Build agent to report status")
+        thread = display_spinner("Waiting for the Cloud Build agent to report status")
         build_provisioning = True
         while build_provisioning:
             build_json_content = BuildClient.get(cmd, builder_name, build_name, resource_group_name)
@@ -167,7 +167,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
                 build_status = build_json_content["properties"]["buildStatus"]
                 if build_status == "InProgress":
                     build_provisioning = False
-                elif build_status == "Failed" or build_status == "Canceled":
+                elif build_status in ("Failed", "Canceled"):
                     raise ValidationError(f"The build {build_name} was provisioned properly but its build status is {build_status}")
             time.sleep(1)
         done_spinner = True
@@ -175,7 +175,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
 
         # Initializing logs stream
         done_spinner = False
-        thread = display_spinner(f"Streaming Cloud Build logs")
+        thread = display_spinner("Streaming Cloud Build logs")
         headers = {'Authorization': 'Bearer ' + token}
         response_log_streaming = requests.get(
             log_streaming_endpoint,
@@ -188,7 +188,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
 
         # Initializing Buildpack and Stream the logs
         done_spinner = False
-        thread = display_spinner(f"Buildpack: Initializing")
+        thread = display_spinner("Buildpack: Initializing")
         log_execution_phase_pattern = r"===== (.*) =====$"
         current_phase_logs = ""
         for line in response_log_streaming.iter_lines():
@@ -227,7 +227,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         thread.join()
         log_in_file(f"{substatus_indentation}{font_bold_red}{str(cloud_build_error)}{font_default}", logs_file)
         log_in_file(f"{substatus_indentation}Full logs: {logs_file_path}\n", logs_file)
-        raise ValidationError("The Cloud Build failed because of an error during the build process.")
+        raise ValidationError("The Cloud Build failed because of an error during the build process.") from cloud_build_error
     except (ValidationError, Exception) as error:
         fail_spinner = True
         thread.join()
