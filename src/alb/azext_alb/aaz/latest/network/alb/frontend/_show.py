@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01-preview",
+        "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}/frontends/{}", "2023-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}/frontends/{}", "2023-11-01"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="[A-Za-z0-9]+[A-Za-z0-9-_.]{0,62}[A-Za-z0-9_]+",
+                pattern="^[A-Za-z0-9]([A-Za-z0-9-_.]{0,62}[A-Za-z0-9])?$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -62,7 +62,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[A-Za-z0-9]+[A-Za-z0-9-_.]{0,62}[A-Za-z0-9_]+",
+                pattern="^[A-Za-z0-9]([A-Za-z0-9-_.]{0,62}[A-Za-z0-9])?$",
             ),
         )
         return cls._args_schema
@@ -136,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }

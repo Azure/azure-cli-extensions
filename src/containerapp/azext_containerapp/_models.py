@@ -408,11 +408,11 @@ ImagePatchableCheck = {
     "reason": None,
 }
 
-OryxMarinerRunImgTagProperty = {
+OryxRunImageTagProperty = {
     "fullTag": None,
     "framework": None,
     "version": None,
-    "marinerVersion": None,
+    "os": None,
     "architectures": None,
     "support": None,
 }
