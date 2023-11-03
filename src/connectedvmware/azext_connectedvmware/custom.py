@@ -236,7 +236,29 @@ def show_inventory_item(
     inventory_item
 ):
 
-    return client.get(resource_group_name, vcenter.split('/')[-1], inventory_item.split('/')[-1])
+    morefId: str = inventory_item.split('/')[-1]
+    moType = morefId.rsplit('-', 1)[0]
+    inventoryType = 'InventoryItem'
+
+    if moType == 'datastore':
+        inventoryType = 'DatastoreInventoryItem'
+    elif moType == 'domain':
+        inventoryType = 'ClusterInventoryItem'
+    elif moType == 'dvportgroup':
+        inventoryType = 'VirtualNetworkInventoryItem'
+    elif moType == 'host':
+        inventoryType = 'HostInventoryItem'
+    elif moType == 'network':
+        inventoryType = 'VirtualNetworkInventoryItem'
+    elif moType == 'resgroup':
+        inventoryType = 'ResourcePoolInventoryItem'
+    elif moType == 'vm':
+        inventoryType = 'VirtualMachineInventoryItem'
+    elif moType == 'vmtpl-vm':
+        inventoryType = 'VirtualMachineTemplateInventoryItem'
+
+    client._deserialize.dependencies['InventoryItem'] = client._deserialize.dependencies[inventoryType]
+    return client.get(resource_group_name, vcenter.split('/')[-1], morefId)
 
 
 def list_inventory_item(
