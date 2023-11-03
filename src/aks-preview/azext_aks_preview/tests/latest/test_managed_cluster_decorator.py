@@ -6952,7 +6952,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
     def test_update_supportPlan(self):
         # default value in `aks_create`
-        noopDecorator = AKSManagedClusterUpdateDecorator(
+        noopDecorator = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {},
