@@ -6902,7 +6902,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
     def test_setup_supportPlan(self):
         # default value in `aks_create`
-        ltsDecorator = AKSManagedClusterCreateDecorator(
+        ltsDecorator = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
             {
@@ -6933,7 +6933,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(ltsClusterCalculated, expectedLTSCluster)
 
-        nonLTSDecorator = AKSManagedClusterCreateDecorator(
+        nonLTSDecorator = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
             {
@@ -6976,7 +6976,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ltsClusterCalculated = noopDecorator.update_k8s_support_plan(ltsCluster)
         self.assertEqual(ltsClusterCalculated, ltsCluster)
 
-        disableLTSDecorator = AKSManagedClusterUpdateDecorator(
+        disableLTSDecorator = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {
@@ -7000,7 +7000,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 tier="Standard"),
             support_plan="KubernetesOfficial",
         )
-        noopDecorator3 = AKSManagedClusterUpdateDecorator(
+        noopDecorator3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {},
