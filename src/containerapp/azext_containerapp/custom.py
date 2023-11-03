@@ -1166,7 +1166,7 @@ def _get_patchable_check_result(inspect_result, oryx_run_images):
         return result
 
     # Define the MCR repositories that are supported for patching
-    mcr_repos = ["oryx/dotnetcore", "oryx/node", "oryx/python"]
+    mcr_repos = ["oryx/dotnetcore", "oryx/node", "oryx/python", "azure-buildpacks/java"]
 
     # Iterate over each base run image found to see if a patch can be applied
     for run_images_prop in run_images_props:
