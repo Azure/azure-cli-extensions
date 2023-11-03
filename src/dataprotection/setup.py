@@ -10,11 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.0'
-try:
-    from azext_dataprotection.manual.version import VERSION
-except ImportError:
-    pass
+VERSION = '0.11.2'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -30,7 +26,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ["azure-mgmt-resourcegraph"]
+DEPENDENCIES = []
 
 try:
     from azext_dataprotection.manual.dependency import DEPENDENCIES
@@ -48,7 +44,7 @@ setup(
     description='Microsoft Azure Command-Line Tools DataProtectionClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/dataprotection',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/dataprotection',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

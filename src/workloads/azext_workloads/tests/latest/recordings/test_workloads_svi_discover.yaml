@@ -1,0 +1,751 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLI-TESTING?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING","name":"CLI-TESTING","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"Created":"20230330"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '249'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:15:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/SAP-E2ETest-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/E2E-RBAC-MSI":
+      {}}}, "location": "eastus", "properties": {"environment": "NonProd", "sapProduct":
+      "S4HANA", "configuration": {"centralServerVmId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TestRG/providers/Microsoft.Compute/virtualMachines/c36ascsvm",
+      "configurationType": "Discovery"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '524'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","name":"C36","type":"microsoft.workloads/sapvirtualinstances","location":"eastus","systemData":{"createdBy":"mohitaneja@microsoft.com","createdByType":"User","createdAt":"2023-04-10T11:15:06.5611451Z","lastModifiedBy":"mohitaneja@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-10T11:15:06.5611451Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/SAP-E2ETest-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/E2E-RBAC-MSI":{"principalId":"b7202d53-6b98-4194-8748-4f13a9000072","clientId":"914aa6fe-5e5f-4b55-9b68-39da0ad86ee7"}}},"properties":{"environment":"NonProd","sapProduct":"S4HANA","configuration":{"configurationType":"Discovery","centralServerVmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TestRG/providers/Microsoft.Compute/virtualMachines/c36ascsvm"},"state":"DiscoveryInProgress","provisioningState":"Accepted"}}'
+    headers:
+      api-supported-versions:
+      - 2021-12-01-preview, 2022-10-15-preview, 2022-11-01-preview, 2023-04-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1112'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:15:09 GMT
+      etag:
+      - '"6a0054be-0000-0100-0000-6433efbd0000"'
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36
+      mise-correlation-id:
+      - 5a478446-4850-457f-b3a9-43f1cc5e6525
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:15:40 GMT
+      etag:
+      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:16:12 GMT
+      etag:
+      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:16:43 GMT
+      etag:
+      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:17:15 GMT
+      etag:
+      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:17:45 GMT
+      etag:
+      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:18:16 GMT
+      etag:
+      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:18:47 GMT
+      etag:
+      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:19:18 GMT
+      etag:
+      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:19:49 GMT
+      etag:
+      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:20:20 GMT
+      etag:
+      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:20:51 GMT
+      etag:
+      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:21:21 GMT
+      etag:
+      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Succeeded","startTime":"2023-04-10T11:15:08.3323332Z","endTime":"2023-04-10T11:21:27.1650154Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '609'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:21:52 GMT
+      etag:
+      - '"6200c8b9-0000-0100-0000-6433f1370000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --sap-product --central-server-vm --identity
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","name":"C36","type":"microsoft.workloads/sapvirtualinstances","location":"eastus","systemData":{"createdBy":"mohitaneja@microsoft.com","createdByType":"User","createdAt":"2023-04-10T11:15:06.5611451Z","lastModifiedBy":"ea21b132-560f-4b0b-9876-903b6bca7b9d","lastModifiedByType":"Application","lastModifiedAt":"2023-04-10T11:21:28.255699Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/SAP-E2ETest-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/E2E-RBAC-MSI":{"principalId":"b7202d53-6b98-4194-8748-4f13a9000072","clientId":"914aa6fe-5e5f-4b55-9b68-39da0ad86ee7"}}},"properties":{"environment":"NonProd","sapProduct":"S4HANA","configuration":{"configurationType":"Discovery","centralServerVmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TestRG/providers/Microsoft.Compute/virtualMachines/c36ascsvm","appLocation":"eastus"},"state":"RegistrationComplete","provisioningState":"Succeeded","managedResourceGroupConfiguration":{"name":"mrg-C36-437867"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1217'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 11:21:52 GMT
+      etag:
+      - '"6a0015c3-0000-0100-0000-6433f1380000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+version: 1

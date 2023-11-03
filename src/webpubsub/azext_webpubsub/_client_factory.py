@@ -12,3 +12,15 @@ def _webpubsub_client_factory(cli_ctx, *_):
 
 def cf_webpubsub(cli_ctx, *_):
     return _webpubsub_client_factory(cli_ctx).web_pub_sub
+
+
+def cf_webpubsubhub(cli_ctx, *_):
+    return _webpubsub_client_factory(cli_ctx).web_pub_sub_hubs
+
+
+def cf_webpubsubhub_usage(cli_ctx, *_):
+    return _webpubsub_client_factory(cli_ctx).usages
+
+
+def cf_webpubsub_replicas(cli_ctx, *_):
+    return _webpubsub_client_factory(cli_ctx).web_pub_sub_replicas

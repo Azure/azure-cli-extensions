@@ -2,6 +2,30 @@
 
 Release History
 ===============
+0.9.0
++++++
+* Change publicnetworkaccess to public-network-access word
+
+0.8.0
++++++
+* Support publicnetworkaccess in datafactory_create and datafactory_update
+
+0.7.0
++++++
+* az datafactory data-flow: Support create/update/list/show/delete data flows.
+
+0.6.0
++++++
+* Bug fix for `az datafactory pipeline list`.
+
+0.5.0
++++++
+* az datafactory managed-virtual-network: Support create/update/list/show managed virtual network.
+* az datafactory managed-private-endpoint: Support create/update/list/show/delete managed private endpoint.
+
+0.4.0
++++++
+* GA the whole module
 
 0.3.0
 +++++

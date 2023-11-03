@@ -9,47 +9,219 @@
 # --------------------------------------------------------------------------
 
 from knack.util import CLIError
+from knack.log import get_logger
+
+DATA_FLOW_SUBTYPES = ["Flowlet", "MappingDataFlow", "WranglingDataFlow"]
 
 
-def datafactory_create(client,
-                       resource_group_name,
-                       factory_name,
-                       if_match=None,
-                       location=None,
-                       tags=None,
-                       factory_vsts_configuration=None,
-                       factory_git_hub_configuration=None,
-                       global_parameters=None):
+def datafactory_create(
+    client,
+    resource_group_name,
+    factory_name,
+    if_match=None,
+    location=None,
+    public_network_access=None,
+    tags=None,
+    factory_vsts_configuration=None,
+    factory_git_hub_configuration=None,
+    global_parameters=None,
+):
     from azext_datafactory.vendored_sdks.datafactory.models import FactoryIdentity
     from azext_datafactory.vendored_sdks.datafactory.models import FactoryIdentityType
+
     all_repo_configuration = []
     if factory_vsts_configuration is not None:
         all_repo_configuration.append(factory_vsts_configuration)
     if factory_git_hub_configuration is not None:
         all_repo_configuration.append(factory_git_hub_configuration)
     if len(all_repo_configuration) > 1:
-        raise CLIError('At most one of factory_vsts_configuration, factory_git_hub_configuration is needed for '
-                       'repo_configuration!')
-    repo_configuration = all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
+        raise CLIError(
+            "At most one of factory_vsts_configuration, factory_git_hub_configuration is needed for "
+            "repo_configuration!"
+        )
+    repo_configuration = (
+        all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
+    )
     factory = {}
-    factory['location'] = location
-    factory['tags'] = tags
-    factory['repo_configuration'] = repo_configuration
-    factory['global_parameters'] = global_parameters
-    factory['encryption'] = {}
-    factory['identity'] = FactoryIdentity(type=FactoryIdentityType.SYSTEM_ASSIGNED)
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   if_match=if_match,
-                                   factory=factory)
+    factory["location"] = location
+    factory["tags"] = tags
+    factory["repo_configuration"] = repo_configuration
+    factory["global_parameters"] = global_parameters
+    factory["encryption"] = {}
+    if public_network_access is not None:
+        factory["publicnetworkaccess"] = public_network_access
+    factory["identity"] = FactoryIdentity(type=FactoryIdentityType.SYSTEM_ASSIGNED)
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        if_match=if_match,
+        factory=factory,
+    )
 
 
-def datafactory_update(client,
-                       resource_group_name,
-                       factory_name,
-                       tags=None):
+def datafactory_update(client, resource_group_name, factory_name, public_network_access=None, tags=None):
     factory_update_parameters = {}
-    factory_update_parameters['tags'] = tags
-    return client.update(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         factory_update_parameters=factory_update_parameters)
+    factory_update_parameters["tags"] = tags
+    if public_network_access is not None:
+        factory_update_parameters["publicnetworkaccess"] = public_network_access
+    return client.update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        factory_update_parameters=factory_update_parameters,
+    )
+
+
+# Data Flows
+def datafactory_data_flow_list(client, resource_group_name, factory_name):
+    return client.list_by_factory(
+        resource_group_name=resource_group_name, factory_name=factory_name
+    )
+
+
+def datafactory_data_flow_delete(
+    client, resource_group_name, factory_name, data_flow_name
+):
+    return client.delete(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        data_flow_name=data_flow_name,
+    )
+
+
+def datafactory_data_flow_create(
+    client,
+    resource_group_name,
+    factory_name,
+    data_flow_name,
+    properties,
+    flow_type,
+    if_match=None,
+):
+    logger = get_logger()
+    data_flow = {}
+    data_flow["properties"] = {}
+    if flow_type not in DATA_FLOW_SUBTYPES:
+        raise CLIError(
+            f"Not a valid type of dataflow. Valid choices: {DATA_FLOW_SUBTYPES}"
+        )
+
+    data_flow["properties"]["type"] = flow_type
+    data_flow["properties"]["description"] = (
+        properties["description"] if "description" in properties.keys() else ""
+    )
+    data_flow["properties"]["folder"] = (
+        {"name": properties["folder"]["name"]}
+        if "folder" in properties.keys()
+        else None
+    )
+    data_flow["properties"]["annotations"] = (
+        properties["annotations"] if "annotations" in properties.keys() else []
+    )
+    data_flow["properties"]["typeProperties"] = {}
+    if "typeProperties" not in properties.keys():
+        data_flow["properties"]["typeProperties"] = {
+            "sources": [],
+            "sinks": [],
+            "transformations": [],
+            "scriptLines": [],
+        }
+    else:
+        logger.warning(
+            'Any malformed "typeProperty" sub-item will result in an incomplete definition '
+            "once viewed on ADF."
+        )
+        if (
+            "sources" in properties["typeProperties"].keys()
+            or "sinks" in properties["typeProperties"].keys()
+        ) and ("scriptLines" not in properties["typeProperties"].keys()):
+
+            logger.warning(
+                "Not including a scriptLines in this case may result "
+                "in a malformed data flow"
+            )
+        data_flow["properties"]["typeProperties"]["sources"] = (
+            properties["typeProperties"]["sources"]
+            if "sources" in properties["typeProperties"].keys()
+            else []
+        )
+        data_flow["properties"]["typeProperties"]["sinks"] = (
+            properties["typeProperties"]["sinks"]
+            if "sinks" in properties["typeProperties"].keys()
+            else []
+        )
+        data_flow["properties"]["typeProperties"]["transformations"] = (
+            properties["typeProperties"]["transformations"]
+            if "transformations" in properties["typeProperties"].keys()
+            else []
+        )
+        data_flow["properties"]["typeProperties"]["scriptLines"] = (
+            properties["typeProperties"]["scriptLines"]
+            if "scriptLines" in properties["typeProperties"].keys()
+            else []
+        )
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        data_flow_name=data_flow_name,
+        if_match=if_match,
+        data_flow=data_flow,
+    )
+
+
+def datafactory_data_flow_update(
+    client,
+    resource_group_name,
+    factory_name,
+    data_flow_name,
+    properties,
+):
+    logger = get_logger()
+    data_flow_data = {}
+    data_flow_data["properties"] = {}
+
+    # Avoid creating in the update command
+    try:
+        client.get(resource_group_name, factory_name, data_flow_name)
+    except Exception as e:
+        raise CLIError(
+            f"No data flow with this name `{data_flow_name}` exists - no update performed"
+        ) from e
+
+    if "name" in properties.keys():
+        raise CLIError(
+            "Do not update the name of the data flow via CLI - chance of naming collision"
+        )
+
+    if "annotations" in properties.keys():
+        data_flow_data["properties"]["annotations"] = properties["annotations"]
+    if "description" in properties.keys():
+        data_flow_data["properties"]["description"] = properties["description"]
+    if "typeProperties" in properties.keys():
+        logger.warning(
+            "If the definition is not correct here, the resource in ADF may be malformed"
+        )
+
+        if "sinks" in properties["typeProperties"].keys():
+            data_flow_data["properties"]["typeProperties"]["sinks"] = properties[
+                "typeProperties"
+            ]["sinks"]
+        if "sources" in properties["typeProperties"].keys():
+            data_flow_data["properties"]["typeProperties"]["sources"] = properties[
+                "typeProperties"
+            ]["sources"]
+        if "transformations" in properties["typeProperties"].keys():
+            data_flow_data["properties"]["typeProperties"][
+                "transformations"
+            ] = properties["typeProperties"]["transformations"]
+        if "scriptLines" in properties["typeProperties"].keys():
+            data_flow_data["properties"]["typeProperties"]["scriptLines"] = properties[
+                "typeProperties"
+            ]["scriptLines"]
+
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        data_flow_name=data_flow_name,
+        if_match=None,
+        data_flow=data_flow_data,
+    )

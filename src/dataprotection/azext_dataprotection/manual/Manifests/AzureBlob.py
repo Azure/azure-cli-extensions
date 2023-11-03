@@ -6,12 +6,23 @@
 manifest = '''
 {
   "isProxyResource": false,
+  "enableDataSourceSetInfo": false,
   "resourceType": "Microsoft.Storage/storageAccounts",
   "parentResourceType": "Microsoft.Storage/storageAccounts",
   "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
   "allowedRestoreModes": [ "PointInTimeBased" ],
   "allowedRestoreTargetTypes": [ "OriginalLocation" ],
   "itemLevelRecoveyEnabled": true,
+  "addBackupDatasourceParametersList": false,
+  "addDataStoreParametersList": false,
+  "friendlyNameRequired": false,
+  "supportSecretStoreAuthentication": false,
+  "backupVaultPermissions": [
+    {
+      "roleDefinitionName": "Storage Account Backup Contributor",
+      "type": "DataSource"
+    }
+  ],
   "policySettings": {
     "supportedRetentionTags": [],
     "supportedDatastoreTypes": [ "OperationalStore" ],

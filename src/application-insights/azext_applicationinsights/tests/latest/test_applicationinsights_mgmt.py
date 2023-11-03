@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, StorageAccountPreparer
 from .recording_processors import StorageAccountSASReplacer
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class ApplicationInsightsManagementClientTests(ScenarioTest):
@@ -124,6 +124,64 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
         ])
 
+    @ResourceGroupPreparer(name_prefix="webapp_cross_rg", parameter_name="resource_group", parameter_name_for_location="location")
+    @ResourceGroupPreparer(name_prefix="webapp_cross_rg2", parameter_name="resource_group2", parameter_name_for_location="location2")
+    def test_connect_webapp_cross_resource_group(self, resource_group, resource_group2, location, location2):
+        # Create Application Insights.
+        ai_name = self.create_random_name('clitestai', 24)
+        self.kwargs.update({
+            'loc': location,
+            'resource_group': resource_group,
+            'resource_group2': resource_group2,
+            'ai_name': ai_name,
+            'kind': 'web',
+            'application_type': 'web'
+        })
+
+        self.cmd(
+            'az monitor app-insights component create --app {ai_name} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}',
+            checks=[
+                self.check('location', '{loc}'),
+                self.check('kind', '{kind}'),
+                self.check('applicationType', '{application_type}'),
+                self.check('applicationId', '{ai_name}'),
+                self.check('provisioningState', 'Succeeded')
+            ])
+
+        app_insights_instrumentation_key = \
+        self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()[
+            'instrumentationKey']
+
+        # Create web app.
+        webapp_name = self.create_random_name('clitestwebapp', 24)
+        plan = self.create_random_name('clitestplan', 24)
+        self.kwargs.update({
+            'plan': plan,
+            'webapp_name': webapp_name
+        })
+
+        self.cmd('az appservice plan create -g {resource_group2} -n {plan}')
+        self.kwargs["webapp_id"] = self.cmd('az webapp create -g {resource_group2} -n {webapp_name} --plan {plan}', checks=[
+            self.check('state', 'Running'),
+            self.check('name', webapp_name)
+        ]).get_output_in_json()['id']
+
+        # Connect AI to web app and update settings for web app.
+        self.cmd(
+            'az monitor app-insights component connect-webapp -g {resource_group} --app {ai_name} --web-app {webapp_id} --enable-profiler --enable-snapshot-debugger',
+            checks=[
+                self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
+                self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0'),
+                self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+            ])
+
+        # Check if the settings are updated correctly.
+        self.cmd('az webapp config appsettings list -g {resource_group2} -n {webapp_name}', checks=[
+            self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
+            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0'),
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+        ])
+
     @ResourceGroupPreparer(parameter_name_for_location='location')
     @StorageAccountPreparer()
     def test_connect_function(self, resource_group, storage_account, location):
@@ -157,7 +215,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         })
 
         self.cmd('az appservice plan create -g {resource_group} -n {plan}')
-        self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa}', checks=[
+        self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa} --functions-version 3 --runtime node', checks=[
             self.check('state', 'Running'),
             self.check('name', function_name)
         ])
@@ -169,6 +227,56 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
 
         # Check if the settings are updated correctly.
         self.cmd('az webapp config appsettings list -g {resource_group} -n {function_name}', checks=[
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+        ])
+
+    @ResourceGroupPreparer(name_prefix="connect_function_cross_rg", parameter_name="resource_group", parameter_name_for_location="location")
+    @ResourceGroupPreparer(name_prefix="connect_function_cross_rg2", parameter_name="resource_group2", parameter_name_for_location="location2")
+    @StorageAccountPreparer(resource_group_parameter_name='resource_group2')
+    def test_connect_function_cross_resource_groups(self, resource_group, resource_group2, location, location2, storage_account):
+        # Create Application Insights.
+        ai_name = self.create_random_name('clitestai', 24)
+        self.kwargs.update({
+            'loc': location,
+            'resource_group': resource_group,
+            'resource_group2': resource_group2,
+            'ai_name': ai_name,
+            'kind': 'web',
+            'application_type': 'web',
+            'sa': storage_account
+        })
+
+        self.cmd('az monitor app-insights component create --app {ai_name} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}', checks=[
+            self.check('location', '{loc}'),
+            self.check('kind', '{kind}'),
+            self.check('applicationType', '{application_type}'),
+            self.check('applicationId', '{ai_name}'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        app_insights_instrumentation_key = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()['instrumentationKey']
+
+        # Create Azure function.
+        function_name = self.create_random_name('clitestfunction', 24)
+        plan = self.create_random_name('clitestplan', 24)
+        self.kwargs.update({
+            'plan': plan,
+            'function_name': function_name
+        })
+
+        self.cmd('az appservice plan create -g {resource_group2} -n {plan}')
+        self.kwargs['functionapp_id'] = self.cmd('az functionapp create -g {resource_group2} -n {function_name} --plan {plan} -s {sa} --functions-version 3 --runtime node', checks=[
+            self.check('state', 'Running'),
+            self.check('name', function_name)
+        ]).get_output_in_json()['id']
+
+        # Connect AI to function and update settings for function.
+        self.cmd('az monitor app-insights component connect-function -g {resource_group} --app {ai_name} --function {functionapp_id}', checks=[
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+        ])
+
+        # Check if the settings are updated correctly.
+        self.cmd('az webapp config appsettings list -g {resource_group2} -n {function_name}', checks=[
             self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
         ])
 
@@ -206,7 +314,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         api_keys = self.cmd('az monitor app-insights api-key show --app {name} -g {resource_group}').get_output_in_json()
         assert len(api_keys) == 3
 
-        self.cmd('az monitor app-insights api-key delete --app {name} -g {resource_group} --api-key {apiKeyB}', checks=[
+        self.cmd('az monitor app-insights api-key delete --app {name} -g {resource_group} --api-key {apiKeyB} -y', checks=[
             self.check('name', '{apiKeyB}')
         ])
         return
@@ -215,6 +323,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
     @StorageAccountPreparer(name_prefix='component', kind='StorageV2')
     @StorageAccountPreparer(name_prefix='component', kind='StorageV2', parameter_name='storage_account_2')
     def test_component_with_linked_storage(self, resource_group, location, storage_account, storage_account_2):
+        from azure.core.exceptions import ResourceNotFoundError
         self.kwargs.update({
             'loc': location,
             'resource_group': resource_group,
@@ -243,8 +352,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         assert self.kwargs['storage_account'] in output_json['linkedStorageAccount']
         output_json = self.cmd('monitor app-insights component linked-storage update --app {name_a} -g {resource_group} -s {storage_account_2}').get_output_in_json()
         assert self.kwargs['storage_account_2'] in output_json['linkedStorageAccount']
-        self.cmd('monitor app-insights component linked-storage unlink --app {name_a} -g {resource_group}')
-        with self.assertRaisesRegexp(SystemExit, '3'):
+        self.cmd('monitor app-insights component linked-storage unlink --app {name_a} -g {resource_group} -y')
+        with self.assertRaisesRegexp(ResourceNotFoundError, "Operation returned an invalid status 'Not Found'"):
             self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
 
     @AllowLargeResponse()
@@ -387,3 +496,66 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         self.cmd('az monitor app-insights component update --app {name_b} --kind {kind} -g {resource_group}', checks=[
             self.check('kind', '{kind}')
         ])
+
+    @ResourceGroupPreparer(name_prefix="cli_test_appinsights_", location="westus")
+    def test_appinsights_webtest_crud(self, resource_group_location):
+        self.kwargs.update({
+            "loc": resource_group_location,
+            "app_name": "test-app",
+            "name": "test-webtest",
+            "kind": "standard",
+            "location_id1": "us-fl-mia-edge",
+            "location_id2": "apac-hk-hkn-azr",
+            "http_verb": "POST",
+            "request_body": "SGVsbG8gd29ybGQ=",
+            "request_url": "https://www.bing.com"
+        })
+
+        # prepare hidden-link
+        app_id = self.cmd("monitor app-insights component create -a {app_name} -l {loc} -g {rg} --kind web --application-type web").get_output_in_json()["id"]
+        self.kwargs["tag"] = f"hidden-link:{app_id}"
+
+        self.cmd(
+            "monitor app-insights web-test create -n {name} -l {loc} -g {rg} "
+            "--enabled true --frequency 900 --web-test-kind {kind} --locations Id={location_id1} --defined-web-test-name {name} "
+            "--http-verb {http_verb} --request-body {request_body} --request-url {request_url} --retry-enabled true --synthetic-monitor-id {name} --timeout 120 "
+            "--ssl-lifetime-check 100 --ssl-check true --tags {tag}=Resource",
+            checks=[
+                self.check("webTestName", "{name}"),
+                self.check("type", "microsoft.insights/webtests")
+            ]
+        )
+        self.cmd(
+            "monitor app-insights web-test list -g {rg} --component-name {app_name}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("@[0].webTestName", "{name}")
+            ]
+        )
+        self.cmd("monitor app-insights web-test update -n {name} -l {loc} -g {rg} --locations Id={location_id2}")
+        self.cmd(
+            "monitor app-insights web-test show -n {name} -g {rg}",
+            checks=[
+                self.check("locations[0].location", "{location_id2}"),
+                self.check("webTestName", "{name}")
+            ]
+        )
+        self.cmd("monitor app-insights web-test delete -n {name} -g {rg} --yes")
+
+        self.cmd(
+            "monitor app-insights web-test create -n {name} -l {loc} -g {rg} "
+            "--enabled true --frequency 900 --web-test-kind {kind} --locations Id={location_id1} --defined-web-test-name {name} "
+            "--http-verb {http_verb} --request-body {request_body} --request-url {request_url} --retry-enabled true --synthetic-monitor-id {name} --timeout 120 "
+            "--ssl-lifetime-check 100 --ssl-check true --headers key=x-ms-test value=123 --tags {tag}=Resource",
+            checks=[
+                self.check("webTestName", "{name}"),
+                self.check("type", "microsoft.insights/webtests")
+            ]
+        )
+        self.cmd(
+            "monitor app-insights web-test list -g {rg} --component-name {app_name}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("@[0].webTestName", "{name}")
+            ]
+        )

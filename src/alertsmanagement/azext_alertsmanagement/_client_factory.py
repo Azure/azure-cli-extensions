@@ -4,27 +4,27 @@
 # --------------------------------------------------------------------------------------------
 
 
-def cf_alertsmanagement(cli_ctx, *_):
+def cf_alertsmanagement_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from .vendored_sdks.alertsmanagement import AlertsManagementClient
     return get_mgmt_service_client(cli_ctx, AlertsManagementClient)
 
 
 def cf_operations(cli_ctx, *_):
-    return cf_alertsmanagement(cli_ctx).operations
+    return cf_alertsmanagement_cl(cli_ctx).operations
 
 
 def cf_alerts(cli_ctx, *_):
-    return cf_alertsmanagement(cli_ctx).alerts
+    return cf_alertsmanagement_cl(cli_ctx).alerts
 
 
 def cf_smart_groups(cli_ctx, *_):
-    return cf_alertsmanagement(cli_ctx).smart_groups
+    return cf_alertsmanagement_cl(cli_ctx).smart_groups
 
 
-def cf_action_rules(cli_ctx, *_):
-    return cf_alertsmanagement(cli_ctx).action_rules
+def cf_processing_rules(cli_ctx, *_):
+    return cf_alertsmanagement_cl(cli_ctx).alert_processing_rules
 
 
 def cf_smart_detector_alert_rules(cli_ctx, *_):
-    return cf_alertsmanagement(cli_ctx).smart_detector_alert_rules
+    return cf_alertsmanagement_cl(cli_ctx).smart_detector_alert_rules

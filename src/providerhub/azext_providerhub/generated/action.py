@@ -10,6 +10,7 @@
 # pylint: disable=protected-access
 
 import argparse
+import json
 from collections import defaultdict
 from knack.util import CLIError
 
@@ -20,10 +21,10 @@ def generate_list(inputStr):
     return [word.strip() for word in inputStr.split(',')]
 
 
-class AddCanary(argparse.Action):
+class AddDefaultRolloutROW2(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.canary = action
+        namespace.rest_of_the_world_group_two = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -31,17 +32,18 @@ class AddCanary(argparse.Action):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'regions':
-                d['regions'] = v
+            if kl == 'wait-duration':
+                d['wait_duration'] = v[0]
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter canary. All possible keys '
-                               'are: regions'.format(k))
+                raise CLIError('Unsupported Key {} is provided for parameter rest_of_the_world_group_two. All possible keys are: wait-duration'.
+                               format(k))
         return d
 
 
@@ -56,8 +58,9 @@ class AddProviderAuthentication(argparse.Action):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -70,10 +73,10 @@ class AddProviderAuthentication(argparse.Action):
         return d
 
 
-class AddResourceProviderAuthentication(argparse.Action):
+class AddProviderHubMetadataAuthentication(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.providerhub_metadata_rp_authentication = action
+        namespace.providerhub_metadata_authentication = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -81,8 +84,9 @@ class AddResourceProviderAuthentication(argparse.Action):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -98,7 +102,8 @@ class AddResourceProviderAuthentication(argparse.Action):
 class AddProviderAuthorizations(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super().__call__(parser, namespace, action, option_string)
+        super(AddProviderAuthorizations, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -106,8 +111,9 @@ class AddProviderAuthorizations(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -127,7 +133,8 @@ class AddProviderAuthorizations(argparse._AppendAction):
 class AddCapabilities(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super().__call__(parser, namespace, action, option_string)
+        super(AddCapabilities, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -135,8 +142,9 @@ class AddCapabilities(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -162,13 +170,13 @@ class AddSkipRegions(argparse.Action):
         return generate_list(values[0])
 
 
-class AddRequiredFeatures(argparse.Action):
+class AddRequiredFeatures(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values)
         namespace.required_features = action
 
     def get_action(self, values):  # pylint: disable=no-self-use
-        return generate_list(values[0])
+        return values
 
 
 class AddTemplateDeploymentOptions(argparse.Action):
@@ -182,8 +190,9 @@ class AddTemplateDeploymentOptions(argparse.Action):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -209,8 +218,9 @@ class AddServiceTreeInfos(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -236,9 +246,14 @@ class AddResourceTypeEndpointProperties(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
-        d = {}
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {
+            'extensions': [
+                {}
+            ]
+        }
         for k in properties:
             kl = k.lower()
             v = properties[k]
@@ -247,14 +262,22 @@ class AddResourceTypeEndpointProperties(argparse._AppendAction):
             elif kl == 'locations':
                 d['locations'] = generate_list(v[0])
             elif kl == 'required-features':
-                d['required_features'] = generate_list(v[0])
+                d['required_features'] = v
+            elif kl == 'extensions':
+                d['extensions'] = json.loads(v[0])
+            elif kl == 'extension-endpoint-uri':
+                d['extensions'][0]['endpointUri'] = v[0]
+            elif kl == 'extension-categories':
+                d['extensions'][0]['extensionCategories'] = v
+            elif kl == 'extension-timeout':
+                d['extensions'][0]['timeout'] = v[0]
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter service_tree_infos. All possible keys '
-                               'are: api-versions, locations, required-features'.format(k))
+                raise CLIError('Unsupported Key {} is provided for parameter endpoints. All possible keys '
+                               'are: api-versions, locations, required-features, extension-endpoint-uri, extension-categories, extension-timeout'.format(k))
         return d
 
 
-class AddResourceCreationBegin(argparse.Action):
+class AddExtensionOptions(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.resource_creation_begin = action
@@ -265,16 +288,17 @@ class AddResourceCreationBegin(argparse.Action):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
             if kl == 'request':
-                d['request'] = generate_list(v[0])
+                d['request'] = v
             elif kl == 'response':
-                d['response'] = generate_list(v[0])
+                d['response'] = v
             else:
                 raise CLIError('Unsupported Key {} is provided for parameter resource_creation_begin. '
                                'All possible keys are: request, response'.format(k))
@@ -292,16 +316,17 @@ class AddResourcePatchBegin(argparse.Action):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
             if kl == 'request':
-                d['request'] = generate_list(v[0])
+                d['request'] = v
             elif kl == 'response':
-                d['response'] = generate_list(v[0])
+                d['response'] = v
             else:
                 raise CLIError('Unsupported Key {} is provided for parameter resource_patch_begin. '
                                'All possible keys are: request, response'.format(k))
@@ -311,7 +336,8 @@ class AddResourcePatchBegin(argparse.Action):
 class AddSubscriptionStateOverrideActions(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super().__call__(parser, namespace, action, option_string)
+        super(AddSubscriptionStateOverrideActions, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -319,8 +345,9 @@ class AddSubscriptionStateOverrideActions(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -338,7 +365,8 @@ class AddSubscriptionStateOverrideActions(argparse._AppendAction):
 class AddProviderHubMetadataProviderAuthorizations(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super().__call__(parser, namespace, action, option_string)
+        super(AddProviderHubMetadataProviderAuthorizations, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -346,8 +374,9 @@ class AddProviderHubMetadataProviderAuthorizations(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -359,7 +388,7 @@ class AddProviderHubMetadataProviderAuthorizations(argparse._AppendAction):
             elif kl == 'managed-by-role-definition-id':
                 d['managed_by_role_definition_id'] = v[0]
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter providerhub_metadata_provider_authorizati'
+                raise CLIError('Unsupported Key {} is provided for parameter provider_hub_metadata_provider_authorizati'
                                'ons. All possible keys are: application-id, role-definition-id, '
                                'managed-by-role-definition-id'.format(k))
         return d
@@ -368,7 +397,8 @@ class AddProviderHubMetadataProviderAuthorizations(argparse._AppendAction):
 class AddAuthorizations(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super().__call__(parser, namespace, action, option_string)
+        super(AddAuthorizations, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -376,8 +406,9 @@ class AddAuthorizations(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -392,10 +423,10 @@ class AddAuthorizations(argparse._AppendAction):
         return d
 
 
-class AddDisplay(argparse.Action):
+class AddCanaryRegion(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.display = action
+        namespace.canary = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -403,30 +434,57 @@ class AddDisplay(argparse.Action):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'provider':
-                d['provider'] = v[0]
-            elif kl == 'resource':
-                d['resource'] = v[0]
-            elif kl == 'operation':
-                d['operation'] = v[0]
-            elif kl == 'description':
-                d['description'] = v[0]
+            if kl == 'skip-regions':
+                d['skip_regions'] = v
+            elif kl == 'regions':
+                d['regions'] = v
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter display. All possible keys are: provider, '
-                               'resource, operation, description'.format(k))
+                raise CLIError('Unsupported Key {} is provided for parameter canary. All possible keys are: '
+                               'skip-regions, regions'.format(k))
+        return d
+
+
+class AddNotificationEndpoints(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddNotificationEndpoints, self).__call__(
+            parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'notification-destination':
+                d['notification_destination'] = v[0]
+            elif kl == 'locations':
+                d['locations'] = v
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter notification_endpoints. All possible keys '
+                               'are: notification-destination, locations'.format(k))
         return d
 
 
 class AddSwaggerSpecifications(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super().__call__(parser, namespace, action, option_string)
+        super(AddSwaggerSpecifications, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -434,8 +492,9 @@ class AddSwaggerSpecifications(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -453,7 +512,8 @@ class AddSwaggerSpecifications(argparse._AppendAction):
 class AddAuthorizationActionMappings(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super().__call__(parser, namespace, action, option_string)
+        super(AddAuthorizationActionMappings, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -461,8 +521,9 @@ class AddAuthorizationActionMappings(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -480,7 +541,8 @@ class AddAuthorizationActionMappings(argparse._AppendAction):
 class AddLinkedAccessChecks(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super().__call__(parser, namespace, action, option_string)
+        super(AddLinkedAccessChecks, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -488,8 +550,9 @@ class AddLinkedAccessChecks(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -522,8 +585,9 @@ class AddLoggingRules(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -543,7 +607,8 @@ class AddLoggingRules(argparse._AppendAction):
 class AddThrottlingRules(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super().__call__(parser, namespace, action, option_string)
+        super(AddThrottlingRules, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -551,8 +616,9 @@ class AddThrottlingRules(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -580,8 +646,9 @@ class AddIdentityManagement(argparse.Action):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -607,8 +674,9 @@ class AddCheckNameAvailabilitySpecifications(argparse.Action):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -624,37 +692,11 @@ class AddCheckNameAvailabilitySpecifications(argparse.Action):
         return d
 
 
-class AddResourcetyperegistrationServiceTreeInfos(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        super().__call__(parser, namespace, action, option_string)
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'service-id':
-                d['service_id'] = v[0]
-            elif kl == 'component-id':
-                d['component_id'] = v[0]
-            else:
-                raise CLIError('Unsupported Key {} is provided for parameter service_tree_infos. All possible keys '
-                               'are: service-id, component-id'.format(k))
-        return d
-
-
 class AddSubscriptionStateRules(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super().__call__(parser, namespace, action, option_string)
+        super(AddSubscriptionStateRules, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -662,8 +704,9 @@ class AddSubscriptionStateRules(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -681,7 +724,8 @@ class AddSubscriptionStateRules(argparse._AppendAction):
 class AddExtendedLocations(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super().__call__(parser, namespace, action, option_string)
+        super(AddExtendedLocations, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -689,8 +733,9 @@ class AddExtendedLocations(argparse._AppendAction):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -716,8 +761,9 @@ class AddResourceMovePolicy(argparse.Action):
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -732,4 +778,32 @@ class AddResourceMovePolicy(argparse.Action):
                 raise CLIError('Unsupported Key {} is provided for parameter resource_move_policy. All possible keys '
                                'are: validation-required, cross-resource-group-move-enabled, '
                                'cross-subscription-move-enabled'.format(k))
+        return d
+
+
+class AddResourceCreationBegin(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.resource_creation_begin = action
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'request':
+                d['request'] = v
+            elif kl == 'response':
+                d['response'] = v
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter resource_creation_begin. All possible '
+                               'keys are: request, response'.format(k))
         return d

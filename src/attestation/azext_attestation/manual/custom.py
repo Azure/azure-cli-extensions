@@ -129,7 +129,7 @@ def add_signer(cmd, client, signer=None, signer_file=None, resource_group_name=N
             'Algorithm': header.get('alg', ''),
             'JKU': header.get('jku', '')
         })
-        body = jwt.decode(token, verify=False)
+        body = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False})
         result['Certificates'] = body.get('aas-policyCertificates', {}).get('keys', [])
         result['CertificateCount'] = len(result['Certificates'])
 
@@ -171,7 +171,7 @@ def list_signers(cmd, client, resource_group_name=None, provider_name=None):
             'Algorithm': header.get('alg', ''),
             'JKU': header.get('jku', '')
         })
-        body = jwt.decode(token, verify=False)
+        body = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False})
         result['Certificates'] = body.get('x-ms-policy-certificates', {}).get('keys', [])
         result['CertificateCount'] = len(result['Certificates'])
 
@@ -188,14 +188,14 @@ def get_policy(cmd, client, attestation_type, resource_group_name=None, provider
 
     if token:
         import jwt
-        policy = jwt.decode(token, verify=False).get('x-ms-policy', '')
+        policy = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False}).get('x-ms-policy', '')
         result['Jwt'] = policy
         result['JwtLength'] = len(policy)
         result['Algorithm'] = None
 
         if policy:
             try:
-                decoded_policy = jwt.decode(policy, verify=False)
+                decoded_policy = jwt.decode(policy, algorithms=['RS256'], options={"verify_signature": False})
                 decoded_policy = decoded_policy.get('AttestationPolicy', '')
                 try:
                     new_decoded_policy = base64.b64decode(_b64url_to_b64(decoded_policy)).decode('ascii')
@@ -250,8 +250,7 @@ def set_policy(cmd, client, attestation_type, new_attestation_policy=None, new_a
             new_attestation_policy = {'AttestationPolicy': new_attestation_policy}
             new_attestation_policy = jwt.encode(
                 new_attestation_policy, key='', algorithm='none'
-            ).decode('ascii')
-
+            )
         except TypeError as e:
             print(e)
             raise CLIError('Failed to encode text content, are you using JWT? If yes, please use --policy-format JWT')

@@ -30,7 +30,7 @@ class ConfigurationAssignmentsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~maintenance_client.models
+    :type models: ~maintenance_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -44,6 +44,88 @@ class ConfigurationAssignmentsOperations(object):
         self._serialize = serializer
         self._deserialize = deserializer
         self._config = config
+
+    def get_parent(
+        self,
+        resource_group_name,  # type: str
+        provider_name,  # type: str
+        resource_parent_type,  # type: str
+        resource_parent_name,  # type: str
+        resource_type,  # type: str
+        resource_name,  # type: str
+        configuration_assignment_name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "models.ConfigurationAssignment"
+        """Get configuration assignment.
+
+        Get configuration for resource.
+
+        :param resource_group_name: Resource group name.
+        :type resource_group_name: str
+        :param provider_name: Resource provider name.
+        :type provider_name: str
+        :param resource_parent_type: Resource parent type.
+        :type resource_parent_type: str
+        :param resource_parent_name: Resource parent identifier.
+        :type resource_parent_name: str
+        :param resource_type: Resource type.
+        :type resource_type: str
+        :param resource_name: Resource identifier.
+        :type resource_name: str
+        :param configuration_assignment_name: Configuration assignment name.
+        :type configuration_assignment_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: ConfigurationAssignment, or the result of cls(response)
+        :rtype: ~maintenance_management_client.models.ConfigurationAssignment
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ConfigurationAssignment"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-09-01-preview"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get_parent.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'providerName': self._serialize.url("provider_name", provider_name, 'str'),
+            'resourceParentType': self._serialize.url("resource_parent_type", resource_parent_type, 'str'),
+            'resourceParentName': self._serialize.url("resource_parent_name", resource_parent_name, 'str'),
+            'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
+            'resourceName': self._serialize.url("resource_name", resource_name, 'str'),
+            'configurationAssignmentName': self._serialize.url("configuration_assignment_name", configuration_assignment_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize(models.MaintenanceError, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('ConfigurationAssignment', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get_parent.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/{providerName}/{resourceParentType}/{resourceParentName}/{resourceType}/{resourceName}/providers/Microsoft.Maintenance/configurationAssignments/{configurationAssignmentName}'}  # type: ignore
 
     def create_or_update_parent(
         self,
@@ -77,10 +159,10 @@ class ConfigurationAssignmentsOperations(object):
         :param configuration_assignment_name: Configuration assignment name.
         :type configuration_assignment_name: str
         :param configuration_assignment: The configurationAssignment.
-        :type configuration_assignment: ~maintenance_client.models.ConfigurationAssignment
+        :type configuration_assignment: ~maintenance_management_client.models.ConfigurationAssignment
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ConfigurationAssignment, or the result of cls(response)
-        :rtype: ~maintenance_client.models.ConfigurationAssignment
+        :rtype: ~maintenance_management_client.models.ConfigurationAssignment
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ConfigurationAssignment"]
@@ -88,7 +170,7 @@ class ConfigurationAssignmentsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2021-09-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -167,7 +249,7 @@ class ConfigurationAssignmentsOperations(object):
         :type configuration_assignment_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ConfigurationAssignment, or the result of cls(response)
-        :rtype: ~maintenance_client.models.ConfigurationAssignment or None
+        :rtype: ~maintenance_management_client.models.ConfigurationAssignment or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.ConfigurationAssignment"]]
@@ -175,7 +257,7 @@ class ConfigurationAssignmentsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         # Construct URL
@@ -219,6 +301,80 @@ class ConfigurationAssignmentsOperations(object):
         return deserialized
     delete_parent.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/{providerName}/{resourceParentType}/{resourceParentName}/{resourceType}/{resourceName}/providers/Microsoft.Maintenance/configurationAssignments/{configurationAssignmentName}'}  # type: ignore
 
+    def get(
+        self,
+        resource_group_name,  # type: str
+        provider_name,  # type: str
+        resource_type,  # type: str
+        resource_name,  # type: str
+        configuration_assignment_name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "models.ConfigurationAssignment"
+        """Get configuration assignment.
+
+        Get configuration for resource.
+
+        :param resource_group_name: Resource group name.
+        :type resource_group_name: str
+        :param provider_name: Resource provider name.
+        :type provider_name: str
+        :param resource_type: Resource type.
+        :type resource_type: str
+        :param resource_name: Resource identifier.
+        :type resource_name: str
+        :param configuration_assignment_name: Configuration assignment name.
+        :type configuration_assignment_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: ConfigurationAssignment, or the result of cls(response)
+        :rtype: ~maintenance_management_client.models.ConfigurationAssignment
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ConfigurationAssignment"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-09-01-preview"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'providerName': self._serialize.url("provider_name", provider_name, 'str'),
+            'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
+            'resourceName': self._serialize.url("resource_name", resource_name, 'str'),
+            'configurationAssignmentName': self._serialize.url("configuration_assignment_name", configuration_assignment_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize(models.MaintenanceError, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('ConfigurationAssignment', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/{providerName}/{resourceType}/{resourceName}/providers/Microsoft.Maintenance/configurationAssignments/{configurationAssignmentName}'}  # type: ignore
+
     def create_or_update(
         self,
         resource_group_name,  # type: str
@@ -245,10 +401,10 @@ class ConfigurationAssignmentsOperations(object):
         :param configuration_assignment_name: Configuration assignment name.
         :type configuration_assignment_name: str
         :param configuration_assignment: The configurationAssignment.
-        :type configuration_assignment: ~maintenance_client.models.ConfigurationAssignment
+        :type configuration_assignment: ~maintenance_management_client.models.ConfigurationAssignment
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ConfigurationAssignment, or the result of cls(response)
-        :rtype: ~maintenance_client.models.ConfigurationAssignment
+        :rtype: ~maintenance_management_client.models.ConfigurationAssignment
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ConfigurationAssignment"]
@@ -256,7 +412,7 @@ class ConfigurationAssignmentsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2021-09-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -327,7 +483,7 @@ class ConfigurationAssignmentsOperations(object):
         :type configuration_assignment_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ConfigurationAssignment, or the result of cls(response)
-        :rtype: ~maintenance_client.models.ConfigurationAssignment or None
+        :rtype: ~maintenance_management_client.models.ConfigurationAssignment or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.ConfigurationAssignment"]]
@@ -335,7 +491,7 @@ class ConfigurationAssignmentsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         # Construct URL
@@ -406,7 +562,7 @@ class ConfigurationAssignmentsOperations(object):
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ListConfigurationAssignmentsResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~maintenance_client.models.ListConfigurationAssignmentsResult]
+        :rtype: ~azure.core.paging.ItemPaged[~maintenance_management_client.models.ListConfigurationAssignmentsResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ListConfigurationAssignmentsResult"]
@@ -414,7 +570,7 @@ class ConfigurationAssignmentsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -494,7 +650,7 @@ class ConfigurationAssignmentsOperations(object):
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ListConfigurationAssignmentsResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~maintenance_client.models.ListConfigurationAssignmentsResult]
+        :rtype: ~azure.core.paging.ItemPaged[~maintenance_management_client.models.ListConfigurationAssignmentsResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ListConfigurationAssignmentsResult"]
@@ -502,7 +658,7 @@ class ConfigurationAssignmentsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):

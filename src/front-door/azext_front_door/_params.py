@@ -31,11 +31,11 @@ def load_arguments(self, _):
     from azext_front_door.vendored_sdks.models import (
         PolicyMode, FrontDoorProtocol, FrontDoorHealthProbeMethod, FrontDoorCertificateSource, FrontDoorQuery, ActionType, RuleType, TransformType,
         FrontDoorRedirectType, FrontDoorRedirectProtocol, MinimumTLSVersion, Transform, HeaderActionType, RulesEngineOperator, RulesEngineMatchVariable,
-        FrontDoorForwardingProtocol, MatchProcessingBehavior, PolicyRequestBodyCheck, SkuName, ResourceType
+        FrontDoorForwardingProtocol, MatchProcessingBehavior, PolicyRequestBodyCheck, SkuName, ResourceType, ManagedRuleSetActionType
     )
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
-    waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
+    waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy. Name must begin with a letter and contain only letters and numbers.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
     rules_engine_name_type = CLIArgumentType(options_list=['--rules-engine-name', '-r'], help='Name of the Rules Engine.', completer=get_fd_subresource_completion_list('rules_engines'), id_part='child_name_1')
 
     # region FrontDoors
@@ -129,9 +129,9 @@ def load_arguments(self, _):
             c.argument('https_port', type=int, help='HTTPS TCP port number.')
             c.argument('weight', type=int, help='Weight of this endpoint for load balancing purposes.')
             c.argument('private_link_alias', help='The Alias of the Private Link resource. Populating this optional field indicates that this backend is \'Private\'.')
-            c.argument('private_link_resource_id', help='The Resource Id of the Private Link. Populating this optional field indicates that this backend is \'Private\'.')
+            c.argument('private_link_resource_id', options_list=['--private-link-resource-id', '--resource-id'], help='The Resource Id of the Private Link. Populating this optional field indicates that this backend is \'Private\'.')
             c.argument('private_link_location', help='The location of the Private Link resource. Required only if \'privateLinkResourceId\' is populated.')
-            c.argument('private_link_approval_message', help='A custom message to be included in the approval request to connect to the Private Link.')
+            c.argument('private_link_approval_message', options_list=['--private-link-approval-message', '--approval-message'], help='A custom message to be included in the approval request to connect to the Private Link.')
             c.argument('backend_host_header', help='Host header sent to the backend.')
             c.argument('backend_pool_name', options_list='--pool-name', help='Name of the backend pool.')
             c.argument('index', type=int, help='Index of the backend to remove (starting with 1).')
@@ -175,9 +175,10 @@ def load_arguments(self, _):
 
     with self.argument_context('network front-door waf-policy managed-rules add') as c:
         c.argument('policy_name', waf_policy_name_type)
-        c.argument('action', arg_type=get_enum_type(ActionType), help='Action for applied rulesets.')
-        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset to apply.')
+        c.argument('rule_set_type', options_list=['--type'], help='Ruleset type to use.')
         c.argument('version', help='Rule set version.')
+        c.argument('rule_set_action', options_list=['--action'], arg_type=get_enum_type(ManagedRuleSetActionType),
+                   help='Action for applied rulesets, only required for Microsoft_DefaultRuleSet with version 2.0 or higher.')
 
     with self.argument_context('network front-door waf-policy managed-rules list') as c:
         c.argument('policy_name', waf_policy_name_type, id_part=None)

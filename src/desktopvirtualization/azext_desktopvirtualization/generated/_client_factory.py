@@ -16,12 +16,12 @@ def cf_desktopvirtualization_cl(cli_ctx, *_):
 
 
 def cf_workspace(cli_ctx, *_):
-    return cf_desktopvirtualization_cl(cli_ctx).workspace
+    return cf_desktopvirtualization_cl(cli_ctx).workspaces
 
 
 def cf_application_group(cli_ctx, *_):
-    return cf_desktopvirtualization_cl(cli_ctx).application_group
+    return cf_desktopvirtualization_cl(cli_ctx).application_groups
 
 
 def cf_host_pool(cli_ctx, *_):
-    return cf_desktopvirtualization_cl(cli_ctx).host_pool
+    return cf_desktopvirtualization_cl(cli_ctx).host_pools

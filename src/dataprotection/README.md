@@ -160,7 +160,7 @@ az dataprotection job show --job-id "3c60cb49-63e8-4b21-b9bd-26277b3fdfae" --res
 #### dataprotection restorable-time-range ####
 ##### Find #####
 ```
-az dataprotection restorable-time-range find --backup-instances "zblobbackuptestsa58" \
+az dataprotection restorable-time-range find --backup-instance-name "zblobbackuptestsa58" \
     --end-time "2021-02-24T00:35:17.6829685Z" --source-data-store-type "OperationalStore" \
     --start-time "2020-10-17T23:28:17.6829685Z" --resource-group "Blob-Backup" --vault-name "ZBlobBackupVaultBVTD3" 
 ```

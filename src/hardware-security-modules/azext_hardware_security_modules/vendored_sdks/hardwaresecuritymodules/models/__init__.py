@@ -11,26 +11,46 @@ try:
     from ._models_py3 import DedicatedHsm
     from ._models_py3 import DedicatedHsmError
     from ._models_py3 import DedicatedHsmListResult
+    from ._models_py3 import DedicatedHsmOperation
+    from ._models_py3 import DedicatedHsmOperationDisplay
+    from ._models_py3 import DedicatedHsmOperationListResult
     from ._models_py3 import DedicatedHsmPatchParameters
+    from ._models_py3 import EndpointDependency
+    from ._models_py3 import EndpointDetail
     from ._models_py3 import Error
     from ._models_py3 import NetworkInterface
+    from ._models_py3 import NetworkProfile
+    from ._models_py3 import OutboundEnvironmentEndpoint
+    from ._models_py3 import OutboundEnvironmentEndpointCollection
     from ._models_py3 import Resource
     from ._models_py3 import ResourceListResult
     from ._models_py3 import Sku
+    from ._models_py3 import SystemData
 except (SyntaxError, ImportError):
     from ._models import ApiEntityReference  # type: ignore
     from ._models import DedicatedHsm  # type: ignore
     from ._models import DedicatedHsmError  # type: ignore
     from ._models import DedicatedHsmListResult  # type: ignore
+    from ._models import DedicatedHsmOperation  # type: ignore
+    from ._models import DedicatedHsmOperationDisplay  # type: ignore
+    from ._models import DedicatedHsmOperationListResult  # type: ignore
     from ._models import DedicatedHsmPatchParameters  # type: ignore
+    from ._models import EndpointDependency  # type: ignore
+    from ._models import EndpointDetail  # type: ignore
     from ._models import Error  # type: ignore
     from ._models import NetworkInterface  # type: ignore
+    from ._models import NetworkProfile  # type: ignore
+    from ._models import OutboundEnvironmentEndpoint  # type: ignore
+    from ._models import OutboundEnvironmentEndpointCollection  # type: ignore
     from ._models import Resource  # type: ignore
     from ._models import ResourceListResult  # type: ignore
     from ._models import Sku  # type: ignore
+    from ._models import SystemData  # type: ignore
 
 from ._azure_dedicated_hsm_resource_provider_enums import (
+    IdentityType,
     JsonWebKeyType,
+    SkuName,
 )
 
 __all__ = [
@@ -38,11 +58,22 @@ __all__ = [
     'DedicatedHsm',
     'DedicatedHsmError',
     'DedicatedHsmListResult',
+    'DedicatedHsmOperation',
+    'DedicatedHsmOperationDisplay',
+    'DedicatedHsmOperationListResult',
     'DedicatedHsmPatchParameters',
+    'EndpointDependency',
+    'EndpointDetail',
     'Error',
     'NetworkInterface',
+    'NetworkProfile',
+    'OutboundEnvironmentEndpoint',
+    'OutboundEnvironmentEndpointCollection',
     'Resource',
     'ResourceListResult',
     'Sku',
+    'SystemData',
+    'IdentityType',
     'JsonWebKeyType',
+    'SkuName',
 ]

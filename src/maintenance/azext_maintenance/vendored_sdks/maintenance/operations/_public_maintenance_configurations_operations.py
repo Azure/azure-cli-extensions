@@ -30,7 +30,7 @@ class PublicMaintenanceConfigurationsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~maintenance_client.models
+    :type models: ~maintenance_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -56,7 +56,7 @@ class PublicMaintenanceConfigurationsOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ListMaintenanceConfigurationsResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~maintenance_client.models.ListMaintenanceConfigurationsResult]
+        :rtype: ~azure.core.paging.ItemPaged[~maintenance_management_client.models.ListMaintenanceConfigurationsResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ListMaintenanceConfigurationsResult"]
@@ -64,7 +64,7 @@ class PublicMaintenanceConfigurationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -129,7 +129,7 @@ class PublicMaintenanceConfigurationsOperations(object):
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: MaintenanceConfiguration, or the result of cls(response)
-        :rtype: ~maintenance_client.models.MaintenanceConfiguration
+        :rtype: ~maintenance_management_client.models.MaintenanceConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.MaintenanceConfiguration"]
@@ -137,7 +137,7 @@ class PublicMaintenanceConfigurationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         # Construct URL

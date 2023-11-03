@@ -1,67 +1,9 @@
 interactions:
 - request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://localhost:8866/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:47:25 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=Av89MEb4STpCrAwDkrweVHI; expires=Sun, 04-Jul-2021 20:47:26 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrpykcMjdTlSALJN7grLCyywaReickhAU1aDPAhiOqtHxzuTfBeOTDL1sLKBLJwM9YNzvhFwJRnCk0O-vuWFydXOgYZo8s5pjIJKDCqLZxl87RxkUXK2HLcE-POsV-H0CFtgJr9gwTx0HunBGTU-eRXZ98vYCSknVXjwng0_ZvMyIgAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11722.21 - NCUS ProdSlices
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "westcentralus", "tags": {}, "sku": {"name": "av20"}, "properties":
-      {"managementCluster": {"clusterSize": 4}, "internet": "Disabled", "networkBlock":
-      "192.168.48.0/22", "vcenterPassword": "UpfBXae9ZquZSDXk(", "nsxtPassword": "5rqdLj4GF3cePUe6("}}'
+    body: '{"identity": {"type": "None"}, "location": "westcentralus", "properties":
+      {"internet": "Disabled", "managementCluster": {"clusterSize": 4}, "networkBlock":
+      "192.168.48.0/22", "nsxtPassword": "5rqdLj4GF3cePUe6(", "vcenterPassword": "UpfBXae9ZquZSDXk("},
+      "sku": {"name": "av20"}}'
     headers:
       Accept:
       - application/json
@@ -72,733 +14,28 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '259'
+      - '277'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
         --accept-eula
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1","location":"westcentralus","name":"cloud1","properties":{"endpoints":{"hcxCloudManager":"https://192.168.48.9/","nsxtManager":"https://192.168.48.3/","vcsa":"https://192.168.48.2/"},"externalCloudLinks":[],"identitySources":[],"internet":"Disabled","managementCluster":{"clusterId":1,"clusterSize":4,"hosts":["gp-fakehost24.mp01.mock01.vmcp.vs.management","gp-fakehost29.mp01.mock01.vmcp.vs.management","gp-fakehost26.mp01.mock01.vmcp.vs.management","gp-fakehost23.mp01.mock01.vmcp.vs.management"],"provisioningState":"Building"},"managementNetwork":"192.168.48.0/26","networkBlock":"192.168.48.0/22","provisioningNetwork":"192.168.50.0/25","provisioningState":"Building","vmotionNetwork":"192.168.49.128/25"},"sku":{"name":"av20"},"tags":{},"type":"Microsoft.AVS/privateClouds"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]}}'
     headers:
-      azure-asyncoperation:
-      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-      cache-control:
-      - no-cache
       content-length:
-      - '975'
+      - '1377'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 04 Jun 2021 20:47:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
-      x-msedge-ref:
-      - 'Ref A: F65592E081E84BBABACD849AE30059E9 Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:47:28Z'
-    status:
-      code: 201
-      message: Created
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":0,"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '385'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:47:44 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 50479F585605401EA6C381F2A1C74FDC Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:47:45Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":0,"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '385'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:47:54 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: DBF9EDFC2D38420F91926977935481A8 Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:47:55Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":88.75,"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '389'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:48:04 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: F7CE87EE5B184BADBD8EEC74512D1692 Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:48:05Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":88.75,"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '389'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:48:15 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: D62C34FDFB3C4EE2AF0DAA822FC7EFE5 Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:48:15Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":100,"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '387'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:48:25 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: F5912C70FB214AA5BFF35779B9F83B2D Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:48:26Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":100,"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '387'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:48:35 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 30BF35C47A534657883BFF79DCFA96DB Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:48:36Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":100,"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '387'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:48:45 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 7EB6A35CA25C4EEBBBAE53230C6886EC Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:48:46Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":100,"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '387'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:48:56 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: F5E70D4E76B84E94A53BF91C2B9BBB52 Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:48:56Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":100,"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '387'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:49:06 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 8B22556FAF3941DD85129FC022D3956F Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:49:07Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":100,"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '387'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:49:16 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 7EEF89A78A9F40968E42957C1C2D266F Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:49:17Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":100,"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '387'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:49:26 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: E1DD2DC54B454DEEB9750D76E7C6059F Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:49:27Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":100,"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '387'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:49:37 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 32C206FABEC641F2970FB35689C88C84 Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:49:37Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c?api-version=2021-06-01
-  response:
-    body:
-      string: '{"endTime":"2021-06-04T20:49:38.7927014+00:00","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/8799968a-d37f-4faf-a862-205936e3f76c","name":"8799968a-d37f-4faf-a862-205936e3f76c","percentComplete":100,"properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1","location":"westcentralus","name":"cloud1","properties":{"circuit":{"expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt93-cust-mp01-mock01/providers/Microsoft.Network/expressRouteCircuits/tnt93-cust-mp01-mock01-er","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt93-cust-mp01-mock01/providers/Microsoft.Network/expressRouteCircuits/tnt93-cust-mp01-mock01-er/peerings/AzurePrivatePeering","primarySubnet":"192.168.48.232/30","secondarySubnet":"192.168.48.236/30"},"endpoints":{"hcxCloudManager":"https://192.168.48.9/","nsxtManager":"https://192.168.48.3/","vcsa":"https://192.168.48.2/"},"externalCloudLinks":[],"identitySources":[],"internet":"Disabled","managementCluster":{"clusterId":1,"clusterSize":4,"hosts":["gp-fakehost24.mp01.mock01.vmcp.vs.management","gp-fakehost29.mp01.mock01.vmcp.vs.management","gp-fakehost26.mp01.mock01.vmcp.vs.management","gp-fakehost23.mp01.mock01.vmcp.vs.management"],"provisioningState":"Succeeded"},"managementNetwork":"192.168.48.0/26","networkBlock":"192.168.48.0/22","nsxtCertificateThumbprint":"B9A9474616752565A3FAF23E0A013ECE3DC8B8FF","provisioningNetwork":"192.168.50.0/25","provisioningState":"Succeeded","vcenterCertificateThumbprint":"BE8EA855AA13D9662A115571636B9B1925C6DB68","vmotionNetwork":"192.168.49.128/25"},"sku":{"name":"av20"},"tags":{},"type":"Microsoft.AVS/privateClouds"},"startTime":"2021-06-04T20:47:28.4741907+00:00","status":"Succeeded"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '2067'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:49:49 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 481BABE1BDE242FE9F87AE0262CA46A5 Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:49:48Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1","location":"westcentralus","name":"cloud1","properties":{"circuit":{"expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt93-cust-mp01-mock01/providers/Microsoft.Network/expressRouteCircuits/tnt93-cust-mp01-mock01-er","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt93-cust-mp01-mock01/providers/Microsoft.Network/expressRouteCircuits/tnt93-cust-mp01-mock01-er/peerings/AzurePrivatePeering","primarySubnet":"192.168.48.232/30","secondarySubnet":"192.168.48.236/30"},"endpoints":{"hcxCloudManager":"https://192.168.48.9/","nsxtManager":"https://192.168.48.3/","vcsa":"https://192.168.48.2/"},"externalCloudLinks":[],"identitySources":[],"internet":"Disabled","managementCluster":{"clusterId":1,"clusterSize":4,"hosts":["gp-fakehost24.mp01.mock01.vmcp.vs.management","gp-fakehost29.mp01.mock01.vmcp.vs.management","gp-fakehost26.mp01.mock01.vmcp.vs.management","gp-fakehost23.mp01.mock01.vmcp.vs.management"],"provisioningState":"Succeeded"},"managementNetwork":"192.168.48.0/26","networkBlock":"192.168.48.0/22","nsxtCertificateThumbprint":"B9A9474616752565A3FAF23E0A013ECE3DC8B8FF","provisioningNetwork":"192.168.50.0/25","provisioningState":"Succeeded","vcenterCertificateThumbprint":"BE8EA855AA13D9662A115571636B9B1925C6DB68","vmotionNetwork":"192.168.49.128/25"},"sku":{"name":"av20"},"tags":{},"type":"Microsoft.AVS/privateClouds"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1619'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:49:49 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 6C3239151D31471080BCA1D9F4A77256 Ref B: PDX31EDGE0111 Ref C: 2021-06-04T20:49:49Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://localhost:8866/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:49:51 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AljdlyTyfspKnN_wMpTYKLg; expires=Sun, 04-Jul-2021 20:49:52 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrR51bU104JoVGEx4NZCFUx92HGTjJ7L_rIzSCP3ZcnbwnEOzgwyzLGUOW-XwXJEn_zqeLNY5pZPTObRI2CnZNYbzXlwjflYRb4Sk0jQ2Ul_lZLGBRyQF4jxgWIjkOgekFkmPnb8k0PTN3roSAeOAIe7MW_hW6NY2kqonkeEhc_JQgAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11722.21 - NCUS ProdSlices
+      - Wed, 20 Sep 2023 15:28:29 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -820,319 +57,21 @@ interactions:
       ParameterSetName:
       - -g -c --offer
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx","name":"hcx","properties":{"addonType":"HCX","offer":"VMware
-        MaaS Cloud Provider","provisioningState":"Building"},"type":"Microsoft.AVS/privateClouds/addons"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
     headers:
-      azure-asyncoperation:
-      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx/operationstatuses/9f44e222-0450-4a61-94e8-7d3deafb7d16?api-version=2021-06-01
-      cache-control:
-      - no-cache
       content-length:
-      - '365'
+      - '260'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 04 Jun 2021 20:49:56 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-msedge-ref:
-      - 'Ref A: 2FFE7DDABDA143E9A32D846A8F4E7797 Ref B: PDX31EDGE0110 Ref C: 2021-06-04T20:49:54Z'
-    status:
-      code: 201
-      message: Created
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware addon hcx create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -c --offer
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx/operationstatuses/9f44e222-0450-4a61-94e8-7d3deafb7d16?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx/operationstatuses/9f44e222-0450-4a61-94e8-7d3deafb7d16","name":"9f44e222-0450-4a61-94e8-7d3deafb7d16","percentComplete":25,"startTime":"2021-06-04T20:49:51.5280087+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '397'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:50:07 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: A6DEFCC2809847FCA1AE160EA8EB220B Ref B: PDX31EDGE0110 Ref C: 2021-06-04T20:50:07Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware addon hcx create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -c --offer
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx/operationstatuses/9f44e222-0450-4a61-94e8-7d3deafb7d16?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx/operationstatuses/9f44e222-0450-4a61-94e8-7d3deafb7d16","name":"9f44e222-0450-4a61-94e8-7d3deafb7d16","percentComplete":0,"startTime":"2021-06-04T20:49:51.5280087+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '396'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:50:17 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 342CCD8E3A1D487284793F5A802610BD Ref B: PDX31EDGE0110 Ref C: 2021-06-04T20:50:17Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware addon hcx create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -c --offer
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx/operationstatuses/9f44e222-0450-4a61-94e8-7d3deafb7d16?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx/operationstatuses/9f44e222-0450-4a61-94e8-7d3deafb7d16","name":"9f44e222-0450-4a61-94e8-7d3deafb7d16","percentComplete":50,"startTime":"2021-06-04T20:49:51.5280087+00:00","status":"Building"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '397'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:50:27 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 12BB443BC56149CEB5C8B4E173178DBC Ref B: PDX31EDGE0110 Ref C: 2021-06-04T20:50:28Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware addon hcx create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -c --offer
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx/operationstatuses/9f44e222-0450-4a61-94e8-7d3deafb7d16?api-version=2021-06-01
-  response:
-    body:
-      string: '{"endTime":"2021-06-04T20:50:23.6911030+00:00","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx/operationstatuses/9f44e222-0450-4a61-94e8-7d3deafb7d16","name":"9f44e222-0450-4a61-94e8-7d3deafb7d16","percentComplete":100,"properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx","name":"hcx","properties":{"addonType":"HCX","offer":"VMware
-        MaaS Cloud Provider","provisioningState":"Succeeded"},"type":"Microsoft.AVS/privateClouds/addons"},"startTime":"2021-06-04T20:49:51.5280087+00:00","status":"Succeeded"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '825'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:50:37 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 047096156FCE4AA38C25E2647D994349 Ref B: PDX31EDGE0110 Ref C: 2021-06-04T20:50:38Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware addon hcx create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -c --offer
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx","name":"hcx","properties":{"addonType":"HCX","offer":"VMware
-        MaaS Cloud Provider","provisioningState":"Succeeded"},"type":"Microsoft.AVS/privateClouds/addons"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '366'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:50:37 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: FFDAFF65CF534F1392A274B3AC46A864 Ref B: PDX31EDGE0110 Ref C: 2021-06-04T20:50:38Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://localhost:8866/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:50:40 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AilGX3jytwxNv0HFya5UWAg; expires=Sun, 04-Jul-2021 20:50:41 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevr0xeWN09IaRY74CrEKI6Z0FpEGOtwuGx9wgmDZS6wMV6EQ1gEcV5Qdi-fnsGA6xgYPmAJk3f3FY30-CeQgAr2XGs1fYIPDck6VF_wEWGzy1YoIycGhU4pMiyMj6VrBQTd5zPcbjeE6JU_4TIiGP6rsEJ4gF5H-r-q0YPZcGMSGc4gAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11722.21 - NCUS ProdSlices
+      - Wed, 20 Sep 2023 15:28:34 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -1150,93 +89,21 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons?api-version=2023-03-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx","name":"hcx","properties":{"addonType":"HCX","offer":"VMware
-        MaaS Cloud Provider","provisioningState":"Succeeded"},"type":"Microsoft.AVS/privateClouds/addons"}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}]}'
     headers:
-      cache-control:
-      - no-cache
       content-length:
-      - '378'
+      - '272'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 04 Jun 2021 20:50:44 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: E2EB7866377B43AA9D9680A2BD186960 Ref B: PDX31EDGE0108 Ref C: 2021-06-04T20:50:43Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://localhost:8866/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:50:46 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AmWN7sC5pgJJlQZ_KUVjxT0; expires=Sun, 04-Jul-2021 20:50:46 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrmNUFBX-aJ4-HBCKSxDlMQWNiS2D2PbpuN8g8G8JN-JPO2e2nqkjcm61M-PdxL09IyOi0k5ekJhfdJ0HU0lu57JkBKPiWjg8usJKmUTxaH7BybIZBJ2RGeDETXSCBKi-GQvqAKiJ08Nqt-Mwmn5Fhh9fa4Uz1j8nGrTENiRlnJQYgAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11722.21 - SCUS ProdSlices
+      - Wed, 20 Sep 2023 15:28:39 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -1254,92 +121,21 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites?api-version=2023-03-01
   response:
     body:
-      string: '{"value":[]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/site1","name":"site1","type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites","properties":{"activationKey":"0276EF1A9A1749A5A362BF73EA9F8D0D","status":"Available"}}]}'
     headers:
-      cache-control:
-      - no-cache
       content-length:
-      - '12'
+      - '322'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 04 Jun 2021 20:50:49 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 5134F2F683AB41B79C616D1185330F7D Ref B: PDX31EDGE0121 Ref C: 2021-06-04T20:50:48Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://localhost:8866/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:50:51 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=Av74CRYTc25Bk6hotr9ND_I; expires=Sun, 04-Jul-2021 20:50:51 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevr8tZEdo4066Ojo98k7mSxHXEbV1ev6IB02MiBgkQ7jXyqmO1QEXs7N48s9hGWTM7nVebQ2XZw-2BS-aoHwZRAQGTEGSRSE_UikUfHWdjLqzyGMPcJBuyVBcVMO6AIEPgUsFVYr4YdlQrS5cWFRdchKtcbcKyk2tG7YHrriU-nQdEgAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11722.21 - NCUS ProdSlices
+      - Wed, 20 Sep 2023 15:28:44 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -1361,94 +157,21 @@ interactions:
       ParameterSetName:
       - -g -c -n
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx","name":"myhcx","properties":{"activationKey":"d85d1920606e47e899ad9886ded09317","status":"Available"},"type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/site1","name":"site1","type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites","properties":{"activationKey":"0276EF1A9A1749A5A362BF73EA9F8D0D","status":"Available"}}'
     headers:
-      cache-control:
-      - no-cache
       content-length:
-      - '379'
+      - '310'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 04 Jun 2021 20:50:54 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
-      x-msedge-ref:
-      - 'Ref A: 5EFA30EDE9314B9C88684A3DCA63E328 Ref B: PDX31EDGE0107 Ref C: 2021-06-04T20:50:54Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://localhost:8866/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:50:56 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AuerVSNF0t1Cl-j3dWKQ19U; expires=Sun, 04-Jul-2021 20:50:57 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrWqvtDvi-EZqMIMFKFHBpH3DNRJhnGoAfZCnsdtS6JWAsr59OxJQNvBzmBjSGP9usg_gYBiDusyOwUPiA0W7p2ybZdfrDCPOPfDYH0Gocteohj_MgoBOQV3jm1-nefK4AN9LTbYoFMxzVWHs6GdIajRBs3Ihc6CUCIfXSmjg-5EwgAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11722.21 - SCUS ProdSlices
+      - Wed, 20 Sep 2023 15:28:49 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -1466,92 +189,21 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites?api-version=2023-03-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx","name":"myhcx","properties":{"activationKey":"d85d1920606e47e899ad9886ded09317","status":"Available"},"type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites"}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/site1","name":"site1","type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites","properties":{"activationKey":"0276EF1A9A1749A5A362BF73EA9F8D0D","status":"Available"}}]}'
     headers:
-      cache-control:
-      - no-cache
       content-length:
-      - '391'
+      - '322'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 04 Jun 2021 20:50:59 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: B9535F7206B448F69EF0D924FAD0475D Ref B: PDX31EDGE0110 Ref C: 2021-06-04T20:50:59Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://localhost:8866/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:51:02 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AvwAZLSU3eFJqD-LsoZCfpg; expires=Sun, 04-Jul-2021 20:51:02 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrBDmLg2fAL3sRkIZzZlPtgRlmQ5mXar8-NBlg_qpX6TstZLO2vzX6yLzSYtEfCh58qNRVrUuYQIACt2LXs0eQMjlrQJshcmFxnzj7gCIVfMnsTbqjkngjnEayPoVSyE-rMvrr__WGCq_YTUM899uNAtCW-XAowThiUwxGTUlvYuwgAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11722.21 - WUS2 ProdSlices
+      - Wed, 20 Sep 2023 15:28:54 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -1569,33 +221,21 @@ interactions:
       ParameterSetName:
       - -g -c -n
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx","name":"myhcx","properties":{"activationKey":"d85d1920606e47e899ad9886ded09317","status":"Available"},"type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/site1","name":"site1","type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites","properties":{"activationKey":"0276EF1A9A1749A5A362BF73EA9F8D0D","status":"Available"}}'
     headers:
-      cache-control:
-      - no-cache
       content-length:
-      - '379'
+      - '310'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 04 Jun 2021 20:51:05 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: DE12268D387F47EAB0B5554F8C013761 Ref B: PDX31EDGE0122 Ref C: 2021-06-04T20:51:04Z'
+      - Wed, 20 Sep 2023 15:28:59 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -1604,65 +244,6 @@ interactions:
     headers:
       Accept:
       - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://localhost:8866/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:51:07 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AsTIUS5RlkRFpbgFOUNG68I; expires=Sun, 04-Jul-2021 20:51:08 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrEPFIznp3NQJLimGUARENSdsdmY9bPwa6WDWdHc9gZWZCsIHWizv3DgcVcc1xtWB1DBvxb4U1rF72ETSOGzbpts-1gpWMooDaMdUKV3kB2v5lvlwGXJ1X1UqJvoCn3BtM5ABIFQr4420GtUXwz-m95eFQQS-uPJMFaUn4DgjnlDkgAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11722.21 - WUS2 ProdSlices
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1672,96 +253,21 @@ interactions:
       Content-Length:
       - '0'
       ParameterSetName:
-      - -g -c -n
+      - -g -c -n --yes
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx?api-version=2023-03-01
   response:
     body:
       string: ''
     headers:
-      cache-control:
-      - no-cache
       content-length:
       - '0'
-      content-type:
-      - text/html
       date:
-      - Fri, 04 Jun 2021 20:51:10 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
-      x-msedge-ref:
-      - 'Ref A: E53C14394A334675AA518649A6161B86 Ref B: PDX31EDGE0115 Ref C: 2021-06-04T20:51:10Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://localhost:8866/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Jun 2021 20:51:13 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=Aj8yZ8GrwmVDq9LXkoakPGA; expires=Sun, 04-Jul-2021 20:51:13 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevri_KslxqkfMpHbO4lwwtw2uL5XDtj4y_PkT4snJfk5jxQwCGqJQfeJPEOEihuWpFtfa-JD7sVrxb6po5vxRScKGzjXfHbt0_InpENxsKktFW-wO5r898BuntqZhilcIKIFOqFxCH651Zh8rMpg1NaV2Rcaz-OMAEbZw4Qmqhef6UgAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11787.14 - WUS2 ProdSlices
+      - Wed, 20 Sep 2023 15:29:04 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -1779,33 +285,21 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites?api-version=2023-03-01
   response:
     body:
-      string: '{"value":[]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/site1","name":"site1","type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites","properties":{"activationKey":"0276EF1A9A1749A5A362BF73EA9F8D0D","status":"Available"}}]}'
     headers:
-      cache-control:
-      - no-cache
       content-length:
-      - '12'
+      - '322'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 04 Jun 2021 20:51:15 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: AF004BCE885E437CA041E26FE6A8FC2E Ref B: PDX31EDGE0114 Ref C: 2021-06-04T20:51:15Z'
+      - Wed, 20 Sep 2023 15:29:08 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK

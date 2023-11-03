@@ -78,7 +78,7 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, _SDKClient):
             'queries': '2019-09-01-preview',
             'query_packs': '2019-09-01-preview',
             'web_test_locations': '2015-05-01',
-            'web_tests': '2015-05-01',
+            'web_tests': '2022-06-15',
             'work_item_configurations': '2015-05-01',
             'workbook_templates': '2019-10-17-preview',
             'workbooks': '2018-06-17-preview',
@@ -144,6 +144,9 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, _SDKClient):
             return models
         elif api_version == '2020-06-02-preview':
             from .v2020_06_02_preview import models
+            return models
+        elif api_version == '2022-06-15':
+            from .v2022_06_15 import models
             return models
         raise ValueError("API version {} is not available".format(api_version))
 
@@ -424,10 +427,15 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, _SDKClient):
         """Instance depends on the API version:
 
            * 2015-05-01: :class:`WebTestsOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.WebTestsOperations>`
+           * 2018-05-01-preview: :class:`WebTestsOperations<azure.mgmt.applicationinsights.v2018_05_01_preview.operations.WebTestsOperations>`
         """
         api_version = self._get_api_version('web_tests')
         if api_version == '2015-05-01':
             from .v2015_05_01.operations import WebTestsOperations as OperationClass
+        elif api_version == '2018-05-01-preview':
+            from .v2018_05_01_preview.operations import WebTestsOperations as OperationClass
+        elif api_version == "2022-06-15":
+            from .v2022_06_15.operations import WebTestsOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'web_tests'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))

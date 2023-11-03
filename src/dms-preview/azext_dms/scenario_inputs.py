@@ -3,56 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azext_dms.vendored_sdks.datamigration.models import (MigrateMySqlAzureDbForMySqlSyncDatabaseInput,
-                                                          MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput,
-                                                          MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseTableInput,
-                                                          MigrateMySqlAzureDbForMySqlSyncTaskInput,
-                                                          MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput,
-                                                          MongoDbMigrationSettings)
-
-
-def get_migrate_mysql_to_azuredbformysql_sync_input(database_options_json,
-                                                    source_connection_info,
-                                                    target_connection_info):
-    database_options = []
-
-    for d in database_options_json:
-        def_migration_setting_input = {"fullLoadSubTasks": "5",
-                                       "inlineLobMaxSize": "0",
-                                       "limitLOBSize": "true",
-                                       "lobChunkSize": "64",
-                                       "lobMaxSize": "32"}
-        database_options.append(MigrateMySqlAzureDbForMySqlSyncDatabaseInput(
-            name=d.get('name', None),
-            target_database_name=d.get('target_database_name', None),
-            migration_setting=d.get('migrationSetting', def_migration_setting_input),
-            source_setting=d.get('sourceSetting', None),
-            target_setting=d.get('targetSetting', None)))
-
-    return MigrateMySqlAzureDbForMySqlSyncTaskInput(source_connection_info=source_connection_info,
-                                                    target_connection_info=target_connection_info,
-                                                    selected_databases=database_options)
-
-
-def get_migrate_postgresql_to_azuredbforpostgresql_sync_input(database_options_json,
-                                                              source_connection_info,
-                                                              target_connection_info):
-    database_options = []
-
-    for d in database_options_json:
-        s_t = d.get('selectedTables', None)
-        t = None if s_t is None else [MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseTableInput(name=t) for t in s_t]
-        database_options.append(MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput(
-            name=d.get('name', None),
-            target_database_name=d.get('target_database_name', None),
-            migration_setting=d.get('migrationSetting', None),
-            source_setting=d.get('sourceSetting', None),
-            target_setting=d.get('targetSetting', None),
-            selected_tables=t))
-
-    return MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput(source_connection_info=source_connection_info,
-                                                              target_connection_info=target_connection_info,
-                                                              selected_databases=database_options)
+from azext_dms.vendored_sdks.datamigration.models import (MongoDbMigrationSettings)
 
 
 def get_mongo_to_mongo_input(database_options_json,

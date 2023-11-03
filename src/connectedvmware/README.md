@@ -1,15 +1,17 @@
-# Microsoft Azure CLI ConnectedVMware Extension #
+# Microsoft Azure CLI ConnectedVMware Extension
 
 The Azure CLI extension for [Azure Arc for VMware PrivateCloud](https://github.com/Azure/azure-arc-enabled-vmware-vsphere-preview/blob/main/docs/overview.md) is an extension for Azure CLI 2.0.
 
 ## Install
+
 ```
 az extension add --name connectedvmware
 ```
 
 ## Usage
+
 See the [extension reference documenation](https://github.com/Azure/azure-arc-enabled-vmware-vsphere-preview/blob/main/docs/overview.md).
-*Examples:*
+_Examples:_
 
 ##### Create Vcenter Resource
 
@@ -29,6 +31,45 @@ az connectedvmware vcenter connect \
 
 ```
 az connectedvmware resource-pool create \
+    --subscription subscriptionId \
+    --resource-group resourceGroupName \
+    --location locationName \
+    --custom-location customLocationName \
+    --vcenter vcenterResourceName \
+    --mo-ref-id morefId \
+    --name resourceName
+```
+
+##### Create Cluster Resource
+
+```
+az connectedvmware cluster create \
+    --subscription subscriptionId \
+    --resource-group resourceGroupName \
+    --location locationName \
+    --custom-location customLocationName \
+    --vcenter vcenterResourceName \
+    --mo-ref-id morefId \
+    --name resourceName
+```
+
+##### Create Host Resource
+
+```
+az connectedvmware host create \
+    --subscription subscriptionId \
+    --resource-group resourceGroupName \
+    --location locationName \
+    --custom-location customLocationName \
+    --vcenter vcenterResourceName \
+    --mo-ref-id morefId \
+    --name resourceName
+```
+
+##### Create Datastore Resource
+
+```
+az connectedvmware datastore create \
     --subscription subscriptionId \
     --resource-group resourceGroupName \
     --location locationName \
@@ -64,7 +105,7 @@ az connectedvmware virtual-network create \
     --name resourceName
 ```
 
-##### Create Virtual Machine Resource
+##### Create Virtual Machine Instance Resource
 
 ```
 az connectedvmware vm create \
@@ -79,7 +120,9 @@ az connectedvmware vm create \
 ```
 
 ## Uninstall
+
 You can see if the extension is installed by running `az --version` or `az extension list`. You can remove the extension by running:
+
 ```
 az extension remove --name connectedvmware
 ```

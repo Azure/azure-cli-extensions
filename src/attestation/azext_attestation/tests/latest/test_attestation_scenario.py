@@ -39,10 +39,10 @@ def setup(test, rg):
 @try_manual
 def step__attestationproviders_put(test, rg):
     test.cmd('az attestation create -l westus '
-             '-n "myattestationprovider" '
+             '-n "testattestationprovider" '
              '--resource-group "{rg}"',
              checks=[
-                 test.check('name', 'myattestationprovider'),
+                 test.check('name', 'testattestationprovider'),
                  test.check('status', 'Ready'),
                  test.check('trustModel', 'AAD')
              ])
@@ -52,10 +52,10 @@ def step__attestationproviders_put(test, rg):
 @try_manual
 def step__attestationproviders_get(test, rg):
     test.cmd('az attestation show '
-             '-n "myattestationprovider" '
+             '-n "testattestationprovider" '
              '--resource-group "{rg}"',
              checks=[
-                 test.check('name', 'myattestationprovider'),
+                 test.check('name', 'testattestationprovider'),
                  test.check('status', 'Ready')
              ])
 
@@ -67,7 +67,7 @@ def step__attestationproviders_get2(test, rg):
              '--resource-group "{rg}"',
              checks=[
                  test.check('length(value)', 1),
-                 test.check('value[0].name', 'myattestationprovider'),
+                 test.check('value[0].name', 'testattestationprovider'),
                  test.check('value[0].status', 'Ready')
              ])
 
@@ -82,7 +82,7 @@ def step__attestationproviders_get3(test, rg):
 @try_manual
 def step__attestationproviders_patch(test, rg):
     test.cmd('az attestation update '
-             '-n "myattestationprovider" '
+             '-n "testattestationprovider" '
              '--resource-group "{rg}" '
              '--tags Property1="Value1" Property2="Value2" Property3="Value3"',
              checks=[
@@ -96,7 +96,7 @@ def step__attestationproviders_patch(test, rg):
 @try_manual
 def step__attestationproviders_delete(test, rg):
     test.cmd('az attestation delete -y '
-             '-n "myattestationprovider" '
+             '-n "testattestationprovider" '
              '--resource-group "{rg}"')
 
 
@@ -118,6 +118,26 @@ def test_provider_with_signer_1(test, rg):
         test.exists('Jwt'),
         test.exists('Algorithm')
     ])
+
+    test.cmd('az attestation policy show -n {att1} -g {rg} --attestation-type SGX-IntelSDK', checks=[
+        test.check('Algorithm', 'none'),
+        test.check('JwtLength', 944),
+        test.check('TextLength', 501),
+        test.exists('Jwt'),
+        test.exists('Text')
+    ])
+
+    from knack.util import CLIError
+    with test.assertRaisesRegex(CLIError, 'PolicyParsingError'):
+        test.cmd('az attestation policy set -n {att1} -g {rg} --attestation-type SGX-IntelSDK '
+                 '-f "{signed_jwt_policy1_file}" --policy-format JWT',
+                 checks=[
+                     test.check('Algorithm', 'RSA256'),
+                     test.check('JwtLength', 2862),
+                     test.check('TextLength', 608),
+                     test.exists('Jwt'),
+                     test.exists('Text')
+                 ])
 
     """ Bypass this since the test file can be only used on old api version
 
@@ -148,21 +168,22 @@ def test_provider_with_signer_2(test, rg):
 
     test.cmd('az attestation policy show -n {att2} -g {rg} --attestation-type SGX-IntelSDK', checks=[
         test.check('Algorithm', 'none'),
-        test.check('JwtLength', 907),
-        test.check('TextLength', 479),
+        test.check('JwtLength', 944),
+        test.check('TextLength', 501),
         test.exists('Jwt'),
         test.exists('Text')
     ])
-
-    test.cmd('az attestation policy set -n {att2} -g {rg} --attestation-type SGX-IntelSDK '
-             '-f "{signed_jwt_policy2_file}" --policy-format JWT',
-             checks=[
-                 test.check('Algorithm', 'RSA256'),
-                 test.check('JwtLength', 2862),
-                 test.check('TextLength', 608),
-                 test.exists('Jwt'),
-                 test.exists('Text')
-             ])
+    from knack.util import CLIError
+    with test.assertRaisesRegex(CLIError, 'InvalidOperation'):
+        test.cmd('az attestation policy set -n {att2} -g {rg} --attestation-type SGX-IntelSDK '
+                 '-f "{signed_jwt_policy2_file}" --policy-format JWT',
+                 checks=[
+                     test.check('Algorithm', 'RSA256'),
+                     test.check('JwtLength', 2862),
+                     test.check('TextLength', 608),
+                     test.exists('Jwt'),
+                     test.exists('Text')
+                 ])
 
 
 @try_manual
@@ -175,8 +196,8 @@ def test_provider_without_signer(test, rg):
 
     test.cmd('az attestation policy show -n {att3} -g {rg} --attestation-type SGX-IntelSDK', checks=[
         test.check('Algorithm', 'none'),
-        test.check('JwtLength', 907),
-        test.check('TextLength', 479),
+        test.check('JwtLength', 944),
+        test.check('TextLength', 501),
         test.exists('Jwt'),
         test.exists('Text')
     ])
@@ -226,8 +247,8 @@ def test_provider_without_signer(test, rg):
 
     test.cmd('az attestation policy reset -n {att3} -g {rg} --attestation-type SGX-IntelSDK', checks=[
         test.check('Algorithm', 'none'),
-        test.check('JwtLength', 907),
-        test.check('TextLength', 479),
+        test.check('JwtLength', 944),
+        test.check('TextLength', 501),
         test.exists('Jwt'),
         test.exists('Text')
     ])

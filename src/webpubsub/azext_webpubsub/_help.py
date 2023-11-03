@@ -17,12 +17,7 @@ helps['webpubsub key'] = """
     short-summary: Commands to manage Webpubsub keys.
 """
 
-helps['webpubsub event-handler'] = """
-    type: group
-    short-summary: Commands to manage Webpubsub event handler settings.
-"""
-
-helps['webpubsub event-handler hub'] = """
+helps['webpubsub hub'] = """
     type: group
     short-summary: Commands to manage Webpubsub hub settings.
 """
@@ -62,6 +57,11 @@ helps['webpubsub service permission'] = """
     short-summary: Commands to manage Webpubsub service permissions.
 """
 
+helps['webpubsub replica'] = """
+type: group
+short-summary: Manage replica settings.
+"""
+
 helps['webpubsub create'] = """
     type: command
     short-summary: Create a Webpubsub.
@@ -69,6 +69,9 @@ helps['webpubsub create'] = """
       - name: Create a WebPubSub Service with Standard SKU and unit 2.
         text: >
           az webpubsub create -n MyWebPubSub -g MyResourceGroup --sku Standard_S1 --unit-count 2
+      - name: Create a Web PubSub for Socket.IO with Premium SKU and unit 1.
+        text: >
+          az webpubsub create -n MyWebPubSub -g MyResourceGroup --sku Premium_P1 --unit-count 1 --kind SocketIO
 """
 
 helps['webpubsub list'] = """
@@ -98,6 +101,16 @@ helps['webpubsub update'] = """
 helps['webpubsub restart'] = """
     type: command
     short-summary: Restart a Webpubsub.
+"""
+
+helps['webpubsub list-usage'] = """
+    type: command
+    short-summary: List resource usage quotas by location.
+"""
+
+helps['webpubsub list-skus'] = """
+    type: command
+    short-summary: List all available skus of the resource.
 """
 
 helps['webpubsub key show'] = """
@@ -138,50 +151,43 @@ helps['webpubsub network-rule update'] = """
             az webpubsub network-rule update --public-network --connection-name MyPrivateEndpointConnection1 MyPrivateEndpointConnection2 -n MyWebPubSub -g MyResourceGroup --deny ClientConnection
 """
 
-helps['webpubsub event-handler show'] = """
+helps['webpubsub hub show'] = """
     type: command
-    short-summary: Show event handler settings for WebPubSub Service.
+    short-summary: Show hub settings for WebPubSub Service.
 """
 
-helps['webpubsub event-handler clear'] = """
+helps['webpubsub hub list'] = """
     type: command
-    short-summary: Clear event handler settings for WebPubSub Service.
+    short-summary: List all hub settings for WebPubSub Service.
 """
 
-helps['webpubsub event-handler update'] = """
+helps['webpubsub hub delete'] = """
     type: command
-    short-summary: Update event handler settings for WebPubSub Service with json. For updating settings per hub, see help in hub subgroup.
+    short-summary: Delete hub settings for WebPubSub Service.
+"""
+
+helps['webpubsub hub create'] = """
+    type: command
+    short-summary: Create hub settings for WebPubSub Service.
     examples:
-      - name: Update event handler to handler connect event.
+      - name: Create a hub setting with two event handler settings
         text: >
-            az webpubsub event-handler update -n MyWebPubSub -g MyResourceGroup --items '{\"myHub\": [{\"urlTemplate\": \"http://host.com\", \"systemEventPattern\": \"connect\"}]}'
+            az webpubsub hub create -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --event-handler url-template="http://host.com" user-event-pattern="MyEvent" --event-handler url-template="http://host2.com" system-event="connected" system-event="disconnected" auth-type="ManagedIdentity" auth-resource="uri://myUri"
+      - name: Create a hub setting with anonymous connection allowed
+        text: >
+            az webpubsub hub create -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --allow-anonymous true
 """
 
-helps['webpubsub event-handler update'] = """
+helps['webpubsub hub update'] = """
     type: command
-    short-summary: Update event handler settings for WebPubSub Service.
+    short-summary: Update hub settings for WebPubSub Service.
     examples:
-      - name: Update event handler to handler connect event.
+      - name: Update event handler settings of a hub
         text: >
-            az webpubsub event-handler update -n MyWebPubSub -g MyResourceGroup --items '{\"myHub\": [{\"urlTemplate\": \"http://host.com\", \"systemEventPattern\": \"connect\"}]}'
-"""
-
-helps['webpubsub event-handler hub remove'] = """
-    type: command
-    short-summary: Remove a hub's event handler settings
-    examples:
-      - name: Remove all event handler settings in a hub
+            az webpubsub hub update -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --event-handler url-template="http://host.com" user-event-pattern="MyEvent" --event-handler url-template="http://host2.com" system-event="connected" system-event="disconnected" auth-type="ManagedIdentity" auth-resource="uri://myUri"
+      - name: Update to allow anonymous connection
         text: >
-            az webpubsub event-handler hub remove -n MyWebPubSub -g MyResourceGroup --hub-name MyHub
-"""
-
-helps['webpubsub event-handler hub update'] = """
-    type: command
-    short-summary: Update a hub's event handler settings
-    examples:
-      - name: Update two event handler settings in a hub
-        text: >
-            az webpubsub event-handler hub update -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --template url-template='http://host.com user-event-pattern="MyEvent" --template url-template="http://host2.com" system-event-pattern="connect"'
+            az webpubsub hub update -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --allow-anonymous true
 """
 
 helps['webpubsub client start'] = """
@@ -191,7 +197,7 @@ helps['webpubsub client start'] = """
 
 helps['webpubsub service broadcast'] = """
     type: command
-    short-summary: Broadcast messages to hub.
+    short-summary: Broadcast messages to hub. Error throws if operation fails.
     examples:
       - name: Send a message to hub
         text: >
@@ -200,47 +206,47 @@ helps['webpubsub service broadcast'] = """
 
 helps['webpubsub service connection exist'] = """
     type: command
-    short-summary: Check whether client connection exists
+    short-summary: Check whether client connection exists.
 """
 
 helps['webpubsub service connection close'] = """
     type: command
-    short-summary: Close a specific client connection
+    short-summary: Close a specific client connection. Error throws if operation fails.
 """
 
 helps['webpubsub service connection send'] = """
     type: command
-    short-summary: Send a message to connection
+    short-summary: Send a message to connection. Error throws if operation fails.
 """
 
 helps['webpubsub service group add-connection'] = """
     type: command
-    short-summary: Add a connection to group
+    short-summary: Add a connection to group. Error throws if operation fails.
 """
 
 helps['webpubsub service group remove-connection'] = """
     type: command
-    short-summary: Remove a connection from group
+    short-summary: Remove a connection from group. Error throws if operation fails.
 """
 
 helps['webpubsub service group add-user'] = """
     type: command
-    short-summary: Add a user to group
+    short-summary: Add a user to group. Error throws if operation fails.
 """
 
 helps['webpubsub service group remove-user'] = """
     type: command
-    short-summary: Remove a user from group
+    short-summary: Remove a user from group. Error throws if operation fails.
 """
 
 helps['webpubsub service group send'] = """
     type: command
-    short-summary: Send a message to group
+    short-summary: Send a message to group. Error throws if operation fails.
 """
 
 helps['webpubsub service user send'] = """
     type: command
-    short-summary: Send a message to user
+    short-summary: Send a message to user. Error throws if operation fails.
 """
 
 helps['webpubsub service user exist'] = """
@@ -250,15 +256,51 @@ helps['webpubsub service user exist'] = """
 
 helps['webpubsub service permission grant'] = """
     type: command
-    short-summary: Grant a group permission to the connection.
+    short-summary: Grant a group permission to the connection. Error throws if operation fails.
 """
 
 helps['webpubsub service permission revoke'] = """
     type: command
-    short-summary: Revoke a group permission from the connection.
+    short-summary: Revoke a group permission from the connection. Error throws if operation fails.
 """
 
 helps['webpubsub service permission check'] = """
     type: command
-    short-summary: Check if a connection has permission to the specified group
+    short-summary: Check if a connection has permission to the specified group.
+"""
+
+helps['webpubsub replica show'] = """
+type: command
+short-summary: Show the details of a replica
+examples:
+  - name: Get the detail of a replica
+    text: >
+        az webpubsub replica show --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub replica delete'] = """
+type: command
+short-summary: Delete a replica of WebPubSub Service.
+examples:
+  - name: Delete a replica
+    text: >
+        az webpubsub replica delete --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub replica list'] = """
+type: command
+short-summary: List replicas of Webpubsub Service.
+examples:
+  - name: Get the detail of a replica
+    text: >
+        az webpubsub replica list --name MyWebPubSub -g MyResourceGroup -o table
+"""
+
+helps['webpubsub replica create'] = """
+type: command
+short-summary: Create a replica of Webpubsub Service.
+examples:
+  - name: Get the detail of a replica
+    text: >
+        az webpubsub replica create --sku Premium_P1 -l eastus --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
 """

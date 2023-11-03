@@ -94,26 +94,7 @@ def step_data_collection_rule_create(test, rg, checks=None):
     if checks is None:
         checks = []
     rule_json = test.cmd('az monitor data-collection rule create '
-                         '-g {rg} -n {myDataCollectionRule} --location "{location}" '
-                         '--data-flows destinations="{workspace_name}" streams="Microsoft-Perf" '
-                         'streams="Microsoft-Syslog" streams="Microsoft-WindowsEvent" '
-                         '--log-analytics name="{workspace_name}" resource-id="{workspace_id}" '
-                         '--performance-counters name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total'
-                         ')\\\\% Processor Time" counter-specifiers="\\\\Memory\\\\Committed Bytes" '
-                         'counter-specifiers="\\\\LogicalDisk(_Total)\\\\Free Megabytes" '
-                         'counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" '
-                         'sampling-frequency=15 streams="Microsoft-Perf" '
-                         '--performance-counters name="appTeamExtraCounters" '
-                         'counter-specifiers="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 '
-                         'streams="Microsoft-Perf" '
-                         '--syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" '
-                         'log-levels="Emergency" streams="Microsoft-Syslog" '
-                         '--windows-event-logs name="cloudSecurityTeamEvents" '
-                         'streams="Microsoft-WindowsEvent" x-path-queries="Security!" '
-                         '--windows-event-logs name="appTeam1AppEvents" '
-                         'streams="Microsoft-WindowsEvent" '
-                         'x-path-queries="System![System[(Level = 1 or Level = 2 or Level = 3)]]" '
-                         'x-path-queries="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" ',
+                         '-g {rg} -n {myDataCollectionRule} --location "{location}" --rule-file "{ruleFile}"',
                          checks=checks).get_output_in_json()
     test.kwargs['rule_id'] = rule_json['id']
 
@@ -423,7 +404,7 @@ def setup_scenario(test, rg):
         "--level 200 --sku CapacityReservation").get_output_in_json()
     test.kwargs['workspace3_id'] = workspace3_json['id']
 
-    vm_json = test.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-password TestPassword11!! '
+    vm_json = test.cmd('vm create -g {rg} -n {vm} --image Ubuntu2204 --admin-password TestPassword11!! '
                        '--admin-username testadmin --authentication-type password').get_output_in_json()
     test.kwargs['vm_id'] = vm_json['id']
 
@@ -451,7 +432,7 @@ def call_scenario(test, rg):
 
     step_data_collection_rule_log_analytics_add(test, rg, checks=[])
     step_data_collection_rule_log_analytics_list(test, rg, checks=[
-        test.check('length(@)', 2),
+        test.check('length(@)', 1),
     ])
     step_data_collection_rule_log_analytics_show(test, rg, checks=[])
     step_data_collection_rule_log_analytics_update(test, rg, checks=[])
@@ -459,7 +440,7 @@ def call_scenario(test, rg):
 
     step_data_collection_rule_performance_counter_add(test, rg, checks=[])
     step_data_collection_rule_performance_counter_list(test, rg, checks=[
-        test.check('length(@)', 3),
+        test.check('length(@)', 2),
     ])
     step_data_collection_rule_performance_counter_show(test, rg, checks=[])
     step_data_collection_rule_performance_counter_update(test, rg, checks=[])
@@ -467,7 +448,7 @@ def call_scenario(test, rg):
 
     step_data_collection_rule_windows_event_log_add(test, rg, checks=[])
     step_data_collection_rule_windows_event_log_list(test, rg, checks=[
-        test.check('length(@)', 3),
+        test.check('length(@)', 1),
     ])
     step_data_collection_rule_windows_event_log_show(test, rg, checks=[])
     step_data_collection_rule_windows_event_log_update(test, rg, checks=[])
@@ -475,7 +456,7 @@ def call_scenario(test, rg):
 
     step_data_collection_rule_syslog_add(test, rg, checks=[])
     step_data_collection_rule_syslog_list(test, rg, checks=[
-        test.check('length(@)', 2),
+        test.check('length(@)', 1),
     ])
     step_data_collection_rule_syslog_show(test, rg, checks=[])
     step_data_collection_rule_syslog_update(test, rg, checks=[])
@@ -513,14 +494,22 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestmonitor_control_service_myResourceGroup'[:7], key='rg',
                            parameter_name='rg')
-    def test_monitor_control_service_Scenario(self, rg):
+    def test_monitor_control_service_commands(self, rg):
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
+        import os
 
+        TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+        templateFile = os.path.join(
+            TEST_DIR,
+            "rule_files",
+            "rule_file.json",
+        )
         self.kwargs.update({
             'myDataCollectionRule': 'myCollectionRule',
-            'myAssociation': 'myAssociation'
+            'myAssociation': 'myAssociation',
+            'ruleFile': templateFile
         })
 
         call_scenario(self, rg)
@@ -558,3 +547,78 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
         self.cmd('monitor data-collection endpoint list -g {rg}', checks=[
             self.check('length(@)', 1)
         ])
+
+    @ResourceGroupPreparer(name_prefix='clitest_amcs_endpoints_association', location='westus')
+    def test_amcs_data_collection_endpoint_association(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'name1': 'endpoint1',
+            'vm': "vm1",
+            "myAssociation": "configurationAccessEndpoint",
+            "description": "new_description"
+        })
+
+        self.cmd('monitor data-collection endpoint create -g {rg} -n {name1} --public-network-access disabled', checks=[
+            self.check('networkAcls.publicNetworkAccess', 'Disabled'),
+        ])
+
+        endpoint_json = self.cmd('monitor data-collection endpoint show -g {rg} -n {name1}').get_output_in_json()
+        self.kwargs["endpoint_id"] = endpoint_json["id"]
+
+        vm_json = self.cmd('vm create -g {rg} -n {vm} --image Ubuntu2204 --admin-password TestPassword11!! '
+                           '--admin-username testadmin --authentication-type password').get_output_in_json()
+        self.kwargs['vm_id'] = vm_json['id']
+
+        self.cmd('az monitor data-collection rule association create --name {myAssociation} --endpoint-id {endpoint_id} --resource {vm_id}',
+                 checks=[
+                     self.check("name", "configurationAccessEndpoint"),
+                     self.check("dataCollectionEndpointId", endpoint_json["id"])
+                 ])
+        self.cmd('az monitor data-collection rule association update --name {myAssociation} --resource {vm_id} --description {description} ',
+                 checks=[
+                     self.check("description", self.kwargs['description'])
+                 ])
+        self.cmd('az monitor data-collection rule association delete -y --name {myAssociation} --resource {vm_id}')
+
+    @ResourceGroupPreparer(name_prefix='clitest_amcs_rule', location='westus2')
+    def test_amcs_data_collection_rule(self, resource_group):
+        import os
+
+        TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+        templateFile = os.path.join(
+            TEST_DIR,
+            "rule_files",
+            "rule_file.json",
+        )
+
+        self.kwargs.update({
+            'rg': resource_group,
+            'name': 'testrule',
+            'location': 'westus2',
+            'rule_file': templateFile
+        })
+
+        self.cmd('monitor data-collection rule create  --resource-group {rg} --location {location} '
+                 '--name {name} --rule-file "{rule_file}"',
+                 checks=[self.check('provisioningState', 'Succeeded')])
+
+        self.cmd('monitor data-collection rule update --resource-group {rg} --name {name} '
+                 '--performance-counters name="perfCounter02" '
+                 'counter-specifiers=["\\Processor Information(_Total)\\% Processor Time"] '
+                 'sampling-frequency=60 transfer-period="PT1M" streams="Microsoft-InsightsMetrics"',
+                 checks=[self.check('provisioningState', 'Succeeded')])
+
+        self.cmd('monitor data-collection rule show -g {rg} -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        self.cmd('monitor data-collection rule list -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
+
+        self.cmd('monitor data-collection rule delete -g {rg} -n {name} -y')
+        self.cmd('monitor data-collection rule list -g {rg}', checks=[
+            self.check('length(@)', 0)
+        ])
+

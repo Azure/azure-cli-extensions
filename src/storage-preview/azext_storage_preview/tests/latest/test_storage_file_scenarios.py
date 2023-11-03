@@ -3,88 +3,101 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-
 import os
-
-from azure.cli.testsdk import (ResourceGroupPreparer, StorageAccountPreparer, JMESPathCheck, ScenarioTest)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer,
+                               JMESPathCheck, NoneCheck, StringCheck, StringContainCheck, JMESPathCheckExists)
 from ..storage_test_util import StorageScenarioMixin
+from azure.cli.testsdk.scenario_tests import record_only
 
 
-class StorageFileShareScenarios(StorageScenarioMixin, ScenarioTest):
-
+class StorageFileSharePreviewScenarios(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer()
-    @StorageAccountPreparer()
-    def test_storage_file_upload_small_file_v2(self, resource_group, storage_account):
+    @StorageAccountPreparer(location='EastUS2')
+    def test_storage_file_trailing_dot_scenario(self, resource_group, storage_account):
         account_info = self.get_account_info(resource_group, storage_account)
-        share_name = self.create_share(account_info)
+        s1 = self.create_share(account_info)
 
-        curr_dir = os.path.dirname(os.path.realpath(__file__))
-        local_file = os.path.join(curr_dir, 'upload_file').replace('\\', '\\\\')
-        local_file_name = 'upload_file'
+        self._validate_file_trailing_dot_scenario(account_info, s1)
+        self._validate_directory_trailing_dot_scenario(account_info, s1)
 
-        self.storage_cmd('storage file upload -s {} --source "{}" '
-                         '--content-cache-control no-cache '
-                         '--content-disposition attachment '
-                         '--content-encoding compress '
-                         '--content-language en-US '
-                         '--content-type "multipart/form-data;" '
-                         '--metadata key=val ', account_info, share_name, local_file)
+        self.storage_cmd('storage share delete -n {}', account_info, s1) \
+            .assert_with_checks(JMESPathCheck('deleted', True))
 
-        self.storage_cmd('storage file show -s {} -p "{}"', account_info, share_name, local_file_name) \
-            .assert_with_checks(JMESPathCheck('name', local_file_name),
-                                JMESPathCheck('properties.contentSettings.cacheControl', 'no-cache'),
-                                JMESPathCheck('properties.contentSettings.contentDisposition', 'attachment'),
-                                JMESPathCheck('properties.contentSettings.contentEncoding', 'compress'),
-                                JMESPathCheck('properties.contentSettings.contentLanguage', 'en-US'),
-                                JMESPathCheck('properties.contentSettings.contentType', 'multipart/form-data;'),
-                                JMESPathCheck('metadata', {'key': 'val'}))
+    def _validate_directory_trailing_dot_scenario(self, account_info, share):
+        directory = self.create_random_name('dir', 16)
+        directory = directory+'..'
+        # by default allow trailing dot
+        self.storage_cmd('storage directory create --share-name {} --name {} --fail-on-exist',
+                         account_info, share, directory) \
+            .assert_with_checks(JMESPathCheck('created', True))
+        self.storage_cmd('storage directory list -s {}', account_info, share) \
+            .assert_with_checks(JMESPathCheck('length(@)', 1))
+        self.storage_cmd('storage directory show --share-name {} -n {}',
+                         account_info, share, directory) \
+            .assert_with_checks(JMESPathCheck('name', directory))
 
-        dest_dir = 'dest_dir'
+        # requests with --disallow-trailing-dot would point to the trimmed url
+        self.storage_cmd('storage directory create --share-name {} --name {} --fail-on-exist --disallow-trailing-dot',
+                         account_info, share, directory) \
+            .assert_with_checks(JMESPathCheck('created', True))
+        self.storage_cmd('storage directory list -s {}', account_info, share) \
+            .assert_with_checks(JMESPathCheck('length(@)', 2))
+        self.storage_cmd('storage directory show --share-name {} -n {} --disallow-trailing-dot',
+                         account_info, share, directory[:-2]) \
+            .assert_with_checks(JMESPathCheck('name', directory[:-2]))
 
-        from azure.core.exceptions import ResourceNotFoundError
-        with self.assertRaises(ResourceNotFoundError):
-            self.storage_cmd('storage file upload -s {} --source "{}" -p {}',
-                             account_info, share_name, local_file, dest_dir)
+    def _validate_file_trailing_dot_scenario(self, account_info, share):
+        source_file = self.create_temp_file(128, full_random=False)
+        dest_file = self.create_temp_file(1)
+        filename = "sample_file.bin..."
+        # default is not trimming trialing dot
+        self.storage_cmd('storage file upload --share-name {} --source "{}" -p {}', account_info,
+                         share, source_file, filename)
+        self.storage_cmd('storage file exists -s {} -p {}', account_info, share, filename) \
+            .assert_with_checks(JMESPathCheck('exists', True))
 
-        self.storage_cmd('storage directory create -s {} -n {}', account_info, share_name, dest_dir)
+        if os.path.isfile(dest_file):
+            os.remove(dest_file)
 
-        self.storage_cmd('storage file upload -s {} --source "{}" -p {}',
-                         account_info, share_name, local_file, dest_dir)
+        self.storage_cmd('storage file download --share-name {} -p "{}" --dest "{}"', account_info,
+                         share, filename, dest_file)
 
-        self.storage_cmd('storage file show -s {} -p "{}"', account_info, share_name, dest_dir + '/' + local_file_name) \
-            .assert_with_checks(JMESPathCheck('name', local_file_name))
+        self.assertTrue(os.path.isfile(dest_file))
+        self.assertEqual(os.stat(dest_file).st_size, 128 * 1024)
 
-        dest_file = 'dest_file.json'
+        # with --disallow-trailing-dot, should fail because file does not exist
+        with self.assertRaises(Exception):
+            self.storage_cmd('storage file download --share-name {} -p "{}" --dest "{}" --disallow-trailing-dot',
+                             account_info, share, filename, dest_file)
 
-        self.storage_cmd('storage file upload -s {} --source "{}" -p {}',
-                         account_info, share_name, local_file, dest_file)
+        # copy from file
+        copy_dst_name = "sample_file_dst.bin..."
+        # copy without trimming
+        self.storage_cmd('storage file copy start --source-account-name {} --source-path {} --source-share {} '
+                         '--destination-path {} --destination-share {}', account_info, account_info[0], filename,
+                         share, copy_dst_name, share)
+        self.storage_cmd('storage file exists -s {} -p {}', account_info, share, copy_dst_name) \
+            .assert_with_checks(JMESPathCheck('exists', True))
 
-        self.storage_cmd('storage file show -s {} -p "{}"', account_info, share_name, dest_file) \
-            .assert_with_checks(JMESPathCheck('name', dest_file))
+        # copy with trimming dst name
+        self.storage_cmd('storage file copy start --source-account-name {} --source-path {} --source-share {} '
+                         '--destination-path {} --destination-share {} --disallow-trailing-dot',
+                         account_info, account_info[0], filename,
+                         share, copy_dst_name, share)
+        self.storage_cmd('storage file exists -s {} -p {} --disallow-trailing-dot', account_info, share, copy_dst_name) \
+            .assert_with_checks(JMESPathCheck('exists', True))
 
-        dest_path = dest_dir + '/' + dest_file
+        # copy with trimmed src name should fail because src file does not exist
+        with self.assertRaises(Exception):
+            self.storage_cmd('storage file copy start --source-account-name {} --source-path {} --source-share {} '
+                             '--destination-path {} --destination-share {} --disallow-source-trailing-dot', account_info,
+                             account_info[0], filename, share, copy_dst_name, share)
 
-        self.storage_cmd('storage file upload -s {} --source "{}" -p {}',
-                         account_info, share_name, local_file, dest_path)
-
-        self.storage_cmd('storage file show -s {} -p "{}"', account_info, share_name, dest_path) \
-            .assert_with_checks(JMESPathCheck('name', dest_file))
-
-        sub_deep_path = dest_dir + '/' + 'sub_dir'
-
-        self.storage_cmd('storage directory create -s {} -n {}', account_info, share_name, sub_deep_path)
-
-        self.storage_cmd('storage file upload -s {} --source "{}" -p {}',
-                         account_info, share_name, local_file, sub_deep_path)
-
-        self.storage_cmd('storage file show -s {} -p "{}"', account_info, share_name,
-                         sub_deep_path + '/' + local_file_name). \
-            assert_with_checks(JMESPathCheck('name', local_file_name))
-
-        sub_deep_file = sub_deep_path + '/' + dest_file
-
-        self.storage_cmd('storage file upload -s {} --source "{}" -p {}',
-                         account_info, share_name, local_file, sub_deep_file)
-
-        self.storage_cmd('storage file show -s {} -p "{}"', account_info, share_name,
-                         sub_deep_file).assert_with_checks(JMESPathCheck('name', dest_file))
+        # try uploading file with trailing dot with --disallow-trailing-dot
+        self.storage_cmd('storage file delete -s {} -p {}', account_info, share, filename)
+        self.storage_cmd('storage file exists -s {} -p {}', account_info, share, filename) \
+            .assert_with_checks(JMESPathCheck('exists', False))
+        self.storage_cmd('storage file upload --share-name {} --source "{}" -p {} --disallow-trailing-dot', account_info,
+                         share, source_file, filename)
+        self.storage_cmd('storage file exists -s {} -p {} --disallow-trailing-dot', account_info, share, filename) \
+            .assert_with_checks(JMESPathCheck('exists', True))

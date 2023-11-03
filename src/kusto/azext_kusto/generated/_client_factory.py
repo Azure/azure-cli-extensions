@@ -28,6 +28,14 @@ def cf_database(cli_ctx, *_):
     return cf_kusto_cl(cli_ctx).databases
 
 
+def cf_attached_database_configuration(cli_ctx, *_):
+    return cf_kusto_cl(cli_ctx).attached_database_configurations
+
+
+def cf_managed_private_endpoint(cli_ctx, *_):
+    return cf_kusto_cl(cli_ctx).managed_private_endpoints
+
+
 def cf_database_principal_assignment(cli_ctx, *_):
     return cf_kusto_cl(cli_ctx).database_principal_assignments
 
@@ -36,8 +44,12 @@ def cf_script(cli_ctx, *_):
     return cf_kusto_cl(cli_ctx).scripts
 
 
-def cf_attached_database_configuration(cli_ctx, *_):
-    return cf_kusto_cl(cli_ctx).attached_database_configurations
+def cf_private_endpoint_connection(cli_ctx, *_):
+    return cf_kusto_cl(cli_ctx).private_endpoint_connections
+
+
+def cf_private_link_resource(cli_ctx, *_):
+    return cf_kusto_cl(cli_ctx).private_link_resources
 
 
 def cf_data_connection(cli_ctx, *_):
@@ -46,3 +58,7 @@ def cf_data_connection(cli_ctx, *_):
 
 def cf_operation_result(cli_ctx, *_):
     return cf_kusto_cl(cli_ctx).operations_results
+
+
+def cf_operation_result_location(cli_ctx, *_):
+    return cf_kusto_cl(cli_ctx).operations_results_location

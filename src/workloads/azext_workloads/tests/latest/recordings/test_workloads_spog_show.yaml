@@ -1,0 +1,50 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor sap-landscape-monitor show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --monitor-name -g
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor/sapLandscapeMonitor/default?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor/sapLandscapeMonitor/default","name":"default","type":"microsoft.workloads/monitors/saplandscapemonitor","systemData":{"createdBy":"srivastavap@microsoft.com","createdByType":"User","createdAt":"2023-04-18T05:10:17.8786463Z","lastModifiedBy":"srivastavap@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-18T05:33:03.9513125Z"},"properties":{"provisioningState":"Succeeded","grouping":{"landscape":[{"name":"Prod","topSid":["SID1","SID2"]}],"sapApplication":[{"name":"ERP1","topSid":["SID1","SID2"]}]},"topMetricsThresholds":[{"green":90.0,"name":"Inscane","red":50.0,"yellow":75.0}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '749'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Apr 2023 05:50:43 GMT
+      etag:
+      - '"02009187-0000-3400-0000-643e2b910000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,66 +1,7 @@
 interactions:
 - request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 03 Jun 2021 20:37:12 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=Aj8f589qiTxOlJkgGY96Fuk; expires=Sat, 03-Jul-2021 20:37:13 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevr9rbqiTYy_YgPA7uXITa-dCH8nwbQ2aezA6m87zoKX0OqjeX_vgRRbRdLlqG5NTGGRaJovA0mbXmoLkLrEWxszgE0gLV0WVZz046f46Y-_smUbp6vfkpbxQxPX0PggSi16VmLEbD4Z_VBY0XilG4NSH-w5XFN1Xlid3u30PzL7FIgAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11722.21 - SCUS ProdSlices
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"diskPoolVolume": {"targetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target",
-      "lunName": "lun0", "mountOption": "MOUNT"}}}'
+    body: '{"properties": {"diskPoolVolume": {"lunName": "lun0", "mountOption": "MOUNT",
+      "targetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"}}}'
     headers:
       Accept:
       - application/json
@@ -77,184 +18,21 @@ interactions:
       ParameterSetName:
       - --name --resource-group --private-cloud --cluster --target-id --lun-name
       User-Agent:
-      - AZURECLI/2.19.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1","name":"iSCSIDatastore1","properties":{"diskPoolVolume":{"lunName":"lun0","mountOption":"Mount","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"},"provisioningState":"Pending"},"type":"Microsoft.AVS/privateClouds/clusters/datastores"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"},"status":"Accessible"}}'
     headers:
-      azure-asyncoperation:
-      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1/operationstatuses/423677d7-f078-42fd-9e7e-321a0d73b2be?api-version=2021-06-01
-      cache-control:
-      - no-cache
       content-length:
-      - '570'
+      - '520'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Thu, 03 Jun 2021 20:37:16 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-msedge-ref:
-      - 'Ref A: AA01EC02673C4690A104744662D707B8 Ref B: WSTEDGE1110 Ref C: 2021-06-03T20:37:13Z'
-    status:
-      code: 201
-      message: Created
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware datastore disk-pool-volume create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --resource-group --private-cloud --cluster --target-id --lun-name
-      User-Agent:
-      - AZURECLI/2.19.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1/operationstatuses/423677d7-f078-42fd-9e7e-321a0d73b2be?api-version=2021-06-01
-  response:
-    body:
-      string: '{"endTime":"2021-06-03T20:37:16.6433365+00:00","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1/operationstatuses/423677d7-f078-42fd-9e7e-321a0d73b2be","name":"423677d7-f078-42fd-9e7e-321a0d73b2be","percentComplete":100,"properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1","name":"iSCSIDatastore1","properties":{"diskPoolVolume":{"lunName":"lun0","mountOption":"Mount","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"},"provisioningState":"Succeeded"},"type":"Microsoft.AVS/privateClouds/clusters/datastores"},"startTime":"2021-06-03T20:37:15.2647827+00:00","status":"Succeeded"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1019'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 03 Jun 2021 20:37:26 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: D1C2BA89AE78494DB5CBD42B6088A31E Ref B: WSTEDGE1110 Ref C: 2021-06-03T20:37:26Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware datastore disk-pool-volume create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --resource-group --private-cloud --cluster --target-id --lun-name
-      User-Agent:
-      - AZURECLI/2.19.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2021-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1","name":"iSCSIDatastore1","properties":{"diskPoolVolume":{"lunName":"lun0","mountOption":"Mount","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"},"provisioningState":"Succeeded"},"type":"Microsoft.AVS/privateClouds/clusters/datastores"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '572'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 03 Jun 2021 20:37:26 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: C8A051D94412485EADACEADAADD063FD Ref B: WSTEDGE1110 Ref C: 2021-06-03T20:37:26Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 03 Jun 2021 20:37:27 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=Arbzb2bM-L9Ftzsn1wLrU5k; expires=Sat, 03-Jul-2021 20:37:28 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrqdEzbk--0ngETuxmF7QdAWgb_PQEH4rX7_Rym0pYjW4q_jb_erIrZ3fRGA9WwbRuRZBY7S_8BMpqjBFn4FDJqHjXmOFhy3za3gilUPp40ihtBKNLghv7oA1mWbBDivhOHyznQhOw9_Jrw3TzdNmEDM8LpIi_twHxLVVTrS9UEzMgAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11722.21 - SCUS ProdSlices
+      - Wed, 20 Sep 2023 15:27:59 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -272,92 +50,21 @@ interactions:
       ParameterSetName:
       - --name --resource-group --private-cloud --cluster
       User-Agent:
-      - AZURECLI/2.19.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1","name":"iSCSIDatastore1","properties":{"diskPoolVolume":{"lunName":"lun0","mountOption":"Mount","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"},"provisioningState":"Succeeded"},"type":"Microsoft.AVS/privateClouds/clusters/datastores"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"},"status":"Accessible"}}'
     headers:
-      cache-control:
-      - no-cache
       content-length:
-      - '572'
+      - '520'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Thu, 03 Jun 2021 20:37:27 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: DFCC24212B144714BBB139A61191967D Ref B: WSTEDGE1005 Ref C: 2021-06-03T20:37:28Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
-  response:
-    body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
-    headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
-      content-length:
-      - '131'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 03 Jun 2021 20:37:28 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=ApQMTB7OmGxElejTI_nD-KI; expires=Sat, 03-Jul-2021 20:37:28 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrCttPgZbi6xCTUiOW-UwhtVE0J3ix7gmB6B6plUlVxibgnyYFi2YOH5hXKlH7u3mz2JFKBJOwjbK_lmN-gvWU9Gx7JEuwlB5yBE3_Xodqe6uY7xrsxJonQHAHGAHNeFw1FC-Q5yfGYVIUKEHM_CBoZvgiGvT-qKnwBm3qNyiaM6ogAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11722.21 - SCUS ProdSlices
+      - Wed, 20 Sep 2023 15:28:04 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -375,92 +82,57 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --cluster
       User-Agent:
-      - AZURECLI/2.19.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores?api-version=2023-03-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/df-iscsi-datastore-1","name":"df-iscsi-datastore-1","properties":{"diskPoolVolume":{"lunName":"lun0","mountOption":"Mount","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"},"provisioningState":"Succeeded"},"type":"Microsoft.AVS/privateClouds/clusters/datastores"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/df-iscsi-datastore-2","name":"df-iscsi-datastore-2","properties":{"diskPoolVolume":{"lunName":"lun0","mountOption":"Mount","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"},"provisioningState":"Succeeded"},"type":"Microsoft.AVS/privateClouds/clusters/datastores"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/df-iscsi-datastore-3","name":"df-iscsi-datastore-3","properties":{"diskPoolVolume":{"lunName":"lun0","mountOption":"Mount","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"},"provisioningState":"Succeeded"},"type":"Microsoft.AVS/privateClouds/clusters/datastores"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/df-iscsi-datastore-4","name":"df-iscsi-datastore-4","properties":{"diskPoolVolume":{"lunName":"lun0","mountOption":"Mount","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"},"provisioningState":"Succeeded"},"type":"Microsoft.AVS/privateClouds/clusters/datastores"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1","name":"iSCSIDatastore1","properties":{"diskPoolVolume":{"lunName":"lun0","mountOption":"Mount","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"},"provisioningState":"Succeeded"},"type":"Microsoft.AVS/privateClouds/clusters/datastores"}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"},"status":"Accessible"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore2","name":"datastore2","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","diskPoolVolume":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.StoragePool/diskPools/DiskPool1/targets/Target1","lunName":"lun0","mountOption":"MOUNT","path":"/vmfs/devices/disks/naa.6001405f75f6bdf7f6f49db8b4b21723"},"status":"Accessible"}}]}'
     headers:
-      cache-control:
-      - no-cache
       content-length:
-      - '2916'
+      - '1133'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Thu, 03 Jun 2021 20:37:29 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 79E2159D4A5C48E681027A444D877178 Ref B: WSTEDGE1017 Ref C: 2021-06-03T20:37:29Z'
+      - Wed, 20 Sep 2023 15:28:09 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
 - request:
-    body: null
+    body: '{"properties": {"netAppVolume": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"}}}'
     headers:
       Accept:
-      - '*/*'
-      Accept-Charset:
-      - utf-8
+      - application/json
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - vmware datastore netapp-volume create
       Connection:
       - keep-alive
+      Content-Length:
+      - '226'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --private-cloud --cluster --volume-id
       User-Agent:
-      - python-requests/2.22.0
-      return-client-request-id:
-      - 'true'
-      x-client-CPU:
-      - x64
-      x-client-OS:
-      - win32
-      x-client-SKU:
-      - Python
-      x-client-Ver:
-      - 1.2.3
-    method: GET
-    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/ANFDatastore1?api-version=2023-03-01
   response:
     body:
-      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"},"status":"Accessible"}}'
     headers:
-      access-control-allow-methods:
-      - GET, OPTIONS
-      access-control-allow-origin:
-      - '*'
-      cache-control:
-      - max-age=86400, private
       content-length:
-      - '131'
+      - '520'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Thu, 03 Jun 2021 20:37:30 GMT
-      p3p:
-      - CP="DSP CUR OTPi IND OTRi ONL FIN"
-      set-cookie:
-      - fpc=AriST5J3hzRAmiqgDxWKxdw; expires=Sat, 03-Jul-2021 20:37:30 GMT; path=/;
-        secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrnxGW_OEXcfY54JU6624WEQiDYZBKAZ6_P6Y_Qreb0h4gl2J1NObsS9UC1XqhN-Uyg5lU0Mk3xxumnpiMoIwHqsxNBr0NM1qkNAN7faHj5tg91CsiWyF3vwC_34u_1PGExigwyJ6cRmCSY7bOMdhvJXWnBf2U24F_wcYLtFHVof8gAA;
-        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
-      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
-      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ests-server:
-      - 2.1.11722.26 - WUS2 ProdSlices
+      - Wed, 20 Sep 2023 15:28:14 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -472,50 +144,30 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - vmware datastore delete
+      - vmware datastore show
       Connection:
       - keep-alive
-      Content-Length:
-      - '0'
       ParameterSetName:
       - --name --resource-group --private-cloud --cluster
       User-Agent:
-      - AZURECLI/2.19.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: DELETE
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2021-06-01
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/ANFDatastore1?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1","name":"iSCSIDatastore1","properties":{"diskPoolVolume":{"lunName":"lun0","mountOption":"Mount","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"},"provisioningState":"Pending"},"type":"Microsoft.AVS/privateClouds/clusters/datastores"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"},"status":"Accessible"}}'
     headers:
-      azure-asyncoperation:
-      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1/operationstatuses/71b73745-5644-4172-8cfd-305fb265d3c3?api-version=2021-06-01
-      cache-control:
-      - no-cache
       content-length:
-      - '570'
+      - '520'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Thu, 03 Jun 2021 20:37:31 GMT
-      expires:
-      - '-1'
-      location:
-      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1/operationresults/71b73745-5644-4172-8cfd-305fb265d3c3?api-version=2021-06-01
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
-      x-msedge-ref:
-      - 'Ref A: 506FAE2517144950846A0CE04475665E Ref B: WSTEDGE1015 Ref C: 2021-06-03T20:37:30Z'
+      - Wed, 20 Sep 2023 15:28:19 GMT
+      server:
+      - Rocket
     status:
-      code: 202
-      message: Accepted
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -527,36 +179,61 @@ interactions:
       - vmware datastore delete
       Connection:
       - keep-alive
+      Content-Length:
+      - '0'
       ParameterSetName:
-      - --name --resource-group --private-cloud --cluster
+      - --name --resource-group --private-cloud --cluster --yes
       User-Agent:
-      - AZURECLI/2.19.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1/operationstatuses/71b73745-5644-4172-8cfd-305fb265d3c3?api-version=2021-06-01
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2023-03-01
   response:
     body:
-      string: '{"endTime":"2021-06-03T20:37:30.7641057+00:00","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1/operationstatuses/71b73745-5644-4172-8cfd-305fb265d3c3","name":"71b73745-5644-4172-8cfd-305fb265d3c3","percentComplete":100,"startTime":"2021-06-03T20:37:30.2163126+00:00","status":"Succeeded"}'
+      string: ''
     headers:
-      cache-control:
-      - no-cache
       content-length:
-      - '433'
-      content-type:
-      - application/json; charset=utf-8
+      - '0'
       date:
-      - Thu, 03 Jun 2021 20:37:41 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 2A4A67D2A0974537AF413865BC47527D Ref B: WSTEDGE1015 Ref C: 2021-06-03T20:37:41Z'
+      - Wed, 20 Sep 2023 15:28:24 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"diskPoolVolume": {"lunName": "lun0", "mountOption": "ATTACH",
+      "targetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware datastore disk-pool-volume create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '272'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --private-cloud --cluster --target-id --lun-name --mount-option
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"},"status":"Accessible"}}'
+    headers:
+      content-length:
+      - '520'
+      content-type:
+      - application/json
+      date:
+      - Wed, 20 Sep 2023 15:28:29 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK

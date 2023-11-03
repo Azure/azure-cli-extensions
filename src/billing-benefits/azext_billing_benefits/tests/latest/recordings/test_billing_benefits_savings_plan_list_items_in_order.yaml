@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits savings-plan-order savings-plan list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --savings-plan-order-id
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.BillingBenefits/savingsPlanOrders/91636c5c-051b-4c19-afd7-2b774259d49f/savingsPlans?api-version=2022-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/microsoft.billingbenefits/savingsPlanOrders/91636c5c-051b-4c19-afd7-2b774259d49f/savingsPlans/21adf2a7-70e4-4ff2-a011-cc111adafb0f","name":"21adf2a7-70e4-4ff2-a011-cc111adafb0f","type":"microsoft.billingbenefits/savingsPlanOrders/savingsPlans","sku":{"name":"Compute_Savings_Plan"},"properties":{"billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/4973e1de-a829-5c64-4fef-0a692e2b3108:1970c5da-0aa4-46fd-a917-4772f9a17978_2019-05-31","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/4973e1de-a829-5c64-4fef-0a692e2b3108:1970c5da-0aa4-46fd-a917-4772f9a17978_2019-05-31/billingProfiles/KPSV-DWNE-BG7-TGB","billingPlan":"P1M","commitment":{"grain":"Hourly","currencyCode":"USD","amount":0.001},"renew":false,"appliedScopeType":"Shared","displayName":"Compute_SavingsPlan_12-01-2022_23-49","provisioningState":"Succeeded","term":"P3Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Shared","expiryDateTime":"2025-12-02T07:52:45.4795490Z","purchaseDateTime":"2022-12-02T07:50:49.9260935Z","benefitStartTime":"2022-12-02T07:52:45.4795490Z","effectiveDateTime":"2022-12-16T01:43:13.0715176Z","utilization":{"trend":"SAME","aggregates":[{"grain":1.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":7.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":30.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"}]}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1497'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:47:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+version: 1

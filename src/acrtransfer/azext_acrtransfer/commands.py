@@ -45,3 +45,4 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_pipelinerun')
         g.custom_command('list', 'list_pipelinerun')
         g.custom_show_command('show', 'get_pipelinerun')
+        g.custom_command('clean', 'clean_pipelinerun')

@@ -1,0 +1,935 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --plan-data --user-info --tags
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-resource/19.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_logz_000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001",
+        "name": "cli_test_logz_000001", "type": "Microsoft.Resources/resourceGroups",
+        "location": "westus2", "tags": {"product": "azurecli", "cause": "automation",
+        "date": "2021-10-26T06:41:42Z"}, "properties": {"provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '429'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:41:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"monitoringStatus": "Enabled", "marketplaceSubscriptionStatus":
+      "Active", "userInfo": {"firstName": "Ethan", "lastName": "Yang", "emailAddress":
+      "ethanyang@microsoft.com", "phoneNumber": "01234567"}, "planData": {"usageType":
+      "Committed", "billingCycle": "Monthly", "planDetails": "100gb14days", "effectiveDate":
+      "2021-08-31T13:14:33.000Z"}}, "tags": {"Environment": "Dev"}, "location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz monitor create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '413'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --plan-data --user-info --tags
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1",
+        "name": "monitor1", "type": "microsoft.logz/monitors", "location": "westus2",
+        "tags": {"Environment": "Dev"}, "systemData": {"createdBy": "ethanyang@microsoft.com",
+        "createdByType": "User", "createdAt": "2021-10-26T06:41:53.2657619Z", "lastModifiedBy":
+        "ethanyang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2021-10-26T06:41:53.2657619Z"}, "properties": {"provisioningState": "Accepted",
+        "monitoringStatus": "Enabled", "marketplaceSubscriptionStatus": "Active",
+        "logzOrganizationProperties": {"companyName": null, "id": null, "enterpriseAppId":
+        null, "singleSignOnUrl": null}, "userInfo": null, "planData": {"usageType":
+        "Committed", "billingCycle": "Monthly", "planDetails": "100gb14days", "effectiveDate":
+        "2021-08-31T13:14:33Z"}, "liftrResourceCategory": "MonitorLogs", "liftrResourcePreference":
+        0}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D?api-version=2020-10-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '966'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:41:59 GMT
+      etag:
+      - '"5e0022f2-0000-0800-0000-6177a3360000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D?api-version=2020-10-01
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:7ddc8157-0cfc-4630-87f5-4c20949f830d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --plan-data --user-info --tags
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D",
+        "name": "b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1",
+        "status": "Accepted", "startTime": "2021-10-26T06:41:57.6066436Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '547'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:42:29 GMT
+      etag:
+      - '"57019cd4-0000-0800-0000-6177a3350000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --plan-data --user-info --tags
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D",
+        "name": "b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1",
+        "status": "Accepted", "startTime": "2021-10-26T06:41:57.6066436Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '547'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:42:59 GMT
+      etag:
+      - '"57019cd4-0000-0800-0000-6177a3350000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --plan-data --user-info --tags
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D",
+        "name": "b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1",
+        "status": "Accepted", "startTime": "2021-10-26T06:41:57.6066436Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '547'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:43:30 GMT
+      etag:
+      - '"57019cd4-0000-0800-0000-6177a3350000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --plan-data --user-info --tags
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D",
+        "name": "b67e1851-7a17-4996-a08e-d4d655bb5013*489C4648FA4E39C4D12183669CF03877595822EF83727406551B4C5911EE3D5D",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1",
+        "status": "Succeeded", "startTime": "2021-10-26T06:41:57.6066436Z", "endTime":
+        "2021-10-26T06:43:40.5220054Z", "error": {}, "properties": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '618'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:44:00 GMT
+      etag:
+      - '"570101d5-0000-0800-0000-6177a39c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --plan-data --user-info --tags
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1",
+        "name": "monitor1", "type": "microsoft.logz/monitors", "location": "westus2",
+        "tags": {"Environment": "Dev"}, "systemData": {"createdBy": "ethanyang@microsoft.com",
+        "createdByType": "User", "createdAt": "2021-10-26T06:41:53.2657619Z", "lastModifiedBy":
+        "a5472e16-e1d2-4bbe-81b3-ecdcd459b536", "lastModifiedByType": "Application",
+        "lastModifiedAt": "2021-10-26T06:43:40.3459529Z"}, "properties": {"provisioningState":
+        "Succeeded", "monitoringStatus": "Enabled", "marketplaceSubscriptionStatus":
+        "Active", "logzOrganizationProperties": {"id": "361055"}, "planData": {"usageType":
+        "Committed", "billingCycle": "Monthly", "planDetails": "100gb14days", "effectiveDate":
+        "2021-08-31T13:14:33Z"}, "liftrResourceCategory": "MonitorLogs", "liftrResourcePreference":
+        0}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '910'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:44:01 GMT
+      etag:
+      - '"5e0035f3-0000-0800-0000-6177a39c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz sub-account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --monitor-name --plan-data --user-info --tags
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-resource/19.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_logz_000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001",
+        "name": "cli_test_logz_000001", "type": "Microsoft.Resources/resourceGroups",
+        "location": "westus2", "tags": {"product": "azurecli", "cause": "automation",
+        "date": "2021-10-26T06:41:42Z"}, "properties": {"provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '429'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:44:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"monitoringStatus": "Enabled", "marketplaceSubscriptionStatus":
+      "Active", "userInfo": {"firstName": "Ethan", "lastName": "Yang", "emailAddress":
+      "ethanyang@microsoft.com", "phoneNumber": "01234567"}, "planData": {"usageType":
+      "Committed", "billingCycle": "Monthly", "planDetails": "100gb14days", "effectiveDate":
+      "2021-08-31T13:14:33.000Z"}}, "tags": {"Environment": "Dev"}, "location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz sub-account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '413'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --monitor-name --plan-data --user-info --tags
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2",
+        "name": "monitor2", "type": "microsoft.logz/monitors/accounts", "location":
+        "westus2", "tags": {"Environment": "Dev"}, "systemData": {"createdBy": "ethanyang@microsoft.com",
+        "createdByType": "User", "createdAt": "2021-10-26T06:44:07.7320248Z", "lastModifiedBy":
+        "ethanyang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2021-10-26T06:44:07.7320248Z"}, "properties": {"provisioningState": "Accepted",
+        "monitoringStatus": "Enabled", "marketplaceSubscriptionStatus": "Active",
+        "logzOrganizationProperties": {"companyName": "monitor1", "id": null, "enterpriseAppId":
+        null, "singleSignOnUrl": null}, "userInfo": null, "planData": {"usageType":
+        "Committed", "billingCycle": "Monthly", "planDetails": "100gb14days", "effectiveDate":
+        "2021-08-31T13:14:33Z"}, "liftrResourceCategory": "MonitorLogs", "liftrResourcePreference":
+        0}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/de8e2202-0b88-4a15-bdf5-52cdd94ce086*FC6AB7F969F2FFA1546D7D72D564EFA675C4FA52B63872729F88D238E14927DE?api-version=2020-10-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '999'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:44:11 GMT
+      etag:
+      - '"c503c65d-0000-0800-0000-6177a3b90000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/de8e2202-0b88-4a15-bdf5-52cdd94ce086*FC6AB7F969F2FFA1546D7D72D564EFA675C4FA52B63872729F88D238E14927DE?api-version=2020-10-01
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:7ddc8157-0cfc-4630-87f5-4c20949f830d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz sub-account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --monitor-name --plan-data --user-info --tags
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/de8e2202-0b88-4a15-bdf5-52cdd94ce086*FC6AB7F969F2FFA1546D7D72D564EFA675C4FA52B63872729F88D238E14927DE?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/providers/Microsoft.Logz/locations/WESTUS2/operationStatuses/de8e2202-0b88-4a15-bdf5-52cdd94ce086*FC6AB7F969F2FFA1546D7D72D564EFA675C4FA52B63872729F88D238E14927DE",
+        "name": "de8e2202-0b88-4a15-bdf5-52cdd94ce086*FC6AB7F969F2FFA1546D7D72D564EFA675C4FA52B63872729F88D238E14927DE",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2",
+        "status": "Succeeded", "startTime": "2021-10-26T06:44:09.3710206Z", "endTime":
+        "2021-10-26T06:44:27.6585251Z", "error": {}, "properties": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '636'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:44:41 GMT
+      etag:
+      - '"57012cd5-0000-0800-0000-6177a3cb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz sub-account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --monitor-name --plan-data --user-info --tags
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2",
+        "name": "monitor2", "type": "microsoft.logz/monitors/accounts", "location":
+        "westus2", "tags": {"Environment": "Dev"}, "systemData": {"createdBy": "ethanyang@microsoft.com",
+        "createdByType": "User", "createdAt": "2021-10-26T06:44:07.7320248Z", "lastModifiedBy":
+        "a5472e16-e1d2-4bbe-81b3-ecdcd459b536", "lastModifiedByType": "Application",
+        "lastModifiedAt": "2021-10-26T06:44:27.4707006Z"}, "properties": {"provisioningState":
+        "Succeeded", "monitoringStatus": "Enabled", "marketplaceSubscriptionStatus":
+        "Active", "logzOrganizationProperties": {"companyName": "monitor1", "id":
+        "361060"}, "planData": {"usageType": "Committed", "billingCycle": "Monthly",
+        "planDetails": "100gb14days", "effectiveDate": "2021-08-31T13:14:33Z"}, "liftrResourceCategory":
+        "MonitorLogs", "liftrResourcePreference": 0}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '962'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:44:42 GMT
+      etag:
+      - '"c5032a5e-0000-0800-0000-6177a3cb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"logRules": {"sendAadLogs": false, "sendSubscriptionLogs":
+      true, "sendActivityLogs": true, "filteringTags": [{"name": "Environment", "value":
+      "Dev", "action": "Exclude"}]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz sub-rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '189'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --monitor-name -g --sub-account-name --filtering-tag --send-aad-logs --send-activity-logs
+        --send-subscription-logs --rule-set-name
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default",
+        "name": "default", "type": "microsoft.logz/monitors/accounts/tagrules", "systemData":
+        {"createdBy": "ethanyang@microsoft.com", "createdByType": "User", "createdAt":
+        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "ethanyang@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2021-10-26T06:44:44.3418119Z"},
+        "properties": {"logRules": {"sendAadLogs": false, "sendSubscriptionLogs":
+        true, "sendActivityLogs": true, "filteringTags": [{"name": "Environment",
+        "value": "Dev", "action": "Exclude"}]}, "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '741'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:44:44 GMT
+      etag:
+      - '"db00f2d4-0000-0800-0000-6177a3dd0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:7ddc8157-0cfc-4630-87f5-4c20949f830d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz sub-rule list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --monitor-name -g --sub-account-name
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules?api-version=2020-10-01
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default",
+        "name": "default", "type": "microsoft.logz/monitors/accounts/tagrules", "systemData":
+        {"createdBy": "ethanyang@microsoft.com", "createdByType": "User", "createdAt":
+        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "ethanyang@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2021-10-26T06:44:44.3418119Z"},
+        "properties": {"logRules": {"sendAadLogs": false, "sendSubscriptionLogs":
+        true, "sendActivityLogs": true, "filteringTags": [{"name": "Environment",
+        "value": "Dev", "action": "Exclude"}]}, "provisioningState": "Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '753'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:44:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz sub-rule update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --monitor-name -g --sub-account-name --rule-set-name --send-aad-logs
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default",
+        "name": "default", "type": "microsoft.logz/monitors/accounts/tagrules", "systemData":
+        {"createdBy": "ethanyang@microsoft.com", "createdByType": "User", "createdAt":
+        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "ethanyang@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2021-10-26T06:44:44.3418119Z"},
+        "properties": {"logRules": {"sendAadLogs": false, "sendSubscriptionLogs":
+        true, "sendActivityLogs": true, "filteringTags": [{"name": "Environment",
+        "value": "Dev", "action": "Exclude"}]}, "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '741'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:44:49 GMT
+      etag:
+      - '"db00f2d4-0000-0800-0000-6177a3dd0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"logRules": {"sendAadLogs": true, "sendSubscriptionLogs":
+      true, "sendActivityLogs": true, "filteringTags": [{"name": "Environment", "value":
+      "Dev", "action": "Exclude"}]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz sub-rule update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '188'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --monitor-name -g --sub-account-name --rule-set-name --send-aad-logs
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default",
+        "name": "default", "type": "microsoft.logz/monitors/accounts/tagrules", "systemData":
+        {"createdBy": "ethanyang@microsoft.com", "createdByType": "User", "createdAt":
+        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "ethanyang@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2021-10-26T06:44:44.3418119Z"},
+        "properties": {"logRules": {"sendAadLogs": true, "sendSubscriptionLogs": true,
+        "sendActivityLogs": true, "filteringTags": [{"name": "Environment", "value":
+        "Dev", "action": "Exclude"}]}, "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '740'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:44:51 GMT
+      etag:
+      - '"db00f3d4-0000-0800-0000-6177a3e40000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:7ddc8157-0cfc-4630-87f5-4c20949f830d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1194'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz sub-rule show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --monitor-name -g --sub-account-name --rule-set-name
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default",
+        "name": "default", "type": "microsoft.logz/monitors/accounts/tagrules", "systemData":
+        {"createdBy": "ethanyang@microsoft.com", "createdByType": "User", "createdAt":
+        "2021-10-26T06:44:44.3418119Z", "lastModifiedBy": "ethanyang@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2021-10-26T06:44:44.3418119Z"},
+        "properties": {"logRules": {"sendAadLogs": true, "sendSubscriptionLogs": true,
+        "sendActivityLogs": true, "filteringTags": [{"name": "Environment", "value":
+        "Dev", "action": "Exclude"}]}, "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '740'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Oct 2021 06:44:53 GMT
+      etag:
+      - '"db00f3d4-0000-0800-0000-6177a3e40000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logz sub-rule delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --monitor-name -g --sub-account-name --rule-set-name --yes
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-logz/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logz_000001/providers/Microsoft.Logz/monitors/monitor1/accounts/monitor2/tagRules/default?api-version=2020-10-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 26 Oct 2021 06:44:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

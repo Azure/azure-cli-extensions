@@ -3,12 +3,15 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=all
-# Generated from ScheduleQueryCondition.g4 by ANTLR 4.7.2
+# Generated from ScheduleQueryCondition.g4 by ANTLR 4.9.3
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
-from typing.io import TextIO
 import sys
+if sys.version_info[1] > 5:
+	from typing import TextIO
+else:
+	from typing.io import TextIO
 
 
 def serializedATN():
@@ -129,18 +132,18 @@ class ScheduleQueryConditionParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "'/'", "'.'", "'_'", "'\\'", "':'", "'%'",
-                     "'-'", "','", "'|'", "'&'", "'('", "')'", "'=='", "'\\\"'",
+    literalNames = [ "<INVALID>", "'/'", "'.'", "'_'", "'\\'", "':'", "'%'", 
+                     "'-'", "','", "'|'", "'&'", "'('", "')'", "'=='", "'\\\"'", 
                      "'\\''", "'*'", "'~'" ]
 
-    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                      "<INVALID>", "<INVALID>", "WHERE", "COMESFROM", "RESOURCE",
-                      "COLUMN", "AT", "LEAST", "OUT", "OF", "VIOLATIONS",
-                      "AGGREGATED", "POINTS", "AND", "INCLUDES", "EXCLUDES",
-                      "OR", "OPERATOR", "NUMBER", "QUOTE", "WHITESPACE",
+    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "WHERE", "COMESFROM", "RESOURCE", 
+                      "COLUMN", "AT", "LEAST", "OUT", "OF", "VIOLATIONS", 
+                      "AGGREGATED", "POINTS", "AND", "INCLUDES", "EXCLUDES", 
+                      "OR", "OPERATOR", "NUMBER", "QUOTE", "WHITESPACE", 
                       "NEWLINE", "WORD" ]
 
     RULE_expression = 0
@@ -177,13 +180,13 @@ class ScheduleQueryConditionParser ( Parser ):
     RULE_dim_values = 31
     RULE_dim_value = 32
 
-    ruleNames =  [ "expression", "aggregation", "comes_from", "namespace",
-                   "metric_with_quote", "metric", "query_with_quote", "query",
-                   "operator", "threshold", "resource_column", "resource_id",
-                   "resource", "column", "falling_period", "at", "least",
-                   "violations", "out", "of", "min_times", "aggregated",
-                   "points", "evaluation_period", "where", "dimensions",
-                   "dimension", "dim_separator", "dim_operator", "dim_val_separator",
+    ruleNames =  [ "expression", "aggregation", "comes_from", "namespace", 
+                   "metric_with_quote", "metric", "query_with_quote", "query", 
+                   "operator", "threshold", "resource_column", "resource_id", 
+                   "resource", "column", "falling_period", "at", "least", 
+                   "violations", "out", "of", "min_times", "aggregated", 
+                   "points", "evaluation_period", "where", "dimensions", 
+                   "dimension", "dim_separator", "dim_operator", "dim_val_separator", 
                    "dim_name", "dim_values", "dim_value" ]
 
     EOF = Token.EOF
@@ -228,7 +231,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.7.2")
+        self.checkVersion("4.9.3")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 
@@ -236,6 +239,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class ExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -351,7 +355,7 @@ class ScheduleQueryConditionParser ( Parser ):
                     self.state = 80
                     self.match(ScheduleQueryConditionParser.WHITESPACE)
                     self.state = 81
-                    self.dimensions()
+                    self.dimensions() 
                 self.state = 86
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,2,self._ctx)
@@ -386,6 +390,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class AggregationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -431,6 +436,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Comes_fromContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -476,6 +482,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class NamespaceContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -508,7 +515,7 @@ class ScheduleQueryConditionParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 104
+            self.state = 104 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -519,7 +526,7 @@ class ScheduleQueryConditionParser ( Parser ):
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 106
+                self.state = 106 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << ScheduleQueryConditionParser.T__0) | (1 << ScheduleQueryConditionParser.T__1) | (1 << ScheduleQueryConditionParser.WORD))) != 0)):
@@ -535,6 +542,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Metric_with_quoteContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -603,6 +611,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class MetricContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -641,7 +650,7 @@ class ScheduleQueryConditionParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 118
+            self.state = 118 
             self._errHandler.sync(self)
             _alt = 1
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
@@ -656,7 +665,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
                 else:
                     raise NoViableAltException(self)
-                self.state = 120
+                self.state = 120 
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,7,self._ctx)
 
@@ -670,6 +679,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Query_with_quoteContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -721,6 +731,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class QueryContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -790,7 +801,7 @@ class ScheduleQueryConditionParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 148
+            self.state = 148 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -888,7 +899,7 @@ class ScheduleQueryConditionParser ( Parser ):
                 else:
                     raise NoViableAltException(self)
 
-                self.state = 150
+                self.state = 150 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << ScheduleQueryConditionParser.T__0) | (1 << ScheduleQueryConditionParser.T__1) | (1 << ScheduleQueryConditionParser.T__2) | (1 << ScheduleQueryConditionParser.T__3) | (1 << ScheduleQueryConditionParser.T__4) | (1 << ScheduleQueryConditionParser.T__5) | (1 << ScheduleQueryConditionParser.T__6) | (1 << ScheduleQueryConditionParser.T__7) | (1 << ScheduleQueryConditionParser.T__8) | (1 << ScheduleQueryConditionParser.T__9) | (1 << ScheduleQueryConditionParser.T__10) | (1 << ScheduleQueryConditionParser.T__11) | (1 << ScheduleQueryConditionParser.T__12) | (1 << ScheduleQueryConditionParser.T__13) | (1 << ScheduleQueryConditionParser.T__14) | (1 << ScheduleQueryConditionParser.WHERE) | (1 << ScheduleQueryConditionParser.AND) | (1 << ScheduleQueryConditionParser.OR) | (1 << ScheduleQueryConditionParser.OPERATOR) | (1 << ScheduleQueryConditionParser.NUMBER) | (1 << ScheduleQueryConditionParser.WHITESPACE) | (1 << ScheduleQueryConditionParser.WORD))) != 0)):
@@ -904,6 +915,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class OperatorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -949,6 +961,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class ThresholdContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -989,6 +1002,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Resource_columnContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1042,6 +1056,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Resource_idContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1080,7 +1095,7 @@ class ScheduleQueryConditionParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 162
+            self.state = 162 
             self._errHandler.sync(self)
             _alt = 1
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
@@ -1095,7 +1110,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
                 else:
                     raise NoViableAltException(self)
-                self.state = 164
+                self.state = 164 
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,10,self._ctx)
 
@@ -1109,6 +1124,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class ResourceContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1154,6 +1170,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class ColumnContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1199,6 +1216,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Falling_periodContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1288,6 +1306,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class AtContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1333,6 +1352,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class LeastContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1378,6 +1398,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class ViolationsContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1423,6 +1444,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class OutContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1468,6 +1490,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class OfContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1513,6 +1536,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Min_timesContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1558,6 +1582,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class AggregatedContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1603,6 +1628,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class PointsContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1643,6 +1669,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Evaluation_periodContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1688,6 +1715,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class WhereContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1733,6 +1761,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class DimensionsContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1803,6 +1832,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class DimensionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1856,6 +1886,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Dim_separatorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1907,6 +1938,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Dim_operatorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1961,6 +1993,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Dim_val_separatorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -2012,6 +2045,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Dim_nameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -2057,6 +2091,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Dim_valuesContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -2106,7 +2141,7 @@ class ScheduleQueryConditionParser ( Parser ):
                     self.state = 238
                     self.dim_val_separator()
                     self.state = 239
-                    self.dim_value()
+                    self.dim_value() 
                 self.state = 245
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,12,self._ctx)
@@ -2121,6 +2156,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Dim_valueContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -2165,7 +2201,7 @@ class ScheduleQueryConditionParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 247
+            self.state = 247 
             self._errHandler.sync(self)
             _alt = 1
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
@@ -2180,7 +2216,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
                 else:
                     raise NoViableAltException(self)
-                self.state = 249
+                self.state = 249 
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,13,self._ctx)
 

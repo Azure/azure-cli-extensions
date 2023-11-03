@@ -6,9 +6,9 @@
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from knack.util import CLIError
+from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -39,14 +39,14 @@ class OperationsScenarioTest(ScenarioTest):
             'wrong_workspace_resource_id': workspace['id'][1:]
         })
 
-        with self.assertRaises(CLIError) as err:
+        with self.assertRaises(InvalidArgumentValueError) as err:
             self.cmd('az monitor log-analytics solution create '
                      '--resource-group {rg} '
                      '--solution-type {solution_type} '
                      '--workspace "{wrong_workspace_resource_id}" ')
-            self.assertTrue("usage error: --workspace is invalid" == err.exception)
+            self.assertTrue("InvalidArgumentValue: --workspace: Invalid format: resource id should be in '/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.OperationalInsights/workspaces/{}' format." == err.exception)
 
-        with self.assertRaises(CLIError) as err:
+        with self.assertRaises(ArgumentUsageError) as err:
             self.cmd('az monitor log-analytics solution create '
                      '--resource-group {rg2} '
                      '--solution-type {solution_type} '

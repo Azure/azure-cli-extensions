@@ -6,121 +6,339 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-try:
-    from ._models_py3 import AutomationAccount
-    from ._models_py3 import AutomationAccountCreateOrUpdateParameters
-    from ._models_py3 import AutomationAccountListResult
-    from ._models_py3 import AutomationAccountUpdateParameters
-    from ._models_py3 import ContentHash
-    from ._models_py3 import ContentLink
-    from ._models_py3 import ErrorResponse
-    from ._models_py3 import Job
-    from ._models_py3 import JobCollectionItem
-    from ._models_py3 import JobCreateParameters
-    from ._models_py3 import JobListResultV2
-    from ._models_py3 import JobStream
-    from ._models_py3 import JobStreamListResult
-    from ._models_py3 import Key
-    from ._models_py3 import KeyListResult
-    from ._models_py3 import Operation
-    from ._models_py3 import OperationDisplay
-    from ._models_py3 import OperationListResult
-    from ._models_py3 import ProxyResource
-    from ._models_py3 import Resource
-    from ._models_py3 import Runbook
-    from ._models_py3 import RunbookAssociationProperty
-    from ._models_py3 import RunbookCreateOrUpdateDraftParameters
-    from ._models_py3 import RunbookCreateOrUpdateDraftProperties
-    from ._models_py3 import RunbookCreateOrUpdateParameters
-    from ._models_py3 import RunbookDraft
-    from ._models_py3 import RunbookDraftUndoEditResult
-    from ._models_py3 import RunbookListResult
-    from ._models_py3 import RunbookParameter
-    from ._models_py3 import RunbookUpdateParameters
-    from ._models_py3 import Sku
-    from ._models_py3 import Statistics
-    from ._models_py3 import StatisticsListResult
-    from ._models_py3 import TestJob
-    from ._models_py3 import TestJobCreateParameters
-    from ._models_py3 import TrackedResource
-    from ._models_py3 import Usage
-    from ._models_py3 import UsageCounterName
-    from ._models_py3 import UsageListResult
-except (SyntaxError, ImportError):
-    from ._models import AutomationAccount  # type: ignore
-    from ._models import AutomationAccountCreateOrUpdateParameters  # type: ignore
-    from ._models import AutomationAccountListResult  # type: ignore
-    from ._models import AutomationAccountUpdateParameters  # type: ignore
-    from ._models import ContentHash  # type: ignore
-    from ._models import ContentLink  # type: ignore
-    from ._models import ErrorResponse  # type: ignore
-    from ._models import Job  # type: ignore
-    from ._models import JobCollectionItem  # type: ignore
-    from ._models import JobCreateParameters  # type: ignore
-    from ._models import JobListResultV2  # type: ignore
-    from ._models import JobStream  # type: ignore
-    from ._models import JobStreamListResult  # type: ignore
-    from ._models import Key  # type: ignore
-    from ._models import KeyListResult  # type: ignore
-    from ._models import Operation  # type: ignore
-    from ._models import OperationDisplay  # type: ignore
-    from ._models import OperationListResult  # type: ignore
-    from ._models import ProxyResource  # type: ignore
-    from ._models import Resource  # type: ignore
-    from ._models import Runbook  # type: ignore
-    from ._models import RunbookAssociationProperty  # type: ignore
-    from ._models import RunbookCreateOrUpdateDraftParameters  # type: ignore
-    from ._models import RunbookCreateOrUpdateDraftProperties  # type: ignore
-    from ._models import RunbookCreateOrUpdateParameters  # type: ignore
-    from ._models import RunbookDraft  # type: ignore
-    from ._models import RunbookDraftUndoEditResult  # type: ignore
-    from ._models import RunbookListResult  # type: ignore
-    from ._models import RunbookParameter  # type: ignore
-    from ._models import RunbookUpdateParameters  # type: ignore
-    from ._models import Sku  # type: ignore
-    from ._models import Statistics  # type: ignore
-    from ._models import StatisticsListResult  # type: ignore
-    from ._models import TestJob  # type: ignore
-    from ._models import TestJobCreateParameters  # type: ignore
-    from ._models import TrackedResource  # type: ignore
-    from ._models import Usage  # type: ignore
-    from ._models import UsageCounterName  # type: ignore
-    from ._models import UsageListResult  # type: ignore
+from ._models_py3 import Activity
+from ._models_py3 import ActivityListResult
+from ._models_py3 import ActivityOutputType
+from ._models_py3 import ActivityParameter
+from ._models_py3 import ActivityParameterSet
+from ._models_py3 import ActivityParameterValidationSet
+from ._models_py3 import AdvancedSchedule
+from ._models_py3 import AdvancedScheduleMonthlyOccurrence
+from ._models_py3 import AgentRegistration
+from ._models_py3 import AgentRegistrationKeys
+from ._models_py3 import AgentRegistrationRegenerateKeyParameter
+from ._models_py3 import AutomationAccount
+from ._models_py3 import AutomationAccountCreateOrUpdateParameters
+from ._models_py3 import AutomationAccountListResult
+from ._models_py3 import AutomationAccountUpdateParameters
+from ._models_py3 import AzureQueryProperties
+from ._models_py3 import Certificate
+from ._models_py3 import CertificateCreateOrUpdateParameters
+from ._models_py3 import CertificateListResult
+from ._models_py3 import CertificateUpdateParameters
+from ._models_py3 import ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties
+from ._models_py3 import Connection
+from ._models_py3 import ConnectionCreateOrUpdateParameters
+from ._models_py3 import ConnectionListResult
+from ._models_py3 import ConnectionType
+from ._models_py3 import ConnectionTypeAssociationProperty
+from ._models_py3 import ConnectionTypeCreateOrUpdateParameters
+from ._models_py3 import ConnectionTypeListResult
+from ._models_py3 import ConnectionUpdateParameters
+from ._models_py3 import ContentHash
+from ._models_py3 import ContentLink
+from ._models_py3 import ContentSource
+from ._models_py3 import Credential
+from ._models_py3 import CredentialCreateOrUpdateParameters
+from ._models_py3 import CredentialListResult
+from ._models_py3 import CredentialUpdateParameters
+from ._models_py3 import DscCompilationJob
+from ._models_py3 import DscCompilationJobCreateParameters
+from ._models_py3 import DscCompilationJobListResult
+from ._models_py3 import DscConfiguration
+from ._models_py3 import DscConfigurationAssociationProperty
+from ._models_py3 import DscConfigurationCreateOrUpdateParameters
+from ._models_py3 import DscConfigurationListResult
+from ._models_py3 import DscConfigurationParameter
+from ._models_py3 import DscConfigurationUpdateParameters
+from ._models_py3 import DscMetaConfiguration
+from ._models_py3 import DscNode
+from ._models_py3 import DscNodeConfiguration
+from ._models_py3 import DscNodeConfigurationCreateOrUpdateParameters
+from ._models_py3 import DscNodeConfigurationListResult
+from ._models_py3 import DscNodeExtensionHandlerAssociationProperty
+from ._models_py3 import DscNodeListResult
+from ._models_py3 import DscNodeReport
+from ._models_py3 import DscNodeReportListResult
+from ._models_py3 import DscNodeUpdateParameters
+from ._models_py3 import DscNodeUpdateParametersProperties
+from ._models_py3 import DscReportError
+from ._models_py3 import DscReportResource
+from ._models_py3 import DscReportResourceNavigation
+from ._models_py3 import EncryptionProperties
+from ._models_py3 import EncryptionPropertiesIdentity
+from ._models_py3 import ErrorResponse
+from ._models_py3 import FieldDefinition
+from ._models_py3 import GraphicalRunbookContent
+from ._models_py3 import HybridRunbookWorker
+from ._models_py3 import HybridRunbookWorkerCreateParameters
+from ._models_py3 import HybridRunbookWorkerGroup
+from ._models_py3 import HybridRunbookWorkerGroupCreateOrUpdateParameters
+from ._models_py3 import HybridRunbookWorkerGroupUpdateParameters
+from ._models_py3 import HybridRunbookWorkerGroupsListResult
+from ._models_py3 import HybridRunbookWorkerLegacy
+from ._models_py3 import HybridRunbookWorkerMoveParameters
+from ._models_py3 import HybridRunbookWorkersListResult
+from ._models_py3 import Identity
+from ._models_py3 import Job
+from ._models_py3 import JobCollectionItem
+from ._models_py3 import JobCreateParameters
+from ._models_py3 import JobListResultV2
+from ._models_py3 import JobNavigation
+from ._models_py3 import JobSchedule
+from ._models_py3 import JobScheduleCreateParameters
+from ._models_py3 import JobScheduleListResult
+from ._models_py3 import JobStream
+from ._models_py3 import JobStreamListResult
+from ._models_py3 import Key
+from ._models_py3 import KeyListResult
+from ._models_py3 import KeyVaultProperties
+from ._models_py3 import LinkedWorkspace
+from ._models_py3 import LinuxProperties
+from ._models_py3 import Module
+from ._models_py3 import ModuleCreateOrUpdateParameters
+from ._models_py3 import ModuleErrorInfo
+from ._models_py3 import ModuleListResult
+from ._models_py3 import ModuleUpdateParameters
+from ._models_py3 import NodeCount
+from ._models_py3 import NodeCountProperties
+from ._models_py3 import NodeCounts
+from ._models_py3 import NonAzureQueryProperties
+from ._models_py3 import Operation
+from ._models_py3 import OperationDisplay
+from ._models_py3 import OperationListResult
+from ._models_py3 import PrivateEndpointConnection
+from ._models_py3 import PrivateEndpointConnectionListResult
+from ._models_py3 import PrivateEndpointProperty
+from ._models_py3 import PrivateLinkResource
+from ._models_py3 import PrivateLinkResourceListResult
+from ._models_py3 import PrivateLinkServiceConnectionStateProperty
+from ._models_py3 import ProxyResource
+from ._models_py3 import PythonPackageCreateParameters
+from ._models_py3 import PythonPackageUpdateParameters
+from ._models_py3 import RawGraphicalRunbookContent
+from ._models_py3 import Resource
+from ._models_py3 import RunAsCredentialAssociationProperty
+from ._models_py3 import Runbook
+from ._models_py3 import RunbookAssociationProperty
+from ._models_py3 import RunbookCreateOrUpdateDraftParameters
+from ._models_py3 import RunbookCreateOrUpdateDraftProperties
+from ._models_py3 import RunbookCreateOrUpdateParameters
+from ._models_py3 import RunbookDraft
+from ._models_py3 import RunbookDraftUndoEditResult
+from ._models_py3 import RunbookListResult
+from ._models_py3 import RunbookParameter
+from ._models_py3 import RunbookUpdateParameters
+from ._models_py3 import SUCScheduleProperties
+from ._models_py3 import Schedule
+from ._models_py3 import ScheduleAssociationProperty
+from ._models_py3 import ScheduleCreateOrUpdateParameters
+from ._models_py3 import ScheduleListResult
+from ._models_py3 import ScheduleUpdateParameters
+from ._models_py3 import Sku
+from ._models_py3 import SoftwareUpdateConfiguration
+from ._models_py3 import SoftwareUpdateConfigurationCollectionItem
+from ._models_py3 import SoftwareUpdateConfigurationListResult
+from ._models_py3 import SoftwareUpdateConfigurationMachineRun
+from ._models_py3 import SoftwareUpdateConfigurationMachineRunListResult
+from ._models_py3 import SoftwareUpdateConfigurationRun
+from ._models_py3 import SoftwareUpdateConfigurationRunListResult
+from ._models_py3 import SoftwareUpdateConfigurationRunTaskProperties
+from ._models_py3 import SoftwareUpdateConfigurationRunTasks
+from ._models_py3 import SoftwareUpdateConfigurationTasks
+from ._models_py3 import SourceControl
+from ._models_py3 import SourceControlCreateOrUpdateParameters
+from ._models_py3 import SourceControlListResult
+from ._models_py3 import SourceControlSecurityTokenProperties
+from ._models_py3 import SourceControlSyncJob
+from ._models_py3 import SourceControlSyncJobById
+from ._models_py3 import SourceControlSyncJobCreateParameters
+from ._models_py3 import SourceControlSyncJobListResult
+from ._models_py3 import SourceControlSyncJobStream
+from ._models_py3 import SourceControlSyncJobStreamById
+from ._models_py3 import SourceControlSyncJobStreamsListBySyncJob
+from ._models_py3 import SourceControlUpdateParameters
+from ._models_py3 import Statistics
+from ._models_py3 import StatisticsListResult
+from ._models_py3 import SystemData
+from ._models_py3 import TagSettingsProperties
+from ._models_py3 import TargetProperties
+from ._models_py3 import TaskProperties
+from ._models_py3 import TestJob
+from ._models_py3 import TestJobCreateParameters
+from ._models_py3 import TrackedResource
+from ._models_py3 import TypeField
+from ._models_py3 import TypeFieldListResult
+from ._models_py3 import UpdateConfiguration
+from ._models_py3 import UpdateConfigurationNavigation
+from ._models_py3 import Usage
+from ._models_py3 import UsageCounterName
+from ._models_py3 import UsageListResult
+from ._models_py3 import Variable
+from ._models_py3 import VariableCreateOrUpdateParameters
+from ._models_py3 import VariableListResult
+from ._models_py3 import VariableUpdateParameters
+from ._models_py3 import Watcher
+from ._models_py3 import WatcherListResult
+from ._models_py3 import WatcherUpdateParameters
+from ._models_py3 import Webhook
+from ._models_py3 import WebhookCreateOrUpdateParameters
+from ._models_py3 import WebhookListResult
+from ._models_py3 import WebhookUpdateParameters
+from ._models_py3 import WindowsProperties
+
 
 from ._automation_client_enums import (
+    AgentRegistrationKeyName,
     AutomationAccountState,
     AutomationKeyName,
     AutomationKeyPermissions,
+    ContentSourceType,
+    CountType,
+    CreatedByType,
+    DscConfigurationState,
+    EncryptionKeySourceType,
+    GraphRunbookType,
+    GroupTypeEnum,
     HttpStatusCode,
     JobProvisioningState,
     JobStatus,
     JobStreamType,
+    LinuxUpdateClasses,
+    ModuleProvisioningState,
+    OperatingSystemType,
+    ProvisioningState,
+    ResourceIdentityType,
     RunbookState,
     RunbookTypeEnum,
+    ScheduleDay,
+    ScheduleFrequency,
     SkuNameEnum,
+    SourceType,
+    StreamType,
+    SyncType,
+    TagOperators,
+    TokenType,
+    WindowsUpdateClasses,
+    WorkerType,
 )
-
+from ._patch import __all__ as _patch_all
+from ._patch import *  # type: ignore # pylint: disable=unused-wildcard-import
+from ._patch import patch_sdk as _patch_sdk
 __all__ = [
+    'Activity',
+    'ActivityListResult',
+    'ActivityOutputType',
+    'ActivityParameter',
+    'ActivityParameterSet',
+    'ActivityParameterValidationSet',
+    'AdvancedSchedule',
+    'AdvancedScheduleMonthlyOccurrence',
+    'AgentRegistration',
+    'AgentRegistrationKeys',
+    'AgentRegistrationRegenerateKeyParameter',
     'AutomationAccount',
     'AutomationAccountCreateOrUpdateParameters',
     'AutomationAccountListResult',
     'AutomationAccountUpdateParameters',
+    'AzureQueryProperties',
+    'Certificate',
+    'CertificateCreateOrUpdateParameters',
+    'CertificateListResult',
+    'CertificateUpdateParameters',
+    'ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties',
+    'Connection',
+    'ConnectionCreateOrUpdateParameters',
+    'ConnectionListResult',
+    'ConnectionType',
+    'ConnectionTypeAssociationProperty',
+    'ConnectionTypeCreateOrUpdateParameters',
+    'ConnectionTypeListResult',
+    'ConnectionUpdateParameters',
     'ContentHash',
     'ContentLink',
+    'ContentSource',
+    'Credential',
+    'CredentialCreateOrUpdateParameters',
+    'CredentialListResult',
+    'CredentialUpdateParameters',
+    'DscCompilationJob',
+    'DscCompilationJobCreateParameters',
+    'DscCompilationJobListResult',
+    'DscConfiguration',
+    'DscConfigurationAssociationProperty',
+    'DscConfigurationCreateOrUpdateParameters',
+    'DscConfigurationListResult',
+    'DscConfigurationParameter',
+    'DscConfigurationUpdateParameters',
+    'DscMetaConfiguration',
+    'DscNode',
+    'DscNodeConfiguration',
+    'DscNodeConfigurationCreateOrUpdateParameters',
+    'DscNodeConfigurationListResult',
+    'DscNodeExtensionHandlerAssociationProperty',
+    'DscNodeListResult',
+    'DscNodeReport',
+    'DscNodeReportListResult',
+    'DscNodeUpdateParameters',
+    'DscNodeUpdateParametersProperties',
+    'DscReportError',
+    'DscReportResource',
+    'DscReportResourceNavigation',
+    'EncryptionProperties',
+    'EncryptionPropertiesIdentity',
     'ErrorResponse',
+    'FieldDefinition',
+    'GraphicalRunbookContent',
+    'HybridRunbookWorker',
+    'HybridRunbookWorkerCreateParameters',
+    'HybridRunbookWorkerGroup',
+    'HybridRunbookWorkerGroupCreateOrUpdateParameters',
+    'HybridRunbookWorkerGroupUpdateParameters',
+    'HybridRunbookWorkerGroupsListResult',
+    'HybridRunbookWorkerLegacy',
+    'HybridRunbookWorkerMoveParameters',
+    'HybridRunbookWorkersListResult',
+    'Identity',
     'Job',
     'JobCollectionItem',
     'JobCreateParameters',
     'JobListResultV2',
+    'JobNavigation',
+    'JobSchedule',
+    'JobScheduleCreateParameters',
+    'JobScheduleListResult',
     'JobStream',
     'JobStreamListResult',
     'Key',
     'KeyListResult',
+    'KeyVaultProperties',
+    'LinkedWorkspace',
+    'LinuxProperties',
+    'Module',
+    'ModuleCreateOrUpdateParameters',
+    'ModuleErrorInfo',
+    'ModuleListResult',
+    'ModuleUpdateParameters',
+    'NodeCount',
+    'NodeCountProperties',
+    'NodeCounts',
+    'NonAzureQueryProperties',
     'Operation',
     'OperationDisplay',
     'OperationListResult',
+    'PrivateEndpointConnection',
+    'PrivateEndpointConnectionListResult',
+    'PrivateEndpointProperty',
+    'PrivateLinkResource',
+    'PrivateLinkResourceListResult',
+    'PrivateLinkServiceConnectionStateProperty',
     'ProxyResource',
+    'PythonPackageCreateParameters',
+    'PythonPackageUpdateParameters',
+    'RawGraphicalRunbookContent',
     'Resource',
+    'RunAsCredentialAssociationProperty',
     'Runbook',
     'RunbookAssociationProperty',
     'RunbookCreateOrUpdateDraftParameters',
@@ -131,23 +349,95 @@ __all__ = [
     'RunbookListResult',
     'RunbookParameter',
     'RunbookUpdateParameters',
+    'SUCScheduleProperties',
+    'Schedule',
+    'ScheduleAssociationProperty',
+    'ScheduleCreateOrUpdateParameters',
+    'ScheduleListResult',
+    'ScheduleUpdateParameters',
     'Sku',
+    'SoftwareUpdateConfiguration',
+    'SoftwareUpdateConfigurationCollectionItem',
+    'SoftwareUpdateConfigurationListResult',
+    'SoftwareUpdateConfigurationMachineRun',
+    'SoftwareUpdateConfigurationMachineRunListResult',
+    'SoftwareUpdateConfigurationRun',
+    'SoftwareUpdateConfigurationRunListResult',
+    'SoftwareUpdateConfigurationRunTaskProperties',
+    'SoftwareUpdateConfigurationRunTasks',
+    'SoftwareUpdateConfigurationTasks',
+    'SourceControl',
+    'SourceControlCreateOrUpdateParameters',
+    'SourceControlListResult',
+    'SourceControlSecurityTokenProperties',
+    'SourceControlSyncJob',
+    'SourceControlSyncJobById',
+    'SourceControlSyncJobCreateParameters',
+    'SourceControlSyncJobListResult',
+    'SourceControlSyncJobStream',
+    'SourceControlSyncJobStreamById',
+    'SourceControlSyncJobStreamsListBySyncJob',
+    'SourceControlUpdateParameters',
     'Statistics',
     'StatisticsListResult',
+    'SystemData',
+    'TagSettingsProperties',
+    'TargetProperties',
+    'TaskProperties',
     'TestJob',
     'TestJobCreateParameters',
     'TrackedResource',
+    'TypeField',
+    'TypeFieldListResult',
+    'UpdateConfiguration',
+    'UpdateConfigurationNavigation',
     'Usage',
     'UsageCounterName',
     'UsageListResult',
+    'Variable',
+    'VariableCreateOrUpdateParameters',
+    'VariableListResult',
+    'VariableUpdateParameters',
+    'Watcher',
+    'WatcherListResult',
+    'WatcherUpdateParameters',
+    'Webhook',
+    'WebhookCreateOrUpdateParameters',
+    'WebhookListResult',
+    'WebhookUpdateParameters',
+    'WindowsProperties',
+    'AgentRegistrationKeyName',
     'AutomationAccountState',
     'AutomationKeyName',
     'AutomationKeyPermissions',
+    'ContentSourceType',
+    'CountType',
+    'CreatedByType',
+    'DscConfigurationState',
+    'EncryptionKeySourceType',
+    'GraphRunbookType',
+    'GroupTypeEnum',
     'HttpStatusCode',
     'JobProvisioningState',
     'JobStatus',
     'JobStreamType',
+    'LinuxUpdateClasses',
+    'ModuleProvisioningState',
+    'OperatingSystemType',
+    'ProvisioningState',
+    'ResourceIdentityType',
     'RunbookState',
     'RunbookTypeEnum',
+    'ScheduleDay',
+    'ScheduleFrequency',
     'SkuNameEnum',
+    'SourceType',
+    'StreamType',
+    'SyncType',
+    'TagOperators',
+    'TokenType',
+    'WindowsUpdateClasses',
+    'WorkerType',
 ]
+__all__.extend([p for p in _patch_all if p not in __all__])
+_patch_sdk()

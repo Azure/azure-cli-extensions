@@ -7,7 +7,7 @@
 # --------------------------------------------------------------------------
 
 try:
-    from ._models_py3 import Action
+    from ._models_py3 import Actions
     from ._models_py3 import Condition
     from ._models_py3 import ConditionFailingPeriods
     from ._models_py3 import Dimension
@@ -22,7 +22,7 @@ try:
     from ._models_py3 import SystemData
     from ._models_py3 import TrackedResource
 except (SyntaxError, ImportError):
-    from ._models import Action  # type: ignore
+    from ._models import Actions  # type: ignore
     from ._models import Condition  # type: ignore
     from ._models import ConditionFailingPeriods  # type: ignore
     from ._models import Dimension  # type: ignore
@@ -47,7 +47,7 @@ from ._monitor_management_client_enums import (
 )
 
 __all__ = [
-    'Action',
+    'Actions',
     'Condition',
     'ConditionFailingPeriods',
     'Dimension',

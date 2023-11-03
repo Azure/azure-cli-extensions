@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.10.7"
+VERSION = "1.0.0a1"
 
 
 CLASSIFIERS = [
@@ -42,7 +42,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/mesh',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/mesh',
     classifiers=CLASSIFIERS,
     package_data={'azext_mesh': ['azext_metadata.json']},
     packages=find_packages(),

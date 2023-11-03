@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.4"
+VERSION = "0.0.5"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -33,7 +33,7 @@ setup(
     license='MIT',
     author='Xiangyu Luo',
     author_email='xiangyul@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/mixed-reality',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/mixed-reality',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES,

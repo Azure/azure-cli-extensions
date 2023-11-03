@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.1.3'
+VERSION = '1.0.4'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -33,9 +33,10 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'setproctitle==1.2.2',
-    'mycli==1.22.2',
-    'pgcli==3.0.0'
+    'setproctitle~=1.2.2',
+    'psycopg2==2.9.3',
+    'mycli==1.26.1',
+    'pgcli==3.4.1'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
@@ -50,7 +51,7 @@ setup(
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/rdbms-connect',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/rdbms-connect',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

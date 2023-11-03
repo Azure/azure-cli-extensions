@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.2.0'
+VERSION = '0.2.1'
 try:
     from azext_attestation.manual.version import VERSION
 except ImportError:
@@ -50,7 +50,7 @@ setup(
     description='Microsoft Azure Command-Line Tools AttestationManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/attestation',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/attestation',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

@@ -41,7 +41,7 @@ setup(
     author_email='ilidemi@microsoft.com',
     maintainer='Azure Resource Graph',
     maintainer_email='earc@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/resource-graph',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/resource-graph',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     package_data={'azext_resourcegraph': ['azext_metadata.json']},

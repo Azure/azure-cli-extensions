@@ -1,0 +1,1487 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '800'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:54:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"NotFound","message":"KPack buildpacksBinding does
+        not exist","target":"default/test-binding-name","details":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '132'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:54:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"properties": {"bindingType": "ApplicationInsights", "launchProperties":
+      {"properties": {"a": "b", "b": "c"}, "secrets": {"x": "y", "y": "z"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '145'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Creating","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:54:46.3402505Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a0d1278d-55bc-47d2-9ace-7142e6bf8d78?api-version=2022-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '726'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:54:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/a0d1278d-55bc-47d2-9ace-7142e6bf8d78/Spring/test-buildpack-binding?api-version=2022-01-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a0d1278d-55bc-47d2-9ace-7142e6bf8d78?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a0d1278d-55bc-47d2-9ace-7142e6bf8d78","name":"a0d1278d-55bc-47d2-9ace-7142e6bf8d78","status":"Succeeded","startTime":"2022-01-07T11:54:50.4769869Z","endTime":"2022-01-07T11:54:57.4899293Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '378'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:55:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:54:46.3402505Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '727'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:55:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '800'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:55:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11998'
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:54:46.3402505Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '727'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:55:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:54:46.3402505Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '727'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:55:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '800'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:55:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11997'
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:54:46.3402505Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '727'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:55:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"bindingType": "NewRelic", "launchProperties": {"properties":
+      {"a": "b"}, "secrets": {"c": "d"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding set
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '114'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Updating","bindingType":"NewRelic","launchProperties":{"properties":{"a":"b"},"secrets":{"c":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:55:36.0622673Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a6bdf74b-39a8-425e-9cdc-11c4ba49143b?api-version=2022-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '699'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:55:40 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/a6bdf74b-39a8-425e-9cdc-11c4ba49143b/Spring/test-buildpack-binding?api-version=2022-01-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a6bdf74b-39a8-425e-9cdc-11c4ba49143b?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a6bdf74b-39a8-425e-9cdc-11c4ba49143b","name":"a6bdf74b-39a8-425e-9cdc-11c4ba49143b","status":"Succeeded","startTime":"2022-01-07T11:55:40.4735174Z","endTime":"2022-01-07T11:55:50.4056357Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '378'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:56:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","bindingType":"NewRelic","launchProperties":{"properties":{"a":"b"},"secrets":{"c":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:55:36.0622673Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '700'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:56:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '800'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:56:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11997'
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","bindingType":"NewRelic","launchProperties":{"properties":{"a":"b"},"secrets":{"c":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:55:36.0622673Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '700'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:56:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-01-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/8cc21ac2-d90c-4a5c-a985-18bfe7faccba?api-version=2022-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 Jan 2022 11:56:23 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/8cc21ac2-d90c-4a5c-a985-18bfe7faccba/Spring/test-buildpack-binding?api-version=2022-01-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/8cc21ac2-d90c-4a5c-a985-18bfe7faccba?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/8cc21ac2-d90c-4a5c-a985-18bfe7faccba","name":"8cc21ac2-d90c-4a5c-a985-18bfe7faccba","status":"Succeeded","startTime":"2022-01-07T11:56:23.4616931Z","endTime":"2022-01-07T11:56:30.3724245Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '378'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:56:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '800'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:56:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11997'
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"NotFound","message":"KPack buildpacksBinding does
+        not exist","target":"default/test-binding-name-0","details":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:56:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"properties": {"bindingType": "ApplicationInsights", "launchProperties":
+      {"properties": {"a": "b", "b": "c"}, "secrets": {"x": "y", "y": "z"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '145'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Creating","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0","name":"test-binding-name-0","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:56:58.77283Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:56:58.77283Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf?api-version=2022-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '726'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:57:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf/Spring/test-buildpack-binding?api-version=2022-01-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf","name":"af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf","status":"Succeeded","startTime":"2022-01-07T11:57:01.45146Z","endTime":"2022-01-07T11:57:09.5464218Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '376'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:57:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0","name":"test-binding-name-0","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:56:58.77283Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:56:58.77283Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '727'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:57:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '800'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:57:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"NotFound","message":"KPack buildpacksBinding does
+        not exist","target":"default/test-binding-name-1","details":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:57:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"properties": {"bindingType": "NewRelic", "launchProperties": {"properties":
+      {"a": "b", "b": "c"}, "secrets": {"x": "y", "y": "z"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '134'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Creating","bindingType":"NewRelic","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1","name":"test-binding-name-1","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:57:39.2402412Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:57:39.2402412Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/72f81f61-7e9d-446e-aef4-79a5f07d6546?api-version=2022-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '719'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:57:43 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/72f81f61-7e9d-446e-aef4-79a5f07d6546/Spring/test-buildpack-binding?api-version=2022-01-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/72f81f61-7e9d-446e-aef4-79a5f07d6546?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/72f81f61-7e9d-446e-aef4-79a5f07d6546","name":"72f81f61-7e9d-446e-aef4-79a5f07d6546","status":"Succeeded","startTime":"2022-01-07T11:57:43.2250279Z","endTime":"2022-01-07T11:57:50.9028007Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '378'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:58:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","bindingType":"NewRelic","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1","name":"test-binding-name-1","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:57:39.2402412Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:57:39.2402412Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '720'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:58:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '800'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:58:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11996'
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder buildpack-binding list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0","name":"test-binding-name-0","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:56:58.77283Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:56:58.77283Z"}},{"properties":{"provisioningState":"Succeeded","bindingType":"NewRelic","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1","name":"test-binding-name-1","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:57:39.2402412Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:57:39.2402412Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1460'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jan 2022 11:58:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 8aeaf7a0-9097-4412-a5ee-7737152dd344
+    status:
+      code: 200
+      message: OK
+version: 1

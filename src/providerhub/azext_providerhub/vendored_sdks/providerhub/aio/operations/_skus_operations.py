@@ -7,17 +7,17 @@
 # --------------------------------------------------------------------------
 from typing import Any, AsyncIterable, Callable, Dict, Generic, Optional, TypeVar
 import warnings
+
 from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
+
 from ... import models
 
 T = TypeVar('T')
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest,
-                                              AsyncHttpResponse], T, Dict[str, Any]], Any]]
-
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 class SkusOperations:
     """SkusOperations async operations.
@@ -26,7 +26,7 @@ class SkusOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~providerhub.models
+    :type models: ~provider_hub.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -58,7 +58,7 @@ class SkusOperations:
         :type sku: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SkuResource, or the result of cls(response)
-        :rtype: ~providerhub.models.SkuResource
+        :rtype: ~provider_hub.models.SkuResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuResource"]
@@ -81,24 +81,20 @@ class SkusOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('SkuResource', pipeline_response)
 
@@ -113,6 +109,7 @@ class SkusOperations:
         provider_namespace: str,
         resource_type: str,
         sku: str,
+        properties: "models.ResourceTypeSku",
         **kwargs
     ) -> "models.SkuResource":
         """Creates or updates the resource type skus in the given resource type.
@@ -123,9 +120,11 @@ class SkusOperations:
         :type resource_type: str
         :param sku: The SKU.
         :type sku: str
+        :param properties: The required body parameters supplied to the resource sku operation.
+        :type properties: ~provider_hub.models.ResourceTypeSku
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SkuResource, or the result of cls(response)
-        :rtype: ~providerhub.models.SkuResource
+        :rtype: ~provider_hub.models.SkuResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuResource"]
@@ -134,6 +133,7 @@ class SkusOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-11-20"
+        content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
@@ -148,24 +148,24 @@ class SkusOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        request = self._client.put(url, query_parameters, header_parameters)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(properties, 'ResourceTypeSku')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('SkuResource', pipeline_response)
 
@@ -173,8 +173,7 @@ class SkusOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/skus/{sku}'}  # type: ignore
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/skus/{sku}'}  # type: ignore
 
     async def delete(
         self,
@@ -216,24 +215,20 @@ class SkusOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 204]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
@@ -260,7 +255,7 @@ class SkusOperations:
         :type sku: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SkuResource, or the result of cls(response)
-        :rtype: ~providerhub.models.SkuResource
+        :rtype: ~provider_hub.models.SkuResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuResource"]
@@ -272,8 +267,7 @@ class SkusOperations:
         accept = "application/json"
 
         # Construct URL
-        # type: ignore
-        url = self.get_nested_resource_type_first.metadata['url']
+        url = self.get_nested_resource_type_first.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -285,24 +279,20 @@ class SkusOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('SkuResource', pipeline_response)
 
@@ -310,8 +300,7 @@ class SkusOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get_nested_resource_type_first.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/skus/{sku}'}  # type: ignore
+    get_nested_resource_type_first.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/skus/{sku}'}  # type: ignore
 
     async def create_or_update_nested_resource_type_first(
         self,
@@ -319,6 +308,7 @@ class SkusOperations:
         resource_type: str,
         nested_resource_type_first: str,
         sku: str,
+        properties: "models.ResourceTypeSku",
         **kwargs
     ) -> "models.SkuResource":
         """Creates or updates the resource type skus in the given resource type.
@@ -331,9 +321,11 @@ class SkusOperations:
         :type nested_resource_type_first: str
         :param sku: The SKU.
         :type sku: str
+        :param properties: The required body parameters supplied to the resource sku operation.
+        :type properties: ~provider_hub.models.ResourceTypeSku
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SkuResource, or the result of cls(response)
-        :rtype: ~providerhub.models.SkuResource
+        :rtype: ~provider_hub.models.SkuResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuResource"]
@@ -342,11 +334,11 @@ class SkusOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-11-20"
+        content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
-        # type: ignore
-        url = self.create_or_update_nested_resource_type_first.metadata['url']
+        url = self.create_or_update_nested_resource_type_first.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -358,24 +350,24 @@ class SkusOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        request = self._client.put(url, query_parameters, header_parameters)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(properties, 'ResourceTypeSku')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('SkuResource', pipeline_response)
 
@@ -383,8 +375,7 @@ class SkusOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update_nested_resource_type_first.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/skus/{sku}'}  # type: ignore
+    create_or_update_nested_resource_type_first.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/skus/{sku}'}  # type: ignore
 
     async def delete_nested_resource_type_first(
         self,
@@ -418,8 +409,7 @@ class SkusOperations:
         accept = "application/json"
 
         # Construct URL
-        # type: ignore
-        url = self.delete_nested_resource_type_first.metadata['url']
+        url = self.delete_nested_resource_type_first.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -431,30 +421,25 @@ class SkusOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 204]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete_nested_resource_type_first.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/skus/{sku}'}  # type: ignore
+    delete_nested_resource_type_first.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/skus/{sku}'}  # type: ignore
 
     async def get_nested_resource_type_second(
         self,
@@ -479,7 +464,7 @@ class SkusOperations:
         :type sku: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SkuResource, or the result of cls(response)
-        :rtype: ~providerhub.models.SkuResource
+        :rtype: ~provider_hub.models.SkuResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuResource"]
@@ -491,8 +476,7 @@ class SkusOperations:
         accept = "application/json"
 
         # Construct URL
-        # type: ignore
-        url = self.get_nested_resource_type_second.metadata['url']
+        url = self.get_nested_resource_type_second.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -505,24 +489,20 @@ class SkusOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('SkuResource', pipeline_response)
 
@@ -530,8 +510,7 @@ class SkusOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get_nested_resource_type_second.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/skus/{sku}'}  # type: ignore
+    get_nested_resource_type_second.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/skus/{sku}'}  # type: ignore
 
     async def create_or_update_nested_resource_type_second(
         self,
@@ -540,6 +519,7 @@ class SkusOperations:
         nested_resource_type_first: str,
         nested_resource_type_second: str,
         sku: str,
+        properties: "models.ResourceTypeSku",
         **kwargs
     ) -> "models.SkuResource":
         """Creates or updates the resource type skus in the given resource type.
@@ -554,9 +534,11 @@ class SkusOperations:
         :type nested_resource_type_second: str
         :param sku: The SKU.
         :type sku: str
+        :param properties: The required body parameters supplied to the resource sku operation.
+        :type properties: ~provider_hub.models.ResourceTypeSku
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SkuResource, or the result of cls(response)
-        :rtype: ~providerhub.models.SkuResource
+        :rtype: ~provider_hub.models.SkuResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuResource"]
@@ -565,11 +547,11 @@ class SkusOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-11-20"
+        content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
-        # type: ignore
-        url = self.create_or_update_nested_resource_type_second.metadata['url']
+        url = self.create_or_update_nested_resource_type_second.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -582,24 +564,24 @@ class SkusOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        request = self._client.put(url, query_parameters, header_parameters)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(properties, 'ResourceTypeSku')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('SkuResource', pipeline_response)
 
@@ -607,8 +589,7 @@ class SkusOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update_nested_resource_type_second.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/skus/{sku}'}  # type: ignore
+    create_or_update_nested_resource_type_second.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/skus/{sku}'}  # type: ignore
 
     async def delete_nested_resource_type_second(
         self,
@@ -645,8 +626,7 @@ class SkusOperations:
         accept = "application/json"
 
         # Construct URL
-        # type: ignore
-        url = self.delete_nested_resource_type_second.metadata['url']
+        url = self.delete_nested_resource_type_second.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -659,30 +639,25 @@ class SkusOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 204]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete_nested_resource_type_second.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/skus/{sku}'}  # type: ignore
+    delete_nested_resource_type_second.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/skus/{sku}'}  # type: ignore
 
     async def get_nested_resource_type_third(
         self,
@@ -710,7 +685,7 @@ class SkusOperations:
         :type sku: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SkuResource, or the result of cls(response)
-        :rtype: ~providerhub.models.SkuResource
+        :rtype: ~provider_hub.models.SkuResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuResource"]
@@ -722,8 +697,7 @@ class SkusOperations:
         accept = "application/json"
 
         # Construct URL
-        # type: ignore
-        url = self.get_nested_resource_type_third.metadata['url']
+        url = self.get_nested_resource_type_third.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -737,24 +711,20 @@ class SkusOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('SkuResource', pipeline_response)
 
@@ -762,8 +732,7 @@ class SkusOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get_nested_resource_type_third.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/resourcetypeRegistrations/{nestedResourceTypeThird}/skus/{sku}'}  # type: ignore
+    get_nested_resource_type_third.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/resourcetypeRegistrations/{nestedResourceTypeThird}/skus/{sku}'}  # type: ignore
 
     async def create_or_update_nested_resource_type_third(
         self,
@@ -773,6 +742,7 @@ class SkusOperations:
         nested_resource_type_second: str,
         nested_resource_type_third: str,
         sku: str,
+        properties: "models.ResourceTypeSku",
         **kwargs
     ) -> "models.SkuResource":
         """Creates or updates the resource type skus in the given resource type.
@@ -789,9 +759,11 @@ class SkusOperations:
         :type nested_resource_type_third: str
         :param sku: The SKU.
         :type sku: str
+        :param properties: The required body parameters supplied to the resource sku operation.
+        :type properties: ~provider_hub.models.ResourceTypeSku
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SkuResource, or the result of cls(response)
-        :rtype: ~providerhub.models.SkuResource
+        :rtype: ~provider_hub.models.SkuResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuResource"]
@@ -800,11 +772,11 @@ class SkusOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-11-20"
+        content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
-        # type: ignore
-        url = self.create_or_update_nested_resource_type_third.metadata['url']
+        url = self.create_or_update_nested_resource_type_third.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -818,24 +790,24 @@ class SkusOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        request = self._client.put(url, query_parameters, header_parameters)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(properties, 'ResourceTypeSku')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('SkuResource', pipeline_response)
 
@@ -843,8 +815,7 @@ class SkusOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update_nested_resource_type_third.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/resourcetypeRegistrations/{nestedResourceTypeThird}/skus/{sku}'}  # type: ignore
+    create_or_update_nested_resource_type_third.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/resourcetypeRegistrations/{nestedResourceTypeThird}/skus/{sku}'}  # type: ignore
 
     async def delete_nested_resource_type_third(
         self,
@@ -884,8 +855,7 @@ class SkusOperations:
         accept = "application/json"
 
         # Construct URL
-        # type: ignore
-        url = self.delete_nested_resource_type_third.metadata['url']
+        url = self.delete_nested_resource_type_third.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -899,30 +869,25 @@ class SkusOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 204]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete_nested_resource_type_third.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/resourcetypeRegistrations/{nestedResourceTypeThird}/skus/{sku}'}  # type: ignore
+    delete_nested_resource_type_third.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/resourcetypeRegistrations/{nestedResourceTypeThird}/skus/{sku}'}  # type: ignore
 
     def list_by_resource_type_registrations(
         self,
@@ -938,11 +903,10 @@ class SkusOperations:
         :type resource_type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either SkuResourceArrayResponseWithContinuation or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~providerhub.models.SkuResourceArrayResponseWithContinuation]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~provider_hub.models.SkuResourceArrayResponseWithContinuation]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop(
-            'cls', None)  # type: ClsType["models.SkuResourceArrayResponseWithContinuation"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuResourceArrayResponseWithContinuation"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -953,13 +917,11 @@ class SkusOperations:
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header(
-                "accept", accept, 'str')
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
-                # type: ignore
-                url = self.list_by_resource_type_registrations.metadata['url']
+                url = self.list_by_resource_type_registrations.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -968,21 +930,17 @@ class SkusOperations:
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query(
-                    "api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
-                request = self._client.get(
-                    url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(
-                    url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize(
-                'SkuResourceArrayResponseWithContinuation', pipeline_response)
+            deserialized = self._deserialize('SkuResourceArrayResponseWithContinuation', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -996,18 +954,15 @@ class SkusOperations:
 
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
-                map_error(status_code=response.status_code,
-                          response=response, error_map=error_map)
-                raise HttpResponseError(
-                    response=response, model=error, error_format=ARMErrorFormat)
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_resource_type_registrations.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/skus'}  # type: ignore
+    list_by_resource_type_registrations.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/skus'}  # type: ignore
 
     def list_by_resource_type_registrations_nested_resource_type_first(
         self,
@@ -1026,11 +981,10 @@ class SkusOperations:
         :type nested_resource_type_first: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either SkuResourceArrayResponseWithContinuation or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~providerhub.models.SkuResourceArrayResponseWithContinuation]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~provider_hub.models.SkuResourceArrayResponseWithContinuation]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop(
-            'cls', None)  # type: ClsType["models.SkuResourceArrayResponseWithContinuation"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuResourceArrayResponseWithContinuation"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -1041,14 +995,11 @@ class SkusOperations:
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header(
-                "accept", accept, 'str')
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
-                # type: ignore
-                url = self.list_by_resource_type_registrations_nested_resource_type_first.metadata[
-                    'url']
+                url = self.list_by_resource_type_registrations_nested_resource_type_first.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -1058,21 +1009,17 @@ class SkusOperations:
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query(
-                    "api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
-                request = self._client.get(
-                    url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(
-                    url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize(
-                'SkuResourceArrayResponseWithContinuation', pipeline_response)
+            deserialized = self._deserialize('SkuResourceArrayResponseWithContinuation', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -1086,18 +1033,15 @@ class SkusOperations:
 
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
-                map_error(status_code=response.status_code,
-                          response=response, error_map=error_map)
-                raise HttpResponseError(
-                    response=response, model=error, error_format=ARMErrorFormat)
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_resource_type_registrations_nested_resource_type_first.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/skus'}  # type: ignore
+    list_by_resource_type_registrations_nested_resource_type_first.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/skus'}  # type: ignore
 
     def list_by_resource_type_registrations_nested_resource_type_second(
         self,
@@ -1119,11 +1063,10 @@ class SkusOperations:
         :type nested_resource_type_second: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either SkuResourceArrayResponseWithContinuation or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~providerhub.models.SkuResourceArrayResponseWithContinuation]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~provider_hub.models.SkuResourceArrayResponseWithContinuation]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop(
-            'cls', None)  # type: ClsType["models.SkuResourceArrayResponseWithContinuation"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuResourceArrayResponseWithContinuation"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -1134,14 +1077,11 @@ class SkusOperations:
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header(
-                "accept", accept, 'str')
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
-                # type: ignore
-                url = self.list_by_resource_type_registrations_nested_resource_type_second.metadata[
-                    'url']
+                url = self.list_by_resource_type_registrations_nested_resource_type_second.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -1152,21 +1092,17 @@ class SkusOperations:
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query(
-                    "api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
-                request = self._client.get(
-                    url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(
-                    url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize(
-                'SkuResourceArrayResponseWithContinuation', pipeline_response)
+            deserialized = self._deserialize('SkuResourceArrayResponseWithContinuation', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -1180,18 +1116,15 @@ class SkusOperations:
 
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
-                map_error(status_code=response.status_code,
-                          response=response, error_map=error_map)
-                raise HttpResponseError(
-                    response=response, model=error, error_format=ARMErrorFormat)
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_resource_type_registrations_nested_resource_type_second.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/skus'}  # type: ignore
+    list_by_resource_type_registrations_nested_resource_type_second.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/skus'}  # type: ignore
 
     def list_by_resource_type_registrations_nested_resource_type_third(
         self,
@@ -1216,11 +1149,10 @@ class SkusOperations:
         :type nested_resource_type_third: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either SkuResourceArrayResponseWithContinuation or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~providerhub.models.SkuResourceArrayResponseWithContinuation]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~provider_hub.models.SkuResourceArrayResponseWithContinuation]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop(
-            'cls', None)  # type: ClsType["models.SkuResourceArrayResponseWithContinuation"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuResourceArrayResponseWithContinuation"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -1231,14 +1163,11 @@ class SkusOperations:
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header(
-                "accept", accept, 'str')
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
-                # type: ignore
-                url = self.list_by_resource_type_registrations_nested_resource_type_third.metadata[
-                    'url']
+                url = self.list_by_resource_type_registrations_nested_resource_type_third.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -1250,21 +1179,17 @@ class SkusOperations:
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query(
-                    "api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
-                request = self._client.get(
-                    url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(
-                    url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize(
-                'SkuResourceArrayResponseWithContinuation', pipeline_response)
+            deserialized = self._deserialize('SkuResourceArrayResponseWithContinuation', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -1278,15 +1203,12 @@ class SkusOperations:
 
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
-                map_error(status_code=response.status_code,
-                          response=response, error_map=error_map)
-                raise HttpResponseError(
-                    response=response, model=error, error_format=ARMErrorFormat)
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_resource_type_registrations_nested_resource_type_third.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/resourcetypeRegistrations/{nestedResourceTypeThird}/skus'}  # type: ignore
+    list_by_resource_type_registrations_nested_resource_type_third.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/resourcetypeRegistrations/{nestedResourceTypeThird}/skus'}  # type: ignore

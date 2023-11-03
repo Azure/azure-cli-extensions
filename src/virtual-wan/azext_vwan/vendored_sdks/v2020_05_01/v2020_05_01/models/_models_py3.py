@@ -7594,14 +7594,14 @@ class EffectiveRoutesParameters(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'resource_id': {'key': 'resourceId', 'type': 'Resource'},
+        'resource_id': {'key': 'resourceId', 'type': 'str'},
         'virtual_wan_resource_type': {'key': 'virtualWanResourceType', 'type': 'str'},
     }
 
     def __init__(
         self,
         *,
-        resource_id: Optional["Resource"] = None,
+        resource_id: Optional[str] = None,
         virtual_wan_resource_type: Optional[str] = None,
         **kwargs
     ):

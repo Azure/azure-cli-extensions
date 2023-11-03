@@ -4,17 +4,25 @@
 # --------------------------------------------------------------------------------------------
 
 VMWARE_NAMESPACE = "Microsoft.ConnectedVmwarevSphere"
-VCENTER_RESOURCE_TYPE = "VCenters"
-RESOURCEPOOL_RESOURCE_TYPE = "resourcepools"
-VMTEMPLATE_RESOURCE_TYPE = "virtualmachinetemplates"
-VIRTUALNETWORK_RESOURCE_TYPE = "virtualnetworks"
-
-DEFAULT_VCENTER_PORT = 443
+VCENTER_RESOURCE_TYPE = "vcenters"
+RESOURCEPOOL_RESOURCE_TYPE = "resourcePools"
+CLUSTER_RESOURCE_TYPE = "clusters"
+DATASTORE_RESOURCE_TYPE = "datastores"
+HOST_RESOURCE_TYPE = "hosts"
+VMTEMPLATE_RESOURCE_TYPE = "virtualmachineTemplates"
+VIRTUALNETWORK_RESOURCE_TYPE = "virtualNetworks"
+EXTENSIONS_RESOURCE_TYPE = "extensions"
 
 EXTENDED_LOCATION_NAMESPACE = "Microsoft.ExtendedLocation"
 CUSTOM_LOCATION_RESOURCE_TYPE = "CustomLocations"
 EXTENDED_LOCATION_TYPE = "CustomLocation"
 INVENTORY_ITEM_TYPE = "InventoryItems"
+
+HCRP_NAMESPACE = "Microsoft.HybridCompute"
+MACHINES_RESOURCE_TYPE = "machines"
+VM_SYSTEM_ASSIGNED_INDENTITY_TYPE = "SystemAssigned"
+GUEST_AGENT_PROVISIONING_ACTION_INSTALL = "install"
+VCENTER_KIND_GET_API_VERSION = "2023-03-01-preview"
 
 NAME_PARAMETER = "name"
 DEVICE_KEY = "device-key"

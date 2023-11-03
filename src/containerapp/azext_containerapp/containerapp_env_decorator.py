@@ -1,0 +1,59 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles
+from knack.log import get_logger
+
+from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvCreateDecorator
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
+from ._utils import safe_get
+from ._client_factory import handle_non_404_status_code_exception
+
+logger = get_logger(__name__)
+
+
+class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
+    def get_argument_infrastructure_resource_group(self):
+        return self.get_param("infrastructure_resource_group")
+
+    def construct_payload(self):
+        super().construct_payload()
+
+        self.set_up_infrastructure_resource_group()
+
+    def validate_arguments(self):
+        super().validate_arguments()
+
+        # Infrastructure Resource Group
+        if self.get_argument_infrastructure_resource_group() is not None:
+            if not self.get_argument_infrastructure_subnet_resource_id():
+                raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
+                                                   "--infrastructure-subnet-resource-id/-s")
+            if not self.get_argument_enable_workload_profiles():
+                raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
+                                                   "--enable-workload-profiles/-w")
+
+    def set_up_infrastructure_resource_group(self):
+        if self.get_argument_enable_workload_profiles() and self.get_argument_infrastructure_subnet_resource_id() is not None:
+            self.managed_env_def["properties"]["InfrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
+
+    def set_up_workload_profiles(self):
+        if self.get_argument_enable_workload_profiles():
+            # If the environment exists, infer the environment type
+            existing_environment = None
+            try:
+                existing_environment = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+            except Exception as e:
+                handle_non_404_status_code_exception(e)
+
+            if existing_environment and safe_get(existing_environment, "properties", "workloadProfiles") is None:
+                # check if input params include -w/--enable-workload-profiles
+                if self.cmd.cli_ctx.data.get('safe_params') and ('-w' in self.cmd.cli_ctx.data.get('safe_params') or '--enable-workload-profiles' in self.cmd.cli_ctx.data.get('safe_params')):
+                    raise ValidationError(f"Existing environment {self.get_argument_name()} cannot enable workload profiles. If you want to use Consumption and Dedicated environment, please create a new one.")
+                return
+
+            self.managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(self.cmd, self.get_argument_location())
+
+    def get_argument_enable_workload_profiles(self):
+        return self.get_param("enable_workload_profiles")

@@ -35,7 +35,7 @@ def broadcast(client, resource_group_name, webpubsub_name, hub_name, payload):
 def check_connection_exists(client, resource_group_name, webpubsub_name, hub_name, connection_id):
     service_client = _get_service_client(client, resource_group_name, webpubsub_name)
     res = service_client.send_request(build_connection_exists_request(hub_name, connection_id))
-    return res.status_code == 200
+    return _get_existence_response(res.status_code == 200)
 
 
 def close_connection(client, resource_group_name, webpubsub_name, hub_name, connection_id):
@@ -71,7 +71,7 @@ def send_group(client, resource_group_name, webpubsub_name, hub_name, group_name
 def check_user_exists(client, resource_group_name, webpubsub_name, hub_name, user_id):
     service_client = _get_service_client(client, resource_group_name, webpubsub_name)
     res = service_client.send_request(build_user_exists_request(hub_name, user_id))
-    return res.status_code == 200
+    return _get_existence_response(res.status_code == 200)
 
 
 def send_user(client, resource_group_name, webpubsub_name, hub_name, user_id, payload):
@@ -110,9 +110,13 @@ def revoke_permission(client, resource_group_name, webpubsub_name, hub_name, con
 def check_permission(client, resource_group_name, webpubsub_name, hub_name, connection_id, permission, group_name):
     service_client = _get_service_client(client, resource_group_name, webpubsub_name)
     res = service_client.send_request(build_check_permission_request(hub_name, permission, connection_id, target_name=group_name))
-    res.raise_for_status()
+    return _get_existence_response(res.status_code == 200)
 
 
 def _get_service_client(client, resource_group_name, webpubsub_name):
     keys = client.list_keys(resource_group_name, webpubsub_name)
     return WebPubSubServiceClient.from_connection_string(keys.primary_connection_string)
+
+
+def _get_existence_response(success):
+    return {"existence": success}

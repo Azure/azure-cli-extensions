@@ -21,7 +21,7 @@ def get_duration_type_values():
 
 
 def get_copy_option_values():
-    return ['CustomCopyOption', 'ImmediateCopyOption']
+    return ['CustomCopyOption', 'ImmediateCopyOption', 'CopyOnExpiryOption']
 
 
 def get_retention_rule_name_values():
@@ -57,6 +57,38 @@ def get_job_operation_values():
     return ['OnDemandBackup', 'ScheduledBackup', 'Restore']
 
 
+def get_rehydration_priority_values():
+    return ['Standard']
+
+
+def get_secret_store_type_values():
+    return ['AzureKeyVault']
+
+
+def get_backup_operation_values():
+    return ['Backup', 'Restore']
+
+
+def get_permission_scope_values():
+    return ['Resource', 'ResourceGroup', 'Subscription']
+
+
+def get_resource_type_values():
+    return ['Microsoft.RecoveryServices/vaults']
+
+
+def get_critical_operation_values():
+    return ['deleteProtection', 'updateProtection', 'updatePolicy', 'getSecurityPIN']
+
+
 def get_datasource_types():
-    import azext_dataprotection.manual.helpers as helpers
+    from azext_dataprotection.manual import helpers
     return helpers.get_supported_datasource_types()
+
+
+def get_persistent_volume_restore_mode_values():
+    return ['RestoreWithVolumeData', 'RestoreWithoutVolumeData']
+
+
+def get_conflict_policy_values():
+    return ['Skip', 'Patch']

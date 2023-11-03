@@ -2,9 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
 
-from knack.util import CLIError
-from azext_vmware.vendored_sdks.avs_client import AVSClient
+from typing import List, Tuple
 
 LEGAL_TERMS = '''
 LEGAL TERMS
@@ -20,242 +20,167 @@ VMWARE DATA PROCESSING AGREEMENT. Once Professional Services Data is transferred
 ACCEPTANCE OF LEGAL TERMS. By continuing, you agree to the above additional Legal Terms for AVS. If you are an individual accepting these terms on behalf of an entity, you also represent that you have the legal authority to enter into these additional terms on that entity's behalf.
 '''
 
+ROTATE_VCENTER_PASSWORD_TERMS = '''
+Any services connected using these credentials will stop working and may cause you to be locked out of your account.
 
-def privatecloud_list(cmd, client: AVSClient, resource_group_name=None):
-    if resource_group_name is None:
-        return client.private_clouds.list_in_subscription()
-    else:
-        return client.private_clouds.list(resource_group_name)
+Check if you're using your cloudadmin credentials for any connected services like backup and disaster recovery appliances, VMware HCX, or any vRealize suite products. Verify you're not using cloudadmin credentials for connected services before generating a new password.
 
+If you are using cloudadmin for connected services, learn how you can setup a connection to an external identity source to create and manage new credentials for your connected services: https://docs.microsoft.com/en-us/azure/azure-vmware/configure-identity-source-vcenter
 
-def privatecloud_show(cmd, client: AVSClient, resource_group_name, name):
-    return client.private_clouds.get(resource_group_name, name)
+Press Y to confirm no services are using my cloudadmin credentials to connect to vCenter
+'''
 
+ROTATE_NSXT_PASSWORD_TERMS = '''
+Currently, rotating your NSX-T managed admin credentials isn’t supported.  If you need to rotate your NSX-T manager admin credentials, please submit a support request in the Azure Portal: https://portal.azure.com/#create/Microsoft.Support
 
-def privatecloud_create(cmd, client: AVSClient, resource_group_name, name, location, sku, cluster_size, network_block, circuit_primary_subnet=None, circuit_secondary_subnet=None, internet=None, vcenter_password=None, nsxt_password=None, tags=[], accept_eula=False):
-    from knack.prompting import prompt_y_n
-    if not accept_eula:
-        print(LEGAL_TERMS)
-        msg = 'Do you agree to the above additional terms for AVS?'
-        if not prompt_y_n(msg, default="n"):
-            return
-
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku
-    if circuit_primary_subnet is not None or circuit_secondary_subnet is not None:
-        circuit = Circuit(primary_subnet=circuit_primary_subnet, secondary_subnet=circuit_secondary_subnet)
-    else:
-        circuit = None
-    management_cluster = ManagementCluster(cluster_size=cluster_size)
-    cloud = PrivateCloud(location=location, sku=Sku(name=sku), circuit=circuit, management_cluster=management_cluster, network_block=network_block, tags=tags)
-    if internet is not None:
-        cloud.internet = internet
-    if vcenter_password is not None:
-        cloud.vcenter_password = vcenter_password
-    if nsxt_password is not None:
-        cloud.nsxt_password = nsxt_password
-    return client.private_clouds.begin_create_or_update(resource_group_name, name, cloud)
+Press any key to continue
+'''
 
 
-def privatecloud_update(cmd, client: AVSClient, resource_group_name, name, cluster_size=None, internet=None):
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate, ManagementCluster
-    private_cloud_update = PrivateCloudUpdate()
-    if cluster_size is not None:
-        private_cloud_update.management_cluster = ManagementCluster(cluster_size=cluster_size)
-    if internet is not None:
-        private_cloud_update.internet = internet
-    return client.private_clouds.begin_update(resource_group_name, name, private_cloud_update)
+def privatecloud_listadmincredentials(cmd, resource_group_name, private_cloud):
+    from .aaz.latest.vmware.private_cloud import ListAdminCredentials
+    return ListAdminCredentials(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "private_cloud": private_cloud
+    })
 
 
-def privatecloud_delete(cmd, client: AVSClient, resource_group_name, name, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the private cloud. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return
-    return client.private_clouds.begin_delete(resource_group_name, name)
-
-
-def privatecloud_listadmincredentials(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.private_clouds.list_admin_credentials(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def privatecloud_addidentitysource(cmd, client: AVSClient, resource_group_name, name, private_cloud, alias, domain, base_user_dn, base_group_dn, primary_server, username, password, secondary_server=None, ssl="Disabled"):
-    from azext_vmware.vendored_sdks.avs_client.models import IdentitySource
-    pc = client.private_clouds.get(resource_group_name, private_cloud)
-    identitysource = IdentitySource(name=name, alias=alias, domain=domain, base_user_dn=base_user_dn, base_group_dn=base_group_dn, primary_server=primary_server, ssl=ssl, username=username, password=password)
+def privatecloud_addidentitysource(cmd, resource_group_name, name, private_cloud, alias, domain, base_user_dn, base_group_dn, primary_server, username, password, secondary_server=None, ssl="Disabled"):
+    from .aaz.latest.vmware.private_cloud.identity_source import Create
+    command_args = {
+        "private_cloud": private_cloud,
+        "resource_group": resource_group_name,
+        "name": name,
+        "alias": alias,
+        "domain": domain,
+        "base_user_dn": base_user_dn,
+        "base_group_dn": base_group_dn,
+        "primary_server": primary_server,
+        "username": username,
+        "password": password,
+        "ssl": ssl,
+    }
     if secondary_server is not None:
-        identitysource.secondary_server = secondary_server
-    pc.identity_sources.append(identitysource)
-    return client.private_clouds.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud=pc)
+        command_args["secondary_server"] = secondary_server
+    return Create(cli_ctx=cmd.cli_ctx)(command_args=command_args)
 
 
-def privatecloud_deleteidentitysource(cmd, client: AVSClient, resource_group_name, name, private_cloud, alias, domain):
-    from azext_vmware.vendored_sdks.avs_client.models import IdentitySource
-    pc = client.private_clouds.get(resource_group_name, private_cloud)
-    found = next((ids for ids in pc.identity_sources
-                 if ids.name == name and ids.alias == alias and ids.domain == domain), None)
-    if found:
-        pc.identity_sources.remove(found)
-        return client.private_clouds.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud=pc)
-    else:
-        return pc
+def privatecloud_deleteidentitysource(cmd, resource_group_name, name, private_cloud, alias, domain, yes=False):
+    from .aaz.latest.vmware.private_cloud.identity_source import Delete
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the identity source. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
+    return Delete(cli_ctx=cmd.cli_ctx)(command_args={
+        "private_cloud": private_cloud,
+        "resource_group": resource_group_name,
+        "name": name,
+    })
 
 
-def privatecloud_rotate_vcenter_password(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.private_clouds.begin_rotate_vcenter_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+def privatecloud_addcmkencryption(cmd, resource_group_name, private_cloud, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None):
+    from .operations.private_cloud import PrivateCloudUpdate
+    return PrivateCloudUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+        "private_cloud_name": private_cloud,
+        "resource_group": resource_group_name,
+        "encryption": {
+            "status": "Enabled",
+            "key_vault_properties": {
+                "key_name": enc_kv_key_name,
+                "key_version": enc_kv_key_version,
+                "key_vault_url": enc_kv_url
+            }
+        }
+    })
 
 
-def privatecloud_rotate_nsxt_password(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+def privatecloud_deletecmkenryption(cmd, resource_group_name, private_cloud, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the managed keys encryption. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
+    from .operations.private_cloud import PrivateCloudUpdate
+    return PrivateCloudUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+        "private_cloud_name": private_cloud,
+        "resource_group": resource_group_name,
+        "encryption": {
+            "status": "Disabled",
+        }
+    })
 
 
-def cluster_create(cmd, client: AVSClient, resource_group_name, name, sku, private_cloud, size, tags=[]):
-    from azext_vmware.vendored_sdks.avs_client.models import Sku
-    return client.clusters.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, sku=Sku(name=sku), cluster_size=size)
+def check_quota_availability(cmd, location):
+    from .aaz.latest.vmware.location import CheckQuotaAvailability
+    return CheckQuotaAvailability(cli_ctx=cmd.cli_ctx)(command_args={
+        "location": location
+    })
 
 
-def cluster_update(cmd, client: AVSClient, resource_group_name, name, private_cloud, size, tags=[]):
-    return client.clusters.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster_size=size)
+def check_trial_availability(cmd, location, sku=None):
+    from .aaz.latest.vmware.location import CheckTrialAvailability
+    return CheckTrialAvailability(cli_ctx=cmd.cli_ctx)(command_args={
+        "location": location,
+        "sku": sku
+    })
 
 
-def cluster_list(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.clusters.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+def privatecloud_identity_assign(cmd, resource_group_name, private_cloud, system_assigned=False):
+    from .operations.private_cloud import PrivateCloudUpdate
+    if system_assigned:
+        return PrivateCloudUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+            "private_cloud_name": private_cloud,
+            "resource_group": resource_group_name,
+            "identity": {
+                "type": "SystemAssigned",
+            }
+        })
 
 
-def cluster_show(cmd, client: AVSClient, resource_group_name, private_cloud, name):
-    return client.clusters.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name)
+def privatecloud_identity_remove(cmd, resource_group_name, private_cloud, system_assigned=False):
+    from .operations.private_cloud import PrivateCloudUpdate
+    if system_assigned:
+        return PrivateCloudUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+            "private_cloud_name": private_cloud,
+            "resource_group": resource_group_name,
+            "identity": {
+                "type": "None",
+            }
+        })
 
 
-def cluster_delete(cmd, client: AVSClient, resource_group_name, private_cloud, name):
-    return client.clusters.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name)
+def privatecloud_identity_get(cmd, resource_group_name, private_cloud):
+    from .aaz.latest.vmware.private_cloud import Show
+    return Show(cli_ctx=cmd.cli_ctx)(command_args={
+        "private_cloud_name": private_cloud,
+        "resource_group": resource_group_name,
+    }).get("identity")
 
 
-def check_quota_availability(cmd, client: AVSClient, location):
-    return client.locations.check_quota_availability(location)
+def privatecloud_rotate_nsxt_password():
+    from knack.prompting import prompt
+    msg = ROTATE_NSXT_PASSWORD_TERMS
+    prompt(msg)
+    # return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
 
-def check_trial_availability(cmd, client: AVSClient, location):
-    return client.locations.check_trial_availability(location)
-
-
-def authorization_create(cmd, client: AVSClient, resource_group_name, private_cloud, name):
-    return client.authorizations.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, authorization_name=name)
-
-
-def authorization_list(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.authorizations.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def authorization_show(cmd, client: AVSClient, resource_group_name, private_cloud, name):
-    return client.authorizations.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, authorization_name=name)
-
-
-def authorization_delete(cmd, client: AVSClient, resource_group_name, private_cloud, name):
-    return client.authorizations.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, authorization_name=name)
-
-
-def hcxenterprisesite_create(cmd, client: AVSClient, resource_group_name, private_cloud, name):
-    return client.hcx_enterprise_sites.create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name)
-
-
-def hcxenterprisesite_list(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.hcx_enterprise_sites.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def hcxenterprisesite_show(cmd, client: AVSClient, resource_group_name, private_cloud, name):
-    return client.hcx_enterprise_sites.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name)
-
-
-def hcxenterprisesite_delete(cmd, client: AVSClient, resource_group_name, private_cloud, name):
-    return client.hcx_enterprise_sites.delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name)
-
-
-def datastore_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, nfs_provider_ip=None, nfs_file_path=None, endpoints=[], lun_name=None):
+def datastore_create():
     print('Please use "az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create" instead.')
 
 
-def datastore_netappvolume_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, volume_id):
-    from azext_vmware.vendored_sdks.avs_client.models import NetAppVolume
-    net_app_volume = NetAppVolume(id=volume_id)
-    return client.datastores.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, net_app_volume=net_app_volume, disk_pool_volume=None)
-
-
-def datastore_diskpoolvolume_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, target_id, lun_name, mount_option="MOUNT", path=None):
-    from azext_vmware.vendored_sdks.avs_client.models import DiskPoolVolume
-    disk_pool_volume = DiskPoolVolume(target_id=target_id, lun_name=lun_name, mount_option=mount_option, path=path)
-    return client.datastores.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, net_app_volume=None, disk_pool_volume=disk_pool_volume)
-
-
-def datastore_list(cmd, client: AVSClient, resource_group_name, private_cloud, cluster):
-    return client.datastores.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster)
-
-
-def datastore_show(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name):
-    return client.datastores.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name)
-
-
-def datastore_delete(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name):
-    return client.datastores.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name)
-
-
-def addon_list(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.addons.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def addon_vr_create(cmd, client: AVSClient, resource_group_name, private_cloud, vrs_count: int):
-    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonVrProperties
-    properties = AddonVrProperties(vrs_count=vrs_count)
-    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr", properties=properties)
-
-
-def addon_hcx_create(cmd, client: AVSClient, resource_group_name, private_cloud, offer: str):
-    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonHcxProperties
-    properties = AddonHcxProperties(offer=offer)
-    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx", properties=properties)
-
-
-def addon_srm_create(cmd, client: AVSClient, resource_group_name, private_cloud, license_key: str):
-    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonSrmProperties
-    properties = AddonSrmProperties(license_key=license_key)
-    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm", properties=properties)
-
-
-def addon_vr_show(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr")
-
-
-def addon_hcx_show(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx")
-
-
-def addon_srm_show(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm")
-
-
-def addon_vr_update(cmd, client: AVSClient, resource_group_name, private_cloud, vrs_count: int):
-    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonVrProperties
-    properties = AddonVrProperties(vrs_count=vrs_count)
-    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr", properties=properties)
-
-
-def addon_hcx_update(cmd, client: AVSClient, resource_group_name, private_cloud, offer: str):
-    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonHcxProperties
-    properties = AddonHcxProperties(offer=offer)
-    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx", properties=properties)
-
-
-def addon_srm_update(cmd, client: AVSClient, resource_group_name, private_cloud, license_key: str):
-    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonSrmProperties
-    properties = AddonSrmProperties(license_key=license_key)
-    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm", properties=properties)
-
-
-def addon_vr_delete(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr")
-
-
-def addon_hcx_delete(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx")
-
-
-def addon_srm_delete(cmd, client: AVSClient, resource_group_name, private_cloud):
-    return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm")
+def script_execution_create(cmd, resource_group_name, private_cloud, name, timeout, script_cmdlet_id=None, parameters=None, hidden_parameters=None, failure_reason=None, retention=None, out=None, named_outputs: List[Tuple[str, str]] = None):
+    from .aaz.latest.vmware.script_execution import Create
+    if named_outputs is not None:
+        named_outputs = dict(named_outputs)
+    return Create(cli_ctx=cmd.cli_ctx)(command_args={
+        "private_cloud": private_cloud,
+        "resource_group": resource_group_name,
+        "script_execution_name": name,
+        "timeout": timeout,
+        "script_cmdlet_id": script_cmdlet_id,
+        "parameters": parameters,
+        "hidden_parameters": hidden_parameters,
+        "failure_reason": failure_reason,
+        "retention": retention,
+        "output": out,
+        "named_outputs": named_outputs,
+    })

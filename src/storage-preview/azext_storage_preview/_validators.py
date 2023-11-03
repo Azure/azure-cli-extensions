@@ -5,17 +5,19 @@
 
 # pylint: disable=protected-access, logging-format-interpolation
 import os
+import argparse
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import get_sdk
 from knack.util import CLIError
 from knack.log import get_logger
-from ._client_factory import get_storage_data_service_client, blob_data_service_factory
+from ._client_factory import get_storage_data_service_client, blob_data_service_factory, cf_blob_service, \
+    cf_share_service, cf_share_client
 from .util import guess_content_type
 from .oauth_token_util import TokenUpdater
-from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE
-
+from .profiles import CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_BLOB
+from .url_quote_util import encode_for_url
 logger = get_logger(__name__)
 
 
@@ -30,7 +32,7 @@ def _query_account_key(cli_ctx, account_name):
     """Query the storage account key. This is used when the customer doesn't offer account key but name."""
     rg, scf = _query_account_rg(cli_ctx, account_name)
     t_storage_account_keys = get_sdk(
-        cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE, 'models.storage_account_keys#StorageAccountKeys')
+        cli_ctx, CUSTOM_MGMT_STORAGE, 'models.storage_account_keys#StorageAccountKeys')
 
     if t_storage_account_keys:
         return scf.storage_accounts.list_keys(rg, account_name).key1
@@ -40,7 +42,7 @@ def _query_account_key(cli_ctx, account_name):
 
 def _query_account_rg(cli_ctx, account_name):
     """Query the storage account's resource group, which the mgmt sdk requires."""
-    scf = get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE)
+    scf = get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE)
     acc = next((x for x in scf.storage_accounts.list() if x.name == account_name), None)
     if acc:
         from msrestazure.tools import parse_resource_id
@@ -93,18 +95,17 @@ def validate_client_parameters(cmd, namespace):
         auth_mode = n.auth_mode or get_config_value(cmd, 'storage', 'auth_mode', None)
         del n.auth_mode
         if not n.account_name:
-            n.account_name = get_config_value(cmd, 'storage', 'account', None)
+            if hasattr(n, 'account_url') and not n.account_url:
+                n.account_name = get_config_value(cmd, 'storage', 'account', None)
+                n.account_url = get_config_value(cmd, 'storage', 'account_url', None)
+            else:
+                n.account_name = get_config_value(cmd, 'storage', 'account', None)
         if auth_mode == 'login':
-            prefix = cmd.command_kwargs['resource_type'].import_prefix
             # is_storagv2() is used to distinguish if the command is in track2 SDK
             # If yes, we will use get_login_credentials() as token credential
-            if is_storagev2(prefix):
-                from azure.cli.core._profile import Profile
-                profile = Profile(cli_ctx=cmd.cli_ctx)
-                n.token_credential, _, _ = profile.get_login_credentials(subscription_id=n._subscription)
-            # Otherwise, we will assume it is in track1 and keep previous token updater
-            else:
-                n.token_credential = _create_token_credential(cmd.cli_ctx)
+            from azure.cli.core._profile import Profile
+            profile = Profile(cli_ctx=cmd.cli_ctx)
+            n.token_credential, _, _ = profile.get_login_credentials(subscription_id=n._subscription)
 
     if hasattr(n, 'token_credential') and n.token_credential:
         # give warning if there are account key args being ignored
@@ -117,7 +118,8 @@ def validate_client_parameters(cmd, namespace):
                            ' ,'.join(account_key_args))
         return
 
-    if not n.connection_string:
+    # When there is no input for credential, we will read environment variable
+    if not n.connection_string and not n.account_key and not n.sas_token:
         n.connection_string = get_config_value(cmd, 'storage', 'connection_string', None)
 
     # if connection string supplied or in environment variables, extract account key and name
@@ -129,8 +131,12 @@ def validate_client_parameters(cmd, namespace):
 
     # otherwise, simply try to retrieve the remaining variables from environment variables
     if not n.account_name:
-        n.account_name = get_config_value(cmd, 'storage', 'account', None)
-    if not n.account_key:
+        if hasattr(n, 'account_url') and not n.account_url:
+            n.account_name = get_config_value(cmd, 'storage', 'account', None)
+            n.account_url = get_config_value(cmd, 'storage', 'account_url', None)
+        else:
+            n.account_name = get_config_value(cmd, 'storage', 'account', None)
+    if not n.account_key and not n.sas_token:
         n.account_key = get_config_value(cmd, 'storage', 'key', None)
     if not n.sas_token:
         n.sas_token = get_config_value(cmd, 'storage', 'sas_token', None)
@@ -147,15 +153,36 @@ def validate_client_parameters(cmd, namespace):
 
     # if account name is specified but no key, attempt to query
     if n.account_name and not n.account_key and not n.sas_token:
-        logger.warning('There are no credentials provided in your command and environment, we will query for the '
-                       'account key inside your storage account. \nPlease provide --connection-string, '
-                       '--account-key or --sas-token as credentials, or use `--auth-mode login` if you '
-                       'have required RBAC roles in your command. For more information about RBAC roles '
-                       'in storage, visit '
-                       'https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad-rbac-cli. \n'
-                       'Setting the corresponding environment variables can avoid inputting credentials in '
-                       'your command. Please use --help to get more information.')
-        n.account_key = _query_account_key(cmd.cli_ctx, n.account_name)
+        message = """
+There are no credentials provided in your command and environment, we will query for account key for your storage account.
+It is recommended to provide --connection-string, --account-key or --sas-token in your command as credentials.
+"""
+        if 'auth_mode' in cmd.arguments:
+            message += """
+You also can add `--auth-mode login` in your command to use Azure Active Directory (Azure AD) for authorization if your login account is assigned required RBAC roles.
+For more information about RBAC roles in storage, visit https://docs.microsoft.com/azure/storage/common/storage-auth-aad-rbac-cli.
+"""
+        logger.warning('%s\nIn addition, setting the corresponding environment variables can avoid inputting '
+                       'credentials in your command. Please use --help to get more information about environment '
+                       'variable usage.', message)
+        try:
+            n.account_key = _query_account_key(cmd.cli_ctx, n.account_name)
+        except Exception as ex:  # pylint: disable=broad-except
+            logger.warning("\nSkip querying account key due to failure: %s", ex)
+
+    if hasattr(n, 'account_url') and n.account_url and not n.account_key and not n.sas_token:
+        message = """
+There are no credentials provided in your command and environment.
+Please provide --connection-string, --account-key or --sas-token in your command as credentials.
+        """
+
+        if 'auth_mode' in cmd.arguments:
+            message += """
+You also can add `--auth-mode login` in your command to use Azure Active Directory (Azure AD) for authorization if your login account is assigned required RBAC roles.
+For more information about RBAC roles in storage, visit https://docs.microsoft.com/azure/storage/common/storage-auth-aad-rbac-cli."
+            """
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        raise InvalidArgumentValueError(message)
 
 
 def validate_azcopy_blob_source_url(cmd, namespace):
@@ -253,42 +280,49 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None, 
         return class_type.__module__ + "." + class_type.__class__.__name__
 
     def validator(cmd, namespace):
-        t_base_blob_service, t_file_service, t_blob_content_settings, t_file_content_settings = cmd.get_models(
-            'blob.baseblobservice#BaseBlobService',
-            'file#FileService',
-            'blob.models#ContentSettings',
-            'file.models#ContentSettings')
+        t_blob_content_settings = get_sdk(cmd.cli_ctx, CUSTOM_DATA_STORAGE_BLOB, '_models#ContentSettings')
+        t_file_content_settings = get_sdk(cmd.cli_ctx, CUSTOM_DATA_STORAGE_FILESHARE, '_models#ContentSettings')
 
         # must run certain validators first for an update
         if update:
             validate_client_parameters(cmd, namespace)
         if update and _class_name(settings_class) == _class_name(t_file_content_settings):
             get_file_path_validator()(namespace)
+
         ns = vars(namespace)
+        clear_content_settings = ns.pop('clear_content_settings', False)
 
         # retrieve the existing object properties for an update
-        if update:
+        if update and not clear_content_settings:
             account = ns.get('account_name')
             key = ns.get('account_key')
             cs = ns.get('connection_string')
             sas = ns.get('sas_token')
+            token_credential = ns.get('token_credential')
+            account_kwargs = {'connection_string': cs,
+                              'account_name': account,
+                              'account_key': key,
+                              'token_credential': token_credential,
+                              'sas_token': sas}
             if _class_name(settings_class) == _class_name(t_blob_content_settings):
-                client = get_storage_data_service_client(cmd.cli_ctx,
-                                                         t_base_blob_service,
-                                                         account,
-                                                         key,
-                                                         cs,
-                                                         sas)
                 container = ns.get('container_name')
                 blob = ns.get('blob_name')
                 lease_id = ns.get('lease_id')
-                props = client.get_blob_properties(container, blob, lease_id=lease_id).properties.content_settings
+                client = cf_blob_service(cmd.cli_ctx, account_kwargs).get_blob_client(container=container,
+                                                                                      blob=blob)
+                props = client.get_blob_properties(lease=lease_id).content_settings
             elif _class_name(settings_class) == _class_name(t_file_content_settings):
-                client = get_storage_data_service_client(cmd.cli_ctx, t_file_service, account, key, cs, sas)
                 share = ns.get('share_name')
                 directory = ns.get('directory_name')
                 filename = ns.get('file_name')
-                props = client.get_file_properties(share, directory, filename).properties.content_settings
+                account_kwargs["share_name"] = share
+                account_kwargs["snapshot"] = ns.get('snapshot')
+                if ns.get('enable_file_backup_request_intent', None):
+                    account_kwargs["enable_file_backup_request_intent"] = ns.get("enable_file_backup_request_intent")
+                client = cf_share_client(cmd.cli_ctx, account_kwargs). \
+                    get_directory_client(directory_path=directory). \
+                    get_file_client(file_name=filename)
+                props = client.get_file_properties().content_settings
 
         # create new properties
         new_props = settings_class(
@@ -302,24 +336,22 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None, 
 
         # if update, fill in any None values with existing
         if update:
-            new_props.content_type = new_props.content_type or props.content_type
-            new_props.content_disposition = new_props.content_disposition or props.content_disposition
-            new_props.content_encoding = new_props.content_encoding or props.content_encoding
-            new_props.content_language = new_props.content_language or props.content_language
-            new_props.content_md5 = new_props.content_md5 or props.content_md5
-            new_props.cache_control = new_props.cache_control or props.cache_control
+            if not clear_content_settings:
+                for attr in ['content_type', 'content_disposition', 'content_encoding', 'content_language',
+                             'content_md5', 'cache_control']:
+                    if getattr(new_props, attr) is None:
+                        setattr(new_props, attr, getattr(props, attr))
         else:
             if guess_from_file:
                 new_props = guess_content_type(ns[guess_from_file], new_props, settings_class)
 
-        # In the model serialization of ContentSettings, the required type for content_md5 is str. But when uploading,
-        # content_md5 needs to be converted to bytearray and it would cause a bug when converting a string to bytearray.
-        # So we pass in the content_md5 of the bytearray type as a workaround.
-        # There is an issue of Python SDK to follow up this problem, and if the SDK is fixed, the logic can be removed
-        # Issue link: https://github.com/Azure/azure-sdk-for-python/issues/15919
-        if process_md5:
-            from .track2_util import string_to_bytes
-            new_props.content_md5 = string_to_bytes(new_props.content_md5)
+        # In track2 SDK, the content_md5 type should be bytearray. And then it will serialize to a string for request.
+        # To keep consistent with track1 input and CLI will treat all parameter values as string. Here is to transform
+        # content_md5 value to bytearray. And track2 SDK will serialize it into the right value with str type in header.
+        if process_md5 and new_props.content_md5:
+            if not isinstance(new_props.content_md5, bytearray):
+                from .track2_util import _str_to_bytearray
+                new_props.content_md5 = _str_to_bytearray(new_props.content_md5)
 
         ns['content_settings'] = new_props
 
@@ -336,58 +368,45 @@ def validate_encryption_services(cmd, namespace):
     Builds up the encryption services object for storage account operations based on the list of services passed in.
     """
     if namespace.encryption_services:
-        t_encryption_services, t_encryption_service = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE,
+        t_encryption_services, t_encryption_service = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_STORAGE,
                                                               'EncryptionServices', 'EncryptionService', mod='models')
         services = {service: t_encryption_service(enabled=True) for service in namespace.encryption_services}
 
         namespace.encryption_services = t_encryption_services(**services)
 
 
-def validate_encryption_source(cmd, namespace):
-    ns = vars(namespace)
-
-    key_name = ns.pop('encryption_key_name', None)
-    key_version = ns.pop('encryption_key_version', None)
-    key_vault_uri = ns.pop('encryption_key_vault', None)
-
-    if namespace.encryption_key_source == 'Microsoft.Keyvault' and not (key_name and key_version and key_vault_uri):
-        raise ValueError('--encryption-key-name, --encryption-key-vault, and --encryption-key-version are required '
+def validate_encryption_source(namespace):
+    if namespace.encryption_key_source == 'Microsoft.Keyvault' and \
+            not (namespace.encryption_key_name and namespace.encryption_key_vault):
+        raise ValueError('--encryption-key-name and --encryption-key-vault are required '
                          'when --encryption-key-source=Microsoft.Keyvault is specified.')
 
-    if key_name or key_version or key_vault_uri:
-        if namespace.encryption_key_source != 'Microsoft.Keyvault':
+    if namespace.encryption_key_name or namespace.encryption_key_version is not None or namespace.encryption_key_vault:
+        if namespace.encryption_key_source and namespace.encryption_key_source != 'Microsoft.Keyvault':
             raise ValueError('--encryption-key-name, --encryption-key-vault, and --encryption-key-version are not '
-                             'applicable when --encryption-key-source=Microsoft.Keyvault is not specified.')
-        KeyVaultProperties = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE, 'KeyVaultProperties',
-                                     mod='models')
-        if not KeyVaultProperties:
-            return
-
-        kv_prop = KeyVaultProperties(key_name=key_name, key_version=key_version, key_vault_uri=key_vault_uri)
-        namespace.encryption_key_vault_properties = kv_prop
+                             'applicable without Microsoft.Keyvault key-source.')
 
 
 def get_file_path_validator(default_file_param=None):
-    """ Allows another path-type parameter to be named which can supply a default filename. """
+    """ Creates a namespace validator that splits out 'path' into 'directory_name' and 'file_name'.
+    Allows another path-type parameter to be named which can supply a default filename. """
 
     def validator(namespace):
         if not hasattr(namespace, 'path'):
             return
 
         path = namespace.path
-        del namespace.path
-
-        if not path:
-            namespace.file_path = os.path.split(getattr(namespace, default_file_param))[1]
-            return
-
         dir_name, file_name = os.path.split(path) if path else (None, '')
+        if dir_name and dir_name.startswith('./'):
+            dir_name = dir_name.replace('./', '', 1)
 
         if default_file_param and '.' not in file_name:
             dir_name = path
             file_name = os.path.split(getattr(namespace, default_file_param))[1]
-
-        namespace.file_path = dir_name + '/' + file_name if dir_name else file_name
+        dir_name = None if dir_name in ('', '.') else dir_name
+        namespace.directory_name = dir_name
+        namespace.file_name = file_name
+        del namespace.path
 
     return validator
 
@@ -409,6 +428,18 @@ def validate_storage_account(cmd, namespace):
     if "access" in cmd.name:
         if not storage_account_property.is_hns_enabled:
             raise CLIError("You storage account doesn't enable HNS property.")
+
+
+def validate_immutability_arguments(namespace):
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+    if not namespace.enable_alw:
+        if any([namespace.immutability_period_since_creation_in_days,
+                namespace.immutability_policy_state, namespace.allow_protected_append_writes is not None]):
+            raise InvalidArgumentValueError("Incorrect usage: To enable account level immutability, "
+                                            "need to specify --enable-alw true. "
+                                            "Cannot set --enable_alw to false and specify "
+                                            "--immutability-period --immutability-state "
+                                            "--allow-append")
 
 
 def validate_subnet(cmd, namespace):
@@ -626,3 +657,345 @@ def process_file_upload_batch_parameters(cmd, namespace):
 
     namespace.source = os.path.realpath(namespace.source)
     namespace.share_name = namespace.destination
+
+
+# pylint: disable=too-few-public-methods
+class PermissionScopeAddAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not namespace.permission_scope:
+            namespace.permission_scope = []
+        PermissionScope = namespace._cmd.get_models('PermissionScope')
+        try:
+            permissions, service, resource_name = '', '', ''
+            for s in values:
+                if "permissions" in s:
+                    permissions = s.split('=')[1]
+                elif "service" in s:
+                    service = s.split('=')[1]
+                elif "resource-name" in s:
+                    resource_name = s.split('=')[1]
+        except (ValueError, TypeError):
+            raise CLIError('usage error: --permission-scope VARIABLE OPERATOR VALUE')
+        namespace.permission_scope.append(PermissionScope(
+            permissions=permissions,
+            service=service,
+            resource_name=resource_name
+        ))
+
+
+# pylint: disable=too-few-public-methods
+class SshPublicKeyAddAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not namespace.ssh_authorized_key:
+            namespace.ssh_authorized_key = []
+        SshPublicKey = namespace._cmd.get_models('SshPublicKey')
+        try:
+            description, key = '', ''
+            for k in values:
+                if "description" in k:
+                    description = k.split('=')[1]
+                elif "key" in k:
+                    key = k.split('=')[1]
+        except (ValueError, TypeError):
+            raise CLIError('usage error: --ssh-authorized-key VARIABLE OPERATOR VALUE')
+        namespace.ssh_authorized_key.append(SshPublicKey(description=description, key=key))
+
+
+def get_permission_help_string(permission_class):
+    allowed_values = get_permission_allowed_values(permission_class)
+    return ' '.join(['({}){}'.format(x[0], x[1:]) for x in allowed_values])
+
+
+def get_permission_allowed_values(permission_class):
+    if permission_class:
+        instance = permission_class()
+
+        allowed_values = [x.lower() for x in dir(instance) if not x.startswith('_')]
+        if 'from_string' in allowed_values:
+            allowed_values.remove('from_string')
+        for i, item in enumerate(allowed_values):
+            if item == 'delete_previous_version':
+                allowed_values[i] = 'x' + item
+            if item == 'permanent_delete':
+                allowed_values[i] = 'y' + item
+            if item == 'set_immutability_policy':
+                allowed_values[i] = 'i' + item
+            if item == 'manage_access_control':
+                allowed_values[i] = 'permissions'
+            if item == 'manage_ownership':
+                allowed_values[i] = 'ownership'
+        return sorted(allowed_values)
+    return None
+
+
+def get_permission_validator(permission_class):
+    allowed_values = get_permission_allowed_values(permission_class)
+    allowed_string = ''.join(x[0] for x in allowed_values)
+
+    def validator(namespace):
+        if namespace.permission:
+            if set(namespace.permission) - set(allowed_string):
+                help_string = get_permission_help_string(permission_class)
+                raise ValueError(
+                    'valid values are {} or a combination thereof.'.format(help_string))
+            if hasattr(permission_class, 'from_string'):
+                namespace.permission = permission_class.from_string(namespace.permission)
+            else:
+                namespace.permission = permission_class(_str=namespace.permission)
+
+    return validator
+
+
+def get_source_file_or_blob_service_client_track2(cmd, namespace):
+    """
+    Create the second file service or blob service client for batch copy command, which is used to
+    list the source files or blobs. If both the source account and source URI are omitted, it
+    indicates that user want to copy files or blobs in the same storage account.
+    """
+
+    usage_string = 'invalid usage: supply only one of the following argument sets:' + \
+                   '\n\t   --source-uri  [--source-sas]' + \
+                   '\n\tOR --source-container' + \
+                   '\n\tOR --source-container --source-account-name --source-account-key' + \
+                   '\n\tOR --source-container --source-account-name --source-sas' + \
+                   '\n\tOR --source-share' + \
+                   '\n\tOR --source-share --source-account-name --source-account-key' + \
+                   '\n\tOR --source-share --source-account-name --source-account-sas'
+
+    ns = vars(namespace)
+    source_account = ns.pop('source_account_name', None)
+    source_key = ns.pop('source_account_key', None)
+    source_uri = ns.pop('source_uri', None)
+    source_sas = ns.get('source_sas', None)
+    source_container = ns.get('source_container', None)
+    source_share = ns.get('source_share', None)
+
+    if source_uri and source_account:
+        raise ValueError(usage_string)
+    if not source_uri and bool(source_container) == bool(source_share):  # must be container or share
+        raise ValueError(usage_string)
+
+    if (not source_account) and (not source_uri):
+        # Set the source_client to None if neither source_account nor source_uri is given. This
+        # indicates the command that the source files share or blob container is in the same storage
+        # account as the destination file share or blob container.
+        #
+        # The command itself should create the source service client since the validator can't
+        # access the destination client through the namespace.
+        #
+        # A few arguments check will be made as well so as not to cause ambiguity.
+        if source_key or source_sas:
+            raise ValueError('invalid usage: --source-account-name is missing; the source account is assumed to be the'
+                             ' same as the destination account. Do not provide --source-sas or --source-account-key')
+
+        source_account, source_key, source_sas = ns['account_name'], ns['account_key'], ns['sas_token']
+
+    if source_account:
+        if not (source_key or source_sas):
+            # when neither storage account key nor SAS is given, try to fetch the key in the current
+            # subscription
+            source_key = _query_account_key(cmd.cli_ctx, source_account)
+
+    elif source_uri:
+        if source_key or source_container or source_share:
+            raise ValueError(usage_string)
+
+        from .storage_url_helpers import StorageResourceIdentifier
+        if source_sas:
+            source_uri = '{}{}{}'.format(source_uri, '?', source_sas.lstrip('?'))
+        identifier = StorageResourceIdentifier(cmd.cli_ctx.cloud, source_uri)
+        nor_container_or_share = not identifier.container and not identifier.share
+        if not identifier.is_url():
+            raise ValueError('incorrect usage: --source-uri expects a URI')
+        if identifier.blob or identifier.directory or identifier.filename or nor_container_or_share:
+            raise ValueError('incorrect usage: --source-uri has to be blob container or file share')
+
+        source_account = identifier.account_name
+        source_container = identifier.container
+        source_share = identifier.share
+
+        if identifier.sas_token:
+            source_sas = identifier.sas_token
+        else:
+            source_key = _query_account_key(cmd.cli_ctx, identifier.account_name)
+
+    # config source account credential
+    ns['source_account_name'] = source_account
+    ns['source_account_key'] = source_key
+    ns['source_container'] = source_container
+    ns['source_share'] = source_share
+    # get sas token for source
+    if not source_sas:
+        from .util import create_short_lived_container_sas_track2, create_short_lived_share_sas_track2
+        if source_container:
+            source_sas = create_short_lived_container_sas_track2(cmd, account_name=source_account,
+                                                                 account_key=source_key,
+                                                                 container=source_container)
+        if source_share:
+            source_sas = create_short_lived_share_sas_track2(cmd, account_name=source_account,
+                                                             account_key=source_key,
+                                                             share=source_share)
+    ns['source_sas'] = source_sas
+    client_kwargs = {'account_name': ns['source_account_name'],
+                     'account_key': ns['source_account_key'],
+                     'sas_token': ns['source_sas']}
+    if source_container:
+        ns['source_client'] = cf_blob_service(cmd.cli_ctx, client_kwargs)
+    if source_share:
+        ns['source_client'] = cf_share_service(cmd.cli_ctx, client_kwargs)
+
+
+def add_progress_callback(cmd, namespace):
+    def _update_progress(current, total):
+        message = getattr(_update_progress, 'message', 'Alive')
+        reuse = getattr(_update_progress, 'reuse', False)
+
+        if total:
+            hook.add(message=message, value=current, total_val=total)
+            if total == current and not reuse:
+                hook.end()
+    hook = cmd.cli_ctx.get_progress_controller(det=True)
+    _update_progress.hook = hook
+
+    if not namespace.no_progress:
+        namespace.progress_callback = _update_progress
+    del namespace.no_progress
+
+
+def process_file_download_batch_parameters(cmd, namespace):
+    """Process the parameters for storage file batch download command"""
+    # 1. quick check
+    if not os.path.exists(namespace.destination) or not os.path.isdir(namespace.destination):
+        raise ValueError('incorrect usage: destination must be an existing directory')
+
+    # 2. try to extract account name and share name from source string
+    process_file_batch_source_parameters(cmd, namespace)
+
+
+def process_file_batch_source_parameters(cmd, namespace):
+    from .storage_url_helpers import StorageResourceIdentifier
+    identifier = StorageResourceIdentifier(cmd.cli_ctx.cloud, namespace.source)
+    if identifier.is_url():
+        if identifier.filename or identifier.directory:
+            raise ValueError('incorrect usage: source should be either share URL or name')
+
+        namespace.source = identifier.share
+
+        if not namespace.account_name:
+            namespace.account_name = identifier.account_name
+
+    namespace.share_name = namespace.source
+
+
+def validate_source_uri(cmd, namespace):  # pylint: disable=too-many-statements
+    from .util import create_short_lived_blob_sas, create_short_lived_blob_sas_v2, \
+        create_short_lived_file_sas, create_short_lived_file_sas_v2
+    usage_string = \
+        'Invalid usage: {}. Supply only one of the following argument sets to specify source:' \
+        '\n\t   --source-uri [--source-sas]' \
+        '\n\tOR --source-container --source-blob [--source-account-name & sas] [--source-snapshot]' \
+        '\n\tOR --source-container --source-blob [--source-account-name & key] [--source-snapshot]' \
+        '\n\tOR --source-share --source-path' \
+        '\n\tOR --source-share --source-path [--source-account-name & sas]' \
+        '\n\tOR --source-share --source-path [--source-account-name & key]'
+
+    ns = vars(namespace)
+
+    # source as blob
+    container = ns.pop('source_container', None)
+    blob = ns.pop('source_blob', None)
+    snapshot = ns.pop('source_snapshot', None)
+
+    # source as file
+    share = ns.pop('source_share', None)
+    path = ns.pop('source_path', None)
+    file_snapshot = ns.pop('file_snapshot', None)
+
+    # source credential clues
+    source_account_name = ns.pop('source_account_name', None)
+    source_account_key = ns.pop('source_account_key', None)
+    source_sas = ns.pop('source_sas', None)
+
+    # source in the form of an uri
+    uri = ns.get('copy_source', None)
+    if uri:
+        if any([container, blob, snapshot, share, path, file_snapshot, source_account_name,
+                source_account_key]):
+            raise ValueError(usage_string.format('Unused parameters are given in addition to the '
+                                                 'source URI'))
+        if source_sas:
+            source_sas = source_sas.lstrip('?')
+            uri = '{}{}{}'.format(uri, '?', source_sas)
+            namespace.copy_source = uri
+        return
+
+    # ensure either a file or blob source is specified
+    valid_blob_source = container and blob and not share and not path and not file_snapshot
+    valid_file_source = share and path and not container and not blob and not snapshot
+
+    if not valid_blob_source and not valid_file_source:
+        raise ValueError(usage_string.format('Neither a valid blob or file source is specified'))
+    if valid_blob_source and valid_file_source:
+        raise ValueError(usage_string.format('Ambiguous parameters, both blob and file sources are '
+                                             'specified'))
+
+    validate_client_parameters(cmd, namespace)  # must run first to resolve storage account
+
+    if not source_account_name:
+        if source_account_key:
+            raise ValueError(usage_string.format('Source account key is given but account name is not'))
+        # assume that user intends to copy blob in the same account
+        source_account_name = ns.get('account_name', None)
+
+    # determine if the copy will happen in the same storage account
+    same_account = False
+
+    if not source_account_key and not source_sas:
+        if source_account_name == ns.get('account_name', None):
+            same_account = True
+            source_account_key = ns.get('account_key', None)
+            source_sas = ns.get('sas_token', None)
+        else:
+            # the source account is different from destination account but the key is missing try to query one.
+            try:
+                source_account_key = _query_account_key(cmd.cli_ctx, source_account_name)
+            except ValueError:
+                raise ValueError('Source storage account {} not found.'.format(source_account_name))
+
+    # Both source account name and either key or sas (or both) are now available
+    if not source_sas:
+        # generate a sas token even in the same account when the source and destination are not the same kind.
+        if valid_file_source and (ns.get('container_name', None) or not same_account):
+            dir_name, file_name = os.path.split(path) if path else (None, '')
+            source_sas = create_short_lived_file_sas_v2(cmd, source_account_name, source_account_key, share,
+                                                        dir_name, file_name)
+        elif valid_blob_source and (ns.get('share_name', None) or not same_account):
+            source_sas = create_short_lived_blob_sas_v2(cmd, source_account_name, source_account_key, container,
+                                                        blob)
+
+    query_params = []
+    if source_sas:
+        query_params.append(source_sas.lstrip('?'))
+    if snapshot:
+        query_params.append('snapshot={}'.format(snapshot))
+    if file_snapshot:
+        query_params.append('sharesnapshot={}'.format(file_snapshot))
+
+    uri = 'https://{0}.{1}.{6}/{2}/{3}{4}{5}'.format(
+        source_account_name,
+        'blob' if valid_blob_source else 'file',
+        container if valid_blob_source else share,
+        encode_for_url(blob if valid_blob_source else path),
+        '?' if query_params else '',
+        '&'.join(query_params),
+        cmd.cli_ctx.cloud.suffixes.storage_endpoint)
+
+    namespace.copy_source = uri
+
+
+def validate_share_close_handle(namespace):
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+    if namespace.close_all and namespace.handle:
+        raise InvalidArgumentValueError("usage error: Please only specify either --handle-id or --close-all, not both.")
+    if not namespace.close_all and not namespace.handle:
+        raise InvalidArgumentValueError("usage error: Please specify either --handle-id or --close-all.")

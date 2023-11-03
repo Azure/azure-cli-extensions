@@ -2,6 +2,18 @@
 
 Release History
 ===============
+1.0.17
+++++++
+* az network front-door waf-policy managed-rules add: Fix managed-rule add issue for Microsoft_DefaultRuleSet with version 2.0 or higher.
+
+1.0.16
+++++++
+* az network front-door routing-rule update: Fix unexpected configuration override when updating routing rule.
+
+1.0.15
+++++++
+* Add az network front-door backend-pool backend update command: Update a backend to Front Door backend pool.
+* Fix backend related bugs
 
 1.0.14
 ++++++

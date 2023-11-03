@@ -10,7 +10,7 @@ from azext_front_door.vendored_sdks.models import MatchVariable, Operator
 # region FrontDoor
 helps['network front-door'] = """
     type: group
-    short-summary: Manage Front Doors.
+    short-summary: Manage Classical Azure Front Doors. For managing Azure Front Door Standard/Premium, please refer https://docs.microsoft.com/en-us/cli/azure/afd?view=azure-cli-latest.
 """
 
 helps['network front-door create'] = """
@@ -96,6 +96,11 @@ helps['network front-door backend-pool backend'] = """
 helps['network front-door backend-pool backend add'] = """
     type: command
     short-summary: Add a backend to a Front Door backend pool.
+"""
+
+helps['network front-door backend-pool backend update'] = """
+    type: command
+    short-summary: Update a backend to a Front Door backend pool.
 """
 
 helps['network front-door backend-pool backend list'] = """

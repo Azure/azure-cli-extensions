@@ -55,10 +55,12 @@ def data_collection_rule_associations_create(client,
                                              resource_uri,
                                              association_name,
                                              description=None,
-                                             rule_id=None):
+                                             rule_id=None,
+                                             endpoint_id=None):
     body = {}
     body['description'] = description
     body['data_collection_rule_id'] = rule_id
+    body['data_collection_endpoint_id'] = endpoint_id
     return client.create(resource_uri=resource_uri,
                          association_name=association_name,
                          body=body)
@@ -68,7 +70,8 @@ def data_collection_rule_associations_update(client,
                                              resource_uri,
                                              association_name,
                                              description=None,
-                                             rule_id=None):
+                                             rule_id=None,
+                                             endpoint_id=None):
     from ..custom import monitor_data_collection_rule_association_show
     instance = monitor_data_collection_rule_association_show(client, resource_uri, association_name)
     body = instance.as_dict(keep_readonly=False)
@@ -77,6 +80,8 @@ def data_collection_rule_associations_update(client,
         body['description'] = description
     if rule_id is not None:
         body['data_collection_rule_id'] = rule_id
+    if endpoint_id is not None:
+        body['data_collection_endpoint_id'] = endpoint_id
     return client.create(resource_uri=resource_uri,
                          association_name=association_name,
                          body=body)
@@ -94,29 +99,52 @@ def _data_collection_rules_create(client,
 def data_collection_rules_create(client,
                                  resource_group_name,
                                  data_collection_rule_name,
+                                 rule_file,
                                  location=None,
                                  tags=None,
-                                 description=None,
-                                 data_flows=None,
-                                 destinations__log_analytics=None,
-                                 destinations__azure_monitor_metrics=None,
-                                 data_sources__performance_counters=None,
-                                 data_sources__windows_event_logs=None,
-                                 data_sources__syslog=None,
-                                 data_sources__extensions=None):
+                                 description=None):
+    from azure.cli.core.util import get_file_json
+    from azure.cli.core.azclierror import FileOperationError, UnclassifiedUserFault
     body = {}
     body['location'] = location
     body['tags'] = tags
     body['description'] = description
-    body['data_flows'] = data_flows
-    body['destinations'] = {}
-    body['destinations']['log_analytics'] = destinations__log_analytics
-    body['destinations']['azure_monitor_metrics'] = destinations__azure_monitor_metrics
-    body['data_sources'] = {}
-    body['data_sources']['performance_counters'] = data_sources__performance_counters
-    body['data_sources']['windows_event_logs'] = data_sources__windows_event_logs
-    body['data_sources']['syslog'] = data_sources__syslog
-    body['data_sources']['extensions'] = data_sources__extensions
+    try:
+        json_data = get_file_json(rule_file)
+    except FileNotFoundError:
+        raise FileOperationError("No such file: " + str(rule_file))
+    except IsADirectoryError:
+        raise FileOperationError("Is a directory: " + str(rule_file))
+    except PermissionError:
+        raise FileOperationError("Permission denied: " + str(rule_file))
+    except OSError as e:
+        raise UnclassifiedUserFault(e)
+    for key_prop in json_data:
+        if key_prop == 'properties':
+            data = json_data['properties']
+        else:
+            data = json_data
+    for key in data:
+        if key == 'dataSources':
+            body['data_sources'] = {}
+            for key_ds in data['dataSources']:
+                if key_ds == 'performanceCounters':
+                    body['data_sources']['performance_counters'] = data['dataSources']['performanceCounters']
+                if key_ds == 'windowsEventLogs':
+                    body['data_sources']['windows_event_logs'] = data['dataSources']['windowsEventLogs']
+                if key_ds == 'syslog':
+                    body['data_sources']['syslog'] = data['dataSources']['syslog']
+                if key_ds == 'extensions':
+                    body['data_sources']['extensions'] = data['dataSources']['extensions']
+        if key == 'destinations':
+            body['destinations'] = {}
+            for key_de in data['destinations']:
+                if key_de == 'logAnalytics':
+                    body['destinations']['log_analytics'] = data['destinations']['logAnalytics']
+                if key_de == 'azureMonitorMetrics':
+                    body['destinations']['azure_monitor_metrics'] = data['destinations']['azureMonitorMetrics']
+        if key == 'dataFlows':
+            body['data_flows'] = data['dataFlows']
     return _data_collection_rules_create(client,
                                          resource_group_name=resource_group_name,
                                          data_collection_rule_name=data_collection_rule_name,

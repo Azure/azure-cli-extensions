@@ -72,7 +72,8 @@ class InteractiveKeyBindings(object):
             questions = {
                 "Do you want command descriptions": "command_description",
                 "Do you want parameter descriptions": "param_description",
-                "Do you want examples": "examples"
+                "Do you want examples": "examples",
+                "Do you want scenarios recommendation": "scenarios"
             }
             for question in questions:
                 while answer.lower() != 'y' and answer.lower() != 'n':

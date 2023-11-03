@@ -15,16 +15,15 @@ from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.arm_polling import ARMPolling
-from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
+
 from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
 
     T = TypeVar('T')
-    ClsType = Optional[Callable[[
-        PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
-
+    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
 class DefaultRolloutsOperations(object):
     """DefaultRolloutsOperations operations.
@@ -33,7 +32,7 @@ class DefaultRolloutsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~providerhub.models
+    :type models: ~provider_hub.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -63,7 +62,7 @@ class DefaultRolloutsOperations(object):
         :type rollout_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DefaultRollout, or the result of cls(response)
-        :rtype: ~providerhub.models.DefaultRollout
+        :rtype: ~provider_hub.models.DefaultRollout
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DefaultRollout"]
@@ -85,25 +84,20 @@ class DefaultRolloutsOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(
-            request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('DefaultRollout', pipeline_response)
 
@@ -150,38 +144,31 @@ class DefaultRolloutsOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(
-            request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 204]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/defaultRollouts/{rolloutName}'}  # type: ignore
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/defaultRollouts/{rolloutName}'}  # type: ignore
 
     def _create_or_update_initial(
         self,
         provider_namespace,  # type: str
         rollout_name,  # type: str
-        row2_wait_duration,  # type: str
-        skip_regions,  # type: list[str]
+        properties, # type: models.DefaultRolloutProperties
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.DefaultRollout"
@@ -191,6 +178,7 @@ class DefaultRolloutsOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-11-20"
+        content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
@@ -204,60 +192,42 @@ class DefaultRolloutsOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        specification = models.DefaultRolloutSpecification(
-            canary=models.CanaryTrafficRegionRolloutConfiguration(
-                skip_regions=skip_regions
-            ),
-            rest_of_the_world_group_two=models.TrafficRegionRolloutConfiguration(
-                wait_duration=row2_wait_duration
-            )
-        )
-        params = models.DefaultRollout(specification=specification)
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(params, 'DefaultRollout')
+        body_content = self._serialize.body(properties, 'DefaultRollout')
         body_content_kwargs['content'] = body_content
-        request = self._client.put(
-            url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(
-            request, stream=False, **kwargs)
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize(
-                'DefaultRollout', pipeline_response)
+            deserialized = self._deserialize('DefaultRollout', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize(
-                'DefaultRollout', pipeline_response)
+            deserialized = self._deserialize('DefaultRollout', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/defaultRollouts/{rolloutName}'}  # type: ignore
+    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/defaultRollouts/{rolloutName}'}  # type: ignore
 
     def begin_create_or_update(
         self,
         provider_namespace,  # type: str
         rollout_name,  # type: str
-        row2_wait_duration,  # type: str
-        skip_regions,  # type: list[str]
+        properties, # type: models.DefaultRolloutProperties
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.DefaultRollout"]
@@ -267,6 +237,8 @@ class DefaultRolloutsOperations(object):
         :type provider_namespace: str
         :param rollout_name: The rollout name.
         :type rollout_name: str
+        :param properties: The Default rollout properties supplied to the CreateOrUpdate operation.
+        :type properties: ~provider_hub.models.DefaultRollout
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -274,25 +246,22 @@ class DefaultRolloutsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either DefaultRollout or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~providerhub.models.DefaultRollout]
+        :rtype: ~azure.core.polling.LROPoller[~provider_hub.models.DefaultRollout]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop(
-            'polling', True)  # type: Union[bool, PollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DefaultRollout"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
         )
-        cont_token = kwargs.pop('continuation_token',
-                                None)  # type: Optional[str]
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = self._create_or_update_initial(
                 provider_namespace=provider_namespace,
                 rollout_name=rollout_name,
-                row2_wait_duration=row2_wait_duration,
-                skip_regions=skip_regions,
-                cls=lambda x, y, z: x,
+                properties=properties,
+                cls=lambda x,y,z: x,
                 **kwargs
             )
 
@@ -300,8 +269,7 @@ class DefaultRolloutsOperations(object):
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize(
-                'DefaultRollout', pipeline_response)
+            deserialized = self._deserialize('DefaultRollout', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, {})
@@ -313,13 +281,9 @@ class DefaultRolloutsOperations(object):
             'rolloutName': self._serialize.url("rollout_name", rollout_name, 'str'),
         }
 
-        if polling is True:
-            polling_method = ARMPolling(lro_delay, lro_options={
-                'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments, **kwargs)
-        elif polling is False:
-            polling_method = NoPolling()
-        else:
-            polling_method = polling
+        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
         if cont_token:
             return LROPoller.from_continuation_token(
                 polling_method=polling_method,
@@ -329,8 +293,7 @@ class DefaultRolloutsOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/defaultRollouts/{rolloutName}'}  # type: ignore
+    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/defaultRollouts/{rolloutName}'}  # type: ignore
 
     def list_by_provider_registration(
         self,
@@ -344,11 +307,10 @@ class DefaultRolloutsOperations(object):
         :type provider_namespace: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DefaultRolloutArrayResponseWithContinuation or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~providerhub.models.DefaultRolloutArrayResponseWithContinuation]
+        :rtype: ~azure.core.paging.ItemPaged[~provider_hub.models.DefaultRolloutArrayResponseWithContinuation]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop(
-            'cls', None)  # type: ClsType["models.DefaultRolloutArrayResponseWithContinuation"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DefaultRolloutArrayResponseWithContinuation"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -359,13 +321,11 @@ class DefaultRolloutsOperations(object):
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header(
-                "accept", accept, 'str')
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
-                # type: ignore
-                url = self.list_by_provider_registration.metadata['url']
+                url = self.list_by_provider_registration.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -373,21 +333,17 @@ class DefaultRolloutsOperations(object):
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query(
-                    "api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
-                request = self._client.get(
-                    url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(
-                    url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize(
-                'DefaultRolloutArrayResponseWithContinuation', pipeline_response)
+            deserialized = self._deserialize('DefaultRolloutArrayResponseWithContinuation', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -396,24 +352,20 @@ class DefaultRolloutsOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(
-                request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
-                map_error(status_code=response.status_code,
-                          response=response, error_map=error_map)
-                raise HttpResponseError(
-                    response=response, model=error, error_format=ARMErrorFormat)
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_provider_registration.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/defaultRollouts'}  # type: ignore
+    list_by_provider_registration.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/defaultRollouts'}  # type: ignore
 
     def stop(
         self,
@@ -452,25 +404,20 @@ class DefaultRolloutsOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.post(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(
-            request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})

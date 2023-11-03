@@ -16,10 +16,6 @@ from azure.cli.core.commands.parameters import (
     get_location_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_confluent.action import (
-    AddOfferDetail,
-    AddUserDetail
-)
 
 
 def load_arguments(self, _):
@@ -39,8 +35,11 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('offer_detail', action=AddOfferDetail, nargs='+', help='Confluent offer detail')
-        c.argument('user_detail', action=AddUserDetail, nargs='+', help='Subscriber detail')
+        c.argument('publisher_id', type=str, help='Publisher Id')
+        c.argument('offer_id', type=str, help='Offer Id')
+        c.argument('plan_id', type=str, help='Offer Plan Id')
+        c.argument('plan_name', type=str, help='Offer Plan Name')
+        c.argument('term_unit', type=str, help='Offer Plan Term unit')
 
     with self.argument_context('confluent organization update') as c:
         c.argument('resource_group_name', resource_group_name_type)

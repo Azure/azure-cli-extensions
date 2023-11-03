@@ -3,10 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=unused-import, line-too-long, unused-argument
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from .recording_processors import KeyReplacer
 
@@ -49,7 +50,6 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('publicPort'),
             self.exists('serverPort'),
             self.exists('externalIp'),
-            self.exists('eventHandler')
         ])
 
         # Test show
@@ -63,7 +63,6 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('publicPort'),
             self.exists('serverPort'),
             self.exists('externalIp'),
-            self.exists('eventHandler')
         ])
 
         # Test list
@@ -77,7 +76,6 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('[0].publicPort'),
             self.exists('[0].serverPort'),
             self.exists('[0].externalIp'),
-            self.exists('[0].eventHandler')
         ])
 
         # Test update
@@ -91,7 +89,6 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('publicPort'),
             self.exists('serverPort'),
             self.exists('externalIp'),
-            self.exists('eventHandler')
         ])
 
         # Test key show
@@ -100,8 +97,26 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('secondaryKey')
         ])
 
+        # Test list skus
+        self.cmd('webpubsub list-skus -n {name} -g {rg}', checks=[
+            self.check('[0].sku.name', 'Free_F1'),
+            self.check('[1].sku.name', 'Standard_S1')
+        ])
+
+        # Test list usage
+        self.cmd('webpubsub list-usage -l {location}', checks=[
+            self.check('[0].name.value', 'FreeTierInstances'),
+            self.check('[1].name.value', 'SignalRTotalUnits')
+        ])
+
         # Test key regenerate
         self.cmd('webpubsub key regenerate -n {name} -g {rg} --key-type secondary', checks=[
+            self.exists('primaryKey'),
+            self.exists('secondaryKey')
+        ])
+
+        # Test key regenerate salt
+        self.cmd('webpubsub key regenerate -n {name} -g {rg} --key-type salt', checks=[
             self.exists('primaryKey'),
             self.exists('secondaryKey')
         ])

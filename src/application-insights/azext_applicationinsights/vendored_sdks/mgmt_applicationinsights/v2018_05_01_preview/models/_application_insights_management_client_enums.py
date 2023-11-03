@@ -72,3 +72,19 @@ class RequestSource(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """
 
     REST = "rest"
+
+class WebTestKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The kind of WebTest that this web test watches. Choices are ping and multistep.
+    """
+
+    PING = "ping"
+    MULTISTEP = "multistep"
+
+class WebTestKindEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The kind of web test this is, valid choices are ping, multistep, basic, and standard.
+    """
+
+    PING = "ping"
+    MULTISTEP = "multistep"
+    BASIC = "basic"
+    STANDARD = "standard"
