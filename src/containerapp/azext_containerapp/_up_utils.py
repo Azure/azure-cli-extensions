@@ -7,7 +7,10 @@
 
 from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
+import os
 import subprocess
+import tempfile
+import uuid
 import requests
 
 from azure.cli.core.azclierror import (
@@ -55,7 +58,7 @@ from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubAction
 from ._utils import (
     get_pack_exec_path,
     is_docker_running,
-    get_latest_buildpack_run_tag
+    get_pack_exec_path
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -63,7 +66,9 @@ from ._constants import (MAXIMUM_SECRET_LENGTH,
                          CONTAINER_APPS_RP,
                          ACR_IMAGE_SUFFIX,
                          ACR_TASK_TEMPLATE,
-                         DEFAULT_PORT)
+                         DEFAULT_PORT,
+                         ACA_BUILDER_BULLSEYE_IMAGE,
+                         ACA_BUILDER_BOOKWORM_IMAGE)
 
 from .custom import (
     create_managed_environment,
@@ -72,6 +77,10 @@ from .custom import (
     list_containerapp,
     list_managed_environments,
     create_or_update_github_action,
+)
+
+from ._cloud_build_utils import (
+    run_cloud_build
 )
 
 logger = get_logger(__name__)
@@ -464,7 +473,21 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         except Exception as ex:
             raise CLIError(f"Unable to run 'docker push' command to push image to the container registry: {ex}") from ex
 
-    def build_container_from_source_with_buildpack(self, image_name, source):  # pylint: disable=too-many-statements
+    def build_container_from_source_with_cloud_build_service(self, source, location):
+        logger.warning("Using the Cloud Build Service to build container image...")
+
+        run_full_id = uuid.uuid4().hex
+        logs_file_path = os.path.join(tempfile.gettempdir(), f"{'build{}'.format(run_full_id)[:12]}.txt")
+        logs_file = open(logs_file_path, "w")
+
+        try:
+            resource_group_name = self.resource_group.name
+            return run_cloud_build(self.cmd, source, location, resource_group_name, self.env.name, run_full_id, logs_file, logs_file_path)
+        except Exception as exception:
+            logs_file.close()
+            raise exception
+
+    def build_container_from_source_with_buildpack(self, image_name, source, cache_image_name):  # pylint: disable=too-many-statements
         # Ensure that Docker is running
         if not is_docker_running():
             raise ValidationError("Docker is not running. Please start Docker to use buildpacks.")
@@ -478,61 +501,86 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         registry_name = self.registry_server.lower()
         image_name = f"{registry_name}/{image_name}"
-        builder_image_name = "mcr.microsoft.com/oryx/builder:builder-dotnet-7.0"
+        cache_image_name = f"{registry_name}/{cache_image_name}"
+        builder_image_list = [ACA_BUILDER_BULLSEYE_IMAGE, ACA_BUILDER_BOOKWORM_IMAGE]
+        default_builder_image = builder_image_list[0]
 
-        # Ensure that the builder is trusted
-        command = [pack_exec_path, 'config', 'default-builder', builder_image_name]
+        # Ensure that the default builder is trusted (this DOES NOT affect calls using different builders)
+        command = [pack_exec_path, 'config', 'default-builder', default_builder_image]
         logger.debug(f"Calling '{' '.join(command)}'")
         try:
             with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
                 _, stderr = process.communicate()
                 if process.returncode != 0:
                     raise CLIError(f"Error thrown when running 'pack config': {stderr.decode('utf-8')}")
-                logger.debug(f"Successfully set the default builder to {builder_image_name}.")
+                logger.debug(f"Successfully set the default builder to {default_builder_image}.")
         except Exception as ex:
             raise ValidationError(f"Unable to run 'pack config' command to set default builder: {ex}") from ex
 
-        # Run 'pack build' to produce a runnable application image for the Container App
-        command = [pack_exec_path, 'build', image_name, '--builder', builder_image_name, '--path', source]
-        buildpack_run_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
-        if buildpack_run_tag is not None:
-            buildpack_run_image = f"mcr.microsoft.com/oryx/builder:{buildpack_run_tag}"
-            logger.debug(f"Determined the run image to use as {buildpack_run_image}.")
-            command.extend(['--run-image', buildpack_run_image])
-
         # If the user specifies a target port, pass it to the buildpack
         if self.target_port:
-            command.extend(['--env', f"PORT={self.target_port}"])
+            command.extend(['--env', f"ORYX_RUNTIME_PORT={self.target_port}"])
 
-        logger.debug(f"Calling '{' '.join(command)}'")
-        try:
-            is_non_supported_platform = False
-            with subprocess.Popen(command, stdout=subprocess.PIPE) as process:
+        logger.warning("Selecting a compatible builder for the provided application source...")
+        could_build_image = False
+        for builder_image in builder_image_list:
+            # Run 'pack build' to produce a runnable application image for the Container App
+            # Specify the image as the 'build-cache' image to ensure that the local cache is used for build layers
+            command = [pack_exec_path, 'build', cache_image_name, '--builder', builder_image, '--path', source, '--tag', image_name]
 
-                # Stream output of 'pack build' to warning stream
-                while process.stdout.readable():
-                    line = process.stdout.readline()
-                    if not line:
-                        break
+            logger.debug(f"Calling '{' '.join(command)}'")
+            try:
+                is_non_supported_platform = False
+                is_non_supported_os = False
+                with subprocess.Popen(command, stdout=subprocess.PIPE) as process:
 
-                    stdout_line = str(line.strip(), 'utf-8')
-                    logger.warning(stdout_line)
-                    if not is_non_supported_platform and "No buildpack groups passed detection" in stdout_line:
-                        is_non_supported_platform = True
+                    # Collect the standard output in a separate variable that will be printed when a builder
+                    # successfully builds the provided application source
+                    stdout_collection = []
 
-                # Update the result of process.returncode
-                process.communicate()
-                if is_non_supported_platform:
-                    raise ValidationError("Current buildpacks do not support the platform targeted in the provided source code.")
+                    # Stream output of 'pack build' to warning stream
+                    while process.stdout.readable():
+                        line = process.stdout.readline()
+                        if not line:
+                            break
 
-                if process.returncode != 0:
-                    raise CLIError("Non-zero exit code returned from 'pack build'; please check the above output for more details.")
+                        stdout_line = str(line.strip(), 'utf-8')
+                        stdout_collection.append(stdout_line)
 
-                logger.debug(f"Successfully built image {image_name} using buildpacks.")
-        except ValidationError as ex:
-            raise ex
-        except Exception as ex:
-            raise CLIError(f"Unable to run 'pack build' command to produce runnable application image: {ex}") from ex
+                        # Check if the application is targeting a platform that's found in the current builder,
+                        # specifically, if none of the buildpacks in the current builder are able to detect a platform
+                        # for the given app source, then we are unable to build the app with the current builder
+                        if not is_non_supported_platform and "No buildpack groups passed detection" in stdout_line:
+                            is_non_supported_platform = True
+
+                        # Check if the application has a version that it can target from the current builder,
+                        # specifically, if we cannot find a valid Oryx runtime image for the given platform version and
+                        # Debian flavor combination, then we are unable to build the app with the current builder
+                        if not is_non_supported_os and "failed to pull run image" in stdout_line:
+                            is_non_supported_os = True
+
+                    # Update the result of process.returncode
+                    process.communicate()
+                    if is_non_supported_platform:
+                        raise ValidationError(f"Builder {builder_image} does not support the platform targeted in the provided source code.")
+
+                    if is_non_supported_os:
+                        raise ValidationError(f"Builder {builder_image} does not support the version detected for the given operating system.")
+
+                    if process.returncode != 0:
+                        raise CLIError("Non-zero exit code returned from 'pack build'; please check the above output for more details.")
+
+                    could_build_image = True
+                    logger.debug(f"Successfully built image {image_name} using buildpacks.")
+
+                    # Flush the stdout we've collected to the warning stream
+                    logger.warning("\n".join(stdout_collection))
+                    break
+            except Exception as ex:
+                logger.warning(f"Unable to run 'pack build' command to produce runnable application image: {ex}")
+
+        if not could_build_image:
+            raise CLIError("No supported builder could be used to build an image from the provided application source.")
 
         # Run 'docker push' to push the image to the container registry
         self._docker_push_to_container_registry(image_name, False)
@@ -541,7 +589,6 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
         from azure.cli.command_modules.acr._client_factory import cf_acr_tasks, cf_acr_runs
         from azure.cli.core.profiles import ResourceType
-        import os
 
         task_name = "cli_build_containerapp"
         registry_name = (self.registry_server[: self.registry_server.rindex(ACR_IMAGE_SUFFIX)]).lower()
@@ -573,7 +620,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 acr_task_run(self.cmd, run_client, task_name, registry_name, file=task_file.name, context_path=source)
             except CLIError as e:
                 logger.error("Failed to automatically generate a docker container from your source. \n"
-                             "See the ACR logs above for more error information. \nPlease check the supported languages for autogenerating docker containers (https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md), "
+                             "See the ACR logs above for more error information. \nPlease check the supported languages for autogenerating docker containers (https://aka.ms/SourceToCloudSupportedVersions), "
                              "or consider using a Dockerfile for your app.")
                 raise e
             finally:
@@ -582,47 +629,27 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         for k, v in old_command_kwargs.items():
             self.cmd.command_kwargs[k] = v
 
-    def run_acr_build(self, dockerfile, source, quiet=False, build_from_source=False):
+    def run_source_to_cloud_flow(self, source, dockerfile, can_create_acr_if_needed, registry_server):
         image_name = self.image if self.image is not None else self.name
         from datetime import datetime
 
         # Creating a tag for the image using the current time to avoid overwriting customer's existing images
         now = datetime.now()
+        tag_cli_prefix = "cli-containerapp"
         tag_now_suffix = str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
-        image_name_with_tag = image_name + ":{}".format(tag_now_suffix)
+        image_name_with_tag = image_name + ":{}-{}".format(tag_cli_prefix, tag_now_suffix)
         self.image = self.registry_server + "/" + image_name_with_tag
 
-        if build_from_source:
-            logger.warning("No dockerfile detected. Attempting to build a container directly from the provided source...")
-
-            try:
-                # First try to build source using buildpacks
-                # Temporary fix: using run time tag as customer image tag
-                # Waiting for buildpacks side to fix this issue: https://github.com/buildpacks/pack/issues/1750
-                logger.warning("Attempting to build image using buildpacks...")
-                buildpack_image_name_with_tag = image_name_with_tag
-                run_image_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
-                if run_image_tag is not None:
-                    buildpack_image_name_with_tag = f"{image_name}:{run_image_tag}-{tag_now_suffix}"
-                self.build_container_from_source_with_buildpack(buildpack_image_name_with_tag, source)
-                self.image = self.registry_server + "/" + buildpack_image_name_with_tag
-                return
-            except ValidationError as e:
-                logger.warning(f"Unable to use buildpacks to build image from source: {e}\nFalling back to ACR Task...")
-            except CLIError as e:
-                logger.error("Failed to use buildpacks to build image from source.")
-                raise e
-
-            # If we're unable to use the buildpack, build source using an ACR Task
-            # Moving tagging img to here
-            # Skipping the buildpacks scenario for now due to issues with buildpacks
-            # Add version tag for acr image
-            logger.warning("Attempting to build image using ACR Task...")
-            self.build_container_from_source_with_acr_task(image_name_with_tag, source)
-        else:
-            # Moving tagging img to here
-            # Skipping the buildpacks scenario for now due to issues with buildpacks
-            # Add version tag for acr image
+        if _has_dockerfile(source, dockerfile):
+            logger.warning("Dockerfile detected. Running the build through ACR.")
+            # ACR Task is the only way we have for now to build a Dockerfile using Docker.
+            if can_create_acr_if_needed:
+                self.create_acr_if_needed()
+            elif not registry_server:
+                raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source with a Dockerfile")
+            elif ACR_IMAGE_SUFFIX not in registry_server:
+                raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source with a Dockerfile")
+            self.image = self.registry_server + "/" + image_name_with_tag
             queue_acr_build(
                 self.cmd,
                 self.acr.resource_group.name,
@@ -630,8 +657,41 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 image_name_with_tag,
                 source,
                 dockerfile,
-                quiet,
+                False
             )
+            return False
+
+        # Only enable Cloud Build on Stage and Canary while the changes are deployed to all regions.
+        location = "eastus"
+        if self.env.location:
+            location = self.env.location
+        is_cloud_build_enabled = any(location.lower() == region for region in ["northcentralusstage", "centraluseuap", "eastus2euap"])
+        if self.should_create_acr and is_cloud_build_enabled:
+            # No container registry provided. Let's use the default container registry through Cloud Build.
+            self.image = self.build_container_from_source_with_cloud_build_service(source, location)
+            return True
+
+        if can_create_acr_if_needed:
+            self.create_acr_if_needed()
+        elif not registry_server:
+            raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source in this context")
+        elif ACR_IMAGE_SUFFIX not in registry_server:
+            raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source in this context")
+
+        # At this point in the logic, we know that the customer doesn't have a Dockerfile but has a container registry.
+        # Cloud Build is not an option anymore as we don't support BYO container registry yet.
+
+        if is_docker_running():
+            # Build the app with a constant 'build-cache' tag to leverage the local cache containing build layers
+            # NOTE: this 'build-cache' tag will not be pushed to the user's registry, only maintained locally
+            build_image_name_with_cache_tag = f"{image_name}:build-cache"
+            self.build_container_from_source_with_buildpack(image_name_with_tag, source, build_image_name_with_cache_tag)
+            self.image = self.registry_server + "/" + image_name_with_tag
+            return False
+
+        # Fall back to ACR Task
+        self.build_container_from_source_with_acr_task(image_name_with_tag, source)
+        return False
 
 
 def _create_service_principal(cmd, resource_group_name, env_resource_group_name):

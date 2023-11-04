@@ -13,8 +13,13 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-09-02-preview.
 
-0.5.168
+0.5.169
++++++++
 * Update "VirtualMachines" agent pool type as Public Preview feature.
+
+0.5.168
++++++++
+* Add `--enable-image-integrity` to the `az aks update` command.
 
 0.5.167
 +++++++

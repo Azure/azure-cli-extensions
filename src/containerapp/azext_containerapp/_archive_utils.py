@@ -62,6 +62,10 @@ def upload_source_code(cmd, client,
     return relative_path
 
 
+def archive_source_code(tar_file_path, source_location):
+    _pack_source_code(source_location, tar_file_path, "", None)
+
+
 def _pack_source_code(source_location, tar_file_path, docker_file_path, docker_file_in_tar):
     logger.info("Packing source code into tar to upload...")
 
