@@ -57,6 +57,8 @@ from .vendored_sdks.connectedvmware.models import (
     DiskMode,
     HardwareProfile,
     InfrastructureProfile,
+    InventoryItem,
+    InventoryType,
     IPAddressAllocationMethod,
     NetworkInterface,
     NetworkInterfaceUpdate,
@@ -230,35 +232,26 @@ def list_vcenter(client: VCentersOperations, resource_group_name=None):
 
 
 def show_inventory_item(
+    cmd,
     client: InventoryItemsOperations,
     resource_group_name,
     vcenter,
     inventory_item
 ):
 
-    morefId: str = inventory_item.split('/')[-1]
-    moType = morefId.rsplit('-', 1)[0]
-    inventoryType = 'InventoryItem'
-
-    if moType == 'datastore':
-        inventoryType = 'DatastoreInventoryItem'
-    elif moType == 'domain':
-        inventoryType = 'ClusterInventoryItem'
-    elif moType == 'dvportgroup':
-        inventoryType = 'VirtualNetworkInventoryItem'
-    elif moType == 'host':
-        inventoryType = 'HostInventoryItem'
-    elif moType == 'network':
-        inventoryType = 'VirtualNetworkInventoryItem'
-    elif moType == 'resgroup':
-        inventoryType = 'ResourcePoolInventoryItem'
-    elif moType == 'vm':
-        inventoryType = 'VirtualMachineInventoryItem'
-    elif moType == 'vmtpl-vm':
-        inventoryType = 'VirtualMachineTemplateInventoryItem'
-
-    client._deserialize.dependencies['InventoryItem'] = client._deserialize.dependencies[inventoryType]
-    return client.get(resource_group_name, vcenter.split('/')[-1], morefId)
+    inventory_item_id = get_resource_id(
+        cmd,
+        resource_group_name,
+        VMWARE_NAMESPACE,
+        VCENTER_RESOURCE_TYPE,
+        vcenter,
+        child_type_1=INVENTORY_ITEM_TYPE,
+        child_name_1=inventory_item,
+    )
+    assert inventory_item_id is not None
+    vcenter_sub = inventory_item_id.split("/")[2]
+    resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
+    return resources_client.get_by_id(inventory_item_id, VCENTER_KIND_GET_API_VERSION)
 
 
 def list_inventory_item(
