@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-09-02-preview.
+* Update "VirtualMachines" agent pool type as Public Preview feature.
 
 0.5.167
 +++++++
@@ -25,11 +26,6 @@ Pending
 0.5.165
 +++++++
 * Rearrange the storagepool SKU related helm values set for Azure Container Storage.
-
-
-0.5.165
-+++++++
-* Update "VirtualMachines" agent pool type as Public Preview feature.
 
 0.5.164
 +++++++
