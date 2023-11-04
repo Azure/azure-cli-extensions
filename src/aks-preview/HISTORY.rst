@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-09-02-preview.
+
+0.5.168
 * Update "VirtualMachines" agent pool type as Public Preview feature.
 
 0.5.167
