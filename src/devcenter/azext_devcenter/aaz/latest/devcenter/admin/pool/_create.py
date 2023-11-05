@@ -116,7 +116,7 @@ class Create(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.managed_virtual_network_regions = AAZListArg(
-            options=["--managed-virtual-network-regions"],
+            options=["--managed-virtual-network-regions", "-m"],
             arg_group="Properties",
             help="The regions of the managed virtual network (required when managedNetworkType is Managed).",
         )
