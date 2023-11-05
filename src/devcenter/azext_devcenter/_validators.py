@@ -113,9 +113,11 @@ already exists for the user-id '{user_id}' in this project '{project}'."""
 
 
 def is_iso8601(namespace):
+    if namespace.expiration_date is None:
+        return
     try:
         datetime.fromisoformat(namespace.expiration_date)
-        return True
+        return
     except ValueError as exception:
         error_message = f"""The expiration date is invalid '{namespace.expiration_date}' \
 it must be in ISO 8601 format. For example: 2023-12-30T22:35:00+00:00"""

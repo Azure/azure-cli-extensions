@@ -5,6 +5,7 @@
 # pylint: disable=protected-access
 
 from datetime import datetime
+import json
 from azure.cli.core.aaz import has_value
 from azure.cli.core.aaz import register_callback
 from azure.cli.core.azclierror import ResourceNotFoundError
@@ -973,10 +974,10 @@ def devcenter_environment_list(
     )
 
     if user_id is not None:
-        return cf_dataplane.deployment_environments.list_all_environments(
+        return cf_dataplane.deployment_environments.list_environments(
             project_name=project_name, user_id=user_id
         )
-    return cf_dataplane.deployment_environments.list_environments(
+    return cf_dataplane.deployment_environments.list_all_environments(
         project_name=project_name
     )
 
@@ -1022,7 +1023,8 @@ def devcenter_environment_create(
     body["environmentType"] = environment_type
     body["catalogName"] = catalog_name
     body["environmentDefinitionName"] = environment_definition_name
-    body["expirationDate"] = datetime.fromisoformat(expiration_date)
+    if expiration_date is not None:
+        body["expirationDate"] = datetime.fromisoformat(expiration_date)
     return sdk_no_wait(
         no_wait,
         cf_dataplane.deployment_environments.begin_create_or_update_environment,
@@ -1056,7 +1058,8 @@ def devcenter_environment_update(
     body["environmentType"] = environment["environmentType"]
     body["catalogName"] = environment["catalogName"]
     body["environmentDefinitionName"] = environment["environmentDefinitionName"]
-    body["expirationDate"] = datetime.fromisoformat(expiration_date)
+    if expiration_date is not None:
+        body["expirationDate"] = datetime.fromisoformat(expiration_date)
     return sdk_no_wait(
         no_wait,
         cf_dataplane.deployment_environments.begin_create_or_update_environment,
@@ -1191,12 +1194,17 @@ def devcenter_environment_operation_show_logs_by_operation(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
 
-    return cf_dataplane.environments.get_logs_by_operation(
+    logs = cf_dataplane.environments.get_logs_by_operation(
         project_name=project_name,
         operation_id=operation_id,
         user_id=user_id,
         environment_name=environment_name,
     )
+    logs_array = []
+    for log in logs:
+        logs_string = json.loads(log)
+        logs_array.append(logs_string)
+    return logs_array
 
 
 def devcenter_environment_operation_show_action(
@@ -1313,7 +1321,8 @@ def devcenter_environment_operation_update_environment(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
     body = {}
-    body["expirationDate"] = datetime.fromisoformat(expiration_date)
+    if expiration_date is not None:
+        body["expirationDate"] = datetime.fromisoformat(expiration_date)
 
     return cf_dataplane.environments.patch_environment(
         project_name=project_name,
