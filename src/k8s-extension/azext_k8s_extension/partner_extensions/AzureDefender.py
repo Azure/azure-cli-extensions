@@ -44,6 +44,11 @@ class AzureDefender(DefaultExtension):
                        'only supports cluster scope and single instance of this extension.', extension_type)
         logger.warning("Defaulting to extension name '%s' and release-namespace '%s'", name, release_namespace)
 
+        # Since our extension doesn't ask for AMA (oms) key settings, we must extract it from the LogAnalytics Workspace
+        # We use this configuration setting flag to explicitly tell the _get_container_insights_settings() function
+        # To extract it for the given LA workspace (or the default one, if not provided)
+        configuration_settings['amalogs.useAADAuth'] = False
+
         _get_container_insights_settings(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, configuration_settings,
                                          configuration_protected_settings, is_ci_extension_type)
 

@@ -3,6 +3,27 @@
 Release History
 ===============
 upcoming
+++++++
+
+0.3.43
+++++++
+* Update azure cli dependency version >= "2.53.0"
+* Remove GA commands which exists in azure-cli of version 2.53.0
+* 'az containerapp create/update': fix an issue for transforming sensitive values when the scale rules metadata not exists
+* 'az containerapp up': update builder image used when --source is provided with no Dockerfile to support building applications targeting a wider range of platform versions
+* Add Cloud Build support (build without Dockerfile or Docker) in Stage/Canary regions to the 'az containerapp up'/'az containerapp create' and 'az containerapp update' commands
+
+0.3.42
+++++++
+* 'az containerapp job create': Fix AttributeError when --trigger-type is None
+* 'az containerapp update': fix bug for mounting secret volumes using --secret-volume-mount
+* 'az containerapp compose create': fixed an issue where the environment's resource group was not resolved from --environment when the input value was a resource id.
+* 'az containerapp replica count', returns the replica count of a container app
+* [Breaking Change] 'az containerapp job create': add default values for container app job properties --replica-completion-count, --replica-retry-limit, --replica-timeout, --parallelism, --min-executions, --max-executions, --polling-interval
+* 'az containerapp create/update': hide environment variables, scale rules metadata
+* 'az containerapp job create/update': hide environment variables, scale rules metadata, eventTriggerConfig for job
+* [Breaking Change] 'az containerapp env create': update the default value of --enable-workload-profiles to `True`
+* 'az containerapp compose create': fix containerapp invalid memory resource
 
 0.3.41
 ++++++

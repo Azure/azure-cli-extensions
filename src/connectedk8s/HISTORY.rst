@@ -2,13 +2,13 @@
 
 Release History
 ===============
-1.5.1
+1.5.3
+++++++
+* Add support to get AKS-EE kubernetes distro
+
+1.5.2
 ++++++
 * Skip onboarding pre-checks for AKS-HCI with additional distros : [aks_management, aks_edge_k8s, aks_edge_k3s]
-
-1.5.0
-++++++
-* Enforce valid custom locations service principal application object id passed in by the user for enabling custom locations feature.
 
 1.4.2
 ++++++

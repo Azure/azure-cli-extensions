@@ -232,3 +232,13 @@ def load_command_table(self, _):
         g.command('list', 'list')
         g.show_command('show', 'get')
         g.command('list-event-types', 'list_event_types')
+
+    with self.command_group('eventgrid namespace'):
+        from .custom import NamespaceListKey, NamespaceRegenerateKey
+        self.command_table['eventgrid namespace list-key'] = NamespaceListKey(loader=self)
+        self.command_table['eventgrid namespace regenerate-key'] = NamespaceRegenerateKey(loader=self)
+
+    with self.command_group('eventgrid namespace ca-certificate'):
+        from .custom import CaCertificateCreate, CaCertificateUpdate
+        self.command_table['eventgrid namespace ca-certificate create'] = CaCertificateCreate(loader=self)
+        self.command_table['eventgrid namespace ca-certificate update'] = CaCertificateUpdate(loader=self)

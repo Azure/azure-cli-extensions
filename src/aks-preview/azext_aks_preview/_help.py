@@ -50,7 +50,7 @@ helps['aks create'] = """
                          size of its node pool with `az aks scale`.
         - name: --node-osdisk-size
           type: int
-          short-summary: Size in GB of the OS disk for each node in the node pool. Minimum 30 GB.
+          short-summary: Size in GiB of the OS disk for each node in the node pool. Minimum 30 GiB.
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
@@ -213,7 +213,7 @@ helps['aks create'] = """
           short-summary: (PREVIEW) The Kubernetes network policy to use.
           long-summary: |
               Using together with "azure" network plugin.
-              Specify "azure" for Azure network policy manager and "calico" for calico network policy controller.
+              Specify "azure" for Azure network policy manager, "calico" for calico network policy controller, "cilium" for Azure CNI Overlay powered by Cilium.
               Defaults to "" (network policy disabled).
         - name: --network-dataplane
           type: string
@@ -497,6 +497,9 @@ helps['aks create'] = """
         - name: --image-cleaner-interval-hours
           type: int
           short-summary: ImageCleaner scanning interval.
+        - name: --enable-image-integrity
+          type: bool
+          short-summary: Enable ImageIntegrity Service.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
@@ -860,6 +863,12 @@ helps['aks update'] = """
           long-summary: |
               Used to control the mode the network plugin should operate in. For example, "overlay" used with
               --network-plugin=azure will use an overlay network (non-VNET IPs) for pods in the cluster.
+        - name: --network-policy
+          type: string
+          short-summary: Update the mode of a network policy.
+          long-summary: |
+              Specify "azure" for Azure network policy manager, "cilium" for Azure CNI Overlay powered by Cilium.
+              Defaults to "" (network policy disabled).
         - name: --network-dataplane
           type: string
           short-summary: The network dataplane to use.
@@ -974,6 +983,9 @@ helps['aks update'] = """
         - name: --image-cleaner-interval-hours
           type: int
           short-summary: ImageCleaner scanning interval.
+        - name: --enable-image-integrity
+          type: bool
+          short-summary: Enable ImageIntegrity Service.
         - name: --disable-image-integrity
           type: bool
           short-summary: Disable ImageIntegrity Service.
@@ -1524,7 +1536,7 @@ helps['aks nodepool add'] = """
           - "`az aks get-versions`"
         - name: --node-osdisk-size
           type: int
-          short-summary: Size in GB of the OS disk for each node in the agent pool. Minimum 30 GB.
+          short-summary: Size in GiB of the OS disk for each node in the agent pool. Minimum 30 GiB.
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
@@ -2632,6 +2644,9 @@ helps['aks mesh enable'] = """
     short-summary: Enable Azure Service Mesh.
     long-summary: This command enables Azure Service Mesh in given cluster.
     parameters:
+      - name: --revision
+        type: string
+        short-summary: Azure Service Mesh revision to install.
       - name: --key-vault-id
         type: string
         short-summary: The Azure Keyvault id with plugin CA info.
@@ -2687,6 +2702,62 @@ helps['aks mesh disable-ingress-gateway'] = """
     examples:
       - name: Disable an internal ingress gateway.
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
+"""
+
+helps['aks mesh get-revisions'] = """
+    type: command
+    short-summary: Discover available Azure Service Mesh revisions and their compatibility.
+    long-summary: This command discovers available Azure Service Mesh revisions and their compatibility information for the given location.
+    examples:
+      - name: Discover Azure Service Mesh revisions.
+        text: az aks mesh get-revisions --location westus2
+        crafted: true
+"""
+
+helps['aks mesh get-upgrades'] = """
+    type: command
+    short-summary: Discover available Azure Service Mesh upgrades.
+    long-summary: This command discovers available Azure Service Mesh upgrades for the mesh revision installed on the cluster.
+    examples:
+      - name: Discover Azure Service Mesh upgrades.
+        text: az aks mesh get-upgrades --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks mesh upgrade start'] = """
+    type: command
+    short-summary: Initiate Azure Service Mesh upgrade.
+    long-summary: This command initiates upgrade of Azure Service Mesh to the specified revision.
+    parameters:
+      - name: --revision
+        type: string
+        short-summary: Azure Service Mesh revision to upgrade to.
+    examples:
+      - name: Initiate Azure Service Mesh upgrade.
+        text: az aks mesh upgrade start --resource-group MyResourceGroup --name MyManagedCluster --revision asm-1-18
+"""
+
+helps['aks mesh upgrade'] = """
+    type: group
+    short-summary: Commands to manage the upgrades for Azure Service Mesh.
+    long-summary: A group of commands to manage the upgrades for Azure Service Mesh in given cluster.
+"""
+
+helps['aks mesh upgrade complete'] = """
+    type: command
+    short-summary: Complete Azure Service Mesh upgrade.
+    long-summary: This command completes Azure Service Mesh canary upgrade by removing the previous revision.
+    examples:
+      - name: Complete Azure Service Mesh upgrade.
+        text: az aks mesh upgrade complete --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks mesh upgrade rollback'] = """
+    type: command
+    short-summary: Rollback Azure Service Mesh upgrade.
+    long-summary: This command rolls back Azure Service Mesh upgrade to the previous stable revision.
+    examples:
+      - name: Rollback Azure Service Mesh upgrade.
+        text: az aks mesh upgrade rollback --resource-group MyResourceGroup --name MyManagedCluster
 """
 
 helps['aks mesh enable-egress-gateway'] = """

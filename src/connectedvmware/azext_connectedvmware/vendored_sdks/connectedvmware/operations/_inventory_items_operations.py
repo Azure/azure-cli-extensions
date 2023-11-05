@@ -39,7 +39,7 @@ def build_create_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -81,7 +81,7 @@ def build_get_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -120,7 +120,7 @@ def build_delete_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -158,7 +158,7 @@ def build_list_by_v_center_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -243,7 +243,7 @@ class InventoryItemsOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -316,7 +316,7 @@ class InventoryItemsOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
         
         request = build_get_request(
@@ -382,7 +382,7 @@ class InventoryItemsOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
         
         request = build_delete_request(
@@ -435,7 +435,7 @@ class InventoryItemsOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.InventoryItemsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItemsList"]
         error_map = {

@@ -35,7 +35,7 @@ def build_list_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -65,7 +65,7 @@ class Operations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~scvmm.models
+    :type models: ~azure.mgmt.scvmm.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -85,18 +85,17 @@ class Operations(object):
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.ResourceProviderOperationList"]
+        # type: (...) -> Iterable["_models.OperationListResult"]
         """Returns list of all operations.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ResourceProviderOperationList or the result of
-         cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~scvmm.models.ResourceProviderOperationList]
+        :return: An iterator like instance of either OperationListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.scvmm.models.OperationListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourceProviderOperationList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.OperationListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -123,7 +122,7 @@ class Operations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("ResourceProviderOperationList", pipeline_response)
+            deserialized = self._deserialize("OperationListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)

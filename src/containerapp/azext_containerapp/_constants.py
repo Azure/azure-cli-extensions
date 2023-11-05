@@ -82,6 +82,10 @@ steps:
   - push: ["$Registry/{{image_name}}"]
     timeout: 1800
 """
+
+ACA_BUILDER_BULLSEYE_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bullseye-20231025.1"
+ACA_BUILDER_BOOKWORM_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bookworm-20231025.1"
+
 DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world image
 
 HELLO_WORLD_IMAGE = "mcr.microsoft.com/k8se/quickstart:latest"

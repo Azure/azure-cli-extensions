@@ -39,8 +39,13 @@ class NodeImageSelectionNamespace:
 
 class UpdateStrategyNamespace:
 
-    def __init__(self, update_strategy_id):
-        self.update_strategy_id = update_strategy_id
+    def __init__(self, update_strategy_name):
+        self.update_strategy_name = update_strategy_name
+
+class VMSizeNamespace:
+
+    def __init__(self, vm_size):
+        self.vm_size = vm_size
 
 class TestValidateMemberClusterId(unittest.TestCase):
     def test_invalid_member_cluster_id(self):
@@ -144,21 +149,37 @@ class TestValidateAssignIdentity(unittest.TestCase):
 
         self.assertIsNone(validators.validate_assign_identity(namespace))
 
-class TestValidateUpdateStrategyId(unittest.TestCase):
-    def test_invalid_update_strategy_id(self):
-        invalid_update_strategy_id = "dummy cluster id"
-        namespace = UpdateStrategyNamespace(update_strategy_id=invalid_update_strategy_id)
-        err = ("--update-strategy-id is not a valid Azure resource ID.")
+class TestValidateUpdateStrategyName(unittest.TestCase):
+    def test_invalid_update_strategy_name(self):
+        invalid_update_strategy_name = ""
+        namespace = UpdateStrategyNamespace(update_strategy_name=invalid_update_strategy_name)
+        err = ("--update-strategy-name is not a valid name")
 
         with self.assertRaises(CLIError) as cm:
-            validators.validate_update_strategy_id(namespace)
+            validators.validate_update_strategy_name(namespace)
         self.assertEqual(str(cm.exception), err)
 
-    def test_valid_update_strategy_id(self):
-        valid_update_strategy_id = "/subscriptions/123/resourceGroups/abc/providers/Microsoft.ContainerService/fleets/fleet-1/updateStrategies/strategy-1"
-        namespace = UpdateStrategyNamespace(update_strategy_id=valid_update_strategy_id)
+    def test_valid_update_strategy_name(self):
+        valid_update_strategy_name = "strategyname"
+        namespace = UpdateStrategyNamespace(update_strategy_name=valid_update_strategy_name)
 
-        self.assertIsNone(validators.validate_update_strategy_id(namespace))
+        self.assertIsNone(validators.validate_update_strategy_name(namespace))
+
+class TestValidateVmSize(unittest.TestCase):
+    def test_invalid_vm_size(self):
+        invalid_vm_size = ""
+        namespace = VMSizeNamespace(vm_size=invalid_vm_size)
+        err = ("--vm-size is not a valid value")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_vm_size(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_vm_size(self):
+        valid_vm_size = "a_valid_vm_size_sku"
+        namespace = VMSizeNamespace(vm_size=valid_vm_size)
+
+        self.assertIsNone(validators.validate_vm_size(namespace))
 
 if __name__ == "__main__":
     unittest.main()
