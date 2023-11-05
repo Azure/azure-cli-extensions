@@ -280,7 +280,7 @@ def load_command_table(self, _):
         g.custom_command("delay-action", "devcenter_environment_operation_delay_action")
         g.custom_command("skip-action", "devcenter_environment_operation_skip_action")
         g.custom_command("show-outputs", "devcenter_environment_operation_show_outputs")
-        g.custom_command("update-environment-expiration-date", "devcenter_environment_operation_update_environment")
+        g.custom_command("update-expiration-date", "devcenter_environment_operation_update_environment")
 
     with self.command_group("devcenter dev catalog", environments_dp) as g:
         g.custom_command("list", "devcenter_catalog_list_dp")

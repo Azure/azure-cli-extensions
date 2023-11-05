@@ -15,7 +15,7 @@ from azure.cli.core.commands.validators import (
     validate_file_or_dict,
 )
 
-from ._validators import validate_dev_box_list, validate_time
+from ._validators import validate_dev_box_list, validate_time, is_iso8601
 
 
 dev_center_type = CLIArgumentType(
@@ -640,7 +640,7 @@ def load_arguments(self, _):
             help="The name " "of the environment.",
         )
 
-    with self.argument_context("devcenter dev environment create") as c:
+    with self.argument_context("devcenter dev environment create", validator=is_iso8601) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -681,12 +681,13 @@ def load_arguments(self, _):
         )
         c.argument(
             "expiration_date",
-            options_list=["--expiration_date", "--expiration"],
+            options_list=["--expiration-date", "--expiration"],
             type=str,
-            help="The date of environment expiration. Must be an ISO string",
+            help="The time the expiration date will be triggered (UTC), after which the environment"
+            " and associated resources will be deleted. The string format is ISO format.",
         )
 
-    with self.argument_context("devcenter dev environment update") as c:
+    with self.argument_context("devcenter dev environment update", validator=is_iso8601) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -719,12 +720,12 @@ def load_arguments(self, _):
         )
         c.argument(
             "expiration_date",
-            options_list=["--expiration_date", "--expiration"],
+            options_list=["--expiration-date", "--expiration"],
             type=str,
             help="The date of environment expiration. Must be an ISO string",
         )
 
-    with self.argument_context("devcenter dev environment deploy") as c:
+    with self.argument_context("devcenter dev environment deploy", validator=is_iso8601) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -757,7 +758,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "expiration_date",
-            options_list=["--expiration_date", "--expiration"],
+            options_list=["--expiration-date", "--expiration"],
             type=str,
             help="The date of environment expiration. Must be an ISO string",
         )
@@ -873,7 +874,7 @@ def load_arguments(self, _):
             "endpoint",
             arg_type=endpoint,
         )
-    
+
     with self.argument_context("devcenter dev environment list-operation") as c:
         c.argument(
             "dev_center",
@@ -927,7 +928,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "operation_id",
-            options_list=["--operation-id", "-o"],
+            options_list=["--operation-id"],
             type=str,
             help="The ID " "of the operation.",
         )
@@ -959,7 +960,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "operation_id",
-            options_list=["--operation-id", "-o"],
+            options_list=["--operation-id"],
             type=str,
             help="The ID " "of the operation.",
         )
@@ -995,7 +996,7 @@ def load_arguments(self, _):
             type=str,
             help="The name of an action that will take place on an environment.",
         )
-    
+
     with self.argument_context("devcenter dev environment skip-action") as c:
         c.argument(
             "dev_center",
@@ -1027,7 +1028,7 @@ def load_arguments(self, _):
             type=str,
             help="The name of an action that will take place on an environment.",
         )
-    
+
     with self.argument_context("devcenter dev environment list-action") as c:
         c.argument(
             "dev_center",
@@ -1054,7 +1055,9 @@ def load_arguments(self, _):
             help="The name " "of the environment.",
         )
 
-    with self.argument_context("devcenter dev environment delay-action") as c:
+    with self.argument_context(
+        "devcenter dev environment delay-action", validator=validate_time
+    ) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -1086,12 +1089,10 @@ def load_arguments(self, _):
             help="The name of an action that will take place on an environment.",
         )
         c.argument(
-            "until",
-            options_list=["--until"],
-            type=str,
-            help="The time to delay the environment action until. Must be an ISO string",
+            "delay_time",
+            help="The delayed timespan from the scheduled action time. Format HH:MM",
         )
-    
+
     with self.argument_context("devcenter dev environment show-outputs") as c:
         c.argument(
             "dev_center",
@@ -1118,7 +1119,7 @@ def load_arguments(self, _):
             help="The name " "of the environment.",
         )
 
-    with self.argument_context("devcenter dev environment update-environment-expiration-date") as c:
+    with self.argument_context("devcenter dev environment update-expiration-date", validator=is_iso8601) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -1145,7 +1146,8 @@ def load_arguments(self, _):
         )
         c.argument(
             "expiration_date",
-            options_list=["--expiration_date", "--expiration"],
+            options_list=["--expiration-date", "--expiration"],
             type=str,
-            help="The date of environment expiration. Must be an ISO string",
+            help="The time the expiration date will be triggered (UTC), after which the environment "
+            "and associated resources will be deleted. The string format is ISO format.",
         )

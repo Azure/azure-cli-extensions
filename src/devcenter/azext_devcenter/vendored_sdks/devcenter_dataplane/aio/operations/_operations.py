@@ -154,7 +154,7 @@ class DevCenterOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_dev_center_list_projects_request(
+                request = build_dev_center_list_projects_request(
                     filter=filter,
                     top=top,
                     api_version=self._config.api_version,
@@ -166,7 +166,7 @@ class DevCenterOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -178,7 +178,7 @@ class DevCenterOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -186,9 +186,9 @@ class DevCenterOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -198,11 +198,11 @@ class DevCenterOperations:
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -252,7 +252,7 @@ class DevCenterOperations:
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_center_get_project_request(
+        request = build_dev_center_get_project_request(
             project_name=project_name,
             api_version=self._config.api_version,
             headers=_headers,
@@ -261,11 +261,11 @@ class DevCenterOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -282,9 +282,9 @@ class DevCenterOperations:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
 
 class DevBoxesOperations:  # pylint: disable=too-many-public-methods
@@ -390,7 +390,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_dev_boxes_list_pools_request(
+                request = build_dev_boxes_list_pools_request(
                     project_name=project_name,
                     top=top,
                     filter=filter,
@@ -403,7 +403,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -415,7 +415,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -423,9 +423,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -435,11 +435,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -531,7 +531,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_get_pool_request(
+        request = build_dev_boxes_get_pool_request(
             project_name=project_name,
             pool_name=pool_name,
             api_version=self._config.api_version,
@@ -541,11 +541,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -562,9 +562,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace
     def list_schedules_by_project(
@@ -620,7 +620,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_dev_boxes_list_schedules_by_project_request(
+                request = build_dev_boxes_list_schedules_by_project_request(
                     project_name=project_name,
                     top=top,
                     filter=filter,
@@ -633,7 +633,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -645,7 +645,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -653,9 +653,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -665,11 +665,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -745,7 +745,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_dev_boxes_list_schedules_request(
+                request = build_dev_boxes_list_schedules_request(
                     project_name=project_name,
                     pool_name=pool_name,
                     top=top,
@@ -759,7 +759,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -771,7 +771,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -779,9 +779,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -791,11 +791,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -857,7 +857,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_get_schedule_request(
+        request = build_dev_boxes_get_schedule_request(
             project_name=project_name,
             pool_name=pool_name,
             schedule_name=schedule_name,
@@ -868,11 +868,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -889,9 +889,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace
     def list_all_dev_boxes(
@@ -993,7 +993,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_dev_boxes_list_all_dev_boxes_request(
+                request = build_dev_boxes_list_all_dev_boxes_request(
                     filter=filter,
                     top=top,
                     api_version=self._config.api_version,
@@ -1005,7 +1005,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -1017,7 +1017,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -1025,9 +1025,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -1037,11 +1037,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -1158,7 +1158,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_dev_boxes_list_all_dev_boxes_by_user_request(
+                request = build_dev_boxes_list_all_dev_boxes_by_user_request(
                     user_id=user_id,
                     filter=filter,
                     top=top,
@@ -1171,7 +1171,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -1183,7 +1183,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -1191,9 +1191,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -1203,11 +1203,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -1332,7 +1332,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_dev_boxes_list_dev_boxes_request(
+                request = build_dev_boxes_list_dev_boxes_request(
                     project_name=project_name,
                     user_id=user_id,
                     filter=filter,
@@ -1346,7 +1346,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -1358,7 +1358,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -1366,9 +1366,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -1378,11 +1378,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -1493,7 +1493,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_get_dev_box_request(
+        request = build_dev_boxes_get_dev_box_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             user_id=user_id,
@@ -1504,11 +1504,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1525,9 +1525,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     async def _create_dev_box_initial(
         self, project_name: str, dev_box_name: str, body: Union[JSON, IO], user_id: str = "me", **kwargs: Any
@@ -1554,7 +1554,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         else:
             _json = body
 
-        _request = build_dev_boxes_create_dev_box_request(
+        request = build_dev_boxes_create_dev_box_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             user_id=user_id,
@@ -1568,11 +1568,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -2093,13 +2093,13 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[JSON].from_continuation_token(
+            return AsyncLROPoller.from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[JSON](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _delete_dev_box_initial(
         self, project_name: str, dev_box_name: str, user_id: str = "me", **kwargs: Any
@@ -2117,7 +2117,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[Optional[JSON]] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_delete_dev_box_request(
+        request = build_dev_boxes_delete_dev_box_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             user_id=user_id,
@@ -2128,11 +2128,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -2156,9 +2156,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                 deserialized = None
 
         if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+            return cls(pipeline_response, deserialized, response_headers)
 
-        return deserialized  # type: ignore
+        return deserialized
 
     @distributed_trace_async
     async def begin_delete_dev_box(
@@ -2259,13 +2259,13 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[JSON].from_continuation_token(
+            return AsyncLROPoller.from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[JSON](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _start_dev_box_initial(
         self, project_name: str, dev_box_name: str, user_id: str = "me", **kwargs: Any
@@ -2283,7 +2283,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_start_dev_box_request(
+        request = build_dev_boxes_start_dev_box_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             user_id=user_id,
@@ -2294,11 +2294,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -2318,9 +2318,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), response_headers)  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), response_headers)
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace_async
     async def begin_start_dev_box(
@@ -2421,13 +2421,13 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[JSON].from_continuation_token(
+            return AsyncLROPoller.from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[JSON](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _stop_dev_box_initial(
         self,
@@ -2451,7 +2451,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_stop_dev_box_request(
+        request = build_dev_boxes_stop_dev_box_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             user_id=user_id,
@@ -2463,11 +2463,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -2487,9 +2487,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), response_headers)  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), response_headers)
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace_async
     async def begin_stop_dev_box(
@@ -2599,13 +2599,13 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[JSON].from_continuation_token(
+            return AsyncLROPoller.from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[JSON](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _restart_dev_box_initial(
         self, project_name: str, dev_box_name: str, user_id: str = "me", **kwargs: Any
@@ -2623,7 +2623,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_restart_dev_box_request(
+        request = build_dev_boxes_restart_dev_box_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             user_id=user_id,
@@ -2634,11 +2634,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -2658,9 +2658,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), response_headers)  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), response_headers)
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace_async
     async def begin_restart_dev_box(
@@ -2761,13 +2761,13 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[JSON].from_continuation_token(
+            return AsyncLROPoller.from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[JSON](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _repair_dev_box_initial(
         self, project_name: str, dev_box_name: str, user_id: str = "me", **kwargs: Any
@@ -2785,7 +2785,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_repair_dev_box_request(
+        request = build_dev_boxes_repair_dev_box_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             user_id=user_id,
@@ -2796,11 +2796,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -2820,9 +2820,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), response_headers)  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), response_headers)
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace_async
     async def begin_repair_dev_box(
@@ -2924,13 +2924,13 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[JSON].from_continuation_token(
+            return AsyncLROPoller.from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[JSON](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     @distributed_trace
     def list_customization_groups(
@@ -3010,7 +3010,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_dev_boxes_list_customization_groups_request(
+                request = build_dev_boxes_list_customization_groups_request(
                     project_name=project_name,
                     dev_box_name=dev_box_name,
                     user_id=user_id,
@@ -3024,7 +3024,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -3036,7 +3036,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -3044,9 +3044,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -3056,11 +3056,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -3141,7 +3141,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_get_customization_group_request(
+        request = build_dev_boxes_get_customization_group_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             customization_group_name=customization_group_name,
@@ -3153,11 +3153,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -3174,9 +3174,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @overload
     async def create_customization_group(
@@ -3465,7 +3465,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         else:
             _json = body
 
-        _request = build_dev_boxes_create_customization_group_request(
+        request = build_dev_boxes_create_customization_group_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             customization_group_name=customization_group_name,
@@ -3480,11 +3480,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -3501,9 +3501,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace_async
     async def get_customization_task_log(
@@ -3545,7 +3545,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_get_customization_task_log_request(
+        request = build_dev_boxes_get_customization_task_log_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             customization_group_name=customization_group_name,
@@ -3558,11 +3558,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -3576,9 +3576,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         deserialized = response.iter_bytes()
 
         if cls:
-            return cls(pipeline_response, cast(AsyncIterator[bytes], deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(AsyncIterator[bytes], deserialized), {})
 
-        return cast(AsyncIterator[bytes], deserialized)  # type: ignore
+        return cast(AsyncIterator[bytes], deserialized)
 
     @distributed_trace_async
     async def get_remote_connection(
@@ -3620,7 +3620,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_get_remote_connection_request(
+        request = build_dev_boxes_get_remote_connection_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             user_id=user_id,
@@ -3631,11 +3631,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -3652,9 +3652,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace
     def list_actions(
@@ -3711,7 +3711,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_dev_boxes_list_actions_request(
+                request = build_dev_boxes_list_actions_request(
                     project_name=project_name,
                     dev_box_name=dev_box_name,
                     user_id=user_id,
@@ -3724,7 +3724,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -3736,7 +3736,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -3744,9 +3744,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -3756,11 +3756,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -3828,7 +3828,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_get_action_request(
+        request = build_dev_boxes_get_action_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             action_name=action_name,
@@ -3840,11 +3840,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -3861,9 +3861,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace_async
     async def skip_action(  # pylint: disable=inconsistent-return-statements
@@ -3897,7 +3897,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[None] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_skip_action_request(
+        request = build_dev_boxes_skip_action_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             action_name=action_name,
@@ -3909,11 +3909,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -3925,7 +3925,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response)
 
         if cls:
-            return cls(pipeline_response, None, {})  # type: ignore
+            return cls(pipeline_response, None, {})
 
     @distributed_trace_async
     async def delay_action(
@@ -3990,7 +3990,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_delay_action_request(
+        request = build_dev_boxes_delay_action_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             action_name=action_name,
@@ -4003,11 +4003,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -4024,9 +4024,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace
     def delay_all_actions(
@@ -4103,7 +4103,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_dev_boxes_delay_all_actions_request(
+                request = build_dev_boxes_delay_all_actions_request(
                     project_name=project_name,
                     dev_box_name=dev_box_name,
                     user_id=user_id,
@@ -4117,7 +4117,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -4129,7 +4129,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -4137,9 +4137,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -4149,11 +4149,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -4337,7 +4337,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_dev_boxes_list_operations_request(
+                request = build_dev_boxes_list_operations_request(
                     project_name=project_name,
                     dev_box_name=dev_box_name,
                     user_id=user_id,
@@ -4352,7 +4352,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -4364,7 +4364,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -4372,9 +4372,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -4384,11 +4384,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -4559,7 +4559,7 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_dev_boxes_get_operation_request(
+        request = build_dev_boxes_get_operation_request(
             project_name=project_name,
             dev_box_name=dev_box_name,
             operation_id=operation_id,
@@ -4571,11 +4571,11 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -4592,9 +4592,9 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
 
 class ProjectsOperations:
@@ -4671,7 +4671,7 @@ class ProjectsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_projects_list_customization_task_definitions_request(
+                request = build_projects_list_customization_task_definitions_request(
                     project_name=project_name,
                     filter=filter,
                     api_version=self._config.api_version,
@@ -4683,7 +4683,7 @@ class ProjectsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -4695,7 +4695,7 @@ class ProjectsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -4703,9 +4703,9 @@ class ProjectsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -4715,11 +4715,11 @@ class ProjectsOperations:
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -4801,7 +4801,7 @@ class ProjectsOperations:
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_projects_get_customization_task_definition_request(
+        request = build_projects_get_customization_task_definition_request(
             project_name=project_name,
             catalog_name=catalog_name,
             task_name=task_name,
@@ -4814,11 +4814,11 @@ class ProjectsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -4835,9 +4835,9 @@ class ProjectsOperations:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     async def _validate_customization_tasks_initial(
         self, project_name: str, body: Union[JSON, IO], **kwargs: Any
@@ -4864,7 +4864,7 @@ class ProjectsOperations:
         else:
             _json = body
 
-        _request = build_projects_validate_customization_tasks_request(
+        request = build_projects_validate_customization_tasks_request(
             project_name=project_name,
             content_type=content_type,
             api_version=self._config.api_version,
@@ -4876,11 +4876,11 @@ class ProjectsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -4897,9 +4897,9 @@ class ProjectsOperations:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @overload
     async def begin_validate_customization_tasks(
@@ -5252,13 +5252,13 @@ class ProjectsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[JSON].from_continuation_token(
+            return AsyncLROPoller.from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[JSON](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
 
 class DeploymentEnvironmentsOperations:
@@ -5346,7 +5346,7 @@ class DeploymentEnvironmentsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_deployment_environments_list_all_environments_request(
+                request = build_deployment_environments_list_all_environments_request(
                     project_name=project_name,
                     top=top,
                     api_version=self._config.api_version,
@@ -5358,7 +5358,7 @@ class DeploymentEnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -5370,7 +5370,7 @@ class DeploymentEnvironmentsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -5378,9 +5378,9 @@ class DeploymentEnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -5390,11 +5390,11 @@ class DeploymentEnvironmentsOperations:
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -5479,7 +5479,7 @@ class DeploymentEnvironmentsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_deployment_environments_list_environments_request(
+                request = build_deployment_environments_list_environments_request(
                     project_name=project_name,
                     user_id=user_id,
                     top=top,
@@ -5492,7 +5492,7 @@ class DeploymentEnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -5504,7 +5504,7 @@ class DeploymentEnvironmentsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -5512,9 +5512,9 @@ class DeploymentEnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -5524,11 +5524,11 @@ class DeploymentEnvironmentsOperations:
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -5609,7 +5609,7 @@ class DeploymentEnvironmentsOperations:
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_deployment_environments_get_environment_request(
+        request = build_deployment_environments_get_environment_request(
             project_name=project_name,
             environment_name=environment_name,
             user_id=user_id,
@@ -5620,11 +5620,11 @@ class DeploymentEnvironmentsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -5641,9 +5641,9 @@ class DeploymentEnvironmentsOperations:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     async def _create_or_update_environment_initial(
         self, project_name: str, environment_name: str, body: Union[JSON, IO], user_id: str = "me", **kwargs: Any
@@ -5670,7 +5670,7 @@ class DeploymentEnvironmentsOperations:
         else:
             _json = body
 
-        _request = build_deployment_environments_create_or_update_environment_request(
+        request = build_deployment_environments_create_or_update_environment_request(
             project_name=project_name,
             environment_name=environment_name,
             user_id=user_id,
@@ -5684,11 +5684,11 @@ class DeploymentEnvironmentsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -5708,9 +5708,9 @@ class DeploymentEnvironmentsOperations:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), response_headers)  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), response_headers)
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @overload
     async def begin_create_or_update_environment(
@@ -6050,13 +6050,13 @@ class DeploymentEnvironmentsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[JSON].from_continuation_token(
+            return AsyncLROPoller.from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[JSON](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _delete_environment_initial(
         self, project_name: str, environment_name: str, user_id: str = "me", **kwargs: Any
@@ -6074,7 +6074,7 @@ class DeploymentEnvironmentsOperations:
 
         cls: ClsType[Optional[JSON]] = kwargs.pop("cls", None)
 
-        _request = build_deployment_environments_delete_environment_request(
+        request = build_deployment_environments_delete_environment_request(
             project_name=project_name,
             environment_name=environment_name,
             user_id=user_id,
@@ -6085,11 +6085,11 @@ class DeploymentEnvironmentsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -6113,9 +6113,9 @@ class DeploymentEnvironmentsOperations:
                 deserialized = None
 
         if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+            return cls(pipeline_response, deserialized, response_headers)
 
-        return deserialized  # type: ignore
+        return deserialized
 
     @distributed_trace_async
     async def begin_delete_environment(
@@ -6211,13 +6211,13 @@ class DeploymentEnvironmentsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[JSON].from_continuation_token(
+            return AsyncLROPoller.from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[JSON](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     @distributed_trace
     def list_catalogs(self, project_name: str, *, top: Optional[int] = None, **kwargs: Any) -> AsyncIterable[JSON]:
@@ -6257,7 +6257,7 @@ class DeploymentEnvironmentsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_deployment_environments_list_catalogs_request(
+                request = build_deployment_environments_list_catalogs_request(
                     project_name=project_name,
                     top=top,
                     api_version=self._config.api_version,
@@ -6269,7 +6269,7 @@ class DeploymentEnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -6281,7 +6281,7 @@ class DeploymentEnvironmentsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -6289,9 +6289,9 @@ class DeploymentEnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -6301,11 +6301,11 @@ class DeploymentEnvironmentsOperations:
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -6353,7 +6353,7 @@ class DeploymentEnvironmentsOperations:
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_deployment_environments_get_catalog_request(
+        request = build_deployment_environments_get_catalog_request(
             project_name=project_name,
             catalog_name=catalog_name,
             api_version=self._config.api_version,
@@ -6363,11 +6363,11 @@ class DeploymentEnvironmentsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -6384,9 +6384,9 @@ class DeploymentEnvironmentsOperations:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace
     def list_environment_definitions(
@@ -6456,7 +6456,7 @@ class DeploymentEnvironmentsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_deployment_environments_list_environment_definitions_request(
+                request = build_deployment_environments_list_environment_definitions_request(
                     project_name=project_name,
                     top=top,
                     api_version=self._config.api_version,
@@ -6468,7 +6468,7 @@ class DeploymentEnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -6480,7 +6480,7 @@ class DeploymentEnvironmentsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -6488,9 +6488,9 @@ class DeploymentEnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -6500,11 +6500,11 @@ class DeploymentEnvironmentsOperations:
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -6588,7 +6588,7 @@ class DeploymentEnvironmentsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_deployment_environments_list_environment_definitions_by_catalog_request(
+                request = build_deployment_environments_list_environment_definitions_by_catalog_request(
                     project_name=project_name,
                     catalog_name=catalog_name,
                     top=top,
@@ -6601,7 +6601,7 @@ class DeploymentEnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -6613,7 +6613,7 @@ class DeploymentEnvironmentsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -6621,9 +6621,9 @@ class DeploymentEnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -6633,11 +6633,11 @@ class DeploymentEnvironmentsOperations:
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -6717,7 +6717,7 @@ class DeploymentEnvironmentsOperations:
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_deployment_environments_get_environment_definition_request(
+        request = build_deployment_environments_get_environment_definition_request(
             project_name=project_name,
             catalog_name=catalog_name,
             definition_name=definition_name,
@@ -6728,11 +6728,11 @@ class DeploymentEnvironmentsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -6749,9 +6749,9 @@ class DeploymentEnvironmentsOperations:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace
     def list_environment_types(
@@ -6799,7 +6799,7 @@ class DeploymentEnvironmentsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_deployment_environments_list_environment_types_request(
+                request = build_deployment_environments_list_environment_types_request(
                     project_name=project_name,
                     top=top,
                     api_version=self._config.api_version,
@@ -6811,7 +6811,7 @@ class DeploymentEnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -6823,7 +6823,7 @@ class DeploymentEnvironmentsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -6831,9 +6831,9 @@ class DeploymentEnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -6843,11 +6843,11 @@ class DeploymentEnvironmentsOperations:
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -7162,7 +7162,7 @@ class EnvironmentsOperations:
         else:
             _json = body
 
-        _request = build_environments_patch_environment_request(
+        request = build_environments_patch_environment_request(
             project_name=project_name,
             environment_name=environment_name,
             user_id=user_id,
@@ -7175,11 +7175,11 @@ class EnvironmentsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -7196,9 +7196,9 @@ class EnvironmentsOperations:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace_async
     async def get_outputs(self, project_name: str, environment_name: str, user_id: str = "me", **kwargs: Any) -> JSON:
@@ -7244,7 +7244,7 @@ class EnvironmentsOperations:
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_environments_get_outputs_request(
+        request = build_environments_get_outputs_request(
             project_name=project_name,
             environment_name=environment_name,
             user_id=user_id,
@@ -7255,11 +7255,11 @@ class EnvironmentsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -7276,9 +7276,9 @@ class EnvironmentsOperations:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace
     def list_operations(
@@ -7391,7 +7391,7 @@ class EnvironmentsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_environments_list_operations_request(
+                request = build_environments_list_operations_request(
                     project_name=project_name,
                     environment_name=environment_name,
                     user_id=user_id,
@@ -7406,7 +7406,7 @@ class EnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -7418,7 +7418,7 @@ class EnvironmentsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -7426,9 +7426,9 @@ class EnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -7438,11 +7438,11 @@ class EnvironmentsOperations:
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -7554,7 +7554,7 @@ class EnvironmentsOperations:
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_environments_get_operation_request(
+        request = build_environments_get_operation_request(
             project_name=project_name,
             environment_name=environment_name,
             operation_id=operation_id,
@@ -7566,11 +7566,11 @@ class EnvironmentsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -7587,9 +7587,9 @@ class EnvironmentsOperations:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace_async
     async def get_logs_by_operation(
@@ -7623,7 +7623,7 @@ class EnvironmentsOperations:
 
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        _request = build_environments_get_logs_by_operation_request(
+        request = build_environments_get_logs_by_operation_request(
             project_name=project_name,
             environment_name=environment_name,
             operation_id=operation_id,
@@ -7635,11 +7635,11 @@ class EnvironmentsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -7653,9 +7653,9 @@ class EnvironmentsOperations:
         deserialized = response.iter_bytes()
 
         if cls:
-            return cls(pipeline_response, cast(AsyncIterator[bytes], deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(AsyncIterator[bytes], deserialized), {})
 
-        return cast(AsyncIterator[bytes], deserialized)  # type: ignore
+        return cast(AsyncIterator[bytes], deserialized)
 
     @distributed_trace
     def list_actions(
@@ -7708,7 +7708,7 @@ class EnvironmentsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_environments_list_actions_request(
+                request = build_environments_list_actions_request(
                     project_name=project_name,
                     environment_name=environment_name,
                     user_id=user_id,
@@ -7721,7 +7721,7 @@ class EnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
             else:
                 # make call to next link with the client's api-version
@@ -7733,7 +7733,7 @@ class EnvironmentsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
+                request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 path_format_arguments = {
@@ -7741,9 +7741,9 @@ class EnvironmentsOperations:
                         "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
                     ),
                 }
-                _request.url = self._client.format_url(_request.url, **path_format_arguments)
+                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            return _request
+            return request
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
@@ -7753,11 +7753,11 @@ class EnvironmentsOperations:
             return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            _request = prepare_request(next_link)
+            request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -7821,7 +7821,7 @@ class EnvironmentsOperations:
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_environments_get_action_request(
+        request = build_environments_get_action_request(
             project_name=project_name,
             environment_name=environment_name,
             action_name=action_name,
@@ -7833,11 +7833,11 @@ class EnvironmentsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -7854,9 +7854,9 @@ class EnvironmentsOperations:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)
 
     @distributed_trace_async
     async def skip_action(  # pylint: disable=inconsistent-return-statements
@@ -7890,7 +7890,7 @@ class EnvironmentsOperations:
 
         cls: ClsType[None] = kwargs.pop("cls", None)
 
-        _request = build_environments_skip_action_request(
+        request = build_environments_skip_action_request(
             project_name=project_name,
             environment_name=environment_name,
             action_name=action_name,
@@ -7902,11 +7902,11 @@ class EnvironmentsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -7918,7 +7918,7 @@ class EnvironmentsOperations:
             raise HttpResponseError(response=response)
 
         if cls:
-            return cls(pipeline_response, None, {})  # type: ignore
+            return cls(pipeline_response, None, {})
 
     @distributed_trace_async
     async def delay_action(
@@ -7979,7 +7979,7 @@ class EnvironmentsOperations:
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_environments_delay_action_request(
+        request = build_environments_delay_action_request(
             project_name=project_name,
             environment_name=environment_name,
             action_name=action_name,
@@ -7992,11 +7992,11 @@ class EnvironmentsOperations:
         path_format_arguments = {
             "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
         }
-        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+        request.url = self._client.format_url(request.url, **path_format_arguments)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -8013,6 +8013,6 @@ class EnvironmentsOperations:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})
 
-        return cast(JSON, deserialized)  # type: ignore
+        return cast(JSON, deserialized)

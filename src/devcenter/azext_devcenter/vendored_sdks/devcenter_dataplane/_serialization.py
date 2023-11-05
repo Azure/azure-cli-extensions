@@ -63,7 +63,7 @@ import xml.etree.ElementTree as ET
 
 import isodate  # type: ignore
 
-from azure.core.exceptions import DeserializationError, SerializationError
+from azure.core.exceptions import DeserializationError, SerializationError, raise_with_traceback
 from azure.core.serialization import NULL as AzureCoreNull
 
 _BOM = codecs.BOM_UTF8.decode(encoding="utf-8")
@@ -124,7 +124,7 @@ class RawDeserializer:
                     pass
 
                 return ET.fromstring(data_as_str)  # nosec
-            except ET.ParseError as err:
+            except ET.ParseError:
                 # It might be because the server has an issue, and returned JSON with
                 # content-type XML....
                 # So let's try a JSON load, and if it's still broken
@@ -143,7 +143,7 @@ class RawDeserializer:
                 # The function hack is because Py2.7 messes up with exception
                 # context otherwise.
                 _LOGGER.critical("Wasn't XML not JSON, failing")
-                raise DeserializationError("XML is invalid") from err
+                raise_with_traceback(DeserializationError, "XML is invalid")
         raise DeserializationError("Cannot deserialize content-type: {}".format(content_type))
 
     @classmethod
@@ -295,7 +295,7 @@ class Model(object):
     _validation: Dict[str, Dict[str, Any]] = {}
 
     def __init__(self, **kwargs: Any) -> None:
-        self.additional_properties: Optional[Dict[str, Any]] = {}
+        self.additional_properties: Dict[str, Any] = {}
         for k in kwargs:
             if k not in self._attribute_map:
                 _LOGGER.warning("%s is not a known attribute of class %s and will be ignored", k, self.__class__)
@@ -340,7 +340,7 @@ class Model(object):
         return _create_xml_node(xml_map.get("name", cls.__name__), xml_map.get("prefix", None), xml_map.get("ns", None))
 
     def serialize(self, keep_readonly: bool = False, **kwargs: Any) -> JSON:
-        """Return the JSON that would be sent to server from this model.
+        """Return the JSON that would be sent to azure from this model.
 
         This is an alias to `as_dict(full_restapi_key_transformer, keep_readonly=False)`.
 
@@ -351,7 +351,7 @@ class Model(object):
         :rtype: dict
         """
         serializer = Serializer(self._infer_class_models())
-        return serializer._serialize(self, keep_readonly=keep_readonly, **kwargs)  # type: ignore
+        return serializer._serialize(self, keep_readonly=keep_readonly, **kwargs)
 
     def as_dict(
         self,
@@ -390,7 +390,7 @@ class Model(object):
         :rtype: dict
         """
         serializer = Serializer(self._infer_class_models())
-        return serializer._serialize(self, key_transformer=key_transformer, keep_readonly=keep_readonly, **kwargs)  # type: ignore
+        return serializer._serialize(self, key_transformer=key_transformer, keep_readonly=keep_readonly, **kwargs)
 
     @classmethod
     def _infer_class_models(cls):
@@ -415,7 +415,7 @@ class Model(object):
         :raises: DeserializationError if something went wrong
         """
         deserializer = Deserializer(cls._infer_class_models())
-        return deserializer(cls.__name__, data, content_type=content_type)  # type: ignore
+        return deserializer(cls.__name__, data, content_type=content_type)
 
     @classmethod
     def from_dict(
@@ -445,7 +445,7 @@ class Model(object):
             if key_extractors is None
             else key_extractors
         )
-        return deserializer(cls.__name__, data, content_type=content_type)  # type: ignore
+        return deserializer(cls.__name__, data, content_type=content_type)
 
     @classmethod
     def _flatten_subtype(cls, key, objects):
@@ -668,7 +668,7 @@ class Serializer(object):
 
         except (AttributeError, KeyError, TypeError) as err:
             msg = "Attribute {} in object {} cannot be serialized.\n{}".format(attr_name, class_name, str(target_obj))
-            raise SerializationError(msg) from err
+            raise_with_traceback(SerializationError, msg, err)
         else:
             return serialized
 
@@ -710,7 +710,7 @@ class Serializer(object):
                     ]
                 data = deserializer._deserialize(data_type, data)
             except DeserializationError as err:
-                raise SerializationError("Unable to build a model: " + str(err)) from err
+                raise_with_traceback(SerializationError, "Unable to build a model: " + str(err), err)
 
         return self._serialize(data, data_type, **kwargs)
 
@@ -730,8 +730,6 @@ class Serializer(object):
 
             if kwargs.get("skip_quote") is True:
                 output = str(output)
-                # https://github.com/Azure/autorest.python/issues/2063
-                output = output.replace("{", quote("{")).replace("}", quote("}"))
             else:
                 output = quote(str(output), safe="")
         except SerializationError:
@@ -755,7 +753,7 @@ class Serializer(object):
             if data_type.startswith("["):
                 internal_data_type = data_type[1:-1]
                 do_quote = not kwargs.get("skip_quote", False)
-                return self.serialize_iter(data, internal_data_type, do_quote=do_quote, **kwargs)
+                return str(self.serialize_iter(data, internal_data_type, do_quote=do_quote, **kwargs))
 
             # Not a list, regular serialization
             output = self.serialize_data(data, data_type, **kwargs)
@@ -826,7 +824,7 @@ class Serializer(object):
 
         except (ValueError, TypeError) as err:
             msg = "Unable to serialize value: {!r} as type: {!r}."
-            raise SerializationError(msg.format(data, data_type)) from err
+            raise_with_traceback(SerializationError, msg.format(data, data_type), err)
         else:
             return self._serialize(data, **kwargs)
 
@@ -1172,10 +1170,10 @@ class Serializer(object):
             return date + microseconds + "Z"
         except (ValueError, OverflowError) as err:
             msg = "Unable to serialize datetime object."
-            raise SerializationError(msg) from err
+            raise_with_traceback(SerializationError, msg, err)
         except AttributeError as err:
             msg = "ISO-8601 object must be valid Datetime object."
-            raise TypeError(msg) from err
+            raise_with_traceback(TypeError, msg, err)
 
     @staticmethod
     def serialize_unix(attr, **kwargs):
@@ -1483,7 +1481,7 @@ class Deserializer(object):
                 d_attrs[attr] = value
         except (AttributeError, TypeError, KeyError) as err:
             msg = "Unable to deserialize to object: " + class_name  # type: ignore
-            raise DeserializationError(msg) from err
+            raise_with_traceback(DeserializationError, msg, err)
         else:
             additional_properties = self._build_additional_properties(attributes, data)
             return self._instantiate_model(response, d_attrs, additional_properties)
@@ -1654,7 +1652,7 @@ class Deserializer(object):
         except (ValueError, TypeError, AttributeError) as err:
             msg = "Unable to deserialize response data."
             msg += " Data: {}, {}".format(data, data_type)
-            raise DeserializationError(msg) from err
+            raise_with_traceback(DeserializationError, msg, err)
         else:
             return self._deserialize(obj_type, data)
 
@@ -1810,6 +1808,7 @@ class Deserializer(object):
             data = data.value
         if isinstance(data, int):
             # Workaround. We might consider remove it in the future.
+            # https://github.com/Azure/azure-rest-api-specs/issues/141
             try:
                 return list(enum_obj.__members__.values())[data]
             except IndexError:
@@ -1866,7 +1865,7 @@ class Deserializer(object):
             return decimal.Decimal(attr)  # type: ignore
         except decimal.DecimalException as err:
             msg = "Invalid decimal {}".format(attr)
-            raise DeserializationError(msg) from err
+            raise_with_traceback(DeserializationError, msg, err)
 
     @staticmethod
     def deserialize_long(attr):
@@ -1894,7 +1893,7 @@ class Deserializer(object):
             duration = isodate.parse_duration(attr)
         except (ValueError, OverflowError, AttributeError) as err:
             msg = "Cannot deserialize duration object."
-            raise DeserializationError(msg) from err
+            raise_with_traceback(DeserializationError, msg, err)
         else:
             return duration
 
@@ -1911,7 +1910,7 @@ class Deserializer(object):
         if re.search(r"[^\W\d_]", attr, re.I + re.U):  # type: ignore
             raise DeserializationError("Date must have only digits and -. Received: %s" % attr)
         # This must NOT use defaultmonth/defaultday. Using None ensure this raises an exception.
-        return isodate.parse_date(attr, defaultmonth=0, defaultday=0)
+        return isodate.parse_date(attr, defaultmonth=None, defaultday=None)
 
     @staticmethod
     def deserialize_time(attr):
@@ -1946,7 +1945,7 @@ class Deserializer(object):
                 date_obj = date_obj.astimezone(tz=TZ_UTC)
         except ValueError as err:
             msg = "Cannot deserialize to rfc datetime object."
-            raise DeserializationError(msg) from err
+            raise_with_traceback(DeserializationError, msg, err)
         else:
             return date_obj
 
@@ -1983,7 +1982,7 @@ class Deserializer(object):
                 raise OverflowError("Hit max or min date")
         except (ValueError, OverflowError, AttributeError) as err:
             msg = "Cannot deserialize datetime object."
-            raise DeserializationError(msg) from err
+            raise_with_traceback(DeserializationError, msg, err)
         else:
             return date_obj
 
@@ -2002,6 +2001,6 @@ class Deserializer(object):
             date_obj = datetime.datetime.fromtimestamp(attr, TZ_UTC)
         except ValueError as err:
             msg = "Cannot deserialize to unix datetime object."
-            raise DeserializationError(msg) from err
+            raise_with_traceback(DeserializationError, msg, err)
         else:
             return date_obj
