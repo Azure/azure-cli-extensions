@@ -19,7 +19,7 @@ class List(AAZCommand):
     """List a list of available cluster pool versions.
 
     :example: Returns a list of available cluster pool versions.
-        az az hdinsightonaks available-cluster-pool-version list -l westus3
+        az hdinsightonaks available-cluster-pool-version list -l westus3
     """
 
     _aaz_info = {
