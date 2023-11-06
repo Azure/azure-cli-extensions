@@ -855,12 +855,13 @@ def containerapp_up(cmd,
             _get_registry_from_app(app, source)  # if the app exists, get the registry
         _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
-    app.create_acr_if_needed()
-
+    used_default_container_registry = False
     if source:
-        app.run_acr_build(dockerfile, source, quiet=False, build_from_source=not _has_dockerfile(source, dockerfile))
+        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=True, registry_server=registry_server)
+    else:
+        app.create_acr_if_needed()
 
-    app.create(no_registry=bool(repo))
+    app.create(no_registry=bool(repo or used_default_container_registry))
     if repo:
         _create_github_action(app, env, service_principal_client_id, service_principal_client_secret,
                               service_principal_tenant_id, branch, token, repo, context_path)
