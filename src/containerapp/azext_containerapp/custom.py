@@ -36,7 +36,7 @@ from azure.cli.command_modules.containerapp._utils import (_validate_subscriptio
                                                            generate_randomized_cert_name, load_cert_file,
                                                            generate_randomized_managed_cert_name,
                                                            check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                                                           get_current_mariner_tags, trigger_workflow,
+                                                           trigger_workflow,
                                                            AppType)
 
 from knack.log import get_logger
@@ -72,7 +72,7 @@ from ._models import (
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     AzureFileProperties as AzureFilePropertiesModel)
 
-from ._utils import connected_env_check_cert_name_availability, patchable_check, get_pack_exec_path, is_docker_running
+from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running
 
 from ._constants import (CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
@@ -854,12 +854,13 @@ def containerapp_up(cmd,
             _get_registry_from_app(app, source)  # if the app exists, get the registry
         _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
-    app.create_acr_if_needed()
-
+    used_default_container_registry = False
     if source:
-        app.run_acr_build(dockerfile, source, quiet=False, build_from_source=not _has_dockerfile(source, dockerfile))
+        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=True, registry_server=registry_server)
+    else:
+        app.create_acr_if_needed()
 
-    app.create(no_registry=bool(repo))
+    app.create(no_registry=bool(repo or used_default_container_registry))
     if repo:
         _create_github_action(app, env, service_principal_client_id, service_principal_client_secret,
                               service_principal_tenant_id, branch, token, repo, context_path)
@@ -1075,14 +1076,21 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
 
 
 def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
+    # Ensure that Docker is running locally before attempting to use the pack CLI
     if is_docker_running() is False:
         logger.error("Please install or start Docker and try again.")
         return
+
+    # Ensure that the pack CLI is installed locally
     pack_exec_path = get_pack_exec_path()
     if pack_exec_path is None:
         return
+
+    # List all Container Apps in the given resource group and managed environment
     logger.warning("Listing container apps...")
     ca_list = list_containerapp(cmd, resource_group_name, managed_env)
+
+    # Fetch all images currently deployed to containers for the listed Container Apps
     imgs = []
     if ca_list:
         for ca in ca_list:
@@ -1100,115 +1108,94 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
                     targetContainerAppEnvironmentName=managed_env_name,
                     targetResourceGroup=resource_group_name)
                 imgs.append(result)
-    # Inspect the images
+
+    # Iterate over each image and execute the `pack inspect` command to fetch the run image used (if previously built via buildpacks)
     results = []
     inspect_results = []
-    # Multi-worker
     logger.warning("Inspecting container apps images...")
     with ThreadPoolExecutor(max_workers=10) as executor:
         [executor.submit(patch_get_image_inspection, pack_exec_path, img, inspect_results) for img in imgs]
 
-    # Get the current tags of Dotnet Mariners
-    oryx_run_img_tags = get_current_mariner_tags()
-    failed_reason = "Failed to inspect the image. Please make sure that you are authenticated to the container registry and that the image exists."
-    not_based_mariner_reason = "Image not based on Mariner"
-    mcr_check_reason = "Image not from mcr.microsoft.com/oryx/builder"
+    # Fetch the list of Oryx-based run images that could be used to patch previously built images
+    oryx_run_images = get_oryx_run_image_tags()
+
+    # Start checking if the images are based on an Oryx image
     results = []
-    # Start checking if the images are based on Mariner
     logger.warning("Checking for patches...")
     for inspect_result in inspect_results:
-        if inspect_result["remote_info"] == 401:
-            results.append(dict(
-                targetContainerName=inspect_result["targetContainerName"],
-                targetContainerAppName=inspect_result["targetContainerAppName"],
-                targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
-                targetResourceGroup=inspect_result["targetResourceGroup"],
-                targetImageName=inspect_result["image_name"],
-                oldRunImage=None,
-                newRunImage=None,
-                id=None,
-                reason=failed_reason))
-        else:
-            # Divide run-images into different parts by "/"
-            run_images_props = inspect_result["remote_info"]["run_images"]
-            if run_images_props is None:
-                results.append(dict(
-                    targetContainerName=inspect_result["targetContainerName"],
-                    targetContainerAppName=inspect_result["targetContainerAppName"],
-                    targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
-                    targetResourceGroup=inspect_result["targetResourceGroup"],
-                    targetImageName=inspect_result["image_name"],
-                    oldRunImage=None,
-                    newRunImage=None,
-                    id=None,
-                    reason=not_based_mariner_reason))
-            else:
-                for run_images_prop in run_images_props:
-                    if run_images_prop["name"].find("mcr.microsoft.com/oryx/builder") != -1:
-                        run_images_prop = run_images_prop["name"].split(":")
-                        run_images_tag = run_images_prop[1]
-                        # Based on Mariners
-                        if run_images_tag.find('mariner') != -1:
-                            check_result = patchable_check(run_images_tag, oryx_run_img_tags, inspect_result=inspect_result)
-                            results.append(check_result)
-                        else:
-                            results.append(dict(
-                                targetContainerName=inspect_result["targetContainerName"],
-                                targetContainerAppName=inspect_result["targetContainerAppName"],
-                                targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
-                                targetResourceGroup=inspect_result["targetResourceGroup"],
-                                targetImageName=inspect_result["image_name"],
-                                oldRunImage=run_images_tag,
-                                newRunImage=None,
-                                id=None,
-                                reason=failed_reason))
-                    else:
-                        # Not based on image from mcr.microsoft.com/oryx/builder
-                        results.append(dict(
-                            targetContainerAppName=inspect_result["targetContainerAppName"],
-                            targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
-                            targetResourceGroup=inspect_result["targetResourceGroup"],
-                            oldRunImage=inspect_result["remote_info"]["run_images"],
-                            newRunImage=None,
-                            id=None,
-                            reason=mcr_check_reason))
+        results.append(_get_patchable_check_result(inspect_result, oryx_run_images))
     if show_all is False:
         results = [result for result in results if result["id"] is not None]
     if not results:
         logger.warning("No container apps available to patch at this time. Use --show-all to show the container apps that cannot be patched.")
-        return
     return results
 
 
+def _get_patchable_check_result(inspect_result, oryx_run_images):
+    # Define reasons for patchable check failure
+    failed_reason = "Failed to inspect the image. Please make sure that you are authenticated to the container registry and that the image exists."
+    not_based_on_oryx_reason = "Image not based on an Oryx runtime."
+    mcr_check_reason = "Image does not have a base pulled from a supported platform MCR repository."
+
+    # Define base result object
+    result = dict(
+        targetContainerName=inspect_result["targetContainerName"],
+        targetContainerAppName=inspect_result["targetContainerAppName"],
+        targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+        targetResourceGroup=inspect_result["targetResourceGroup"],
+        oldRunImage=None,
+        newRunImage=None,
+        id=None,
+    )
+
+    # Check if the image was previously found
+    if inspect_result["remote_info"] == 401:
+        result.update(
+            targetImageName=inspect_result["image_name"],
+            reason=failed_reason
+        )
+        return result
+
+    # Divide run-images into different parts by "/"
+    run_images_props = inspect_result["remote_info"]["run_images"]
+
+    # Check if a base run image was found for the image
+    if run_images_props is None:
+        result.update(
+            targetImageName=inspect_result["image_name"],
+            reason=not_based_on_oryx_reason)
+        return result
+
+    # Define the MCR repositories that are supported for patching
+    mcr_repos = ["oryx/dotnetcore", "oryx/node", "oryx/python"]
+
+    # Iterate over each base run image found to see if a patch can be applied
+    for run_images_prop in run_images_props:
+        base_run_image_name = run_images_prop["name"]
+        if any(base_run_image_name.find(repo) != -1 for repo in mcr_repos):
+            return patchable_check(base_run_image_name, oryx_run_images, inspect_result=inspect_result)
+
+        # Not based on a supported MCR repository
+        result.update(
+            oldRunImage=inspect_result["remote_info"]["run_images"],
+            reason=mcr_check_reason)
+        return result
+
+
 def patch_get_image_inspection(pack_exec_path, img, info_list):
-    if (img["imageName"].find("run-dotnet") != -1) and (img["imageName"].find("cbl-mariner") != -1):
-        inspect_result = {
-            "remote_info":
-            {
-                "run_images":
-                [{
-                    "name": "mcr.microsoft.com/oryx/builder:" + img["imageName"].split(":")[-1]
-                }]
-            },
-            "image_name": img["imageName"],
+    # Execute the 'pack inspect' command on an image and return the result (with additional Container App metadata)
+    with subprocess.Popen(pack_exec_path + " inspect-image " + img["imageName"] + " --output json", shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE) as img_info:
+        img_info_out, img_info_err = img_info.communicate()
+        if img_info_err.find(b"status code 401 Unauthorized") != -1 or img_info_err.find(b"unable to find image") != -1:
+            inspect_result = dict(remote_info=401, image_name=img["imageName"])
+        else:
+            inspect_result = json.loads(img_info_out)
+        inspect_result.update({
             "targetContainerName": img["targetContainerName"],
             "targetContainerAppName": img["targetContainerAppName"],
             "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"],
             "targetResourceGroup": img["targetResourceGroup"]
-        }
-    else:
-        with subprocess.Popen(pack_exec_path + " inspect-image " + img["imageName"] + " --output json", shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE) as img_info:
-            img_info_out, img_info_err = img_info.communicate()
-            if img_info_err.find(b"status code 401 Unauthorized") != -1 or img_info_err.find(b"unable to find image") != -1:
-                inspect_result = dict(remote_info=401, image_name=img["imageName"])
-            else:
-                inspect_result = json.loads(img_info_out)
-            inspect_result.update({
-                "targetContainerName": img["targetContainerName"],
-                "targetContainerAppName": img["targetContainerAppName"],
-                "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"],
-                "targetResourceGroup": img["targetResourceGroup"]
-            })
+        })
     info_list.append(inspect_result)
 
 
@@ -1304,7 +1291,7 @@ def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
 def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, pack_exec_path):
     try:
         logger.warning("Applying patch for container app: " + container_app_name + " container: " + container_name)
-        subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image}", shell=True, check=True)
+        subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image} --force", shell=True, check=True)
         new_target_image_name = target_image_name.split(":")[0] + ":" + new_run_image.split(":")[1]
         subprocess.run(f"docker tag {target_image_name} {new_target_image_name}", shell=True, check=True)
         logger.debug(f"Publishing {new_target_image_name} to registry...")

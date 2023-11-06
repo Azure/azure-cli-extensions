@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.9.0
++++++
+* Change publicnetworkaccess to public-network-access word
+
 0.8.0
 +++++
 * Support publicnetworkaccess in datafactory_create and datafactory_update

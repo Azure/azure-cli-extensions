@@ -55,10 +55,12 @@ def data_collection_rule_associations_create(client,
                                              resource_uri,
                                              association_name,
                                              description=None,
-                                             rule_id=None):
+                                             rule_id=None,
+                                             endpoint_id=None):
     body = {}
     body['description'] = description
     body['data_collection_rule_id'] = rule_id
+    body['data_collection_endpoint_id'] = endpoint_id
     return client.create(resource_uri=resource_uri,
                          association_name=association_name,
                          body=body)
@@ -68,7 +70,8 @@ def data_collection_rule_associations_update(client,
                                              resource_uri,
                                              association_name,
                                              description=None,
-                                             rule_id=None):
+                                             rule_id=None,
+                                             endpoint_id=None):
     from ..custom import monitor_data_collection_rule_association_show
     instance = monitor_data_collection_rule_association_show(client, resource_uri, association_name)
     body = instance.as_dict(keep_readonly=False)
@@ -77,6 +80,8 @@ def data_collection_rule_associations_update(client,
         body['description'] = description
     if rule_id is not None:
         body['data_collection_rule_id'] = rule_id
+    if endpoint_id is not None:
+        body['data_collection_endpoint_id'] = endpoint_id
     return client.create(resource_uri=resource_uri,
                          association_name=association_name,
                          body=body)
