@@ -13,7 +13,7 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
 
     def _prepare_vm(self, resource_group, vm):
         vm_create_cmd_tpl = 'vm create -g {rg} --name {vm} ' \
-                            '--image Canonical:UbuntuServer:18.04-LTS:latest ' \
+                            '--image UbuntuLTS ' \
                             '--authentication-type password ' \
                             '--admin-username deploy ' \
                             '--admin-password PassPass10!) ' \
@@ -73,7 +73,7 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
         })
 
         self.cmd('vm create -g {rg} -n {vm2} '
-                 '--image Canonical:UbuntuServer:18.04-LTS:latest '
+                 '--image UbuntuLTS '
                  '--authentication-type password '
                  '--admin-username deploy '
                  '--admin-password PassPass10!) '
@@ -83,7 +83,7 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
                  '-n NetworkWatcherAgentLinux '
                  '--publisher Microsoft.Azure.NetworkWatcher')
         self.cmd('vm create -g {rg} -n {vm3} '
-                 '--image Canonical:UbuntuServer:18.04-LTS:latest '
+                 '--image UbuntuLTS '
                  '--authentication-type password '
                  '--admin-username deploy '
                  '--admin-password PassPass10!) '
