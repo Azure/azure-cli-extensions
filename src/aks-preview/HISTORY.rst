@@ -12,7 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 0.5.169
 +++++++
 * Vendor new SDK and bump API version to 2023-09-02-preview.
-* fix a bug in --support_plan handling when doing az aks update
+* fix a bug in --support-plan handling when doing `az aks update`
 
 0.5.168
 +++++++
