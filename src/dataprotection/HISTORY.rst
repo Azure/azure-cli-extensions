@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.11.2
+++++++
+* `az dataprotection backup-instance update-msi-permissions`: Added UAMI support for AKS backup/restore.
+
 0.11.1
 ++++++
 * Added '-v' option for all --vault-name parameters
