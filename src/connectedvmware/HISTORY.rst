@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.2.2
+++++++
+* GA release: Using stable API version for all operations.
+* `az connectedvmware inventory item show` shows inventory-type specific properties.
+
 0.2.1
 ++++++
 * Bug fix for `get-resource-id` internal function, which was not honoring resource-group override.

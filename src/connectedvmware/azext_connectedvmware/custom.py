@@ -57,6 +57,8 @@ from .vendored_sdks.connectedvmware.models import (
     DiskMode,
     HardwareProfile,
     InfrastructureProfile,
+    InventoryItem,
+    InventoryType,
     IPAddressAllocationMethod,
     NetworkInterface,
     NetworkInterfaceUpdate,
@@ -230,13 +232,26 @@ def list_vcenter(client: VCentersOperations, resource_group_name=None):
 
 
 def show_inventory_item(
+    cmd,
     client: InventoryItemsOperations,
     resource_group_name,
     vcenter,
     inventory_item
 ):
 
-    return client.get(resource_group_name, vcenter.split('/')[-1], inventory_item.split('/')[-1])
+    inventory_item_id = get_resource_id(
+        cmd,
+        resource_group_name,
+        VMWARE_NAMESPACE,
+        VCENTER_RESOURCE_TYPE,
+        vcenter,
+        child_type_1=INVENTORY_ITEM_TYPE,
+        child_name_1=inventory_item,
+    )
+    assert inventory_item_id is not None
+    vcenter_sub = inventory_item_id.split("/")[2]
+    resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
+    return resources_client.get_by_id(inventory_item_id, VCENTER_KIND_GET_API_VERSION)
 
 
 def list_inventory_item(
