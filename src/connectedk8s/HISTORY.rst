@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.5.4
+++++++
+* Log debug if 'arcConfigEndpoint' doesn't exist in 'dataplaneEndpoints' ARM metadata.
+
 1.5.3
 ++++++
 * Add support to get AKS-EE kubernetes distro
