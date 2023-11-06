@@ -19,7 +19,7 @@ class CheckNameAvailability(AAZCommand):
     """Check the availability of the resource name.
 
     :example: Check if the name clicluster  is available in cluster pool cliclusterpool.
-        az az hdinsightonaks check-name-availability -l westus3 --name cliclusterpool/clicluster --type Microsoft.HDInsight/clusterPools/clusters
+        az hdinsightonaks check-name-availability -l westus3 --name cliclusterpool/clicluster --type Microsoft.HDInsight/clusterPools/clusters
     """
 
     _aaz_info = {

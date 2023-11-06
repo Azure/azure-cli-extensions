@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a cluster.
 
-    :example: Create a Trino cluster.
-        az az hdinsightonaks cluster create -n clustername --cluster-pool-name clusterpoolname -g resourcesGroup -l westus3 --assigned-identity-object-id 00000000-0000-0000-0000-000000000000 --assigned-identity-client-id 00000000-0000-0000-0000-000000000000 --authorization-user-id 00000000-0000-0000-0000-000000000000 --assigned-identity-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi --cluster-type Trino --cluster-version 1.0.6 --oss-version 0.410.0 --nodes (az hdinsightonaks cluster node-profile create  --count 5 --type Worker --vm-size Standard_D8d_v5)
+    :example: Create a Trino cluster. Need to use az hdinsightonaks cluster node-profile create a node profile frist.
+        az hdinsightonaks cluster create -n clustername --cluster-pool-name clusterpoolname -g resourcesGroup -l westus3 --assigned-identity-object-id 00000000-0000-0000-0000-000000000000 --assigned-identity-client-id 00000000-0000-0000-0000-000000000000 --authorization-user-id 00000000-0000-0000-0000-000000000000 --assigned-identity-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi --cluster-type Trino --cluster-version 1.0.6 --oss-version 0.410.0 --nodes $node-profile
     """
 
     _aaz_info = {
