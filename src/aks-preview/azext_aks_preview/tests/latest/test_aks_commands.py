@@ -2712,6 +2712,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
+    # the availability of features is controlled by a toggle and cannot be fully tested yet,
+    # however, existing test results show that the client side works as expected, so exclude it at this moment
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     def test_aks_nodepool_add_with_artifact_streaming(self, resource_group, resource_group_location):
@@ -7317,6 +7320,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
+    # the availability of features is controlled by a toggle and cannot be fully tested yet,
+    # however, existing test results show that the client side works as expected, so exclude it at this moment
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     def test_aks_nodepool_update_with_artifact_streaming(self, resource_group, resource_group_location):
