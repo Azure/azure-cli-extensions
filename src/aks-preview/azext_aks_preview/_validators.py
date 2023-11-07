@@ -191,7 +191,7 @@ def validate_vm_set_type(namespace):
             namespace.vm_set_type.lower() != "virtualmachines" and \
                 namespace.vm_set_type.lower() != "virtualmachinescalesets":
             raise CLIError(
-                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview)")
 
 
 def validate_load_balancer_sku(namespace):
