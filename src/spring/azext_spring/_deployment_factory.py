@@ -6,7 +6,7 @@
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import get_file_json
-from .vendored_sdks.appplatform.v2023_09_01_preview import models
+from .vendored_sdks.appplatform.v2023_11_01_preview import models
 from ._deployment_source_factory import source_selector
 from .custom import format_scale
 

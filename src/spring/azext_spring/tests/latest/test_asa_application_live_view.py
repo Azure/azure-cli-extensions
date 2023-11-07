@@ -7,7 +7,7 @@ import unittest
 from azure.cli.testsdk import (ScenarioTest)
 from .custom_preparers import SpringPreparer, SpringResourceGroupPreparer
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
-from ...vendored_sdks.appplatform.v2023_09_01_preview import models
+from ...vendored_sdks.appplatform.v2023_11_01_preview import models
 from ...application_live_view import (create, delete)
 try:
     import unittest.mock as mock

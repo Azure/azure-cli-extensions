@@ -99,8 +99,11 @@ from azext_aks_preview._consts import (
     CONST_WEEKINDEX_THIRD,
     CONST_WEEKLY_MAINTENANCE_SCHEDULE,
     CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
+    CONST_NODE_PROVISIONING_MODE_MANUAL,
+    CONST_NODE_PROVISIONING_MODE_AUTO,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -161,7 +164,8 @@ from azext_aks_preview._validators import (
     validate_vm_set_type,
     validate_vnet_subnet_id,
     validate_force_upgrade_disable_and_enable_parameters,
-    validate_azure_service_mesh_revision
+    validate_azure_service_mesh_revision,
+    validate_artifact_streaming
 )
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
@@ -199,7 +203,7 @@ node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
 node_os_skus_create = [CONST_OS_SKU_AZURELINUX, CONST_OS_SKU_UBUNTU, CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_MARINER]
 node_os_skus = node_os_skus_create + [CONST_OS_SKU_WINDOWS2019, CONST_OS_SKU_WINDOWS2022]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
-workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI, CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION]
+workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI, CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION, CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION]
 gpu_instance_profiles = [
     CONST_GPU_INSTANCE_PROFILE_MIG1_G,
     CONST_GPU_INSTANCE_PROFILE_MIG2_G,
@@ -294,6 +298,12 @@ storage_pool_skus = [
 storage_pool_options = [
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_SSD,
+]
+
+# consts for guardrails level
+node_provisioning_modes = [
+    CONST_NODE_PROVISIONING_MODE_MANUAL,
+    CONST_NODE_PROVISIONING_MODE_AUTO,
 ]
 
 
@@ -409,6 +419,7 @@ def load_arguments(self, _):
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('rotation_poll_interval')
         c.argument('enable_sgxquotehelper', action='store_true')
+        c.argument('enable_app_routing', action='store_true', is_preview=True)
         # nodepool paramerters
         c.argument('nodepool_name', default='nodepool1',
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
@@ -504,6 +515,8 @@ def load_arguments(self, _):
                    help='set azure disk type storage pool sku for azure container storage')
         c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options),
                    help='set ephemeral disk storage pool option for azure container storage')
+        c.argument('node_provisioning_mode', is_preview=True, arg_type=get_enum_type(node_provisioning_modes),
+                   help='Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -520,6 +533,7 @@ def load_arguments(self, _):
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('network_dataplane', arg_type=get_enum_type(network_dataplanes))
         c.argument('network_policy')
+        c.argument('network_plugin', arg_type=get_enum_type(network_plugins))
         c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
@@ -631,6 +645,7 @@ def load_arguments(self, _):
         c.argument('guardrails_version', help='The guardrails version', is_preview=True)
         c.argument('guardrails_excluded_ns', is_preview=True)
         c.argument('enable_network_observability', action='store_true', is_preview=True, help="enable network observability for cluster")
+        c.argument('disable_network_observability', action='store_true', is_preview=True, help="disable network observability for cluster")
         c.argument('enable_cost_analysis', is_preview=True, action='store_true')
         c.argument('disable_cost_analysis', is_preview=True, action='store_true')
         # azure container storage
@@ -646,6 +661,8 @@ def load_arguments(self, _):
                    help='set ephemeral disk storage pool option for azure container storage')
         c.argument('azure_container_storage_nodepools',
                    help='define the comma separated nodepool list to install azure container storage')
+        c.argument('node_provisioning_mode', is_preview=True, arg_type=get_enum_type(node_provisioning_modes),
+                   help='Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.')
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
@@ -685,6 +702,8 @@ def load_arguments(self, _):
         c.argument('node_osdisk_type', arg_type=get_enum_type(node_os_disk_types))
         c.argument('node_osdisk_size', type=int)
         c.argument('max_surge', validator=validate_max_surge)
+        c.argument('drain_timeout', type=int)
+        c.argument('node_soak_duration', type=int)
         c.argument('mode', arg_type=get_enum_type(node_mode_types))
         c.argument('scale_down_mode', arg_type=get_enum_type(scale_down_modes))
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
@@ -708,6 +727,7 @@ def load_arguments(self, _):
         c.argument('disable_windows_outbound_nat', action='store_true', validator=validate_disable_windows_outbound_nat)
         c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
         c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
+        c.argument('enable_artifact_streaming', action='store_true', validator=validate_artifact_streaming, is_preview=True)
         c.argument('node_public_ip_tags', arg_type=tags_type, validator=validate_node_public_ip_tags,
                    help='space-separated tags: key[=value] [key[=value] ...].')
 
@@ -724,6 +744,8 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('node_taints', validator=validate_nodepool_taints)
         c.argument('max_surge', validator=validate_max_surge)
+        c.argument('drain_timeout', type=int)
+        c.argument('node_soak_duration', type=int)
         c.argument('mode', arg_type=get_enum_type(node_mode_types))
         c.argument('scale_down_mode', arg_type=get_enum_type(scale_down_modes))
         # extensions
@@ -731,9 +753,12 @@ def load_arguments(self, _):
         c.argument('disable_custom_ca_trust', options_list=['--disable-custom-ca-trust', '--dcat'], action='store_true')
         c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
         c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
+        c.argument('enable_artifact_streaming', action='store_true', validator=validate_artifact_streaming, is_preview=True)
 
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', validator=validate_max_surge)
+        c.argument('drain_timeout', type=int)
+        c.argument('node_soak_duration', type=int)
         c.argument('snapshot_id', validator=validate_snapshot_id)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('aks_custom_headers')
@@ -1010,6 +1035,30 @@ def load_arguments(self, _):
 
     with self.argument_context('aks mesh upgrade start') as c:
         c.argument('revision', validator=validate_azure_service_mesh_revision, required=True)
+
+    with self.argument_context('aks approuting enable') as c:
+        c.argument('enable_kv', action='store_true')
+        c.argument('keyvault_id', options_list=[
+                   '--attach-kv'])
+
+    with self.argument_context('aks approuting update') as c:
+        c.argument('keyvault_id', options_list=[
+                   '--attach-kv'])
+        c.argument('enable_kv', action='store_true')
+
+    with self.argument_context('aks approuting zone add') as c:
+        c.argument('dns_zone_resource_ids', options_list=[
+                   '--ids'], required=True)
+        c.argument('attach_zones')
+
+    with self.argument_context('aks approuting zone delete') as c:
+        c.argument('dns_zone_resource_ids', options_list=[
+                   '--ids'], required=True)
+
+    with self.argument_context('aks approuting zone update') as c:
+        c.argument('dns_zone_resource_ids', options_list=[
+                   '--ids'], required=True)
+        c.argument('attach_zones')
 
 
 def _get_default_install_location(exe_name):
