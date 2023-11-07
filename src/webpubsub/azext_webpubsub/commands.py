@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.util import empty_on_404
-from ._client_factory import (cf_webpubsub, cf_webpubsubhub, cf_webpubsubhub_usage)
+from ._client_factory import (cf_webpubsub, cf_webpubsubhub, cf_webpubsubhub_usage, cf_webpubsub_replicas)
 from ._exception_handler import exception_handler
 
 
@@ -45,6 +45,11 @@ def load_command_table(self, _):
     webpubsub_usage_utils = CliCommandType(
         operations_tmpl='azext_webpubsub.custom#{}',
         client_factory=cf_webpubsubhub_usage
+    )
+
+    webpubsub_replica_utils = CliCommandType(
+        operations_tmpl='azext_webpubsub.replica#{}',
+        client_factory=cf_webpubsub_replicas
     )
 
     with self.command_group('webpubsub', webpubsub_general_utils) as g:
@@ -100,3 +105,9 @@ def load_command_table(self, _):
         g.command('grant', 'grant_permission')
         g.command('revoke', 'revoke_permission')
         g.command('check', 'check_permission')
+
+    with self.command_group('webpubsub replica', webpubsub_replica_utils) as g:
+        g.command('create', 'webpubsub_replica_create')
+        g.command('list', 'webpubsub_replica_list')
+        g.show_command('show', 'webpubsub_replica_show', exception_handler=empty_on_404)
+        g.show_command('delete', 'webpubsub_replica_delete')

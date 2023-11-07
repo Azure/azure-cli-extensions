@@ -4,32 +4,34 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import time
+
+from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-from .utils import create_containerapp_env
+from .utils import prepare_containerapp_env_for_app_e2e_tests
+
 
 class ContainerAppIngressStickySessionsTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_ingress_sticky_sessions_e2e(self, resource_group):
-        import requests
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='app2', length=24)
 
-        create_containerapp_env(self, env, resource_group)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
 
-        self.cmd('containerapp env show -n {} -g {}'.format(env, resource_group), checks=[
-            JMESPathCheck('name', env)            
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, env_rg), checks=[
+            JMESPathCheck('name', env_name)
         ])
 
-        self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/k8se/quickstart:latest --environment {} -n {} ".format(resource_group, env, app))        
+        self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/k8se/quickstart:latest --environment {} -n {} ".format(resource_group, env_id, app))
         self.cmd("az containerapp ingress sticky-sessions set -n {} -g {} --affinity sticky".format(app, resource_group))        
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, app), checks=[
             JMESPathCheck('properties.configuration.ingress.stickySessions.affinity', "sticky"),        

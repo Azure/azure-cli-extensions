@@ -106,7 +106,10 @@ def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, exte
     ext_str = str(extension_version)
 
     # Don't parse version for test and CI tags
-    if "pr" not in ext_str and "release" not in ext_str and version.parse(ext_str) <= version.parse("0.8.3"):
+    if "pr" in ext_str or "release" in ext_str or "beta" in ext_str:
+        return
+
+    if version.parse(ext_str) <= version.parse("0.8.3"):
         logger.warning(field_unavailable_error)
         return
 

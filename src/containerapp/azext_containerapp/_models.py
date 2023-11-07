@@ -20,7 +20,8 @@ ManagedEnvironment = {
         "vnetConfiguration": None,  # VnetConfiguration
         "appLogsConfiguration": None,
         "customDomainConfiguration": None,  # CustomDomainConfiguration,
-        "workloadProfiles": None
+        "workloadProfiles": None,
+        "InfrastructureResourceGroup": None
     }
 }
 
@@ -399,11 +400,11 @@ ImagePatchableCheck = {
     "reason": None,
 }
 
-OryxMarinerRunImgTagProperty = {
+OryxRunImageTagProperty = {
     "fullTag": None,
     "framework": None,
     "version": None,
-    "marinerVersion": None,
+    "os": None,
     "architectures": None,
     "support": None,
 }

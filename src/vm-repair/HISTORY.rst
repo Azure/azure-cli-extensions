@@ -1,6 +1,14 @@
 
 Release History
 ===============
+0.5.7
+++++++
+Remove VM-repair SUSE image check
+
+0.5.6
+++++++
+Renaming the Public IP resource.
+Fix the name of the resource, previously the name was always "yes". Now it follows the format repair-<VM>_PublicIP
 
 0.5.5
 ++++++

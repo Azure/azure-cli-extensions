@@ -365,3 +365,17 @@ def transform_apm_type_output(result):
         item['Name'] = item['name']
 
     return result if is_list else result[0]
+
+
+def transform_support_server_versions_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Value'] = item['value']
+        item['Server'] = item['server']
+        item['Version'] = item['version']
+
+    return result if is_list else result[0]

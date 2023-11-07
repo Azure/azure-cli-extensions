@@ -57,7 +57,10 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     MongoCluster,
     NodeGroupSpec,
     NodeKind,
-    FirewallRule
+    FirewallRule,
+    CosmosCassandraDataTransferDataSourceSink,
+    CosmosSqlDataTransferDataSourceSink,
+    CosmosMongoDataTransferDataSourceSink
 )
 
 from azext_cosmosdb_preview._client_factory import (
@@ -299,7 +302,9 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
                                                   cassandra_version=None,
                                                   authentication_method=None,
                                                   hours_between_backups=None,
-                                                  repair_enabled=None):
+                                                  repair_enabled=None,
+                                                  cluster_type='Production',
+                                                  extensions=None):
 
     """Creates an Azure Managed Cassandra Cluster"""
 
@@ -320,7 +325,9 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
         cassandra_version=cassandra_version,
         authentication_method=authentication_method,
         hours_between_backups=hours_between_backups,
-        repair_enabled=repair_enabled)
+        repair_enabled=repair_enabled,
+        cluster_type=cluster_type,
+        extensions=extensions)
 
     managed_service_identity_parameter = ManagedCassandraManagedServiceIdentity(
         type=identity_type
@@ -346,7 +353,9 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
                                                   cassandra_version=None,
                                                   authentication_method=None,
                                                   hours_between_backups=None,
-                                                  repair_enabled=None):
+                                                  repair_enabled=None,
+                                                  cluster_type=None,
+                                                  extensions=None):
 
     """Updates an Azure Managed Cassandra Cluster"""
 
@@ -381,6 +390,16 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
     if identity_type is not None:
         identity = ManagedCassandraManagedServiceIdentity(type=identity_type)
 
+    if cluster_type is None:
+        cluster_type = cluster_resource.properties.cluster_type
+
+    if extensions is None:
+        extensions = cluster_resource.properties.extensions
+
+    # to remove extension
+    if len(extensions) == 1 and extensions[0] == '':
+        extensions = None
+
     cluster_properties = ClusterResourceProperties(
         provisioning_state=cluster_resource.properties.provisioning_state,
         restore_from_backup_id=cluster_resource.properties.restore_from_backup_id,
@@ -395,7 +414,9 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
         external_gossip_certificates=external_gossip_certificates,
         gossip_certificates=cluster_resource.properties.gossip_certificates,
         external_seed_nodes=cluster_resource.properties.external_seed_nodes,
-        seed_nodes=cluster_resource.properties.seed_nodes
+        seed_nodes=cluster_resource.properties.seed_nodes,
+        cluster_type=cluster_type,
+        extensions=extensions
     )
 
     cluster_resource_create_update_parameters = ClusterResource(
@@ -423,6 +444,15 @@ def cli_cosmosdb_managed_cassandra_cluster_list_backup(client,
                                                        cluster_name):
     """List Azure Managed Cassandra Backup"""
     return client.list_backups(resource_group_name, cluster_name)
+
+
+def cli_cosmosdb_managed_cassandra_cluster_deallocate(client,
+                                                      resource_group_name,
+                                                      cluster_name,
+                                                      force=False):
+
+    """Deallocate Azure Managed Cassandra Cluster"""
+    return client.begin_deallocate(resource_group_name, cluster_name, force)
 
 
 def cli_cosmosdb_managed_cassandra_cluster_show_backup(client,
@@ -747,7 +777,9 @@ def cli_cosmosdb_create(cmd,
                         restore_source=None,
                         restore_timestamp=None,
                         enable_materialized_views=None,
-                        enable_burst_capacity=None):
+                        enable_burst_capacity=None,
+                        enable_priority_based_execution=None,
+                        default_priority_level=None):
     """Create a new Azure Cosmos DB database account."""
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -801,7 +833,9 @@ def cli_cosmosdb_create(cmd,
                                     tables_to_restore=tables_to_restore,
                                     arm_location=resource_group_location,
                                     enable_materialized_views=enable_materialized_views,
-                                    enable_burst_capacity=enable_burst_capacity)
+                                    enable_burst_capacity=enable_burst_capacity,
+                                    enable_priority_based_execution=enable_priority_based_execution,
+                                    default_priority_level=default_priority_level)
 
 
 # pylint: disable=too-many-branches
@@ -833,7 +867,9 @@ def cli_cosmosdb_update(client,
                         backup_policy_type=None,
                         continuous_tier=None,
                         enable_materialized_views=None,
-                        enable_burst_capacity=None):
+                        enable_burst_capacity=None,
+                        enable_priority_based_execution=None,
+                        default_priority_level=None):
     """Update an existing Azure Cosmos DB database account. """
     existing = client.get(resource_group_name, account_name)
 
@@ -924,7 +960,9 @@ def cli_cosmosdb_update(client,
         default_identity=default_identity,
         analytical_storage_configuration=analytical_storage_configuration,
         enable_materialized_views=enable_materialized_views,
-        enable_burst_capacity=enable_burst_capacity)
+        enable_burst_capacity=enable_burst_capacity,
+        enable_priority_based_execution=enable_priority_based_execution,
+        default_priority_level=default_priority_level)
 
     async_docdb_update = client.begin_update(resource_group_name, account_name, params)
     docdb_account = async_docdb_update.result()
@@ -1127,7 +1165,9 @@ def _create_database_account(client,
                              arm_location=None,
                              enable_materialized_views=None,
                              enable_burst_capacity=None,
-                             source_backup_location=None):
+                             source_backup_location=None,
+                             enable_priority_based_execution=None,
+                             default_priority_level=None):
 
     consistency_policy = None
     if default_consistency_level is not None:
@@ -1264,7 +1304,9 @@ def _create_database_account(client,
         create_mode=create_mode,
         restore_parameters=restore_parameters,
         enable_materialized_views=enable_materialized_views,
-        enable_burst_capacity=enable_burst_capacity
+        enable_burst_capacity=enable_burst_capacity,
+        enable_priority_based_execution=enable_priority_based_execution,
+        default_priority_level=default_priority_level
     )
 
     async_docdb_create = client.begin_create_or_update(resource_group_name, account_name, params)
@@ -1548,6 +1590,99 @@ def cosmosdb_data_transfer_copy_job(client,
 
     return client.create(resource_group_name=resource_group_name,
                          account_name=account_name,
+                         job_name=job_name,
+                         job_create_parameters=job_create_parameters)
+
+
+def cosmosdb_copy_job(client,
+                      resource_group_name,
+                      dest_account,
+                      src_account,
+                      src_cassandra=None,
+                      dest_cassandra=None,
+                      src_nosql=None,
+                      dest_nosql=None,
+                      src_mongo=None,
+                      dest_mongo=None,
+                      job_name=None,
+                      worker_count=0,
+                      host_copy_on_src=False):
+    job_create_properties = {}
+    is_cross_account = src_account != dest_account
+    remote_account_name = dest_account if host_copy_on_src else src_account
+
+    source = None
+    if src_cassandra is not None:
+        if source is not None:
+            raise CLIError('Invalid input: multiple source components')
+        if is_cross_account and not host_copy_on_src:
+            source = CosmosCassandraDataTransferDataSourceSink(keyspace_name=src_cassandra.keyspace_name, table_name=src_cassandra.table_name, remote_account_name=remote_account_name)
+        else:
+            source = src_cassandra
+
+    if src_nosql is not None:
+        if source is not None:
+            raise CLIError('Invalid input: multiple source components')
+        if is_cross_account and not host_copy_on_src:
+            source = CosmosSqlDataTransferDataSourceSink(database_name=src_nosql.database_name, container_name=src_nosql.container_name, remote_account_name=remote_account_name)
+        else:
+            source = src_nosql
+
+    if src_mongo is not None:
+        if source is not None:
+            raise CLIError('Invalid input: multiple source components')
+        if is_cross_account and not host_copy_on_src:
+            source = CosmosMongoDataTransferDataSourceSink(database_name=src_mongo.database_name, collection_name=src_mongo.collection_name, remote_account_name=remote_account_name)
+        else:
+            source = src_mongo
+
+    if source is None:
+        raise CLIError('source component is missing')
+    job_create_properties['source'] = source
+
+    destination = None
+    if dest_cassandra is not None:
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        destination = dest_cassandra
+        if is_cross_account and host_copy_on_src:
+            destination = CosmosCassandraDataTransferDataSourceSink(keyspace_name=dest_cassandra.keyspace_name, table_name=dest_cassandra.table_name, remote_account_name=remote_account_name)
+        else:
+            destination = dest_cassandra
+
+    if dest_nosql is not None:
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        if is_cross_account and host_copy_on_src:
+            destination = CosmosSqlDataTransferDataSourceSink(database_name=dest_nosql.database_name, container_name=dest_nosql.container_name, remote_account_name=remote_account_name)
+        else:
+            destination = dest_nosql
+
+    if dest_mongo is not None:
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        if is_cross_account and host_copy_on_src:
+            destination = CosmosMongoDataTransferDataSourceSink(database_name=dest_mongo.database_name, collection_name=dest_mongo.collection_name, remote_account_name=remote_account_name)
+        else:
+            destination = dest_mongo
+
+    if destination is None:
+        raise CLIError('destination component is missing')
+    job_create_properties['destination'] = destination
+
+    if worker_count > 0:
+        job_create_properties['worker_count'] = worker_count
+
+    job_create_parameters = {}
+    job_create_parameters['properties'] = job_create_properties
+
+    if job_name is None:
+        job_name = _gen_guid()
+
+    host_account_name = src_account if host_copy_on_src else dest_account
+
+    return client.create(resource_group_name=resource_group_name,
+                         account_name=host_account_name,
                          job_name=job_name,
                          job_create_parameters=job_create_parameters)
 

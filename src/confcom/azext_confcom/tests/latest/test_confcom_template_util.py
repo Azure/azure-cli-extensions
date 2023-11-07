@@ -5,7 +5,6 @@
 
 import os
 import unittest
-import pytest
 from azext_confcom.custom import acipolicygen_confcom
 import azext_confcom.config as config
 from azext_confcom.template_util import (
@@ -13,13 +12,9 @@ from azext_confcom.template_util import (
     extract_confidential_properties,
 )
 from azext_confcom.os_util import load_json_from_str
-import pytest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
-
-# @unittest.skip("not in use")
-@pytest.mark.run(order=1)
 class TemplateUtil(unittest.TestCase):
     def test_case_insensitive_dict_get(self):
         test_dict = {"key1": "value1", "key2": "value2", "KEY3": "value3"}
@@ -489,16 +484,17 @@ LmZyYW1ld29yay5lcnJvcnN9Cg=="""
             }
         }
         """
+        filename = "test_template.json"
         # write template to file for testing
-        with open("test_template.json", "w") as f:
+        with open(filename, "w") as f:
             f.write(template)
 
         with self.assertRaises(SystemExit) as exc_info:
-            acipolicygen_confcom(None, "test_template.json", None, None, None, None)
+            acipolicygen_confcom(None, filename, None, None, None, None)
 
         self.assertEqual(exc_info.exception.code, 0)
 
-        with open("test_template.json", "r") as f:
+        with open(filename, "r") as f:
             template_with_policy = load_json_from_str(f.read())
 
             # check if template contains confidential compute policy
@@ -528,4 +524,4 @@ LmZyYW1ld29yay5lcnJvcnN9Cg=="""
                 > 0
             )
         # delete test file
-        os.remove("test_template.json")
+        os.remove(filename)
