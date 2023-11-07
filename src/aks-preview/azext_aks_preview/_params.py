@@ -102,6 +102,8 @@ from azext_aks_preview._consts import (
     CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
+    CONST_NODE_PROVISIONING_MODE_MANUAL,
+    CONST_NODE_PROVISIONING_MODE_AUTO,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -295,6 +297,12 @@ storage_pool_skus = [
 storage_pool_options = [
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_SSD,
+]
+
+# consts for guardrails level
+node_provisioning_modes = [
+    CONST_NODE_PROVISIONING_MODE_MANUAL,
+    CONST_NODE_PROVISIONING_MODE_AUTO,
 ]
 
 
@@ -505,6 +513,8 @@ def load_arguments(self, _):
                    help='set azure disk type storage pool sku for azure container storage')
         c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options),
                    help='set ephemeral disk storage pool option for azure container storage')
+        c.argument('node_provisioning_mode', is_preview=True, arg_type=get_enum_type(node_provisioning_modes),
+                   help='Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -649,6 +659,8 @@ def load_arguments(self, _):
                    help='set ephemeral disk storage pool option for azure container storage')
         c.argument('azure_container_storage_nodepools',
                    help='define the comma separated nodepool list to install azure container storage')
+        c.argument('node_provisioning_mode', is_preview=True, arg_type=get_enum_type(node_provisioning_modes),
+                   help='Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.')
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
