@@ -10,5 +10,58 @@
 
 from knack.log import get_logger
 
+from .aaz.latest.apic.api.definition import ImportSpecification
+from azure.cli.core.aaz import has_value, AAZStrArg
+import json
+import sys
 
 logger = get_logger(__name__)
+
+class ImportSpecificationExtension(ImportSpecification):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.source_profile = AAZStrArg(
+            options=["--file-name"],
+            help='Name of the file from where to import the spec from.',
+            required=False,
+            registered=True
+        )
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+
+        # check size of the spec for inline format and raise error if size is greater than 3 mb
+        self.checkSpecSizeOrRaiseError(args)
+
+    
+    def checkSpecSizeOrRaiseError(self, args):
+        data = None
+        value = None
+        format = None
+
+        # Load the JSON file
+        if args.source_profile:
+            with open(str(args.source_profile)) as f:
+                data = json.load(f)
+
+        if data:
+            # Extract the 'value', 'format', and 'specification' fields
+            value = data.get('value')
+            format = data.get('format')
+      
+        # If any of the fields are None, get them from self.args
+        if value is None:
+            value = args.value
+        if format is None:
+            format = args.format
+
+        # Check the size of 'value' if format is inline and raise error if value is greater than 3 mb
+        if format == 'inline':
+            value_size_bytes = sys.getsizeof(value)
+            value_size_mb = value_size_bytes / (1024 * 1024)  # Convert bytes to megabytes
+            if value_size_mb > 3:
+                raise ValueError('The size of "value" is greater than 3 MB. Please use --format "url" to import the specification from a URL for size greater than 3 mb.')
+
