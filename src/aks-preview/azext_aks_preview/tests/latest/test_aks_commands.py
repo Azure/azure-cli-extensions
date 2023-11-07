@@ -2653,8 +2653,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
-                     '--ssh-key-value={ssh_key_value}'
+                     '--ssh-key-value={ssh_key_value} '
                      '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/ArtifactStreamingPreview '
+
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
