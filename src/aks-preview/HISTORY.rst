@@ -15,7 +15,6 @@ Pending
 * Add `--network-plugin` to the `az aks update` command.
 * Add `--enable-artifact-streaming` option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
 
->>>>>>> 2373f902d04bd82cb99de7d8b05f4495101a3a90
 0.5.168
 +++++++
 * Add `--enable-image-integrity` to the `az aks update` command.
