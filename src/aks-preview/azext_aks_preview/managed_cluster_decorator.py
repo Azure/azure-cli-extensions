@@ -498,7 +498,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # read the original value passed by the command
         network_plugin = self.raw_param.get("network_plugin")
         # try to read the property value corresponding to the parameter from the `mc` object
+        # but do not override if it was specified in the raw params since this property can be updated.
         if (
+            not network_plugin and
             self.mc and
             self.mc.network_profile and
             self.mc.network_profile.network_plugin is not None
@@ -607,7 +609,19 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool or None
         """
-        return self.raw_param.get("enable_network_observability")
+        enable_network_observability = self.raw_param.get("enable_network_observability")
+        disable_network_observability = self.raw_param.get("disable_network_observability")
+        if enable_network_observability and disable_network_observability:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-network-observability and "
+                "--disable-network-observability at the same time."
+            )
+        if enable_network_observability is False and disable_network_observability is False:
+            return None
+        if enable_network_observability is not None:
+            return enable_network_observability
+        if disable_network_observability is not None:
+            return not disable_network_observability
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of load_balancer_managed_outbound_ip_count.
@@ -2411,6 +2425,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # because it's already checked in _get_enable_cost_analysis
         return self.raw_param.get("disable_cost_analysis")
 
+    def get_node_provisioning_mode(self) -> Union[str, None]:
+        """Obtain the value of node_provisioning_mode.
+        """
+        return self.raw_param.get("node_provisioning_mode")
+
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -2936,6 +2955,26 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_node_provisioning_mode(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        mode = self.context.get_node_provisioning_mode()
+        if mode is not None:
+            if mc.node_provisioning_profile is None:
+                mc.node_provisioning_profile = self.models.ManagedClusterNodeProvisioningProfile()
+
+            # set mode
+            mc.node_provisioning_profile.mode = mode
+
+        return mc
+
+    def set_up_node_provisioning_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        mc = self.set_up_node_provisioning_mode(mc)
+
+        return mc
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -2987,6 +3026,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_metrics_profile(mc)
         # set up for azure container storage
         mc = self.set_up_azure_container_storage(mc)
+        # set up node provisioning profile
+        mc = self.set_up_node_provisioning_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -3294,6 +3335,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
+
+        network_plugin = self.context._get_network_plugin()
+        if network_plugin:
+            mc.network_profile.network_plugin = network_plugin
 
         network_plugin_mode = self.context.get_network_plugin_mode()
         if network_plugin_mode:
@@ -4002,6 +4047,19 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_node_provisioning_mode(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        mode = self.context.get_node_provisioning_mode()
+        if mode is not None:
+            if mc.node_provisioning_profile is None:
+                mc.node_provisioning_profile = self.models.ManagedClusterNodeProvisioningProfile()
+
+            # set mode
+            mc.node_provisioning_profile.mode = mode
+
+        return mc
+
     def update_metrics_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Updates the metricsProfile field of the managed cluster
 
@@ -4010,6 +4068,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         mc = self.update_cost_analysis(mc)
+
+        return mc
+
+    def update_node_provisioning_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Updates the nodeProvisioningProfile field of the managed cluster
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        mc = self.update_node_provisioning_mode(mc)
 
         return mc
 
@@ -4074,6 +4143,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_metrics_profile(mc)
         # update azure container storage
         mc = self.update_azure_container_storage(mc)
+        # update node provisioning profile
+        mc = self.update_node_provisioning_profile(mc)
 
         return mc
 

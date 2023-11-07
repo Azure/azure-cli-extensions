@@ -605,6 +605,7 @@ def aks_create(
     storage_pool_size=None,
     storage_pool_sku=None,
     storage_pool_option=None,
+    node_provisioning_mode=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -731,6 +732,7 @@ def aks_update(
     ssh_key_value=None,
     load_balancer_managed_outbound_ipv6_count=None,
     outbound_type=None,
+    network_plugin=None,
     network_plugin_mode=None,
     network_policy=None,
     network_dataplane=None,
@@ -774,6 +776,7 @@ def aks_update(
     guardrails_version=None,
     guardrails_excluded_ns=None,
     enable_network_observability=None,
+    disable_network_observability=None,
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
@@ -785,6 +788,7 @@ def aks_update(
     storage_pool_sku=None,
     storage_pool_option=None,
     azure_container_storage_nodepools=None,
+    node_provisioning_mode=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -978,7 +982,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
         for agent_pool_profile in instance.agent_pool_profiles:
             if vmas_cluster:
                 raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation '
-                               'can only be applied on VirtualMachineScaleSets cluster.')
+                               'can only be applied on VirtualMachineScaleSets and VirtualMachines(Preview) cluster.')
             agent_pool_client = cf_agent_pools(cmd.cli_ctx)
             _upgrade_single_nodepool_image_version(
                 True, agent_pool_client, resource_group_name, name, agent_pool_profile.name, None)
@@ -1096,6 +1100,8 @@ def aks_agentpool_add(
     node_osdisk_type=None,
     node_osdisk_size=0,
     max_surge=None,
+    drain_timeout=None,
+    node_soak_duration=None,
     mode=CONST_NODEPOOL_MODE_USER,
     scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
     max_pods=0,
@@ -1161,6 +1167,8 @@ def aks_agentpool_update(
     tags=None,
     node_taints=None,
     max_surge=None,
+    drain_timeout=None,
+    node_soak_duration=None,
     mode=None,
     scale_down_mode=None,
     no_wait=False,
@@ -1222,6 +1230,8 @@ def aks_agentpool_upgrade(cmd,
                           kubernetes_version='',
                           node_image_only=False,
                           max_surge=None,
+                          drain_timeout=None,
+                          node_soak_duration=None,
                           snapshot_id=None,
                           no_wait=False,
                           aks_custom_headers=None,
@@ -1239,11 +1249,11 @@ def aks_agentpool_upgrade(cmd,
         )
 
     # Note: we exclude this option because node image upgrade can't accept nodepool put fields like max surge
-    if max_surge and node_image_only:
+    if (max_surge or drain_timeout or node_soak_duration) and node_image_only:
         raise MutuallyExclusiveArgumentError(
-            'Conflicting flags. Unable to specify max-surge with node-image-only.'
-            'If you want to use max-surge with a node image upgrade, please first '
-            'update max-surge using "az aks nodepool update --max-surge".'
+            'Conflicting flags. Unable to specify max-surge/drain-timeout/node-soak-duration with node-image-only.'
+            'If you want to use max-surge/drain-timeout/node-soak-duration with a node image upgrade, please first '
+            'update max-surge/drain-timeout/node-soak-duration using "az aks nodepool update --max-surge/--drain-timeout/--node-soak-duration".'
         )
 
     if node_image_only:
@@ -1290,6 +1300,10 @@ def aks_agentpool_upgrade(cmd,
 
     if max_surge:
         instance.upgrade_settings.max_surge = max_surge
+    if drain_timeout:
+        instance.upgrade_settings.drain_timeout_in_minutes = drain_timeout
+    if node_soak_duration:
+        instance.upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
 
     # custom headers
     aks_custom_headers = extract_comma_separated_string(

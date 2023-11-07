@@ -1838,6 +1838,84 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_nodepool_drain_timeout(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        np_name = self.create_random_name('clinp', 12)
+        self.kwargs.update({
+            'name': aks_name,
+            'resource_group': resource_group,
+            'nodepool_name': np_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--ssh-key-value={ssh_key_value} -c 1'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        add_nodepool_cmd = 'aks nodepool add -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
+                     '--mode user --drain-timeout 10'
+        self.cmd(add_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('upgradeSettings.drainTimeoutInMinutes', 10),
+        ])
+
+        update_nodepool_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
+                      '--drain-timeout 60'
+        self.cmd(update_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('upgradeSettings.drainTimeoutInMinutes', 60),
+        ])
+
+        #actually running an upgrade is too expensive for these tests.
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_nodepool_node_soak_duration(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        np_name = self.create_random_name('clinp', 12)
+        self.kwargs.update({
+            'name': aks_name,
+            'resource_group': resource_group,
+            'nodepool_name': np_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--ssh-key-value={ssh_key_value} -c 1'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        add_nodepool_cmd = 'aks nodepool add -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
+                     '--mode user --node-soak-duration 5'
+        self.cmd(add_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('upgradeSettings.nodeSoakDurationInMinutes', 5),
+        ])
+
+        update_nodepool_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
+                      '--node-soak-duration 10'
+        self.cmd(update_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('upgradeSettings.nodeSoakDurationInMinutes', 10),
+        ])
+
+        #actually running an upgrade is too expensive for these tests.
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
     def test_aks_nodepool_stop_and_start(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
@@ -4493,6 +4571,47 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('networkProfile.networkPlugin', 'azure'),
             self.check('networkProfile.networkPluginMode', 'overlay'),
             self.check('networkProfile.podCidr', '100.64.0.0/10'),
+            self.check('networkProfile.serviceCidr', '172.56.0.0/16'),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
+    def test_aks_azure_cni_overlay_migration_from_kubenet(self, resource_group, resource_group_location):
+        _, create_version = self._get_versions(resource_group_location)
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'k8s_version': create_version,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--network-plugin kubenet --ssh-key-value={ssh_key_value} --kubernetes-version {k8s_version} ' \
+                     '--service-cidr 172.56.0.0/16 --dns-service-ip 172.56.0.10 --pod-cidr 100.64.0.0/16 -c 1'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.networkPlugin', 'kubenet'),
+            self.check('networkProfile.networkPluginMode', None),
+            self.check('networkProfile.podCidr', '100.64.0.0/16'),
+            self.check('networkProfile.serviceCidr', '172.56.0.0/16'),
+        ])
+
+        # update
+        update_cmd = 'aks update -g {resource_group} -n {name} --network-plugin azure --network-plugin-mode overlay ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureOverlayPreview'
+
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.networkPlugin', 'azure'),
+            self.check('networkProfile.networkPluginMode', 'overlay'),
+            self.check('networkProfile.podCidr', '100.64.0.0/16'),
             self.check('networkProfile.serviceCidr', '172.56.0.0/16'),
         ])
 
@@ -7942,6 +8061,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('networkProfile.monitoring.enabled', True),
         ])
 
+        # update to disable network observability
+        update_cmd_two = 'aks update --resource-group={resource_group} --name={name} --disable-network-observability ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkObservabilityPreview '
+        self.cmd(update_cmd_two, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.monitoring.enabled', False),
+        ])
+
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
@@ -8040,6 +8167,69 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('metricsProfile.costAnalysis.enabled', False),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westcentralus',
+                                    preserve_default_location=True)
+    def test_aks_create_node_provisioning_mode_manual(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'location': resource_group_location,
+        })
+
+        # create
+        # TODO: Use mode Auto instead?
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity --node-provisioning-mode=Manual'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('nodeProvisioningProfile.mode', 'Manual'),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westcentralus',
+                                    preserve_default_location=True)
+    def test_aks_update_node_provisioning_mode_manual(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'location': resource_group_location,
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # update
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --node-provisioning-mode=Manual'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('nodeProvisioningProfile.mode', 'Manual'),
         ])
 
         # delete

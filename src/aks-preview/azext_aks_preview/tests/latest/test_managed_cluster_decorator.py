@@ -884,6 +884,35 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_3.get_enable_network_observability(), True)
 
+        # Flag set to True and False.
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_network_observability": True,
+                    "disable_network_observability": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on get_enable_network_observability mutual exclusive error
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_4.get_enable_network_observability()
+        
+        # Flag set to False.
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_network_observability": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_5.get_enable_network_observability(), False)
+
     def test_get_enable_managed_identity(self):
         # custom value
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -5146,6 +5175,39 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_6, ground_truth_mc_6)
+
+        # test update network plugin for kubenet -> cni overlay migrations
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "network_plugin": "azure",
+                "network_plugin_mode": "overlay",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+            ),
+        )
+
+        dec_7.context.attach_mc(mc_7)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_7.update_network_plugin_settings(None)
+        dec_mc_7 = dec_7.update_network_plugin_settings(mc_7)
+
+        ground_truth_mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+            ),
+        )
+
+        self.assertEqual(dec_mc_7, ground_truth_mc_7)
 
     def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(

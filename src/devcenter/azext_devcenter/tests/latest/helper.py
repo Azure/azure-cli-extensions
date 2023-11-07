@@ -6,6 +6,7 @@
 # --------------------------------------------------------------------------
 import time
 
+
 def create_dev_center(self):
     dev_center = self.cmd(
         "az devcenter admin devcenter create "
@@ -75,6 +76,7 @@ def create_virtual_network_with_subnet(self):
         'az network vnet subnet create --nsg "{nsgName}" -n "{subnetName}" --vnet-name "{vNetName}" -g "{rg}" --address-prefixes "10.0.0.0/21"'
     ).get_output_in_json()
 
+
 def create_virtual_network_with_subnet_euap(self):
     self.kwargs.update(
         {
@@ -84,13 +86,18 @@ def create_virtual_network_with_subnet_euap(self):
         }
     )
 
-    self.cmd('az network vnet create -n "{vNetName}" --location "canadacentral" -g "{rg}"')
+    self.cmd(
+        'az network vnet create -n "{vNetName}" --location "canadacentral" -g "{rg}"'
+    )
 
-    self.cmd('az network nsg create -n "{nsgName}" --location "canadacentral" -g "{rg}"')
+    self.cmd(
+        'az network nsg create -n "{nsgName}" --location "canadacentral" -g "{rg}"'
+    )
 
     return self.cmd(
         'az network vnet subnet create --nsg "{nsgName}" -n "{subnetName}" --vnet-name "{vNetName}" -g "{rg}" --address-prefixes "10.0.0.0/21"'
     ).get_output_in_json()
+
 
 def create_sig(self):
     self.kwargs.update(
@@ -228,8 +235,10 @@ def get_endpoint(self):
 
 
 def create_network_connection(self):
-    subnet = create_virtual_network_with_subnet(self)
-
+    if self.kwargs.get("location", "") == "centraluseuap":
+        subnet = create_virtual_network_with_subnet_euap(self)
+    else:
+        subnet = create_virtual_network_with_subnet(self)
     self.kwargs.update(
         {
             "subnetId": subnet["id"],
@@ -257,9 +266,9 @@ def create_network_connection(self):
 
 
 def create_network_connection_dp(self):
-    if (self.kwargs.get('location', '') == "centraluseuap"):
+    if self.kwargs.get("location", "") == "centraluseuap":
         subnet = create_virtual_network_with_subnet_euap(self)
-    else: 
+    else:
         subnet = create_virtual_network_with_subnet(self)
 
     self.kwargs.update(
@@ -364,6 +373,7 @@ def create_env_type(self):
         ],
     )
 
+
 def get_aad_id(self):
     if self.is_live:
         user = self.cmd('az ad user show --id "{userName}"').get_output_in_json()
@@ -392,7 +402,7 @@ def add_dev_box_user_role_to_project(self):
         time.sleep(180)
 
 
-def create_pool(self):  
+def create_pool(self):
     create_network_connection_dp(self)
     imageRefId = f"{self.kwargs.get('devCenterId', '')}/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os"
 
@@ -474,7 +484,7 @@ def catalog_create_and_sync_cmds(self):
             "catalogName": self.create_random_name(prefix="c2", length=12),
             "branch": "main",
             "path": "/Environments",
-            "secretIdentifier": "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
+            "secretIdentifier": "https://dummy.fake.net/secrets/dummy/00000000000000000000000000000007",
             "uri": "https://domain.com/dummy/dummy.git",
         }
     )
@@ -494,6 +504,13 @@ def catalog_create_and_sync_cmds(self):
         '--name "{catalogName}" '
         '--resource-group "{rg}" '
     )
+
+
+def create_catalog_control_plane(self):
+    create_dev_center_with_identity(self)
+    create_kv_policy(self)
+    create_project(self)
+    catalog_create_and_sync_cmds(self)
 
 
 def create_catalog(self):
@@ -603,7 +620,5 @@ def create_dev_box_dependencies(self):
 
 
 def login_account(self):
-    if (self.is_live):
-        self.cmd(
-            "az login -t 003b06c3-d471-4452-9686-9e7f3ca85f0a"
-        )
+    if self.is_live:
+        self.cmd("az login -t 003b06c3-d471-4452-9686-9e7f3ca85f0a")
