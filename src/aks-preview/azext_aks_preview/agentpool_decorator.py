@@ -377,8 +377,8 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         enable_artifact_streaming = self.raw_param.get("enable_artifact_streaming")
         # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
         if self.decorator_mode == DecoratorMode.CREATE:
-            if self.agentpool and self.agentpool.enable_artifact_streaming is not None:
-                enable_artifact_streaming = self.agentpool.enable_artifact_streaming
+            if self.agentpool and self.agentpool.artifact_streaming_profile.enabled is not None:
+                enable_artifact_streaming = self.agentpool.artifact_streaming_profile.enabled
         return enable_artifact_streaming
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
@@ -674,5 +674,5 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         self._ensure_agentpool(agentpool)
 
         if self.context.get_enable_artifact_streaming():
-            agentpool.enable_artifact_streaming = True
+            agentpool.artifact_streaming_profile.enabled = True
         return agentpool
