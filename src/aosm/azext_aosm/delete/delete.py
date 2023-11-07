@@ -314,12 +314,13 @@ class ResourceDeleter:
                 if attempt == 5:
                     logger.error("Failed to delete publisher")
                     raise
-                logger.debug("ResourceExistsError: This may be nested resource is not finished deleting. Wait and retry.")
+                logger.debug(
+                    "ResourceExistsError: This may be nested resource is not finished deleting. Wait and retry."
+                )
                 sleep(30)
             except Exception:
                 logger.error("Failed to delete publisher")
                 raise
-
 
     def delete_config_group_schema(self) -> None:
         """Delete the Configuration Group Schema."""
