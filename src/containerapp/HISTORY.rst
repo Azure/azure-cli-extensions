@@ -5,6 +5,7 @@ Release History
 upcoming
 ++++++
 * 'az containerapp env create': Support --enable-dedicated-gpu
+* 'az containerapp job create': fix problem of parsing parameters minExecutions and maxExecutions from --yaml
 
 0.3.43
 ++++++

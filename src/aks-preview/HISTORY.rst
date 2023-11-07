@@ -11,8 +11,17 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Vendor new SDK and bump API version to 2023-09-02-preview.
+* Add `--node-provisioning-mode` to the `az aks update` command.
+* Add `--node-provisioning-mode` to the `az aks create` command.
+
+0.5.169
++++++++
 * Add `--network-plugin` to the `az aks update` command.
+* Add the KataCcIsolation option to --workload-runtime.
+* Update "VirtualMachines" agent pool type as Public Preview feature.
+* Add --disable-network-observability to `az aks update` cluster command.
+* Add `--node-soak-duration` to the `az aks nodepool add/update/upgrade` commands.
+* Add `--drain-timeout` to the `az aks nodepool add/update/upgrade` commands (already in [azure-cli](https://github.com/Azure/azure-cli/pull/27475)).
 
 0.5.168
 +++++++
@@ -20,6 +29,7 @@ Pending
 
 0.5.167
 +++++++
+* Vendor new SDK and bump API version to 2023-09-02-preview.
 * Fix the default storagepool name value created for Azure Container Storage.
 * Ensure the correct nodepool name is picked and labelled by Azure Container Storage while installing with `az aks create`.
 
