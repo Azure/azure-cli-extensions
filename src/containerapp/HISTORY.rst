@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env dapr-component init': support initializing Dapr components and dev services for an environment
 
 0.3.43
 ++++++
@@ -12,7 +13,6 @@ upcoming
 * 'az containerapp create/update': fix an issue for transforming sensitive values when the scale rules metadata not exists
 * 'az containerapp up': update builder image used when --source is provided with no Dockerfile to support building applications targeting a wider range of platform versions
 * Add Cloud Build support (build without Dockerfile or Docker) in Stage/Canary regions to the 'az containerapp up'/'az containerapp create' and 'az containerapp update' commands
-* 'az containerapp env dapr-component init': support initializing Dapr components and dev services for an environment
 
 0.3.42
 ++++++
