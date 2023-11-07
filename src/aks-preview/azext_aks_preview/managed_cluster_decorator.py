@@ -498,7 +498,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # read the original value passed by the command
         network_plugin = self.raw_param.get("network_plugin")
         # try to read the property value corresponding to the parameter from the `mc` object
+        # but do not override if it was specified in the raw params since this property can be updated.
         if (
+            not network_plugin and
             self.mc and
             self.mc.network_profile and
             self.mc.network_profile.network_plugin is not None
@@ -1046,6 +1048,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
 
         return profile
+
+    def get_enable_image_integrity(self) -> bool:
+        """Obtain the value of enable_image_integrity.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_image_integrity = self.raw_param.get("enable_image_integrity")
+
+        return enable_image_integrity
 
     def get_disable_image_integrity(self) -> bool:
         """Obtain the value of disable_image_integrity.
@@ -2601,6 +2613,22 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_image_integrity(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up security profile imageIntegrity for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_image_integrity():
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            mc.security_profile.image_integrity = self.models.ManagedClusterSecurityProfileImageIntegrity(
+                enabled=True,
+            )
+
+        return mc
+
     def set_up_creationdata_of_cluster_snapshot(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up creationData of cluster snapshot for the ManagedCluster object.
 
@@ -2931,6 +2959,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_node_restriction(mc)
         # set up image cleaner
         mc = self.set_up_image_cleaner(mc)
+        # set up image integrity
+        mc = self.set_up_image_integrity(mc)
         # set up cluster snapshot
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
         # set up ingress web app routing profile
@@ -3267,6 +3297,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
+        network_plugin = self.context._get_network_plugin()
+        if network_plugin:
+            mc.network_profile.network_plugin = network_plugin
+
         network_plugin_mode = self.context.get_network_plugin_mode()
         if network_plugin_mode:
             mc.network_profile.network_plugin_mode = network_plugin_mode
@@ -3591,11 +3625,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
+        enable_image_integrity = self.context.get_enable_image_integrity()
         disable_image_integrity = self.context.get_disable_image_integrity()
 
         # no image integrity related changes
-        if not disable_image_integrity:
+        if not enable_image_integrity and not disable_image_integrity:
             return mc
+        if enable_image_integrity and disable_image_integrity:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-image-integrity and "
+                "--disable-image-integrity at the same time."
+            )
+        shouldEnable_image_integrity = False
+        if enable_image_integrity:
+            shouldEnable_image_integrity = True
 
         if mc.security_profile is None:
             mc.security_profile = self.models.ManagedClusterSecurityProfile()
@@ -3606,7 +3649,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             image_integrity_profile = self.models.ManagedClusterSecurityProfileImageIntegrity()
             mc.security_profile.image_integrity = image_integrity_profile
 
-        image_integrity_profile.enabled = False
+        image_integrity_profile.enabled = shouldEnable_image_integrity
 
         return mc
 

@@ -175,46 +175,54 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
     client = cf_amg(cmd.cli_ctx, subscription=None)
     instance = client.grafana.get(resource_group_name, grafana_name)
 
+    resource = {}
+    resourceProperties = {}
+
     if api_key_and_service_account:
-        instance.properties.api_key = api_key_and_service_account
+        resourceProperties["apiKey"] = api_key_and_service_account
 
     if deterministic_outbound_ip:
-        instance.properties.deterministic_outbound_ip = deterministic_outbound_ip
+        resourceProperties["deterministicOutboundIP"] = deterministic_outbound_ip
 
     if public_network_access:
-        instance.properties.public_network_access = public_network_access
+        resourceProperties["publicNetworkAccess"] = public_network_access
 
     if tags:
-        instance.tags = tags
+        resource["tags"] = tags
 
     if (smtp or host or user or password or start_tls_policy
             or from_address or from_name or skip_verify is not None):
 
         from azext_amg.vendored_sdks.models import GrafanaConfigurations, Smtp
-        if not instance.properties.grafana_configurations:
-            instance.properties.grafana_configurations = GrafanaConfigurations()
+        resourceProperties["grafanaConfigurations"] = GrafanaConfigurations()
+
         if not instance.properties.grafana_configurations.smtp:
-            instance.properties.grafana_configurations.smtp = Smtp()
+            resourceProperties["grafanaConfigurations"].smtp = Smtp()
+        else:
+            resourceProperties["grafanaConfigurations"] = instance.properties.grafana_configurations
 
         if smtp:
-            instance.properties.grafana_configurations.smtp.enabled = (smtp == "Enabled")
+            resourceProperties["grafanaConfigurations"].smtp.enabled = (smtp == "Enabled")
         if host:
-            instance.properties.grafana_configurations.smtp.host = host
+            resourceProperties["grafanaConfigurations"].smtp.host = host
         if user:
-            instance.properties.grafana_configurations.smtp.user = user
+            resourceProperties["grafanaConfigurations"].smtp.user = user
         if password:
-            instance.properties.grafana_configurations.smtp.password = password
+            resourceProperties["grafanaConfigurations"].smtp.password = password
         if start_tls_policy:
-            instance.properties.grafana_configurations.smtp.start_tls_policy = start_tls_policy
+            resourceProperties["grafanaConfigurations"].smtp.start_tls_policy = start_tls_policy
         if skip_verify is not None:
-            instance.properties.grafana_configurations.smtp.skip_verify = skip_verify
+            resourceProperties["grafanaConfigurations"].smtp.skip_verify = skip_verify
         if from_address:
-            instance.properties.grafana_configurations.smtp.from_address = from_address
+            resourceProperties["grafanaConfigurations"].smtp.from_address = from_address
         if from_name:
-            instance.properties.grafana_configurations.smtp.from_name = from_name
+            resourceProperties["grafanaConfigurations"].smtp.from_name = from_name
 
-    # "begin_create" uses PUT, which handles both Create and Update
-    return client.grafana.begin_create(resource_group_name, grafana_name, instance)
+    if resourceProperties:
+        resource["properties"] = resourceProperties
+
+    # "update" uses PATCH
+    return client.grafana.update(resource_group_name, grafana_name, resource)
 
 
 def show_grafana(cmd, grafana_name, resource_group_name=None, subscription=None):
