@@ -397,7 +397,14 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                     aks_rg_id = helper.get_rg_id_from_arm_id(datasource_arm_id)
                     aks_rg = aks_rg_id.split('/')[-1]
                     aks_cluster = aks_client.get(aks_rg, aks_name)
-                    datasource_principal_id = aks_cluster.identity.principal_id
+
+                    if "UserAssigned" in aks_cluster.identity.type:
+                        uami_key = list(aks_cluster.identity.user_assigned_identities.keys())[0]
+                        if uami_key == "" or uami_key is None:
+                            raise CLIInternalError("User assigned identity not found for AKS Cluster")
+                        datasource_principal_id = aks_cluster.identity.user_assigned_identities[uami_key].principal_id
+                    else:
+                        datasource_principal_id = aks_cluster.identity.principal_id
                 else:
                     raise InvalidArgumentValueError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
 
@@ -490,7 +497,14 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                     aks_rg_id = helper.get_rg_id_from_arm_id(datasource_arm_id)
                     aks_rg = aks_rg_id.split('/')[-1]
                     aks_cluster = aks_client.get(aks_rg, aks_name)
-                    datasource_principal_id = aks_cluster.identity.principal_id
+
+                    if "UserAssigned" in aks_cluster.identity.type:
+                        uami_key = list(aks_cluster.identity.user_assigned_identities.keys())[0]
+                        if uami_key == "" or uami_key is None:
+                            raise CLIInternalError("User assigned identity not found for AKS Cluster")
+                        datasource_principal_id = aks_cluster.identity.user_assigned_identities[uami_key].principal_id
+                    else:
+                        datasource_principal_id = aks_cluster.identity.principal_id
                 else:
                     raise InvalidArgumentValueError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
 
