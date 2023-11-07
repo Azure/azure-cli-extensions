@@ -437,7 +437,7 @@ def _get_oryx_run_image_version_key(tag_obj, framework):
 def parse_oryx_run_image(image_repository, tag) -> OryxRunImageTagProperty:
     # Example Oryx run image: mcr.microsoft.com/oryx/<platform>:<version>-<os>
     # Note: image_repository should NOT include the "mcr.microsoft.com/" prefix; it should ONLY be the repository
-    re_matches = re.findall(r"(oryx|azure-buildpacks)/([A-Za-z]*):([0-9.]*)-([A-Za-z-]*)",
+    re_matches = re.findall(r"(oryx|azure-buildpacks)\/([A-Za-z]*):([0-9.]*)-([A-Za-z-]*)",
                             "{}:{}".format(image_repository, tag))
     if len(re_matches) == 0 or len(re_matches[0]) < 4:
         return None
