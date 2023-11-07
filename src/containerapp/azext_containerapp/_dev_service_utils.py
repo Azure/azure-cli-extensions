@@ -5,7 +5,6 @@
 
 from azure.cli.core.azclierror import ValidationError, CLIError, ResourceNotFoundError
 from ._client_factory import handle_raw_exception
-from azure.cli.testsdk import JMESPathCheck
 from ._clients import ManagedEnvironmentClient, ContainerAppClient
 from ._constants import (
     CONTAINER_APPS_RP
@@ -64,8 +63,3 @@ class DevServiceUtils:
         except CLIError as e:
             handle_raw_exception(e)
 
-def addon_provisioningState_check(test_cls, addon_name, resource_group):
-    try:
-        test_cls.cmd(f'containerapp show -g {resource_group} -n {addon_name}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
-    except Exception as ex:
-        print(f'addon {addon_name} in resource group {resource_group} did not provision successfully: {str(ex)}') 
