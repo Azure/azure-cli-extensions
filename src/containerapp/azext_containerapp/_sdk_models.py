@@ -7337,9 +7337,9 @@ class Scale(_serialization.Model):
 class JobScale(_serialization.Model):
     """Container Apps Job scaling configurations.
 
-    :ivar min_executions: Optional. Minimum number of container replicas.
+    :ivar min_executions: Optional. Minimum number of job executions that are created for a trigger, default 0.
     :vartype min_executions: int
-    :ivar max_executions: Optional. Maximum number of container replicas. Defaults to 10 if not set.
+    :ivar max_executions: Optional. Maximum number of job executions that are created for a trigger, default 10.
     :vartype max_executions: int
     :ivar pollingInterval: Optional. Time between poll requests.
     :vartype pollingInterval: int
@@ -7364,10 +7364,9 @@ class JobScale(_serialization.Model):
         **kwargs: Any
     ) -> None:
         """
-        :keyword min_executions: Optional. Minimum number of container replicas.
+        :keyword min_executions: Optional. Minimum number of job executions that are created for a trigger, default 0.
         :paramtype min_executions: int
-        :keyword max_executions: Optional. Maximum number of container replicas. Defaults to 10 if not
-         set.
+        :keyword max_executions: Optional. Maximum number of job executions that are created for a trigger, default 10.
         :paramtype max_executions: int
         :keyword rules: Scaling rules.
         :paramtype rules: list[~azure.mgmt.appcontainers.models.JobScaleRule]

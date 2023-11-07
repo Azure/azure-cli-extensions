@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp job create': fix problem of parsing parameters minExecutions and maxExecutions from --yaml
 
 0.3.43
 ++++++
@@ -12,7 +13,6 @@ upcoming
 * 'az containerapp create/update': fix an issue for transforming sensitive values when the scale rules metadata not exists
 * 'az containerapp up': update builder image used when --source is provided with no Dockerfile to support building applications targeting a wider range of platform versions
 * Add Cloud Build support (build without Dockerfile or Docker) in Stage/Canary regions to the 'az containerapp up'/'az containerapp create' and 'az containerapp update' commands
-* Fix for 'az containerapp job create' command wherein the correct values for --min-executions, --max-executions are used from yaml to create Container App job
 
 0.3.42
 ++++++
