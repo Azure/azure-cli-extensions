@@ -1091,6 +1091,9 @@ helps['aks update'] = """
         - name: --enable-network-observability
           type: bool
           short-summary: Enable network observability on a cluster.
+        - name: --disable-network-observability
+          type: bool
+          short-summary: Disable network observability on a cluster
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
@@ -1617,6 +1620,12 @@ helps['aks nodepool add'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --drain-timeout
+          type: int
+          short-summary: When nodes are drain how many minutes to wait for all pods to be evicted
+        - name: --node-soak-duration
+          type: int
+          short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
         - name: --kubelet-config
           type: string
           short-summary: Kubelet configurations for agent nodes.
@@ -1704,6 +1713,12 @@ helps['aks nodepool upgrade'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --drain-timeout
+          type: int
+          short-summary: When nodes are drain how many minutes to wait for all pods to be evicted
+        - name: --node-soak-duration
+          type: int
+          short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -1738,6 +1753,12 @@ helps['aks nodepool update'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --drain-timeout
+          type: int
+          short-summary: When nodes are drain how many minutes to wait for all pods to be evicted
+        - name: --node-soak-duration
+          type: int
+          short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
