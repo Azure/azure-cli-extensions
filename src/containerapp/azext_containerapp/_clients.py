@@ -18,6 +18,7 @@ from azure.cli.command_modules.containerapp._clients import (
     GitHubActionClient,
     ContainerAppClient,
     ContainerAppsJobClient,
+    DaprComponentClient,
     ManagedEnvironmentClient,
     WorkloadProfileClient)
 
@@ -494,6 +495,10 @@ class ConnectedEnvStorageClient():
                 env_list.append(formatted)
 
         return env_list
+
+
+class DaprComponentPreviewClient(DaprComponentClient):
+    api_version = PREVIEW_API_VERSION
 
 
 class BuilderClient():
