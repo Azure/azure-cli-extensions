@@ -56,6 +56,8 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env create') as c:
         c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
+        c.argument('enable_dedicated_gpu', arg_type=get_three_state_flag(), options_list=["--enable-dedicated-gpu"],
+                   help="Boolean indicating if the environment is enabled to have dedicated gpu", is_preview=True)
 
     with self.argument_context('containerapp env certificate create') as c:
         c.argument('hostname', options_list=['--hostname'], help='The custom domain name.')
@@ -65,6 +67,10 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env certificate list') as c:
         c.argument('managed_certificates_only', options_list=['--managed-certificates-only', '-m'], help='List managed certificates only.')
         c.argument('private_key_certificates_only', options_list=['--private-key-certificates-only', '-p'], help='List private-key certificates only.')
+
+    with self.argument_context('containerapp env dapr-component init') as c:
+        c.argument('statestore', help="The state store component and dev service to create.")
+        c.argument('pubsub', help="The pubsub component and dev service to create.")
 
     with self.argument_context('containerapp up', arg_group='Github Repo') as c:
         c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/<owner>/<repository-name> or <owner>/<repository-name>')

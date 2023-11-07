@@ -18,6 +18,7 @@ from azure.cli.command_modules.containerapp._clients import (
     GitHubActionClient,
     ContainerAppClient,
     ContainerAppsJobClient,
+    DaprComponentClient,
     ManagedEnvironmentClient,
     WorkloadProfileClient)
 
@@ -28,7 +29,7 @@ logger = get_logger(__name__)
 PREVIEW_API_VERSION = "2023-05-02-preview"
 BUILDER_CLIENT_API_VERSION = "2023-08-01-preview"
 BUILD_CLIENT_API_VERSION = "2023-08-01-preview"
-POLLING_TIMEOUT = 1200  # how many seconds before exiting
+POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
 POLLING_INTERVAL_FOR_MANAGED_CERTIFICATE = 4  # how many seconds between requests
@@ -494,6 +495,10 @@ class ConnectedEnvStorageClient():
                 env_list.append(formatted)
 
         return env_list
+
+
+class DaprComponentPreviewClient(DaprComponentClient):
+    api_version = PREVIEW_API_VERSION
 
 
 class BuilderClient():
