@@ -96,7 +96,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         elif vm_set_type.lower() == CONST_VIRTUAL_MACHINES.lower():
             vm_set_type = CONST_VIRTUAL_MACHINES
         else:
-            raise InvalidArgumentValueError("--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
+            raise InvalidArgumentValueError("--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview)")
         # this parameter does not need validation
         return vm_set_type
 
