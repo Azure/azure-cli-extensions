@@ -54,7 +54,6 @@ a network connection name (--network-connection) should be set."""
     if has_value(managed_virtual_network_regions) and (
         virtual_network_type == "Unmanaged" or not has_value(virtual_network_type)
     ):
-        print(managed_virtual_network_regions[0])
         error_message = """When virtual-network-type is not used or set to "Unmanaged", \
 managed virtual network regions (--managed-virtual-network-regions) should not be set."""
         raise RequiredArgumentMissingError(error_message)
