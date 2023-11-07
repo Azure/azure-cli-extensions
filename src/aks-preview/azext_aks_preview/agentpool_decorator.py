@@ -367,6 +367,19 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return node_soak_duration
 
+    def get_enable_artifact_streaming(self) -> bool:
+        """Obtain the value of enable_artifact_streaming.
+
+        :return: bool
+        """
+
+        # read the original value passed by the command
+        enable_artifact_streaming = self.raw_param.get("enable_artifact_streaming")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.agentpool and self.agentpool.enable_artifact_streaming is not None:
+                enable_artifact_streaming = self.agentpool.enable_artifact_streaming
+        return enable_artifact_streaming
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -512,6 +525,15 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
 
+    def set_up_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
+        """Set up artifact streaming property for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+
+        agentpool.enable_artifact_streaming = self.context.get_enable_artifact_streaming()
+        return agentpool
+
     def set_up_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
         """Set up upgrade settings for the AgentPool object.
 
@@ -642,4 +664,15 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
             agentpool.upgrade_settings = upgrade_settings
 
+        return agentpool
+
+    def update_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
+        """Update artifact streaming property for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_artifact_streaming():
+            agentpool.enable_artifact_streaming = True
         return agentpool

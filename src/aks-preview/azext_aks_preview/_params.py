@@ -164,7 +164,8 @@ from azext_aks_preview._validators import (
     validate_vm_set_type,
     validate_vnet_subnet_id,
     validate_force_upgrade_disable_and_enable_parameters,
-    validate_azure_service_mesh_revision
+    validate_azure_service_mesh_revision,
+    validate_artifact_streaming
 )
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
@@ -725,6 +726,7 @@ def load_arguments(self, _):
         c.argument('disable_windows_outbound_nat', action='store_true', validator=validate_disable_windows_outbound_nat)
         c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
         c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
+        c.argument('enable_artifact_streaming', validator=validate_artifact_streaming, is_preview=True)
         c.argument('node_public_ip_tags', arg_type=tags_type, validator=validate_node_public_ip_tags,
                    help='space-separated tags: key[=value] [key[=value] ...].')
 
@@ -750,6 +752,7 @@ def load_arguments(self, _):
         c.argument('disable_custom_ca_trust', options_list=['--disable-custom-ca-trust', '--dcat'], action='store_true')
         c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
         c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
+        c.argument('enable_artifact_streaming', validator=validate_artifact_streaming, is_preview=True)
 
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', validator=validate_max_surge)
