@@ -2663,7 +2663,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # nodepool add
         self.cmd('aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --enable-artifact-streaming true --aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/ArtifactStreamingPreview', checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('agentpoolProfiles[0].ArtifactStreamingProfile.enabled', True)
+            self.check('agentpoolProfiles[1].ArtifactStreamingProfile.enabled', True)
         ])
 
         # delete
@@ -7273,7 +7273,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ArtifactStreamingPreview',
             checks=[
                 self.check('provisioningState', 'Succeeded'),
-                self.check('agentPoolProfiles[0].ArtifactStreamingProfile.enabled'),
+                self.check('agentPoolProfiles[1].ArtifactStreamingProfile.enabled'),
             ],
         )
 
