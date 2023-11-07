@@ -1105,7 +1105,7 @@ helps['aks update'] = """
           short-summary: Disable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
         - name: --node-provisioning-mode
           type: string
-          short-summary: Sets the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.
+          short-summary: Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
