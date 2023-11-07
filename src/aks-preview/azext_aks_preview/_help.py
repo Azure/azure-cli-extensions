@@ -2798,7 +2798,7 @@ helps['aks approuting enable'] = """
     parameters:
       - name: --enable-kv
         type: bool
-        short-summary: Enables the keyvault-secrets-provider.
+        short-summary: Enable the keyvault secrets provider.
         long-summary: This optional flag enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
       - name: --attach-kv
         type: string
@@ -2823,7 +2823,7 @@ helps['aks approuting update'] = """
         long-summary: This optional flag attaches a keyvault id to access secrets and certificates.
       - name: --enable-kv
         type: bool
-        short-summary: Enables the keyvault-secrets-provider addon.
+        short-summary: Enable the keyvault secrets provider addon.
         long-summary: This optional flag enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
 """
 
@@ -2843,7 +2843,7 @@ helps['aks approuting zone add'] = """
         short-summary: Comma-separated list of DNS zone resource IDs to add to App Routing.
       - name: --attach-zones
         type: bool
-        short-summary: Grants DNS zone Contributor permissions on all zone IDs specified in --ids.
+        short-summary: Grant DNS zone Contributor permissions on all zone IDs specified in --ids.
 """
 
 helps['aks approuting zone delete'] = """
@@ -2866,11 +2866,11 @@ helps['aks approuting zone update'] = """
         short-summary: Comma-separated list of DNS zone resource IDs to replace in App Routing.
       - name: --attach-zones
         type: bool
-        short-summary: Grants DNS zone Contributor permissions on all zone IDs specified in --ids.
+        short-summary: Grant DNS zone Contributor permissions on all zone IDs specified in --ids.
 """
 
 helps['aks approuting zone list'] = """
     type: command
-    short-summary: List DNS zone IDs in App Routing.
+    short-summary: List DNS Zone IDs in App Routing.
     long-summary: This command lists the DNS zone resources used in App Routing.
 """

@@ -409,7 +409,7 @@ def load_arguments(self, _):
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('rotation_poll_interval')
         c.argument('enable_sgxquotehelper', action='store_true')
-        c.argument('enable_app_routing', options_list=['--enable-app-routing'], action='store_true', is_preview=True)
+        c.argument('enable_app_routing', action='store_true', is_preview=True)
         # nodepool paramerters
         c.argument('nodepool_name', default='nodepool1',
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
@@ -1013,22 +1013,19 @@ def load_arguments(self, _):
         c.argument('revision', validator=validate_azure_service_mesh_revision, required=True)
 
     with self.argument_context('aks approuting enable') as c:
-        c.argument('enable_kv', options_list=[
-                   '--enable-kv'], required=False, action='store_true')
+        c.argument('enable_kv', action='store_true')
         c.argument('keyvault_id', options_list=[
-                   '--attach-kv'], required=False)
+                   '--attach-kv'])
 
     with self.argument_context('aks approuting update') as c:
         c.argument('keyvault_id', options_list=[
-                   '--attach-kv'], required=False)
-        c.argument('enable_kv', options_list=[
-                   '--enable-kv'], required=False, action='store_true')
+                   '--attach-kv'])
+        c.argument('enable_kv', action='store_true')
 
     with self.argument_context('aks approuting zone add') as c:
         c.argument('dns_zone_resource_ids', options_list=[
                    '--ids'], required=True)
-        c.argument('attach_zones', options_list=[
-            '--attach-zones'], required=False)
+        c.argument('attach_zones')
 
     with self.argument_context('aks approuting zone delete') as c:
         c.argument('dns_zone_resource_ids', options_list=[
@@ -1037,8 +1034,7 @@ def load_arguments(self, _):
     with self.argument_context('aks approuting zone update') as c:
         c.argument('dns_zone_resource_ids', options_list=[
                    '--ids'], required=True)
-        c.argument('attach_zones', options_list=[
-            '--attach-zones'], required=False)
+        c.argument('attach_zones')
 
 
 def _get_default_install_location(exe_name):
