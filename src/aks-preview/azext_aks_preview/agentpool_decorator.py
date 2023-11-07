@@ -369,7 +369,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
     def get_enable_artifact_streaming(self) -> bool:
         """Obtain the value of enable_artifact_streaming.
-
         :return: bool
         """
 
@@ -377,9 +376,14 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         enable_artifact_streaming = self.raw_param.get("enable_artifact_streaming")
         # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
         if self.decorator_mode == DecoratorMode.CREATE:
-            if self.agentpool and self.agentpool.artifact_streaming_profile.enabled is not None:
+            if (
+                self.agentpool and
+                self.agentpool.artifact_streaming_profile is not None and
+                self.agentpool.artifact_streaming_profile.enabled is not None
+            ):
                 enable_artifact_streaming = self.agentpool.artifact_streaming_profile.enabled
         return enable_artifact_streaming
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -498,6 +502,16 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool.node_taints = self.context.get_node_taints()
         return agentpool
 
+    def set_up_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
+        """Set up artifact streaming property for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_artifact_streaming():
+            if agentpool.artifact_streaming_profile is None:
+                agentpool.artifact_streaming_profile = self.models.AgentPoolArtifactStreamingProfile()
+            agentpool.artifact_streaming_profile.enabled = True
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -521,17 +535,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_agentpool_network_profile(agentpool)
         # set up taints
         agentpool = self.set_up_taints(agentpool)
+        # set up artifact streaming
+        agentpool = self.set_up_artifact_streaming(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
-        return agentpool
-
-    def set_up_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
-        """Set up artifact streaming property for the AgentPool object.
-
-        :return: the AgentPool object
-        """
-
-        agentpool.enable_artifact_streaming = self.context.get_enable_artifact_streaming()
         return agentpool
 
     def set_up_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
@@ -618,6 +625,18 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.network_profile.allowed_host_ports = allowed_host_ports
         return agentpool
 
+    def update_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
+        """Update artifact streaming property for the AgentPool object.
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_artifact_streaming():
+            if agentpool.artifact_streaming_profile is None:
+                agentpool.artifact_streaming_profile = self.models.AgentPoolArtifactStreamingProfile()
+            agentpool.artifact_streaming_profile.enabled = True
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -635,6 +654,8 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         # update network profile
         agentpool = self.update_network_profile(agentpool)
 
+        # update artifact streaming 
+        agentpool = self.update_artifact_streaming(agentpool)
         return agentpool
 
     def update_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
@@ -664,15 +685,4 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
             agentpool.upgrade_settings = upgrade_settings
 
-        return agentpool
-
-    def update_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
-        """Update artifact streaming property for the AgentPool object.
-
-        :return: the AgentPool object
-        """
-        self._ensure_agentpool(agentpool)
-
-        if self.context.get_enable_artifact_streaming():
-            agentpool.artifact_streaming_profile.enabled = True
         return agentpool

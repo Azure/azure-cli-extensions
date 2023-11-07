@@ -2739,10 +2739,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # nodepool add
-        self.cmd('aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --enable-artifact-streaming true --aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/ArtifactStreamingPreview', checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('agentpoolProfiles[1].ArtifactStreamingProfile.enabled', True)
-        ])
+        self.cmd(
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} "
+            "--enable-artifact-streaming --aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/ArtifactStreamingPreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "agentpoolProfiles[1].ArtifactStreamingProfile.enabled", True
+                ),
+            ],
+        )
 
         # delete
         self.cmd(
@@ -7346,12 +7352,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--resource-group={resource_group} '
             '--cluster-name={name} '
             '--name={node_pool_name} '
-            '--allowed-host-ports={allowed_host_ports} '
-            '--enable-artifact-streaming true'
+            '--enable-artifact-streaming '
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ArtifactStreamingPreview',
             checks=[
                 self.check('provisioningState', 'Succeeded'),
-                self.check('agentPoolProfiles[1].ArtifactStreamingProfile.enabled'),
+                self.check('agentPoolProfiles[1].ArtifactStreamingProfile.enabled', True),
             ],
         )
 
