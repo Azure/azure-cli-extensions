@@ -794,6 +794,7 @@ def validate_azure_service_mesh_revision(namespace):
     if not found:
         raise InvalidArgumentValueError(f"Revision {revision} is not supported by the service mesh add-on.")
 
+
 def validate_artifact_streaming(namespace):
     """Validates that artifact streaming enablement can only be used on Linux."""
     if namespace.enable_artifact_streaming:

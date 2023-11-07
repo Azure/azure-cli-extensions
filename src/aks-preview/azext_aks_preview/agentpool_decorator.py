@@ -654,7 +654,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         # update network profile
         agentpool = self.update_network_profile(agentpool)
 
-        # update artifact streaming 
+        # update artifact streaming
         agentpool = self.update_artifact_streaming(agentpool)
         return agentpool
 
