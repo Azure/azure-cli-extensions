@@ -13,6 +13,7 @@ Pending
 +++++++
 * Add `--node-provisioning-mode` to the `az aks update` command.
 * Add `--node-provisioning-mode` to the `az aks create` command.
+* Add Artifact Streaming enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
 
 0.5.169
 +++++++
