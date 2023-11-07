@@ -575,7 +575,7 @@ helps['aks create'] = """
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
         - name: --node-provisioning-mode
           type: string
-          short-summary: Sets the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.
+          short-summary: Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
