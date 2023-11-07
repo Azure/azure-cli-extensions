@@ -811,7 +811,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('length(properties.template.containers[0].env[?name==`AZURE_MYSQL_HOST`])', 1)
         ])
-# --bind {},database={},username={},password={}
+
         self.cmd('containerapp update -g {} -n {} --bind {},database={},username={},password={}'.format(
             resource_group, ca_name, postgresqlserver, postgresqldb , postgresqlusername, postgresqlpassword))
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name), checks=[
