@@ -3,6 +3,11 @@
 Release History
 ===============
 
+Upcoming
+++++++
+* First Stable version release.
+* Vendor new SDK and bump API version to stable/2023-10-07.
+
 0.2.0
 ++++++
 * Using New Resource Model for all VM operations:

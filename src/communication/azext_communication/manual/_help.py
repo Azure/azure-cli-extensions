@@ -480,6 +480,9 @@ helps['communication rooms create'] = """
       - name: Create a room with valid-from and valid-until date/times
         text: |-
                az communication rooms create --valid-from "2022-07-14T10:21" --valid-until "2022-08-14T10:21"
+      - name: Create a room with valid-from, valid-until date/times and pstn-dial-out-enabled
+        text: |-
+               az communication rooms create --valid-from "2022-07-14T10:21" --valid-until "2022-08-14T10:21" --pstn-dial-out-enabled "True"
       - name: Create a room with a list of participants with presenter role
         text: |-
                az communication rooms create --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx"

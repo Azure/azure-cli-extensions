@@ -11,7 +11,7 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
-from .vendored_sdks.appplatform.v2023_09_01_preview import models
+from .vendored_sdks.appplatform.v2023_11_01_preview import models
 from ._utils import get_spring_sku
 
 logger = get_logger(__name__)
@@ -59,6 +59,7 @@ def gateway_update(cmd, client, resource_group, service,
                    certificate_names=None,
                    addon_configs_json=None,
                    addon_configs_file=None,
+                   apms=None,
                    no_wait=False
                    ):
     gateway = client.gateways.get(resource_group, service, DEFAULT_NAME)
@@ -95,6 +96,8 @@ def gateway_update(cmd, client, resource_group, service,
 
     addon_configs = _update_addon_configs(gateway.properties.addon_configs, addon_configs_json, addon_configs_file)
 
+    apms = _update_apms(client, resource_group, service, gateway.properties.apms, apms)
+
     model_properties = models.GatewayProperties(
         public=assign_endpoint if assign_endpoint is not None else gateway.properties.public,
         https_only=https_only if https_only is not None else gateway.properties.https_only,
@@ -102,6 +105,7 @@ def gateway_update(cmd, client, resource_group, service,
         api_metadata_properties=api_metadata_properties,
         cors_properties=cors_properties,
         apm_types=update_apm_types,
+        apms=apms,
         environment_variables=environment_variables,
         client_auth=client_auth,
         addon_configs=addon_configs,
@@ -271,6 +275,12 @@ def _update_client_auth(client, resource_group, service, existing, enable_certif
             else:
                 raise InvalidArgumentValueError(f"Certificate {name} not found in Azure Spring Apps.")
     return client_auth
+
+
+def _update_apms(client, resource_group, service, existing, apms):
+    if apms is None:
+        return existing
+    return apms
 
 
 def _update_addon_configs(existing, addon_configs_json, addon_configs_file):

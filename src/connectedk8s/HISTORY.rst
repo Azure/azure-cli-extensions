@@ -2,6 +2,14 @@
 
 Release History
 ===============
+1.5.3
+++++++
+* Add support to get AKS-EE kubernetes distro
+
+1.5.2
+++++++
+* Skip onboarding pre-checks for AKS-HCI with additional distros : [aks_management, aks_edge_k8s, aks_edge_k3s]
+
 1.4.2
 ++++++
 * Fix reference error.
@@ -16,7 +24,6 @@ Release History
 
 1.3.20
 ++++++
-
 * Bug fix in parsing logs for outbound connectivity check for troubleshoot command
 
 1.3.19

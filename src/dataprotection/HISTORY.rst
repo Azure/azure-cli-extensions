@@ -8,6 +8,14 @@ Release History
 * `az dataprotection backup-instance initialize-backupconfig`: Added parameters `--vaulted-backup-containers` to provide list of containers to backup
 * `az dataprotection backup-instance initialize-backupconfig`: Added parameters `--include-all-containers`, `--storage-account-name`, `storage-account-resource-group` to backup all containers in a storage storage-account-resource-group
 
+0.11.2
+++++++
+* `az dataprotection backup-instance update-msi-permissions`: Added UAMI support for AKS backup/restore.
+
+0.11.1
+++++++
+* Added '-v' option for all --vault-name parameters
+
 0.11.0
 ++++++
 * Add support for Multi-User Authentication for Backup vaults

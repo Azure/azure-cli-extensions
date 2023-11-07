@@ -156,10 +156,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     required_node_exists = check_linux_node(node_api_response)
 
-    # check if this is AKS_HCI
-    aks_hci = False
-    if distribution == 'aks_workload' and infrastructure == 'azure_stack_hci':
-        aks_hci = True
+    # check if this is aks_hci low bandwith scenario
+    lowbandwidth = False
+    lowbandwith_distros = ["aks_workload", "aks_management", "aks_edge_k3s", "aks_edge_k8s"]
+
+    if (infrastructure.lower() == 'azure_stack_hci') and (distribution.lower() in lowbandwith_distros):
+        lowbandwidth = True
 
     # Install kubectl and helm
     try:
@@ -174,8 +176,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Pre onboarding checks
     diagnostic_checks = "Failed"
     try:
-        # if aks_hci skip, otherwise continue to perform pre-onboarding check
-        if not aks_hci:
+        # if aks_hci lowbandwidth scenario skip, otherwise continue to perform pre-onboarding check
+        if not lowbandwidth:
             batchv1_api_instance = kube_client.BatchV1Api()
             storage_space_available = True
 
@@ -218,7 +220,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise ManualInterrupt('Process terminated externally.')
 
     # If the checks didnt pass then stop the onboarding
-    if diagnostic_checks != consts.Diagnostic_Check_Passed and aks_hci is False:
+    if diagnostic_checks != consts.Diagnostic_Check_Passed and lowbandwidth is False:
         if storage_space_available:
                 logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
         if(diagnostic_checks == consts.Diagnostic_Check_Incomplete):
@@ -228,10 +230,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             telemetry.set_exception(exception='Cluster Diagnostic Prechecks Failed', fault_type=consts.Cluster_Diagnostic_Prechecks_Failed, summary="Cluster Diagnostic Prechecks Failed in the cluster")
             raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
 
-    if aks_hci is False:
+    if lowbandwidth is False:
         print("The required pre-checks for onboarding have succeeded.")
     else:
-        print("Skipped onboarding pre-checks for AKS-HCI. Continuing...")
+        print("Skipped onboarding pre-checks for AKS-HCI low bandwidth scenario. Continuing...")
 
     if not required_node_exists:
         telemetry.set_user_fault()
@@ -646,6 +648,10 @@ def get_kubernetes_distro(api_response):  # Heuristic
                 return "eks"
             if labels.get("minikube.k8s.io/version"):
                 return "minikube"
+            if annotations.get("node.aksedge.io/distro") == 'aks_edge_k3s':
+                return "aks_edge_k3s"
+            if annotations.get("node.aksedge.io/distro") == 'aks_edge_k8s':
+                return "aks_edge_k8s"
             if provider_id.startswith("kind://"):
                 return "kind"
             if provider_id.startswith("k3s://"):

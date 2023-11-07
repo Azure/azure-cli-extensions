@@ -85,6 +85,8 @@ class TestIndex(unittest.TestCase):
                                  "Extension name mismatch in extensions['{}']. "
                                  "Found an extension in the list with name "
                                  "{}".format(ext_name, item['metadata']['name']))
+                # Due to https://github.com/pypa/wheel/issues/235 we prevent whls built with 0.31.0 or greater.
+                # 0.29.0, 0.30.0 are the two previous versions before that release.
                 parsed_filename = WHEEL_INFO_RE(item['filename'])
                 p = parsed_filename.groupdict()
                 self.assertTrue(p.get('name'), "Can't get name for {}".format(item['filename']))

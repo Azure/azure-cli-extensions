@@ -27,6 +27,9 @@ CONTAINER_APP_EXTENSION_TYPE = "microsoft.app.environment"
 MANAGED_CERTIFICATE_RT = "managedCertificates"
 PRIVATE_CERTIFICATE_RT = "certificates"
 
+DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST = ["postgres", "redis"]
+DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST = ["kafka", "redis"]
+
 DEV_SERVICE_LIST = ["kafka", "postgres", "redis", "mariadb", "qdrant"]
 
 DEV_KAFKA_IMAGE = 'kafka'
@@ -82,6 +85,10 @@ steps:
   - push: ["$Registry/{{image_name}}"]
     timeout: 1800
 """
+
+ACA_BUILDER_BULLSEYE_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bullseye-20231025.1"
+ACA_BUILDER_BOOKWORM_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bookworm-20231025.1"
+
 DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world image
 
 HELLO_WORLD_IMAGE = "mcr.microsoft.com/k8se/quickstart:latest"
