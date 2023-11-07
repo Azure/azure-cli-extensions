@@ -73,6 +73,10 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_qdrant_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_qdrant_service', confirmation=True, supports_no_wait=True)
 
+    with self.command_group('containerapp service milvus') as g:
+        g.custom_command('create', 'create_milvus_service', supports_no_wait=True)
+        g.custom_command('delete', 'delete_milvus_service', confirmation=True, supports_no_wait=True)
+
     with self.command_group('containerapp github-action') as g:
         g.custom_command('add', 'create_or_update_github_action', exception_handler=ex_handler_factory())
 
