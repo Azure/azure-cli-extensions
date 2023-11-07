@@ -18,7 +18,7 @@ class ExportSpecification(AAZCommand):
     """Exports the API specification.
 
     :example: Export Specification
-        az az apic api version definition export-specification -g api-center-test -s contosoeuap --api-name echo-api --version-name 2023-01-01 --definition-name default
+        az apic api version definition export-specification -g api-center-test -s contosoeuap --api-name echo-api --version-name 2023-01-01 --definition-name default
     """
 
     _aaz_info = {
