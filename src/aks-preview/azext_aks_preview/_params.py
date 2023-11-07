@@ -660,7 +660,7 @@ def load_arguments(self, _):
         c.argument('azure_container_storage_nodepools',
                    help='define the comma separated nodepool list to install azure container storage')
         c.argument('node_provisioning_mode', is_preview=True, arg_type=get_enum_type(node_provisioning_modes),
-                   help='Sets the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.')
+                   help='Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.')
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
