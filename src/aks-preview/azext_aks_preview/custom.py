@@ -731,6 +731,7 @@ def aks_update(
     ssh_key_value=None,
     load_balancer_managed_outbound_ipv6_count=None,
     outbound_type=None,
+    network_plugin=None,
     network_plugin_mode=None,
     network_policy=None,
     network_dataplane=None,

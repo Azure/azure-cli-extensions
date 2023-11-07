@@ -67,13 +67,6 @@ def cf_virtual_machine_template(cli_ctx: AzCli, *_):
     return cf_connectedvmware(cli_ctx).virtual_machine_templates
 
 
-def cf_virtual_machine(cli_ctx: AzCli, *_):
-    """
-    Client factory for virtual machines.
-    """
-    return cf_connectedvmware(cli_ctx).virtual_machines
-
-
 def cf_virtual_machine_instance(cli_ctx: AzCli, *_):
     """
     Client factory for virtual machine instances.

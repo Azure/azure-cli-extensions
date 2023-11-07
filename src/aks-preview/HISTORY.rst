@@ -12,7 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-09-02-preview.
-* Add Artifact Streaming enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
+* Add `--network-plugin` to the `az aks update` command.
+* Add `--enable-artifact-streaming` option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
+
+>>>>>>> 2373f902d04bd82cb99de7d8b05f4495101a3a90
 0.5.168
 +++++++
 * Add `--enable-image-integrity` to the `az aks update` command.
