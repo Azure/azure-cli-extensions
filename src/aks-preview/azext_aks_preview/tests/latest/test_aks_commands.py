@@ -2653,7 +2653,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
-                     '--ssh-key-value={ssh_key_value} '
+                     '--ssh-key-value={ssh_key_value} ' \
                      '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/ArtifactStreamingPreview '
 
         self.cmd(create_cmd, checks=[
@@ -7269,7 +7269,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--cluster-name={name} '
             '--name={node_pool_name} '
             '--allowed-host-ports={allowed_host_ports} '
-            '--enable-artifact-streaming'
+            '--enable-artifact-streaming '
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ArtifactStreamingPreview',
             checks=[
                 self.check('provisioningState', 'Succeeded'),
