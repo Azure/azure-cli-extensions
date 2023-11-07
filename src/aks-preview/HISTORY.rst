@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `az aks approuting` and `az aks approuting zone` commands for managing App Routing.
 * Add `--node-provisioning-mode` to the `az aks update` command.
 * Add `--node-provisioning-mode` to the `az aks create` command.
 * Add Artifact Streaming enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
