@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -52,6 +52,11 @@ class Update(AAZCommand):
             help="The name of the dev center.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
+                max_length=26,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -92,6 +97,16 @@ class Update(AAZCommand):
         user_assigned_identities.Element = AAZObjectArg(
             nullable=True,
             blank={},
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
+            arg_group="Properties",
+            help="The display name of the devcenter.",
+            nullable=True,
         )
         return cls._args_schema
 
@@ -173,7 +188,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -272,7 +287,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -345,6 +360,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("encryption", AAZObjectType, ".encryption")
 
             encryption = _builder.get(".properties.encryption")
@@ -453,6 +469,9 @@ class _UpdateHelper:
         properties.dev_center_uri = AAZStrType(
             serialized_name="devCenterUri",
             flags={"read_only": True},
+        )
+        properties.display_name = AAZStrType(
+            serialized_name="displayName",
         )
         properties.encryption = AAZObjectType()
         properties.provisioning_state = AAZStrType(
