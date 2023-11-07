@@ -71,6 +71,12 @@ def load_arguments(self, _):
             required=False,
             validator=get_default_location_from_resource_group,
         )
+        c.argument(
+            "public_network_access",
+            type=str,
+            required=False,
+            help="Whether or not public network access is allowed for the data factory.",
+        )
         c.argument("tags", tags_type)
         c.argument(
             "factory_vsts_configuration",
@@ -101,6 +107,12 @@ def load_arguments(self, _):
             type=str,
             help="The factory name.",
             id_part="name",
+        )
+        c.argument(
+            "public_network_access",
+            type=str,
+            required=False,
+            help="Whether or not public network access is allowed for the data factory.",
         )
         c.argument("tags", tags_type)
 

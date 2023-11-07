@@ -497,6 +497,9 @@ helps['aks create'] = """
         - name: --image-cleaner-interval-hours
           type: int
           short-summary: ImageCleaner scanning interval.
+        - name: --enable-image-integrity
+          type: bool
+          short-summary: Enable ImageIntegrity Service.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
@@ -854,6 +857,10 @@ helps['aks update'] = """
           type: string
           short-summary: A CIDR notation IP range from which to assign pod IPs when kubenet is used.
           long-summary: This range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+        - name: --network-plugin
+          type: string
+          short-summary: The Kubernetes network plugin to use.
+          long-summary: Specify "azure" for routable pod IPs from VNET, "kubenet" for non-routable pod IPs with an overlay network, or "none" for no networking configured.
         - name: --network-plugin-mode
           type: string
           short-summary: The network plugin mode to use.
@@ -980,6 +987,9 @@ helps['aks update'] = """
         - name: --image-cleaner-interval-hours
           type: int
           short-summary: ImageCleaner scanning interval.
+        - name: --enable-image-integrity
+          type: bool
+          short-summary: Enable ImageIntegrity Service.
         - name: --disable-image-integrity
           type: bool
           short-summary: Disable ImageIntegrity Service.

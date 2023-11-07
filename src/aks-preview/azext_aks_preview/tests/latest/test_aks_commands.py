@@ -4502,6 +4502,47 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
+    def test_aks_azure_cni_overlay_migration_from_kubenet(self, resource_group, resource_group_location):
+        _, create_version = self._get_versions(resource_group_location)
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'k8s_version': create_version,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--network-plugin kubenet --ssh-key-value={ssh_key_value} --kubernetes-version {k8s_version} ' \
+                     '--service-cidr 172.56.0.0/16 --dns-service-ip 172.56.0.10 --pod-cidr 100.64.0.0/16 -c 1'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.networkPlugin', 'kubenet'),
+            self.check('networkProfile.networkPluginMode', None),
+            self.check('networkProfile.podCidr', '100.64.0.0/16'),
+            self.check('networkProfile.serviceCidr', '172.56.0.0/16'),
+        ])
+
+        # update
+        update_cmd = 'aks update -g {resource_group} -n {name} --network-plugin azure --network-plugin-mode overlay ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureOverlayPreview'
+
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.networkPlugin', 'azure'),
+            self.check('networkProfile.networkPluginMode', 'overlay'),
+            self.check('networkProfile.podCidr', '100.64.0.0/16'),
+            self.check('networkProfile.serviceCidr', '172.56.0.0/16'),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
     def test_aks_migrate_cluster_to_cilium_dataplane(self, resource_group, resource_group_location):
         _, create_version = self._get_versions(resource_group_location)
         aks_name = self.create_random_name('cliakstest', 16)
@@ -5141,6 +5182,40 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_image_integrity_enabled(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'vm_size': 'Standard_D4s_v3',
+            'node_count': 1,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        create_cmd = ' '.join([
+            'aks', 'create', '--resource-group={resource_group}', '--name={name}', '--location={location}',
+            '--node-vm-size {vm_size}',
+            '--node-count {node_count}',
+            '--enable-image-integrity',
+            '-a azure-policy',
+            '--enable-oidc-issuer',
+            '--ssh-key-value={ssh_key_value}',
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageIntegrityPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AzurePolicyExternalData',
+        ])
+
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.imageIntegrity.enabled', True),
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_image_integrity(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
@@ -5165,7 +5240,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--node-count {node_count}',
             '-a azure-policy',
             '--enable-oidc-issuer',
-            '-k 1.26', #TOD remove when default version becomes 1.26
             '--ssh-key-value={ssh_key_value}',
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AzurePolicyExternalData',
         ])
@@ -5180,24 +5254,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
         sdk_profile = AZURE_API_PROFILES["latest"][CUSTOM_MGMT_AKS_PREVIEW]
         api_version = sdk_profile.default_api_version
-        url = 'https://management.azure.com/subscriptions/' + subscription + '/resourceGroups/' + resource_group + '/providers/Microsoft.ContainerService/managedClusters/' + aks_name + '?api-version=' + api_version
 
         enable_cmd = ' '.join([
-            'rest', '--method put', '--url ' + url,
-            '--body \'{request_body}\'',
-            '--headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageIntegrityPreview,Microsoft.ContainerService/AKS-AzurePolicyExternalData'
+            'aks', 'update', '--resource-group={resource_group}', '--name={name}',
+            '--enable-image-integrity',
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageIntegrityPreview',
         ])
-        self.cmd(enable_cmd, checks=[])
-        for i in range(0, 20):
-            get_cmd = ' '.join([
-                'aks', 'show', '--resource-group={resource_group}', '--name={name}',
-            ])
-            cluster = self.cmd(get_cmd, checks=[
-                self.check('securityProfile.imageIntegrity.enabled', True),
-            ]).get_output_in_json()
-            if cluster["provisioningState"] == "Succeeded":
-                break
-            time.sleep(30)
+        self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.imageIntegrity.enabled', True),
+        ])
 
         disable_cmd = ' '.join([
             'aks', 'update', '--resource-group={resource_group}', '--name={name}',
@@ -6751,6 +6817,47 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # the only check we should perform is to verify that the cluster is provisioned successfully.
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    # live only due to downloading k8s-extension extension
+    @live_only()
+    @AllowLargeResponse(8192)
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_azurecontainerstorage_with_nodepool_name(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+        nodepool_name = self.create_random_name('n', 6)
+
+        node_vm_size = 'standard_d4s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+            'nodepool_name':  nodepool_name
+        })
+
+        # add k8s-extension extension for azurecontainerstorage operations.
+        self.cmd('extension add --name k8s-extension')
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} ' \
+                     '--node-count 3 --nodepool-name {nodepool_name} --enable-managed-identity --enable-azure-container-storage azureDisk --output=json'
+
+        # enabling azurecontainerstorage will not affect any field in the cluster.
+        # the only check we should perform is to verify that the cluster is provisioned successfully.
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('agentPoolProfiles[0].name', nodepool_name),
         ])
 
         # delete
