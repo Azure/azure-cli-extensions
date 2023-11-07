@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.18
+++++++
+* adding warning if printing to stdout
+
 0.2.17
 ++++++
 * updating dmverity-vhd version to allow for larger images with better memory efficiency

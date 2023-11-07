@@ -11,6 +11,12 @@ from six import with_metaclass
 from azure.core import CaseInsensitiveEnumMeta
 
 
+class ActionType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """Enum. Indicates the action type. "Internal" refers to actions that are for internal only APIs.
+    """
+
+    INTERNAL = "Internal"
+
 class AllocationMethod(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Allocation method.
     """
@@ -34,9 +40,19 @@ class CreateDiffDisk(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     FALSE = "false"
     TRUE = "true"
 
+class DeleteFromHost(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+
+    FALSE = "false"
+    TRUE = "true"
+
 class DynamicMemoryEnabled(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Gets or sets a value indicating whether to enable dynamic memory or not.
     """
+
+    FALSE = "false"
+    TRUE = "true"
+
+class Force(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
 
     FALSE = "false"
     TRUE = "true"
@@ -58,7 +74,14 @@ class InventoryType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     VIRTUAL_MACHINE = "VirtualMachine"
 
 class IsCustomizable(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Gets or sets a value indicating whether the vm template is customizable or not.
+    """Gets a value indicating whether the vm template is customizable or not.
+    """
+
+    FALSE = "false"
+    TRUE = "true"
+
+class IsHighlyAvailable(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """Gets highly available property.
     """
 
     FALSE = "false"
@@ -71,6 +94,15 @@ class LimitCpuForMigration(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
 
     FALSE = "false"
     TRUE = "true"
+
+class Origin(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """The intended executor of the operation; as in Resource Based Access Control (RBAC) and audit
+    logs UX. Default value is "user,system"
+    """
+
+    USER = "user"
+    SYSTEM = "system"
+    USER_SYSTEM = "user,system"
 
 class OsType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Defines the different types of VM guest operating systems.
@@ -88,18 +120,23 @@ class ProvisioningAction(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     UNINSTALL = "uninstall"
     REPAIR = "repair"
 
-class StatusLevelTypes(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The level code.
+class ProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """The provisioning state of a resource.
     """
 
-    INFO = "Info"
-    WARNING = "Warning"
-    ERROR = "Error"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    PROVISIONING = "Provisioning"
+    UPDATING = "Updating"
+    DELETING = "Deleting"
+    ACCEPTED = "Accepted"
+    CREATED = "Created"
 
-class StatusTypes(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The status of the hybrid machine agent.
+class SkipShutdown(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """Gets or sets a value indicating whether to request non-graceful VM shutdown. True value for
+    this flag indicates non-graceful shutdown whereas false indicates otherwise. Defaults to false.
     """
 
-    CONNECTED = "Connected"
-    DISCONNECTED = "Disconnected"
-    ERROR = "Error"
+    FALSE = "false"
+    TRUE = "true"

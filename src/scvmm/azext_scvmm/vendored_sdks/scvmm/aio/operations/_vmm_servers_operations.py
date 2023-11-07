@@ -32,7 +32,7 @@ class VmmServersOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~scvmm.models
+    :type models: ~azure.mgmt.scvmm.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -58,13 +58,13 @@ class VmmServersOperations:
 
         Implements VMMServer GET method.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param vmm_server_name: Name of the VMMServer.
         :type vmm_server_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VMMServer, or the result of cls(response)
-        :rtype: ~scvmm.models.VMMServer
+        :rtype: ~azure.mgmt.scvmm.models.VMMServer
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VMMServer"]
@@ -73,7 +73,7 @@ class VmmServersOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         
         request = build_get_request(
@@ -121,7 +121,7 @@ class VmmServersOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         _json = self._serialize.body(body, 'VMMServer')
@@ -175,12 +175,12 @@ class VmmServersOperations:
 
         Onboards the SCVMM fabric as an Azure VmmServer resource.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param vmm_server_name: Name of the VMMServer.
         :type vmm_server_name: str
         :param body: Request payload.
-        :type body: ~scvmm.models.VMMServer
+        :type body: ~azure.mgmt.scvmm.models.VMMServer
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -191,10 +191,10 @@ class VmmServersOperations:
          Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either VMMServer or the result of
          cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~scvmm.models.VMMServer]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.scvmm.models.VMMServer]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VMMServer"]
@@ -241,7 +241,7 @@ class VmmServersOperations:
         self,
         resource_group_name: str,
         vmm_server_name: str,
-        force: Optional[bool] = None,
+        force: Optional[Union[str, "_models.Force"]] = None,
         **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
@@ -250,7 +250,7 @@ class VmmServersOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         
         request = build_delete_request_initial(
@@ -271,12 +271,17 @@ class VmmServersOperations:
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}"}  # type: ignore
 
@@ -286,20 +291,20 @@ class VmmServersOperations:
         self,
         resource_group_name: str,
         vmm_server_name: str,
-        force: Optional[bool] = None,
+        force: Optional[Union[str, "_models.Force"]] = None,
         **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Implements VmmServers DELETE method.
 
-        Deboards the SCVMM fabric from Azure.
+        Removes the SCVMM fabric from Azure.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param vmm_server_name: Name of the VMMServer.
         :type vmm_server_name: str
         :param force: Forces the resource to be deleted from azure. The corresponding CR would be
          attempted to be deleted too.
-        :type force: bool
+        :type force: str or ~azure.mgmt.scvmm.models.Force
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -312,7 +317,7 @@ class VmmServersOperations:
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -363,7 +368,7 @@ class VmmServersOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         _json = self._serialize.body(body, 'ResourcePatch')
@@ -387,19 +392,21 @@ class VmmServersOperations:
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 201, 202]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize('VMMServer', pipeline_response)
 
-        if response.status_code == 201:
-            deserialized = self._deserialize('VMMServer', pipeline_response)
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -418,12 +425,12 @@ class VmmServersOperations:
 
         Updates the VmmServers resource.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param vmm_server_name: Name of the VMMServer.
         :type vmm_server_name: str
         :param body: VmmServers patch payload.
-        :type body: ~scvmm.models.ResourcePatch
+        :type body: ~azure.mgmt.scvmm.models.ResourcePatch
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -434,10 +441,10 @@ class VmmServersOperations:
          Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either VMMServer or the result of
          cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~scvmm.models.VMMServer]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.scvmm.models.VMMServer]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VMMServer"]
@@ -490,14 +497,14 @@ class VmmServersOperations:
 
         List of VmmServers in a resource group.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VMMServerListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~scvmm.models.VMMServerListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.scvmm.models.VMMServerListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VMMServerListResult"]
         error_map = {
@@ -570,10 +577,10 @@ class VmmServersOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VMMServerListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~scvmm.models.VMMServerListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.scvmm.models.VMMServerListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VMMServerListResult"]
         error_map = {

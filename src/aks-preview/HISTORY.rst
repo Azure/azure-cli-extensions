@@ -13,6 +13,11 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-09-02-preview.
 * Add the KataCcIsolation option to --workload-runtime.
+* Add `--network-plugin` to the `az aks update` command.
+
+0.5.168
++++++++
+* Add `--enable-image-integrity` to the `az aks update` command.
 
 0.5.167
 +++++++

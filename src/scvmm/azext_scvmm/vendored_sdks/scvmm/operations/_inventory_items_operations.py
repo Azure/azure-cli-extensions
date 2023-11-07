@@ -35,21 +35,21 @@ def build_create_request(
     subscription_id,  # type: str
     resource_group_name,  # type: str
     vmm_server_name,  # type: str
-    inventory_item_name,  # type: str
+    inventory_item_resource_name,  # type: str
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
     # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemName}")  # pylint: disable=line-too-long
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}")  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
-        "vmmServerName": _SERIALIZER.url("vmm_server_name", vmm_server_name, 'str'),
-        "inventoryItemName": _SERIALIZER.url("inventory_item_name", inventory_item_name, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+        "vmmServerName": _SERIALIZER.url("vmm_server_name", vmm_server_name, 'str', max_length=54, min_length=1, pattern=r'[a-zA-Z0-9-_\.]'),
+        "inventoryItemResourceName": _SERIALIZER.url("inventory_item_resource_name", inventory_item_resource_name, 'str', pattern=r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'),
     }
 
     _url = _format_url_section(_url, **path_format_arguments)
@@ -77,20 +77,20 @@ def build_get_request(
     subscription_id,  # type: str
     resource_group_name,  # type: str
     vmm_server_name,  # type: str
-    inventory_item_name,  # type: str
+    inventory_item_resource_name,  # type: str
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
     accept = "application/json"
     # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemName}")  # pylint: disable=line-too-long
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}")  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
-        "vmmServerName": _SERIALIZER.url("vmm_server_name", vmm_server_name, 'str'),
-        "inventoryItemName": _SERIALIZER.url("inventory_item_name", inventory_item_name, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+        "vmmServerName": _SERIALIZER.url("vmm_server_name", vmm_server_name, 'str', max_length=54, min_length=1, pattern=r'[a-zA-Z0-9-_\.]'),
+        "inventoryItemResourceName": _SERIALIZER.url("inventory_item_resource_name", inventory_item_resource_name, 'str', pattern=r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'),
     }
 
     _url = _format_url_section(_url, **path_format_arguments)
@@ -116,20 +116,20 @@ def build_delete_request(
     subscription_id,  # type: str
     resource_group_name,  # type: str
     vmm_server_name,  # type: str
-    inventory_item_name,  # type: str
+    inventory_item_resource_name,  # type: str
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
     accept = "application/json"
     # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemName}")  # pylint: disable=line-too-long
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}")  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
-        "vmmServerName": _SERIALIZER.url("vmm_server_name", vmm_server_name, 'str'),
-        "inventoryItemName": _SERIALIZER.url("inventory_item_name", inventory_item_name, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+        "vmmServerName": _SERIALIZER.url("vmm_server_name", vmm_server_name, 'str', max_length=54, min_length=1, pattern=r'[a-zA-Z0-9-_\.]'),
+        "inventoryItemResourceName": _SERIALIZER.url("inventory_item_resource_name", inventory_item_resource_name, 'str', pattern=r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'),
     }
 
     _url = _format_url_section(_url, **path_format_arguments)
@@ -158,15 +158,15 @@ def build_list_by_vmm_server_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
     accept = "application/json"
     # Construct URL
     _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems")  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
-        "vmmServerName": _SERIALIZER.url("vmm_server_name", vmm_server_name, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+        "vmmServerName": _SERIALIZER.url("vmm_server_name", vmm_server_name, 'str', max_length=54, min_length=1, pattern=r'[a-zA-Z0-9-_\.]'),
     }
 
     _url = _format_url_section(_url, **path_format_arguments)
@@ -195,7 +195,7 @@ class InventoryItemsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~scvmm.models
+    :type models: ~azure.mgmt.scvmm.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -215,7 +215,7 @@ class InventoryItemsOperations(object):
         self,
         resource_group_name,  # type: str
         vmm_server_name,  # type: str
-        inventory_item_name,  # type: str
+        inventory_item_resource_name,  # type: str
         body=None,  # type: Optional["_models.InventoryItem"]
         **kwargs  # type: Any
     ):
@@ -224,17 +224,17 @@ class InventoryItemsOperations(object):
 
         Create Or Update InventoryItem.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param vmm_server_name: Name of the VMMServer.
         :type vmm_server_name: str
-        :param inventory_item_name: Name of the inventoryItem.
-        :type inventory_item_name: str
+        :param inventory_item_resource_name: Name of the inventoryItem.
+        :type inventory_item_resource_name: str
         :param body: Request payload.
-        :type body: ~scvmm.models.InventoryItem
+        :type body: ~azure.mgmt.scvmm.models.InventoryItem
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: InventoryItem, or the result of cls(response)
-        :rtype: ~scvmm.models.InventoryItem
+        :rtype: ~azure.mgmt.scvmm.models.InventoryItem
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItem"]
@@ -243,7 +243,7 @@ class InventoryItemsOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -255,7 +255,7 @@ class InventoryItemsOperations(object):
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             vmm_server_name=vmm_server_name,
-            inventory_item_name=inventory_item_name,
+            inventory_item_resource_name=inventory_item_resource_name,
             api_version=api_version,
             content_type=content_type,
             json=_json,
@@ -271,19 +271,23 @@ class InventoryItemsOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('InventoryItem', pipeline_response)
+        if response.status_code == 200:
+            deserialized = self._deserialize('InventoryItem', pipeline_response)
+
+        if response.status_code == 201:
+            deserialized = self._deserialize('InventoryItem', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    create.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemName}"}  # type: ignore
+    create.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}"}  # type: ignore
 
 
     @distributed_trace
@@ -291,7 +295,7 @@ class InventoryItemsOperations(object):
         self,
         resource_group_name,  # type: str
         vmm_server_name,  # type: str
-        inventory_item_name,  # type: str
+        inventory_item_resource_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.InventoryItem"
@@ -299,15 +303,15 @@ class InventoryItemsOperations(object):
 
         Shows an inventory item.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param vmm_server_name: Name of the VMMServer.
         :type vmm_server_name: str
-        :param inventory_item_name: Name of the inventoryItem.
-        :type inventory_item_name: str
+        :param inventory_item_resource_name: Name of the inventoryItem.
+        :type inventory_item_resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: InventoryItem, or the result of cls(response)
-        :rtype: ~scvmm.models.InventoryItem
+        :rtype: ~azure.mgmt.scvmm.models.InventoryItem
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItem"]
@@ -316,14 +320,14 @@ class InventoryItemsOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         
         request = build_get_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             vmm_server_name=vmm_server_name,
-            inventory_item_name=inventory_item_name,
+            inventory_item_resource_name=inventory_item_resource_name,
             api_version=api_version,
             template_url=self.get.metadata['url'],
         )
@@ -349,7 +353,7 @@ class InventoryItemsOperations(object):
 
         return deserialized
 
-    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemName}"}  # type: ignore
+    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}"}  # type: ignore
 
 
     @distributed_trace
@@ -357,7 +361,7 @@ class InventoryItemsOperations(object):
         self,
         resource_group_name,  # type: str
         vmm_server_name,  # type: str
-        inventory_item_name,  # type: str
+        inventory_item_resource_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -365,12 +369,12 @@ class InventoryItemsOperations(object):
 
         Deletes an inventoryItem.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param vmm_server_name: Name of the VMMServer.
         :type vmm_server_name: str
-        :param inventory_item_name: Name of the inventoryItem.
-        :type inventory_item_name: str
+        :param inventory_item_resource_name: Name of the inventoryItem.
+        :type inventory_item_resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -382,14 +386,14 @@ class InventoryItemsOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         
         request = build_delete_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             vmm_server_name=vmm_server_name,
-            inventory_item_name=inventory_item_name,
+            inventory_item_resource_name=inventory_item_resource_name,
             api_version=api_version,
             template_url=self.delete.metadata['url'],
         )
@@ -411,7 +415,7 @@ class InventoryItemsOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemName}"}  # type: ignore
+    delete.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}"}  # type: ignore
 
 
     @distributed_trace
@@ -426,16 +430,16 @@ class InventoryItemsOperations(object):
 
         Returns the list of inventoryItems in the given VMMServer.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param vmm_server_name: Name of the VMMServer.
         :type vmm_server_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either InventoryItemsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~scvmm.models.InventoryItemsList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.scvmm.models.InventoryItemsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItemsList"]
         error_map = {
