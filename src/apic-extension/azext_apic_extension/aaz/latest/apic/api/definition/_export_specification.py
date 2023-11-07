@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic api definition show",
+    "apic api definition export-specification",
 )
-class Show(AAZCommand):
-    """Get details of the API definition.
+class ExportSpecification(AAZCommand):
+    """Exports the API specification.
 
-    :example: Show API definition details
-        az apic api definition show -g api-center-test -s contosoeuap --api-name echo-api --version 2023-01-01 --name "openapi"
+    :example: Export Specification
+        az az apic api version definition export-specification -g api-center-test -s contosoeuap --api-name echo-api --version-name 2023-01-01 --definition-name default
     """
 
     _aaz_info = {
         "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/apis/{}/versions/{}/definitions/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/apis/{}/versions/{}/definitions/{}/exportspecification", "2024-03-01"],
         ]
     }
 
@@ -102,7 +102,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ApiDefinitionsGet(ctx=self.ctx)()
+        self.ApiDefinitionsExportSpecification(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -117,7 +117,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ApiDefinitionsGet(AAZHttpOperation):
+    class ApiDefinitionsExportSpecification(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -125,19 +125,21 @@ class Show(AAZCommand):
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
+            if session.http_response.status_code in [202]:
+                return self.on_202(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/apis/{apiName}/versions/{versionName}/definitions/{definitionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/apis/{apiName}/versions/{versionName}/definitions/{definitionName}/exportSpecification",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -214,61 +216,17 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.description = AAZStrType()
-            properties.specification = AAZObjectType(
-                flags={"read_only": True},
-            )
-            properties.title = AAZStrType(
-                flags={"required": True},
-            )
-
-            specification = cls._schema_on_200.properties.specification
-            specification.name = AAZStrType()
-            specification.version = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _schema_on_200.format = AAZStrType()
+            _schema_on_200.value = AAZStrType()
 
             return cls._schema_on_200
 
+        def on_202(self, session):
+            pass
 
-class _ShowHelper:
-    """Helper class for Show"""
+
+class _ExportSpecificationHelper:
+    """Helper class for ExportSpecification"""
 
 
-__all__ = ["Show"]
+__all__ = ["ExportSpecification"]

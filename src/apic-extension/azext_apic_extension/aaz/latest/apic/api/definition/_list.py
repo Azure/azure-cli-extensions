@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List a collection of API definitions.
 
     :example: List API definitions
-        az apic api version definition list -g api-center-test -s contosoeuap --api-name echo-api --version 2023-01-01
+        az apic api definition list -g api-center-test -s contosoeuap --api-name echo-api --version 2023-01-01
     """
 
     _aaz_info = {

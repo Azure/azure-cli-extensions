@@ -12,26 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic api definition show",
+    "apic api definition import-specification",
 )
-class Show(AAZCommand):
-    """Get details of the API definition.
+class ImportSpecification(AAZCommand):
+    """Imports the API specification.
 
-    :example: Show API definition details
-        az apic api definition show -g api-center-test -s contosoeuap --api-name echo-api --version 2023-01-01 --name "openapi"
+    :example: Import Sepecification
+        az az apic api definition import-specification -g api-center-test -s contosoeuap --api-name echo-api-2 --version-name 2023-08-01 --definition-name openapi3 --format "inline" --value '{"openapi":"3.0.1","info":{"title":"httpbin.org","description":"API Management facade for a very handy and free online HTTP tool.","version":"1.0"}}' --specification '{"name":"openapi","version":"3.0.0"}'
     """
 
     _aaz_info = {
         "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/apis/{}/versions/{}/definitions/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/apis/{}/versions/{}/definitions/{}/importspecification", "2024-03-01"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
         self._execute_operations()
-        return self._output()
+        return None
 
     _args_schema = None
 
@@ -98,11 +98,41 @@ class Show(AAZCommand):
                 min_length=1,
             ),
         )
+
+        # define Arg Group "Payload"
+
+        _args_schema = cls._args_schema
+        _args_schema.format = AAZStrArg(
+            options=["--format"],
+            arg_group="Payload",
+            help="Format of the API specification source.",
+            enum={"inline": "inline", "link": "link"},
+        )
+        _args_schema.specification = AAZObjectArg(
+            options=["--specification"],
+            arg_group="Payload",
+            help="API specification details.",
+        )
+        _args_schema.value = AAZStrArg(
+            options=["--value"],
+            arg_group="Payload",
+            help="Value of the API specification source.",
+        )
+
+        specification = cls._args_schema.specification
+        specification.name = AAZStrArg(
+            options=["name"],
+            help="Specification name.",
+        )
+        specification.version = AAZStrArg(
+            options=["version"],
+            help="Specification version.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ApiDefinitionsGet(ctx=self.ctx)()
+        self.ApiDefinitionsImportSpecification(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -113,11 +143,7 @@ class Show(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class ApiDefinitionsGet(AAZHttpOperation):
+    class ApiDefinitionsImportSpecification(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -125,19 +151,21 @@ class Show(AAZCommand):
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
+            if session.http_response.status_code in [202]:
+                return self.on_202(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/apis/{apiName}/versions/{versionName}/definitions/{definitionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/apis/{apiName}/versions/{versionName}/definitions/{definitionName}/importSpecification",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -191,84 +219,38 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Accept", "application/json",
+                    "Content-Type", "application/json",
                 ),
             }
             return parameters
 
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("format", AAZStrType, ".format")
+            _builder.set_prop("specification", AAZObjectType, ".specification")
+            _builder.set_prop("value", AAZStrType, ".value")
+
+            specification = _builder.get(".specification")
+            if specification is not None:
+                specification.set_prop("name", AAZStrType, ".name")
+                specification.set_prop("version", AAZStrType, ".version")
+
+            return self.serialize_content(_content_value)
+
         def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
+            pass
 
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.description = AAZStrType()
-            properties.specification = AAZObjectType(
-                flags={"read_only": True},
-            )
-            properties.title = AAZStrType(
-                flags={"required": True},
-            )
-
-            specification = cls._schema_on_200.properties.specification
-            specification.name = AAZStrType()
-            specification.version = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            return cls._schema_on_200
+        def on_202(self, session):
+            pass
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ImportSpecificationHelper:
+    """Helper class for ImportSpecification"""
 
 
-__all__ = ["Show"]
+__all__ = ["ImportSpecification"]
