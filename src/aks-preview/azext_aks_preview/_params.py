@@ -633,6 +633,7 @@ def load_arguments(self, _):
         c.argument('guardrails_version', help='The guardrails version', is_preview=True)
         c.argument('guardrails_excluded_ns', is_preview=True)
         c.argument('enable_network_observability', action='store_true', is_preview=True, help="enable network observability for cluster")
+        c.argument('disable_network_observability', action='store_true', is_preview=True, help="disable network observability for cluster")
         c.argument('enable_cost_analysis', is_preview=True, action='store_true')
         c.argument('disable_cost_analysis', is_preview=True, action='store_true')
         # azure container storage

@@ -11,10 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Vendor new SDK and bump API version to 2023-09-02-preview.
-* Add the KataCcIsolation option to --workload-runtime.
 * Add `--network-plugin` to the `az aks update` command.
+* Add the KataCcIsolation option to --workload-runtime.
 * Update "VirtualMachines" agent pool type as Public Preview feature.
+* Add --disable-network-observability to `az aks update` cluster command.
 
 0.5.168
 +++++++
@@ -22,6 +22,7 @@ Pending
 
 0.5.167
 +++++++
+* Vendor new SDK and bump API version to 2023-09-02-preview.
 * Fix the default storagepool name value created for Azure Container Storage.
 * Ensure the correct nodepool name is picked and labelled by Azure Container Storage while installing with `az aks create`.
 
