@@ -31,8 +31,10 @@ from azext_aks_preview._consts import (
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
     CONST_AVAILABILITY_SET,
-    CONST_VIRTUAL_MACHINES
+    CONST_VIRTUAL_MACHINES,
+    CONST_OS_SKU_UBUNTU,
 )
+from azext_aks_preview._params import node_os_skus_update
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
 
 logger = get_logger(__name__)
@@ -384,6 +386,40 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 enable_artifact_streaming = self.agentpool.artifact_streaming_profile.enabled
         return enable_artifact_streaming
 
+    def _get_os_sku(self, read_only: bool = False) -> Union[str, None]:
+        """Internal function to dynamically obtain the value of os_sku according to the context.
+        Note: Overwritten in aks-preview to support being updated.
+        If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
+        from the Snapshot. When determining the value of the parameter, obtaining from `agentpool` takes precedence over
+        user's explicit input over snapshot over default vaule.
+        :return: string or None
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("os_sku")
+        # try to read the property value corresponding to the parameter from the `agentpool` object
+        value_obtained_from_agentpool = None
+        if self.agentpool and hasattr(self.agentpool, "os_sku"):    # backward compatibility
+            value_obtained_from_agentpool = self.agentpool.os_sku
+        # try to retrieve the value from snapshot
+        value_obtained_from_snapshot = None
+        # skip dynamic completion if read_only is specified
+        if not read_only:
+            snapshot = self.get_snapshot()
+            if snapshot:
+                value_obtained_from_snapshot = snapshot.os_sku
+
+        # set default value
+        if self.decorator_mode == DecoratorMode.CREATE and value_obtained_from_agentpool is not None:
+            os_sku = value_obtained_from_agentpool
+        elif raw_value is not None:
+            os_sku = raw_value
+        elif not read_only and value_obtained_from_snapshot is not None:
+            os_sku = value_obtained_from_snapshot
+        else:
+            os_sku = raw_value
+        # this parameter does not need validation
+        return os_sku
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -635,6 +671,14 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             if agentpool.artifact_streaming_profile is None:
                 agentpool.artifact_streaming_profile = self.models.AgentPoolArtifactStreamingProfile()
             agentpool.artifact_streaming_profile.enabled = True
+        return agentpool
+
+    def update_os_sku(self, agentpool: AgentPool) -> AgentPool:
+        self._ensure_agentpool(agentpool)
+
+        os_sku = self.context.get_os_sku()
+        if os_sku:
+            agentpool.os_sku = os_sku
         return agentpool
 
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
