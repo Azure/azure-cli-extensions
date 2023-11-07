@@ -13,6 +13,8 @@ from azure.cli.core.azclierror import ValidationError
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 from msrestazure.tools import parse_resource_id
+from _dev_service_utils import addon_provisioningState_check
+from _constants import DEV_SERVICE_LIST
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION
@@ -730,7 +732,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service mariadb create -g {} -n {} --environment {}'.format(
             resource_group, mariadb_ca_name, env_name))
-        
+
         self.cmd('containerapp service qdrant create -g {} -n {} --environment {}'.format(
             resource_group, qdrant_ca_name, env_name))
 
@@ -765,13 +767,95 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service mariadb delete -g {} -n {} --yes'.format(
             resource_group, mariadb_ca_name, env_name))
-    
+
         self.cmd('containerapp service qdrant delete -g {} -n {} --yes'.format(
             resource_group, qdrant_ca_name, env_name))
 
-        self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes') 
+        self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes')
 
         self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd('containerapp list -g {} --environment {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_addon_binding_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        redis_ca_name = 'redis'
+        postgres_ca_name = 'postgres'
+        kafka_ca_name = 'kafka'
+        mariadb_ca_name = 'mariadb'
+        qdrant_ca_name = "qdrant"
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        self.cmd('containerapp addon redis create -g {} -n {} --environment {}'.format(
+            resource_group, redis_ca_name, env_name))
+
+        self.cmd('containerapp addon postgres create -g {} -n {} --environment {}'.format(
+            resource_group, postgres_ca_name, env_name))
+
+        self.cmd('containerapp addon kafka create -g {} -n {} --environment {}'.format(
+            resource_group, kafka_ca_name, env_name))
+
+        self.cmd('containerapp addon mariadb create -g {} -n {} --environment {}'.format(
+            resource_group, mariadb_ca_name, env_name))
+
+        self.cmd('containerapp addon qdrant create -g {} -n {} --environment {}'.format(
+            resource_group, qdrant_ca_name, env_name))
+
+        for addon in DEV_SERVICE_LIST:
+            addon_provisioningState_check(self, addon_name=addon, resource_group=resource_group)
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
+            resource_group, ca_name, env_name, image), checks=[
+            JMESPathCheck('properties.template.addonBinds[0].name', "postgres_binding"),
+            JMESPathCheck('properties.template.addonBinds[1].name', "redis")
+        ])
+
+        self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
+            resource_group, ca_name, image), checks=[
+            JMESPathCheck('properties.template.addonBinds[0].name', "redis"),
+        ])
+
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant'.format(
+            resource_group, ca_name, image), checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck('properties.template.addonBinds[0].name', "redis"),
+            JMESPathCheck('properties.template.addonBinds[1].name', "postgres_binding"),
+            JMESPathCheck('properties.template.addonBinds[2].name', "kafka"),
+            JMESPathCheck('properties.template.addonBinds[3].name', "mariadb"),
+            JMESPathCheck('properties.template.addonBinds[4].name', "qdrant")
+        ])
+
+        self.cmd('containerapp addon postgres delete -g {} -n {} --yes'.format(
+            resource_group, postgres_ca_name, env_name))
+
+        self.cmd('containerapp addon redis delete -g {} -n {} --yes'.format(
+            resource_group, redis_ca_name, env_name))
+
+        self.cmd('containerapp addon kafka delete -g {} -n {} --yes'.format(
+            resource_group, kafka_ca_name, env_name))
+
+        self.cmd('containerapp addon mariadb delete -g {} -n {} --yes'.format(
+            resource_group, mariadb_ca_name, env_name))
+
+        self.cmd('containerapp addon qdrant delete -g {} -n {} --yes'.format(
+            resource_group, qdrant_ca_name, env_name))
+
+        self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes')
+
+        self.cmd('containerapp addon list -g {} --environment {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
 
@@ -790,14 +874,14 @@ class ContainerappServiceBindingTests(ScenarioTest):
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         mysqlserver = "mysqlflexsb"
         postgresqlserver = "postgresqlflexsb"
-        
+
         mysqlflex_json= self.cmd('mysql flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, mysqlserver, "None")).output
         postgresqlflex_json= self.cmd('postgres flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, postgresqlserver, "None")).output
         mysqlflex_dict = json.loads(mysqlflex_json)
 
         mysqlusername = mysqlflex_dict['username']
         mysqlpassword = mysqlflex_dict['password']
-        
+
         mysqldb = mysqlflex_dict['databaseName']
         flex_binding="mysqlflex_binding"
         postgresqlflex_dict = json.loads(postgresqlflex_json)
