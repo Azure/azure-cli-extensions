@@ -1098,6 +1098,8 @@ def aks_agentpool_add(
     node_osdisk_type=None,
     node_osdisk_size=0,
     max_surge=None,
+    drain_timeout=None,
+    node_soak_duration=None,
     mode=CONST_NODEPOOL_MODE_USER,
     scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
     max_pods=0,
@@ -1163,6 +1165,8 @@ def aks_agentpool_update(
     tags=None,
     node_taints=None,
     max_surge=None,
+    drain_timeout=None,
+    node_soak_duration=None,
     mode=None,
     scale_down_mode=None,
     no_wait=False,
@@ -1224,6 +1228,8 @@ def aks_agentpool_upgrade(cmd,
                           kubernetes_version='',
                           node_image_only=False,
                           max_surge=None,
+                          drain_timeout=None,
+                          node_soak_duration=None,
                           snapshot_id=None,
                           no_wait=False,
                           aks_custom_headers=None,
@@ -1241,11 +1247,11 @@ def aks_agentpool_upgrade(cmd,
         )
 
     # Note: we exclude this option because node image upgrade can't accept nodepool put fields like max surge
-    if max_surge and node_image_only:
+    if (max_surge or drain_timeout or node_soak_duration) and node_image_only:
         raise MutuallyExclusiveArgumentError(
-            'Conflicting flags. Unable to specify max-surge with node-image-only.'
-            'If you want to use max-surge with a node image upgrade, please first '
-            'update max-surge using "az aks nodepool update --max-surge".'
+            'Conflicting flags. Unable to specify max-surge/drain-timeout/node-soak-duration with node-image-only.'
+            'If you want to use max-surge/drain-timeout/node-soak-duration with a node image upgrade, please first '
+            'update max-surge/drain-timeout/node-soak-duration using "az aks nodepool update --max-surge/--drain-timeout/--node-soak-duration".'
         )
 
     if node_image_only:
@@ -1292,6 +1298,10 @@ def aks_agentpool_upgrade(cmd,
 
     if max_surge:
         instance.upgrade_settings.max_surge = max_surge
+    if drain_timeout:
+        instance.upgrade_settings.drain_timeout_in_minutes = drain_timeout
+    if node_soak_duration:
+        instance.upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
 
     # custom headers
     aks_custom_headers = extract_comma_separated_string(

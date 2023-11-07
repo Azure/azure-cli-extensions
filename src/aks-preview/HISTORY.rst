@@ -16,6 +16,11 @@ Pending
 * Update "VirtualMachines" agent pool type as Public Preview feature.
 * Add --disable-network-observability to `az aks update` cluster command.
 
+0.5.169
++++++++
+* Add `--node-soak-duration` to the `az aks nodepool add/update/upgrade` commands.
+* Add `--drain-timeout` to the `az aks nodepool add/update/upgrade` commands (already in [azure-cli](https://github.com/Azure/azure-cli/pull/27475)).
+
 0.5.168
 +++++++
 * Add `--enable-image-integrity` to the `az aks update` command.
