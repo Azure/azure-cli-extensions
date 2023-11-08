@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, too-many-locals, missing-timeout, too-many-statements, consider-using-with
+# pylint: disable=line-too-long, too-many-locals, missing-timeout, too-many-statements, consider-using-with, too-many-branches
 
 from threading import Thread
 import os
@@ -33,9 +33,6 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
     generated_build_name = f"build{run_full_id}"[:12]
     log_in_file(f"Starting the Cloud Build for build of id '{generated_build_name}'\n", logs_file, no_print=True)
 
-    if not os.path.exists(source):
-        raise ValidationError(f"Impossible to find the directory or file corresponding to {source}. Please make sure that this path exists.")
-
     try:
         done_spinner = False
         fail_spinner = False
@@ -61,7 +58,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
                     loop_counter = (loop_counter + 1) % 17
                     loading_bar_left_spaces_count = loop_counter - 9 if loop_counter > 9 else 0
                     loading_bar_right_spaces_count = 6 - loop_counter if loop_counter < 7 else 0
-                    spinner = f"[{' ' * loading_bar_left_spaces_count}{'=' * (7 - loading_bar_left_spaces_count - loading_bar_right_spaces_count)}{' ' * loading_bar_right_spaces_count}]"
+                    spinner = f"|{' ' * loading_bar_left_spaces_count}{'=' * (7 - loading_bar_left_spaces_count - loading_bar_right_spaces_count)}{' ' * loading_bar_right_spaces_count}|"
                     time_elapsed = time.time() - start_time
                     print(f"\r    {spinner} {task_title} ({time_elapsed:.1f}s)", end="", flush=True)
                     time.sleep(0.15)
@@ -177,12 +174,35 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         done_spinner = False
         thread = display_spinner("Streaming Cloud Build logs")
         headers = {'Authorization': 'Bearer ' + token}
-        response_log_streaming = requests.get(
-            log_streaming_endpoint,
-            headers=headers,
-            stream=True)
-        if not response_log_streaming.ok:
-            raise ValidationError(f"Error when streaming the logs, request exited with {response_log_streaming.status_code}")
+        logs_stream_retries = 0
+        maximum_logs_stream_retries = 5
+        while logs_stream_retries < maximum_logs_stream_retries:
+            logs_stream_retries += 1
+            response_log_streaming = requests.get(
+                log_streaming_endpoint,
+                headers=headers,
+                stream=True)
+            if not response_log_streaming.ok:
+                raise ValidationError(f"Error when streaming the logs, request exited with {response_log_streaming.status_code}")
+            # Actually validate that we logs streams successfully
+            response_log_streaming_lines = response_log_streaming.iter_lines()
+            count_lines_check = 2
+            for line in response_log_streaming_lines:
+                log_line = remove_ansi_characters(line.decode("utf-8"))
+                log_in_file(log_line, logs_file, no_print=True)
+                if "Kubernetes error happened" in log_line:
+                    if logs_stream_retries == maximum_logs_stream_retries:
+                        # We're getting an error when streaming logs and no retries remaining.
+                        raise CloudBuildError(log_line)
+                    # Wait for a bit, and then break to try again. Using "logs_stream_retries" as the number of seconds to wait is a primitive exponential retry.
+                    time.sleep(logs_stream_retries)
+                    break
+                count_lines_check -= 1
+                if count_lines_check == 0:
+                    break
+            if count_lines_check == 0:
+                # We checked the set number of lines and logs stream without error. Let's continue.
+                break
         done_spinner = True
         thread.join()
 
@@ -194,7 +214,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         for line in response_log_streaming.iter_lines():
             log_line = remove_ansi_characters(line.decode("utf-8"))
             current_phase_logs += f"{log_line}\n{substatus_indentation}"
-            if "ERROR:" in log_line or "Kubernetes error happened" in log_line:
+            if "----- Cloud Build failed with exit code" in log_line or "Exiting with failure status due to previous errors" in log_line:
                 raise CloudBuildError(current_phase_logs)
 
             log_execution_phase_match = re.search(log_execution_phase_pattern, log_line)

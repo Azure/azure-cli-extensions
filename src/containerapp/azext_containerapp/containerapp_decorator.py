@@ -600,14 +600,24 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def validate_arguments(self):
         super().validate_arguments()
-        validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
+        validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_artifact(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
 
     def set_up_source(self):
-        if self.get_argument_source():
+        from ._up_utils import (_validate_source_artifact_args)
+
+        source = self.get_argument_source()
+        artifact = self.get_argument_artifact()
+        _validate_source_artifact_args(source, artifact)
+        if artifact:
+            # Artifact is mostly a convenience argument provided to use --source specifically with a single artifact file.
+            # At this point we know for sure that source isn't set (else _validate_up_args would have failed), so we can build with this value.
+            source = artifact
+
+        if source:
             app, env = self._construct_app_and_env_for_source_or_repo()
             dockerfile = "Dockerfile"
             # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
-            app.run_source_to_cloud_flow(self.get_argument_source(), dockerfile, can_create_acr_if_needed=False, registry_server=self.get_argument_registry_server())
+            app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=False, registry_server=self.get_argument_registry_server())
             # Validate containers exist
             containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
             if containers is None or len(containers) == 0:
@@ -850,23 +860,32 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         self.set_up_source()
 
     def set_up_source(self):
-        if self.get_argument_source():
+        from ._up_utils import (_validate_source_artifact_args)
+
+        source = self.get_argument_source()
+        artifact = self.get_argument_artifact()
+        _validate_source_artifact_args(source, artifact)
+        if artifact:
+            # Artifact is mostly a convenience argument provided to use --source specifically with a single artifact file.
+            # At this point we know for sure that source isn't set (else _validate_up_args would have failed), so we can build with this value.
+            source = artifact
+
+        if source:
             if self.get_argument_yaml():
                 raise MutuallyExclusiveArgumentError("Cannot use --source with --yaml together. Can either deploy from a local directory or provide a yaml file")
             # Check if an ACR registry is associated with the container app
             existing_registries = safe_get(self.containerapp_def, "properties", "configuration", "registries", default=[])
             existing_registries = [r for r in existing_registries if ACR_IMAGE_SUFFIX in r["server"]]
-            if existing_registries is None or len(existing_registries) == 0:
-                raise ValidationError(
-                    "Error: The containerapp '{}' does not have an ACR registry associated with it. Please specify a registry using the --registry-server argument while creating the ContainerApp".format(
-                        self.get_argument_name()))
-            registry_server = existing_registries[0]["server"]
-            parsed = urlparse(registry_server)
-            registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
-            registry_user, registry_pass, _ = _get_acr_cred(self.cmd.cli_ctx, registry_name)
-            self._update_container_app_source(cmd=self.cmd, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+            if existing_registries and len(existing_registries) > 0:
+                registry_server = existing_registries[0]["server"]
+                parsed = urlparse(registry_server)
+                registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
+                registry_user, registry_pass, _ = _get_acr_cred(self.cmd.cli_ctx, registry_name)
+                self._update_container_app_source(cmd=self.cmd, source=source, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+            else:
+                self._update_container_app_source(cmd=self.cmd, source=source, registry_server=None, registry_user=None, registry_pass=None)
 
-    def _update_container_app_source(self, cmd, registry_server, registry_user, registry_pass):
+    def _update_container_app_source(self, cmd, source, registry_server, registry_user, registry_pass):
         from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details)
 
         ingress = self.get_argument_ingress()
@@ -883,7 +902,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         env_rg = parsed_env['resource_group']
 
         # Set image to None if it was previously set to the default image (case where image was not provided by the user) else reformat it
-        image = None if self.get_argument_image() is None else _reformat_image(source=self.get_argument_source(), image=self.get_argument_image(), repo=None)
+        image = None if self.get_argument_image() is None else _reformat_image(source=source, image=self.get_argument_image(), repo=None)
 
         # Parse location
         env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
@@ -891,8 +910,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
         # Check if source contains a Dockerfile
         # and ignore checking if Dockerfile exists in repo since GitHub action inherently checks for it.
-        if _has_dockerfile(self.get_argument_source(), dockerfile):
-            dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=self.get_argument_source(), context_path=None, dockerfile=dockerfile)
+        if _has_dockerfile(source, dockerfile):
+            dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=source, context_path=None, dockerfile=dockerfile)
             ingress, target_port = _get_ingress_and_target_port(self.get_argument_ingress(), self.get_argument_target_port(), dockerfile_content)
 
         # Construct ContainerApp
@@ -902,10 +921,10 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         app = ContainerApp(cmd=cmd, name=self.get_argument_name(), resource_group=resource_group, image=image, env=env, target_port=target_port, workload_profile_name=self.get_argument_workload_profile_name(), ingress=ingress, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
 
         # Fetch registry credentials
-        _get_registry_details(cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments
+        _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
         # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
-        app.run_source_to_cloud_flow(self.get_argument_source(), dockerfile, can_create_acr_if_needed=False, registry_server=registry_server)
+        app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=False, registry_server=registry_server)
 
         # Validate an image associated with the container app exists
         containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])

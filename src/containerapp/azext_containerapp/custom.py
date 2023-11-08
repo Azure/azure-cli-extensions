@@ -818,7 +818,11 @@ def containerapp_up(cmd,
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
-    _validate_up_args(cmd, source, image, repo, registry_server)
+    _validate_up_args(cmd, source, artifact, image, repo, registry_server)
+    if artifact:
+        # Artifact is mostly a convenience argument provided to use --source specifically with a single artifact file.
+        # At this point we know for sure that source isn't set (else _validate_up_args would have failed), so we can build with this value.
+        source = artifact
     validate_container_app_name(name, AppType.ContainerApp.name)
     check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
 
