@@ -1991,7 +1991,9 @@ def build_environments_patch_environment_request(
     project_name: str, environment_name: str, user_id: str = "me", **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-01-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -2027,11 +2029,12 @@ def build_environments_patch_environment_request(
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct headers
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
     if content_type is not None:
         _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(method="PATCH", url=_url, headers=_headers, **kwargs)
+    return HttpRequest(method="PATCH", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_environments_get_outputs_request(
