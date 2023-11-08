@@ -396,12 +396,13 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck("properties.template.containers[0].resources.memory", mem)
         ])
 
+
 class ContainerAppWorkloadProfilesGPUTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, random_config_dir=True, **kwargs)
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="eastus")
+    @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_create_enable_dedicated_gpu(self, resource_group):
         self.cmd('configure --defaults location={}'.format("northeurope"))
         env = self.create_random_name(prefix='gpu-env', length=24)
