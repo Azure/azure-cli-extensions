@@ -62,4 +62,3 @@ class DevServiceUtils:
                                              no_wait=no_wait)
         except CLIError as e:
             handle_raw_exception(e)
-
