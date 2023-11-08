@@ -8,6 +8,7 @@ upcoming
 * 'az containerapp job create': fix problem of parsing parameters minExecutions and maxExecutions from --yaml
 * 'az containerapp env dapr-component init': support initializing Dapr components and dev services for an environment
 * 'az containerapp patch apply': support image patching for java application
+* Upgrade api-version to 2023-08-01-preview
 
 0.3.43
 ++++++
