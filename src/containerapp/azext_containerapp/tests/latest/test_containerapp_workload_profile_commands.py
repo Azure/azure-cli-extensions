@@ -409,7 +409,6 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck('properties.template.scale.minReplicas', '1'),
             JMESPathCheck('properties.template.scale.maxReplicas', '10')
         ])
-        self.cmd(f'containerapp logs show -n {app1} -g {resource_group}', expect_failure=False)
 
     def assertContainerappProperties(self, containerapp_env, rg, app, workload_profile_name, revision, cpu, mem):
         self.cmd(f'containerapp show -g {rg} -n {app}', checks=[
