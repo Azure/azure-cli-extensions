@@ -376,14 +376,13 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck("properties.workloadProfiles", None),
         ])
 
-    @live_only()
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_enable_dedicated_gpu(self, resource_group):
-        self.cmd('configure --defaults location={}'.format("westus3"))
-        env = self.create_random_name(prefix='env', length=24)
+        self.cmd('configure --defaults location={}'.format("northeurope"))
+        env = self.create_random_name(prefix='gpu-env', length=24)
         gpu_default_name = "gpu"
-        gpu_default_type = "NC_A100_24"
+        gpu_default_type = "NC24-A100"
         self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-dedicated-gpu'.format(
             resource_group, env), expect_failure=False, checks=[
             JMESPathCheck("name", env),
