@@ -11,10 +11,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+0.5.170
++++++++
 * Add `az aks approuting` and `az aks approuting zone` commands for managing App Routing.
+* Add `--os-sku` to the `az aks nodepool update` command.
 * Add `--node-provisioning-mode` to the `az aks update` command.
 * Add `--node-provisioning-mode` to the `az aks create` command.
 * Add Artifact Streaming enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
+* fix a bug in --support-plan handling when doing `az aks update`
 
 0.5.169
 +++++++
@@ -24,6 +29,7 @@ Pending
 * Add --disable-network-observability to `az aks update` cluster command.
 * Add `--node-soak-duration` to the `az aks nodepool add/update/upgrade` commands.
 * Add `--drain-timeout` to the `az aks nodepool add/update/upgrade` commands (already in [azure-cli](https://github.com/Azure/azure-cli/pull/27475)).
+
 
 0.5.168
 +++++++
