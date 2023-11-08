@@ -2,6 +2,10 @@
 
 Release History
 ===============
+4.0.1
+++++++
+* Update due to bug in API swagger causing missing API version
+
 4.0.0
 ++++++
 * Update control plane API to v2023-10-01-preview

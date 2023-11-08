@@ -278,6 +278,82 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_2.attach_agentpool(agentpool_2)
         self.assertEqual(ctx_2.get_enable_artifact_streaming(), None)
 
+    def common_get_os_sku(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"os_sku": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_os_sku(), None)
+        agentpool = self.create_initialized_agentpool_instance(os_sku="test_os_sku")
+        ctx_1.attach_agentpool(agentpool)
+        self.assertEqual(ctx_1.get_os_sku(), "test_os_sku")
+
+        # custom value
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"os_sku": None, "snapshot_id": "test_snapshot_id"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        mock_snapshot = Mock(os_sku="test_os_sku")
+        with patch(
+            "azext_aks_preview.agentpool_decorator.get_nodepool_snapshot_by_snapshot_id",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_2.get_os_sku(), "test_os_sku")
+
+        # custom value
+        ctx_3 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict(
+                {
+                    "os_sku": "custom_os_sku",
+                    "snapshot_id": "test_snapshot_id",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        mock_snapshot = Mock(os_sku="test_os_sku")
+        with patch(
+            "azext_aks_preview.agentpool_decorator.get_nodepool_snapshot_by_snapshot_id",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_3.get_os_sku(), "custom_os_sku")
+
+        # custom value
+        ctx_4 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict(
+                {
+                    "os_sku": "custom_os_sku",
+                }
+            ),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_4 = self.create_initialized_agentpool_instance(os_sku="test_os_sku")
+        ctx_4.attach_agentpool(agentpool_4)
+        self.assertEqual(ctx_4.get_os_sku(), "custom_os_sku")
+
+        # custom value
+        ctx_5 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"os_sku": None}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_5 = self.create_initialized_agentpool_instance(os_sku="test_os_sku")
+        ctx_5.attach_agentpool(agentpool_5)
+        self.assertEqual(ctx_5.get_os_sku(), None)
 
 class AKSPreviewAgentPoolContextStandaloneModeTestCase(AKSPreviewAgentPoolContextCommonTestCase):
     def setUp(self):
@@ -313,6 +389,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(AKSPreviewAgentPoolContex
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
 
+    def test_get_os_sku(self):
+        self.common_get_os_sku()
+
 class AKSPreviewAgentPoolContextManagedClusterModeTestCase(AKSPreviewAgentPoolContextCommonTestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW
@@ -346,6 +425,9 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(AKSPreviewAgentPoolCo
 
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
+
+    def test_get_os_sku(self):
+        self.common_get_os_sku()
 
 class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
     def _remove_defaults_in_agentpool(self, agentpool):
@@ -642,7 +724,7 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(AKSPreviewAgentP
         }
         raw_param_dict.update(optional_params)
 
-        # default value in `aks_create`
+        # default value in `aks nodepool add`
         dec_1 = AKSPreviewAgentPoolAddDecorator(
             self.cmd,
             self.client,
@@ -857,7 +939,7 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(AKSPreviewAgentPo
         }
         raw_param_dict.update(optional_params)
 
-        # default value in `aks_create`
+        # default value in `aks nodepool update`
         dec_1 = AKSPreviewAgentPoolUpdateDecorator(
             self.cmd,
             self.client,
@@ -921,7 +1003,7 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(AKSPreviewAge
         }
         raw_param_dict.update(optional_params)
 
-        # default value in `aks_create`
+        # default value in `aks nodepool update`
         dec_1 = AKSPreviewAgentPoolUpdateDecorator(
             self.cmd,
             self.client,

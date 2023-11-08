@@ -27,8 +27,6 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2023-08-01-preview"
-BUILDER_CLIENT_API_VERSION = "2023-08-01-preview"
-BUILD_CLIENT_API_VERSION = "2023-08-01-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -502,7 +500,7 @@ class DaprComponentPreviewClient(DaprComponentClient):
 
 
 class BuilderClient():
-    api_version = BUILDER_CLIENT_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def list(cls, cmd, resource_group_name):
@@ -548,7 +546,7 @@ class BuilderClient():
 
 
 class BuildClient():
-    api_version = BUILD_CLIENT_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def create(cls, cmd, builder_name, build_name, resource_group_name, location, no_wait=False):
