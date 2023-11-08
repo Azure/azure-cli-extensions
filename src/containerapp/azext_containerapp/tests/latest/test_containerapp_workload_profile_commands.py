@@ -379,6 +379,22 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck("properties.workloadProfiles", None),
         ])
 
+    def assertContainerappProperties(self, containerapp_env, rg, app, workload_profile_name, revision, cpu, mem):
+        self.cmd(f'containerapp show -g {rg} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", revision),
+            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.workloadProfileName", workload_profile_name),
+            JMESPathCheck("properties.template.containers[0].resources.cpu", cpu),
+            JMESPathCheck("properties.template.containers[0].resources.memory", mem)
+        ])
 
 class ContainerAppWorkloadProfilesGPUTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
@@ -416,21 +432,4 @@ class ContainerAppWorkloadProfilesGPUTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[0].resources.memory', '0.1Gi'),
             JMESPathCheck('properties.template.scale.minReplicas', '1'),
             JMESPathCheck('properties.template.scale.maxReplicas', '10')
-        ])
-
-    def assertContainerappProperties(self, containerapp_env, rg, app, workload_profile_name, revision, cpu, mem):
-        self.cmd(f'containerapp show -g {rg} -n {app}', checks=[
-            JMESPathCheck("properties.provisioningState", "Succeeded"),
-            JMESPathCheck("properties.configuration.ingress.external", True),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
-            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
-            JMESPathCheck("properties.template.revisionSuffix", revision),
-            JMESPathCheck("properties.template.containers[0].name", "nginx"),
-            JMESPathCheck("properties.template.scale.minReplicas", 1),
-            JMESPathCheck("properties.template.scale.maxReplicas", 3),
-            JMESPathCheck("properties.workloadProfileName", workload_profile_name),
-            JMESPathCheck("properties.template.containers[0].resources.cpu", cpu),
-            JMESPathCheck("properties.template.containers[0].resources.memory", mem)
         ])
