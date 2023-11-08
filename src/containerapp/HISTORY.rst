@@ -4,7 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
-* 'az containerapp addon': support deprecation of service command in favor of addon.
+* 'az containerapp addon': support for az containerapp addon commands; deprecation of az containerapp service commands
 * 'az containerapp env create': Support --enable-dedicated-gpu
 * 'az containerapp job create': fix problem of parsing parameters minExecutions and maxExecutions from --yaml
 * 'az containerapp env dapr-component init': support initializing Dapr components and dev services for an environment

@@ -703,7 +703,6 @@ class ContainerappDaprTests(ScenarioTest):
 
 
 class ContainerappServiceBindingTests(ScenarioTest):
-    @live_only()
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_service_binding_e2e(self, resource_group):
@@ -782,7 +781,6 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
 
-    @live_only()
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_addon_binding_e2e(self, resource_group):
