@@ -11,9 +11,12 @@
 from knack.log import get_logger
 
 from .aaz.latest.apic.api.definition import ImportSpecification
+from .aaz.latest.apic.api.definition import ExportSpecification
 from azure.cli.core.aaz import has_value, AAZStrArg
 import json
 import sys
+import requests
+import os
 
 logger = get_logger(__name__)
 
@@ -32,36 +35,78 @@ class ImportSpecificationExtension(ImportSpecification):
 
     def pre_operations(self):
         args = self.ctx.args
-
-        # check size of the spec for inline format and raise error if size is greater than 3 mb
-        self.checkSpecSizeOrRaiseError(args)
-
-    
-    def checkSpecSizeOrRaiseError(self, args):
+      
         data = None
         value = None
-        format = None
 
         # Load the JSON file
         if args.source_profile:
             with open(str(args.source_profile)) as f:
                 data = json.load(f)
-
-        if data:
-            # Extract the 'value', 'format', and 'specification' fields
-            value = data.get('value')
-            format = data.get('format')
-      
+                if data:
+                    value = json.dumps(data)
+  
         # If any of the fields are None, get them from self.args
         if value is None:
             value = args.value
-        if format is None:
-            format = args.format
+   
+        # Reassign the values to self.args
+        args.value = value
 
         # Check the size of 'value' if format is inline and raise error if value is greater than 3 mb
-        if format == 'inline':
-            value_size_bytes = sys.getsizeof(value)
+        if args.format == 'inline':
+            value_size_bytes = sys.getsizeof(args.value)
             value_size_mb = value_size_bytes / (1024 * 1024)  # Convert bytes to megabytes
             if value_size_mb > 3:
-                raise ValueError('The size of "value" is greater than 3 MB. Please use --format "url" to import the specification from a URL for size greater than 3 mb.')
+                logger.error('The size of "value" is greater than 3 MB. Please use --format "url" to import the specification from a URL for size greater than 3 mb.')
 
+class ExportSpecificationExtension(ExportSpecification):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.source_profile = AAZStrArg(
+            options=["--file-name"],
+            help='Name of the file where to export the spec to.',
+            required=True,
+            registered=True
+        )
+        return args_schema
+
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+
+        arguments = self.ctx.args
+
+        if result:
+            response_format = result['format']
+            exportedResults = result['value']
+
+            # if response_format == 'link':
+                # TODO: make a get call and save the result to filename
+                #check the status code and see content response
+                # set the value to exportedResults
+
+                # getReponse = requests.get(exportedResults)
+                # if getReponse.status_code == 200:
+                #     exportedResults = getReponse.content
+                # else:
+                #     logger.error('Error while fetching the results from the link. Status code: %s', getReponse.status_code)
+                        
+            if arguments.source_profile:
+                self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
+                print('Results exported to', arguments.source_profile)
+            else:
+                logger.error('Please provide the --file-name to exports the results to.')
+        else:
+            logger.error('No results found.')
+
+    def writeResultsToFile(self, results, file_name):
+        if file_name:
+            with open(file_name, 'w') as f:
+                if os.path.splitext(file_name)[1] == '.json':
+                    if isinstance(results, str):
+                        results = json.loads(results)
+                    json.dump(results, f, indent=None, separators=(',', ':'))
+                else:    
+                    f.write(results)

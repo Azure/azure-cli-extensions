@@ -10,8 +10,9 @@
 
 # from azure.cli.core.commands import CliCommandType
 from .custom import ImportSpecificationExtension
+from .custom import ExportSpecificationExtension
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group('apic api definition') as g:
         self.command_table['apic api definition import-specification'] = ImportSpecificationExtension(loader=self)
-
+        self.command_table['apic api definition export-specification'] = ExportSpecificationExtension(loader=self)
