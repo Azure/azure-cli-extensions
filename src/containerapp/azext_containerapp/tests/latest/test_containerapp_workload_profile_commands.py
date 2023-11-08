@@ -16,6 +16,9 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerAppWorkloadProfilesTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
@@ -376,14 +379,35 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck("properties.workloadProfiles", None),
         ])
 
-    @live_only()
+    def assertContainerappProperties(self, containerapp_env, rg, app, workload_profile_name, revision, cpu, mem):
+        self.cmd(f'containerapp show -g {rg} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", revision),
+            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.workloadProfileName", workload_profile_name),
+            JMESPathCheck("properties.template.containers[0].resources.cpu", cpu),
+            JMESPathCheck("properties.template.containers[0].resources.memory", mem)
+        ])
+
+
+class ContainerAppWorkloadProfilesGPUTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="eastus")
+    @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_create_enable_dedicated_gpu(self, resource_group):
-        self.cmd('configure --defaults location={}'.format("westus3"))
-        env = self.create_random_name(prefix='env', length=24)
+        self.cmd('configure --defaults location={}'.format("northeurope"))
+        env = self.create_random_name(prefix='gpu-env', length=24)
         gpu_default_name = "gpu"
-        gpu_default_type = "NC_A100_24"
+        gpu_default_type = "NC24-A100"
         self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-dedicated-gpu'.format(
             resource_group, env), expect_failure=False, checks=[
             JMESPathCheck("name", env),
@@ -409,22 +433,4 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[0].resources.memory', '0.1Gi'),
             JMESPathCheck('properties.template.scale.minReplicas', '1'),
             JMESPathCheck('properties.template.scale.maxReplicas', '10')
-        ])
-        self.cmd(f'containerapp logs show -n {app1} -g {resource_group}', expect_failure=False)
-
-    def assertContainerappProperties(self, containerapp_env, rg, app, workload_profile_name, revision, cpu, mem):
-        self.cmd(f'containerapp show -g {rg} -n {app}', checks=[
-            JMESPathCheck("properties.provisioningState", "Succeeded"),
-            JMESPathCheck("properties.configuration.ingress.external", True),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
-            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
-            JMESPathCheck("properties.template.revisionSuffix", revision),
-            JMESPathCheck("properties.template.containers[0].name", "nginx"),
-            JMESPathCheck("properties.template.scale.minReplicas", 1),
-            JMESPathCheck("properties.template.scale.maxReplicas", 3),
-            JMESPathCheck("properties.workloadProfileName", workload_profile_name),
-            JMESPathCheck("properties.template.containers[0].resources.cpu", cpu),
-            JMESPathCheck("properties.template.containers[0].resources.memory", mem)
         ])

@@ -56,7 +56,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             workload_profiles = get_default_workload_profiles(self.cmd, self.get_argument_location())
             if self.get_argument_enable_dedicated_gpu():
                 gpu_profile = {
-                    "workloadProfileType": "NC24_A100",
+                    "workloadProfileType": "NC24-A100",
                     "name": "gpu",
                     "minimumCount": 0,
                     "maximumCount": 1
