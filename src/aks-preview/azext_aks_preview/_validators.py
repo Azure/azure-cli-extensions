@@ -191,7 +191,7 @@ def validate_vm_set_type(namespace):
             namespace.vm_set_type.lower() != "virtualmachines" and \
                 namespace.vm_set_type.lower() != "virtualmachinescalesets":
             raise CLIError(
-                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview)")
 
 
 def validate_load_balancer_sku(namespace):
@@ -793,3 +793,10 @@ def validate_azure_service_mesh_revision(namespace):
     found = asm_revision_regex.findall(revision)
     if not found:
         raise InvalidArgumentValueError(f"Revision {revision} is not supported by the service mesh add-on.")
+
+
+def validate_artifact_streaming(namespace):
+    """Validates that artifact streaming enablement can only be used on Linux."""
+    if namespace.enable_artifact_streaming:
+        if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() == "windows":
+            raise ArgumentUsageError('--enable-artifact-streaming can only be set for Linux nodepools')
