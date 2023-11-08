@@ -700,6 +700,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update artifact streaming
         agentpool = self.update_artifact_streaming(agentpool)
+
+        # update os sku
+        agentpool = self.update_os_sku(agentpool)
         return agentpool
 
     def update_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:

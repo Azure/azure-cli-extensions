@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.171
++++++++
+* Fix the issue that the value passed by option `--os-sku` in command `az aks nodepool update` is not processed.
+
 0.5.170
 +++++++
 * Add `az aks approuting` and `az aks approuting zone` commands for managing App Routing.
