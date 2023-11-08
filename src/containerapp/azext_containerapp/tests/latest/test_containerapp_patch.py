@@ -14,7 +14,11 @@ from azext_containerapp import _utils
 from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_up
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class ContainerAppPatchTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @live_only()
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location = "eastus2")
@@ -151,13 +155,14 @@ class ContainerAppPatchTest(ScenarioTest):
             create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name)
 
             # Execute and verify patch list command
-            patchable_images = self.cmd(f'containerapp patch list -g {resource_group}').get_output_in_json()
+            self.cmd(f'configure --defaults group={resource_group}')
+            patchable_images = self.cmd(f'containerapp patch list').get_output_in_json()
             self.assertTrue(len(patchable_images) == 1)
             self.assertEquals(patchable_images[0]["oldRunImage"], builder_runtime_image)
 
             # Execute and verify patch apply command
-            self.cmd(f'containerapp patch apply -g {resource_group}')
-            patchable_images = self.cmd(f'containerapp patch list -g {resource_group}').get_output_in_json()
+            self.cmd(f'containerapp patch apply')
+            patchable_images = self.cmd(f'containerapp patch list').get_output_in_json()
             self.assertTrue(len(patchable_images) == 0)
         finally:
             # Delete the oryx.env file so it may not conflict with other tests
@@ -190,13 +195,14 @@ class ContainerAppPatchTest(ScenarioTest):
             create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name)
 
             # Execute and verify patch list command
-            patchable_images = self.cmd(f'containerapp patch list -g {resource_group}').get_output_in_json()
+            self.cmd(f'configure --defaults group={resource_group}')
+            patchable_images = self.cmd(f'containerapp patch list').get_output_in_json()
             self.assertTrue(len(patchable_images) == 1)
             self.assertEquals(patchable_images[0]["oldRunImage"], builder_runtime_image)
 
             # Execute and verify patch apply command
-            self.cmd(f'containerapp patch apply -g {resource_group}')
-            patchable_images = self.cmd(f'containerapp patch list -g {resource_group}').get_output_in_json()
+            self.cmd(f'containerapp patch apply')
+            patchable_images = self.cmd(f'containerapp patch list').get_output_in_json()
             self.assertTrue(len(patchable_images) == 0)
         finally:
             # Delete the oryx.env file so it may not conflict with other tests
@@ -230,13 +236,14 @@ class ContainerAppPatchTest(ScenarioTest):
             create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name)
 
             # Execute and verify patch list command
-            patchable_images = self.cmd(f'containerapp patch list -g {resource_group}').get_output_in_json()
+            self.cmd(f'configure --defaults group={resource_group}')
+            patchable_images = self.cmd(f'containerapp patch list').get_output_in_json()
             self.assertTrue(len(patchable_images) == 1)
             self.assertEquals(patchable_images[0]["oldRunImage"], builder_runtime_image)
 
             # Execute and verify patch apply command
-            self.cmd(f'containerapp patch apply -g {resource_group}')
-            patchable_images = self.cmd(f'containerapp patch list -g {resource_group}').get_output_in_json()
+            self.cmd(f'containerapp patch apply')
+            patchable_images = self.cmd(f'containerapp patch list').get_output_in_json()
             self.assertTrue(len(patchable_images) == 0)
         finally:
             # Delete the oryx.env file so it may not conflict with other tests
