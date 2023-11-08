@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud storageappliance update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update properties of the provided storage appliance, or update tags associated with the storage appliance Properties and tag updates can be done independently.
@@ -22,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -161,7 +162,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -333,7 +334,7 @@ class _UpdateHelper:
 
         administrator_credentials = _schema_storage_appliance_read.properties.administrator_credentials
         administrator_credentials.password = AAZStrType(
-            flags={"required": True, "secret": True},
+            flags={"secret": True},
         )
         administrator_credentials.username = AAZStrType(
             flags={"required": True},

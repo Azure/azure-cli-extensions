@@ -146,6 +146,12 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
             loader=self
         )
 
+        from .operations.kubernetescluster._update import Update
+
+        self.command_table["networkcloud kubernetescluster update"] = Update(
+            loader=self
+        )
+
     # kubernetescluster agentpool
     with self.command_group("networkcloud kubernetescluster agentpool"):
         from .aaz.latest.networkcloud.kubernetescluster.agentpool import List, Show
@@ -160,6 +166,12 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         from .operations.kubernetescluster.agentpool._create import Create
 
         self.command_table["networkcloud kubernetescluster agentpool create"] = Create(
+            loader=self
+        )
+
+        from .operations.kubernetescluster.agentpool._update import Update
+
+        self.command_table["networkcloud kubernetescluster agentpool update"] = Update(
             loader=self
         )
 

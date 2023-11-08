@@ -13,18 +13,25 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the properties of the provided Kubernetes cluster, or update the tags associated with the Kubernetes cluster. Properties and tag updates can be done independently.
 
     :example: Patch Kubernetes cluster
         az networkcloud kubernetescluster update --name "kubernetesClusterName" --resource-group "resourceGroupName" --kubernetes-version "1.25.4" --control-plane-node-configuration count="3" --tags key1="myvalue1" key2="myvalue2"
+
+    :example: Update Kubernetes cluster administrator credentials
+        az networkcloud kubernetescluster update --name "kubernetesClusterName" --resource-group "resourceGroupName" --ssh-key-values 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgt5SjWU= admin@vm'
+
+    :example: Update Kubernetes cluster control node administrator credentials
+        az networkcloud kubernetescluster update --name "kubernetesClusterName" --resource-group "resourceGroupName" --control-plane-node-configuration ssh-key-values="['ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgt5SjWU= admin@vm']"
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -58,6 +65,26 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "AdministratorConfiguration"
+
+        _args_schema = cls._args_schema
+        _args_schema.ssh_public_keys = AAZListArg(
+            options=["--ssh-public-keys"],
+            arg_group="AdministratorConfiguration",
+        )
+
+        ssh_public_keys = cls._args_schema.ssh_public_keys
+        ssh_public_keys.Element = AAZObjectArg()
+
+        _element = cls._args_schema.ssh_public_keys.Element
+        _element.key_data = AAZStrArg(
+            options=["key-data"],
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
         # define Arg Group "KubernetesClusterUpdateParameters"
 
         _args_schema = cls._args_schema
@@ -85,11 +112,26 @@ class Update(AAZCommand):
         )
 
         control_plane_node_configuration = cls._args_schema.control_plane_node_configuration
+        control_plane_node_configuration.ssh_public_keys = AAZListArg(
+            options=["ssh-public-keys"],
+        )
         control_plane_node_configuration.count = AAZIntArg(
             options=["count"],
             help="The number of virtual machines that use this configuration.",
             fmt=AAZIntArgFormat(
                 minimum=1,
+            ),
+        )
+
+        ssh_public_keys = cls._args_schema.control_plane_node_configuration.ssh_public_keys
+        ssh_public_keys.Element = AAZObjectArg()
+
+        _element = cls._args_schema.control_plane_node_configuration.ssh_public_keys.Element
+        _element.key_data = AAZStrArg(
+            options=["key-data"],
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
             ),
         )
         return cls._args_schema
@@ -175,7 +217,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -205,12 +247,38 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("administratorConfiguration", AAZObjectType)
                 properties.set_prop("controlPlaneNodeConfiguration", AAZObjectType, ".control_plane_node_configuration")
                 properties.set_prop("kubernetesVersion", AAZStrType, ".kubernetes_version")
 
+            administrator_configuration = _builder.get(".properties.administratorConfiguration")
+            if administrator_configuration is not None:
+                administrator_configuration.set_prop("sshPublicKeys", AAZListType, ".ssh_public_keys")
+
+            ssh_public_keys = _builder.get(".properties.administratorConfiguration.sshPublicKeys")
+            if ssh_public_keys is not None:
+                ssh_public_keys.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.administratorConfiguration.sshPublicKeys[]")
+            if _elements is not None:
+                _elements.set_prop("keyData", AAZStrType, ".key_data", typ_kwargs={"flags": {"required": True}})
+
             control_plane_node_configuration = _builder.get(".properties.controlPlaneNodeConfiguration")
             if control_plane_node_configuration is not None:
+                control_plane_node_configuration.set_prop("administratorConfiguration", AAZObjectType)
                 control_plane_node_configuration.set_prop("count", AAZIntType, ".count")
+
+            administrator_configuration = _builder.get(".properties.controlPlaneNodeConfiguration.administratorConfiguration")
+            if administrator_configuration is not None:
+                administrator_configuration.set_prop("sshPublicKeys", AAZListType, ".ssh_public_keys")
+
+            ssh_public_keys = _builder.get(".properties.controlPlaneNodeConfiguration.administratorConfiguration.sshPublicKeys")
+            if ssh_public_keys is not None:
+                ssh_public_keys.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.controlPlaneNodeConfiguration.administratorConfiguration.sshPublicKeys[]")
+            if _elements is not None:
+                _elements.set_prop("keyData", AAZStrType, ".key_data", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
