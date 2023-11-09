@@ -3023,19 +3023,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
-    def set_up_app_routing_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up app routing profile for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        if self.context.get_enable_app_routing():
-            if mc.ingress_profile is None:
-                mc.ingress_profile = self.models.ManagedClusterIngressProfile()
-            mc.ingress_profile.web_app_routing = self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)
-        return mc
-
     def set_up_node_provisioning_mode(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -3081,9 +3068,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_integrity(mc)
         # set up cluster snapshot
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
-        # set up app routing profile using `aks approuting enable`
-        mc = self.set_up_app_routing_profile(mc)
-        # set up app routing profile using `aks create --enable-addons web_application_routing`
+        # set up app routing profile
         mc = self.set_up_ingress_web_app_routing(mc)
         # set up workload auto scaler profile
         mc = self.set_up_workload_auto_scaler_profile(mc)
