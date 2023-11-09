@@ -860,6 +860,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_source(self):
         return self.get_param("source")
 
+    def set_argument_source(self, source):
+        self.set_param("source", source)
+
     def get_argument_artifact(self):
         return self.get_param("artifact")
 

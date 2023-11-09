@@ -344,7 +344,8 @@ def update_containerapp(cmd,
                                      termination_grace_period=termination_grace_period,
                                      no_wait=no_wait,
                                      secret_volume_mount=secret_volume_mount,
-                                     source=source)
+                                     source=source,
+                                     artifact=artifact)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
