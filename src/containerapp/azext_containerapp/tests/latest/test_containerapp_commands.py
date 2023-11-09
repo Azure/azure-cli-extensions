@@ -763,7 +763,21 @@ class ContainerappServiceBindingTests(ScenarioTest):
                 JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DBENDPOINT', "POSTGRES_HOST"),
                 JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DBPASSWORD', "POSTGRES_PASSWORD")
             ])
-
+        # test update customizedKeys without clientType
+        self.cmd(
+            'containerapp update -n {} -g  {} --bind {}:redis,resourcegroup={} --customized-keys CACHE_1_ENDPOINT=REDIS_HOST CACHE_1_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name, resource_group, redis_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_PASSWORD', "REDIS_PASSWORD"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', "postgres"),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DBENDPOINT', "POSTGRES_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DBPASSWORD', "POSTGRES_PASSWORD")
+            ])
         self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(env_rg, redis_ca_name), expect_failure=False)
         self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(env_rg, postgres_ca_name), expect_failure=False)
         self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name, resource_group), expect_failure=False)
