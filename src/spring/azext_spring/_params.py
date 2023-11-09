@@ -265,7 +265,7 @@ def load_arguments(self, _):
                    validator=validate_planned_maintenance,
                    is_preview=True,
                    options_list=['--planned-maintenance-day', '--pm-day'],
-                   help='Day of the week which planned maintenance will be scheduled on. Must be one of Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.')
+                   help='Day of the week which planned maintenance will be scheduled on.')
         c.argument('planned_maintenance_start_hour',
                    arg_group='Planned Maintenance',
                    type=int,
