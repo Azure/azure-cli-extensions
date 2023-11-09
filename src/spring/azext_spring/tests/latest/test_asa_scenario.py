@@ -178,3 +178,19 @@ class FlushVirtualNetworkDnsSettingTest(ScenarioTest):
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('properties.powerState', 'Running')
         ])
+
+
+class PlannedMaintenanceTest(ScenarioTest):
+
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    def test_enable_planned_maintenance(self, resource_group, spring):
+        self.kwargs.update({
+            'serviceName': spring,
+            'resource_group': resource_group,
+        })
+
+        self.cmd('spring update -g {resource_group} -n {serviceName} --enable-planned-maintenance --planned-maintenance-day Friday --planned-maintenance-start-hour 10', checks=[
+            self.check('properties.maintenanceScheduleConfiguration.day', 'Friday'),
+            self.check('properties.maintenanceScheduleConfiguration.hour', 10)
+        ])
