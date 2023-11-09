@@ -3081,8 +3081,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_integrity(mc)
         # set up cluster snapshot
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
-        # set up app routing profile
+        # set up app routing profile using `aks approuting enable`
         mc = self.set_up_app_routing_profile(mc)
+        #set up app routing profile using `aks enable-addons`
+        mc = self.set_up_ingress_web_app_routing(mc)
         # set up workload auto scaler profile
         mc = self.set_up_workload_auto_scaler_profile(mc)
         # set up vpa
