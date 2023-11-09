@@ -81,11 +81,6 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
 
 class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
-    def construct_payload(self):
-        super().construct_payload()
-
-        self.set_up_app_log_configuration()
-
     def set_up_app_log_configuration(self):
         logs_destination = self.get_argument_logs_destination()
 
