@@ -41,33 +41,34 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
         bin_flag = False
         # search for genpolicy in the assets from kata-container releases
         for release in r.json():
-            # these should be newest to oldest
-            for asset in release["assets"]:
-                # download the file if it contains genpolicy
-                if "genpolicy" in asset["name"]:
-                    save_name = ""
-                    if ".exe" in asset["name"]:
-                        save_name = "genpolicy-windows.exe"
-                    else:
-                        save_name = "genpolicy-linux"
-                    bin_flag = True
-                    # get the download url for the genpolicy file
-                    exe_url = asset["browser_download_url"]
-                    # download the file
-                    r = requests.get(exe_url)
-                    # save the file to the bin folder
-                    with open(os.path.join(bin_folder, save_name), "wb") as f:
-                        f.write(r.content)
+            if release.get("tag_name").startswith("genpolicy"):
+                # these should be newest to oldest
+                for asset in release["assets"]:
+                    # download the file if it contains genpolicy
+                    if "genpolicy" in asset["name"]:
+                        save_name = ""
+                        if ".exe" in asset["name"]:
+                            save_name = "genpolicy-windows.exe"
+                        else:
+                            save_name = "genpolicy-linux"
+                        bin_flag = True
+                        # get the download url for the genpolicy file
+                        exe_url = asset["browser_download_url"]
+                        # download the file
+                        r = requests.get(exe_url)
+                        # save the file to the bin folder
+                        with open(os.path.join(bin_folder, save_name), "wb") as f:
+                            f.write(r.content)
 
-                # download the rules.rego and genpolicy-settings.json files
-                if asset["name"] == "rules.rego" or asset["name"] == "genpolicy-settings.json":
-                    # download the rules.rego file
-                    exe_url = asset["browser_download_url"]
-                    # download the file
-                    r = requests.get(exe_url)
-                    # save the file to the data folder
-                    with open(os.path.join(data_folder, asset["name"]), "wb") as f:
-                        f.write(r.content)
+                    # download the rules.rego and genpolicy-settings.json files
+                    if asset["name"] == "rules.rego" or asset["name"] == "genpolicy-settings.json":
+                        # download the rules.rego file
+                        exe_url = asset["browser_download_url"]
+                        # download the file
+                        r = requests.get(exe_url)
+                        # save the file to the data folder
+                        with open(os.path.join(data_folder, asset["name"]), "wb") as f:
+                            f.write(r.content)
             if bin_flag:
                 break
 
