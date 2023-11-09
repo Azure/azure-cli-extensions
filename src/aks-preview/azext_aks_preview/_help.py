@@ -1680,6 +1680,9 @@ helps['aks nodepool add'] = """
         - name: --enable-artifact-streaming
           type: bool
           short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
+        - name: --disable-artifact-streaming
+          type: bool
+          short-summary: Disable artifact streaming for VirtualMachineScaleSets managed by a node pool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1795,6 +1798,9 @@ helps['aks nodepool update'] = """
         - name: --enable-artifact-streaming
           type: bool
           short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
+        - name: --disable-artifact-streaming
+          type: bool
+          short-summary: Disable artifact streaming for VirtualMachineScaleSets managed by a node pool.
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool.
