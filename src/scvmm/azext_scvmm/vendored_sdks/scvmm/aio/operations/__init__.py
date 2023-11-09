@@ -10,13 +10,9 @@ from ._vmm_servers_operations import VmmServersOperations
 from ._operations import Operations
 from ._clouds_operations import CloudsOperations
 from ._virtual_networks_operations import VirtualNetworksOperations
-from ._virtual_machines_operations import VirtualMachinesOperations
 from ._virtual_machine_templates_operations import VirtualMachineTemplatesOperations
 from ._availability_sets_operations import AvailabilitySetsOperations
 from ._inventory_items_operations import InventoryItemsOperations
-from ._hybrid_identity_metadatas_operations import HybridIdentityMetadatasOperations
-from ._machine_extensions_operations import MachineExtensionsOperations
-from ._guest_agents_operations import GuestAgentsOperations
 from ._virtual_machine_instances_operations import VirtualMachineInstancesOperations
 from ._virtual_machine_instance_hybrid_identity_metadata_operations import VirtualMachineInstanceHybridIdentityMetadataOperations
 from ._vm_instance_guest_agents_operations import VMInstanceGuestAgentsOperations
@@ -26,13 +22,9 @@ __all__ = [
     'Operations',
     'CloudsOperations',
     'VirtualNetworksOperations',
-    'VirtualMachinesOperations',
     'VirtualMachineTemplatesOperations',
     'AvailabilitySetsOperations',
     'InventoryItemsOperations',
-    'HybridIdentityMetadatasOperations',
-    'MachineExtensionsOperations',
-    'GuestAgentsOperations',
     'VirtualMachineInstancesOperations',
     'VirtualMachineInstanceHybridIdentityMetadataOperations',
     'VMInstanceGuestAgentsOperations',

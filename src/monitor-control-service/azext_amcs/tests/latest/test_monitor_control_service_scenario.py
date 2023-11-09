@@ -548,6 +548,38 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
             self.check('length(@)', 1)
         ])
 
+    @ResourceGroupPreparer(name_prefix='clitest_amcs_endpoints_association', location='westus')
+    def test_amcs_data_collection_endpoint_association(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'name1': 'endpoint1',
+            'vm': "vm1",
+            "myAssociation": "configurationAccessEndpoint",
+            "description": "new_description"
+        })
+
+        self.cmd('monitor data-collection endpoint create -g {rg} -n {name1} --public-network-access disabled', checks=[
+            self.check('networkAcls.publicNetworkAccess', 'Disabled'),
+        ])
+
+        endpoint_json = self.cmd('monitor data-collection endpoint show -g {rg} -n {name1}').get_output_in_json()
+        self.kwargs["endpoint_id"] = endpoint_json["id"]
+
+        vm_json = self.cmd('vm create -g {rg} -n {vm} --image Ubuntu2204 --admin-password TestPassword11!! '
+                           '--admin-username testadmin --authentication-type password').get_output_in_json()
+        self.kwargs['vm_id'] = vm_json['id']
+
+        self.cmd('az monitor data-collection rule association create --name {myAssociation} --endpoint-id {endpoint_id} --resource {vm_id}',
+                 checks=[
+                     self.check("name", "configurationAccessEndpoint"),
+                     self.check("dataCollectionEndpointId", endpoint_json["id"])
+                 ])
+        self.cmd('az monitor data-collection rule association update --name {myAssociation} --resource {vm_id} --description {description} ',
+                 checks=[
+                     self.check("description", self.kwargs['description'])
+                 ])
+        self.cmd('az monitor data-collection rule association delete -y --name {myAssociation} --resource {vm_id}')
+
     @ResourceGroupPreparer(name_prefix='clitest_amcs_rule', location='westus2')
     def test_amcs_data_collection_rule(self, resource_group):
         import os

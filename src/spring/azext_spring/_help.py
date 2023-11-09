@@ -65,6 +65,8 @@ helps['spring update'] = """
       text: az spring update -n MyService --sku Standard -g MyResourceGroup
     - name: Update the tags of the existing Azure Spring Apps.
       text: az spring update -n MyService -g MyResourceGroup --tags key1=value1 key2=value2
+    - name: Configure planned maintenance
+      text: az spring update -n MyService -g MyResourceGroup --enable-planned-maintenance --planned-maintenance-day Friday --planned-maintenance-start-hour 10
 """
 
 helps['spring delete'] = """

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster bmckeyset create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new baseboard management controller key set or update the existing one for the provided cluster.
@@ -22,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/bmckeysets/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/bmckeysets/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -153,6 +154,10 @@ class Create(AAZCommand):
             help="The SSH public key for this user.",
             required=True,
         )
+        _element.user_principal_name = AAZStrArg(
+            options=["user-principal-name"],
+            help="The user principal name (email format) used to validate this user's group membership.",
+        )
 
         ssh_public_key = cls._args_schema.user_list.Element.ssh_public_key
         ssh_public_key.key_data = AAZStrArg(
@@ -250,7 +255,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -301,6 +306,7 @@ class Create(AAZCommand):
                 _elements.set_prop("azureUserName", AAZStrType, ".azure_user_name", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("description", AAZStrType, ".description")
                 _elements.set_prop("sshPublicKey", AAZObjectType, ".ssh_public_key", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("userPrincipalName", AAZStrType, ".user_principal_name")
 
             ssh_public_key = _builder.get(".properties.userList[].sshPublicKey")
             if ssh_public_key is not None:
@@ -412,6 +418,9 @@ class Create(AAZCommand):
             _element.ssh_public_key = AAZObjectType(
                 serialized_name="sshPublicKey",
                 flags={"required": True},
+            )
+            _element.user_principal_name = AAZStrType(
+                serialized_name="userPrincipalName",
             )
 
             ssh_public_key = cls._schema_on_200_201.properties.user_list.Element.ssh_public_key

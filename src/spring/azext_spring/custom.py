@@ -21,7 +21,7 @@ from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
 from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
 from knack.util import CLIError
-from .vendored_sdks.appplatform.v2023_09_01_preview import models, AppPlatformManagementClient
+from .vendored_sdks.appplatform.v2023_11_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
@@ -82,7 +82,8 @@ def _update_application_insights_asc_create(cmd,
 def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
                   disable_app_insights=None, sku=None, tags=None, build_pool_size=None,
                   enable_log_stream_public_endpoint=None, enable_dataplane_public_endpoint=None,
-                  ingress_read_timeout=None, no_wait=False):
+                  ingress_read_timeout=None, enable_planned_maintenance=False, planned_maintenance_day=None,
+                  planned_maintenance_start_hour=None, no_wait=False):
     """
     TODO (jiec) app_insights_key, app_insights and disable_app_insights are marked as deprecated.
     Will be decommissioned in future releases.
@@ -122,13 +123,21 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
 
     _update_ingress_config(updated_resource_properties, ingress_read_timeout)
 
+    # update planned maintenance
+    update_planned_maintenance, updated_resource_properties.maintenance_schedule_configuration = _update_planned_maintenance(
+        legacy_configuration=resource.properties.maintenance_schedule_configuration,
+        enable_planned_maintenance=enable_planned_maintenance,
+        planned_maintenance_day=planned_maintenance_day,
+        planned_maintenance_start_hour=planned_maintenance_start_hour
+    )
+
     # update service tags
     if tags is not None:
         updated_resource.tags = tags
         update_service_tags = True
 
-    if update_service_tags is False and update_service_sku is False and update_dataplane_public_endpoint is False and (
-            ingress_read_timeout is None):
+    if update_service_tags is False and update_service_sku is False and update_dataplane_public_endpoint is False \
+            and update_planned_maintenance is False and ingress_read_timeout is None:
         return resource
 
     updated_resource.properties = updated_resource_properties
@@ -180,6 +189,18 @@ def _update_application_insights_asc_update(cmd, resource_group, name, location,
             sdk_no_wait(no_wait, client_preview.monitoring_settings.begin_update_put,
                         resource_group_name=resource_group, service_name=name,
                         monitoring_setting_resource=monitoring_setting_resource)
+
+
+def _update_planned_maintenance(legacy_configuration, enable_planned_maintenance=False, planned_maintenance_day=None,
+                                planned_maintenance_start_hour=None):
+    if enable_planned_maintenance is True:
+        if planned_maintenance_day is None or planned_maintenance_start_hour is None:
+            return False, legacy_configuration
+        return True, models.WeeklyMaintenanceScheduleConfiguration(
+            day=planned_maintenance_day,
+            hour=planned_maintenance_start_hour
+        )
+    return False, legacy_configuration
 
 
 def spring_delete(cmd, client, resource_group, name, no_wait=False):

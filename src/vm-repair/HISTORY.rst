@@ -2,9 +2,13 @@
 Release History
 ===============
 
-0.5.7
+0.5.8
 ++++++
 Fixing az vm repair run --preview parameter to take in fork and branch name of User's repository.
+
+0.5.7
+++++++
+Remove VM-repair SUSE image check
 
 0.5.6
 ++++++
