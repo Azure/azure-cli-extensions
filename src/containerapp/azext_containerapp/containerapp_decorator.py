@@ -974,8 +974,10 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                 for update_item in service_bindings_def_list:
                     if update_item["name"] in item.values():
                         item["serviceId"] = update_item["serviceId"]
-                        item["clientType"] = update_item.get("clientType")
-                        item["customizedKeys"] = update_item.get("customizedKeys")
+                        if update_item.get("clientType"):
+                            item["clientType"] = update_item.get("clientType")
+                        if update_item.get("customizedKeys"):
+                            item["customizedKeys"] = update_item.get("customizedKeys")
                         service_bindings_used_map[update_item["name"]] = True
 
             for update_item in service_bindings_def_list:
