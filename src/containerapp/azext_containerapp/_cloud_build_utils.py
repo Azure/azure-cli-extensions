@@ -211,7 +211,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         thread = display_spinner("Buildpack: Initializing")
         log_execution_phase_pattern = r"===== (.*) =====$"
         current_phase_logs = ""
-        for line in response_log_streaming.iter_lines():
+        for line in response_log_streaming_lines:
             log_line = remove_ansi_characters(line.decode("utf-8"))
             current_phase_logs += f"{log_line}\n{substatus_indentation}"
             if "----- Cloud Build failed with exit code" in log_line or "Exiting with failure status due to previous errors" in log_line:

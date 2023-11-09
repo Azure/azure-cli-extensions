@@ -202,6 +202,7 @@ def create_containerapp(cmd,
                         secret_volume_mount=None,
                         environment_type="managed",
                         source=None,
+                        artifact=None,
                         repo=None,
                         token=None,
                         branch=None,
@@ -262,7 +263,8 @@ def update_containerapp_logic(cmd,
                               registry_user=None,
                               registry_pass=None,
                               secret_volume_mount=None,
-                              source=None):
+                              source=None,
+                              artifact=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -309,7 +311,8 @@ def update_containerapp(cmd,
                         termination_grace_period=None,
                         no_wait=False,
                         secret_volume_mount=None,
-                        source=None):
+                        source=None,
+                        artifact=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -793,6 +796,7 @@ def containerapp_up(cmd,
                     registry_server=None,
                     image=None,
                     source=None,
+                    artifact=None,
                     ingress=None,
                     target_port=None,
                     registry_user=None,

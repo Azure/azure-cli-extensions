@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 
 
 # called directly from custom method bc otherwise it disrupts the --environment auto RID functionality
-def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait, source=None, repo=None, yaml=None, environment_type=None):
+def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait, source=None, artifact=None, repo=None, yaml=None, environment_type=None):
     if source and repo:
         raise MutuallyExclusiveArgumentError("Usage error: --source and --repo cannot be used together. Can either deploy from a local directory or a GitHub repository")
     if (source or repo) and yaml:
