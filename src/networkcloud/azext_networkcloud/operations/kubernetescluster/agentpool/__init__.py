@@ -7,3 +7,4 @@
 # flake8: noqa
 
 from ._create import *
+from ._update import *

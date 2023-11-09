@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update a network connection.
 
     :example: Update
-        az devcenter admin network-connection update --domain-password "New Password value for user" --name "{networkConnectionName}" --resource-group "rg1"
+        az devcenter admin network-connection update --domain-password "New Password value for user" --name "networkConnection" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -47,12 +47,16 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
             options=["-n", "--name", "--network-connection-name"],
-            help="Name of the network connection that can be applied to a pool.",
+            help="Name of the Network Connection that can be applied to a Pool.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -74,12 +78,12 @@ class Update(AAZCommand):
         _args_schema.domain_name = AAZStrArg(
             options=["--domain-name"],
             arg_group="Properties",
-            help="Active Directory domain name.",
+            help="Active Directory domain name",
         )
         _args_schema.domain_password = AAZStrArg(
             options=["--domain-password"],
             arg_group="Properties",
-            help="The password for the account used to join domain.",
+            help="The password for the account used to join domain",
             blank=AAZPromptInput(
                 msg="Domain password:",
             ),
@@ -92,12 +96,12 @@ class Update(AAZCommand):
         _args_schema.organization_unit = AAZStrArg(
             options=["--organization-unit"],
             arg_group="Properties",
-            help="Active Directory domain Organization Unit (OU).",
+            help="Active Directory domain Organization Unit (OU)",
         )
         _args_schema.subnet_id = AAZStrArg(
             options=["--subnet-id"],
             arg_group="Properties",
-            help="The subnet to attach dev boxes to.",
+            help="The subnet to attach Virtual Machines to",
         )
         return cls._args_schema
 
@@ -182,7 +186,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }

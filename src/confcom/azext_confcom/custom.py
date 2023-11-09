@@ -52,6 +52,16 @@ def acipolicygen_confcom(
     elif save_to_file and arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
         error_out("Must print policy to terminal when saving to file")
 
+    if print_existing_policy or outraw or outraw_pretty_print:
+        logger.warning(
+            "%s %s %s %s %s",
+            "Secrets that are included in the provided arm template or configuration files ",
+            "in the container env or cmd sections will be printed out with this flag.",
+            "These are outputed secrets that you must protect. Be sure that you do not include these secrets in your",
+            "source control. Also verify that no secrets are present in the logs of your command or script.",
+            "For additional information, see http://aka.ms/clisecrets. \n",
+        )
+
     if print_existing_policy:
         print_existing_policy_from_arm_template(arm_template, arm_template_parameters)
         sys.exit(0)

@@ -389,6 +389,18 @@ helps['containerapp env certificate delete'] = """
           az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
 """
 
+helps['containerapp env dapr-component init'] = """
+    type: command
+    short-summary: Initializes Dapr components and dev services for an environment.
+    examples:
+    - name: Initialize Dapr components with default statestore and pubsub.
+      text: |
+          az containerapp env dapr-component init -g MyResourceGroup --name MyEnvironment
+    - name: Initialize Dapr components with Postgres statestore and Kafka pubsub.
+      text: |
+          az containerapp env dapr-component init -g MyResourceGroup --name MyEnvironment --statestore postgres --pubsub kafka
+"""
+
 helps['containerapp github-action'] = """
     type: group
     short-summary: Commands to manage GitHub Actions.

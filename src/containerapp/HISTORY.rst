@@ -4,9 +4,19 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env create': Support --enable-dedicated-gpu
+* 'az containerapp job create': fix problem of parsing parameters minExecutions and maxExecutions from --yaml
+* 'az containerapp env dapr-component init': support initializing Dapr components and dev services for an environment
+* 'az containerapp patch apply': support image patching for java application
+* Upgrade api-version to 2023-08-01-preview
+
+0.3.43
+++++++
 * Update azure cli dependency version >= "2.53.0"
 * Remove GA commands which exists in azure-cli of version 2.53.0
 * 'az containerapp create/update': fix an issue for transforming sensitive values when the scale rules metadata not exists
+* 'az containerapp up': update builder image used when --source is provided with no Dockerfile to support building applications targeting a wider range of platform versions
+* Add Cloud Build support (build without Dockerfile or Docker) in Stage/Canary regions to the 'az containerapp up'/'az containerapp create' and 'az containerapp update' commands
 
 0.3.42
 ++++++
