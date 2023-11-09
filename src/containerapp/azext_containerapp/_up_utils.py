@@ -664,9 +664,9 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         if can_create_acr_if_needed:
             self.create_acr_if_needed()
         elif not registry_server:
-            raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source in this context")
+            raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source or --artifact in this context")
         elif ACR_IMAGE_SUFFIX not in registry_server:
-            raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source in this context")
+            raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source or --artifact in this context")
 
         # At this point in the logic, we know that the customer doesn't have a Dockerfile but has a container registry.
         # Cloud Build is not an option anymore as we don't support BYO container registry yet.
@@ -803,7 +803,7 @@ def _validate_up_args(cmd, source, artifact, image, repo, registry_server):
         if a in command_args:
             raise ValidationError(f"Argument {a} is not allowed for 'az containerapp up'")
 
-    if not source and not artifact not image and not repo:
+    if not source and not artifact and not image and not repo:
         raise RequiredArgumentMissingError(
             "You must specify either --source, --artifact, --repo, or --image"
         )
