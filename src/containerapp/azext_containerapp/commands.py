@@ -95,14 +95,14 @@ def load_command_table(self, _):
     with self.command_group('containerapp add-on qdrant') as g:
         g.custom_command('create', 'create_qdrant_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_qdrant_service', confirmation=True, supports_no_wait=True)
-    
+
     with self.command_group('containerapp resiliency', is_preview=True) as g:
         g.custom_command('create', 'create_container_app_resiliency', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_show_command('update', 'update_container_app_resiliency', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_show_command('delete', 'delete_container_app_resiliency', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_container_app_resiliency')
         g.custom_show_command('list', 'list_container_app_resiliencies')
-    
+
     with self.command_group('containerapp env dapr-component resiliency', is_preview=True) as g:
         g.custom_command('create', 'create_dapr_component_resiliency', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_show_command('update', 'update_dapr_component_resiliency', supports_no_wait=True, exception_handler=ex_handler_factory())

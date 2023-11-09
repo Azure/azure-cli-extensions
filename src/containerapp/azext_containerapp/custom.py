@@ -215,7 +215,7 @@ def update_container_app_resiliency(cmd, name, resource_group_name, container_ap
                                     http_retry_interval_in_milliseconds=None,
                                     http_retry_status_codes=None,
                                     http_retry_errors=None):
-    
+
     raw_parameters = locals()
     containerapp_resiliency_update_decorator = ContainerAppResiliencyPreviewUpdateDecorator(
         cmd=cmd,
@@ -268,17 +268,17 @@ def list_container_app_resiliencies(cmd, resource_group_name, container_app_name
 
 
 def create_dapr_component_resiliency(cmd, name, resource_group_name, dapr_component_name, environment,
-                                    yaml=None,
-                                    no_wait=False,
-                                    disable_warnings=False,
-                                    in_timeout_response_in_seconds=None,
-                                    out_timeout_response_in_seconds=None,
-                                    in_http_retry_max=None,
-                                    out_http_retry_max=None,
-                                    in_http_retry_delay_in_milliseconds=None,
-                                    out_http_retry_delay_in_milliseconds=None,
-                                    in_http_retry_interval_in_milliseconds=None,
-                                    out_http_retry_interval_in_milliseconds=None):
+                                     yaml=None,
+                                     no_wait=False,
+                                     disable_warnings=False,
+                                     in_timeout_response_in_seconds=None,
+                                     out_timeout_response_in_seconds=None,
+                                     in_http_retry_max=None,
+                                     out_http_retry_max=None,
+                                     in_http_retry_delay_in_milliseconds=None,
+                                     out_http_retry_delay_in_milliseconds=None,
+                                     in_http_retry_interval_in_milliseconds=None,
+                                     out_http_retry_interval_in_milliseconds=None):
     raw_parameters = locals()
     component_resiliency_create_decorator = DaprComponentResiliencyPreviewCreateDecorator(
         cmd=cmd,
@@ -292,18 +292,18 @@ def create_dapr_component_resiliency(cmd, name, resource_group_name, dapr_compon
 
 
 def update_dapr_component_resiliency(cmd, name, resource_group_name, dapr_component_name, environment,
-                                    yaml=None,
-                                    no_wait=False,
-                                    disable_warnings=False,
-                                    in_timeout_response_in_seconds=None,
-                                    out_timeout_response_in_seconds=None,
-                                    in_http_retry_max=None,
-                                    out_http_retry_max=None,
-                                    in_http_retry_delay_in_milliseconds=None,
-                                    out_http_retry_delay_in_milliseconds=None,
-                                    in_http_retry_interval_in_milliseconds=None,
-                                    out_http_retry_interval_in_milliseconds=None):
-    
+                                     yaml=None,
+                                     no_wait=False,
+                                     disable_warnings=False,
+                                     in_timeout_response_in_seconds=None,
+                                     out_timeout_response_in_seconds=None,
+                                     in_http_retry_max=None,
+                                     out_http_retry_max=None,
+                                     in_http_retry_delay_in_milliseconds=None,
+                                     out_http_retry_delay_in_milliseconds=None,
+                                     in_http_retry_interval_in_milliseconds=None,
+                                     out_http_retry_interval_in_milliseconds=None):
+
     raw_parameters = locals()
     component_resiliency_update_decorator = DaprComponentResiliencyPreviewUpdateDecorator(
         cmd=cmd,

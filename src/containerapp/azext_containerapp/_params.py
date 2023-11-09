@@ -58,36 +58,36 @@ def load_arguments(self, _):
     # App Resiliency
     with self.argument_context('containerapp resiliency') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('container_app_name', options_list=['--container-app-name'], help=f"The name of the Container App. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
+        c.argument('container_app_name', options_list=['--container-app-name'], help=f"The name of the existing Container App.")
         c.argument('name', name_type, help=f"The name of the Container App Resiliency Policy. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_APP_RESILIENCY_NAME_LENGTH} characters.")
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a container app resiliency policy. All other parameters will be ignored.')
         c.argument('default', options_list=['--default'], help='Set recommended values of resiliency policies for a container app.')
-    
+
     with self.argument_context('containerapp resiliency', arg_group='Timeout Policy') as c:
-        c.argument('timeout_response_in_seconds', type=int, options_list=['--timeout-response-in-seconds'], help='Specifies the timeout in seconds. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries. Default: 30.')
-        c.argument('timeout_connection_in_seconds', type=int, options_list=['--timeout-connection-in-seconds'], help='The timeout in seconds for new network connections to the container app. Default: 5.')
+        c.argument('timeout_response_in_seconds', type=int, options_list=['--timeout'], help='Specifies the timeout in seconds. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries. Default: 30.')
+        c.argument('timeout_connection_in_seconds', type=int, options_list=['--timeout-connect'], help='The timeout in seconds for new network connections to the container app. Default: 5.')
 
     with self.argument_context('containerapp resiliency', arg_group='HTTP Retry Policy') as c:
-        c.argument('http_retry_max', type=int, options_list=['--http-retry-max'], help='Specifies the allowed number of retries. Default: 3.')
-        c.argument('http_retry_delay_in_milliseconds', type=int, options_list=['--http-retry-delay-in-milliseconds'], help='Specifies the base interval between retries. Default: 1000.')
-        c.argument('http_retry_interval_in_milliseconds', type=int, options_list=['--http-retry-interval-in-milliseconds'], help='Specifies the maximum interval between retries. Default: 10000.')
-        c.argument('http_retry_status_codes', nargs='*', options_list=['--http-retry-status-codes'], help='A retry will be attempted if the response status code matches any status code in this list.')
-        c.argument('http_retry_errors', nargs='+', options_list=['--http-retry-errors'], help='A retry will be attempted if the response error message matches any error in this list. Default: 5xx')
+        c.argument('http_retry_max', type=int, options_list=['--http-retry'], help='Specifies the allowed number of retries. Default: 3.')
+        c.argument('http_retry_delay_in_milliseconds', type=int, options_list=['--http-delay'], help='Specifies the base interval between retries. Default: 1000.')
+        c.argument('http_retry_interval_in_milliseconds', type=int, options_list=['--http-interval'], help='Specifies the maximum interval between retries. Default: 10000.')
+        c.argument('http_retry_status_codes', nargs='*', options_list=['--http-codes'], help='A retry will be attempted if the response status code matches any status code in this list.')
+        c.argument('http_retry_errors', nargs='+', options_list=['--http-errors'], help='A retry will be attempted if the response error message matches any error in this list. Default: 5xx')
 
     with self.argument_context('containerapp resiliency', arg_group='TCP Retry Policy') as c:
-        c.argument('tcp_retry_max_connect_attempts', type=int, options_list=['--tcp-retry-max-connect-attempts'], help='The maximum number of unsuccessful connection attempts that will be made before giving up. Default: 3.')
+        c.argument('tcp_retry_max_connect_attempts', type=int, options_list=['--tcp-retry'], help='The maximum number of unsuccessful connection attempts that will be made before giving up. Default: 3.')
 
     with self.argument_context('containerapp resiliency', arg_group='TCP Connection Pool Policy') as c:
-        c.argument('tcp_connection_pool_max_connections', type=int, options_list=['--tcp-connection-pool-max-connections'], help='The maximum number of connections that will be made to the container app. Default: 1024.')
+        c.argument('tcp_connection_pool_max_connections', type=int, options_list=['--tcp-connections'], help='The maximum number of connections that will be made to the container app. Default: 1024.')
 
     with self.argument_context('containerapp resiliency', arg_group='HTTP Connection Pool Policy') as c:
-        c.argument('http_connection_pool_http1_max_pending_req', type=int, options_list=['--http-connection-pool-http1-max-pending-requests'], help='The maximum number of pending requests that will be allowed to the container app. Default: 1024.')
-        c.argument('http_connection_pool_http2_max_req', type=int, options_list=['--http-connection-pool-http2-max-requests'], help='The maximum number of parallel requests that will be made to the container app. Default: 1024.')
+        c.argument('http_connection_pool_http1_max_pending_req', type=int, options_list=['--http1-pending'], help='The maximum number of pending requests that will be allowed to the container app. Default: 1024.')
+        c.argument('http_connection_pool_http2_max_req', type=int, options_list=['--http2-parallel'], help='The maximum number of parallel requests that will be made to the container app. Default: 1024.')
 
     with self.argument_context('containerapp resiliency', arg_group='Circuit Breaker Policy') as c:
-        c.argument('circuit_breaker_consecutive_errors', type=int, options_list=['--circuit-breaker-consecutive-errors'], help='The number of consecutive server-side error responses (for HTTP traffic, 5xx responses; for TCP traffic, failure to respond PONG; etc.) before a consecutive 5xx ejection occurs. Default: 5.')
-        c.argument('circuit_breaker_interval', type=int, options_list=['--circuit-breaker-interval-in-seconds'], help='The time interval in seconds between ejection analysis sweeps. This can result in both new ejections as well as hosts being returned to service. Default: 10.')
-        c.argument('circuit_breaker_max_ejection', type=int, options_list=['--circuit-breaker-max-ejection'], help='The maximum % of container app replicas that can be ejected. Defaults to 50% but will eject at least one host regardless of the value. Default: 50.')
+        c.argument('circuit_breaker_consecutive_errors', type=int, options_list=['--cb-consecutive-error'], help='The number of consecutive server-side error responses (for HTTP traffic, 5xx responses; for TCP traffic, failure to respond PONG; etc.) before a consecutive 5xx ejection occurs. Default: 5.')
+        c.argument('circuit_breaker_interval', type=int, options_list=['--cb-interval'], help='The time interval in seconds between ejection analysis sweeps. This can result in both new ejections as well as hosts being returned to service. Default: 10.')
+        c.argument('circuit_breaker_max_ejection', type=int, options_list=['--cb-max-ejection'], help='The maximum % of container app replicas that can be ejected. Defaults to 50% but will eject at least one host regardless of the value. Default: 50.')
 
     with self.argument_context('containerapp service') as c:
         c.argument('service_name', options_list=['--name', '-n'], help="The service name.")
@@ -112,29 +112,29 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env certificate list') as c:
         c.argument('managed_certificates_only', options_list=['--managed-certificates-only', '-m'], help='List managed certificates only.')
         c.argument('private_key_certificates_only', options_list=['--private-key-certificates-only', '-p'], help='List private-key certificates only.')
-    
+
     with self.argument_context('containerapp env dapr-component resiliency') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('dapr_component_name', help="The Dapr component name.")
+        c.argument('dapr_component_name', help="The name of the existing Dapr Component.")
         c.argument('environment', options_list=['--environment'], help="The environment name.")
         c.argument('name', options_list=['--name', '-n'], help=f"The name of the Dapr Component Resiliency Policy. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH} characters.")
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a dapr component resiliency policy. All other parameters will be ignored.')
 
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Inbound HTTP Retry Policy') as c:
-        c.argument('in_http_retry_max', type=int, options_list=['--in-http-retry-max'], help='Specifies the allowed number of retries for the inbound policy. Default: 3.')
-        c.argument('in_http_retry_delay_in_milliseconds', type=int, options_list=['--in-http-retry-delay-in-milliseconds'], help='Specifies the base interval between retries for the inbound policy. Default: 1000.')
-        c.argument('in_http_retry_interval_in_milliseconds', type=int, options_list=['--in-http-retry-interval-in-milliseconds'], help='Specifies the maximum interval between retries for the inbound policy. Default: 10000.')
+        c.argument('in_http_retry_max', type=int, options_list=['--in-http-retry'], help='Specifies the allowed number of retries for the inbound policy. Default: 3.')
+        c.argument('in_http_retry_delay_in_milliseconds', type=int, options_list=['--in-http-delay'], help='Specifies the base interval between retries for the inbound policy. Default: 1000.')
+        c.argument('in_http_retry_interval_in_milliseconds', type=int, options_list=['--in-http-interval'], help='Specifies the maximum interval between retries for the inbound policy. Default: 10000.')
 
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Inbound Timeout Policy') as c:
-        c.argument('in_timeout_response_in_seconds', type=int, options_list=['--in-timeout-response-in-seconds'], help='Specifies the response timeout in seconds for the inbound policy. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries.')
-    
+        c.argument('in_timeout_response_in_seconds', type=int, options_list=['--in-timeout'], help='Specifies the response timeout in seconds for the inbound policy. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries.')
+
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound HTTP Retry Policy') as c:
-        c.argument('out_http_retry_max', type=int, options_list=['--out-http-retry-max'], help='Specifies the allowed number of retries for the outbound policy. Default: 3.')
-        c.argument('out_http_retry_delay_in_milliseconds', type=int, options_list=['--out-http-retry-delay-in-milliseconds'], help='Specifies the base interval between retries for the outbound policy. Default: 1000.')
-        c.argument('out_http_retry_interval_in_milliseconds', type=int, options_list=['--out-http-retry-interval-in-milliseconds'], help='Specifies the maximum interval between retries for the outbound policy. Default: 10000.')
+        c.argument('out_http_retry_max', type=int, options_list=['--out-http-retry'], help='Specifies the allowed number of retries for the outbound policy. Default: 3.')
+        c.argument('out_http_retry_delay_in_milliseconds', type=int, options_list=['--out-http-delay'], help='Specifies the base interval between retries for the outbound policy. Default: 1000.')
+        c.argument('out_http_retry_interval_in_milliseconds', type=int, options_list=['--out-http-interval'], help='Specifies the maximum interval between retries for the outbound policy. Default: 10000.')
 
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound Timeout Policy') as c:
-        c.argument('out_timeout_response_in_seconds', type=int, options_list=['--out-timeout-response-in-seconds'], help='Specifies the response timeout in seconds for the outbound policy. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries.')
+        c.argument('out_timeout_response_in_seconds', type=int, options_list=['--out-timeout'], help='Specifies the response timeout in seconds for the outbound policy. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries.')
 
     with self.argument_context('containerapp env dapr-component init') as c:
         c.argument('statestore', help="The state store component and dev service to create.")

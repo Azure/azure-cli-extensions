@@ -295,7 +295,7 @@ DaprComponentResiliency = {
     "properties": {
         "inboundPolicy": {
             "timeoutPolicy": {
-                "responseTimeoutInSeconds": None,            
+                "responseTimeoutInSeconds": None,
             },
             "httpRetryPolicy": {
                 "maxRetries": None,
@@ -307,7 +307,7 @@ DaprComponentResiliency = {
         },
         "outboundPolicy": {
             "timeoutPolicy": {
-                "responseTimeoutInSeconds": None,            
+                "responseTimeoutInSeconds": None,
             },
             "httpRetryPolicy": {
                 "maxRetries": None,

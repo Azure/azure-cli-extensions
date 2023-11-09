@@ -81,7 +81,7 @@ def process_loaded_yaml(yaml_containerapp):
 
 
 def process_containerapp_resiliency_yaml(containerapp_resiliency):
-    
+
     if type(containerapp_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
         raise ValidationError('Invalid YAML provided. Please provide a valid containerapps YAML spec.')
     if not containerapp_resiliency.get('properties'):
@@ -94,7 +94,7 @@ def process_containerapp_resiliency_yaml(containerapp_resiliency):
                          "tcpConnectionPool",
                          "httpConnectionPool"]
     for nested_property in nested_properties:
-        tmp = containerapp_resiliency.get(nested_property)
+        tmp = containerapp_resiliency['additionalProperties'].get(nested_property)
         if nested_property in containerapp_resiliency:
             containerapp_resiliency['properties'][nested_property] = tmp
             del containerapp_resiliency[nested_property]
@@ -112,7 +112,7 @@ def process_dapr_component_resiliency_yaml(dapr_component_resiliency):
     nested_properties = ["inboundPolicy",
                          "outboundPolicy"]
     for nested_property in nested_properties:
-        tmp = dapr_component_resiliency.get(nested_property)
+        tmp = dapr_component_resiliency['additionalProperties'].get(nested_property)
         if nested_property in dapr_component_resiliency:
             dapr_component_resiliency['properties'][nested_property] = tmp
             del dapr_component_resiliency[nested_property]

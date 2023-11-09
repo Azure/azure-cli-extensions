@@ -36,13 +36,13 @@ class ContainerappResiliencyTests(ScenarioTest):
         self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
 
         #Incorrect resource group (create)
-        self.cmd('containerapp resiliency create -g {} -n {} --container-app-name {} --circuit-breaker-interval 15 --circuit-breaker-consecutive-errors 5 --circuit-breaker-max-ejection 60'.format(bad_rg, resil_name, ca_name), expect_failure=True)
+        self.cmd('containerapp resiliency create -g {} -n {} --container-app-name {} --cb-interval 15 --cb-consecutive-error 5 --cb-max-ejection 60'.format(bad_rg, resil_name, ca_name), expect_failure=True)
 
         #Incorrect capp name (create)
-        self.cmd('containerapp resiliency create -g {} -n {} --container-app-name {} --circuit-breaker-interval 15 --circuit-breaker-consecutive-errors 5 --circuit-breaker-max-ejection 60'.format(resource_group, resil_name, bad_capp), expect_failure=True)
+        self.cmd('containerapp resiliency create -g {} -n {} --container-app-name {} --cb-interval 15 --cb-consecutive-error 5 --cb-max-ejection 60'.format(resource_group, resil_name, bad_capp), expect_failure=True)
 
         #Create app resiliency using flags
-        self.cmd('containerapp resiliency create -g {} -n {} --container-app-name {} --circuit-breaker-interval 15 --circuit-breaker-consecutive-errors 5 --circuit-breaker-max-ejection 60'.format(resource_group, resil_name, ca_name))
+        self.cmd('containerapp resiliency create -g {} -n {} --container-app-name {} --cb-interval 15 --cb-consecutive-error 5 --cb-max-ejection 60'.format(resource_group, resil_name, ca_name))
 
         #Show app resiliency
         self.cmd('containerapp resiliency show -g {} -n {} --container-app-name {}'.format(resource_group, resil_name, ca_name), checks=[
@@ -52,13 +52,13 @@ class ContainerappResiliencyTests(ScenarioTest):
         ])
 
         #Update app resiliency using flags
-        self.cmd('containerapp resiliency update -g {} -n {} --container-app-name {} --timeout-response-in-seconds 45 --timeout-connection-in-seconds 5'.format(resource_group, resil_name, ca_name))
+        self.cmd('containerapp resiliency update -g {} -n {} --container-app-name {} --timeout 45 --timeout-connect 5'.format(resource_group, resil_name, ca_name))
 
         #Incorrect resource group (update)
-        self.cmd('containerapp resiliency update -g {} -n {} --container-app-name {} --circuit-breaker-interval 15 --circuit-breaker-consecutive-errors 5 --circuit-breaker-max-ejection 60'.format(bad_rg, resil_name, ca_name), expect_failure=True)
+        self.cmd('containerapp resiliency update -g {} -n {} --container-app-name {} --cb-interval 15 --cb-consecutive-error 5 --cb-max-ejection 60'.format(bad_rg, resil_name, ca_name), expect_failure=True)
 
         #Incorrect capp name (update)
-        self.cmd('containerapp resiliency update -g {} -n {} --container-app-name {} --circuit-breaker-interval 15 --circuit-breaker-consecutive-errors 5 --circuit-breaker-max-ejection 60'.format(resource_group, resil_name, bad_capp), expect_failure=True)
+        self.cmd('containerapp resiliency update -g {} -n {} --container-app-name {} --cb-interval 15 --cb-consecutive-error 5 --cb-max-ejection 60'.format(resource_group, resil_name, bad_capp), expect_failure=True)
 
         self.cmd('containerapp resiliency show -g {} -n {} --container-app-name {}'.format(resource_group, resil_name, ca_name), checks=[
             JMESPathCheck("properties.circuitBreakerPolicy.consecutiveErrors", "5"),
@@ -182,16 +182,16 @@ class DaprComponentResiliencyTests(ScenarioTest):
         os.close(file_ref)
 
         #Incorrect resource group (create)
-        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout-response-in-seconds 15 --in-http-retry-max 5'.format(resil_name, dapr_comp_name, env_name, bad_rg), expect_failure=True)
+        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retry 5'.format(resil_name, dapr_comp_name, env_name, bad_rg), expect_failure=True)
 
         #Incorrect dapr component name (create)
-        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout-response-in-seconds 15 --in-http-retry-max 5'.format(resil_name, bad_comp, env_name, resource_group), expect_failure=True)
+        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retry 5'.format(resil_name, bad_comp, env_name, resource_group), expect_failure=True)
 
         #Incorrect environment name (create)
-        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout-response-in-seconds 15 --in-http-retry-max 5'.format(resil_name, dapr_comp_name, bad_env, resource_group), expect_failure=True)
+        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retry 5'.format(resil_name, dapr_comp_name, bad_env, resource_group), expect_failure=True)
 
         #Create dapr component resiliency using flags
-        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout-response-in-seconds 15 --in-http-retry-max 5'.format(resil_name, dapr_comp_name, env_name, resource_group))
+        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retry 5'.format(resil_name, dapr_comp_name, env_name, resource_group))
 
         #Show dapr component resiliency
         self.cmd('containerapp env dapr-component resiliency show -n {} --dapr-component-name {} --environment {} -g {}'.format(resil_name, dapr_comp_name, env_name, resource_group), checks=[
@@ -202,7 +202,7 @@ class DaprComponentResiliencyTests(ScenarioTest):
         ])
 
         #Update dapr component resiliency using flags
-        self.cmd('containerapp env dapr-component resiliency update -n {} --dapr-component-name {} --environment {} -g {} --out-timeout-response-in-seconds 45'.format(resil_name, dapr_comp_name, env_name, resource_group))
+        self.cmd('containerapp env dapr-component resiliency update -n {} --dapr-component-name {} --environment {} -g {} --out-timeout 45'.format(resil_name, dapr_comp_name, env_name, resource_group))
 
         self.cmd('containerapp env dapr-component resiliency show -n {} --dapr-component-name {} --environment {} -g {}'.format(resil_name, dapr_comp_name, env_name, resource_group), checks=[
             JMESPathCheck("properties.inboundPolicy.httpRetryPolicy.maxRetries", "5"),
@@ -213,13 +213,13 @@ class DaprComponentResiliencyTests(ScenarioTest):
         ])
 
         #Incorrect resource group (update)
-        self.cmd('containerapp env dapr-component resiliency update -n {} --dapr-component-name {} --environment {} -g {} --out-timeout-response-in-seconds 45'.format(resil_name, dapr_comp_name, env_name, bad_rg), expect_failure=True)
+        self.cmd('containerapp env dapr-component resiliency update -n {} --dapr-component-name {} --environment {} -g {} --out-timeout 45'.format(resil_name, dapr_comp_name, env_name, bad_rg), expect_failure=True)
 
         #Incorrect dapr component name (update)
-        self.cmd('containerapp env dapr-component resiliency update -n {} --dapr-component-name {} --environment {} -g {} --out-timeout-response-in-seconds 45'.format(resil_name, bad_comp, env_name, resource_group), expect_failure=True)
+        self.cmd('containerapp env dapr-component resiliency update -n {} --dapr-component-name {} --environment {} -g {} --out-timeout 45'.format(resil_name, bad_comp, env_name, resource_group), expect_failure=True)
 
         #Incorrect environment name (update)
-        self.cmd('containerapp env dapr-component resiliency update -n {} --dapr-component-name {} --environment {} -g {} --out-timeout-response-in-seconds 45'.format(resil_name, dapr_comp_name, bad_env, resource_group), expect_failure=True)
+        self.cmd('containerapp env dapr-component resiliency update -n {} --dapr-component-name {} --environment {} -g {} --out-timeout 45'.format(resil_name, dapr_comp_name, bad_env, resource_group), expect_failure=True)
 
         #List dapr component resiliency
         self.cmd('containerapp env dapr-component resiliency list --dapr-component-name {} --environment {} -g {}'.format(dapr_comp_name, env_name, resource_group), checks=[
@@ -254,19 +254,19 @@ class DaprComponentResiliencyTests(ScenarioTest):
         #Create dapr component resiliency using yaml
         resil_yaml_text = f"""
 outboundPolicy:
-    httpRetryPolicy:
-        maxRetries: 16
-        retryBackOff:
-            initialDelayInMilliseconds: 10
-            maxIntervalInMilliseconds: 100
-    timeoutPolicy:
-        responseTimeoutInSeconds: 17
+  httpRetryPolicy:
+    maxRetries: 16
+    retryBackOff:
+      initialDelayInMilliseconds: 10
+      maxIntervalInMilliseconds: 100
+  timeoutPolicy:
+    responseTimeoutInSeconds: 17
 inboundPolicy:
-    httpRetryPolicy:
-        maxRetries: 15
-        retryBackOff:
-            initialDelayInMilliseconds: 9
-            maxIntervalInMilliseconds: 99
+  httpRetryPolicy:
+    maxRetries: 15
+    retryBackOff:
+      initialDelayInMilliseconds: 9
+      maxIntervalInMilliseconds: 99
 """
         resil_file_name = f"{self._testMethodName}_daprcomp.yml"
 
@@ -285,11 +285,11 @@ inboundPolicy:
         #Update dapr component resiliency using yaml
         resil_yaml_text = f"""
 outboundPolicy:
-    httpRetryPolicy:
-        maxRetries: 25
-        retryBackOff:
-            initialDelayInMilliseconds: 25
-            maxIntervalInMilliseconds: 250
+  httpRetryPolicy:
+    maxRetries: 25
+    retryBackOff:
+      initialDelayInMilliseconds: 25
+      maxIntervalInMilliseconds: 250
 """
         resil_file_name = f"{self._testMethodName}_daprcomp.yml"
 

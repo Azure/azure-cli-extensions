@@ -42,7 +42,7 @@ helps['containerapp env dapr-component resiliency create'] = """
       text: |
           az containerapp env dapr-component resiliency create -g MyResourceGroup \\
             -n MyDaprResiliency --dapr-component-name MyDaprComponentName \\
-            --environment MyEnvironment --out-timeout-response-in-seconds 45
+            --environment MyEnvironment --out-timeout 45
     - name: Create resiliency policies for a dapr component using a yaml configuration.
       text: |
           az containerapp env dapr-component resiliency create -g MyResourceGroup \\
@@ -58,7 +58,7 @@ helps['containerapp env dapr-component resiliency update'] = """
       text: |
           az containerapp env dapr-component resiliency update -g MyResourceGroup \\
             -n MyDaprResiliency --dapr-component-name MyDaprComponentName \\
-            --environment MyEnvironment --in-timeout-response-in-seconds 45
+            --environment MyEnvironment --in-timeout 45
     - name: Update resiliency policies for a dapr component using a yaml configuration.
       text: |
           az containerapp env dapr-component resiliency update -g MyResourceGroup \\
@@ -287,7 +287,7 @@ helps['containerapp resiliency create'] = """
       text: |
           az containerapp resiliency create -g MyResourceGroup \\
             -n MyResiliencyName --container-app-name MyContainerApp \\
-            --timeout-response-in-seconds 15 --timeout-connection-in-seconds 5
+            --timeout 15 --timeout-connect 5
     - name: Create resiliency policies using a yaml configuration.
       text: |
           az containerapp resiliency create -g MyResourceGroup \\
@@ -303,7 +303,7 @@ helps['containerapp resiliency update'] = """
       text: |
           az containerapp resiliency update -g MyResourceGroup \\
             -n MyResiliencyName --container-app-name MyContainerApp \\
-            --tcp-connection-pool-max-connections 1024
+            --tcp-connections 1024
     - name: Update resiliency policies using a yaml configuration.
       text: |
           az containerapp resiliency update -g MyResourceGroup \\

@@ -18,14 +18,13 @@ from knack.log import get_logger
 
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._utils import (
-    clean_null_values, validate_container_app_name, AppType, safe_get, 
-    _convert_object_from_snake_to_camel_case, _object_to_dict, 
-    _remove_additional_attributes, _remove_readonly_attributes)
+    clean_null_values, safe_get, _convert_object_from_snake_to_camel_case,
+    _object_to_dict, _remove_additional_attributes, _remove_readonly_attributes)
 from ._clients import ContainerAppsResiliencyPreviewClient
 from ._client_factory import handle_raw_exception
 
 from ._constants import (DEFAULT_INTERVAL, DEFAULT_MAX_EJECTION, DEFAULT_HTTP2_MAX_REQ, DEFAULT_RESPONSE_TIMEOUT,
-                         DEFAULT_TCP_MAX_CONNECT_ATTEMPTS, DEFAULT_CONNECTION_TIMEOUT, DEFAULT_HTTP_RETRY_MAX,
+                         DEFAULT_CONNECTION_TIMEOUT, DEFAULT_HTTP_RETRY_MAX, HARD_EJECTION_THRESHOLD,
                          DEFAULT_HTTP1_MAX_PENDING_REQ, DEFAULT_CONSECUTIVE_ERRORS, DEFAULT_HTTP_RETRY_DELAY_IN_MILLISECONDS,
                          DEFAULT_HTTP_RETRY_INTERVAL_IN_MILLISECONDS, DEFAULT_HTTP_RETRY_ERRORS)
 
@@ -75,19 +74,19 @@ class ContainerAppResiliencyDecorator(BaseResource):
 
     def get_argument_timeout_connection_in_seconds(self):
         return self.get_param("timeout_connection_in_seconds")
-    
+
     def get_argument_http_retry_max(self):
         return self.get_param("http_retry_max")
-    
+
     def get_argument_http_retry_delay_in_milliseconds(self):
         return self.get_param("http_retry_delay_in_milliseconds")
-    
+
     def get_argument_http_retry_interval_in_milliseconds(self):
         return self.get_param("http_retry_interval_in_milliseconds")
-    
+
     def get_argument_http_retry_status_codes(self):
         return self.get_param("http_retry_status_codes")
-    
+
     def get_argument_http_retry_errors(self):
         return self.get_param("http_retry_errors")
 
@@ -96,24 +95,24 @@ class ContainerAppResiliencyDecorator(BaseResource):
 
     def get_argument_default(self):
         return self.get_param("default")
-    
+
     def set_argument_name(self, name):
         self.set_param("name", name)
 
     def set_argument_container_app_name(self, container_app_name):
         self.set_param("container_app_name", container_app_name)
-    
+
     def validate_positive_argument(self, argument_name):
         argument_value = getattr(self, f"get_argument_{argument_name}")()
         if argument_value is not None and argument_value < 1:
             raise ValidationError(f"--{argument_name} must be greater than 0")
-    
+
     def validate_max_ejection(self):
         max_ejection = self.get_argument_circuit_breaker_max_ejection()
         if max_ejection is not None and (max_ejection < 1 or max_ejection > 100):
-            raise ValidationError(f"--circuit-breaker-max-ejection must be between 1 and 100")
-    
-    def validate_arguments(self):      
+            raise ValidationError(f"--cb-max-ejection must be between 1 and 100")
+
+    def validate_arguments(self):
         self.validate_positive_argument("circuit_breaker_consecutive_errors")
         self.validate_positive_argument("circuit_breaker_interval")
         self.validate_max_ejection()
@@ -127,7 +126,6 @@ class ContainerAppResiliencyDecorator(BaseResource):
         self.validate_positive_argument("http_retry_delay_in_milliseconds")
         self.validate_positive_argument("http_retry_interval_in_milliseconds")
 
-    
     def set_up_containerapp_resiliency_yaml(self, file_name):
         containerapp_def = ContainerAppsResiliencyModel
         if self.get_argument_tcp_retry_max_connect_attempts() or self.get_argument_circuit_breaker_consecutive_errors()\
@@ -148,13 +146,13 @@ class ContainerAppResiliencyDecorator(BaseResource):
 
         if yaml_containerapps_resiliency.get('type') and yaml_containerapps_resiliency.get('type').lower() != "microsoft.app/containerapps/resiliencypolicies":
             raise ValidationError('Containerapp resiliency type must be \"Microsoft.App/containerApps/resiliencyPolicies\"')
-        
+
         if yaml_containerapps_resiliency.get('name') and yaml_containerapps_resiliency.get('name').lower() != self.get_argument_name().lower():
             logger.warning(
                 'The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(
                     yaml_containerapps_resiliency.get('name'), self.get_argument_name()))
             self.set_argument_name(yaml_containerapps_resiliency.get('name'))
-        
+
         if yaml_containerapps_resiliency.get('containerAppName') and yaml_containerapps_resiliency.get('containerAppName').lower() != self.get_argument_container_app_name().lower():
             logger.warning(
                 'The containerapp name provided in the --yaml file "{}" does not match the one provided in the --container-app-name flag "{}". The one provided in the --yaml file will be used.'.format(
@@ -165,7 +163,7 @@ class ContainerAppResiliencyDecorator(BaseResource):
         try:
             deserializer = create_deserializer(self.models)
 
-            containerapp_def = deserializer('ContainerAppsResiliency', yaml_containerapps_resiliency)
+            containerapp_def = deserializer('AppResiliency', yaml_containerapps_resiliency)
         except DeserializationError as ex:
             raise ValidationError('Invalid YAML provided. Please supply a valid YAML spec.') from ex
 
@@ -250,16 +248,16 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
         if self.get_argument_yaml():
             self.containerapp_resiliency_def = self.set_up_containerapp_resiliency_yaml(file_name=self.get_argument_yaml())
             return
-        
+
         if self.get_argument_default():
             return self.set_up_default_containerapp_resiliency()
 
         http_retry_def = HttpRetryPolicyModel
-        if  self.get_argument_http_retry_max() is not None or \
-            self.get_argument_http_retry_delay_in_milliseconds() is not None or \
-            self.get_argument_http_retry_interval_in_milliseconds() is not None or \
-            self.get_argument_http_retry_status_codes() is not None or \
-            self.get_argument_http_retry_errors() is not None:
+        if self.get_argument_http_retry_max() is not None or \
+                self.get_argument_http_retry_delay_in_milliseconds() is not None or \
+                self.get_argument_http_retry_interval_in_milliseconds() is not None or \
+                self.get_argument_http_retry_status_codes() is not None or \
+                self.get_argument_http_retry_errors() is not None:
             http_retry_def["maxRetries"] = self.get_argument_http_retry_max() if self.get_argument_http_retry_max() is not None else DEFAULT_HTTP_RETRY_MAX
             http_retry_def["retryBackOff"] = {
                 "initialDelayInMilliseconds": self.get_argument_http_retry_delay_in_milliseconds() if self.get_argument_http_retry_delay_in_milliseconds() is not None else DEFAULT_HTTP_RETRY_DELAY_IN_MILLISECONDS,
@@ -309,7 +307,7 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
 
         if self.containerapp_resiliency_def is None or self.containerapp_resiliency_def == {}:
             self.containerapp_resiliency_def["properties"] = {}
-    
+
     def set_up_default_containerapp_resiliency(self):
         if self.get_argument_tcp_retry_max_connect_attempts() or self.get_argument_circuit_breaker_consecutive_errors()\
                 or self.get_argument_circuit_breaker_interval() or self.get_argument_circuit_breaker_max_ejection() or \
@@ -320,32 +318,26 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
                 or self.get_argument_http_retry_status_codes() or self.get_argument_http_retry_errors():
             not self.get_argument_disable_warnings() and logger.warning(
                 'Additional flags were passed along with --default. These flags will be ignored, and system defaults will be applied.')
-        
+
         timeout_def = TimeoutPolicyModel
         timeout_def["responseTimeoutInSeconds"] = DEFAULT_RESPONSE_TIMEOUT
         timeout_def["connectionTimeoutInSeconds"] = DEFAULT_CONNECTION_TIMEOUT
         self.containerapp_resiliency_def["properties"]["timeoutPolicy"] = timeout_def
 
-        tcpretry_def = TcpRetryPolicyModel
-        tcpretry_def["maxConnectAttempts"] = DEFAULT_TCP_MAX_CONNECT_ATTEMPTS
-        self.containerapp_resiliency_def["properties"]["tcpRetryPolicy"] = tcpretry_def
-
         circuitbreaker_def = CircuitBreakerPolicyModel
         circuitbreaker_def["consecutiveErrors"] = DEFAULT_CONSECUTIVE_ERRORS
         circuitbreaker_def["intervalInSeconds"] = DEFAULT_INTERVAL
-        circuitbreaker_def["maxEjectionPercent"] = 100
+        circuitbreaker_def["maxEjectionPercent"] = HARD_EJECTION_THRESHOLD
         self.containerapp_resiliency_def["properties"]["circuitBreakerPolicy"] = circuitbreaker_def
 
         http_retry_policy = {
-            "maxRetries": 3,
+            "maxRetries": DEFAULT_HTTP_RETRY_MAX,
             "retryBackOff": {
-                "initialDelayInMilliseconds": 1000,
-                "maxIntervalInMilliseconds": 10000
+                "initialDelayInMilliseconds": DEFAULT_HTTP_RETRY_DELAY_IN_MILLISECONDS,
+                "maxIntervalInMilliseconds": DEFAULT_HTTP_RETRY_INTERVAL_IN_MILLISECONDS
             },
             "matches": {
-                "errors": [
-                    "5xx"
-                ]
+                "errors": DEFAULT_HTTP_RETRY_ERRORS
             }
         }
         self.containerapp_resiliency_def["properties"]["httpRetryPolicy"] = http_retry_policy
@@ -375,7 +367,7 @@ class ContainerAppResiliencyPreviewListDecorator(ContainerAppResiliencyDecorator
                                  container_app_name=self.get_argument_container_app_name())
             r = clean_null_values(r)
             return r
-        except Exception as e: 
+        except Exception as e:
             handle_raw_exception(e)
 
 
@@ -401,24 +393,24 @@ class ContainerAppResiliencyPreviewUpdateDecorator(ContainerAppResiliencyDecorat
         if self.get_argument_yaml():
             self.containerapp_resiliency_update_def = self.set_up_containerapp_resiliency_yaml(file_name=self.get_argument_yaml())
             return
-        
+
         containerapps_resiliency_def = None
 
         try:
-            containerapps_resiliency_def = ContainerAppsResiliencyPreviewClient.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), 
-                                                                              name=self.get_argument_name(), container_app_name=self.get_argument_container_app_name())
+            containerapps_resiliency_def = ContainerAppsResiliencyPreviewClient.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
+                                                                                     name=self.get_argument_name(), container_app_name=self.get_argument_container_app_name())
         except:
             pass
 
         if not containerapps_resiliency_def:
             raise ResourceNotFoundError("The containerapp resiliency policy '{}' does not exist".format(self.get_argument_name()))
-        
+
         http_retry_def = HttpRetryPolicyModel
-        if  self.get_argument_http_retry_max() is not None or \
-            self.get_argument_http_retry_delay_in_milliseconds() is not None or \
-            self.get_argument_http_retry_interval_in_milliseconds() is not None or \
-            self.get_argument_http_retry_status_codes() is not None or \
-            self.get_argument_http_retry_errors() is not None:
+        if (self.get_argument_http_retry_max() is not None or
+                self.get_argument_http_retry_delay_in_milliseconds() is not None or
+                self.get_argument_http_retry_interval_in_milliseconds() is not None or
+                self.get_argument_http_retry_status_codes() is not None or
+                self.get_argument_http_retry_errors() is not None):
             http_retry_def["maxRetries"] = self.get_argument_http_retry_max() if self.get_argument_http_retry_max() is not None else safe_get(containerapps_resiliency_def, 'properties', 'httpRetryPolicy', 'maxRetries', default=DEFAULT_HTTP_RETRY_MAX)
             http_retry_def["retryBackOff"] = {
                 "initialDelayInMilliseconds": self.get_argument_http_retry_delay_in_milliseconds() if self.get_argument_http_retry_delay_in_milliseconds() is not None else safe_get(containerapps_resiliency_def, 'properties', 'httpRetryPolicy', 'retryBackOff', 'initialDelayInMilliseconds', default=DEFAULT_HTTP_RETRY_DELAY_IN_MILLISECONDS),
@@ -470,14 +462,14 @@ class ContainerAppResiliencyPreviewUpdateDecorator(ContainerAppResiliencyDecorat
         try:
             if self.get_argument_yaml():
                 r = self.client.create_or_update(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                      name=self.get_argument_name(), container_app_name=self.get_argument_container_app_name(),
-                                      container_app_resiliency_envelope=self.containerapp_resiliency_update_def,
-                                      no_wait=self.get_argument_no_wait())
+                                                 name=self.get_argument_name(), container_app_name=self.get_argument_container_app_name(),
+                                                 container_app_resiliency_envelope=self.containerapp_resiliency_update_def,
+                                                 no_wait=self.get_argument_no_wait())
             else:
                 r = self.client.update(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                      name=self.get_argument_name(), container_app_name=self.get_argument_container_app_name(),
-                                      container_app_resiliency_envelope=self.containerapp_resiliency_update_def,
-                                      no_wait=self.get_argument_no_wait())
+                                       name=self.get_argument_name(), container_app_name=self.get_argument_container_app_name(),
+                                       container_app_resiliency_envelope=self.containerapp_resiliency_update_def,
+                                       no_wait=self.get_argument_no_wait())
             r = clean_null_values(r)
             return r
         except Exception as e:

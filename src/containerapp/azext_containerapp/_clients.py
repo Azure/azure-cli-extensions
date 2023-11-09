@@ -73,12 +73,13 @@ class ContainerAppsResiliencyPreviewClient():
             poll_status(cmd, operation_url)
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/resiliencyPolicies/{}?api-version={}"
             request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            container_app_name,
-            name,
-            cls.api_version)
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                container_app_name,
+                name,
+                cls.api_version)
+
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
@@ -150,7 +151,7 @@ class ContainerAppsResiliencyPreviewClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
-    
+
     @classmethod
     def list(cls, cmd, resource_group_name, container_app_name):
         policy_list = []
@@ -199,15 +200,15 @@ class DaprComponentResiliencyPreviewClient():
             poll_status(cmd, operation_url)
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/daprComponents/{}/resiliencyPolicies/{}?api-version={}"
             request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            environment_name,
-            dapr_component_name,
-            name,
-            cls.api_version)
-        
-        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                environment_name,
+                dapr_component_name,
+                name,
+                cls.api_version)
+
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
 
@@ -217,13 +218,13 @@ class DaprComponentResiliencyPreviewClient():
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/daprComponents/{}/resiliencyPolicies/{}?api-version={}"
         request_url = url_fmt.format(
-        management_hostname.strip('/'),
-        sub_id,
-        resource_group_name,
-        environment_name,
-        dapr_component_name,
-        name,
-        cls.api_version)
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            dapr_component_name,
+            name,
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
@@ -241,18 +242,18 @@ class DaprComponentResiliencyPreviewClient():
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/daprComponents/{}/resiliencyPolicies/{}?api-version={}"
         request_url = url_fmt.format(
-        management_hostname.strip('/'),
-        sub_id,
-        resource_group_name,
-        environment_name,
-        dapr_component_name,
-        name,
-        cls.api_version)
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            dapr_component_name,
+            name,
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
-    
+
     @classmethod
     def list(cls, cmd, resource_group_name, dapr_component_name, environment_name):
         policy_list = []
@@ -260,12 +261,12 @@ class DaprComponentResiliencyPreviewClient():
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/daprComponents/{}/resiliencyPolicies?api-version={}"
         request_url = url_fmt.format(
-        management_hostname.strip('/'),
-        sub_id,
-        resource_group_name,
-        environment_name,
-        dapr_component_name,
-        cls.api_version)
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            dapr_component_name,
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         r = r.json()
