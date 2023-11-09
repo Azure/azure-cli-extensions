@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the properties of the provided virtual machine, or update the tags associated with the virtual machine. Properties and tag updates can be done independently.
@@ -22,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -184,7 +185,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -218,7 +219,7 @@ class Update(AAZCommand):
 
             vm_image_repository_credentials = _builder.get(".properties.vmImageRepositoryCredentials")
             if vm_image_repository_credentials is not None:
-                vm_image_repository_credentials.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"required": True, "secret": True}})
+                vm_image_repository_credentials.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
                 vm_image_repository_credentials.set_prop("registryUrl", AAZStrType, ".registry_url", typ_kwargs={"flags": {"required": True}})
                 vm_image_repository_credentials.set_prop("username", AAZStrType, ".username", typ_kwargs={"flags": {"required": True}})
 
@@ -500,7 +501,7 @@ class _UpdateHelper:
 
         vm_image_repository_credentials = _schema_virtual_machine_read.properties.vm_image_repository_credentials
         vm_image_repository_credentials.password = AAZStrType(
-            flags={"required": True, "secret": True},
+            flags={"secret": True},
         )
         vm_image_repository_credentials.registry_url = AAZStrType(
             serialized_name="registryUrl",

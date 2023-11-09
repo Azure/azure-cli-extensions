@@ -1308,13 +1308,12 @@ properties:
     def test_containerapp_replica_commands(self, resource_group):
         self.cmd(f'configure --defaults location={TEST_LOCATION}')
 
-        env_name = self.create_random_name(prefix='env', length=24)
         app_name = self.create_random_name(prefix='aca', length=24)
         replica_count = 3
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'containerapp create -g {resource_group} -n {app_name} --environment {env_name} --ingress external --target-port 80 --min-replicas {replica_count}').get_output_in_json()
+        self.cmd(f'containerapp create -g {resource_group} -n {app_name} --environment {env} --ingress external --target-port 80 --min-replicas {replica_count}').get_output_in_json()
 
         count = self.cmd(f"containerapp replica count -g {resource_group} -n {app_name}").output
         self.assertEqual(int(count), replica_count)
@@ -1324,7 +1323,6 @@ properties:
         ])
 
         self.cmd(f'containerapp delete -g {resource_group} -n {app_name} --yes')
-        self.cmd(f'containerapp env delete -n {env_name} -g {resource_group} --yes')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")

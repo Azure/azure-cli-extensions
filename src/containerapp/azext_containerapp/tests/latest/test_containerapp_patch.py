@@ -14,7 +14,11 @@ from azext_containerapp import _utils
 from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_up
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class ContainerAppPatchTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @live_only()
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location = "eastus2")

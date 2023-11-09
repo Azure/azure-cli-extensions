@@ -78,7 +78,8 @@ from ._constants import (CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
-                         DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
+                         DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
+                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST)
 
 logger = get_logger(__name__)
 
@@ -436,6 +437,7 @@ def create_managed_environment(cmd,
                                certificate_password=None,
                                enable_workload_profiles=True,
                                mtls_enabled=None,
+                               enable_dedicated_gpu=False,
                                no_wait=False):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
@@ -858,12 +860,13 @@ def containerapp_up(cmd,
             _get_registry_from_app(app, source)  # if the app exists, get the registry
         _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
-    app.create_acr_if_needed()
-
+    used_default_container_registry = False
     if source:
-        app.run_acr_build(dockerfile, source, quiet=False, build_from_source=not _has_dockerfile(source, dockerfile))
+        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=True, registry_server=registry_server)
+    else:
+        app.create_acr_if_needed()
 
-    app.create(no_registry=bool(repo))
+    app.create(no_registry=bool(repo or used_default_container_registry))
     if repo:
         _create_github_action(app, env, service_principal_client_id, service_principal_client_secret,
                               service_principal_tenant_id, branch, token, repo, context_path)
@@ -1170,7 +1173,7 @@ def _get_patchable_check_result(inspect_result, oryx_run_images):
         return result
 
     # Define the MCR repositories that are supported for patching
-    mcr_repos = ["oryx/dotnetcore", "oryx/node", "oryx/python"]
+    mcr_repos = ["oryx/dotnetcore", "oryx/node", "oryx/python", "azure-buildpacks/java"]
 
     # Iterate over each base run image found to see if a patch can be applied
     for run_images_prop in run_images_props:
@@ -1587,3 +1590,40 @@ def connected_env_remove_storage(cmd, storage_name, name, resource_group_name):
         return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name)
     except CLIError as e:
         handle_raw_exception(e)
+
+
+def init_dapr_components(cmd, resource_group_name, environment_name, statestore="redis", pubsub="redis"):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if statestore not in DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST:
+        raise ValidationError(
+            f"Statestore {statestore} is not supported. Supported statestores are {', '.join(DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST)}."
+        )
+    if pubsub not in DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST:
+        raise ValidationError(
+            f"Pubsub {pubsub} is not supported. Supported pubsubs are {', '.join(DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST)}."
+        )
+
+    from ._dapr_utils import DaprUtils
+
+    statestore_metadata = {"actorStateStore": "true"}
+    statestore_service_id, statestore_component_id = DaprUtils.create_dapr_component_with_service(
+        cmd, "state", statestore, resource_group_name, environment_name, component_metadata=statestore_metadata)
+
+    if statestore == pubsub:
+        # For cases where statestore and pubsub are the same, we don't need to create another service.
+        # E.g. Redis can be used for both statestore and pubsub.
+        pubsub_service_id, pubsub_component_id = DaprUtils.create_dapr_component_with_service(
+            cmd, "pubsub", pubsub, resource_group_name, environment_name, service_id=statestore_service_id)
+    else:
+        pubsub_service_id, pubsub_component_id = DaprUtils.create_dapr_component_with_service(
+            cmd, "pubsub", pubsub, resource_group_name, environment_name)
+
+    return {
+        "message": "Operation successful.",
+        "resources": {
+            # Remove duplicates for services like Redis, which can be used for both statestore and pubsub
+            "devServices": list(set([statestore_service_id, pubsub_service_id])),
+            "daprComponents": [statestore_component_id, pubsub_component_id]
+        }
+    }

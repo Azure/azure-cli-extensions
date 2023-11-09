@@ -392,6 +392,7 @@ def get_oryx_run_image_tags() -> dict:
     result.update(_get_oryx_run_image_tags("https://mcr.microsoft.com/v2/oryx/dotnetcore/tags/list", parse_oryx_run_image))
     result.update(_get_oryx_run_image_tags("https://mcr.microsoft.com/v2/oryx/node/tags/list", parse_oryx_run_image))
     result.update(_get_oryx_run_image_tags("https://mcr.microsoft.com/v2/oryx/python/tags/list", parse_oryx_run_image))
+    result.update(_get_oryx_run_image_tags("https://mcr.microsoft.com/v2/azure-buildpacks/java/tags/list", parse_oryx_run_image))
 
     # Return the merged result of all Oryx-supported platform tags
     return result
@@ -439,10 +440,11 @@ def _get_oryx_run_image_version_key(tag_obj, framework):
 def parse_oryx_run_image(image_repository, tag) -> OryxRunImageTagProperty:
     # Example Oryx run image: mcr.microsoft.com/oryx/<platform>:<version>-<os>
     # Note: image_repository should NOT include the "mcr.microsoft.com/" prefix; it should ONLY be the repository
-    re_matches = re.findall(r"oryx\/([A-Za-z]*):([0-9.]*)-([A-Za-z-]*)", "{}:{}".format(image_repository, tag))
-    if len(re_matches) == 0:
+    re_matches = re.findall(r"(oryx|azure-buildpacks)\/([A-Za-z]*):([0-9.]*)-([A-Za-z-]*)",
+                            "{}:{}".format(image_repository, tag))
+    if len(re_matches) == 0 or len(re_matches[0]) < 4:
         return None
-    return dict(fullTag=tag, framework=re_matches[0][0], version=SemVer.parse(re_matches[0][1]), os=re_matches[0][2], architectures=None, support="lts")
+    return dict(fullTag=tag, framework=re_matches[0][1], version=SemVer.parse(re_matches[0][2]), os=re_matches[0][3], architectures=None, support="lts")
 
 
 def get_custom_location(cmd, custom_location_id):
@@ -493,3 +495,16 @@ def validate_custom_location(cmd, custom_location=None):
     if not extension_existing:
         raise ValidationError('There is no Microsoft.App.Environment extension found associated with custom location {}'.format(custom_location))
     return r.location
+
+
+def log_in_file(log_text, opened_file, no_print=False):
+    if not no_print:
+        print(log_text)
+
+    cleaned_log_text = remove_ansi_characters(log_text.strip())
+    opened_file.write(f"{cleaned_log_text}\n")
+
+
+def remove_ansi_characters(text):
+    regular_expression = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+    return regular_expression.sub("", text)

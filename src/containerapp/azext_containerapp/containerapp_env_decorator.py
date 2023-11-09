@@ -53,7 +53,19 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                     raise ValidationError(f"Existing environment {self.get_argument_name()} cannot enable workload profiles. If you want to use Consumption and Dedicated environment, please create a new one.")
                 return
 
-            self.managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(self.cmd, self.get_argument_location())
+            workload_profiles = get_default_workload_profiles(self.cmd, self.get_argument_location())
+            if self.get_argument_enable_dedicated_gpu():
+                gpu_profile = {
+                    "workloadProfileType": "NC24-A100",
+                    "name": "gpu",
+                    "minimumCount": 0,
+                    "maximumCount": 1
+                }
+                workload_profiles.append(gpu_profile)
+            self.managed_env_def["properties"]["workloadProfiles"] = workload_profiles
 
     def get_argument_enable_workload_profiles(self):
         return self.get_param("enable_workload_profiles")
+
+    def get_argument_enable_dedicated_gpu(self):
+        return self.get_param("enable_dedicated_gpu")

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -45,12 +45,22 @@ class Wait(AAZWaitCommand):
             help="Name of the pool.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
             help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -126,7 +136,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -189,6 +199,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="devBoxDefinitionName",
                 flags={"required": True},
             )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
             properties.health_status = AAZStrType(
                 serialized_name="healthStatus",
             )
@@ -204,6 +217,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="localAdministrator",
                 flags={"required": True},
             )
+            properties.managed_virtual_network_regions = AAZListType(
+                serialized_name="managedVirtualNetworkRegions",
+            )
             properties.network_connection_name = AAZStrType(
                 serialized_name="networkConnectionName",
                 flags={"required": True},
@@ -212,8 +228,14 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.single_sign_on_status = AAZStrType(
+                serialized_name="singleSignOnStatus",
+            )
             properties.stop_on_disconnect = AAZObjectType(
                 serialized_name="stopOnDisconnect",
+            )
+            properties.virtual_network_type = AAZStrType(
+                serialized_name="virtualNetworkType",
             )
 
             health_status_details = cls._schema_on_200.properties.health_status_details
@@ -226,6 +248,9 @@ class Wait(AAZWaitCommand):
             _element.message = AAZStrType(
                 flags={"read_only": True},
             )
+
+            managed_virtual_network_regions = cls._schema_on_200.properties.managed_virtual_network_regions
+            managed_virtual_network_regions.Element = AAZStrType()
 
             stop_on_disconnect = cls._schema_on_200.properties.stop_on_disconnect
             stop_on_disconnect.grace_period_minutes = AAZIntType(

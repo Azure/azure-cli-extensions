@@ -13,7 +13,7 @@ from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from ._utils import get_portal_uri
-from .vendored_sdks.appplatform.v2023_09_01_preview import models
+from .vendored_sdks.appplatform.v2023_11_01_preview import models
 
 logger = get_logger(__name__)
 DEFAULT_APM_NAME = "default"
