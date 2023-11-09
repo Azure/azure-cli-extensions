@@ -47,7 +47,7 @@ from msrest.exceptions import DeserializationError
 
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
-from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator
+from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from ._client_factory import handle_raw_exception
@@ -434,7 +434,8 @@ def create_managed_environment(cmd,
                                enable_workload_profiles=True,
                                mtls_enabled=None,
                                enable_dedicated_gpu=False,
-                               no_wait=False):
+                               no_wait=False,
+                               logs_dynamic_json_columns=False):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -468,9 +469,10 @@ def update_managed_environment(cmd,
                                min_nodes=None,
                                max_nodes=None,
                                mtls_enabled=None,
-                               no_wait=False):
+                               no_wait=False,
+                               logs_dynamic_json_columns=None):
     raw_parameters = locals()
-    containerapp_env_update_decorator = ContainerAppEnvUpdateDecorator(
+    containerapp_env_update_decorator = ContainerappEnvPreviewUpdateDecorator(
         cmd=cmd,
         client=ManagedEnvironmentPreviewClient,
         raw_parameters=raw_parameters,

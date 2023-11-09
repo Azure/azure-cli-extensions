@@ -9,6 +9,7 @@ upcoming
 * 'az containerapp env dapr-component init': support initializing Dapr components and dev services for an environment
 * 'az containerapp patch apply': support image patching for java application
 * Upgrade api-version to 2023-08-01-preview
+* 'az container app create/update': support --logs-dynamic-json-columns/-j to configure whether to parse json string log into dynamic json columns
 
 0.3.43
 ++++++
