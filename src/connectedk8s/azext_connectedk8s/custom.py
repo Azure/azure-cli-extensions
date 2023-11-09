@@ -1351,7 +1351,7 @@ def get_all_helm_values(release_namespace, kube_config, kube_context, helm_clien
 
 
 def enable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
-                    azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, cl_oid=None):
+                    azrbac_skip_authz_check=None, cl_oid=None):
     logger.warning("This operation might take a while...\n")
 
     # Validate custom token operation
