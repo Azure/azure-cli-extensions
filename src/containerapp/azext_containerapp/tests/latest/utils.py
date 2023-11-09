@@ -69,15 +69,6 @@ def create_and_verify_containerapp_up(
            env_name = test_cls.create_random_name(prefix='env', length=24)
            test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
 
-        if requires_acr_prerequisite:
-            # Create ACR
-            registry_name = test_cls.create_random_name(prefix='containerapp', length=24)
-            acr = test_cls.cmd('acr create -g {} -n {} --sku Basic --admin-enabled'.format(resource_group, registry_name)).get_output_in_json()
-            registry_server = acr["loginServer"]
-            acr_credentials = test_cls.cmd('acr credential show -g {} -n {}'.format(resource_group, registry_name)).get_output_in_json()
-            registry_user = acr_credentials["username"]
-            registry_pass = acr_credentials["passwords"][0]["value"]
-
         if app_name is None:
             # Generate a name for the Container App
             app_name = test_cls.create_random_name(prefix='containerapp', length=24)
@@ -96,7 +87,14 @@ def create_and_verify_containerapp_up(
             up_cmd += f" --target-port {target_port}"
 
         if requires_acr_prerequisite:
-            up_cmd += f" --registry-server {registry_server}"
+            # Create ACR
+            registry_name = test_cls.create_random_name(prefix='containerapp', length=24)
+            acr = test_cls.cmd('acr create -g {} -n {} --sku Basic --admin-enabled'.format(resource_group, registry_name)).get_output_in_json()
+            registry_server = acr["loginServer"]
+            acr_credentials = test_cls.cmd('acr credential show -g {} -n {}'.format(resource_group, registry_name)).get_output_in_json()
+            registry_user = acr_credentials["username"]
+            registry_pass = acr_credentials["passwords"][0]["value"]
+            up_cmd += f" --registry-server {registry_server} --registry-username {registry_user} --registry-password {registry_pass}"
 
         # Execute the 'az containerapp up' command
         test_cls.cmd(up_cmd)

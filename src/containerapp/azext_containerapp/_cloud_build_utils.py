@@ -191,16 +191,16 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
                 log_line = remove_ansi_characters(line.decode("utf-8"))
                 log_in_file(log_line, logs_file, no_print=True)
                 if "Kubernetes error happened" in log_line:
-                    if logs_stream_retries == maximum_logs_stream_retries:
+                    if logs_stream_retries >= maximum_logs_stream_retries:
                         # We're getting an error when streaming logs and no retries remaining.
                         raise CloudBuildError(log_line)
                     # Wait for a bit, and then break to try again. Using "logs_stream_retries" as the number of seconds to wait is a primitive exponential retry.
                     time.sleep(logs_stream_retries)
                     break
                 count_lines_check -= 1
-                if count_lines_check == 0:
+                if count_lines_check <= 0:
                     break
-            if count_lines_check == 0:
+            if count_lines_check <= 0:
                 # We checked the set number of lines and logs stream without error. Let's continue.
                 break
         done_spinner = True
