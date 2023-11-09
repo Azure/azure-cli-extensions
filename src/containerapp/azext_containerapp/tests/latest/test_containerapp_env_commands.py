@@ -54,26 +54,26 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(location="australiaeast")
     def test_containerapp_env_la_dynamic_json(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
         default_env_name = self.create_random_name(prefix='containerapp-env', length=24)
-        self.cmd('containerapp env create -g {} -n {} -j'.format(resource_group, default_env_name),checks=[
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics -j'.format(resource_group, default_env_name, logs_workspace_id, logs_workspace_key), checks=[
             JMESPathCheck('name', default_env_name),
             JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
             JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', True),
         ])
 
         default_env_name2 = self.create_random_name(prefix='containerapp-env', length=24)
-        self.cmd('containerapp env create -g {} -n {} -j false'.format(resource_group, default_env_name2),checks=[
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} -j false'.format(resource_group, default_env_name2, logs_workspace_id, logs_workspace_key),checks=[
             JMESPathCheck('name', default_env_name2),
             JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
             JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', False),
         ])
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
-        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
-
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
-        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
