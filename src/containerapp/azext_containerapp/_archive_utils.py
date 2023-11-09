@@ -186,6 +186,10 @@ def _load_dockerignore_file(source_location, original_docker_file_name):
 
 
 def _archive_file_recursively(tar, name, arcname, parent_ignored, parent_matching_rule_index, ignore_check):
+    if os.path.isfile(name) and (arcname == "" or arcname == None):
+        # If the file is in the root dir, use its name as the arcname
+        arcname = os.path.basename(name)
+
     # create a TarInfo object from the file
     tarinfo = tar.gettarinfo(name, arcname)
 
