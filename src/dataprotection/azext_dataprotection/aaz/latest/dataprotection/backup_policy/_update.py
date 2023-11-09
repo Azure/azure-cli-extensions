@@ -54,7 +54,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.vault_name = AAZStrArg(
-            options=["--vault-name"],
+            options=["-v", "--vault-name"],
             help="The name of the backup vault.",
             required=True,
             id_part="name",

@@ -42,7 +42,7 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType, ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType, ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -898,7 +898,7 @@ def load_arguments(self, _):
         c.argument('api_doc_location', arg_group='API metadata', help="Location of additional documentation for the APIs available on the Gateway instance.")
         c.argument('api_version', arg_group='API metadata', help="Version of APIs available on this Gateway instance.")
         c.argument('server_url', arg_group='API metadata', help="Base URL that API consumers will use to access APIs on the Gateway instance.")
-        c.argument('apm_types', nargs='*',
+        c.argument('apm_types', nargs='*', arg_group='APM',
                    help="Space-separated list of APM integrated with Gateway. Allowed values are: " + ', '.join(list(ApmType)))
         c.argument('properties', nargs='*',
                    help='Non-sensitive properties for environment variables. Format "key[=value]" and separated by space.')
@@ -924,6 +924,8 @@ def load_arguments(self, _):
         c.argument('certificate_names', arg_group='Client Certificate Authentication', help="Comma-separated list of certificate names in Azure Spring Apps.")
         c.argument('addon_configs_json', arg_group='Add-on Configurations', help="JSON string of add-on configurations.")
         c.argument('addon_configs_file', arg_group='Add-on Configurations', help="The file path of JSON string of add-on configurations.")
+        c.argument('apms', arg_group='APM', nargs='*',
+                   help="Space-separated list of APM reference names in Azure Spring Apps to integrate with Gateway.")
 
     for scope in ['spring gateway custom-domain',
                   'spring api-portal custom-domain']:
