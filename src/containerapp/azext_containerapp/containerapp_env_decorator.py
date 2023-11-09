@@ -2,10 +2,11 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles
+from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set
 from knack.log import get_logger
 
-from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvCreateDecorator
+from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvCreateDecorator, \
+    ContainerAppEnvUpdateDecorator
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
 from ._utils import safe_get
 from ._client_factory import handle_non_404_status_code_exception
@@ -21,6 +22,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         super().construct_payload()
 
         self.set_up_infrastructure_resource_group()
+        self.set_up_dynamic_json_columns()
 
     def validate_arguments(self):
         super().validate_arguments()
@@ -33,6 +35,10 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             if not self.get_argument_enable_workload_profiles():
                 raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
                                                    "--enable-workload-profiles/-w")
+
+    def set_up_dynamic_json_columns(self):
+        if self.get_argument_logs_destination() == "log-analytics" and self.get_argument_logs_dynamic_json_columns() is not None:
+            self.managed_env_def["properties"]["appLogsConfiguration"]["logAnalyticsConfiguration"]["dynamicJsonColumns"] = self.get_argument_logs_dynamic_json_columns()
 
     def set_up_infrastructure_resource_group(self):
         if self.get_argument_enable_workload_profiles() and self.get_argument_infrastructure_subnet_resource_id() is not None:
@@ -69,3 +75,32 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
     def get_argument_enable_dedicated_gpu(self):
         return self.get_param("enable_dedicated_gpu")
+
+    def get_argument_logs_dynamic_json_columns(self):
+        return self.get_param("logs_dynamic_json_columns")
+
+
+class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
+    def construct_payload(self):
+        super().construct_payload()
+
+        self.set_up_app_log_configuration()
+
+    def set_up_app_log_configuration(self):
+        logs_destination = self.get_argument_logs_destination()
+
+        if logs_destination:
+            logs_destination = None if logs_destination == "none" else logs_destination
+            safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
+
+        if self.get_argument_logs_customer_id() and self.get_argument_logs_key():
+            safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId",
+                     value=self.get_argument_logs_customer_id())
+            safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey",
+                     value=self.get_argument_logs_key())
+
+        if self.get_argument_logs_dynamic_json_columns() is not None:
+            safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "dynamicJsonColumns", value=self.get_argument_logs_dynamic_json_columns())
+
+    def get_argument_logs_dynamic_json_columns(self):
+        return self.get_param("logs_dynamic_json_columns")
