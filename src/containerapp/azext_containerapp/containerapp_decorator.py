@@ -537,11 +537,11 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             tags = yaml_containerapp.get('tags')
             del yaml_containerapp['tags']
 
-        service_binds = safe_get(yaml_containerapp, "properties", "template", "serviceBinds")
-
+        # Save customizedKeys before converting from snake case to camel case, then re-add customizedKeys. We don't want to change the case of the customizedKeys.
+        service_binds = safe_get(yaml_containerapp, "properties", "template", "serviceBinds", default=[])
         customized_keys_dict = {}
-        if service_binds:
-            for bind in service_binds:
+        for bind in service_binds:
+            if bind.get("name") and bind.get("customizedKeys"):
                 customized_keys_dict[bind["name"]] = bind["customizedKeys"]
 
         self.new_containerapp = _convert_object_from_snake_to_camel_case(_object_to_dict(self.new_containerapp))
@@ -833,10 +833,11 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             tags = yaml_containerapp.get('tags')
             del yaml_containerapp['tags']
 
-        service_binds = safe_get(yaml_containerapp, "properties", "template", "serviceBinds")
+        # Save customizedKeys before converting from snake case to camel case, then re-add customizedKeys. We don't want to change the case of the customizedKeys.
+        service_binds = safe_get(yaml_containerapp, "properties", "template", "serviceBinds", default=[])
         customized_keys_dict = {}
-        if service_binds:
-            for bind in service_binds:
+        for bind in service_binds:
+            if bind.get("name") and bind.get("customizedKeys"):
                 customized_keys_dict[bind["name"]] = bind["customizedKeys"]
 
         self.containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(self.containerapp_def))
@@ -845,7 +846,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         service_binds = safe_get(self.containerapp_def, "properties", "template", "serviceBinds") or safe_get(self.containerapp_def, "template", "serviceBinds")
         if service_binds:
             for bind in service_binds:
-                bind["customizedKeys"] = customized_keys_dict.get(bind["name"])
+                if bind.get("name") and bind.get("customizedKeys"):
+                    bind["customizedKeys"] = customized_keys_dict.get(bind["name"])
 
         # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
         self.containerapp_def = process_loaded_yaml(self.containerapp_def)
