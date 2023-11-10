@@ -4,12 +4,15 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp add-on': support for az containerapp add-on commands; deprecation of az containerapp service commands
 * 'az containerapp env create': Support --enable-dedicated-gpu
 * 'az containerapp job create': fix problem of parsing parameters minExecutions and maxExecutions from --yaml
 * 'az containerapp env dapr-component init': support initializing Dapr components and dev services for an environment
 * 'az containerapp patch apply': support image patching for java application
 * Upgrade api-version to 2023-08-01-preview
 * 'az container app create/update': support --logs-dynamic-json-columns/-j to configure whether to parse json string log into dynamic json columns
+* 'az container app create/update/up': Remove the region check for the Cloud Build feature
+* 'az container app create/update/up': Improve logs on the local buildpack source to cloud flow
 * 'az containerapp create/update': Support --customized-keys and clientType in --bind for dev service
 
 0.3.43
