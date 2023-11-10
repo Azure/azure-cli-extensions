@@ -39,13 +39,14 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
         # get the most recent release artifacts from github
         r = requests.get("https://api.github.com/repos/microsoft/kata-containers/releases")
         bin_flag = False
+        needed_assets = ["genpolicy", "genpolicy.exe"]
         # search for genpolicy in the assets from kata-container releases
         for release in r.json():
             if release.get("tag_name").startswith("genpolicy"):
                 # these should be newest to oldest
                 for asset in release["assets"]:
                     # download the file if it contains genpolicy
-                    if "genpolicy" in asset["name"]:
+                    if asset["name"] in needed_assets:
                         save_name = ""
                         if ".exe" in asset["name"]:
                             save_name = "genpolicy-windows.exe"
@@ -132,11 +133,12 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
             # only take the last part of the path for the settings file
             settings_file_name = os.path.basename(settings_file_name)
             arg_list.append(settings_file_name)
+        print("arg_list: ", arg_list)
 
         item = subprocess.run(
             arg_list,
-            stdout=sys.stdout,
-            stderr=sys.stderr,
+            # stdout=sys.stdout,
+            # stderr=sys.stderr,
             check=False,
         )
 

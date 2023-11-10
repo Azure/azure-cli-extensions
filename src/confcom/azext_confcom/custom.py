@@ -166,7 +166,7 @@ def katapolicygen_confcom(
 ):
 
     if settings_file_name:
-        if settings_file_name == "genpolicy-settings.json":
+        if "genpolicy-settings.json" in settings_file_name:
             error_out("Cannot use default settings file names")
         os_util.copy_file(settings_file_name, DATA_FOLDER)
 

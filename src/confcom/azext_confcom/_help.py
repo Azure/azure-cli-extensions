@@ -99,7 +99,7 @@ helps[
     short-summary: Create a Confidential Container Security Policy for AKS.
 
     parameters:
-        - name: --yaml-path -y
+        - name: --yaml -y
           type: string
           short-summary: 'Input YAML Kubernetes file'
 
@@ -121,5 +121,5 @@ helps[
 
     examples:
         - name: Input a Kubernetes YAML file to inject a base64 encoded Confidential Container Security Policy into the YAML file
-          text: az confcom katapolicygen --yaml-path "./pod.json"
+          text: az confcom katapolicygen --yaml "./pod.json"
 """
