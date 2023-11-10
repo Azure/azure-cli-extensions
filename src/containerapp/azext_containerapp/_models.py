@@ -291,6 +291,83 @@ ContainerAppsJob = {
     "tags": None
 }
 
+DaprComponentResiliency = {
+    "properties": {
+        "inboundPolicy": {
+            "timeoutPolicy": {
+                "responseTimeoutInSeconds": None,            
+            },
+            "httpRetryPolicy": {
+                "maxRetries": None,
+                "retryBackOff": {
+                    "initialDelayInMilliseconds": None,
+                    "maxIntervalInMilliseconds": None,
+                }
+            },
+        },
+        "outboundPolicy": {
+            "timeoutPolicy": {
+                "responseTimeoutInSeconds": None,            
+            },
+            "httpRetryPolicy": {
+                "maxRetries": None,
+                "retryBackOff": {
+                    "initialDelayInMilliseconds": None,
+                    "maxIntervalInMilliseconds": None,
+                }
+            },
+        }
+    }
+}
+
+ContainerAppsResiliency = {
+    "properties": {
+        "timeoutPolicy": None,
+        "httpRetryPolicy": None,
+        "tcpRetryPolicy": None,
+        "circuitBreakerPolicy": None,
+        "tcpConnectionPool": None,
+        "httpConnectionPool": None
+    }
+}
+
+HttpRetryPolicy = {
+    "maxRetries": None,
+    "retryBackOff": {
+        "initialDelayInMilliseconds": None,
+        "maxIntervalInMilliseconds": None,
+    },
+    "matches": {
+        "headers": None,
+        "httpStatusCodes": None,
+        "errors": None
+    }
+}
+
+TcpConnectionPool = {
+    "maxConnections": None
+}
+
+TimeoutPolicy = {
+    "responseTimeoutInSeconds": None,
+    "connectionTimeoutInSeconds": None
+}
+
+TcpRetryPolicy = {
+    "maxConnectAttempts": None
+}
+
+CircuitBreakerPolicy = {
+    "consecutiveErrors": None,
+    "intervalInSeconds": None,
+    "maxEjectionPercent": None
+}
+
+HttpConnectionPool = {
+    "http1MaxPendingRequests": None,
+    "http2MaxRequests": None
+}
+
 ContainerAppCertificateEnvelope = {
     "location": None,
     "properties": {
