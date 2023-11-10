@@ -24,7 +24,7 @@ from ._clients import ContainerAppsResiliencyPreviewClient
 from ._client_factory import handle_raw_exception
 
 from ._constants import (DEFAULT_INTERVAL, DEFAULT_MAX_EJECTION, DEFAULT_HTTP2_MAX_REQ, DEFAULT_RESPONSE_TIMEOUT,
-                         DEFAULT_CONNECTION_TIMEOUT, DEFAULT_HTTP_RETRY_MAX, HARD_EJECTION_THRESHOLD,
+                         DEFAULT_CONNECTION_TIMEOUT, DEFAULT_HTTP_RETRY_MAX,
                          DEFAULT_HTTP1_MAX_PENDING_REQ, DEFAULT_CONSECUTIVE_ERRORS, DEFAULT_HTTP_RETRY_DELAY_IN_MILLISECONDS,
                          DEFAULT_HTTP_RETRY_INTERVAL_IN_MILLISECONDS, DEFAULT_HTTP_RETRY_ERRORS)
 
@@ -317,7 +317,7 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
                 or self.get_argument_http_retry_delay_in_milliseconds() or self.get_argument_http_retry_interval_in_milliseconds() \
                 or self.get_argument_http_retry_status_codes() or self.get_argument_http_retry_errors():
             not self.get_argument_disable_warnings() and logger.warning(
-                'Additional flags were passed along with --default. These flags will be ignored, and system defaults will be applied.')
+                'Additional flags were passed along with --recommended. These flags will be ignored, and recommended values will be applied.')
 
         timeout_def = TimeoutPolicyModel
         timeout_def["responseTimeoutInSeconds"] = DEFAULT_RESPONSE_TIMEOUT
@@ -327,7 +327,7 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
         circuitbreaker_def = CircuitBreakerPolicyModel
         circuitbreaker_def["consecutiveErrors"] = DEFAULT_CONSECUTIVE_ERRORS
         circuitbreaker_def["intervalInSeconds"] = DEFAULT_INTERVAL
-        circuitbreaker_def["maxEjectionPercent"] = HARD_EJECTION_THRESHOLD
+        circuitbreaker_def["maxEjectionPercent"] = DEFAULT_MAX_EJECTION
         self.containerapp_resiliency_def["properties"]["circuitBreakerPolicy"] = circuitbreaker_def
 
         http_retry_policy = {

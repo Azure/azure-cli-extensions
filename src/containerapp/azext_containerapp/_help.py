@@ -279,10 +279,10 @@ helps['containerapp resiliency create'] = """
     type: command
     short-summary: Create resiliency policies for a container app.
     examples:
-    - name: Create default resiliency policies.
+    - name: Create recommended resiliency policies.
       text: |
           az containerapp resiliency create -g MyResourceGroup \\
-            -n MyResiliencyName --container-app-name MyContainerApp --default
+            -n MyResiliencyName --container-app-name MyContainerApp --recommended
     - name: Create the timeout resiliency policy.
       text: |
           az containerapp resiliency create -g MyResourceGroup \\

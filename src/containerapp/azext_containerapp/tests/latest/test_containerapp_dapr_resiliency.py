@@ -106,22 +106,71 @@ class ContainerappResiliencyTests(ScenarioTest):
 
         #Create app resiliency using yaml
         resil_yaml_text = f"""
-tcpRetryPolicy:
-  maxConnectAttempts: 3
-httpRetryPolicy:
-  maxRetries: 3
-  retryBackOff:
-    initialDelayInMilliseconds: 100
+  timeoutPolicy:
+    responseTimeoutInSeconds: 25
+    connectionTimeoutInSeconds: 15
+  httpRetryPolicy:
+    maxRetries: 15
+    retryBackOff:
+      initialDelayInMilliseconds: 5000
+      maxIntervalInMilliseconds: 50000
+    matches:
+      headers:
+        - header: X-Content-Type
+          match:
+            prefixMatch: GOATS
+      httpStatusCodes:
+        - 502
+        - 503
+      errors:
+        - 5xx
+        - connect-failure
+        - reset
+        - retriable-headers
+        - retriable-status-codes
+  tcpRetryPolicy:
+    maxConnectAttempts: 8
+  circuitBreakerPolicy:
+    consecutiveErrors: 15
+    intervalInSeconds: 15
+    maxEjectionPercent: 60
+  tcpConnectionPool:
+    maxConnections: 700
+  httpConnectionPool:
+    http1MaxPendingRequests: 2048
+    http2MaxRequests: 2048
 """
         resil_file_name = f"{self._testMethodName}_containerapp.yml"
 
         write_test_file(resil_file_name, resil_yaml_text)
         self.cmd(f'containerapp resiliency create -n {resil_name} --container-app {ca_name} -g {resource_group} --yaml {resil_file_name}', checks=[
+            # HTTP Retry Policy
             JMESPathCheck("properties.httpRetryPolicy.matches.errors[0]", "5xx"),
-            JMESPathCheck("properties.httpRetryPolicy.maxRetries", "3"),
-            JMESPathCheck("properties.httpRetryPolicy.retryBackOff.initialDelayInMilliseconds", "100"),
-            JMESPathCheck("properties.httpRetryPolicy.retryBackOff.maxIntervalInMilliseconds", "10000"),
-            JMESPathCheck("properties.tcpRetryPolicy.maxConnectAttempts", "3")
+            JMESPathCheck("properties.httpRetryPolicy.matches.errors[1]", "connect-failure"),
+            JMESPathCheck("properties.httpRetryPolicy.matches.errors[2]", "reset"),
+            JMESPathCheck("properties.httpRetryPolicy.matches.errors[3]", "retriable-headers"),
+            JMESPathCheck("properties.httpRetryPolicy.matches.errors[4]", "retriable-status-codes"),
+            JMESPathCheck("properties.httpRetryPolicy.matches.headers[0].header", "X-Content-Type"),
+            JMESPathCheck("properties.httpRetryPolicy.matches.headers[0].match.prefixMatch", "GOATS"),
+            JMESPathCheck("properties.httpRetryPolicy.matches.httpStatusCodes[0]", "502"),
+            JMESPathCheck("properties.httpRetryPolicy.matches.httpStatusCodes[1]", "503"),
+            JMESPathCheck("properties.httpRetryPolicy.maxRetries", "15"),
+            JMESPathCheck("properties.httpRetryPolicy.retryBackOff.initialDelayInMilliseconds", "5000"),
+            JMESPathCheck("properties.httpRetryPolicy.retryBackOff.maxIntervalInMilliseconds", "50000"),
+            # TCP Retry Policy
+            JMESPathCheck("properties.tcpRetryPolicy.maxConnectAttempts", "8"),
+            # Circuit Breaker Policy
+            JMESPathCheck("properties.circuitBreakerPolicy.consecutiveErrors", "15"),
+            JMESPathCheck("properties.circuitBreakerPolicy.intervalInSeconds", "15"),
+            JMESPathCheck("properties.circuitBreakerPolicy.maxEjectionPercent", "60"),
+            # TCP Connection Pool
+            JMESPathCheck("properties.tcpConnectionPool.maxConnections", "700"),
+            # HTTP Connection Pool
+            JMESPathCheck("properties.httpConnectionPool.httP1MaxPendingRequests", "2048"),
+            JMESPathCheck("properties.httpConnectionPool.httP2MaxRequests", "2048"),
+            # Timeout Policy
+            JMESPathCheck("properties.timeoutPolicy.responseTimeoutInSeconds", "25"),
+            JMESPathCheck("properties.timeoutPolicy.connectionTimeoutInSeconds", "15")
         ])
         clean_up_test_file(resil_file_name)
 
@@ -148,7 +197,6 @@ class DaprComponentResiliencyTests(ScenarioTest):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         dapr_comp_name = self.create_random_name(prefix='daprcomp', length=24)
         resil_name = self.create_random_name(prefix='resil', length=24)
-        bad_resil = "bad-resil"
         bad_rg = "bad-rg"
         bad_comp = "bad-comp"
         bad_env = "bad-env"
@@ -182,16 +230,16 @@ class DaprComponentResiliencyTests(ScenarioTest):
         os.close(file_ref)
 
         #Incorrect resource group (create)
-        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retry 5'.format(resil_name, dapr_comp_name, env_name, bad_rg), expect_failure=True)
+        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retries 5'.format(resil_name, dapr_comp_name, env_name, bad_rg), expect_failure=True)
 
         #Incorrect dapr component name (create)
-        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retry 5'.format(resil_name, bad_comp, env_name, resource_group), expect_failure=True)
+        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retries 5'.format(resil_name, bad_comp, env_name, resource_group), expect_failure=True)
 
         #Incorrect environment name (create)
-        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retry 5'.format(resil_name, dapr_comp_name, bad_env, resource_group), expect_failure=True)
+        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retries 5'.format(resil_name, dapr_comp_name, bad_env, resource_group), expect_failure=True)
 
         #Create dapr component resiliency using flags
-        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retry 5'.format(resil_name, dapr_comp_name, env_name, resource_group))
+        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retries 5'.format(resil_name, dapr_comp_name, env_name, resource_group))
 
         #Show dapr component resiliency
         self.cmd('containerapp env dapr-component resiliency show -n {} --dapr-component-name {} --environment {} -g {}'.format(resil_name, dapr_comp_name, env_name, resource_group), checks=[

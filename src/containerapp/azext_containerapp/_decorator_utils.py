@@ -83,7 +83,9 @@ def process_loaded_yaml(yaml_containerapp):
 def process_containerapp_resiliency_yaml(containerapp_resiliency):
 
     if type(containerapp_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please provide a valid containerapps YAML spec.')
+        raise ValidationError('Invalid YAML provided. Please provide a valid container app resiliency YAML spec.')
+    if 'additionalProperties' in containerapp_resiliency and not containerapp_resiliency['additionalProperties']:
+        raise ValidationError('Invalid YAML provided. Please provide a valid containerapp resiliency YAML spec.')
     if not containerapp_resiliency.get('properties'):
         containerapp_resiliency['properties'] = {}
 
@@ -94,6 +96,7 @@ def process_containerapp_resiliency_yaml(containerapp_resiliency):
                          "tcpConnectionPool",
                          "httpConnectionPool"]
     for nested_property in nested_properties:
+        # Fix this and remove additionalProperties after flattening is avoided
         tmp = containerapp_resiliency['additionalProperties'].get(nested_property)
         if nested_property in containerapp_resiliency:
             containerapp_resiliency['properties'][nested_property] = tmp
@@ -105,7 +108,9 @@ def process_containerapp_resiliency_yaml(containerapp_resiliency):
 def process_dapr_component_resiliency_yaml(dapr_component_resiliency):
 
     if type(dapr_component_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please provide a valid containerapps YAML spec.')
+        raise ValidationError('Invalid YAML provided. Please provide a valid dapr component resiliency YAML spec.')
+    if 'additionalProperties' in dapr_component_resiliency and not dapr_component_resiliency['additionalProperties']:
+        raise ValidationError('Invalid YAML provided. Please provide a valid dapr component resiliency YAML spec.')
     if not dapr_component_resiliency.get('properties'):
         dapr_component_resiliency['properties'] = {}
 
