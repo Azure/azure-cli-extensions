@@ -6,6 +6,8 @@ upcoming
 ++++++
 * 'az containerapp env workload-profile set': deprecate command
 * 'az containerapp add-on': support for az containerapp add-on commands; deprecation of az containerapp service commands
+* 'az containerapp env dapr-component resiliency': Add Dapr Component Resiliency commands
+* 'az containerapp resiliency': Add Container App Resiliency commands
 * 'az containerapp env create': Support --enable-dedicated-gpu
 * 'az containerapp job create': fix problem of parsing parameters minExecutions and maxExecutions from --yaml
 * 'az containerapp env dapr-component init': support initializing Dapr components and dev services for an environment
