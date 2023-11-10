@@ -620,7 +620,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         super().validate_arguments()
         validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_artifact(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
-            raise InvalidArgumentValueError("--bind have multiple values, but --customized-keys only can be set when --bind has single value.")
+            raise InvalidArgumentValueError("--bind have multiple values, but --customized-keys only can be set when --bind is single.")
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
@@ -844,7 +844,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
         self.containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(self.containerapp_def))
         self.containerapp_def['tags'] = tags
-        
+
         # Containerapp object is deserialized from 'ContainerApp' model, "Properties" level is lost after deserialization
         # We try to get serviceBinds from 'properties.template.serviceBinds' first, if not exists, try 'template.serviceBinds'
         service_binds = safe_get(self.containerapp_def, "properties", "template", "serviceBinds") or safe_get(self.containerapp_def, "template", "serviceBinds")
@@ -994,7 +994,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         super().validate_arguments()
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError(
-                "--bind have multiple values, but --customized-keys only can be set when --bind has single value.")
+                "--bind have multiple values, but --customized-keys only can be set when --bind is single.")
 
     def construct_payload(self):
         super().construct_payload()
