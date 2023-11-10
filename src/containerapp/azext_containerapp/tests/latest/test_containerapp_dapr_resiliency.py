@@ -36,13 +36,13 @@ class ContainerappResiliencyTests(ScenarioTest):
         self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
 
         #Incorrect resource group (create)
-        self.cmd('containerapp resiliency create -g {} -n {} --container-app-name {} --cb-interval 15 --cb-consecutive-error 5 --cb-max-ejection 60'.format(bad_rg, resil_name, ca_name), expect_failure=True)
+        self.cmd('containerapp resiliency create -g {} -n {} --container-app-name {} --cb-interval 15 --cb-sequential-errors 5 --cb-max-ejection 60'.format(bad_rg, resil_name, ca_name), expect_failure=True)
 
         #Incorrect capp name (create)
-        self.cmd('containerapp resiliency create -g {} -n {} --container-app-name {} --cb-interval 15 --cb-consecutive-error 5 --cb-max-ejection 60'.format(resource_group, resil_name, bad_capp), expect_failure=True)
+        self.cmd('containerapp resiliency create -g {} -n {} --container-app-name {} --cb-interval 15 --cb-sequential-errors 5 --cb-max-ejection 60'.format(resource_group, resil_name, bad_capp), expect_failure=True)
 
         #Create app resiliency using flags
-        self.cmd('containerapp resiliency create -g {} -n {} --container-app-name {} --cb-interval 15 --cb-consecutive-error 5 --cb-max-ejection 60'.format(resource_group, resil_name, ca_name))
+        self.cmd('containerapp resiliency create -g {} -n {} --container-app-name {} --cb-interval 15 --cb-sequential-errors 5 --cb-max-ejection 60'.format(resource_group, resil_name, ca_name))
 
         #Show app resiliency
         self.cmd('containerapp resiliency show -g {} -n {} --container-app-name {}'.format(resource_group, resil_name, ca_name), checks=[
@@ -55,10 +55,10 @@ class ContainerappResiliencyTests(ScenarioTest):
         self.cmd('containerapp resiliency update -g {} -n {} --container-app-name {} --timeout 45 --timeout-connect 5'.format(resource_group, resil_name, ca_name))
 
         #Incorrect resource group (update)
-        self.cmd('containerapp resiliency update -g {} -n {} --container-app-name {} --cb-interval 15 --cb-consecutive-error 5 --cb-max-ejection 60'.format(bad_rg, resil_name, ca_name), expect_failure=True)
+        self.cmd('containerapp resiliency update -g {} -n {} --container-app-name {} --cb-interval 15 --cb-sequential-errors 5 --cb-max-ejection 60'.format(bad_rg, resil_name, ca_name), expect_failure=True)
 
         #Incorrect capp name (update)
-        self.cmd('containerapp resiliency update -g {} -n {} --container-app-name {} --cb-interval 15 --cb-consecutive-error 5 --cb-max-ejection 60'.format(resource_group, resil_name, bad_capp), expect_failure=True)
+        self.cmd('containerapp resiliency update -g {} -n {} --container-app-name {} --cb-interval 15 --cb-sequential-errors 5 --cb-max-ejection 60'.format(resource_group, resil_name, bad_capp), expect_failure=True)
 
         self.cmd('containerapp resiliency show -g {} -n {} --container-app-name {}'.format(resource_group, resil_name, ca_name), checks=[
             JMESPathCheck("properties.circuitBreakerPolicy.consecutiveErrors", "5"),

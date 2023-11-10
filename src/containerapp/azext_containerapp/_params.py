@@ -85,7 +85,7 @@ def load_arguments(self, _):
         c.argument('http_connection_pool_http2_max_req', type=int, options_list=['--http2-parallel'], help='The maximum number of parallel requests that will be made to the container app. Default: 1024.')
 
     with self.argument_context('containerapp resiliency', arg_group='Circuit Breaker Policy') as c:
-        c.argument('circuit_breaker_consecutive_errors', type=int, options_list=['--cb-consecutive-error'], help='The number of consecutive server-side error responses (for HTTP traffic, 5xx responses; for TCP traffic, failure to respond PONG; etc.) before a consecutive 5xx ejection occurs. Default: 5.')
+        c.argument('circuit_breaker_consecutive_errors', type=int, options_list=['--cb-sequential-errors'], help='The number of consecutive server-side error responses (for HTTP traffic, 5xx responses; for TCP traffic, failure to respond PONG; etc.) before a consecutive 5xx ejection occurs. Default: 5.')
         c.argument('circuit_breaker_interval', type=int, options_list=['--cb-interval'], help='The time interval in seconds between ejection analysis sweeps. This can result in both new ejections as well as hosts being returned to service. Default: 10.')
         c.argument('circuit_breaker_max_ejection', type=int, options_list=['--cb-max-ejection'], help='The maximum % of container app replicas that can be ejected. It will eject at least one host regardless of the value. Default: 100.')
 

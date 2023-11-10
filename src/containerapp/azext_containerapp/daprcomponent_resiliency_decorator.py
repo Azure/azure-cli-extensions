@@ -78,20 +78,20 @@ class DaprComponentResiliencyDecorator(BaseResource):
     def set_argument_environment(self, environment):
         self.set_param("environment", environment)
 
-    def validate_positive_argument(self, argument_name):
+    def validate_positive_argument(self, argument_name, param_name):
         argument_value = getattr(self, f"get_argument_{argument_name}")()
         if argument_value is not None and argument_value < 1:
-            raise ValidationError(f"--{argument_name} must be greater than 0")
+            raise ValidationError(f"--{param_name} must be greater than 0")
 
     def validate_arguments(self):
-        self.validate_positive_argument("in_timeout_response_in_seconds")
-        self.validate_positive_argument("out_timeout_response_in_seconds")
-        self.validate_positive_argument("in_http_retry_max")
-        self.validate_positive_argument("out_http_retry_max")
-        self.validate_positive_argument("in_http_retry_delay_in_milliseconds")
-        self.validate_positive_argument("out_http_retry_delay_in_milliseconds")
-        self.validate_positive_argument("in_http_retry_interval_in_milliseconds")
-        self.validate_positive_argument("out_http_retry_interval_in_milliseconds")
+        self.validate_positive_argument("in_timeout_response_in_seconds", "in-timeout")
+        self.validate_positive_argument("out_timeout_response_in_seconds", "out-timeout")
+        self.validate_positive_argument("in_http_retry_max", "in-http-retries")
+        self.validate_positive_argument("out_http_retry_max", "out-http-retries")
+        self.validate_positive_argument("in_http_retry_delay_in_milliseconds", "in-http-delay")
+        self.validate_positive_argument("out_http_retry_delay_in_milliseconds", "out-http-delay")
+        self.validate_positive_argument("in_http_retry_interval_in_milliseconds", "in-http-interval")
+        self.validate_positive_argument("out_http_retry_interval_in_milliseconds", "out-http-interval")
 
     def set_up_component_resiliency_yaml(self, file_name):
         component_resiliency_def = DaprComponentResiliencyModel

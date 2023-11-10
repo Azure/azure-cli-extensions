@@ -102,10 +102,10 @@ class ContainerAppResiliencyDecorator(BaseResource):
     def set_argument_container_app_name(self, container_app_name):
         self.set_param("container_app_name", container_app_name)
 
-    def validate_positive_argument(self, argument_name):
+    def validate_positive_argument(self, argument_name, param_name):
         argument_value = getattr(self, f"get_argument_{argument_name}")()
         if argument_value is not None and argument_value < 1:
-            raise ValidationError(f"--{argument_name} must be greater than 0")
+            raise ValidationError(f"--{param_name} must be greater than 0")
 
     def validate_max_ejection(self):
         max_ejection = self.get_argument_circuit_breaker_max_ejection()
@@ -113,18 +113,18 @@ class ContainerAppResiliencyDecorator(BaseResource):
             raise ValidationError(f"--cb-max-ejection must be between 1 and 100")
 
     def validate_arguments(self):
-        self.validate_positive_argument("circuit_breaker_consecutive_errors")
-        self.validate_positive_argument("circuit_breaker_interval")
+        self.validate_positive_argument("circuit_breaker_consecutive_errors", "cb-sequential-errors")
+        self.validate_positive_argument("circuit_breaker_interval", "cb-interval")
         self.validate_max_ejection()
-        self.validate_positive_argument("tcp_connection_pool_max_connections")
-        self.validate_positive_argument("http_connection_pool_http1_max_pending_req")
-        self.validate_positive_argument("http_connection_pool_http2_max_req")
-        self.validate_positive_argument("timeout_response_in_seconds")
-        self.validate_positive_argument("timeout_connection_in_seconds")
-        self.validate_positive_argument("tcp_retry_max_connect_attempts")
-        self.validate_positive_argument("http_retry_max")
-        self.validate_positive_argument("http_retry_delay_in_milliseconds")
-        self.validate_positive_argument("http_retry_interval_in_milliseconds")
+        self.validate_positive_argument("tcp_connection_pool_max_connections", "tcp-connections")
+        self.validate_positive_argument("http_connection_pool_http1_max_pending_req", "http1-pending")
+        self.validate_positive_argument("http_connection_pool_http2_max_req", "http2-parallel")
+        self.validate_positive_argument("timeout_response_in_seconds", "timeout")
+        self.validate_positive_argument("timeout_connection_in_seconds", "timeout-connect")
+        self.validate_positive_argument("tcp_retry_max_connect_attempts", "tcp-retries")
+        self.validate_positive_argument("http_retry_max", "http-retries")
+        self.validate_positive_argument("http_retry_delay_in_milliseconds", "http-delay")
+        self.validate_positive_argument("http_retry_interval_in_milliseconds", "http-interval")
 
     def set_up_containerapp_resiliency_yaml(self, file_name):
         containerapp_def = ContainerAppsResiliencyModel
