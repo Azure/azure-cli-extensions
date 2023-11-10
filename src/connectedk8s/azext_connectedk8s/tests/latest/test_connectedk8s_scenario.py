@@ -135,9 +135,9 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_connect(self,resource_group):
-        
+
         managed_cluster_name = self.create_random_name(prefix='test-connect', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
             'rg': resource_group,
             'name': self.create_random_name(prefix='cc-', length=12),
@@ -165,7 +165,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     def test_forcedelete(self,resource_group):
 
         managed_cluster_name = self.create_random_name(prefix='test-force-delete', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
             'rg': resource_group,
             'name': self.create_random_name(prefix='cc-', length=12),
@@ -204,7 +204,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     def test_enable_disable_features(self,resource_group):
 
         managed_cluster_name = self.create_random_name(prefix='test-enable-disable', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
             'rg': resource_group,
             'name': self.create_random_name(prefix='cc-', length=12),
@@ -278,7 +278,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(disabled_cmd1["systemDefaultValues"]['guard']['enabled'] == bool(0))
 
-        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --features azure-rbac')
+        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --features azure-rbac --app-id ffba4043-836e-4dcc-906c-fbf60bf54eef --app-secret="6a6ae7a7-4260-40d3-ba00-af909f2ca8f0"')
 
         # deleting the cluster
         self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
@@ -294,14 +294,14 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         managed_cluster_name = self.create_random_name(prefix='first', length=24)
         managed_cluster_name_second = self.create_random_name(prefix='second', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         kubeconfigpls="%s" % (_get_test_data_file('pls-config.yaml'))
         name = self.create_random_name(prefix='cc-', length=12)
         name_second = self.create_random_name(prefix='cc-', length=12)
         managed_cluster_list=[]
         managed_cluster_list.append(name)
         managed_cluster_list.append(name_second)
-        managed_cluster_list.sort() 
+        managed_cluster_list.sort()
         self.kwargs.update({
             'rg': resource_group,
             'name': name,
@@ -366,7 +366,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     def test_upgrade(self,resource_group):
 
         managed_cluster_name = self.create_random_name(prefix='test-upgrade', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
             'name': self.create_random_name(prefix='cc-', length=12),
             'rg': resource_group,
@@ -430,7 +430,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_update(self,resource_group):
         managed_cluster_name = self.create_random_name(prefix='test-update', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
             'name': self.create_random_name(prefix='cc-', length=12),
             'kubeconfig': kubeconfig,
