@@ -16,7 +16,7 @@ class HdinsightonaksClusterPoolScenario(ScenarioTest):
             'loc': self.location
         })
         # List a list of available cluster pool versions.
-        cluster_pool_version_list = self.cmd('az hdinsightonaks available-cluster-version list -l {loc}').get_output_in_json()
+        cluster_pool_version_list = self.cmd('az hdinsight-on-aks list-available-cluster-pool-version -l {loc}').get_output_in_json()
         assert len(cluster_pool_version_list) > 0
 
     # Uses 'rg' kwarg
@@ -29,29 +29,29 @@ class HdinsightonaksClusterPoolScenario(ScenarioTest):
         })
 
         # create a cluster pool
-        self.cmd('az hdinsightonaks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3', checks=[
+        self.cmd('az hdinsight-on-aks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3', checks=[
             self.check("name", '{poolName}'),
             self.check("location", '{loc}'),
             self.check("status", 'Running')
         ])
 
         # set cluster pool enable log analytics
-        self.cmd('az hdinsightonaks clusterpool update -g {rg} -n {poolName} --enable-log-analytics --log-analytic-workspace-id {logAnalyticProfileWorkspaceId}', checks=[
+        self.cmd('az hdinsight-on-aks clusterpool update -g {rg} -n {poolName} --enable-log-analytics --log-analytic-workspace-id {logAnalyticProfileWorkspaceId}', checks=[
             self.check("name", '{poolName}'),
             self.check("location", '{loc}'),
             self.check("logAnalyticsProfile.enabled", True)
         ])
 
         # List the list of Cluster Pools within a resources group.
-        cluster_pool_list = self.cmd('az hdinsightonaks clusterpool list -g {rg}').get_output_in_json()
+        cluster_pool_list = self.cmd('az hdinsight-on-aks clusterpool list -g {rg}').get_output_in_json()
         assert len(cluster_pool_list) > 0
 
         # Get a Cluster Pool.
-        self.cmd('az hdinsightonaks clusterpool show -g {rg} -n {poolName}', checks=[
+        self.cmd('az hdinsight-on-aks clusterpool show -g {rg} -n {poolName}', checks=[
             self.check("name", '{poolName}'),
             self.check("location", '{loc}'),
             self.check("status", 'Running')
         ])
 
         # Delete a Cluster Pool.
-        self.cmd('az hdinsightonaks clusterpool delete -g {rg} -n {poolName} --yes')
+        self.cmd('az hdinsight-on-aks clusterpool delete -g {rg} -n {poolName} --yes')

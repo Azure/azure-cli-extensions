@@ -64,7 +64,7 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         ])
 
         # Create a Trino cluster.
-        create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --cluster-version ' + trino_versions[0]["clusterVersion"] + ' --oss-version ' + trino_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' +' '+ hdinsight-on-aksClusterScenario.authorization_info()
+        create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --cluster-version ' + trino_versions[0]["clusterVersion"] + ' --oss-version ' + trino_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' +' '+ HdinsightonaksClusterScenario.authorization_info()
         self.cmd(create_command,checks=[
             self.check("name", '{clusterName}'),
             self.check("location", '{loc}'),
@@ -122,7 +122,7 @@ class HdinsightonaksClusterScenario(ScenarioTest):
                 "clusterType": "Trino",
                 "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D8d_v5').get_output_in_json(),    # Create a cluster node-profile object.
 
-                "keyVaultResourceId": "/subscriptions/10e32bab-26da-4cc4-a441-52b318f824e6/resourceGroups/PSGroup/providers/Microsoft.KeyVault/vaults/sqlpass",
+                "keyVaultResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.KeyVault/vaults/sqlpass",
                 "trinoHiveCatalogOption": self.cmd('az hdinsight-on-aks cluster trino-hive-catalog create --catalog-name ' + self.catalogName \
                                                                 + ' --metastore-db-connection-url ' + self.metastoreDbConnectionURL + ' --metastore-db-connection-user-name ' + self.metastoreDbUserName \
                                                                 + ' --metastore-db-connection-password-secret ' + self.metastoreDbPasswordSecret + ' --metastore-warehouse-dir ' + self.metastoreWarehouseDir).get_output_in_json(),
@@ -130,7 +130,7 @@ class HdinsightonaksClusterScenario(ScenarioTest):
                 "secret_reference": self.cmd('az hdinsight-on-aks cluster secret create --secret-name ' + self.secretName + ' --reference-name ' +  self.secretName).get_output_in_json()
             })
         # Get trino cluster version and ossVersion.
-        trino_versions = self.cmd('az hdinsight-on-aks available-cluster-version list -l {loc} --query "[?clusterType==\'Trino\']"').get_output_in_json()
+        trino_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Trino\']"').get_output_in_json()
 
         # Create a cluster pool.
         # self.cmd('az hdinsight-on-aks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3', checks=[
@@ -167,7 +167,7 @@ class HdinsightonaksClusterScenario(ScenarioTest):
     #             "jobProperty": "{'action':'NEW','job_name':'testJob','type':'FlinkJob','job_jar_directory':'abfs://flinkjob@hilosa.dfs.core.windows.net/jars','jar_name':'jarName','entry_class':'com.microsoft.hilo.flink.job.streaming.SleepJob','args':'test','flink_configuration':{\"parallelism\":\"1\"}}"
     #         })
         # Get trino cluster version and ossVersion.
-        # flink_versions = self.cmd('az hdinsight-on-aks available-cluster-version list -l {loc} --query "[?clusterType==\'Flink\']"').get_output_in_json()
+        # flink_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Flink\']"').get_output_in_json()
 
         # Create a Flink cluster.
         # create_command = 'az hdinsight-on-aks cluster create  -n {clusterName} --cluster-pool-name {poolName} -g {rgName} -l {loc} --cluster-type {clusterType} --cluster-version ' \
@@ -180,7 +180,7 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         # ])
 
         # Run a job on a Flink cluster.
-        # self.cmd('az hdinsight-on-aks cluster run-job --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName} --flink-job {jobProperty}')
+        # self.cmd('az hdinsight-on-aks cluster job run --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName} --flink-job {jobProperty}')
         # List a cluster job list.
         # self.cmd('az hdinsight-on-aks cluster job list --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName}')
  
@@ -200,14 +200,14 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         ])
 
         # Test list service config.
-        self.cmd('az hdinsight-on-aks cluster service-config list --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName}')
+        self.cmd('az hdinsight-on-aks cluster list-service-config --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName}')
 
 
     @staticmethod
     def authorization_info():
-        msiClientId = '' # Managed Service Identity ClientId
-        msiObjectId = '' # Managed Service Identity ObjectId
-        authorizationUserId = ''
+        msiClientId = '00000000-0000-0000-0000-000000000000' # Managed Service Identity ClientId
+        msiObjectId = '00000000-0000-0000-0000-000000000000' # Managed Service Identity ObjectId
+        authorizationUserId = '00000000-0000-0000-0000-000000000000'
         identityProfileMsiResourceId = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/psmsi'
        
         return '--assigned-identity-object-id {} --assigned-identity-client-id {} --authorization-user-id {} --assigned-identity-id {}' \
