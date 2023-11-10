@@ -681,7 +681,7 @@ Example 1: The following command creates a security policy and outputs it to the
 az confcom katapolicygen -y ./pod.yaml --print-policy
 ```
 
-This command combines the information of images from the pod spec with other information such as mount, environment variables and commands from the pod spec to create a CCE policy.
+This command combines the information of images from the pod spec with other information such as mount, environment variables and commands from the pod spec to create a security policy.
 The `--print-policy` argument is included to display the policy on the command line in addition to injecting it into the input pod spec.
 
 Example 2: This command injects a security policy into a [pod spec]() based on input from [config map]() so that there is no need to change the pod spec to pass variables into the security policy:

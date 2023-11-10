@@ -103,9 +103,13 @@ helps[
           type: string
           short-summary: 'Input YAML Kubernetes file'
 
-        - name: --output-policy-file
-          type: string
-          short-summary: 'Output policy file in Rego format'
+        - name: --outraw
+          type: boolean
+          short-summary: 'Output policy in clear text compact JSON instead of default base64 format'
+
+        - name: --print-policy
+          type: boolean
+          short-summary: 'Print the base64 encoded generated policy in the terminal'
 
         - name: --config-map-file -c
           type: string
@@ -122,4 +126,10 @@ helps[
     examples:
         - name: Input a Kubernetes YAML file to inject a base64 encoded Confidential Container Security Policy into the YAML file
           text: az confcom katapolicygen --yaml "./pod.json"
+        - name: Input a Kubernetes YAML file to print a base64 encoded Confidential Container Security Policy to stdout
+          text: az confcom katapolicygen --yaml "./pod.json" --print-policy
+        - name: Input a Kubernetes YAML file and custom settings file to inject a base64 encoded Confidential Container Security Policy into the YAML file
+          text: az confcom katapolicygen --yaml "./pod.json" -j "./settings.json"
+        - name: Input a Kubernetes YAML file and external config map file
+          text: az confcom katapolicygen --yaml "./pod.json" --config-map-file "./configmap.json"
 """
