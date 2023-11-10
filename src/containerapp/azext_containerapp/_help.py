@@ -226,6 +226,11 @@ helps['containerapp service qdrant'] = """
     short-summary: Commands to manage the qdrant service for the Container Apps environment.
 """
 
+helps['containerapp service chroma'] = """
+    type: group
+    short-summary: Commands to manage the chroma service for the Container Apps environment.
+"""
+
 helps['containerapp service redis create'] = """
     type: command
     short-summary: Command to create the redis service.
@@ -249,6 +254,11 @@ helps['containerapp service mariadb create'] = """
 helps['containerapp service qdrant create'] = """
     type: command
     short-summary: Command to create the qdrant service.
+"""
+
+helps['containerapp service chroma create'] = """
+    type: command
+    short-summary: Command to create the chroma service.
 """
 
 helps['containerapp service redis delete'] = """
@@ -348,6 +358,11 @@ helps['containerapp resiliency list'] = """
             --container-app-name MyContainerApp
 """
 
+helps['containerapp service chroma delete'] = """
+    type: command
+    short-summary: Command to delete the chroma service.
+"""
+
 helps['containerapp add-on redis'] = """
     type: group
     short-summary: Commands to manage the redis add-on for the Container Apps environment.
@@ -371,6 +386,11 @@ helps['containerapp add-on mariadb'] = """
 helps['containerapp add-on qdrant'] = """
     type: group
     short-summary: Commands to manage the qdrant add-on for the Container Apps environment.
+"""
+
+helps['containerapp add-on chroma'] = """
+    type: group
+    short-summary: Commands to manage the chroma add-on for the Container Apps environment.
 """
 
 helps['containerapp add-on redis create'] = """
@@ -398,6 +418,11 @@ helps['containerapp add-on qdrant create'] = """
     short-summary: Command to create the qdrant add-on.
 """
 
+helps['containerapp add-on chroma create'] = """
+    type: command
+    short-summary: Command to create the chroma add-on.
+"""
+
 helps['containerapp add-on redis delete'] = """
     type: command
     short-summary: Command to delete the redis add-on.
@@ -421,6 +446,11 @@ helps['containerapp add-on mariadb delete'] = """
 helps['containerapp add-on qdrant delete'] = """
     type: command
     short-summary: Command to delete the qdrant add-on.
+"""
+
+helps['containerapp add-on chroma delete'] = """
+    type: command
+    short-summary: Command to delete the chroma add-on.
 """
 
 helps['containerapp env update'] = """
