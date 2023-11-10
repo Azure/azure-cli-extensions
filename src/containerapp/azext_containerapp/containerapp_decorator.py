@@ -546,7 +546,9 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
         self.new_containerapp = _convert_object_from_snake_to_camel_case(_object_to_dict(self.new_containerapp))
         self.new_containerapp['tags'] = tags
-        # Containerapp object to dictionary will lose "properties" level
+
+        # Containerapp object is deserialized from 'ContainerApp' model, "Properties" level is lost after deserialization
+        # We try to get serviceBinds from 'properties.template.serviceBinds' first, if not exists, try 'template.serviceBinds'
         service_binds = safe_get(self.new_containerapp, "properties", "template", "serviceBinds") or safe_get(self.new_containerapp, "template", "serviceBinds")
         if service_binds:
             for bind in service_binds:
@@ -842,7 +844,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
         self.containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(self.containerapp_def))
         self.containerapp_def['tags'] = tags
-        # Containerapp object to dictionary will lose "properties" level
+        
+        # Containerapp object is deserialized from 'ContainerApp' model, "Properties" level is lost after deserialization
+        # We try to get serviceBinds from 'properties.template.serviceBinds' first, if not exists, try 'template.serviceBinds'
         service_binds = safe_get(self.containerapp_def, "properties", "template", "serviceBinds") or safe_get(self.containerapp_def, "template", "serviceBinds")
         if service_binds:
             for bind in service_binds:
