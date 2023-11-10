@@ -20,7 +20,7 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         })
 
         # List a list of available cluster versions.
-        cluster_version_list = self.cmd('az hdinsightonaks available-cluster-version list -l {loc}').get_output_in_json()
+        cluster_version_list = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc}').get_output_in_json()
         assert len(cluster_version_list) > 0
 
     def test_check_name_availability(self):
@@ -32,7 +32,7 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         })
 
         # Create a cluster pool.
-        self.cmd('az hdinsightonaks check-name-availability -l {loc} --name {poolName}/{clusterName} --type {clusterType}', checks=[
+        self.cmd('az hdinsight-on-aks check-name-availability -l {loc} --name {poolName}/{clusterName} --type {clusterType}', checks=[
             self.check("nameAvailable", True)
         ])
 
@@ -44,12 +44,12 @@ class HdinsightonaksClusterScenario(ScenarioTest):
                 "clusterName": self.create_random_name(prefix='hilo-', length=18),
 
                 "clusterType": "Trino",
-                "computeNodeProfile": self.cmd('az hdinsightonaks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D8d_v5').get_output_in_json(),    # Create a cluster node-profile object.
+                "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D8d_v5').get_output_in_json(),    # Create a cluster node-profile object.
                 "targetWorkerNodeCount": 6
             })
 
         # Get trino cluster version and ossVersion.
-        trino_versions = self.cmd('az hdinsightonaks available-cluster-version list -l {loc} --query "[?clusterType==\'Trino\']"').get_output_in_json()
+        trino_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Trino\']"').get_output_in_json()
 
         # Assert whether the version is correctly obtained.
         # assert trino_versions[0]["clusterVersion"] == "1.0.6"
@@ -57,14 +57,14 @@ class HdinsightonaksClusterScenario(ScenarioTest):
 
         
         # Create a cluster pool.
-        self.cmd('az hdinsightonaks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3', checks=[
+        self.cmd('az hdinsight-on-aks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3', checks=[
             self.check("name", '{poolName}'),
             self.check("location", '{loc}'),
             self.check("status", 'Running')
         ])
 
         # Create a Trino cluster.
-        create_command = 'az hdinsightonaks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --cluster-version ' + trino_versions[0]["clusterVersion"] + ' --oss-version ' + trino_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' +' '+ HdinsightonaksClusterScenario.authorization_info()
+        create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --cluster-version ' + trino_versions[0]["clusterVersion"] + ' --oss-version ' + trino_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' +' '+ hdinsight-on-aksClusterScenario.authorization_info()
         self.cmd(create_command,checks=[
             self.check("name", '{clusterName}'),
             self.check("location", '{loc}'),
@@ -73,42 +73,42 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         ])
 
         # Get a cluster with cluster name.
-        self.cmd('az hdinsightonaks cluster show -n {clusterName} --cluster-pool-name {poolName} -g {rg}',checks=[
+        self.cmd('az hdinsight-on-aks cluster show -n {clusterName} --cluster-pool-name {poolName} -g {rg}',checks=[
             self.check("name", '{clusterName}'),
             self.check("clusterType", '{clusterType}'),
             self.check("status", 'Running')
         ])
 
         # List all cluster in a cluster pool.
-        cluster_list = self.cmd('az hdinsightonaks cluster list --cluster-pool-name {poolName} -g {rg}').get_output_in_json()
+        cluster_list = self.cmd('az hdinsight-on-aks cluster list --cluster-pool-name {poolName} -g {rg}').get_output_in_json()
         assert len(cluster_list) > 0
 
         # Resize a cluster.
-        self.cmd('az hdinsightonaks cluster resize --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --target-worker-node-count {targetWorkerNodeCount}')
-        self.cmd('az hdinsightonaks cluster show -n {clusterName} --cluster-pool-name {poolName} -g {rg}',checks=[
+        self.cmd('az hdinsight-on-aks cluster resize --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --target-worker-node-count {targetWorkerNodeCount}')
+        self.cmd('az hdinsight-on-aks cluster show -n {clusterName} --cluster-pool-name {poolName} -g {rg}',checks=[
             self.check("computeProfile.nodes[1].count", '{targetWorkerNodeCount}')
         ])
 
         # Get cluster instance view.
-        self.cmd('az hdinsightonaks cluster instance-view show  --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg}',checks=[
+        self.cmd('az hdinsight-on-aks cluster show-instance-view  --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg}',checks=[
             self.check("status.ready", True)
         ])     
 
         # Delete a cluster.
-        self.cmd('az hdinsightonaks cluster delete -n {clusterName} --cluster-pool-name {poolName} -g {rg} --yes')
+        self.cmd('az hdinsight-on-aks cluster delete -n {clusterName} --cluster-pool-name {poolName} -g {rg} --yes')
  
     def test_create_secret_reference(self):
          self.kwargs.update({
                 "secretName": 'testSecretName',
                 "referenceName": 'testSecretName'
             })
-         secret_reference = self.cmd('az hdinsightonaks cluster secret create --secret-name {secretName} --reference-name {referenceName}').get_output_in_json()
+         secret_reference = self.cmd('az hdinsight-on-aks cluster secret create --secret-name {secretName} --reference-name {referenceName}').get_output_in_json()
          assert secret_reference == (["{'secret_name':'testSecretName','reference_name':'testSecretName','type':'Secret','version':None}"])
 
     # Set your hive catalog config.
     secretName="sqlpassword"
     catalogName="mycata"
-    metastoreDbConnectionURL="jdbc:sqlserver://sqlserver.database.windows.net:1433;database=testhilo;encrypt=true;trustServerCertificate=true;loginTimeout=30;"
+    metastoreDbConnectionURL="jdbc:sqlserver://sqlserver.database.windows.net:1433;database=data1;encrypt=true;trustServerCertificate=true;loginTimeout=30;"
     metastoreDbUserName="hdi";
     metastoreDbPasswordSecret=secretName
     metastoreWarehouseDir="abfs://test1@hilostorage.dfs.core.windows.net/";
@@ -120,27 +120,27 @@ class HdinsightonaksClusterScenario(ScenarioTest):
                 "poolName": self.create_random_name(prefix='hilopool-', length=18),
                 "clusterName": self.create_random_name(prefix='hilo-', length=18),
                 "clusterType": "Trino",
-                "computeNodeProfile": self.cmd('az hdinsightonaks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D8d_v5').get_output_in_json(),    # Create a cluster node-profile object.
+                "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D8d_v5').get_output_in_json(),    # Create a cluster node-profile object.
 
-                "keyVaultResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.KeyVault/vaults/sqlpass",
-                "trinoHiveCatalogOption": self.cmd('az hdinsightonaks cluster trino-hive-catalog create --catalog-name ' + self.catalogName \
+                "keyVaultResourceId": "/subscriptions/10e32bab-26da-4cc4-a441-52b318f824e6/resourceGroups/PSGroup/providers/Microsoft.KeyVault/vaults/sqlpass",
+                "trinoHiveCatalogOption": self.cmd('az hdinsight-on-aks cluster trino-hive-catalog create --catalog-name ' + self.catalogName \
                                                                 + ' --metastore-db-connection-url ' + self.metastoreDbConnectionURL + ' --metastore-db-connection-user-name ' + self.metastoreDbUserName \
                                                                 + ' --metastore-db-connection-password-secret ' + self.metastoreDbPasswordSecret + ' --metastore-warehouse-dir ' + self.metastoreWarehouseDir).get_output_in_json(),
 
-                "secret_reference": self.cmd('az hdinsightonaks cluster secret create --secret-name ' + self.secretName + ' --reference-name ' +  self.secretName).get_output_in_json()
+                "secret_reference": self.cmd('az hdinsight-on-aks cluster secret create --secret-name ' + self.secretName + ' --reference-name ' +  self.secretName).get_output_in_json()
             })
         # Get trino cluster version and ossVersion.
-        trino_versions = self.cmd('az hdinsightonaks available-cluster-version list -l {loc} --query "[?clusterType==\'Trino\']"').get_output_in_json()
+        trino_versions = self.cmd('az hdinsight-on-aks available-cluster-version list -l {loc} --query "[?clusterType==\'Trino\']"').get_output_in_json()
 
         # Create a cluster pool.
-        # self.cmd('az hdinsightonaks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3', checks=[
+        # self.cmd('az hdinsight-on-aks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3', checks=[
         #     self.check("name", '{poolName}'),
         #     self.check("location", '{loc}'),
         #     self.check("status", 'Running')
         # ])
 
         # Create a Trino cluster.
-        create_command = 'az hdinsightonaks cluster create  -n {clusterName} --cluster-pool-name {poolName} -g cli -l {loc} --cluster-type {clusterType} --cluster-version ' \
+        create_command = 'az hdinsight-on-aks cluster create  -n {clusterName} --cluster-pool-name {poolName} -g cli -l {loc} --cluster-type {clusterType} --cluster-version ' \
               + trino_versions[0]["clusterVersion"] + ' --oss-version ' + trino_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' \
                 +' '+ HdinsightonaksClusterScenario.authorization_info() + ' --secret-reference {secret_reference} --key-vault-id {keyVaultResourceId}' + ' --trino-hive-catalog {trinoHiveCatalogOption}' 
 
@@ -151,7 +151,7 @@ class HdinsightonaksClusterScenario(ScenarioTest):
 
    
     def test_create_flink_job_property(self):
-        job_property = self.cmd('az hdinsightonaks cluster flink-job create --action NEW --job-name job1 --entry-class com.microsoft.hilo.flink.job.streaming.SleepJob --job-jar-directory abfs://flinkjob@hilosa.dfs.core.windows.net/jars --args test --jar-name jarname --job-name test1').get_output_in_json()
+        job_property = self.cmd('az hdinsight-on-aks cluster flink-job create --action NEW --job-name job1 --entry-class com.microsoft.hilo.flink.job.streaming.SleepJob --job-jar-directory abfs://flinkjob@hilosa.dfs.core.windows.net/jars --args test --jar-name jarname --job-name test1').get_output_in_json()
         assert job_property == ("{'action':'NEW','job_name':'test1','type':'FlinkJob','job_jar_directory':'abfs://flinkjob@hilosa.dfs.core.windows.net/jars','jar_name':'jarname','entry_class':'com.microsoft.hilo.flink.job.streaming.SleepJob','args':'test'}")
 
     # def test_run_flink_job(self):
@@ -162,15 +162,15 @@ class HdinsightonaksClusterScenario(ScenarioTest):
     #             "clusterName": "hiloflinkcluster", # self.create_random_name(prefix='hilo-', length=18),
 
     #             "clusterType": "Flink",
-    #             "computeNodeProfile": self.cmd('az hdinsightonaks cluster node-profile create --count 5 --type Worker --vm-size Standard_D8d_v5').get_output_in_json(), 
+    #             "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --type Worker --vm-size Standard_D8d_v5').get_output_in_json(), 
     #             "storageUri": "abfs://testflinkjob@hilostorage.dfs.core.windows.net",
     #             "jobProperty": "{'action':'NEW','job_name':'testJob','type':'FlinkJob','job_jar_directory':'abfs://flinkjob@hilosa.dfs.core.windows.net/jars','jar_name':'jarName','entry_class':'com.microsoft.hilo.flink.job.streaming.SleepJob','args':'test','flink_configuration':{\"parallelism\":\"1\"}}"
     #         })
         # Get trino cluster version and ossVersion.
-        # flink_versions = self.cmd('az hdinsightonaks available-cluster-version list -l {loc} --query "[?clusterType==\'Flink\']"').get_output_in_json()
+        # flink_versions = self.cmd('az hdinsight-on-aks available-cluster-version list -l {loc} --query "[?clusterType==\'Flink\']"').get_output_in_json()
 
         # Create a Flink cluster.
-        # create_command = 'az hdinsightonaks cluster create  -n {clusterName} --cluster-pool-name {poolName} -g {rgName} -l {loc} --cluster-type {clusterType} --cluster-version ' \
+        # create_command = 'az hdinsight-on-aks cluster create  -n {clusterName} --cluster-pool-name {poolName} -g {rgName} -l {loc} --cluster-type {clusterType} --cluster-version ' \
         #       + flink_versions[0]["clusterVersion"] + ' --oss-version ' + flink_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' \
         #         +' '+ HdinsightonaksClusterScenario.authorization_info() + " " + HdinsightonaksClusterScenario.flink_config_str() + ' --flink-storage-uri {storageUri}'
 
@@ -180,9 +180,9 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         # ])
 
         # Run a job on a Flink cluster.
-        # self.cmd('az hdinsightonaks cluster run-job --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName} --flink-job {jobProperty}')
+        # self.cmd('az hdinsight-on-aks cluster run-job --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName} --flink-job {jobProperty}')
         # List a cluster job list.
-        # self.cmd('az hdinsightonaks cluster job list --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName}')
+        # self.cmd('az hdinsight-on-aks cluster job list --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName}')
  
     def test_update_cluster_config(self):
         self.kwargs.update({
@@ -193,21 +193,21 @@ class HdinsightonaksClusterScenario(ScenarioTest):
             })      
 
         # Test update a cluster's service config.
-        self.cmd('az hdinsightonaks cluster update -n {clusterName} --cluster-pool-name {poolName} -g {rgName} --service-configs-profiles @"{config_path}"', checks=[
+        self.cmd('az hdinsight-on-aks cluster update -n {clusterName} --cluster-pool-name {poolName} -g {rgName} --service-configs-profiles @"{config_path}"', checks=[
             self.check("clusterProfile.serviceConfigsProfiles[0].serviceName", "yarn-service"),
             self.check("clusterProfile.serviceConfigsProfiles[0].configs[0].component", "hadoop-config"),
             self.check("clusterProfile.serviceConfigsProfiles[0].configs[0].files[0].fileName", "core-site.xml"),
         ])
 
         # Test list service config.
-        self.cmd('az hdinsightonaks cluster service-config list --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName}')
+        self.cmd('az hdinsight-on-aks cluster service-config list --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName}')
 
 
     @staticmethod
     def authorization_info():
-        msiClientId = '359290f9-fc9a-4b24-a420-4e78e7283f6c' # Managed Service Identity ClientId
-        msiObjectId = '31a0be82-373c-45f7-b379-c4ce1f38794f' # Managed Service Identity ObjectId
-        authorizationUserId = '77e9262b-339d-4ac4-a044-8884fdf73071'
+        msiClientId = '' # Managed Service Identity ClientId
+        msiObjectId = '' # Managed Service Identity ObjectId
+        authorizationUserId = ''
         identityProfileMsiResourceId = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/psmsi'
        
         return '--assigned-identity-object-id {} --assigned-identity-client-id {} --authorization-user-id {} --assigned-identity-id {}' \
