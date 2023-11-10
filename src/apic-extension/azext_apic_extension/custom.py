@@ -17,6 +17,7 @@ import json
 import sys
 import requests
 import os
+import chardet
 
 logger = get_logger(__name__)
 
@@ -41,7 +42,11 @@ class ImportSpecificationExtension(ImportSpecification):
 
         # Load the JSON file
         if args.source_profile:
-            with open(str(args.source_profile)) as f:
+            rawdata = open(str(args.source_profile), 'rb').read()
+            result = chardet.detect(rawdata)
+            encoding = result['encoding']
+
+            with open(str(args.source_profile), 'r', encoding=encoding) as f:
                 data = json.load(f)
                 if data:
                     value = json.dumps(data)
@@ -107,6 +112,6 @@ class ExportSpecificationExtension(ExportSpecification):
                 if os.path.splitext(file_name)[1] == '.json':
                     if isinstance(results, str):
                         results = json.loads(results)
-                    json.dump(results, f, indent=None, separators=(',', ':'))
+                    json.dump(results, f, indent=4, separators=(',', ':'))
                 else:    
                     f.write(results)
