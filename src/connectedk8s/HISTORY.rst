@@ -3,9 +3,29 @@
 Release History
 ===============
 
-1.4.1
+1.5.5
 ++++++
 * Setting guard default authnMode to 'arc' when RBAC is enabled.
+
+1.5.4
+++++++
+* Log debug if 'arcConfigEndpoint' doesn't exist in 'dataplaneEndpoints' ARM metadata.
+
+1.5.3
+++++++
+* Add support to get AKS-EE kubernetes distro
+
+1.5.2
+++++++
+* Skip onboarding pre-checks for AKS-HCI with additional distros : [aks_management, aks_edge_k8s, aks_edge_k3s]
+
+1.4.2
+++++++
+* Fix reference error.
+
+1.4.1
+++++++
+* Skip Onboarding prechecks for AKS-HCI.
 
 1.4.0
 ++++++
@@ -13,7 +33,6 @@ Release History
 
 1.3.20
 ++++++
-
 * Bug fix in parsing logs for outbound connectivity check for troubleshoot command
 
 1.3.19

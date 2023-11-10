@@ -112,6 +112,59 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             self.cmd('monitor scheduled-query show -g {rg} -n {name1}')
 
 
+    @ResourceGroupPreparer(name_prefix='cli_test_scheduled_query_operator', location='eastus')
+    def test_scheduled_query_condition_operator(self, resource_group):
+        from azure.mgmt.core.tools import resource_id
+        import time
+        from unittest import mock
+        self.kwargs.update({
+            'name1': 'sq01',
+            'rg': resource_group,
+            'vm': 'myvm1',
+            'ws': self.create_random_name('clitest', 20),
+        })
+        with mock.patch('azure.cli.command_modules.vm.custom._gen_guid', side_effect=self.create_guid):
+            vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
+        self.kwargs.update({
+            'vm_id': vm['id'],
+            'rg_id': resource_id(subscription=self.get_subscription_id(),
+                                 resource_group=resource_group),
+            'sub_id': resource_id(subscription=self.get_subscription_id(),
+                                  resource_group=resource_group),
+        })
+        time.sleep(180)
+        self.cmd('monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'placeholder_1\' = 360" --condition-query placeholder_1="union Event, Syslog | where TimeGenerated > ago(1h)" --description "Test rule"',
+                 checks=[
+                     self.check('name', '{name1}'),
+                     self.check('scopes[0]', '{vm_id}'),
+                     self.check('severity', 2),
+                     self.check('criteria.allOf[0].query', 'union Event, Syslog | where TimeGenerated > ago(1h)'),
+                     self.check('criteria.allOf[0].threshold', 360),
+                     self.check('criteria.allOf[0].timeAggregation', 'Count'),
+                     self.check('criteria.allOf[0].operator', 'Equal'),
+                     self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1),
+                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1),
+                     self.check('autoMitigate', True),
+                     self.check('skipQueryValidation', False),
+                     self.check('checkWorkspaceAlertsStorageConfigured', False)
+                 ])
+        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --condition "count \'placeholder_1\' = 260" --condition-query placeholder_1="union Event | where TimeGenerated > ago(2h)" --description "Test rule 2" --severity 4 --disabled --evaluation-frequency 10m --window-size 10m',
+                 checks=[
+                     self.check('name', '{name1}'),
+                     self.check('scopes[0]', '{vm_id}'),
+                     self.check('severity', 4),
+                     self.check('windowSize', '0:10:00'),
+                     self.check('evaluationFrequency', '0:10:00'),
+                     self.check('criteria.allOf[0].query', 'union Event | where TimeGenerated > ago(2h)'),
+                     self.check('criteria.allOf[0].threshold', 260),
+                     self.check('criteria.allOf[0].timeAggregation', 'Count'),
+                     self.check('criteria.allOf[0].operator', 'Equal')
+                 ])
+        self.cmd('monitor scheduled-query delete -g {rg} -n {name1} -y')
+        with self.assertRaisesRegexp(SystemExit, '3'):
+            self.cmd('monitor scheduled-query show -g {rg} -n {name1}')
+
+
 class ScheduledQueryCondtionTest(unittest.TestCase):
 
     def _build_namespace(self, name_or_id=None, resource_group=None, provider_namespace=None, parent=None,
@@ -176,3 +229,7 @@ class ScheduledQueryCondtionTest(unittest.TestCase):
         self.check_dimension(ns, 0, 'ApiName', 'Include', ['GetBlob', 'PutBlob'])
         self.check_dimension(ns, 1, 'DpiName', 'Exclude', ['CCC'])
         self.check_falling_period(ns, 1, 10)
+
+        ns = self._build_namespace()
+        self.call_condition(ns, 'avg "Perf" = 90')
+        self.check_condition(ns, 'Average', 'Perf', 'Equal', '90')

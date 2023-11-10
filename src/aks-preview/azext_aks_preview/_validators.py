@@ -12,12 +12,14 @@ from ipaddress import ip_network
 from math import isclose, isnan
 
 import azure.cli.core.keys as keys
+from azure.mgmt.containerservice.models import KubernetesSupportPlan
 from azext_aks_preview._consts import (
     ADDONS,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
@@ -189,7 +191,7 @@ def validate_vm_set_type(namespace):
             namespace.vm_set_type.lower() != "virtualmachines" and \
                 namespace.vm_set_type.lower() != "virtualmachinescalesets":
             raise CLIError(
-                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview)")
 
 
 def validate_load_balancer_sku(namespace):
@@ -206,8 +208,8 @@ def validate_sku_tier(namespace):
     if namespace.tier is not None:
         if namespace.tier == '':
             return
-        if namespace.tier.lower() not in (CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD):
-            raise InvalidArgumentValueError("--tier can only be free or standard")
+        if namespace.tier.lower() not in (CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD, CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM):
+            raise InvalidArgumentValueError("--tier can only be free, standard, or premium")
 
 
 def validate_nodepool_taints(namespace):
@@ -339,6 +341,30 @@ def validate_node_public_ip_tags(ns):
         for item in ns.node_public_ip_tags:
             tags_dict.update(validate_tag(item))
         ns.node_public_ip_tags = tags_dict
+
+
+def validate_egress_gtw_nodeselector(namespace):
+    """Validates that provided node selector is a valid format"""
+
+    if not hasattr(namespace, 'egx_gtw_nodeselector'):
+        return
+
+    labels = namespace.egx_gtw_nodeselector
+
+    if labels is None:
+        # no specify any labels
+        namespace.egx_gtw_nodeselector = {}
+        return
+
+    if isinstance(labels, list):
+        labels_dict = {}
+        for item in labels:
+            labels_dict.update(validate_label(item))
+        after_validation_labels = labels_dict
+    else:
+        after_validation_labels = validate_label(labels)
+
+    namespace.egx_gtw_nodeselector = after_validation_labels
 
 
 def validate_nodepool_labels(namespace):
@@ -616,16 +642,6 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
         raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
 
 
-def validate_image_cleaner_enable_disable_mutually_exclusive(namespace):
-    enable_image_cleaner = namespace.enable_image_cleaner
-    disable_image_cleaner = namespace.disable_image_cleaner
-
-    if enable_image_cleaner and disable_image_cleaner:
-        raise MutuallyExclusiveArgumentError(
-            "Cannot specify --enable-image-cleaner and --disable-image-cleaner at the same time."
-        )
-
-
 def validate_enable_custom_ca_trust(namespace):
     """Validates Custom CA Trust can only be used on Linux."""
     if namespace.enable_custom_ca_trust:
@@ -658,6 +674,11 @@ def validate_defender_config_parameter(namespace):
 def validate_defender_disable_and_enable_parameters(namespace):
     if namespace.disable_defender and namespace.enable_defender:
         raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')
+
+
+def validate_force_upgrade_disable_and_enable_parameters(namespace):
+    if namespace.disable_force_upgrade and namespace.enable_force_upgrade:
+        raise MutuallyExclusiveArgumentError('Providing both --disable-force-upgrade and --enable-force-upgrade flags is invalid')
 
 
 def sanitize_resource_id(resource_id):
@@ -761,3 +782,21 @@ def validate_os_sku(namespace):
             CONST_OS_SKU_CBLMARINER,
             CONST_OS_SKU_MARINER,
         )
+
+
+def validate_azure_service_mesh_revision(namespace):
+    """Validates the user provided revision parameter for azure service mesh commands."""
+    if namespace.revision is None:
+        return
+    revision = namespace.revision
+    asm_revision_regex = re.compile(r'^asm-\d+-\d+$')
+    found = asm_revision_regex.findall(revision)
+    if not found:
+        raise InvalidArgumentValueError(f"Revision {revision} is not supported by the service mesh add-on.")
+
+
+def validate_artifact_streaming(namespace):
+    """Validates that artifact streaming enablement can only be used on Linux."""
+    if namespace.enable_artifact_streaming:
+        if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() == "windows":
+            raise ArgumentUsageError('--enable-artifact-streaming can only be set for Linux nodepools')

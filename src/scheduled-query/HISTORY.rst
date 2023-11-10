@@ -2,6 +2,13 @@
 
 Release History
 ===============
+0.5.3
+++++++
+* Upgrade antlr to 4.13.1
+
+0.5.2
+++++++
+* Fix scheduled query condition operator mapping
 
 0.5.1
 ++++++

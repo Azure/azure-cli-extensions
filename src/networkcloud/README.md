@@ -35,8 +35,6 @@ Below is a high-level overview of networkcloud commands.
 | az networkcloud cluster bmckeyset              | Provides commands to manage cluster's baseboard management controller key set.     |
 | az networkcloud cluster metricsconfiguration   | Provides commands to manage cluster's metrics configurations.                      |
 | az networkcloud clustermanager                 | Provides commands to manage cluster managers.                                      |
-| az networkcloud defaultcninetwork              | Provides commands to manage default CNI networks.                                  |
-| az networkcloud hybridakscluster               | Provides commands to manage additional details of Hybrid Aks provisioned clusters. |
 | az networkcloud kubernetescluster              | Provides commands to manage Kubernetes clusters.                                   |
 | az networkcloud kubernetescluster agentpool    | Provides commands to manage Kubernetes cluster's agent pool.                       |
 | az networkcloud l2network                      | Provides commands to manage layer 2 (L2) networks.                                 |

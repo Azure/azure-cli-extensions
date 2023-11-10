@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/environmenttypes/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/environmenttypes/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -48,14 +48,23 @@ class Create(AAZCommand):
             options=["-n", "--name", "--environment-type-name"],
             help="The name of the environment type.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
             help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -120,6 +129,11 @@ class Create(AAZCommand):
             options=["--deployment-target-id"],
             arg_group="Properties",
             help="ID of a subscription that the environment type will be mapped to. The environment's resources will be deployed into this subscription.",
+        )
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
+            arg_group="Properties",
+            help="The display name of the project environment type.",
         )
         _args_schema.status = AAZStrArg(
             options=["--status"],
@@ -230,7 +244,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -273,6 +287,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("creatorRoleAssignment", AAZObjectType)
                 properties.set_prop("deploymentTargetId", AAZStrType, ".deployment_target_id")
+                properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("status", AAZStrType, ".status")
                 properties.set_prop("userRoleAssignments", AAZDictType, ".user_role_assignments")
 
@@ -375,6 +390,13 @@ class Create(AAZCommand):
             )
             properties.deployment_target_id = AAZStrType(
                 serialized_name="deploymentTargetId",
+            )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.environment_count = AAZIntType(
+                serialized_name="environmentCount",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

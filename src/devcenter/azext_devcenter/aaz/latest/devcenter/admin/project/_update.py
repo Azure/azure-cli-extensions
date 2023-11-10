@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -52,9 +52,13 @@ class Update(AAZCommand):
             help="The name of the project.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -80,6 +84,12 @@ class Update(AAZCommand):
             options=["--description"],
             arg_group="Properties",
             help="Description of the project.",
+            nullable=True,
+        )
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
+            arg_group="Properties",
+            help="The display name of the project.",
             nullable=True,
         )
         _args_schema.max_dev_boxes_per_user = AAZIntArg(
@@ -171,7 +181,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -270,7 +280,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -334,6 +344,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("maxDevBoxesPerUser", AAZIntType, ".max_dev_boxes_per_user")
 
             tags = _builder.get(".tags")
@@ -400,6 +411,9 @@ class _UpdateHelper:
         properties.dev_center_uri = AAZStrType(
             serialized_name="devCenterUri",
             flags={"read_only": True},
+        )
+        properties.display_name = AAZStrType(
+            serialized_name="displayName",
         )
         properties.max_dev_boxes_per_user = AAZIntType(
             serialized_name="maxDevBoxesPerUser",

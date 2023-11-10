@@ -43,7 +43,7 @@ class TestGetResourceId(unittest.TestCase):
                 "invalid/resource",
             )
 
-    def test_get_resource_id_with_child1_id(self):
+    def test_get_resource_id_with_child1_id_and_diff_rg(self):
         cmd = self._get_test_cmd()
 
         res_id = (
@@ -53,7 +53,7 @@ class TestGetResourceId(unittest.TestCase):
         )
         result = get_resource_id(
             cmd,
-            "contoso-rg",
+            "contoso-parent-rg",
             "Microsoft.HybridCompute",
             "Machines",
             None,
