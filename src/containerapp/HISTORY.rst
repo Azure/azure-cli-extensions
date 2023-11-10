@@ -10,6 +10,8 @@ upcoming
 * 'az containerapp patch apply': support image patching for java application
 * Upgrade api-version to 2023-08-01-preview
 * 'az container app create/update': support --logs-dynamic-json-columns/-j to configure whether to parse json string log into dynamic json columns
+* 'az container app create/update/up': Remove the region check for the Cloud Build feature
+* 'az container app create/update/up': Improve logs on the local buildpack source to cloud flow
 
 0.3.43
 ++++++
