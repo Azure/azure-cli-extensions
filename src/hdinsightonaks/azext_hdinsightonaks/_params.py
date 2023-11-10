@@ -10,7 +10,7 @@
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    with self.argument_context('hdinsightonaks cluster trino-hive-catalog create') as c:
+    with self.argument_context('hdinsight-on-aks cluster trino-hive-catalog create') as c:
         c.argument('catalog_name',
                    help='Name of trino catalog which should use specified hive metastore.')
         c.argument('metastore_db_connection_url', options_list=['--metastore-db-connection-url', '--url'],
@@ -23,7 +23,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('metastore_warehouse_dir', options_list=['--metastore-warehouse-dir', '--warehouse-dir'],
                    help='Warehouse directory for hive metastore database.')
 
-    with self.argument_context('hdinsightonaks cluster node-profile create') as c:
+    with self.argument_context('hdinsight-on-aks cluster node-profile create') as c:
         c.argument('count',
                    help='The number of virtual machines.', required=True)
         c.argument('node_type',
@@ -31,7 +31,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('vm_size',
                    help='The virtual machine SKU.', required=True)
 
-    with self.argument_context('hdinsightonaks cluster secret create') as c:
+    with self.argument_context('hdinsight-on-aks cluster secret create') as c:
         c.argument('secret_name',
                    help='The secret name in the key vault.', required=True)
         c.argument('reference_name',
@@ -39,7 +39,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('version',
                    help='The version of the secret in key vault.')
 
-    with self.argument_context('hdinsightonaks cluster flink-job create') as c:
+    with self.argument_context('hdinsight-on-aks cluster flink-job create') as c:
         c.argument('job_name',
                    help='The name of the Flink job.', required=True)
         c.argument('action',

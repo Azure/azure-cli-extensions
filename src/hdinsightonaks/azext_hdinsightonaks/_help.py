@@ -10,42 +10,42 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-helps['hdinsightonaks cluster node-profile'] = """
+helps['hdinsight-on-aks cluster node-profile'] = """
 type: group
 short-summary: Manage compute node profile.
 """
 
-helps['hdinsightonaks cluster node-profile create'] = """
+helps['hdinsight-on-aks cluster node-profile create'] = """
 type: command
 short-summary: Create a node profile with SKU and worker count.
 """
 
-helps['hdinsightonaks cluster trino-hive-catalog'] = """
+helps['hdinsight-on-aks cluster trino-hive-catalog'] = """
 type: group
 short-summary: Manage hive catalog config.
 """
 
-helps['hdinsightonaks cluster trino-hive-catalog create'] = """
+helps['hdinsight-on-aks cluster trino-hive-catalog create'] = """
 type: command
 short-summary: Create a hive catalog configured as a Trino cluster.
 """
 
-helps['hdinsightonaks cluster secret'] = """
+helps['hdinsight-on-aks cluster secret'] = """
 type: group
 short-summary: Manage secret reference.
 """
 
-helps['hdinsightonaks cluster secret create'] = """
+helps['hdinsight-on-aks cluster secret create'] = """
 type: command
 short-summary: Create a reference to provide a secret to store the password for accessing the database.
 """
 
-helps['hdinsightonaks cluster flink-job'] = """
+helps['hdinsight-on-aks cluster flink-job'] = """
 type: group
 short-summary: Manage flink job properties.
 """
 
-helps['hdinsightonaks cluster flink-job create'] = """
+helps['hdinsight-on-aks cluster flink-job create'] = """
 type: command
 short-summary: Create an object as a parameter for submitting cluster work.
 """
