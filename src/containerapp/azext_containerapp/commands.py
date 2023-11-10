@@ -110,7 +110,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_containerapps_from_compose')
 
     with self.command_group('containerapp env workload-profile') as g:
-        g.custom_command('set', 'set_workload_profile', deprecate_info=g.deprecate(hide=True))
+        g.custom_command('set', 'set_workload_profile', deprecate_info=self.deprecate(redirect='containerapp env workload-profile add/update', hide=True))
 
     with self.command_group('containerapp patch', is_preview=True) as g:
         g.custom_command('list', 'patch_list')
