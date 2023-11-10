@@ -40,7 +40,7 @@ logger = get_logger(__name__)
 
 
 def process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name, name,
-                    binding_name, service_connector_def_list, service_bindings_def_list):
+                    binding_name, service_connector_def_list, service_bindings_def_list, customized_keys=None):
     # Check if the service exists in the list of dict
     for service in resource_list:
         if service["name"] == service_name:
@@ -74,11 +74,14 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
 
                 if service_type is None or service_type not in DEV_SERVICE_LIST:
                     raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
-
-                service_bindings_def_list.append({
+                service_bind = {
                     "serviceId": containerapp_def["id"],
-                    "name": binding_name
-                })
+                    "name": binding_name,
+                    "clientType": arg_dict.get("clientType")
+                }
+                if customized_keys:
+                    service_bind["customizedKeys"] = customized_keys
+                service_bindings_def_list.append(service_bind)
 
             else:
                 raise ValidationError("Service not supported")
@@ -140,7 +143,7 @@ def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def
         return True
 
 
-def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name):
+def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name, customized_keys=None):
     # Make it return both managed and dev bindings
     service_bindings_def_list = []
     service_connector_def_list = []
@@ -194,7 +197,7 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
 
         # Will work for both create and update
         process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name,
-                        name, binding_name, service_connector_def_list, service_bindings_def_list)
+                        name, binding_name, service_connector_def_list, service_bindings_def_list, customized_keys)
 
     return service_connector_def_list, service_bindings_def_list
 
