@@ -572,6 +572,15 @@ examples:
         az containerapp auth update -g myResourceGroup --name MyContainerapp --proxy-convention Standard
 """
 
+helps['containerapp env workload-profile set'] = """
+    type: command
+    short-summary: Create or update an existing workload profile in a Container Apps environment
+    examples:
+    - name: Create or update an existing workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile set -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
+"""
+
 # Compose commands
 helps['containerapp compose'] = """
     type: group
