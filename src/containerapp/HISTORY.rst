@@ -14,6 +14,7 @@ upcoming
 * 'az containerapp env create/update': Support --logs-dynamic-json-columns/-j to configure whether to parse json string log into dynamic json columns
 * 'az containerapp create/update/up': Remove the region check for the Cloud Build feature
 * 'az containerapp create/update/up': Improve logs on the local buildpack source to cloud flow
+* 'az containerapp create/update': Support --customized-keys and clientType in --bind for dev service
 
 0.3.43
 ++++++
