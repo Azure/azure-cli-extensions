@@ -20,7 +20,8 @@ export AZURE_EXTENSION_INDEX_URL=https://raw.githubusercontent.com/Azure/azure-c
 output=$(az extension list-available --query [].name -otsv)
 # azure-cli-ml is replaced by ml
 # disable alias which relies on Jinja2 2.10
-blocklist=("azure-cli-ml" "alias")
+# disable azure-iot-ops temporarily which requires kubernetes >= 27.2
+blocklist=("azure-cli-ml" "alias" "azure-iot-ops")
 
 rm -f ~/.azure/extCmdTreeToUpload.json
 
