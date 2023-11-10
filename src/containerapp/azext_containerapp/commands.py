@@ -109,6 +109,10 @@ def load_command_table(self, _):
         g.custom_show_command('delete', 'delete_dapr_component_resiliency', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_dapr_component_resiliency')
         g.custom_show_command('list', 'list_dapr_component_resiliencies')
+    
+    with self.command_group('containerapp service milvus') as g:
+        g.custom_command('create', 'create_milvus_service', supports_no_wait=True)
+        g.custom_command('delete', 'delete_milvus_service', confirmation=True, supports_no_wait=True)
 
     with self.command_group('containerapp github-action') as g:
         g.custom_command('add', 'create_or_update_github_action', exception_handler=ex_handler_factory())
