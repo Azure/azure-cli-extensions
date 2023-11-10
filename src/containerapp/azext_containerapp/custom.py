@@ -1092,6 +1092,10 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
     return containerapps_from_compose
 
 
+def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
+
+
 def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
     # Ensure that Docker is running locally before attempting to use the pack CLI
     if is_docker_running() is False:
