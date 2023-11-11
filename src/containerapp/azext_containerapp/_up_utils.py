@@ -582,6 +582,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         from azure.cli.command_modules.acr._client_factory import cf_acr_tasks, cf_acr_runs
         from azure.cli.core.profiles import ResourceType
 
+        # Validate that the source provided is a directory, and not a file.
+        if os.path.isfile(source):
+            raise ValidationError(f"Impossible to build the artifact file {source} with ACR Task. Please make sure that you use --source and target a directory, or if you want to build your artifact locally, please make sure Docker is running on your machine.")
+
         task_name = "cli_build_containerapp"
         registry_name = (self.registry_server[: self.registry_server.rindex(ACR_IMAGE_SUFFIX)]).lower()
         if not self.target_port:
