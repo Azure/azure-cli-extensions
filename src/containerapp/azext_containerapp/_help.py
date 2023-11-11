@@ -280,6 +280,11 @@ helps['containerapp service qdrant delete'] = """
     short-summary: Command to delete the qdrant service.
 """
 
+helps['containerapp service milvus delete'] = """
+    type: command
+    short-summary: Command to delete the milvus service.
+"""
+
 helps['containerapp resiliency'] = """
     type: group
     short-summary: Commands to manage resiliency policies for a container app.
@@ -377,6 +382,11 @@ helps['containerapp add-on qdrant'] = """
     short-summary: Commands to manage the qdrant add-on for the Container Apps environment.
 """
 
+helps['containerapp add-on milvus'] = """
+    type: group
+    short-summary: Commands to manage the milvus add-on for the Container Apps environment.
+"""
+
 helps['containerapp add-on redis create'] = """
     type: command
     short-summary: Command to create the redis add-on.
@@ -400,6 +410,11 @@ helps['containerapp add-on mariadb create'] = """
 helps['containerapp add-on qdrant create'] = """
     type: command
     short-summary: Command to create the qdrant add-on.
+"""
+
+helps['containerapp add-on milvus create'] = """
+    type: command
+    short-summary: Command to create the milvus add-on.
 """
 
 helps['containerapp add-on redis delete'] = """
@@ -427,7 +442,7 @@ helps['containerapp add-on qdrant delete'] = """
     short-summary: Command to delete the qdrant add-on.
 """
 
-helps['containerapp service milvus delete'] = """
+helps['containerapp add-on milvus delete'] = """
     type: command
     short-summary: Command to delete the milvus service.
 """

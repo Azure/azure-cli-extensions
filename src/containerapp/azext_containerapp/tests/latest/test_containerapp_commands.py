@@ -1030,7 +1030,8 @@ class ContainerappServiceBindingTests(ScenarioTest):
         kafka_ca_name = 'kafka'
         mariadb_ca_name = 'mariadb'
         qdrant_ca_name = "qdrant"
-        ADDON_LIST = ["redis", "postgres", "kafka", "mariadb", "qdrant"]
+        milvus_ca_name = "milvus"
+        ADDON_LIST = ["redis", "postgres", "kafka", "mariadb", "qdrant", "milvus"]
         create_containerapp_env(self, env_name, resource_group)
 
         self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(
@@ -1048,6 +1049,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
         self.cmd('containerapp add-on qdrant create -g {} -n {} --environment {}'.format(
             resource_group, qdrant_ca_name, env_name))
 
+        self.cmd('containerapp add-on milvus create -g {} -n {} --environment {}'.format(
+            resource_group, milvus_ca_name, env_name))
+
         for addon in ADDON_LIST:
             self.cmd(f'containerapp show -g {resource_group} -n {addon}', checks=[
                 JMESPathCheck("properties.provisioningState", "Succeeded")])
@@ -1063,14 +1067,15 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant milvus'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
             JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
-            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant")
+            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant"),
+            JMESPathCheck('properties.template.serviceBinds[4].name', "milvus")
         ])
 
         self.cmd('containerapp add-on postgres delete -g {} -n {} --yes'.format(
@@ -1086,6 +1091,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
             resource_group, mariadb_ca_name, env_name))
 
         self.cmd('containerapp add-on qdrant delete -g {} -n {} --yes'.format(
+            resource_group, qdrant_ca_name, env_name))
+
+        self.cmd('containerapp add-on milvus delete -g {} -n {} --yes'.format(
             resource_group, qdrant_ca_name, env_name))
 
         self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes')

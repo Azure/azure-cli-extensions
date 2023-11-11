@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp add-on/service' : support for add-on/service milvus create and delete commands
 * 'az containerapp env workload-profile set': deprecate command
 * 'az containerapp add-on': support for az containerapp add-on commands; deprecation of az containerapp service commands
 * 'az containerapp env dapr-component resiliency': Add Dapr Component Resiliency commands
