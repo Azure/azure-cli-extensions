@@ -61,9 +61,6 @@ def create_and_verify_containerapp_up(
             target_port = None,
             app_name = None,
             requires_acr_prerequisite = False):
-        # Configure the default location
-        test_cls.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
         # Ensure that the Container App environment is created
         if env_name is None:
            env_name = test_cls.create_random_name(prefix='env', length=24)
