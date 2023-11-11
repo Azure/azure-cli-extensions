@@ -2194,7 +2194,7 @@ def get_custom_locations_oid(cmd, cl_oid):
     try:
         sp_graph_client = get_graph_client_service_principals(cmd.cli_ctx)
         sub_filters = []
-        sub_filters.append("appId eq '{}'".format("bc313c14-388c-4e7d-a58e-70017303ee3b")) # lookup using well-known first-party application id
+        sub_filters.append("appId eq '{}'".format("bc313c14-388c-4e7d-a58e-70017303ee3b"))  # Lookup using well-known first-party application id
         result = list(sp_graph_client.list(filter=(' and '.join(sub_filters))))
         if len(result) != 0:
             if cl_oid is not None and cl_oid != result[0].object_id:
