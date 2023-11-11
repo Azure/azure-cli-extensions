@@ -927,9 +927,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
         self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name2, resource_group), expect_failure=False)
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="eastus2")
+    @ResourceGroupPreparer(location="westcentralus")
     def test_containerapp_dev_service_binding_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        self.cmd('configure --defaults location={}'.format("westcentralus"))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -1018,9 +1018,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
         self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="eastus2")
+    @ResourceGroupPreparer(location="westcentralus")
     def test_containerapp_addon_binding_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        self.cmd('configure --defaults location={}'.format("westcentralus"))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
