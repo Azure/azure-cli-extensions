@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "azurelargeinstance show",
+    "large-storage-instance update",
 )
-class Show(AAZCommand):
-    """Get an Azure Large Instance for the specified subscription, resource group, and instance name.
+class Update(AAZCommand):
+    """Update the Tags field of a Azure Large Storage Instance for the specified subscription, resource group, and instance name.
 
-    :example: To show details about an Azure Large Instance
-        az azurelargeinstance show --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP
+    :example: To add an Azure Large Storage Instance tag
+        az large-storage-instance update --subscription $SUBSCRIPTION_ID --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --tags newKey=value
     """
 
     _aaz_info = {
         "version": "2023-07-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances/{}", "2023-07-20-preview"],
         ]
     }
 
@@ -46,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.instance_name = AAZStrArg(
             options=["-n", "--name", "--instance-name"],
-            help="Name of the AzureLargeInstance.",
+            help="Name of the AzureLargeStorageInstance.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -56,11 +56,23 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "TagsParameter"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="TagsParameter",
+            help="Tags field of the AzureLargeInstance instance.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AzureLargeInstanceGet(ctx=self.ctx)()
+        self.AzureLargeStorageInstanceUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,7 +87,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class AzureLargeInstanceGet(AAZHttpOperation):
+    class AzureLargeStorageInstanceUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -89,13 +101,13 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstances/{azureLargeInstanceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances/{azureLargeStorageInstanceName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -105,7 +117,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "azureLargeInstanceName", self.ctx.args.instance_name,
+                    "azureLargeStorageInstanceName", self.ctx.args.instance_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -133,10 +145,28 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -178,104 +208,39 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.azure_large_instance_id = AAZStrType(
-                serialized_name="azureLargeInstanceId",
-                flags={"read_only": True},
+            properties.azure_large_storage_instance_unique_identifier = AAZStrType(
+                serialized_name="azureLargeStorageInstanceUniqueIdentifier",
             )
-            properties.hardware_profile = AAZObjectType(
-                serialized_name="hardwareProfile",
-            )
-            properties.hw_revision = AAZStrType(
-                serialized_name="hwRevision",
-                flags={"read_only": True},
-            )
-            properties.network_profile = AAZObjectType(
-                serialized_name="networkProfile",
-            )
-            properties.os_profile = AAZObjectType(
-                serialized_name="osProfile",
-            )
-            properties.partner_node_id = AAZStrType(
-                serialized_name="partnerNodeId",
-            )
-            properties.power_state = AAZStrType(
-                serialized_name="powerState",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.proximity_placement_group = AAZStrType(
-                serialized_name="proximityPlacementGroup",
-                flags={"read_only": True},
-            )
-            properties.storage_profile = AAZObjectType(
-                serialized_name="storageProfile",
+            properties.storage_properties = AAZObjectType(
+                serialized_name="storageProperties",
             )
 
-            hardware_profile = cls._schema_on_200.properties.hardware_profile
-            hardware_profile.azure_large_instance_size = AAZStrType(
-                serialized_name="azureLargeInstanceSize",
-                flags={"read_only": True},
-            )
-            hardware_profile.hardware_type = AAZStrType(
+            storage_properties = cls._schema_on_200.properties.storage_properties
+            storage_properties.generation = AAZStrType()
+            storage_properties.hardware_type = AAZStrType(
                 serialized_name="hardwareType",
-                flags={"read_only": True},
+            )
+            storage_properties.offering_type = AAZStrType(
+                serialized_name="offeringType",
+            )
+            storage_properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+            )
+            storage_properties.storage_billing_properties = AAZObjectType(
+                serialized_name="storageBillingProperties",
+            )
+            storage_properties.storage_type = AAZStrType(
+                serialized_name="storageType",
+            )
+            storage_properties.workload_type = AAZStrType(
+                serialized_name="workloadType",
             )
 
-            network_profile = cls._schema_on_200.properties.network_profile
-            network_profile.circuit_id = AAZStrType(
-                serialized_name="circuitId",
-                flags={"read_only": True},
+            storage_billing_properties = cls._schema_on_200.properties.storage_properties.storage_billing_properties
+            storage_billing_properties.billing_mode = AAZStrType(
+                serialized_name="billingMode",
             )
-            network_profile.network_interfaces = AAZListType(
-                serialized_name="networkInterfaces",
-            )
-
-            network_interfaces = cls._schema_on_200.properties.network_profile.network_interfaces
-            network_interfaces.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.network_profile.network_interfaces.Element
-            _element.ip_address = AAZStrType(
-                serialized_name="ipAddress",
-            )
-
-            os_profile = cls._schema_on_200.properties.os_profile
-            os_profile.computer_name = AAZStrType(
-                serialized_name="computerName",
-            )
-            os_profile.os_type = AAZStrType(
-                serialized_name="osType",
-                flags={"read_only": True},
-            )
-            os_profile.ssh_public_key = AAZStrType(
-                serialized_name="sshPublicKey",
-            )
-            os_profile.version = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            storage_profile = cls._schema_on_200.properties.storage_profile
-            storage_profile.nfs_ip_address = AAZStrType(
-                serialized_name="nfsIpAddress",
-                flags={"read_only": True},
-            )
-            storage_profile.os_disks = AAZListType(
-                serialized_name="osDisks",
-            )
-
-            os_disks = cls._schema_on_200.properties.storage_profile.os_disks
-            os_disks.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.storage_profile.os_disks.Element
-            _element.disk_size_gb = AAZIntType(
-                serialized_name="diskSizeGB",
-            )
-            _element.lun = AAZIntType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType()
+            storage_billing_properties.sku = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -303,8 +268,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _UpdateHelper:
+    """Helper class for Update"""
 
 
-__all__ = ["Show"]
+__all__ = ["Update"]

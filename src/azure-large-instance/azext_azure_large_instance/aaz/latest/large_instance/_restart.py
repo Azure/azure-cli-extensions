@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "azurelargeinstance shutdown",
+    "large-instance restart",
 )
-class Shutdown(AAZCommand):
-    """The operation to shutdown an Azure Large Instance (only for compute instances)
+class Restart(AAZCommand):
+    """The operation to restart an Azure Large Instance (only for compute instances)
 
-    :example: To shutdown an Azure Large Instance
-        az azurelargeinstance shutdown --resource-group $RESOURCE_GROUP --instance-name $INSTANCE_NAME
+    :example: To restart an Azure Large Instance
+        az large-instance restart --subscription $SUBSCRIPTION_ID --resource-group $RESOURCE_GROUP --instance-name $INSTANCE_NAME
     """
 
     _aaz_info = {
         "version": "2023-07-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}/shutdown", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}/restart", "2023-07-20-preview"],
         ]
     }
 
@@ -57,11 +57,21 @@ class Shutdown(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "ForceParameter"
+
+        _args_schema = cls._args_schema
+        _args_schema.force_state = AAZStrArg(
+            options=["--force-state"],
+            arg_group="ForceParameter",
+            help="Whether to force restart by shutting all processes.",
+            enum={"active": "active", "inactive": "inactive"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.AzureLargeInstanceShutdown(ctx=self.ctx)()
+        yield self.AzureLargeInstanceRestart(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +86,7 @@ class Shutdown(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class AzureLargeInstanceShutdown(AAZHttpOperation):
+    class AzureLargeInstanceRestart(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -106,7 +116,7 @@ class Shutdown(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstances/{azureLargeInstanceName}/shutdown",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstances/{azureLargeInstanceName}/restart",
                 **self.url_parameters
             )
 
@@ -150,10 +160,24 @@ class Shutdown(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"client_flatten": True}}
+            )
+            _builder.set_prop("forceState", AAZStrType, ".force_state")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -171,13 +195,13 @@ class Shutdown(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _ShutdownHelper._build_schema_operation_status_result_read(cls._schema_on_200)
+            _RestartHelper._build_schema_operation_status_result_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
 
-class _ShutdownHelper:
-    """Helper class for Shutdown"""
+class _RestartHelper:
+    """Helper class for Restart"""
 
     _schema_error_detail_read = None
 
@@ -285,4 +309,4 @@ class _ShutdownHelper:
         _schema.status = cls._schema_operation_status_result_read.status
 
 
-__all__ = ["Shutdown"]
+__all__ = ["Restart"]

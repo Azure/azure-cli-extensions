@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "azurelargeinstance start",
+    "large-instance start",
 )
 class Start(AAZCommand):
     """The operation to start an Azure Large Instance (only for compute instances)
 
     :example: To start an Azure Large Instance
-        az azurelargeinstance start --resource-group $RESOURCE_GROUP --instance-name $INSTANCE_NAME
+        az large-instance start --subscription $SUBSCRIPTION_ID --resource-group $RESOURCE_GROUP --instance-name $INSTANCE_NAME
     """
 
     _aaz_info = {

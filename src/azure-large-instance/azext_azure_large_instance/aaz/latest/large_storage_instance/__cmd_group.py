@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "azurelargeinstance",
+    "large-storage-instance",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Handle Operations for Compute Azure Large Instances.
+    """Handle Operations for Storage Azure Large Instances.
     """
     pass
 
