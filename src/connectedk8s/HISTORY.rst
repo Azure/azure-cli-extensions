@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.5.5
+++++++
+* Lookup Custom Locations objectId using appId instead of displayName
+
 1.5.4
 ++++++
 * Log debug if 'arcConfigEndpoint' doesn't exist in 'dataplaneEndpoints' ARM metadata.
