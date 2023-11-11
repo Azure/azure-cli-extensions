@@ -584,7 +584,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         # Validate that the source provided is a directory, and not a file.
         if os.path.isfile(source):
-            raise ValidationError(f"Impossible to build the artifact file {source} with ACR Task. Please make sure that you use --source and target a directory, or if you want to build your artifact locally that Docker is running on your machine.")
+            raise ValidationError(f"Impossible to build the artifact file {source} with ACR Task. Please make sure that you use --source and target a directory, or if you want to build your artifact locally, please make sure Docker is running on your machine.")
 
         task_name = "cli_build_containerapp"
         registry_name = (self.registry_server[: self.registry_server.rindex(ACR_IMAGE_SUFFIX)]).lower()
