@@ -729,6 +729,7 @@ def load_arguments(self, _):
         c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
         c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
         c.argument('enable_artifact_streaming', action='store_true', validator=validate_artifact_streaming, is_preview=True)
+        c.argument('disable_artifact_streaming', action='store_true', validator=validate_artifact_streaming, is_preview=True)
         c.argument('node_public_ip_tags', arg_type=tags_type, validator=validate_node_public_ip_tags,
                    help='space-separated tags: key[=value] [key[=value] ...].')
 
@@ -755,6 +756,7 @@ def load_arguments(self, _):
         c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
         c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
         c.argument('enable_artifact_streaming', action='store_true', validator=validate_artifact_streaming, is_preview=True)
+        c.argument('disable_artifact_streaming', action='store_true', validator=validate_artifact_streaming, is_preview=True)
         c.argument('os_sku', arg_type=get_enum_type(node_os_skus_update), validator=validate_os_sku)
 
     with self.argument_context('aks nodepool upgrade') as c:

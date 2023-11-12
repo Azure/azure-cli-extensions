@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `--disable-artifact-streaming` in `az aks nodepool add` and `az aks nodepool update` commands.
 
 0.5.171
 +++++++
