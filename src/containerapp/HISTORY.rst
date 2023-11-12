@@ -4,6 +4,9 @@ Release History
 ===============
 upcoming
 ++++++
+
+0.3.44
+++++++
 * 'az containerapp env workload-profile set': deprecate command
 * 'az containerapp add-on': support for az containerapp add-on commands; deprecation of az containerapp service commands
 * 'az containerapp env dapr-component resiliency': Add Dapr Component Resiliency commands
