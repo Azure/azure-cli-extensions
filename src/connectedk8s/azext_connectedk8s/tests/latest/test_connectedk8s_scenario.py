@@ -150,7 +150,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_connect(self,resource_group):
-
         managed_cluster_name = self.create_random_name(prefix='test-connect', length=24)
         kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
@@ -240,7 +239,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'rbac_app_secret': CONFIG['rbacAppSecret'],
             'location': CONFIG['location']
         })
-        
+
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[

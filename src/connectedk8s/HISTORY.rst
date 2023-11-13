@@ -5,7 +5,9 @@ Release History
 
 1.5.5
 ++++++
-* Setting guard default authnMode to 'arc' when RBAC is enabled.
+* Deprecate 'app-id' and 'app-secret' RBAC params.
+* Use 1P apps for authN/authZ when RBAC is enabled.
+* Add warning to use kubelogin version v0.0.32 or higher which has support for generating PoP token.
 
 1.5.4
 ++++++
