@@ -306,7 +306,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(disabled_cmd1["systemDefaultValues"]['guard']['enabled'] == bool(0))
 
-        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --features azure-rbac --app-id {rbac_app_id} --app-secret {rbac_app_secret}')
+        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --features azure-rbac')
 
         # deleting the cluster
         self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
