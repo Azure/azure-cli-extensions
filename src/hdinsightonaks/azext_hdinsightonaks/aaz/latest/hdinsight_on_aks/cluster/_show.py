@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get a HDInsight cluster.
 
     :example: Get a cluster with cluster name.
-        az hdinsightonaks cluster show  -n testcluster --cluster-pool-name testpool -g RG
+        az hdinsight-on-aks cluster show  -n testcluster --cluster-pool-name testpool -g RG
     """
 
     _aaz_info = {

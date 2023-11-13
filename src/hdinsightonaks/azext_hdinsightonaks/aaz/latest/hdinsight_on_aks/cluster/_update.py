@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update a cluster.
 
     :example: Update a cluster service-config.
-        az hdinsightonaks cluster update -n testpsspark --cluster-pool-name ps-test-pool -g yuchenPSGroup --service-configs-profiles @config.json
+        az hdinsight-on-aks cluster update -n testpsspark --cluster-pool-name ps-test-pool -g yuchenPSGroup --service-configs-profiles @config.json
     """
 
     _aaz_info = {

@@ -19,7 +19,7 @@ class List(AAZCommand):
     """List the HDInsight cluster pools under a resource group.
 
     :example: List all cluster in a cluster pool.
-        az hdinsightonaks cluster list --cluster-pool-name testpool -g RG
+        az hdinsight-on-aks cluster list --cluster-pool-name testpool -g RG
     """
 
     _aaz_info = {

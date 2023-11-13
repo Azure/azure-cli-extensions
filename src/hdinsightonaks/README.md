@@ -35,7 +35,7 @@ az hdinsight-on-aks check-name-availability -l westus3 \
 
 ```sh
 $node-profile = az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D8d_v5
-az hdinsightonaks cluster create -n clustername --cluster-pool-name \
+az hdinsight-on-aks cluster create -n clustername --cluster-pool-name \
  clusterpoolname -g resourcesGroup -l westus3 --assigned-identity-object-id \
  00000000-0000-0000-0000-000000000000 \
  --assigned-identity-client-id 00000000-0000-0000-0000-000000000000 \
@@ -48,13 +48,13 @@ az hdinsightonaks cluster create -n clustername --cluster-pool-name \
 #### Delete a cluster ####
 
 ```sh
-az hdinsightonaks cluster delete -n testcluster --cluster-pool-name testpool -g RG
+az hdinsight-on-aks cluster delete -n testcluster --cluster-pool-name testpool -g RG
 ```
 
 #### List the HDInsight cluster pools under a resource group ####
 
 ```sh
-az hdinsightonaks cluster list --cluster-pool-name testpool -g RG
+az hdinsight-on-aks cluster list --cluster-pool-name testpool -g RG
 ```
 
 #### List the config dump of all services running in cluster ####
@@ -66,12 +66,12 @@ az hdinsight-on-aks cluster list-service-config --cluster-name testcluster --clu
 #### Resize an existing Cluster ####
 
 ```sh
-az hdinsightonaks cluster resize --cluster-name testcluster --cluster-pool-name testpool -g RG -l westus3 --target-worker-node-count 6
+az hdinsight-on-aks cluster resize --cluster-name testcluster --cluster-pool-name testpool -g RG -l westus3 --target-worker-node-count 6
 ```
 #### Get a HDInsight cluster ####
 
 ```sh
-az hdinsightonaks cluster show -n testcluster --cluster-pool-name testpool -g RG
+az hdinsight-on-aks cluster show -n testcluster --cluster-pool-name testpool -g RG
 ```
 
 #### Get the status of a cluster instance ####
@@ -83,50 +83,50 @@ az hdinsight-on-aks cluster show-instance-view --cluster-name testcluster --clus
 #### Update a cluster ####
 
 ```sh
-az hdinsightonaks cluster update -n testpsspark --cluster-pool-name ps-test-pool \
+az hdinsight-on-aks cluster update -n testpsspark --cluster-pool-name ps-test-pool \
  -g yuchenPSGroup --service-configs-profiles @config.json
 ```
 
 #### List jobs of HDInsight on AKS cluster ####
 
 ```sh
-az hdinsightonaks cluster job list --cluster-name testcluster --cluster-pool-name testpool -g RG
+az hdinsight-on-aks cluster job list --cluster-name testcluster --cluster-pool-name testpool -g RG
 ```
 
 #### Operations on jobs of HDInsight on AKS cluster ####
 
 ```sh
-$jobProperty = az hdinsightonaks cluster flink-job create --action NEW --job-name job1 --entry-class com.microsoft.hilo.flink.job.streaming.SleepJob --job-jar-directory abfs://flinkjob@hilosa.dfs.core.windows.net/jars --flink-configuration '{\"parallelism\":\"1\"}' --args test --jar-name jarname --job-name test1
-az hdinsightonaks cluster job run --cluster-name testcluster --cluster-pool-name testpool -g RG--flink-job $jobProperty
+$jobProperty = az hdinsight-on-aks cluster flink-job create --action NEW --job-name job1 --entry-class com.microsoft.hilo.flink.job.streaming.SleepJob --job-jar-directory abfs://flinkjob@hilosa.dfs.core.windows.net/jars --flink-configuration '{\"parallelism\":\"1\"}' --args test --jar-name jarname --job-name test1
+az hdinsight-on-aks cluster job run --cluster-name testcluster --cluster-pool-name testpool -g RG--flink-job $jobProperty
 ```
 
 #### Create a cluster pool ####
 
 ```sh
-az hdinsightonaks clusterpool create -g RG -n poolName -l westus3 --workernode-size Standard_E4s_v3
+az hdinsight-on-aks clusterpool create -g RG -n poolName -l westus3 --workernode-size Standard_E4s_v3
 ```
 
 #### Delete a Cluster Pool ####
 
 ```sh
-az hdinsightonaks clusterpool delete -g RG -n testcluster
+az hdinsight-on-aks clusterpool delete -g RG -n testcluster
 ```
 
 #### List the list of Cluster Pools within a Subscription ####
 
 ```sh
-az hdinsightonaks clusterpool list
+az hdinsight-on-aks clusterpool list
 ```
 
 #### Get a cluster pool ####
 
 ```sh
-az hdinsightonaks clusterpool show -g RG -n testpool
+az hdinsight-on-aks clusterpool show -g RG -n testpool
 ```
 
 #### Update a cluster pool ####
 
 ```sh
-az hdinsightonaks clusterpool update -g RG -n testpool --enable-log-analytics \
+az hdinsight-on-aks clusterpool update -g RG -n testpool --enable-log-analytics \
  --log-analytic-workspace-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/RG/providers/microsoft.operationalinsights/workspaces/yourworkspace"
 ```
