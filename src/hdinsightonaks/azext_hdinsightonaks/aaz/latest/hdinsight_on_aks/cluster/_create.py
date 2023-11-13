@@ -18,8 +18,17 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a cluster.
 
-    :example: Create a Trino cluster. need use az hdinsightonaks cluster node-profile create a node profile frist.
+    :example: Create a Trino cluster. need use az hdinsight-on-aks cluster node-profile create $node frist.
+        az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D8d_v5
         az hdinsightonaks cluster create -n clustername --cluster-pool-name clusterpoolname -g resourcesGroup -l westus3 --assigned-identity-object-id 00000000-0000-0000-0000-000000000000 --assigned-identity-client-id 00000000-0000-0000-0000-000000000000 --authorization-user-id 00000000-0000-0000-0000-000000000000 --assigned-identity-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi --cluster-type Trino --cluster-version 1.0.6 --oss-version 0.410.0 --nodes $node-profile
+
+    :example: Create a Flink cluster.
+        az hdinsight-on-aks cluster create  -n clustername --cluster-pool-name clusterpoolname -g RG -l westus3 --assigned-identity-object-id 00000000-0000-0000-0000-000000000000 --assigned-identity-client-id 00000000-0000-0000-0000-000000000000 --authorization-user-id 00000000-0000-0000-0000-000000000000 --assigned-identity-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi --cluster-type Flink --cluster-version flinkversion --oss-version flinkossversion --nodes nodes --flink-storage-uri storageUri --job-manager-cpu 1 --job-manager-memory 2000 --task-manager-cpu 6 --task-manager-memory 49016
+
+    :example: Create Trino cluster with hive catalog.
+        az hdinsight-on-aks cluster trino-hive-catalog create --catalog-name catalogName --metastore-db-connection-url metastoreDbConnectionURL --metastore-db-connection-user-name metastoreDbUserName  --metastore-db-connection-password-secret metastoreDbPasswordSecret --metastore-warehouse-dir metastoreWarehouseDir
+        az hdinsight-on-aks cluster secret create --secret-name secretName  --reference-name secretName
+        az hdinsightonaks cluster create -n clustername --cluster-pool-name clusterpoolname -g resourcesGroup -l westus3 --assigned-identity-object-id 00000000-0000-0000-0000-000000000000 --assigned-identity-client-id 00000000-0000-0000-0000-000000000000 --authorization-user-id 00000000-0000-0000-0000-000000000000 --assigned-identity-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi --cluster-type Trino --cluster-version 1.0.6 --oss-version 0.410.0 --nodes $node-profile --secret-reference secretReference --key-vault-id yourkeyVaultResourceId --trino-hive-catalog trinoHiveCatalogOption
     """
 
     _aaz_info = {
