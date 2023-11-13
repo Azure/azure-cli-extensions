@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update a cluster pool.
 
     :example: Updates an existing Cluster enable log analytic.
-        az hdinsight-on-aksclusterpool update -g RG -n testpool --enable-log-analytics --log-analytic-workspace-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/RG/providers/microsoft.operationalinsights/workspaces/yourworkspace"
+        az hdinsight-on-aks clusterpool update -g RG -n testpool --enable-log-analytics --log-analytic-workspace-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/RG/providers/microsoft.operationalinsights/workspaces/yourworkspace"
     """
 
     _aaz_info = {
