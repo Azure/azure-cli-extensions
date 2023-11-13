@@ -19,7 +19,7 @@ class Resize(AAZCommand):
     """Resize an existing Cluster.
 
     :example: Resize a cluster.
-        az az hdinsightonaks cluster resize --cluster-name testcluster --cluster-pool-name testpool -g RG -l westus3 --target-worker-node-count 6
+        az hdinsightonaks cluster resize --cluster-name testcluster --cluster-pool-name testpool -g RG -l westus3 --target-worker-node-count 6
     """
 
     _aaz_info = {

@@ -19,10 +19,10 @@ class List(AAZCommand):
     """List the list of Cluster Pools within a Subscription.
 
     :example: Lists the list of clusterpool in a resource group.
-        az az hdinsightonaks clusterpool list -g RG
+        az hdinsightonaks clusterpool list -g RG
 
     :example: List the list of Cluster Pools within a Subscription.
-        az az hdinsightonaks clusterpool list
+        az hdinsightonaks clusterpool list
     """
 
     _aaz_info = {

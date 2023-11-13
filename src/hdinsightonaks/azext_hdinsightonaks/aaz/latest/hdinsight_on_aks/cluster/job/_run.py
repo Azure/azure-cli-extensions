@@ -19,8 +19,8 @@ class Run(AAZCommand):
     """Operations on jobs of HDInsight on AKS cluster.
 
     :example: Operations on jobs of HDInsight on AKS cluster.
-        az az hdinsightonaks cluster flink-job create --action NEW --job-name job1 --entry-class com.microsoft.hilo.flink.job.streaming.SleepJob --job-jar-directory abfs://flinkjob@hilosa.dfs.core.windows.net/jars --flink-configuration '{\"parallelism\":\"1\"}' --args test --jar-name jarname --job-name test1
-        az az hdinsightonaks cluster job run --cluster-name testcluster --cluster-pool-name testpool -g RG--flink-job {jobProperty}
+        az hdinsightonaks cluster flink-job create --action NEW --job-name job1 --entry-class com.microsoft.hilo.flink.job.streaming.SleepJob --job-jar-directory abfs://flinkjob@hilosa.dfs.core.windows.net/jars --flink-configuration '{\"parallelism\":\"1\"}' --args test --jar-name jarname --job-name test1
+        az hdinsightonaks cluster job run --cluster-name testcluster --cluster-pool-name testpool -g RG--flink-job {jobProperty}
     """
 
     _aaz_info = {
@@ -92,10 +92,6 @@ class Run(AAZCommand):
         flink_job.jar_name = AAZStrArg(
             options=["jar-name"],
             help="A string property that represents the name of the job JAR.",
-        )
-        flink_job.type = AAZStrArg(
-            options=["type"],
-            help="A string property that run job type",
         )
         flink_job.job_jar_directory = AAZStrArg(
             options=["job-jar-directory"],
