@@ -21,43 +21,55 @@ helps['fleet create'] = """
           short-summary: Prefix for hostnames that are created. If not specified, generate a hostname using the
                          managed cluster and resource group names.
     examples:
-        - name: Create a hubless fleet
-          text: az fleet create -g MyResourceGroup -l MyLocation -n MyFleetName --tags "TagKey=TagValue"
-        - name: Create a hubful fleet
-          text: az fleet create -g MyResourceGroup -l MyLocation -n MyFleetName --enable-hub --tags "TagKey=TagValue"
-
+        - name: Create a hubless fleet.
+          text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --tags "TagKey=TagValue"
+        - name: Create a hubful fleet.
+          text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --enable-hub --tags "TagKey=TagValue"
+        - name: Create a fleet with a system assigned Managed Service Identity.
+          text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --enable-managed-identity
+        - name: Create a fleet with a user provided Managed Service Identity.
+          text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --enable-managed-identity --assign-identity "/subscription/00000000-0000-0000-0000-000000000000/resourcegroup/MyFleetResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity"
 """
 
 helps['fleet update'] = """
     type: command
     short-summary: Patches a fleet resource.
     examples:
-        - name: Update a Fleet's tags
-          text: az fleet update -g MyResourceGroup -n MyFleetName --tags Key=Value
+        - name: Update a Fleet's tags.
+          text: az fleet update -g MyFleetResourceGroup -n MyFleetName --tags Key=Value
         - name: Update a Fleet to use a system assigned managed service identity.
-          text: az fleet update -g MyResourceGroup -n MyFleetName --enable-managed-identity --tags Key=Value
+          text: az fleet update -g MyFleetResourceGroup -n MyFleetName --enable-managed-identity --tags Key=Value
         - name: Update a Fleet to use a user assigned managed service identity.
-          text: az fleet update -g MyResourceGroup -n MyFleetName --enable-managed-identity --assign-identity "/subscription/00000000-0000-0000-0000-000000000000/resourcegroup/MyResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity" --tags Key=Value
+          text: az fleet update -g MyFleetResourceGroup -n MyFleetName --enable-managed-identity --assign-identity "/subscription/00000000-0000-0000-0000-000000000000/resourcegroup/MyFleetResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity" --tags Key=Value
 """
 
 helps['fleet show'] = """
     type: command
     short-summary: Gets a Fleet.
+    examples:
+        - name: Show the details of a fleet.
+          text: az fleet show -g MyFleetResourceGroup -f MyFleetName
 """
 
 helps['fleet list'] = """
     type: command
-    short-summary: Lists fleets in the specified subscription and resource group.
+    short-summary: Lists all fleets within a resource group.
+    examples:
+        - name: List all fleets that exist within a specific subscription and resource group.
+          text: az fleet list -g MyResourceGroup
 """
 
 helps['fleet delete'] = """
     type: command
     short-summary: Deletes a Fleet.
+    examples:
+        - name: Delete a specific fleet.
+          text: az fleet delete -g MyFleetResourceGroup -f MyFleetName
 """
 
 helps['fleet get-credentials'] = """
     type: command
-    short-summary: Lists the user credentials of a Fleet.
+    short-summary: For hubful fleets, gets the kubeconfig for the fleet's hub cluster.
     parameters:
     - name: --overwrite-existing
       type: bool
@@ -65,6 +77,11 @@ helps['fleet get-credentials'] = """
     - name: --file -f
       type: string
       short-summary: Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.
+    examples:
+        - name: Get a Fleet's hub cluster kubeconfig. 
+          text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName
+        - name: Get a Fleet's hub cluster kubeconfig, and save it to a specific file.
+          text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName -f ~/mykubeconfigfile.txt
 """
 
 helps['fleet wait'] = """
@@ -88,6 +105,9 @@ helps['fleet member create'] = """
         - name: --update-group
           type: string
           short-summary: Group of the fleet member.
+    examples:
+        - name: Create a fleet member and assign it to a specific update group.
+          text: az fleet member create -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group UpdateGroup1 --member-cluster-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyFleetResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyManagedCluster"
 """
 
 helps['fleet member update'] = """
@@ -97,21 +117,33 @@ helps['fleet member update'] = """
         - name: --update-group
           type: string
           short-summary: Group of the fleet member.
+    examples:
+        - name: Update an existing member's update group.
+          text: az fleet member update -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group UpdateGroup2"
 """
 
 helps['fleet member list'] = """
     type: command
     short-summary: Lists the members of a fleet.
+    examples:
+        - name: List all members for a given fleet.
+          text: az fleet member list -g MyFleetResourceGroup -n MyFleetName
 """
 
 helps['fleet member show'] = """
     type: command
-    short-summary: Gets a Fleet member.
+    short-summary: Gets a fleet member.
+    examples:
+        - name: Show the details of a specific fleet member.
+          text: az fleet member show -g MyFleetResourceGroup -f MyFleetName -n NameOfMember
 """
 
 helps['fleet member delete'] = """
     type: command
     short-summary: Deletes a fleet member.
+    examples:
+        - name: Delete a specific fleet member
+          text: az fleet member delete -g MyFleetResourceGroup -f MyFleetName -n NameOfMember
 """
 
 helps['fleet member wait'] = """
@@ -187,26 +219,42 @@ helps['fleet updaterun create'] = """
 helps['fleet updaterun show'] = """
     type: command
     short-summary: Shows a fleet update run.
+    examples:
+        - name: Show the details of a specific updaterun
+          text: az fleet updaterun show -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun
 """
 
 helps['fleet updaterun list'] = """
     type: command
     short-summary: Lists the update runs of a fleet.
+    examples:
+        - name: Show the details of a specific updaterun
+          text: az fleet updaterun show -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun
 """
 
 helps['fleet updaterun delete'] = """
     type: command
     short-summary: Deletes a fleet update run.
+    examples:
+        - name: Delete a specific updaterun.
+          text: az fleet updaterun delete -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun
 """
 
 helps['fleet updaterun start'] = """
     type: command
     short-summary: Starts a fleet update run.
+    examples:
+        - name: Starts an updaterun
+          text: az fleet updaterun start -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun
 """
 
 helps['fleet updaterun stop'] = """
     type: command
     short-summary: Stops a fleet update run.
+    examples:
+        - name: Stops an updaterun
+          text: az fleet updaterun stop -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun
+    
 """
 
 helps['fleet updaterun wait'] = """
@@ -227,21 +275,33 @@ helps['fleet updatestrategy create'] = """
         - name: --stages
           type: string
           short-summary: Path to a json file that defines the update strategy.
+    examples:
+        - name: Create an updatestrategy from a JSON file.
+          text: az fleet updatestrategy create -g MyFleetResourceGroup -f MyFleetName -n MyUpdateStrategy --stages MyUpdateStrategyFile.json
 """
 
 helps['fleet updatestrategy show'] = """
     type: command
     short-summary: Shows a update strategy.
+    examples:
+        - name: Show the details of a specific updatestrategy.
+          text: az fleet updatestrategy show -g MyFleetResourceGroup -f MyFleetName -n MyUpdateStrategy
 """
 
 helps['fleet updatestrategy list'] = """
     type: command
     short-summary: Lists the fleet's update strategies.
+    examples:
+        - name: List all updatestratgies for a given fleet.
+          text: az fleet updatestrategy list -g MyFleetResourceGroup -f MyFleetName
 """
 
 helps['fleet updatestrategy delete'] = """
     type: command
     short-summary: Deletes a update strategy.
+    examples:
+        - name: Delete a specific updatestrategy.
+          text: az fleet updatestrategy delete -g MyFleetResourceGroup -f MyFleetName -n MyUpdateStrategy
 """
 
 helps['fleet updatestrategy wait'] = """
