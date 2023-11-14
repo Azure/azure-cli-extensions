@@ -48,7 +48,7 @@ helps['fleet show'] = """
     short-summary: Gets a Fleet.
     examples:
         - name: Show the details of a fleet.
-          text: az fleet show -g MyFleetResourceGroup -f MyFleetName
+          text: az fleet show -g MyFleetResourceGroup -n MyFleetName
 """
 
 helps['fleet list'] = """
@@ -64,7 +64,7 @@ helps['fleet delete'] = """
     short-summary: Deletes a Fleet.
     examples:
         - name: Delete a specific fleet.
-          text: az fleet delete -g MyFleetResourceGroup -f MyFleetName
+          text: az fleet delete -g MyFleetResourceGroup -n MyFleetName
 """
 
 helps['fleet get-credentials'] = """
@@ -119,7 +119,7 @@ helps['fleet member update'] = """
           short-summary: Group of the fleet member.
     examples:
         - name: Update an existing member's update group.
-          text: az fleet member update -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group UpdateGroup2"
+          text: az fleet member update -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group UpdateGroup2
 """
 
 helps['fleet member list'] = """
@@ -127,7 +127,7 @@ helps['fleet member list'] = """
     short-summary: Lists the members of a fleet.
     examples:
         - name: List all members for a given fleet.
-          text: az fleet member list -g MyFleetResourceGroup -n MyFleetName
+          text: az fleet member list -g MyFleetResourceGroup -f MyFleetName
 """
 
 helps['fleet member show'] = """
@@ -229,7 +229,7 @@ helps['fleet updaterun list'] = """
     short-summary: Lists the update runs of a fleet.
     examples:
         - name: Show the details of a specific updaterun
-          text: az fleet updaterun show -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun
+          text: az fleet updaterun list -g MyFleetResourceGroup -f MyFleetName
 """
 
 helps['fleet updaterun delete'] = """
