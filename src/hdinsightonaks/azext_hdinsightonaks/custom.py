@@ -58,23 +58,3 @@ def create_trino_hive_catalog(catalog_name, metastore_db_connection_url, metasto
 def create_secret_reference(secret_name, reference_name, version=None):
     secret_reference = SecretReference(secret_name, reference_name, "Secret", version)
     return [repr(secret_reference.__dict__).replace(" ", "")]
-
-
-# Create an object as a parameter for submitting cluster work.
-def create_flink_job_property(action, job_name, job_jar_directory=None, jar_name=None, entry_class=None,
-                              args=None, save_point_name=None, flink_configuration=None):
-    result = "{'action':'" + action + "','job_name':'" + job_name + "','type':'FlinkJob'"
-    if job_jar_directory is not None:
-        result = result + ",'job_jar_directory':'" + job_jar_directory + "'"
-    if jar_name is not None:
-        result = result + ",'jar_name':'" + jar_name + "'"
-    if entry_class is not None:
-        result = result + ",'entry_class':'" + entry_class + "'"
-    if args is not None:
-        result = result + ",'args':'" + args + "'"
-    if save_point_name is not None:
-        result = result + ",'save_point_name':'" + save_point_name + "'"
-    if flink_configuration is not None:
-        result = result + ",'flink_configuration':" + flink_configuration
-
-    return result + "}"

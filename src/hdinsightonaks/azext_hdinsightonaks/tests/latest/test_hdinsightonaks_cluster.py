@@ -149,10 +149,6 @@ class HdinsightonaksClusterScenario(ScenarioTest):
             self.check("location", '{loc}'),
         ])
 
-   
-    def test_create_flink_job_property(self):
-        job_property = self.cmd('az hdinsight-on-aks cluster flink-job create --action NEW --job-name job1 --entry-class com.microsoft.hilo.flink.job.streaming.SleepJob --job-jar-directory abfs://flinkjob@hilosa.dfs.core.windows.net/jars --args test --jar-name jarname --job-name test1').get_output_in_json()
-        assert job_property == ("{'action':'NEW','job_name':'test1','type':'FlinkJob','job_jar_directory':'abfs://flinkjob@hilosa.dfs.core.windows.net/jars','jar_name':'jarname','entry_class':'com.microsoft.hilo.flink.job.streaming.SleepJob','args':'test'}")
 
     # def test_run_flink_job(self):
     #     self.kwargs.update({

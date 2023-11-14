@@ -17,7 +17,6 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         operations_tmpl='azext_hdinsightonaks.custom#{}')
 
     with self.command_group('hdinsight-on-aks', hdinsightonaks_cluster_sdk) as g:
-        g.command('cluster node-profile create', 'create_compute_node_profile')
-        g.command('cluster trino-hive-catalog create', 'create_trino_hive_catalog')
-        g.command('cluster secret create', 'create_secret_reference')
-        g.command('cluster flink-job create', 'create_flink_job_property')
+        g.command('cluster node-profile create', 'create_compute_node_profile', is_preview=True)
+        g.command('cluster trino-hive-catalog create', 'create_trino_hive_catalog', is_preview=True)
+        g.command('cluster secret create', 'create_secret_reference', is_preview=True)
