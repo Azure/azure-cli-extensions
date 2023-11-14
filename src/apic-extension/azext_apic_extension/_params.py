@@ -10,4 +10,29 @@
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    pass
+
+    with self.argument_context("apic service register") as c:
+            c.argument(
+                "api_location",
+                options_list=['--api-location', '-l'],
+                help="Specification file",
+                required=True,
+            ),
+            c.argument(
+                "resource_group",
+                options_list=['--resource-group', '-g'],
+                help="Resource group name",
+                required=True,
+            ),
+            c.argument(
+                "service_name",
+                options_list=['--service', '-s'],
+                help="Service name",
+                required=True,
+            ),
+            c.argument(
+                "environment_name",
+                options_list=['--environment-name', '-e'],
+                help="Environemnt name",
+                required=False,
+            )

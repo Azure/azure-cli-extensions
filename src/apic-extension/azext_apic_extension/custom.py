@@ -12,12 +12,15 @@ from knack.log import get_logger
 
 from .aaz.latest.apic.api.definition import ImportSpecification
 from .aaz.latest.apic.api.definition import ExportSpecification
-from azure.cli.core.aaz import has_value, AAZStrArg
+
+from azure.cli.core.aaz import *
+from urllib.parse import urlparse, urlunparse
 import json
 import sys
 import requests
 import os
 import chardet
+
 
 logger = get_logger(__name__)
 
@@ -115,3 +118,240 @@ class ExportSpecificationExtension(ExportSpecification):
                     json.dump(results, f, indent=4, separators=(',', ':'))
                 else:    
                     f.write(results)
+
+def register_apic(cmd, api_location, resource_group, service_name, environment_name=None):
+
+    # Load the JSON file
+    if api_location:
+
+        #TODO Confirm its a file and not link
+
+        rawdata = open(str(api_location), 'rb').read()
+        result = chardet.detect(rawdata)
+        encoding = result['encoding']
+
+        with open(str(api_location), 'r', encoding=encoding) as f:
+            data = json.load(f)
+            if data:
+                value = json.dumps(data)
+
+        # If we could not read the file, return error
+        if value is None:
+            logger.error('Could not load json file')
+            return
+
+        value_dict = json.loads(value)
+
+        # Check if the first field is 'swagger', 'openapi', or something else and get the definition name and version
+        first_key, first_value = list(data.items())[0]
+        if first_key in ['swagger', 'openapi']:
+            extracted_definition_name = 'openapi'
+            extracted_definition_version = first_value.replace(".", "-").lower()
+            extracted_api_kind = 'rest' #TODO
+        else:
+            extracted_definition_name = 'default'
+            extracted_definition_version = 'v1'
+            extracted_api_kind = 'rest'
+            #TODO how to determine other kinds - enum={"graphql": "graphql", "grpc": "grpc", "rest": "rest", "soap": "soap", "webhook": "webhook", "websocket": "websocket"}
+    
+        # Create API and Create API Version
+        info = data['info']
+        if info:
+            # Create API and Create API Version
+            extracted_api_name = info.get('title', 'Default API').replace(" ", "-").lower()
+            extracted_api_description = info.get('description', 'API Description')
+            extracted_api_summary = info.get('summary', extracted_api_description)
+            extracted_api_title = info.get('title', 'API Title').replace(" ", "-").lower()
+            extracted_api_version = info.get('version', 'v1').replace(".", "-").lower()
+            extracted_api_version_title = info.get('version', 'v1').replace(".", "-").lower()
+            #TODO - Create API Version lifecycle_stage. Ask Alex about this
+
+            # Create API - Get the contact details from info in spec
+            contact = info.get('contact')
+            if contact:
+                extracted_api_contact_email = contact.get('email')
+                extracted_api_contact_name = contact.get('name')
+                extracted_api_contact_url = contact.get('url')
+                contacts = [{'email': extracted_api_contact_email, 'name': extracted_api_contact_name, 'url': extracted_api_contact_url}]
+            else:
+                contacts = None
+
+            # Create API - Get the license details from info in spec
+            license = info.get('license')
+            if license:
+                extracted_api_license_identifier = license.get('identifier')
+                extracted_api_license_name = license.get('name')
+                extracted_api_license_url = license.get('url')
+                extracted_api_license = {'identifier': extracted_api_license_identifier, 'name': extracted_api_license_name, 'url': extracted_api_license_url}
+            else:
+                extracted_api_license = None
+
+            # Create API - Get the terms of service from info in spec
+            extracted_api_terms_of_service_value = info.get('termsOfService')
+            if extracted_api_terms_of_service_value:
+                extracted_api_terms_of_service = {'url': extracted_api_terms_of_service_value}
+            else:
+                extracted_api_terms_of_service = {'url': None}
+
+            # Create API - Get the external documentation from info in spec
+            extracted_api_external_documentation = None
+            external_documentation = info.get('externalDocumentation')
+            if external_documentation:
+                extracted_api_external_documentation_description = external_documentation.get('description')
+                extracted_api_external_documentation_title = external_documentation.get('title')
+                extracted_api_external_documentation_url = external_documentation.get('url')
+                extracted_api_external_documentation = {'description': extracted_api_external_documentation_description, 'title': extracted_api_external_documentation_title, 'url': extracted_api_external_documentation_url}
+            else:
+                extracted_api_external_documentation = None
+                
+            #TODO: Create API - custom-properties
+            # - "The custom metadata defined for API catalog entities. #1
+            #Ask Alex about this
+                 
+
+            # Create API -------------------------------------------------------------------------------------
+
+            from .aaz.latest.apic.api import Create as CreateAPI
+            
+            api_args = {
+                'api_name': extracted_api_name,
+                'resource_group': resource_group,
+                'service_name': service_name,
+                'workspace_name': 'default',
+                'title' : extracted_api_title,
+                'summary': extracted_api_summary,
+                'kind': extracted_api_kind,
+                'contacts': contacts,
+                'license': extracted_api_license,
+                'terms_of_service': extracted_api_terms_of_service,
+                'external_documentation': extracted_api_external_documentation,
+                'description': extracted_api_description,
+                }
+            createAPIResults = CreateAPI(cli_ctx=cmd.cli_ctx)(command_args=api_args)
+            print("API was created successfully")
+            
+
+
+
+            # Create API Version -----------------------------------------------------------------------------
+
+            from .aaz.latest.apic.api.version import Create as CreateAPIVersion
+            
+            api_version_args = {
+                'api_name': extracted_api_name,
+                'resource_group': resource_group,
+                'service_name': service_name,
+                'version_name': extracted_api_version,
+                'workspace_name': 'default',
+                'lifecycle_stage': 'design', #TODO: Extract from spec or not pass. was it required?
+                'title' : extracted_api_version_title
+            }
+
+            createAPIVersionResults = CreateAPIVersion(cli_ctx=cmd.cli_ctx)(command_args=api_version_args)
+            print("API version was created successfully")
+
+
+
+
+            # Create API Definition -----------------------------------------------------------------------------
+
+            from .aaz.latest.apic.api.definition import Create as CreateAPIDefinition
+
+            api_definition_args = {
+                'api_name': extracted_api_name,
+                'resource_group': resource_group,
+                'service_name': service_name,
+                'version_name': extracted_api_version,
+                'workspace_name': 'default',
+                'definition_name': extracted_definition_name,
+                'title' : extracted_definition_name,        #TODO Extract from spec
+                'description' : extracted_api_description,  #TODO Extract from spec
+            }
+
+            createAPIDefinitionResults = CreateAPIDefinition(cli_ctx=cmd.cli_ctx)(command_args=api_definition_args)
+            print("API definition was created successfully")
+
+
+
+            # Import Specification -----------------------------------------------------------------------------
+
+            from azure.cli.core.commands import LongRunningOperation
+
+            # uses customized ImportSpecificationExtension class
+            specification_details = {'name':extracted_definition_name,'version':extracted_definition_version}
+            format = 'inline'
+            #TODO format - Link - what if the link is just pasted in the value?
+            #TODO format - inline - what if spec is just pasted in the value?
+            #TODO - other non json spec formats
+
+            api_specification_args = {
+                'resource_group': resource_group,
+                'service_name': service_name,
+                'workspace_name': 'default',
+                'api_name': extracted_api_name,
+                'version_name': extracted_api_version,
+                'definition_name': extracted_definition_name,
+                'format': 'inline',
+                'specification': specification_details, #TODO write the correct spec object
+                'source_profile' : api_location
+            }
+
+            importAPISpecificationResults = ImportSpecificationExtension(cli_ctx=cmd.cli_ctx)(command_args=api_specification_args)
+            importAPISpecificationResults_Polled = LongRunningOperation(cmd.cli_ctx)(importAPISpecificationResults)
+            print("API specification was imported successfully")
+
+
+            # Create API Deployment -----------------------------------------------------------------------------
+
+            from .aaz.latest.apic.api.deployment import Create as CreateAPIDeployment
+            from .aaz.latest.apic.environment import Show as GetEnvironment
+            from datetime import datetime
+
+            if environment_name:
+                # GET Environment ID
+               
+                environment_args = {
+                    'resource_group': resource_group,
+                    'service_name': service_name,
+                    'workspace_name': 'default',
+                    'environment_name': environment_name
+                }
+
+                getEnvironmentResults = GetEnvironment(cli_ctx=cmd.cli_ctx)(command_args=environment_args)
+                environment_id = getEnvironmentResults['id']  
+                # full envId, extract actual envId if to be used later
+
+            servers = data.get('servers')
+            if environment_id and servers:
+                for server in servers:
+                                     
+                    default_deployment_title = (extracted_api_name + "deployment").replace("-", "")
+                    extracted_deployment_name = server.get('name', default_deployment_title).replace(" ", "-")
+                    extracted_deployment_title = server.get('title', default_deployment_title).replace(" ", "-")
+                    extracted_deployment_description = server.get('description', default_deployment_title)
+                    extracted_definition_id = '/workspaces/default/apis/'+ extracted_api_name +'/versions/'+ extracted_api_version +'/definitions/'+ extracted_definition_name
+                    extracted_environment_id = '/workspaces/default/environments/' + environment_name
+                    extracted_state = server.get('state', 'active')
+
+                    extracted_server_urls = []
+                    extracted_server_url = server.get('url')
+                    extracted_server_urls.append(extracted_server_url)
+                    extracted_server = {'runtime_uri': extracted_server_urls}
+
+                    api_deployment_args = {
+                        'resource_group': resource_group,
+                        'service_name': service_name,
+                        'workspace_name': 'default',
+                        'api_name': extracted_api_name,
+                        'deployment_name' : extracted_deployment_name,
+                        'description' : extracted_deployment_description,
+                        'title' : extracted_deployment_title,
+                        'definition_id': extracted_definition_id,
+                        'environment_id': extracted_environment_id,
+                        'server' : extracted_server,
+                        'state' : extracted_state
+                        # TODO custom properties
+                    }
+
+                    createAPIDeploymentResults = CreateAPIDeployment(cli_ctx=cmd.cli_ctx)(command_args=api_deployment_args)
+                    print("API deployment was created successfully")
