@@ -1,0 +1,50 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - hdinsight-on-aks list-available-cluster-pool-version
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableClusterPoolVersions?api-version=2023-06-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterpoolversions/1.0","name":"1.0","properties":{"clusterPoolVersion":"1.0","aksVersion":"1.26","isPreview":false}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Nov 2023 02:27:27 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c6dbfb6a-3a58-40a2-9063-0a771d0ada52
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+version: 1
