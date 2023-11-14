@@ -43,7 +43,7 @@ class ContainerAppPatchTest(ScenarioTest):
             app_name = self.create_random_name(prefix='containerapp', length=24)
 
             # Create a Container App using a .NET 7.0 image with an outdated run image that is eligible for patching
-            create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name)
+            create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name, requires_acr_prerequisite=True)
 
             # Execute and verify patch list command
             patchable_images = self.cmd(f'containerapp patch list -g {resource_group}').get_output_in_json()
@@ -86,7 +86,7 @@ class ContainerAppPatchTest(ScenarioTest):
             self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
 
             # Create a Container App using a .NET 7.0 image with an outdated run image that is eligible for patching
-            create_and_verify_containerapp_up(self, resource_group, env_name=env_name, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name)
+            create_and_verify_containerapp_up(self, resource_group, env_name=env_name, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name, requires_acr_prerequisite=True)
 
             # Execute and verify patch list command
             patchable_images = self.cmd(f'containerapp patch list -g {resource_group} --environment {env_name}').get_output_in_json()
@@ -114,7 +114,7 @@ class ContainerAppPatchTest(ScenarioTest):
         env_name = self.create_random_name(prefix='env', length=24)
         self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
 
-        create_and_verify_containerapp_up(self, resource_group, env_name=env_name, image=image, app_name=app_name)
+        create_and_verify_containerapp_up(self, resource_group, env_name=env_name, image=image, app_name=app_name, requires_acr_prerequisite=True)
 
         # Execute and verify patch list command
         patch_cmd = f'containerapp patch list -g {resource_group} --environment {env_name} --show-all'
@@ -152,7 +152,7 @@ class ContainerAppPatchTest(ScenarioTest):
             app_name = self.create_random_name(prefix='containerapp', length=24)
 
             # Create a Container App using a .NET 7.0 image with an outdated run image that is eligible for patching
-            create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name)
+            create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name, requires_acr_prerequisite=True)
 
             # Execute and verify patch list command
             self.cmd(f'configure --defaults group={resource_group}')
@@ -192,7 +192,7 @@ class ContainerAppPatchTest(ScenarioTest):
             app_name = self.create_random_name(prefix='containerapp', length=24)
 
             # Create a Container App using a Node 18 image with an outdated run image that is eligible for patching
-            create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name)
+            create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name, requires_acr_prerequisite=True)
 
             # Execute and verify patch list command
             self.cmd(f'configure --defaults group={resource_group}')
@@ -233,7 +233,7 @@ class ContainerAppPatchTest(ScenarioTest):
             app_name = self.create_random_name(prefix='containerapp', length=24)
 
             # Create a Container App using a Python 3.10 image with an outdated run image that is eligible for patching
-            create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name)
+            create_and_verify_containerapp_up(self, resource_group, source_path=source_path, ingress=ingress, target_port=target_port, app_name=app_name, requires_acr_prerequisite=True)
 
             # Execute and verify patch list command
             self.cmd(f'configure --defaults group={resource_group}')
