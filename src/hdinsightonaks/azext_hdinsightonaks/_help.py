@@ -39,13 +39,3 @@ helps['hdinsight-on-aks cluster secret create'] = """
 type: command
 short-summary: Create a reference to provide a secret to store the password for accessing the database.
 """
-
-helps['hdinsight-on-aks cluster flink-job'] = """
-type: group
-short-summary: Manage flink job properties.
-"""
-
-helps['hdinsight-on-aks cluster flink-job create'] = """
-type: command
-short-summary: Create an object as a parameter for submitting cluster work.
-"""
