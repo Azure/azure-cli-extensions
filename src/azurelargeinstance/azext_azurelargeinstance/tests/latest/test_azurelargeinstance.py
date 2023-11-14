@@ -8,9 +8,13 @@
 from azure.cli.testsdk import *
 
 
-class AzureLargeInstanceScenario(ScenarioTest):
+class AzurelargeinstanceScenario(ScenarioTest):
     def test_list_azurelargeinstances_in_subscription(self):
-        self.cmd('az large-instance list')
+        self.kwargs.update({
+            'subscription': '10267def-42d5-4bc8-8cc0-887da4742d06'
+        })
+
+        self.cmd('az large-instance list --subscription {subscription}')
     
     @ResourceGroupPreparer()
     def test_list_azurelargeinstances_in_resourcegroup(self, resource_group):
@@ -21,8 +25,14 @@ class AzureLargeInstanceScenario(ScenarioTest):
         self.cmd('az large-instance list --subscription {subscription} --resource-group {rg}')
     
     def test_list_azurelargestorageinstances_in_subscription(self):
-        self.cmd('az large-storage-instance list')
+        self.kwargs.update({
+            'subscription': '10267def-42d5-4bc8-8cc0-887da4742d06'
+        })
+        self.cmd('az large-storage-instance list --subscription {subscription}')
     
     @ResourceGroupPreparer()
     def test_list_azurelargestorageinstances_in_resourcegroup(self, resource_group):
-        self.cmd('az large-storage-instance list --resource-group {rg}')
+        self.kwargs.update({
+            'subscription': '10267def-42d5-4bc8-8cc0-887da4742d06'
+        })
+        self.cmd('az large-storage-instance list --subscription {subscription} --resource-group {rg}')
