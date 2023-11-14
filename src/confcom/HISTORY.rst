@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.1
+++++++
+* removing unneeded print statement
+
 0.3.0
 ++++++
 * adding katapolicygen as a subcommand
