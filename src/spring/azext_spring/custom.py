@@ -10,6 +10,8 @@ import re
 import os
 import time
 from azure.cli.core._profile import Profile
+from azure.core.exceptions import HttpResponseError
+from azure.mgmt.loganalytics import LogAnalyticsManagementClient
 
 from ._websocket import WebSocketConnection, recv_remote, send_stdin, EXEC_PROTOCOL_CTRL_C_MSG
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
@@ -48,6 +50,8 @@ NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployme
 NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use \"az spring app deployment create\" to create a deployment and \"az spring app set-deployment\" to set production deployment."
 DELETE_PRODUCTION_DEPLOYMENT_WARNING = "You are going to delete production deployment, the app will be inaccessible after this operation."
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
+APP_INSIGHTS_CREATION_FAILURE_WARNING = 'Unable to create the Application Insights for the Azure Spring Apps. ' \
+                                        'Please use the Azure Portal to manually create and configure the Application Insights, if needed.'
 
 
 def _warn_enable_java_agent(enable_java_agent, **_):
@@ -1589,26 +1593,26 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
 
 
 def try_create_application_insights(cmd, resource_group, name, location):
-    creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Apps. ' \
-                           'Please use the Azure Portal to manually create and configure the Application Insights, ' \
-                           'if needed.'
+    workspace = try_create_log_analytics_workspace(cmd, resource_group, name, location)
+    if workspace is None:
+        logger.warning(APP_INSIGHTS_CREATION_FAILURE_WARNING)
+        return None
 
-    ai_resource_group_name = resource_group
-    ai_name = name
-    ai_location = location
-
-    app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient)
+    app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient,
+                                                  api_version='2020-02-02')
     ai_properties = {
-        "name": ai_name,
-        "location": ai_location,
+        "location": location,
         "kind": "web",
         "properties": {
-            "Application_Type": "web"
+            "Application_Type": "web",
+            "Flow_Type": "Bluefield",
+            "Request_Source": "rest",
+            "WorkspaceResourceId": workspace.id
         }
     }
-    appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
+    appinsights = app_insights_client.components.create_or_update(resource_group, name, ai_properties)
     if appinsights is None or appinsights.connection_string is None:
-        logger.warning(creation_failed_warn)
+        logger.warning(APP_INSIGHTS_CREATION_FAILURE_WARNING)
         return None
 
     portal_url = get_portal_uri(cmd.cli_ctx)
@@ -1669,6 +1673,40 @@ def app_insights_show(cmd, client, resource_group, name, no_wait=False):
     if not monitoring_setting_properties:
         raise CLIError("Application Insights not set.")
     return monitoring_setting_properties
+
+
+def try_create_log_analytics_workspace(cmd, resource_group, name, location):
+    client = get_mgmt_service_client(cmd.cli_ctx, LogAnalyticsManagementClient)
+
+    try:
+        workspace = client.workspaces.get(resource_group, name)
+    except HttpResponseError as err:
+        if err.status_code != 404:
+            raise
+        else:
+            logger.debug("Log Analytics workspace not found. Creating it now...")
+            properties = {
+                "location": location,
+                "properties": {
+                    "sku": {
+                        "name": "PerGB2018"
+                    },
+                    "retentionInDays": 30
+                }
+            }
+            workspace = client.workspaces.begin_create_or_update(resource_group, name, properties)
+            logger.debug("[DELETE-THIS] id=%s state=%s", workspace.id, workspace.properties.provisioningState)
+
+    if workspace is None or workspace.properties.provisioningState != 'Succeeded':
+        return None
+
+    portal_url = get_portal_uri(cmd.cli_ctx)
+    # We make this success message as a warning to no interfere with regular JSON output in stdout
+    logger.warning('Log Analytics workspace \"%s\" was created for this Azure Spring Apps. '
+                   'You can visit %s/#resource%s/overview to view your Log Analytics workspace',
+                   workspace.name, portal_url, workspace.id)
+
+    return workspace
 
 
 def app_connect(cmd, client, resource_group, service, name,
