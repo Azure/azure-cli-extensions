@@ -118,7 +118,7 @@ def pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context,
     if new_path:
         base_path = os.path.dirname(chart_url)
         image_name = os.path.basename(chart_url)
-        chart_url = base_path + '/312/' + image_name
+        chart_url = base_path + '/v2/' + image_name
     cmd_helm_chart_pull = [helm_client_location, "pull", "oci://" + chart_url, "--untar", "--untardir", chart_export_path, "--version", chart_version]
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
