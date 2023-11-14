@@ -78,7 +78,7 @@ helps['fleet get-credentials'] = """
       type: string
       short-summary: Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.
     examples:
-        - name: Get a Fleet's hub cluster kubeconfig. 
+        - name: Get a Fleet's hub cluster kubeconfig.
           text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName
         - name: Get a Fleet's hub cluster kubeconfig, and save it to a specific file.
           text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName -f ~/mykubeconfigfile.txt
@@ -254,7 +254,7 @@ helps['fleet updaterun stop'] = """
     examples:
         - name: Stops an updaterun
           text: az fleet updaterun stop -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun
-    
+
 """
 
 helps['fleet updaterun wait'] = """
