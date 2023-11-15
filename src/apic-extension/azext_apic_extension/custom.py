@@ -307,6 +307,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             from .aaz.latest.apic.environment import Show as GetEnvironment
             from datetime import datetime
 
+            environment_id = None
             if environment_name:
                 # GET Environment ID
                
