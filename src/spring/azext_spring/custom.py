@@ -1578,7 +1578,7 @@ def try_create_application_insights(cmd, resource_group, name, location):
         return None
 
     app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient,
-                                                  api_version='2020-02-02')
+                                                  api_version='2020-02-02-preview')
     ai_properties = {
         "location": location,
         "kind": "web",
@@ -1656,28 +1656,28 @@ def app_insights_show(cmd, client, resource_group, name, no_wait=False):
 
 def try_create_log_analytics_workspace(cmd, resource_group, name, location):
     client = get_mgmt_service_client(cmd.cli_ctx, LogAnalyticsManagementClient)
+    workspace = None
 
     try:
         workspace = client.workspaces.get(resource_group, name)
     except HttpResponseError as err:
         if err.status_code != 404:
             raise
-        else:
-            logger.debug("Log Analytics workspace not found. Creating it now...")
-            properties = {
-                "location": location,
-                "properties": {
-                    "sku": {
-                        "name": "PerGB2018"
-                    },
-                    "retentionInDays": 30
-                }
-            }
-            workspace = client.workspaces.begin_create_or_update(resource_group, name, properties)
-            logger.debug("[DELETE-THIS] id=%s state=%s", workspace.id, workspace.properties.provisioningState)
 
-    if workspace is None or workspace.properties.provisioningState != 'Succeeded':
-        return None
+    if workspace is not None:
+        return workspace
+
+    logger.debug("Log Analytics workspace not found. Creating it now...")
+    properties = {
+        "location": location,
+        "properties": {
+            "sku": {
+                "name": "PerGB2018"
+            },
+            "retentionInDays": 30
+        }
+    }
+    workspace = client.workspaces.begin_create_or_update(resource_group, name, properties).result()
 
     portal_url = get_portal_uri(cmd.cli_ctx)
     # We make this success message as a warning to no interfere with regular JSON output in stdout
