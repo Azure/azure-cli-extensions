@@ -182,7 +182,7 @@ helps['fleet updaterun create'] = """
             az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0 --node-image-selection Latest --stages ./test/stages.json
 
                 The following JSON structure represents example contents of the parameter '--stages ./test/stages.json'.
-                A stages array is composed of one or more stages, each containing one or more groups. 
+                A stages array is composed of one or more stages, each containing one or more groups.
                 Each group contains the 'name' property, which represents the group to which a cluster belongs (see 'az fleet member create --help').
                 Stages have an optional 'afterStageWaitInSeconds' integer property, acting as a delay between stage execution.
                 {
