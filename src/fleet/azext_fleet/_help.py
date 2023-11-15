@@ -55,7 +55,9 @@ helps['fleet list'] = """
     type: command
     short-summary: Lists all fleets within a resource group.
     examples:
-        - name: List all fleets that exist within a resource group.
+        - name: List all fleets with a specific subscription.
+          text: az fleet list
+        - name: List all fleets that exist within a specific subscription and resource group.
           text: az fleet list -g MyResourceGroup
 """
 
