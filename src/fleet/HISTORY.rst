@@ -64,3 +64,4 @@ Release History
 1.0.1
 ++++++
 * Updated help examples.
+* Fixed serialization bug.
