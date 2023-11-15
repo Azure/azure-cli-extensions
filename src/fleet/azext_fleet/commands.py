@@ -35,12 +35,12 @@ def load_command_table(self, _):
     )
 
     # fleets command group
-    with self.command_group("fleet", fleets_sdk, client_factory=cf_fleets, is_preview=True) as g:
+    with self.command_group("fleet", fleets_sdk, client_factory=cf_fleets) as g:
         g.custom_command("create", "create_fleet", supports_no_wait=True)
         g.custom_command("update", "update_fleet", supports_no_wait=True)
         g.custom_show_command("show", "show_fleet")
         g.custom_command("list", "list_fleet")
-        g.custom_command("delete", "delete_fleet", supports_no_wait=True)
+        g.custom_command("delete", "delete_fleet", supports_no_wait=True, confirmation=True)
         g.custom_command("get-credentials", "get_credentials")
         g.wait_command("wait")
 
@@ -48,7 +48,7 @@ def load_command_table(self, _):
     with self.command_group("fleet member", fleet_members_sdk, client_factory=cf_fleet_members) as g:
         g.custom_command("create", "create_fleet_member", supports_no_wait=True)
         g.custom_command("update", "update_fleet_member")
-        g.custom_command("delete", "delete_fleet_member", supports_no_wait=True)
+        g.custom_command("delete", "delete_fleet_member", supports_no_wait=True, confirmation=True)
         g.custom_command("list", "list_fleet_member")
         g.custom_show_command("show", "show_fleet_member")
         g.wait_command("wait")
@@ -58,7 +58,7 @@ def load_command_table(self, _):
         g.custom_command("create", "create_update_run", supports_no_wait=True)
         g.custom_show_command("show", "show_update_run")
         g.custom_command("list", "list_update_run")
-        g.custom_command("delete", "delete_update_run", supports_no_wait=True)
+        g.custom_command("delete", "delete_update_run", supports_no_wait=True, confirmation=True)
         g.custom_command("start", "start_update_run", supports_no_wait=True)
         g.custom_command("stop", "stop_update_run", supports_no_wait=True)
         g.wait_command("wait")
@@ -68,5 +68,5 @@ def load_command_table(self, _):
         g.custom_command("create", "create_fleet_update_strategy", supports_no_wait=True)
         g.custom_show_command("show", "show_fleet_update_strategy")
         g.custom_command("list", "list_fleet_update_strategies")
-        g.custom_command("delete", "delete_fleet_update_strategy", supports_no_wait=True)
+        g.custom_command("delete", "delete_fleet_update_strategy", supports_no_wait=True, confirmation=True)
         g.wait_command("wait")

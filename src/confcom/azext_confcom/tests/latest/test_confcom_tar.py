@@ -4,9 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import tempfile
 import unittest
-import pytest
 import deepdiff
 import json
 import docker
@@ -19,20 +17,27 @@ from azext_confcom.errors import (
     AccContainerError,
 )
 import azext_confcom.config as config
+from azext_confcom.template_util import DockerClient
 
+def create_tar_file(image_path: str) -> None:
+    if not os.path.isfile(image_path):
+        with DockerClient() as client:
+            image = client.images.get("nginx:1.22")
+            f = open(image_path, "wb")
+            for chunk in image.save(named=True):
+                f.write(chunk)
+            f.close()
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=11)
+def remove_tar_file(image_path: str) -> None:
+    if os.path.isfile(image_path):
+        os.remove(image_path)
+
 class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        # this is simulating the output of the "load_tar_mapping_from_file" output
         path = os.path.dirname(__file__)
-        image_path = os.path.join(path, "./nginx.tar")
-
         cls.path = path
 
-        cls.image_path = image_path
 
     def test_arm_template_with_parameter_file_clean_room_tar(self):
         custom_arm_json_default_value = """
@@ -169,27 +174,19 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             custom_arm_json_default_value, ""
         )[0]
 
-        # save the tar file for the image in the testing directory
-        client = docker.from_env()
-        image = client.images.get("nginx:1.22")
-        tar_mapping_file = {"nginx:1.22": self.image_path}
-        # Note: Class setup and teardown shouldn't have side effects, and reading from the tar file fails when all the tests are running in parallel, so we want to save and delete this tar file as a part of the test. Not as a part of the testing class.
-        f = open(self.image_path, "wb")
-        for chunk in image.save(named=True):
-            f.write(chunk)
-        f.close()
-        client.close()
-        tar_mapping_file = {"nginx:1.22": self.image_path}
+
         try:
+            filename = os.path.join(self.path, "./nginx.tar")
+            tar_mapping_file = {"nginx:1.22": filename}
+            create_tar_file(filename)
             clean_room_image.populate_policy_content_for_all_images(
                 tar_mapping=tar_mapping_file
             )
-        except:
+        except Exception as e:
+            print(e)
             raise AccContainerError("Could not get image from tar file")
         finally:
-            # delete the tar file
-            if os.path.isfile(self.image_path):
-                os.remove(self.image_path)
+            remove_tar_file(filename)
 
         regular_image_json = json.loads(
             regular_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
@@ -242,7 +239,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"python:3.9"
+                "defaultValue":"python:3.6.14-slim-buster"
             },
             "containername2": {
                 "type": "string",
@@ -384,33 +381,13 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             custom_arm_json_default_value, ""
         )[0]
 
-        # save the tar file for the image in the testing directory
-        client = docker.from_env()
-        image = client.images.get("nginx:1.22")
-        image_path = self.image_path + "2"
-        # Note: Class setup and teardown shouldn't have side effects, and reading from the tar file fails when all the tests are running in parallel, so we want to save and delete this tar file as a part of the test. Not as a part of the testing class.
-        # make a temp directory for the tar file
-        temp_dir = tempfile.TemporaryDirectory()
 
-        image_path = os.path.join(
-            temp_dir.name, "nginx.tar"
-        )
-        f = open(image_path, "wb")
-        for chunk in image.save(named=True):
-            f.write(chunk)
-        f.close()
-        client.close()
-        tar_mapping_file = {"nginx:1.22": image_path}
-        try:
-            clean_room_image.populate_policy_content_for_all_images(
-                tar_mapping=image_path
+        filename = os.path.join(self.path, "./nginx2.tar")
+        create_tar_file(filename)
+        clean_room_image.populate_policy_content_for_all_images(
+            tar_mapping=filename
             )
-        finally:
-            temp_dir.cleanup()
-            # delete the tar file
-            if os.path.isfile(image_path):
-                os.remove(image_path)
-
+        remove_tar_file(filename)
         regular_image_json = json.loads(
             regular_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
         )
@@ -451,7 +428,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"rust:latest"
+                "defaultValue":"alpine:3.16"
             },
             "containername": {
                 "type": "string",
@@ -559,35 +536,19 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
         clean_room_image = load_policy_from_arm_template_str(
             custom_arm_json_default_value, ""
         )[0]
-        # save the tar file for the image in the testing directory
-        client = docker.from_env()
-        image = client.images.pull("nginx:1.23")
-        image = client.images.get("nginx:1.23")
 
-        # Note: Class setup and teardown shouldn't have side effects, and reading from the tar file fails when all the tests are running in parallel, so we want to save and delete this tar file as a part of the test. Not as a part of the testing class.
-        temp_dir = tempfile.TemporaryDirectory()
-
-        image_path = os.path.join(
-            temp_dir.name, "nginx.tar"
-        )
-        f = open(image_path, "wb")
-        for chunk in image.save(named=True):
-            f.write(chunk)
-        f.close()
-        client.close()
+        filename = os.path.join(self.path, "./nginx3.tar")
 
         try:
+            create_tar_file(filename)
             clean_room_image.populate_policy_content_for_all_images(
-                tar_mapping=image_path
+                tar_mapping=filename
             )
             raise AccContainerError("getting image should fail")
         except:
             pass
         finally:
-            # delete the tar file
-            temp_dir.cleanup()
-            if os.path.isfile(self.image_path):
-                os.remove(self.image_path)
+            remove_tar_file(filename)
 
     def test_clean_room_fake_tar_invalid(self):
         custom_arm_json_default_value = """
@@ -609,7 +570,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"rust:latest"
+                "defaultValue":"alpine:3.16"
             },
             "containername": {
                 "type": "string",

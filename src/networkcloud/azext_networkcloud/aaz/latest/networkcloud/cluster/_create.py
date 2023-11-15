@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new cluster or update the properties of the cluster if it exists.
@@ -25,9 +26,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -154,11 +155,26 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The configuration of the managed resource group associated with the resource.",
         )
-        _args_schema.network_fabric_id = AAZStrArg(
+        _args_schema.network_fabric_id = AAZResourceIdArg(
             options=["--network-fabric-id"],
             arg_group="Properties",
             help="The resource ID of the Network Fabric associated with the cluster.",
             required=True,
+        )
+        _args_schema.runtime_protection = AAZObjectArg(
+            options=["--runtime-protection"],
+            arg_group="Properties",
+            help="The settings for cluster runtime protection.",
+        )
+        _args_schema.secret_archive = AAZObjectArg(
+            options=["--secret-archive"],
+            arg_group="Properties",
+            help="The configuration for use of a key vault to store secrets for later retrieval by the operator.",
+        )
+        _args_schema.update_strategy = AAZObjectArg(
+            options=["--update-strategy"],
+            arg_group="Properties",
+            help="The strategy for updating the cluster.",
         )
 
         cluster_service_principal = cls._args_schema.cluster_service_principal
@@ -219,6 +235,65 @@ class Create(AAZCommand):
             help="The name for the managed resource group. If not specified, the unique name is automatically generated.",
             fmt=AAZStrArgFormat(
                 max_length=75,
+            ),
+        )
+
+        runtime_protection = cls._args_schema.runtime_protection
+        runtime_protection.enforcement_level = AAZStrArg(
+            options=["enforcement-level"],
+            help="The mode of operation for runtime protection.",
+            default="Disabled",
+            enum={"Audit": "Audit", "Disabled": "Disabled", "OnDemand": "OnDemand", "Passive": "Passive", "RealTime": "RealTime"},
+        )
+
+        secret_archive = cls._args_schema.secret_archive
+        secret_archive.key_vault_id = AAZResourceIdArg(
+            options=["key-vault-id"],
+            help="The resource ID of the key vault to archive the secrets of the cluster.",
+            required=True,
+        )
+        secret_archive.use_key_vault = AAZStrArg(
+            options=["use-key-vault"],
+            help="The indicator if the specified key vault should be used to archive the secrets of the cluster.",
+            default="False",
+            enum={"False": "False", "True": "True"},
+        )
+
+        update_strategy = cls._args_schema.update_strategy
+        update_strategy.max_unavailable = AAZIntArg(
+            options=["max-unavailable"],
+            help="The maximum number of worker nodes that can be offline within the increment of update, e.g., rack-by-rack. Limited by the maximum number of machines in the increment. Defaults to the whole increment size.",
+            fmt=AAZIntArgFormat(
+                minimum=1,
+            ),
+        )
+        update_strategy.strategy_type = AAZStrArg(
+            options=["strategy-type"],
+            help="The mode of operation for runtime protection.",
+            required=True,
+            enum={"Rack": "Rack"},
+        )
+        update_strategy.threshold_type = AAZStrArg(
+            options=["threshold-type"],
+            help="Selection of how the threshold should be evaluated.",
+            required=True,
+            enum={"CountSuccess": "CountSuccess", "PercentSuccess": "PercentSuccess"},
+        )
+        update_strategy.threshold_value = AAZIntArg(
+            options=["threshold-value"],
+            help="The numeric threshold value.",
+            required=True,
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+        update_strategy.wait_time_minutes = AAZIntArg(
+            options=["wait-time-minutes"],
+            help="The time to wait between the increments of update defined by the strategy.",
+            default=15,
+            fmt=AAZIntArgFormat(
+                maximum=60,
+                minimum=0,
             ),
         )
         return cls._args_schema
@@ -283,7 +358,7 @@ class Create(AAZCommand):
             options=["bare-metal-machine-configuration-data"],
             help="The unordered list of bare metal machine configuration.",
         )
-        rack_definition_create.network_rack_id = AAZStrArg(
+        rack_definition_create.network_rack_id = AAZResourceIdArg(
             options=["network-rack-id"],
             help="The resource ID of the network rack that matches this rack definition.",
             required=True,
@@ -304,7 +379,7 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
-        rack_definition_create.rack_sku_id = AAZStrArg(
+        rack_definition_create.rack_sku_id = AAZResourceIdArg(
             options=["rack-sku-id"],
             help="The resource ID of the sku for the rack being added.",
             required=True,
@@ -493,7 +568,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -540,11 +615,14 @@ class Create(AAZCommand):
                 properties.set_prop("computeRackDefinitions", AAZListType, ".compute_rack_definitions")
                 properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
                 properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("runtimeProtectionConfiguration", AAZObjectType, ".runtime_protection")
+                properties.set_prop("secretArchive", AAZObjectType, ".secret_archive")
+                properties.set_prop("updateStrategy", AAZObjectType, ".update_strategy")
 
             cluster_service_principal = _builder.get(".properties.clusterServicePrincipal")
             if cluster_service_principal is not None:
                 cluster_service_principal.set_prop("applicationId", AAZStrType, ".application_id", typ_kwargs={"flags": {"required": True}})
-                cluster_service_principal.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"required": True, "secret": True}})
+                cluster_service_principal.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
                 cluster_service_principal.set_prop("principalId", AAZStrType, ".principal_id", typ_kwargs={"flags": {"required": True}})
                 cluster_service_principal.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
 
@@ -562,6 +640,23 @@ class Create(AAZCommand):
             if managed_resource_group_configuration is not None:
                 managed_resource_group_configuration.set_prop("location", AAZStrType, ".location")
                 managed_resource_group_configuration.set_prop("name", AAZStrType, ".name")
+
+            runtime_protection_configuration = _builder.get(".properties.runtimeProtectionConfiguration")
+            if runtime_protection_configuration is not None:
+                runtime_protection_configuration.set_prop("enforcementLevel", AAZStrType, ".enforcement_level")
+
+            secret_archive = _builder.get(".properties.secretArchive")
+            if secret_archive is not None:
+                secret_archive.set_prop("keyVaultId", AAZStrType, ".key_vault_id", typ_kwargs={"flags": {"required": True}})
+                secret_archive.set_prop("useKeyVault", AAZStrType, ".use_key_vault")
+
+            update_strategy = _builder.get(".properties.updateStrategy")
+            if update_strategy is not None:
+                update_strategy.set_prop("maxUnavailable", AAZIntType, ".max_unavailable")
+                update_strategy.set_prop("strategyType", AAZStrType, ".strategy_type", typ_kwargs={"flags": {"required": True}})
+                update_strategy.set_prop("thresholdType", AAZStrType, ".threshold_type", typ_kwargs={"flags": {"required": True}})
+                update_strategy.set_prop("thresholdValue", AAZIntType, ".threshold_value", typ_kwargs={"flags": {"required": True}})
+                update_strategy.set_prop("waitTimeMinutes", AAZIntType, ".wait_time_minutes")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -692,9 +787,18 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.runtime_protection_configuration = AAZObjectType(
+                serialized_name="runtimeProtectionConfiguration",
+            )
+            properties.secret_archive = AAZObjectType(
+                serialized_name="secretArchive",
+            )
             properties.support_expiry_date = AAZStrType(
                 serialized_name="supportExpiryDate",
                 flags={"read_only": True},
+            )
+            properties.update_strategy = AAZObjectType(
+                serialized_name="updateStrategy",
             )
             properties.workload_resource_ids = AAZListType(
                 serialized_name="workloadResourceIds",
@@ -762,7 +866,7 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
             cluster_service_principal.password = AAZStrType(
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             cluster_service_principal.principal_id = AAZStrType(
                 serialized_name="principalId",
@@ -791,6 +895,40 @@ class Create(AAZCommand):
             managed_resource_group_configuration = cls._schema_on_200_201.properties.managed_resource_group_configuration
             managed_resource_group_configuration.location = AAZStrType()
             managed_resource_group_configuration.name = AAZStrType()
+
+            runtime_protection_configuration = cls._schema_on_200_201.properties.runtime_protection_configuration
+            runtime_protection_configuration.enforcement_level = AAZStrType(
+                serialized_name="enforcementLevel",
+            )
+
+            secret_archive = cls._schema_on_200_201.properties.secret_archive
+            secret_archive.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                flags={"required": True},
+            )
+            secret_archive.use_key_vault = AAZStrType(
+                serialized_name="useKeyVault",
+            )
+
+            update_strategy = cls._schema_on_200_201.properties.update_strategy
+            update_strategy.max_unavailable = AAZIntType(
+                serialized_name="maxUnavailable",
+            )
+            update_strategy.strategy_type = AAZStrType(
+                serialized_name="strategyType",
+                flags={"required": True},
+            )
+            update_strategy.threshold_type = AAZStrType(
+                serialized_name="thresholdType",
+                flags={"required": True},
+            )
+            update_strategy.threshold_value = AAZIntType(
+                serialized_name="thresholdValue",
+                flags={"required": True},
+            )
+            update_strategy.wait_time_minutes = AAZIntType(
+                serialized_name="waitTimeMinutes",
+            )
 
             workload_resource_ids = cls._schema_on_200_201.properties.workload_resource_ids
             workload_resource_ids.Element = AAZStrType()
@@ -828,7 +966,7 @@ class _CreateHelper:
     def _build_schema_administrative_credentials_create(cls, _builder):
         if _builder is None:
             return
-        _builder.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"required": True, "secret": True}})
+        _builder.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
         _builder.set_prop("username", AAZStrType, ".username", typ_kwargs={"flags": {"required": True}})
 
     @classmethod
@@ -881,7 +1019,7 @@ class _CreateHelper:
 
         administrative_credentials_read = _schema_administrative_credentials_read
         administrative_credentials_read.password = AAZStrType(
-            flags={"required": True, "secret": True},
+            flags={"secret": True},
         )
         administrative_credentials_read.username = AAZStrType(
             flags={"required": True},

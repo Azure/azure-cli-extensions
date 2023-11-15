@@ -20,10 +20,9 @@ class ContainerappComposePreviewRegistryAllArgsScenarioTest(ContainerappComposeP
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_registry_all_args(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composewithreg', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     ports: 8080:80
 """
@@ -48,10 +47,11 @@ services:
         command_string += ' --registry-password {registry_pass}'
 
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.configuration.registries[0].server', ["foobar.azurecr.io"]),
-            self.check(f'[?name==`{app}`].properties.configuration.registries[0].username', ["foobar"]),
-            self.check(f'[?name==`{app}`].properties.configuration.registries[0].passwordSecretRef', ["foobarazurecrio-foobar"]),  # pylint: disable=C0301
+            self.check(f'[?name==`foo`].properties.configuration.registries[0].server', ["foobar.azurecr.io"]),
+            self.check(f'[?name==`foo`].properties.configuration.registries[0].username', ["foobar"]),
+            self.check(f'[?name==`foo`].properties.configuration.registries[0].passwordSecretRef', ["foobarazurecrio-foobar"]),  # pylint: disable=C0301
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -61,10 +61,9 @@ class ContainerappComposePreviewRegistryServerArgOnlyScenarioTest(ContainerappCo
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_registry_server_arg_only(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composewithreg', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     ports: 8080:80
 """
@@ -86,5 +85,6 @@ services:
 
         # This test fails because prompts are not supported in NoTTY environments
         self.cmd(command_string, expect_failure=True)
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)

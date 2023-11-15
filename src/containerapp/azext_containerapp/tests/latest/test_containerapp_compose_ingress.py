@@ -20,10 +20,9 @@ class ContainerappComposePreviewIngressScenarioTest(ContainerappComposePreviewSc
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_ingress_external(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composeingress', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     ports: 8080:80
 """
@@ -41,9 +40,10 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.configuration.ingress.targetPort', [80]),
-            self.check(f'[?name==`{app}`].properties.configuration.ingress.external', [True]),
+            self.check(f'[?name==`foo`].properties.configuration.ingress.targetPort', [80]),
+            self.check(f'[?name==`foo`].properties.configuration.ingress.external', [True]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -52,10 +52,9 @@ class ContainerappComposePreviewIngressInternalScenarioTest(ContainerappComposeP
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_ingress_internal(self, resource_group):
-        app = self.create_random_name(prefix='composeingress', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     expose:
       - "3000"
@@ -73,9 +72,10 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.configuration.ingress.targetPort', [3000]),
-            self.check(f'[?name==`{app}`].properties.configuration.ingress.external', [False]),
+            self.check(f'[?name==`foo`].properties.configuration.ingress.targetPort', [3000]),
+            self.check(f'[?name==`foo`].properties.configuration.ingress.external', [False]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -85,10 +85,9 @@ class ContainerappComposePreviewIngressBothScenarioTest(ContainerappComposePrevi
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_ingress_both(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composeingress', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     ports: 4000:3000
     expose:
@@ -107,9 +106,10 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.configuration.ingress.targetPort', [3000]),
-            self.check(f'[?name==`{app}`].properties.configuration.ingress.external', [True]),
+            self.check(f'[?name==`foo`].properties.configuration.ingress.targetPort', [3000]),
+            self.check(f'[?name==`foo`].properties.configuration.ingress.external', [True]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -119,10 +119,9 @@ class ContainerappComposePreviewIngressPromptScenarioTest(ContainerappComposePre
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_ingress_prompt(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composeingress', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     ports:
       - 4000:3000
@@ -148,5 +147,6 @@ services:
 
         # This test fails because prompts are not supported in NoTTY environments
         self.cmd(command_string, expect_failure=True)
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
