@@ -23,7 +23,6 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
     # static variable to cache layer hashes between container groups
     layer_cache = {}
 
-    # TODO: update this to only take stable releases once the release cycle is more consistent
     @staticmethod
     def download_binaries():
         dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -133,7 +132,6 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
             # only take the last part of the path for the settings file
             settings_file_name = os.path.basename(settings_file_name)
             arg_list.append(settings_file_name)
-        print("arg_list: ", arg_list)
 
         item = subprocess.run(
             arg_list,
