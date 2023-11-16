@@ -7,6 +7,7 @@ CONNECTED_ENVIRONMENT_TYPE = "connected"
 MANAGED_ENVIRONMENT_RESOURCE_TYPE = "managedEnvironments"
 CONNECTED_ENVIRONMENT_RESOURCE_TYPE = "connectedEnvironments"
 CUSTOM_LOCATION_RESOURCE_TYPE = "customLocations"
+CONNECTED_CLUSTER_TYPE = "connectedClusters"
 
 MAXIMUM_SECRET_LENGTH = 20
 MAXIMUM_CONTAINER_APP_NAME_LENGTH = 32
@@ -41,6 +42,7 @@ LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 CONTAINER_APPS_RP = "Microsoft.App"
 SERVICE_LINKER_RP = "Microsoft.ServiceLinker"
 EXTENDED_LOCATION_RP = "Microsoft.ExtendedLocation"
+KUBERNETES_CONFIGURATION_RP = "Microsoft.KubernetesConfiguration"
 CONTAINER_APP_EXTENSION_TYPE = "microsoft.app.environment"
 
 MANAGED_CERTIFICATE_RT = "managedCertificates"
