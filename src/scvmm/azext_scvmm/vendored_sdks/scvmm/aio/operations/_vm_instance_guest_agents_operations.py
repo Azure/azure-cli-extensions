@@ -21,7 +21,7 @@ from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
 from ..._vendor import _convert_request
-from ...operations._vm_instance_guest_agents_operations import build_create_request_initial, build_delete_request_initial, build_get_request, build_list_request
+from ...operations._vm_instance_guest_agents_operations import build_create_request_initial, build_delete_request, build_get_request, build_list_request
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
@@ -32,7 +32,7 @@ class VMInstanceGuestAgentsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~scvmm.models
+    :type models: ~azure.mgmt.scvmm.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,7 +59,7 @@ class VMInstanceGuestAgentsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -117,7 +117,7 @@ class VMInstanceGuestAgentsOperations:
          Compute machine resource to be extended.
         :type resource_uri: str
         :param body: Request payload.
-        :type body: ~scvmm.models.GuestAgent
+        :type body: ~azure.mgmt.scvmm.models.GuestAgent
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -128,10 +128,10 @@ class VMInstanceGuestAgentsOperations:
          Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either GuestAgent or the result of
          cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~scvmm.models.GuestAgent]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.scvmm.models.GuestAgent]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.GuestAgent"]
@@ -188,7 +188,7 @@ class VMInstanceGuestAgentsOperations:
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: GuestAgent, or the result of cls(response)
-        :rtype: ~scvmm.models.GuestAgent
+        :rtype: ~azure.mgmt.scvmm.models.GuestAgent
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.GuestAgent"]
@@ -197,7 +197,7 @@ class VMInstanceGuestAgentsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         
         request = build_get_request(
@@ -230,24 +230,37 @@ class VMInstanceGuestAgentsOperations:
     get.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/guestAgents/default"}  # type: ignore
 
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+    @distributed_trace_async
+    async def delete(  # pylint: disable=inconsistent-return-statements
         self,
         resource_uri: str,
         **kwargs: Any
     ) -> None:
+        """Deletes an GuestAgent.
+
+        Implements GuestAgent DELETE method.
+
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the Hybrid
+         Compute machine resource to be extended.
+        :type resource_uri: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: None, or the result of cls(response)
+        :rtype: None
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         
-        request = build_delete_request_initial(
+        request = build_delete_request(
             resource_uri=resource_uri,
             api_version=api_version,
-            template_url=self._delete_initial.metadata['url'],
+            template_url=self.delete.metadata['url'],
         )
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
@@ -259,76 +272,16 @@ class VMInstanceGuestAgentsOperations:
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/guestAgents/default"}  # type: ignore
+    delete.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/guestAgents/default"}  # type: ignore
 
-
-    @distributed_trace_async
-    async def begin_delete(  # pylint: disable=inconsistent-return-statements
-        self,
-        resource_uri: str,
-        **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Deletes an GuestAgent.
-
-        Implements GuestAgent DELETE method.
-
-        :param resource_uri: The fully qualified Azure Resource manager identifier of the Hybrid
-         Compute machine resource to be extended.
-        :type resource_uri: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
-        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
-        if cont_token is None:
-            raw_result = await self._delete_initial(
-                resource_uri=resource_uri,
-                api_version=api_version,
-                cls=lambda x,y,z: x,
-                **kwargs
-            )
-        kwargs.pop('error_map', None)
-
-        def get_long_running_output(pipeline_response):
-            if cls:
-                return cls(pipeline_response, None, {})
-
-
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, **kwargs)
-        elif polling is False: polling_method = AsyncNoPolling()
-        else: polling_method = polling
-        if cont_token:
-            return AsyncLROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output
-            )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-
-    begin_delete.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/guestAgents/default"}  # type: ignore
 
     @distributed_trace
     def list(
@@ -345,10 +298,10 @@ class VMInstanceGuestAgentsOperations:
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either GuestAgentList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~scvmm.models.GuestAgentList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.scvmm.models.GuestAgentList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.GuestAgentList"]
         error_map = {

@@ -156,6 +156,8 @@ CUSTOMER_REGO_POLICY = os_util.load_str_from_file(REGO_FILE_PATH)
 SIDECAR_REGO_FILE = "./data/sidecar_rego_policy.txt"
 SIDECAR_REGO_FILE_PATH = f"{script_directory}/{SIDECAR_REGO_FILE}"
 SIDECAR_REGO_POLICY = os_util.load_str_from_file(SIDECAR_REGO_FILE_PATH)
+# data folder
+DATA_FOLDER = os.path.join(script_directory, "data")
 
 # api version
 API_VERSION = _config["version_api"]

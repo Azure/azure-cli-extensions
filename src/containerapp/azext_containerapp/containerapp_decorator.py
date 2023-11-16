@@ -16,7 +16,8 @@ from azure.cli.core.azclierror import (
     ValidationError,
     ArgumentUsageError,
     ResourceNotFoundError,
-    MutuallyExclusiveArgumentError)
+    MutuallyExclusiveArgumentError,
+    InvalidArgumentValueError)
 from azure.cli.command_modules.containerapp.containerapp_decorator import BaseContainerAppDecorator, ContainerAppCreateDecorator
 from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
 from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -536,8 +537,22 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             tags = yaml_containerapp.get('tags')
             del yaml_containerapp['tags']
 
+        # Save customizedKeys before converting from snake case to camel case, then re-add customizedKeys. We don't want to change the case of the customizedKeys.
+        service_binds = safe_get(yaml_containerapp, "properties", "template", "serviceBinds", default=[])
+        customized_keys_dict = {}
+        for bind in service_binds:
+            if bind.get("name") and bind.get("customizedKeys"):
+                customized_keys_dict[bind["name"]] = bind["customizedKeys"]
+
         self.new_containerapp = _convert_object_from_snake_to_camel_case(_object_to_dict(self.new_containerapp))
         self.new_containerapp['tags'] = tags
+
+        # Containerapp object is deserialized from 'ContainerApp' model, "Properties" level is lost after deserialization
+        # We try to get serviceBinds from 'properties.template.serviceBinds' first, if not exists, try 'template.serviceBinds'
+        service_binds = safe_get(self.new_containerapp, "properties", "template", "serviceBinds") or safe_get(self.new_containerapp, "template", "serviceBinds")
+        if service_binds:
+            for bind in service_binds:
+                bind["customizedKeys"] = customized_keys_dict.get(bind["name"])
 
         # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
         self.new_containerapp = process_loaded_yaml(self.new_containerapp)
@@ -584,6 +599,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_service_bindings(self):
         return self.get_param("service_bindings")
 
+    def get_argument_customized_keys(self):
+        return self.get_param("customized_keys")
+
     def get_argument_service_connectors_def_list(self):
         return self.get_param("service_connectors_def_list")
 
@@ -600,16 +618,27 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def validate_arguments(self):
         super().validate_arguments()
-        validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
+        validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_artifact(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
+        if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
+            raise InvalidArgumentValueError("--bind have multiple values, but --customized-keys only can be set when --bind is single.")
 
     def set_up_source(self):
-        if self.get_argument_source():
-            from ._up_utils import _has_dockerfile
+        from ._up_utils import (_validate_source_artifact_args)
+
+        source = self.get_argument_source()
+        artifact = self.get_argument_artifact()
+        _validate_source_artifact_args(source, artifact)
+        if artifact:
+            # Artifact is mostly a convenience argument provided to use --source specifically with a single artifact file.
+            # At this point we know for sure that source isn't set (else _validate_up_args would have failed), so we can build with this value.
+            source = artifact
+            self.set_argument_source(source)
+
+        if source:
             app, env = self._construct_app_and_env_for_source_or_repo()
             dockerfile = "Dockerfile"
-            has_dockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
-            # Uses buildpacks or an ACR Task to generate image if Dockerfile was not provided by the user
-            app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not has_dockerfile)
+            # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
+            app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=False, registry_server=self.get_argument_registry_server())
             # Validate containers exist
             containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
             if containers is None or len(containers) == 0:
@@ -759,13 +788,114 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd,
                                                                                             self.get_argument_service_bindings(),
                                                                                             self.get_argument_resource_group_name(),
-                                                                                            self.get_argument_name())
+                                                                                            self.get_argument_name(),
+                                                                                            self.get_argument_customized_keys())
             self.set_argument_service_connectors_def_list(service_connectors_def_list)
             unique_bindings = check_unique_bindings(self.cmd, service_connectors_def_list, service_bindings_def_list,
                                                     self.get_argument_resource_group_name(), self.get_argument_name())
             if not unique_bindings:
                 raise ValidationError("Binding names across managed and dev services should be unique.")
             safe_set(self.containerapp_def, "properties", "template", "serviceBinds", value=service_bindings_def_list)
+
+    def set_up_create_containerapp_yaml(self, name, file_name):
+        if self.get_argument_image() or self.get_argument_min_replicas() or self.get_argument_max_replicas() or self.get_argument_target_port() or self.get_argument_ingress() or \
+                self.get_argument_revisions_mode() or self.get_argument_secrets() or self.get_argument_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_registry_server() or \
+                self.get_argument_registry_user() or self.get_argument_registry_pass() or self.get_argument_dapr_enabled() or self.get_argument_dapr_app_port() or self.get_argument_dapr_app_id() or \
+                self.get_argument_startup_command() or self.get_argument_args() or self.get_argument_tags():
+            not self.get_argument_disable_warnings() and logger.warning(
+                'Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
+
+        yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
+
+        if not yaml_containerapp.get('name'):
+            yaml_containerapp['name'] = name
+        elif yaml_containerapp.get('name').lower() != name.lower():
+            logger.warning(
+                'The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(
+                    yaml_containerapp.get('name'), name))
+        name = yaml_containerapp.get('name')
+
+        if not yaml_containerapp.get('type'):
+            yaml_containerapp['type'] = 'Microsoft.App/containerApps'
+        elif yaml_containerapp.get('type').lower() != "microsoft.app/containerapps":
+            raise ValidationError('Containerapp type must be \"Microsoft.App/ContainerApps\"')
+
+        # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
+        try:
+            deserializer = create_deserializer(self.models)
+
+            self.containerapp_def = deserializer('ContainerApp', yaml_containerapp)
+        except DeserializationError as ex:
+            raise ValidationError(
+                'Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
+
+        # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
+        tags = None
+        if yaml_containerapp.get('tags'):
+            tags = yaml_containerapp.get('tags')
+            del yaml_containerapp['tags']
+
+        # Save customizedKeys before converting from snake case to camel case, then re-add customizedKeys. We don't want to change the case of the customizedKeys.
+        service_binds = safe_get(yaml_containerapp, "properties", "template", "serviceBinds", default=[])
+        customized_keys_dict = {}
+        for bind in service_binds:
+            if bind.get("name") and bind.get("customizedKeys"):
+                customized_keys_dict[bind["name"]] = bind["customizedKeys"]
+
+        self.containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(self.containerapp_def))
+        self.containerapp_def['tags'] = tags
+
+        # Containerapp object is deserialized from 'ContainerApp' model, "Properties" level is lost after deserialization
+        # We try to get serviceBinds from 'properties.template.serviceBinds' first, if not exists, try 'template.serviceBinds'
+        service_binds = safe_get(self.containerapp_def, "properties", "template", "serviceBinds") or safe_get(self.containerapp_def, "template", "serviceBinds")
+        if service_binds:
+            for bind in service_binds:
+                if bind.get("name") and bind.get("customizedKeys"):
+                    bind["customizedKeys"] = customized_keys_dict.get(bind["name"])
+
+        # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
+        self.containerapp_def = process_loaded_yaml(self.containerapp_def)
+
+        # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
+        _remove_additional_attributes(self.containerapp_def)
+        _remove_readonly_attributes(self.containerapp_def)
+
+        # Remove extra workloadProfileName introduced in deserialization
+        if "workloadProfileName" in self.containerapp_def:
+            del self.containerapp_def["workloadProfileName"]
+
+        # Validate managed environment
+        env_id = self.containerapp_def["properties"]['environmentId']
+        env_info = None
+        if self.get_argument_managed_env():
+            if not self.get_argument_disable_warnings() and env_id is not None and env_id != self.get_argument_managed_env():
+                logger.warning('The environmentId was passed along with --yaml. The value entered with --environment will be ignored, and the configuration defined in the yaml will be used instead')
+            if env_id is None:
+                env_id = self.get_argument_managed_env()
+                safe_set(self.containerapp_def, "properties", "environmentId", value=env_id)
+
+        if not self.containerapp_def["properties"].get('environmentId'):
+            raise RequiredArgumentMissingError(
+                'environmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+
+        if is_valid_resource_id(env_id):
+            parsed_managed_env = parse_resource_id(env_id)
+            env_name = parsed_managed_env['name']
+            env_rg = parsed_managed_env['resource_group']
+        else:
+            raise ValidationError('Invalid environmentId specified. Environment not found')
+
+        try:
+            env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
+        except Exception as e:
+            handle_non_404_status_code_exception(e)
+
+        if not env_info:
+            raise ValidationError("The environment '{}' in resource group '{}' was not found".format(env_name, env_rg))
+
+        # Validate location
+        if not self.containerapp_def.get('location'):
+            self.containerapp_def['location'] = env_info['location']
 
     def get_environment_client(self):
         if self.get_argument_yaml():
@@ -806,6 +936,12 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_source(self):
         return self.get_param("source")
 
+    def set_argument_source(self, source):
+        self.set_param("source", source)
+
+    def get_argument_artifact(self):
+        return self.get_param("artifact")
+
     def get_argument_repo(self):
         return self.get_param("repo")
 
@@ -833,6 +969,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_service_bindings(self):
         return self.get_param("service_bindings")
 
+    def get_argument_customized_keys(self):
+        return self.get_param("customized_keys")
+
     def get_argument_service_connectors_def_list(self):
         return self.get_param("service_connectors_def_list")
 
@@ -845,6 +984,18 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_source(self):
         return self.get_param("source")
 
+    def set_argument_source(self, source):
+        self.set_param("source", source)
+
+    def get_argument_artifact(self):
+        return self.get_param("artifact")
+
+    def validate_arguments(self):
+        super().validate_arguments()
+        if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
+            raise InvalidArgumentValueError(
+                "--bind have multiple values, but --customized-keys only can be set when --bind is single.")
+
     def construct_payload(self):
         super().construct_payload()
         self.set_up_service_bindings()
@@ -852,23 +1003,33 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         self.set_up_source()
 
     def set_up_source(self):
-        if self.get_argument_source():
+        from ._up_utils import (_validate_source_artifact_args)
+
+        source = self.get_argument_source()
+        artifact = self.get_argument_artifact()
+        _validate_source_artifact_args(source, artifact)
+        if artifact:
+            # Artifact is mostly a convenience argument provided to use --source specifically with a single artifact file.
+            # At this point we know for sure that source isn't set (else _validate_up_args would have failed), so we can build with this value.
+            source = artifact
+            self.set_argument_source(source)
+
+        if source:
             if self.get_argument_yaml():
                 raise MutuallyExclusiveArgumentError("Cannot use --source with --yaml together. Can either deploy from a local directory or provide a yaml file")
             # Check if an ACR registry is associated with the container app
             existing_registries = safe_get(self.containerapp_def, "properties", "configuration", "registries", default=[])
             existing_registries = [r for r in existing_registries if ACR_IMAGE_SUFFIX in r["server"]]
-            if existing_registries is None or len(existing_registries) == 0:
-                raise ValidationError(
-                    "Error: The containerapp '{}' does not have an ACR registry associated with it. Please specify a registry using the --registry-server argument while creating the ContainerApp".format(
-                        self.get_argument_name()))
-            registry_server = existing_registries[0]["server"]
-            parsed = urlparse(registry_server)
-            registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
-            registry_user, registry_pass, _ = _get_acr_cred(self.cmd.cli_ctx, registry_name)
-            self._update_container_app_source(cmd=self.cmd, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+            if existing_registries and len(existing_registries) > 0:
+                registry_server = existing_registries[0]["server"]
+                parsed = urlparse(registry_server)
+                registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
+                registry_user, registry_pass, _ = _get_acr_cred(self.cmd.cli_ctx, registry_name)
+                self._update_container_app_source(cmd=self.cmd, source=source, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+            else:
+                self._update_container_app_source(cmd=self.cmd, source=source, registry_server=None, registry_user=None, registry_pass=None)
 
-    def _update_container_app_source(self, cmd, registry_server, registry_user, registry_pass):
+    def _update_container_app_source(self, cmd, source, registry_server, registry_user, registry_pass):
         from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details)
 
         ingress = self.get_argument_ingress()
@@ -885,7 +1046,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         env_rg = parsed_env['resource_group']
 
         # Set image to None if it was previously set to the default image (case where image was not provided by the user) else reformat it
-        image = None if self.get_argument_image() is None else _reformat_image(source=self.get_argument_source(), image=self.get_argument_image(), repo=None)
+        image = None if self.get_argument_image() is None else _reformat_image(source=source, image=self.get_argument_image(), repo=None)
 
         # Parse location
         env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
@@ -893,9 +1054,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
         # Check if source contains a Dockerfile
         # and ignore checking if Dockerfile exists in repo since GitHub action inherently checks for it.
-        has_dockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
-        if has_dockerfile:
-            dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=self.get_argument_source(), context_path=None, dockerfile=dockerfile)
+        if _has_dockerfile(source, dockerfile):
+            dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=source, context_path=None, dockerfile=dockerfile)
             ingress, target_port = _get_ingress_and_target_port(self.get_argument_ingress(), self.get_argument_target_port(), dockerfile_content)
 
         # Construct ContainerApp
@@ -905,10 +1065,10 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         app = ContainerApp(cmd=cmd, name=self.get_argument_name(), resource_group=resource_group, image=image, env=env, target_port=target_port, workload_profile_name=self.get_argument_workload_profile_name(), ingress=ingress, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
 
         # Fetch registry credentials
-        _get_registry_details(cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments
+        _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
-        # Uses buildpacks or an ACR Task to generate image if Dockerfile was not provided by the user
-        app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not has_dockerfile)
+        # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
+        app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=False, registry_server=registry_server)
 
         # Validate an image associated with the container app exists
         containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
@@ -948,7 +1108,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         if self.get_argument_service_bindings() is not None:
             linker_client = get_linker_client(self.cmd)
 
-            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd, self.get_argument_service_bindings(), self.get_argument_resource_group_name(), self.get_argument_name())
+            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd, self.get_argument_service_bindings(), self.get_argument_resource_group_name(), self.get_argument_name(), self.get_argument_customized_keys())
             self.set_argument_service_connectors_def_list(service_connectors_def_list)
             service_bindings_used_map = {update_item["name"]: False for update_item in service_bindings_def_list}
 
@@ -961,6 +1121,10 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                 for update_item in service_bindings_def_list:
                     if update_item["name"] in item.values():
                         item["serviceId"] = update_item["serviceId"]
+                        if update_item.get("clientType"):
+                            item["clientType"] = update_item.get("clientType")
+                        if update_item.get("customizedKeys"):
+                            item["customizedKeys"] = update_item.get("customizedKeys")
                         service_bindings_used_map[update_item["name"]] = True
 
             for update_item in service_bindings_def_list:

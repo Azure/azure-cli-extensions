@@ -14,7 +14,6 @@ from .common import TEST_LOCATION
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-from .utils import create_containerapp_env
 
 class ContainerappEnvScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -49,6 +48,73 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="australiaeast")
+    def test_containerapp_env_la_dynamic_json(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        default_env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics -j'.format(resource_group, default_env_name, logs_workspace_id, logs_workspace_key), checks=[
+            JMESPathCheck('name', default_env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', True),
+        ])
+
+        default_env_name2 = self.create_random_name(prefix='containerapp-env', length=24)
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} -j false'.format(resource_group, default_env_name2, logs_workspace_id, logs_workspace_key),checks=[
+            JMESPathCheck('name', default_env_name2),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', False),
+        ])
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', False),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} -j'.format(resource_group, env_name))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', True),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {}'.format(resource_group, env_name))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', True),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} -j false'.format(resource_group, env_name))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', False),
         ])
 
     @AllowLargeResponse(8192)
@@ -129,8 +195,6 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.destination', None),
         ])
 
-
-
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
@@ -196,6 +260,58 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env dapr-component list -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('length(@)', 0),
+        ])
+
+        # Invalid pubsub service type should throw an error.
+        self.cmd('containerapp env dapr-component init -n {} -g {} --pubsub {}'.format(env_name, resource_group, "invalid1"), expect_failure=True)
+
+        # Invalid statestore service type should throw an error.
+        self.cmd('containerapp env dapr-component init -n {} -g {} --statestore {}'.format(env_name, resource_group, "invalid2"), expect_failure=True)
+
+        # Should create a Redis statestore and pubsub components as default.
+        output_json = self.cmd('containerapp env dapr-component init -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('length(@)', 2),
+            JMESPathCheck('message', "Operation successful."),
+            JMESPathCheck('length(resources.daprComponents)', 2), # Redis statestore and pubsub components
+            JMESPathCheck('length(resources.devServices)', 1), # Single Redis instance
+        ]).get_output_in_json()
+        self.assertIn("daprComponents/statestore", output_json["resources"]["daprComponents"][0])
+        self.assertIn("daprComponents/pubsub", output_json["resources"]["daprComponents"][1])
+        self.assertIn("containerapps/dapr-redis", output_json["resources"]["devServices"][0])
+
+        # Should not create a Redis statestore and pubsub components if they already exist.
+        output_json = self.cmd('containerapp env dapr-component init -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('length(@)', 2),
+            JMESPathCheck('message', "Operation successful."),
+            JMESPathCheck('length(resources.daprComponents)', 2), # Redis statestore and pubsub components
+            JMESPathCheck('length(resources.devServices)', 1), # Single Redis instance
+        ]).get_output_in_json()
+        self.assertIn("daprComponents/statestore", output_json["resources"]["daprComponents"][0])
+        self.assertIn("daprComponents/pubsub", output_json["resources"]["daprComponents"][1])
+        self.assertIn("containerapps/dapr-redis", output_json["resources"]["devServices"][0])
+
+        # Redis statestore should be correctly created.
+        self.cmd('containerapp env dapr-component show --dapr-component-name {} -n {} -g {}'.format("statestore", env_name, resource_group), checks=[
+            JMESPathCheck('name', "statestore"),
+            JMESPathCheck('properties.componentType', "state.redis"),
+            JMESPathCheck('length(properties.metadata)', 1),
+            JMESPathCheck('properties.metadata[0].name', "actorStateStore"),
+            JMESPathCheck('properties.metadata[0].value', "true"),
+            JMESPathCheck('properties.serviceComponentBind.name', "dapr-redis"),
+            JMESPathCheck('properties.serviceComponentBind.serviceId', output_json["resources"]["devServices"][0]),
+            JMESPathCheck('properties.serviceComponentBind.metadata.DCI_SB_CREATED_BY', "azcli_azext_containerapp_daprutils"),
+            JMESPathCheck('properties.version', "v1"),
+        ])
+
+        # Redis pubsub should be correctly created.
+        self.cmd('containerapp env dapr-component show --dapr-component-name {} -n {} -g {}'.format("pubsub", env_name, resource_group), checks=[
+            JMESPathCheck('name', "pubsub"),
+            JMESPathCheck('properties.componentType', "pubsub.redis"),
+            JMESPathCheck('length(properties.metadata)', 0),
+            JMESPathCheck('properties.serviceComponentBind.name', "dapr-redis"),
+            JMESPathCheck('properties.serviceComponentBind.serviceId', output_json["resources"]["devServices"][0]),
+            JMESPathCheck('properties.serviceComponentBind.metadata.DCI_SB_CREATED_BY', "azcli_azext_containerapp_daprutils"),
+            JMESPathCheck('properties.version', "v1"),
         ])
 
     @AllowLargeResponse(8192)
