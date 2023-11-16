@@ -546,7 +546,7 @@ def _validate_custom_loc_and_location(cmd, custom_location_id=None, env=None, co
             if env_id is not None:
                 if e["id"].lower() != env_id.lower():
                     env_list.append(e)
-            elif e["name"] != env_name or (env_rg is not None and e["resourceGroup"] != env_rg):
+            elif e["name"] != env_name or (env_rg is not None and parse_resource_id(e["id"]).get("resource_group") != env_rg):
                 env_list.append(e)
 
         if len(env_list) > 0:
@@ -560,7 +560,7 @@ def _validate_custom_loc_and_location(cmd, custom_location_id=None, env=None, co
             containerapp_extension_exists_in_cluster = True
             break
     if not containerapp_extension_exists_in_cluster:
-        raise ValidationError('There is no Microsoft.App.Environment extension found associated with custom location {}'.format(custom_location))
+        raise ValidationError('There is no Microsoft.App.Environment extension found associated with custom location {}'.format(custom_location_id))
 
     return r.location
 

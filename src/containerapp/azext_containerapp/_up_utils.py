@@ -308,7 +308,7 @@ class ContainerAppEnvironment(Resource):
                 subscription=get_subscription_id(self.cmd.cli_ctx),
                 resource_group=self.resource_group.name,
                 namespace=CONTAINER_APPS_RP,
-                type=self.resource_type if self.resource_type else MANAGED_ENVIRONMENT_TYPE,
+                type=self.resource_type if self.resource_type else MANAGED_ENVIRONMENT_RESOURCE_TYPE,
                 name=self.name,
             )
         return rid
@@ -797,7 +797,7 @@ class Extension:
         return r
 
     def _get(self):
-        return get_cluster_extension(self, self.get_rid())
+        return get_cluster_extension(self.cmd, self.get_rid())
 
     def get_rid(self):
         rid = self.name
@@ -862,7 +862,7 @@ class CustomLocation(Resource):
             )  # TODO use .info()
 
     def _get(self):
-        return get_custom_location(self, custom_location_id=self.get_rid())
+        return get_custom_location(self.cmd, custom_location_id=self.get_rid())
 
     def set_name(self, name_or_rid):
         if is_valid_resource_id(name_or_rid):
@@ -1028,7 +1028,7 @@ def _validate_custom_location_connected_cluster_args(cmd, env, resource_group_na
         register_provider_if_needed(cmd, EXTENDED_LOCATION_RP)
         register_provider_if_needed(cmd, KUBERNETES_CONFIGURATION_RP)
         if location:
-            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, CONNECTED_ENVIRONMENT_TYPE)
+            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, CONNECTED_ENVIRONMENT_RESOURCE_TYPE)
         if custom_location_id:
             _validate_custom_loc_and_location(cmd, custom_location_id=custom_location_id, env=env, connected_cluster_id=connected_cluster_id, env_rg=resource_group_name)
         if connected_cluster_id:
