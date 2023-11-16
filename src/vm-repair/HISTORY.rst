@@ -4,7 +4,7 @@ Release History
 
 0.5.8
 ++++++
-Fixing az vm repair run --preview parameter to take in fork and branch name of User's repository.
+Fix az vm repair run --preview parameter to take in fork and branch name of User's repository.
 
 0.5.7
 ++++++
