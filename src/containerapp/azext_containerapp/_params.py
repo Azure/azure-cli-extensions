@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id,
-                          validate_custom_location_name_or_id)
+                          validate_custom_location_name_or_id, validate_env_name_or_id_for_up)
 from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH
 
 
@@ -144,6 +144,7 @@ def load_arguments(self, _):
         c.argument('pubsub', help="The pubsub component and dev service to create.")
 
     with self.argument_context('containerapp up') as c:
+        c.argument('managed_env', validator=validate_env_name_or_id_for_up, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
         c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)
 
     with self.argument_context('containerapp up', arg_group='Connected environment', is_preview=True) as c:

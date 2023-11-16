@@ -92,6 +92,49 @@ def validate_env_name_or_id(cmd, namespace):
             )
 
 
+def validate_env_name_or_id_for_up(cmd, namespace):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
+
+    if not namespace.managed_env:
+        return
+
+    # Set environment type
+    environment_type = None
+
+    if is_valid_resource_id(namespace.managed_env):
+        env_dict = parse_resource_id(namespace.managed_env)
+        resource_type = env_dict.get("resource_type")
+        if resource_type:
+            if CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower() == resource_type.lower():
+                environment_type = CONNECTED_ENVIRONMENT_TYPE
+            if MANAGED_ENVIRONMENT_RESOURCE_TYPE.lower() == resource_type.lower():
+                environment_type = MANAGED_ENVIRONMENT_TYPE
+
+    if namespace.__dict__.get("custom_location") or namespace.__dict__.get("connected_cluster_id"):
+        environment_type = CONNECTED_ENVIRONMENT_TYPE
+
+    # Validate resource id / format resource id
+    if environment_type == CONNECTED_ENVIRONMENT_TYPE:
+        if not is_valid_resource_id(namespace.managed_env):
+            namespace.managed_env = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace=CONTAINER_APPS_RP,
+                type=CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
+                name=namespace.managed_env
+            )
+    elif environment_type == MANAGED_ENVIRONMENT_TYPE:
+        if not is_valid_resource_id(namespace.managed_env):
+            namespace.managed_env = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace=CONTAINER_APPS_RP,
+                type=MANAGED_ENVIRONMENT_RESOURCE_TYPE,
+                name=namespace.managed_env
+            )
+
+
 def validate_custom_location_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
     from msrestazure.tools import is_valid_resource_id, resource_id

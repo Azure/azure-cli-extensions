@@ -44,12 +44,13 @@ from azure.cli.command_modules.containerapp._utils import (
     register_provider_if_needed,
     format_location
 )
+from azure.core.exceptions import HttpResponseError
 from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 from knack.log import get_logger
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from _client_factory import handle_non_404_status_code_exception
+from ._client_factory import handle_non_404_status_code_exception
 from ._clients import ContainerAppPreviewClient, GitHubActionClient, ContainerAppsJobClient, \
     ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
 
@@ -181,6 +182,7 @@ class ContainerAppEnvironment(Resource):
         connected_cluster_id=None,
     ):
         self.resource_type = None
+        super().__init__(cmd, name, resource_group, exists)
         if is_valid_resource_id(name):
             env_dict = parse_resource_id(name)
             self.name = env_dict["name"]
@@ -194,11 +196,6 @@ class ContainerAppEnvironment(Resource):
                 else:
                     self.resource_type = MANAGED_ENVIRONMENT_RESOURCE_TYPE
 
-            self.name = parse_resource_id(name)["name"]
-            if "resource_group" in parse_resource_id(name):
-                rg = parse_resource_id(name)["resource_group"]
-                if resource_group.name != rg:
-                    self.resource_group = ResourceGroup(cmd, rg, location)
         if self.resource_type is None:
             if custom_location_id or connected_cluster_id:
                 self.resource_type = CONNECTED_ENVIRONMENT_RESOURCE_TYPE
@@ -207,7 +204,6 @@ class ContainerAppEnvironment(Resource):
         self.logs_key = logs_key
         self.logs_customer_id = logs_customer_id
         self.custom_location_id = custom_location_id
-        super().__init__(cmd, name, resource_group, exists)
 
     def set_name(self, name_or_rid):
         if is_valid_resource_id(name_or_rid):
@@ -734,7 +730,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         return False
 
 
-class Extension(Resource):
+class Extension:
     def __init__(
             self,
             cmd,
@@ -748,8 +744,8 @@ class Extension(Resource):
             connected_cluster_id=None,
             connected_environment_name=None,
     ):
-        resource_group = ResourceGroup(cmd, logs_rg, logs_location)
-        super().__init__(cmd, name, resource_group, exists)
+        self.cmd = cmd
+        self.name = name
         self.exists = exists
         self.namespace = namespace
         self.logs_location = logs_location
@@ -772,9 +768,10 @@ class Extension(Resource):
         return extension
 
     def create_if_needed(self):
+        # if name is None, that means no need to create an extension
         if self.name is None:
             return
-        if not self.exists:
+        if not self.check_exists():
             logger.warning(
                 f"Creating {type(self).__name__} '{self.name}' in cluster {self.connected_cluster_id}"
             )
@@ -783,6 +780,21 @@ class Extension(Resource):
             logger.warning(
                 f"Using {type(self).__name__} '{self.name}' in cluster {self.connected_cluster_id}"
             )  # TODO use .info()
+
+    def check_exists(self):
+        if self.name is None or self.connected_cluster_id is None:
+            self.exists = False
+        else:
+            self.exists = self.get() is not None
+        return self.exists
+
+    def get(self):
+        r = None
+        try:
+            r = self._get()
+        except HttpResponseError as ex:  # pylint: disable=bare-except
+            handle_non_404_status_code_exception(ex)
+        return r
 
     def _get(self):
         return get_cluster_extension(self, self.get_rid())
@@ -1359,9 +1371,7 @@ def _infer_existing_connected_env(
         custom_location: "CustomLocation",
 ):
     if not env.resource_type or (env.is_connected_environment() and (not env.name or not resource_group.name or not env.custom_location_id)):
-        connected_env_list = []
-        if resource_group.exists or not resource_group.name:
-            connected_env_list = list_connected_environments(cmd=cmd, resource_group_name=resource_group.name)
+        connected_env_list = list_connected_environments(cmd=cmd, resource_group_name=resource_group.name)
         env_list = []
         for e in connected_env_list:
             if env.name and env.name != e["name"]:
