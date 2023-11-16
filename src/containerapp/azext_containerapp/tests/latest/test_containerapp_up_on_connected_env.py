@@ -25,6 +25,8 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
         run(cmd, check=True)
         cmd = ['azdev', 'extension', 'add', 'k8s-extension']
         run(cmd, check=True)
+        cmd = ['azdev', 'extension', 'add', 'customlocation']
+        run(cmd, check=True)
         # Wait for extensions to be installed
         # We mock time.sleep in azure-sdk-tools, that's why we need to use sleep here.
         sleep(120)
