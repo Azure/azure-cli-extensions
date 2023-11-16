@@ -333,14 +333,9 @@ def create_update_run(cmd,
         strategy=update_run_strategy,
         managed_cluster_update=managed_cluster_update)
 
-    result = None
-    try:
-        result = sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
-        print("After successfully creating the run, you need to use the following command to start the run:"
-              f"az fleet updaterun start --resource-group={resource_group_name} --fleet={fleet_name} --name={name}")
-    except Exception as e:
-        return e
-
+    result = sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
+    print("After successfully creating the run, you need to use the following command to start the run:"
+          f"az fleet updaterun start --resource-group={resource_group_name} --fleet={fleet_name} --name={name}")
     return result
 
 
