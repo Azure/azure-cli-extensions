@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from subprocess import run
+from time import sleep
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only, JMESPathCheck,
@@ -14,9 +16,21 @@ from .custom_preparers import ConnectedClusterPreparer
 
 
 class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
+    def __init__(self, method_name, config_file=None, recording_name=None, recording_processors=None,
+                 replay_processors=None, recording_patches=None, replay_patches=None, random_config_dir=False):
+
+        super().__init__(method_name, config_file, recording_name, recording_processors, replay_processors,
+                         recording_patches, replay_patches, random_config_dir)
+        cmd = ['azdev', 'extension', 'add', 'connectedk8s']
+        run(cmd, check=True)
+        cmd = ['azdev', 'extension', 'add', 'k8s-extension']
+        run(cmd, check=True)
+        # Wait for extensions to be installed
+        # We mock time.sleep in azure-sdk-tools, that's why we need to use sleep here.
+        sleep(120)
 
     # If the process contains create_extension, it contains _generate_log_analytics_if_not_provided, which cause playback failed.
-    # If the process contains create custom location, it will uses random name, which will cause playback failed too.
+    # If the process contains create custom location, it will use a random name, which will cause playback failed too.
     # So prepare extension and custom location before execute the `up` command
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location=TEST_LOCATION, random_name_length=15)
