@@ -533,11 +533,6 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 is_non_supported_platform = False
                 is_non_supported_os = False
                 with subprocess.Popen(command, stdout=subprocess.PIPE) as process:
-
-                    # Collect the standard output in a separate variable that will be printed when a builder
-                    # successfully builds the provided application source
-                    stdout_collection = []
-
                     # Stream output of 'pack build' to warning stream
                     while process.stdout.readable():
                         line = process.stdout.readline()
@@ -545,7 +540,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                             break
 
                         stdout_line = str(line.strip(), 'utf-8')
-                        stdout_collection.append(stdout_line)
+                        logger.warning(stdout_line)
 
                         # Check if the application is targeting a platform that's found in the current builder,
                         # specifically, if none of the buildpacks in the current builder are able to detect a platform
@@ -572,9 +567,6 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
                     could_build_image = True
                     logger.debug(f"Successfully built image {image_name} using buildpacks.")
-
-                    # Flush the stdout we've collected to the warning stream
-                    logger.warning("\n".join(stdout_collection))
                     break
             except Exception as ex:
                 logger.warning(f"Unable to run 'pack build' command to produce runnable application image: {ex}")
@@ -589,6 +581,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
         from azure.cli.command_modules.acr._client_factory import cf_acr_tasks, cf_acr_runs
         from azure.cli.core.profiles import ResourceType
+
+        # Validate that the source provided is a directory, and not a file.
+        if os.path.isfile(source):
+            raise ValidationError(f"Impossible to build the artifact file {source} with ACR Task. Please make sure that you use --source and target a directory, or if you want to build your artifact locally, please make sure Docker is running on your machine.")
 
         task_name = "cli_build_containerapp"
         registry_name = (self.registry_server[: self.registry_server.rindex(ACR_IMAGE_SUFFIX)]).lower()
@@ -661,12 +657,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             )
             return False
 
-        # Only enable Cloud Build on Stage and Canary while the changes are deployed to all regions.
         location = "eastus"
         if self.env.location:
             location = self.env.location
-        is_cloud_build_enabled = any(location.lower() == region for region in ["northcentralusstage", "centraluseuap", "eastus2euap"])
-        if self.should_create_acr and is_cloud_build_enabled:
+        if self.should_create_acr:
             # No container registry provided. Let's use the default container registry through Cloud Build.
             self.image = self.build_container_from_source_with_cloud_build_service(source, location)
             return True
@@ -674,9 +668,9 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         if can_create_acr_if_needed:
             self.create_acr_if_needed()
         elif not registry_server:
-            raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source in this context")
+            raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source or --artifact in this context")
         elif ACR_IMAGE_SUFFIX not in registry_server:
-            raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source in this context")
+            raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source or --artifact in this context")
 
         # At this point in the logic, we know that the customer doesn't have a Dockerfile but has a container registry.
         # Cloud Build is not an option anymore as we don't support BYO container registry yet.
@@ -806,28 +800,46 @@ def _get_ingress_and_target_port(ingress, target_port, dockerfile_content: "list
     return ingress, target_port
 
 
-def _validate_up_args(cmd, source, image, repo, registry_server):
+def _validate_up_args(cmd, source, artifact, image, repo, registry_server):
     disallowed_params = ["--only-show-errors", "--output", "-o"]
     command_args = cmd.cli_ctx.data.get("safe_params", [])
     for a in disallowed_params:
         if a in command_args:
             raise ValidationError(f"Argument {a} is not allowed for 'az containerapp up'")
 
-    if not source and not image and not repo:
+    if not source and not artifact and not image and not repo:
         raise RequiredArgumentMissingError(
-            "You must specify either --source, --repo, or --image"
+            "You must specify either --source, --artifact, --repo, or --image"
         )
     if source and repo:
         raise MutuallyExclusiveArgumentError(
-            "Cannot use --source and --repo togther. "
+            "Cannot use --source and --repo together. "
             "Can either deploy from a local directory or a Github repo"
         )
+    _validate_source_artifact_args(source, artifact)
     if repo and registry_server and "azurecr.io" in registry_server:
         parsed = urlparse(registry_server)
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
         if registry_name and len(registry_name) > MAXIMUM_SECRET_LENGTH:
             raise ValidationError(f"--registry-server ACR name must be less than {MAXIMUM_SECRET_LENGTH} "
                                   "characters when using --repo")
+
+
+def _validate_source_artifact_args(source, artifact):
+    if source and artifact:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot use --source and --artifact together."
+        )
+    if source:
+        if not os.path.exists(source):
+            raise ValidationError(f"Impossible to find the source directory corresponding to {source}. Please make sure that this path exists.")
+        if not os.path.isdir(source):
+            raise ValidationError(f"The path corresponding to {source} is not a directory. Please make sure that the path given to --source is a directory.")
+    if artifact:
+        if not os.path.exists(artifact):
+            raise ValidationError(f"Impossible to find the artifact file corresponding to {artifact}. Please make sure that this path exists.")
+        if not os.path.isfile(artifact):
+            raise ValidationError(f"The path corresponding to {artifact} is not a file. Please make sure that the path given to --artifact is a file.")
 
 
 def _reformat_image(source, repo, image):

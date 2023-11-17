@@ -29,6 +29,75 @@ helps['containerapp env list-usages'] = """
           az containerapp env list-usages -n MyEnv -g MyResourceGroup
 """
 
+helps['containerapp env dapr-component resiliency'] = """
+    type: group
+    short-summary: Commands to manage resiliency policies for a dapr component.
+"""
+
+helps['containerapp env dapr-component resiliency create'] = """
+    type: command
+    short-summary: Create resiliency policies for a dapr component.
+    examples:
+    - name: Create timeout resiliency policy for a dapr component.
+      text: |
+          az containerapp env dapr-component resiliency create -g MyResourceGroup \\
+            -n MyDaprResiliency --dapr-component-name MyDaprComponentName \\
+            --environment MyEnvironment --out-timeout 45
+    - name: Create resiliency policies for a dapr component using a yaml configuration.
+      text: |
+          az containerapp env dapr-component resiliency create -g MyResourceGroup \\
+            -n MyDaprResiliency --dapr-component-name MyDaprComponentName \\
+            --environment MyEnvironment --yaml "path/to/yaml/file.yml"
+"""
+
+helps['containerapp env dapr-component resiliency update'] = """
+    type: command
+    short-summary: Update resiliency policies for a dapr component.
+    examples:
+    - name: Update timeout resiliency policy for a dapr component.
+      text: |
+          az containerapp env dapr-component resiliency update -g MyResourceGroup \\
+            -n MyDaprResiliency --dapr-component-name MyDaprComponentName \\
+            --environment MyEnvironment --in-timeout 45
+    - name: Update resiliency policies for a dapr component using a yaml configuration.
+      text: |
+          az containerapp env dapr-component resiliency update -g MyResourceGroup \\
+            -n MyDaprResiliency --dapr-component-name MyDaprComponentName \\
+            --environment MyEnvironment --yaml "path/to/yaml/file.yml"
+"""
+
+helps['containerapp env dapr-component resiliency show'] = """
+    type: command
+    short-summary: Show resiliency policies for a dapr component.
+    examples:
+    - name: Show resiliency policies for a dapr component.
+      text: |
+          az containerapp env dapr-component resiliency show -g MyResourceGroup \\
+            -n MyDaprResiliency --dapr-component-name MyDaprComponentName \\
+            --environment MyEnvironment
+"""
+
+helps['containerapp env dapr-component resiliency delete'] = """
+    type: command
+    short-summary: Delete resiliency policies for a dapr component.
+    examples:
+    - name: Delete resiliency policies for a dapr component.
+      text: |
+          az containerapp env dapr-component resiliency delete -g MyResourceGroup \\
+            -n MyDaprResiliency --dapr-component-name MyDaprComponentName \\
+            --environment MyEnvironment
+"""
+
+helps['containerapp env dapr-component resiliency list'] = """
+    type: command
+    short-summary: List resiliency policies for a dapr component.
+    examples:
+    - name: List resiliency policies for a dapr component.
+      text: |
+          az containerapp env dapr-component resiliency list -g MyResourceGroup \\
+           --dapr-component-name MyDaprComponentName --environment MyEnvironment
+"""
+
 helps['containerapp up'] = """
     type: command
     short-summary: Create or update a container app as well as any associated resources (ACR, resource group, container apps environment, GitHub Actions, etc.)
@@ -108,11 +177,22 @@ helps['containerapp env create'] = """
 helps['containerapp service'] = """
     type: group
     short-summary: Commands to manage services available within the environment.
+    deprecate_info: This command group is deprecated. Use 'az containerapp add-on' instead.
+"""
+
+helps['containerapp add-on'] = """
+    type: group
+    short-summary: Commands to manage add-ons available within the environment.
 """
 
 helps['containerapp service list'] = """
     type: command
     short-summary: List all services within the environment.
+"""
+
+helps['containerapp add-on list'] = """
+    type: command
+    short-summary: List all add-ons within the environment.
 """
 
 helps['containerapp service redis'] = """
@@ -188,6 +268,153 @@ helps['containerapp service mariadb delete'] = """
 helps['containerapp service qdrant delete'] = """
     type: command
     short-summary: Command to delete the qdrant service.
+"""
+
+helps['containerapp resiliency'] = """
+    type: group
+    short-summary: Commands to manage resiliency policies for a container app.
+"""
+
+helps['containerapp resiliency create'] = """
+    type: command
+    short-summary: Create resiliency policies for a container app.
+    examples:
+    - name: Create recommended resiliency policies.
+      text: |
+          az containerapp resiliency create -g MyResourceGroup \\
+            -n MyResiliencyName --container-app-name MyContainerApp --recommended
+    - name: Create the timeout resiliency policy.
+      text: |
+          az containerapp resiliency create -g MyResourceGroup \\
+            -n MyResiliencyName --container-app-name MyContainerApp \\
+            --timeout 15 --timeout-connect 5
+    - name: Create resiliency policies using a yaml configuration.
+      text: |
+          az containerapp resiliency create -g MyResourceGroup \\
+            -n MyResiliencyName --container-app-name MyContainerApp \\
+            --yaml "path/to/yaml/file.yml"
+"""
+
+helps['containerapp resiliency update'] = """
+    type: command
+    short-summary: Update resiliency policies for a container app.
+    examples:
+    - name: Update the TCP Connection Pool resiliency policy.
+      text: |
+          az containerapp resiliency update -g MyResourceGroup \\
+            -n MyResiliencyName --container-app-name MyContainerApp \\
+            --tcp-connections 1024
+    - name: Update resiliency policies using a yaml configuration.
+      text: |
+          az containerapp resiliency update -g MyResourceGroup \\
+            -n MyResiliencyName --container-app-name MyContainerApp \\
+            --yaml "path/to/yaml/file.yml"
+
+"""
+
+helps['containerapp resiliency delete'] = """
+    type: command
+    short-summary: Delete resiliency policies for a container app.
+    examples:
+    - name: Delete resiliency policies for a container app.
+      text: |
+          az containerapp resiliency delete -g MyResourceGroup \\
+            -n MyResiliencyName --container-app-name MyContainerApp
+"""
+
+helps['containerapp resiliency show'] = """
+    type: command
+    short-summary: Show resiliency policies for a container app.
+    examples:
+    - name: Show resiliency policies for a container app.
+      text: |
+          az containerapp resiliency show -g MyResourceGroup \\
+            -n MyResiliencyName --container-app-name MyContainerApp
+"""
+
+helps['containerapp resiliency list'] = """
+    type: command
+    short-summary: List resiliency policies for a container app.
+    examples:
+    - name: List resiliency policies for a container app.
+      text: |
+          az containerapp resiliency list -g MyResourceGroup \\
+            --container-app-name MyContainerApp
+"""
+
+helps['containerapp add-on redis'] = """
+    type: group
+    short-summary: Commands to manage the redis add-on for the Container Apps environment.
+"""
+
+helps['containerapp add-on postgres'] = """
+    type: group
+    short-summary: Commands to manage the postgres add-on for the Container Apps environment.
+"""
+
+helps['containerapp add-on kafka'] = """
+    type: group
+    short-summary: Commands to manage the kafka add-on for the Container Apps environment.
+"""
+
+helps['containerapp add-on mariadb'] = """
+    type: group
+    short-summary: Commands to manage the mariadb add-on for the Container Apps environment.
+"""
+
+helps['containerapp add-on qdrant'] = """
+    type: group
+    short-summary: Commands to manage the qdrant add-on for the Container Apps environment.
+"""
+
+helps['containerapp add-on redis create'] = """
+    type: command
+    short-summary: Command to create the redis add-on.
+"""
+
+helps['containerapp add-on postgres create'] = """
+    type: command
+    short-summary: Command to create the postgres add-on.
+"""
+
+helps['containerapp add-on kafka create'] = """
+    type: command
+    short-summary: Command to create the kafka add-on.
+"""
+
+helps['containerapp add-on mariadb create'] = """
+    type: command
+    short-summary: Command to create the mariadb add-on.
+"""
+
+helps['containerapp add-on qdrant create'] = """
+    type: command
+    short-summary: Command to create the qdrant add-on.
+"""
+
+helps['containerapp add-on redis delete'] = """
+    type: command
+    short-summary: Command to delete the redis add-on.
+"""
+
+helps['containerapp add-on postgres delete'] = """
+    type: command
+    short-summary: Command to delete the postgres add-on.
+"""
+
+helps['containerapp add-on kafka delete'] = """
+    type: command
+    short-summary: Command to delete the kafka add-on.
+"""
+
+helps['containerapp add-on mariadb delete'] = """
+    type: command
+    short-summary: Command to delete the mariadb add-on.
+"""
+
+helps['containerapp add-on qdrant delete'] = """
+    type: command
+    short-summary: Command to delete the qdrant add-on.
 """
 
 helps['containerapp env update'] = """
@@ -484,6 +711,15 @@ examples:
   - name: Configure the app to listen to the forward headers X-FORWARDED-HOST and X-FORWARDED-PROTO.
     text: |
         az containerapp auth update -g myResourceGroup --name MyContainerapp --proxy-convention Standard
+"""
+
+helps['containerapp env workload-profile set'] = """
+    type: command
+    short-summary: Create or update an existing workload profile in a Container Apps environment
+    examples:
+    - name: Create or update an existing workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile set -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
 """
 
 # Compose commands

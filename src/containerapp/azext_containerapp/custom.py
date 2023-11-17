@@ -47,7 +47,20 @@ from msrest.exceptions import DeserializationError
 
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
-from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator
+from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
+from .containerapp_resiliency_decorator import (
+    ContainerAppResiliencyPreviewCreateDecorator,
+    ContainerAppResiliencyPreviewShowDecorator,
+    ContainerAppResiliencyPreviewDeleteDecorator,
+    ContainerAppResiliencyPreviewListDecorator,
+    ContainerAppResiliencyPreviewUpdateDecorator)
+from .daprcomponent_resiliency_decorator import (
+    DaprComponentResiliencyPreviewCreateDecorator,
+    DaprComponentResiliencyPreviewDeleteDecorator,
+    DaprComponentResiliencyPreviewShowDecorator,
+    DaprComponentResiliencyPreviewListDecorator,
+    DaprComponentResiliencyPreviewUpdateDecorator
+)
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from ._client_factory import handle_raw_exception
@@ -57,6 +70,8 @@ from ._clients import (
     AuthPreviewClient,
     SubscriptionPreviewClient,
     ContainerAppsJobPreviewClient,
+    ContainerAppsResiliencyPreviewClient,
+    DaprComponentResiliencyPreviewClient,
     ManagedEnvironmentPreviewClient,
     ConnectedEnvDaprComponentClient,
     ConnectedEnvironmentClient,
@@ -151,6 +166,195 @@ def delete_qdrant_service(cmd, service_name, resource_group_name, no_wait=False)
     return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_QDRANT_SERVICE_TYPE)
 
 
+def create_container_app_resiliency(cmd, name, resource_group_name, container_app_name,
+                                    yaml=None,
+                                    no_wait=False,
+                                    disable_warnings=False,
+                                    tcp_retry_max_connect_attempts=None,
+                                    circuit_breaker_consecutive_errors=None,
+                                    circuit_breaker_interval=None,
+                                    circuit_breaker_max_ejection=None,
+                                    tcp_connection_pool_max_connections=None,
+                                    http_connection_pool_http1_max_pending_req=None,
+                                    http_connection_pool_http2_max_req=None,
+                                    timeout_response_in_seconds=None,
+                                    timeout_connection_in_seconds=None,
+                                    http_retry_max=None,
+                                    http_retry_delay_in_milliseconds=None,
+                                    http_retry_interval_in_milliseconds=None,
+                                    http_retry_status_codes=None,
+                                    http_retry_errors=None,
+                                    default=False):
+    raw_parameters = locals()
+    containerapp_resiliency_create_decorator = ContainerAppResiliencyPreviewCreateDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_resiliency_create_decorator.validate_arguments()
+    containerapp_resiliency_create_decorator.construct_payload()
+    return containerapp_resiliency_create_decorator.create()
+
+
+def update_container_app_resiliency(cmd, name, resource_group_name, container_app_name,
+                                    yaml=None,
+                                    no_wait=False,
+                                    disable_warnings=False,
+                                    tcp_retry_max_connect_attempts=None,
+                                    circuit_breaker_consecutive_errors=None,
+                                    circuit_breaker_interval=None,
+                                    circuit_breaker_max_ejection=None,
+                                    tcp_connection_pool_max_connections=None,
+                                    http_connection_pool_http1_max_pending_req=None,
+                                    http_connection_pool_http2_max_req=None,
+                                    timeout_response_in_seconds=None,
+                                    timeout_connection_in_seconds=None,
+                                    http_retry_max=None,
+                                    http_retry_delay_in_milliseconds=None,
+                                    http_retry_interval_in_milliseconds=None,
+                                    http_retry_status_codes=None,
+                                    http_retry_errors=None):
+
+    raw_parameters = locals()
+    containerapp_resiliency_update_decorator = ContainerAppResiliencyPreviewUpdateDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_resiliency_update_decorator.validate_arguments()
+    containerapp_resiliency_update_decorator.construct_payload()
+    return containerapp_resiliency_update_decorator.update()
+
+
+def delete_container_app_resiliency(cmd, name, resource_group_name, container_app_name, no_wait=False):
+
+    raw_parameters = locals()
+    containerapp_resiliency_delete_decorator = ContainerAppResiliencyPreviewDeleteDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_delete_decorator.delete()
+
+
+def show_container_app_resiliency(cmd, name, resource_group_name, container_app_name):
+
+    raw_parameters = locals()
+    containerapp_resiliency_show_decorator = ContainerAppResiliencyPreviewShowDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_show_decorator.show()
+
+
+def list_container_app_resiliencies(cmd, resource_group_name, container_app_name):
+
+    raw_parameters = locals()
+    containerapp_resiliency_list_decorator = ContainerAppResiliencyPreviewListDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_list_decorator.list()
+
+
+def create_dapr_component_resiliency(cmd, name, resource_group_name, dapr_component_name, environment,
+                                     yaml=None,
+                                     no_wait=False,
+                                     disable_warnings=False,
+                                     in_timeout_response_in_seconds=None,
+                                     out_timeout_response_in_seconds=None,
+                                     in_http_retry_max=None,
+                                     out_http_retry_max=None,
+                                     in_http_retry_delay_in_milliseconds=None,
+                                     out_http_retry_delay_in_milliseconds=None,
+                                     in_http_retry_interval_in_milliseconds=None,
+                                     out_http_retry_interval_in_milliseconds=None):
+    raw_parameters = locals()
+    component_resiliency_create_decorator = DaprComponentResiliencyPreviewCreateDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    component_resiliency_create_decorator.validate_arguments()
+    component_resiliency_create_decorator.construct_payload()
+    return component_resiliency_create_decorator.create()
+
+
+def update_dapr_component_resiliency(cmd, name, resource_group_name, dapr_component_name, environment,
+                                     yaml=None,
+                                     no_wait=False,
+                                     disable_warnings=False,
+                                     in_timeout_response_in_seconds=None,
+                                     out_timeout_response_in_seconds=None,
+                                     in_http_retry_max=None,
+                                     out_http_retry_max=None,
+                                     in_http_retry_delay_in_milliseconds=None,
+                                     out_http_retry_delay_in_milliseconds=None,
+                                     in_http_retry_interval_in_milliseconds=None,
+                                     out_http_retry_interval_in_milliseconds=None):
+
+    raw_parameters = locals()
+    component_resiliency_update_decorator = DaprComponentResiliencyPreviewUpdateDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    component_resiliency_update_decorator.validate_arguments()
+    component_resiliency_update_decorator.construct_payload()
+    return component_resiliency_update_decorator.update()
+
+
+def delete_dapr_component_resiliency(cmd, name, resource_group_name, environment, dapr_component_name, no_wait=False):
+
+    raw_parameters = locals()
+    containerapp_resiliency_delete_decorator = DaprComponentResiliencyPreviewDeleteDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_delete_decorator.delete()
+
+
+def show_dapr_component_resiliency(cmd, name, resource_group_name, environment, dapr_component_name, no_wait=False):
+
+    raw_parameters = locals()
+    containerapp_resiliency_show_decorator = DaprComponentResiliencyPreviewShowDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_show_decorator.show()
+
+
+def list_dapr_component_resiliencies(cmd, resource_group_name, dapr_component_name, environment, no_wait=False):
+
+    raw_parameters = locals()
+    containerapp_resiliency_list_decorator = DaprComponentResiliencyPreviewListDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_list_decorator.list()
+
+
 def create_containerapp(cmd,
                         name,
                         resource_group_name,
@@ -188,6 +392,7 @@ def create_containerapp(cmd,
                         dapr_enable_api_logging=False,
                         service_type=None,
                         service_bindings=None,
+                        customized_keys=None,
                         revision_suffix=None,
                         startup_command=None,
                         args=None,
@@ -202,6 +407,7 @@ def create_containerapp(cmd,
                         secret_volume_mount=None,
                         environment_type="managed",
                         source=None,
+                        artifact=None,
                         repo=None,
                         token=None,
                         branch=None,
@@ -241,6 +447,7 @@ def update_containerapp_logic(cmd,
                               scale_rule_metadata=None,
                               scale_rule_auth=None,
                               service_bindings=None,
+                              customized_keys=None,
                               unbind_service_bindings=None,
                               set_env_vars=None,
                               remove_env_vars=None,
@@ -262,7 +469,8 @@ def update_containerapp_logic(cmd,
                               registry_user=None,
                               registry_pass=None,
                               secret_volume_mount=None,
-                              source=None):
+                              source=None,
+                              artifact=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -295,6 +503,7 @@ def update_containerapp(cmd,
                         scale_rule_auth=None,
                         unbind_service_bindings=None,
                         service_bindings=None,
+                        customized_keys=None,
                         set_env_vars=None,
                         remove_env_vars=None,
                         replace_env_vars=None,
@@ -309,7 +518,8 @@ def update_containerapp(cmd,
                         termination_grace_period=None,
                         no_wait=False,
                         secret_volume_mount=None,
-                        source=None):
+                        source=None,
+                        artifact=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -326,6 +536,7 @@ def update_containerapp(cmd,
                                      scale_rule_metadata=scale_rule_metadata,
                                      scale_rule_auth=scale_rule_auth,
                                      service_bindings=service_bindings,
+                                     customized_keys=customized_keys,
                                      unbind_service_bindings=unbind_service_bindings,
                                      set_env_vars=set_env_vars,
                                      remove_env_vars=remove_env_vars,
@@ -341,7 +552,8 @@ def update_containerapp(cmd,
                                      termination_grace_period=termination_grace_period,
                                      no_wait=no_wait,
                                      secret_volume_mount=secret_volume_mount,
-                                     source=source)
+                                     source=source,
+                                     artifact=artifact)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -434,7 +646,8 @@ def create_managed_environment(cmd,
                                enable_workload_profiles=True,
                                mtls_enabled=None,
                                enable_dedicated_gpu=False,
-                               no_wait=False):
+                               no_wait=False,
+                               logs_dynamic_json_columns=False):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -468,9 +681,10 @@ def update_managed_environment(cmd,
                                min_nodes=None,
                                max_nodes=None,
                                mtls_enabled=None,
-                               no_wait=False):
+                               no_wait=False,
+                               logs_dynamic_json_columns=None):
     raw_parameters = locals()
-    containerapp_env_update_decorator = ContainerAppEnvUpdateDecorator(
+    containerapp_env_update_decorator = ContainerappEnvPreviewUpdateDecorator(
         cmd=cmd,
         client=ManagedEnvironmentPreviewClient,
         raw_parameters=raw_parameters,
@@ -791,6 +1005,7 @@ def containerapp_up(cmd,
                     registry_server=None,
                     image=None,
                     source=None,
+                    artifact=None,
                     ingress=None,
                     target_port=None,
                     registry_user=None,
@@ -816,7 +1031,11 @@ def containerapp_up(cmd,
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
-    _validate_up_args(cmd, source, image, repo, registry_server)
+    _validate_up_args(cmd, source, artifact, image, repo, registry_server)
+    if artifact:
+        # Artifact is mostly a convenience argument provided to use --source specifically with a single artifact file.
+        # At this point we know for sure that source isn't set (else _validate_up_args would have failed), so we can build with this value.
+        source = artifact
     validate_container_app_name(name, AppType.ContainerApp.name)
     check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
 
@@ -1075,6 +1294,10 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                 max_replicas=replicas, )
         )
     return containerapps_from_compose
+
+
+def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
 
 
 def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
