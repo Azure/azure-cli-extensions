@@ -8,8 +8,10 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
+# pylint: disable=unused-wildcard-import, protected-access
 
+from azure.cli.core.aaz import has_value
+from azext_quota.aaz.latest.quota import Create as _QuotaCreate, Update as _QuotaUpdate
 from .generated.custom import *  # noqa: F403
 try:
     from .manual.custom import *  # noqa: F403
@@ -18,3 +20,47 @@ except ImportError as e:
         pass
     else:
         raise e
+
+
+class QuotaCreate(_QuotaCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZFreeFormDictArg, AAZFreeFormDictArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.properties = AAZFreeFormDictArg(
+            options=["--properties"],
+            help="The additional properties for the specific resource provider.",
+            fmt=AAZFreeFormDictArgFormat()
+        )
+        args_schema.name._registered = False
+        args_schema.properties_org._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.resource_name):
+            args.name = {'value': args.resource_name}
+        if has_value(args.properties):
+            args.properties_org = args.properties
+
+
+class QuotaUpdate(_QuotaUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZFreeFormDictArg, AAZFreeFormDictArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.properties = AAZFreeFormDictArg(
+            options=["--properties"],
+            help="The additional properties for the specific resource provider.",
+            fmt=AAZFreeFormDictArgFormat()
+        )
+        args_schema.name._registered = False
+        args_schema.properties_org._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.resource_name):
+            args.name = {'value': args.resource_name}
+        if has_value(args.properties):
+            args.properties_org = args.properties

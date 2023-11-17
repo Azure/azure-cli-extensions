@@ -51,3 +51,19 @@ class QuotaScenarioTest(ScenarioTest):
         self.cmd('quota request status show --scope {sub} --name {name}')
 
         self.cmd('quota operation list')
+
+    def test_quota_request(self):
+        self.kwargs.update({
+            'resource_name': 'StandardSkuPublicIpAddresses',
+            'resource_type': 'PublicIPAddresses',
+            'sub': '/subscriptions/{}/providers/Microsoft.Network/locations/eastus'.format(self.get_subscription_id())
+        })
+        self.cmd('quota request list --scope {sub} --top 3', checks=[
+            self.check('length(@)', 3)
+        ])
+        quota_request = self.cmd('quota request list --scope {sub}').get_output_in_json()
+        quota_request_ids = [request['name'] for request in quota_request if request['provisioningState'] == 'Succeeded']
+        self.kwargs.update({
+            'quota_request_id': quota_request_ids[0]
+        })
+        self.cmd('quota request show --scope {sub} --id {quota_request_id}')
