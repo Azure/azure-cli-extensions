@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.2.3
+++++++
+* Fix docs and help for vm creation from template with disk override.
+* Convert any HCRP machine with empty kind to VMWare / AVS kind, while enabling vm from inventory.
+
 0.2.2
 ++++++
 * GA release: Using stable API version for all operations.
