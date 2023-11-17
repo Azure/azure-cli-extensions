@@ -25,8 +25,6 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
         run(cmd, check=True)
         cmd = ['azdev', 'extension', 'add', 'k8s-extension']
         run(cmd, check=True)
-        cmd = ['azdev', 'extension', 'add', 'customlocation']
-        run(cmd, check=True)
         # Wait for extensions to be installed
         # We mock time.sleep in azure-sdk-tools, that's why we need to use sleep here.
         sleep(120)
@@ -42,12 +40,12 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
             f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
         custom_location_name = self.create_random_name(prefix="my-custom-location", length=24)
         create_extension_and_custom_location(self, resource_group, connected_cluster_name, custom_location_name)
-        custom_location_id = self.cmd(f'customlocation show -n {custom_location_name} -g {resource_group}', checks=[
-            JMESPathCheck('provisioningState', "Succeeded")
-        ]).get_output_in_json()["id"]
+        sub_id = self.cmd('az account show').get_output_in_json()['id']
+        custom_location_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/Microsoft.ExtendedLocation/customLocations/{custom_location_name}"
         connected_cluster_id = connected_cluster['id']
         app_name = self.create_random_name(prefix='app1', length=24)
         image = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+
         # -n {appname} --connected-cluster-id
         self.cmd(f'containerapp up -n {app_name} -g {resource_group} --connected-cluster-id {connected_cluster_id} --image {image}')
         env_list = self.cmd(f'containerapp connected-env list -g {resource_group}').get_output_in_json()
