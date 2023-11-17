@@ -149,17 +149,18 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     if not resource_port:
         resource_port = 22
 
-    if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and bastion['enableTunneling'] is not True:
+    if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and \
+       bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
-    ip_connect = _is_ipconnect_request(cmd, bastion, target_ip_address)
+    ip_connect = _is_ipconnect_request(bastion, target_ip_address)
     if ip_connect:
-        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
+        if int(resource_port) not in [22, 3389]:
+            raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is 22, 3389.")
+        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}"
+        f"/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
 
-    if ip_connect and int(resource_port) not in [22, 3389]:
-        raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is 22, 3389.")
-
-    _validate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address)
+    _validate_resourceid(target_resource_id)
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port)
@@ -242,7 +243,8 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     if not resource_port:
         resource_port = 3389
 
-    if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and bastion['enableTunneling'] is not True:
+    if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and \
+       bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
     if auth_type is None:
@@ -253,18 +255,19 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     else:
         raise UnrecognizedArgumentError("Unknown auth type, support auth-types: aad. For non aad login, you dont need to provide auth-type flag.")
 
-    ip_connect = _is_ipconnect_request(cmd, bastion, target_ip_address)
-
-    if ip_connect and enable_mfa:
-        raise UnrecognizedArgumentError("AAD login is not supported for IP Connect scenarios.")
+    ip_connect = _is_ipconnect_request(bastion, target_ip_address)
 
     if ip_connect:
-        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
+        if enable_mfa:
+            raise UnrecognizedArgumentError("AAD login is not supported for IP Connect scenarios.")
 
-    if ip_connect and int(resource_port) not in [22, 3389]:
-        raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is 22, 3389.")
+        if int(resource_port) not in [22, 3389]:
+            raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is 22, 3389.")
 
-    _validate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address)
+        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}"
+        f"/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
+
+    _validate_resourceid(target_resource_id)
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
     if platform.system() == "Windows":
@@ -282,7 +285,8 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             profile = Profile(cli_ctx=cmd.cli_ctx)
             access_token = profile.get_raw_token()[0][2].get("accessToken")
             logger.debug("Response %s", access_token)
-            web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
+            web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&format=rdp"
+            f"&rdpport={resource_port}&enablerdsaad={enable_mfa}"
 
             headers = {
                 "Authorization": f"Bearer {access_token}",
@@ -311,14 +315,14 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
         raise UnrecognizedArgumentError("Platform is not supported for this command. Supported platforms: Windows")
 
 
-def _is_ipconnect_request(cmd, bastion, target_ip_address):
+def _is_ipconnect_request(bastion, target_ip_address):
     if 'enableIpConnect' in bastion and bastion['enableIpConnect'] is True and target_ip_address:
         return True
 
     return False
 
 
-def _validate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address):
+def _validate_resourceid(target_resource_id):
     if not is_valid_resource_id(target_resource_id):
         err_msg = "Please enter a valid resource ID. If this is not working, " \
                   "try opening the JSON view of your resource (in the Overview tab), and copying the full resource ID."
@@ -373,14 +377,15 @@ def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_g
     if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
-    ip_connect = _is_ipconnect_request(cmd, bastion, target_ip_address)
+    ip_connect = _is_ipconnect_request(bastion, target_ip_address)
     if ip_connect:
-        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
+        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/"
+        f"{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
 
     if ip_connect and int(resource_port) not in [22, 3389]:
         raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is 22, 3389.")
 
-    _validate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address)
+    _validate_resourceid(target_resource_id)
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port, port)
