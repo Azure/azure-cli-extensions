@@ -15,6 +15,7 @@ import tempfile
 import threading
 import time
 import json
+import uuid
 
 import requests
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError, RequiredArgumentMissingError, \
@@ -227,7 +228,7 @@ def _get_rdp_path(rdp_command="mstsc"):
 
 
 def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_name, bastion_host_name,
-                     resource_port=None, disable_gateway=False, configure=False, enable_mfa=False):
+                     auth_type=None, resource_port=None, disable_gateway=False, configure=False, enable_mfa=False):
     import os
     from azure.cli.core._profile import Profile
     from ._process_helper import launch_and_wait
@@ -244,7 +245,19 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
+    if auth_type is None:
+        # do nothing
+        pass
+    elif auth_type.lower() == "aad":
+        enable_mfa = True
+    else:
+        raise UnrecognizedArgumentError("Unknown auth type, support auth-types: aad. For non aad login, you dont need to provide auth-type flag.")
+
     ip_connect = _is_ipconnect_request(cmd, bastion, target_ip_address)
+
+    if ip_connect and enable_mfa:
+        raise UnrecognizedArgumentError("AAD login is not supported for IP Connect scenarios.")
+
     if ip_connect:
         target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
 
@@ -285,8 +298,10 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
                     raise ClientRequestError("Request failed with error: " + errorMessage)
                 raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
 
-            _write_to_file(response)
-            rdpfilepath = os.getcwd() + "/conn.rdp"
+            tempdir = os.path.realpath(tempfile.gettempdir())
+            rdpfilepath = os.path.join(tempdir, 'conn_{}.rdp'.format(uuid.uuid4().hex))
+            _write_to_file(response, rdpfilepath)
+
             command = [_get_rdp_path()]
             if configure:
                 command.append("/edit")
@@ -319,8 +334,8 @@ def _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id):
     return bastion['dnsName']
 
 
-def _write_to_file(response):
-    with open("conn.rdp", "w", encoding="utf-8") as f:
+def _write_to_file(response, file_path):
+    with open(file_path, "w", encoding="utf-8") as f:
         for line in response.text.splitlines():
             f.write(line + "\n")
 
