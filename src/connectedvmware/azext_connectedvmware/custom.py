@@ -160,6 +160,7 @@ def connect_vcenter(
             creds['password'] = pwinput('Please provide vcenter password: ')
             if not creds['password']:
                 print('Parameter is required, please try again')
+                continue
             passwdConfim = pwinput('Please confirm vcenter password: ')
             if creds['password'] != passwdConfim:
                 print('Passwords do not match, please try again')

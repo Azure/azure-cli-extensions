@@ -6,6 +6,7 @@ Release History
 ++++++
 * Fix docs and help for vm creation from template with disk override.
 * Convert any HCRP machine with empty kind to VMWare / AVS kind, while enabling vm from inventory.
+* Reprompt fix for password for vcenter connect.
 
 0.2.2
 ++++++
