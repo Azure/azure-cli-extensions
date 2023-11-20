@@ -12,6 +12,8 @@ from knack.log import get_logger
 
 from .aaz.latest.apic.api.definition import ImportSpecification
 from .aaz.latest.apic.api.definition import ExportSpecification
+from .aaz.latest.apic.metadata_schema import Create
+from .aaz.latest.apic.metadata_schema import ExportMetadataSchema
 
 from azure.cli.core.aaz import *
 from urllib.parse import urlparse, urlunparse
@@ -83,27 +85,28 @@ class ExportSpecificationExtension(ExportSpecification):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-
         arguments = self.ctx.args
 
         if result:
+            print('Results found. Exporting to', arguments.source_profile)
+        
             response_format = result['format']
             exportedResults = result['value']
-
-            # if response_format == 'link':
-                # TODO: make a get call and save the result to filename
-                #check the status code and see content response
-                # set the value to exportedResults
-
-                # getReponse = requests.get(exportedResults)
-                # if getReponse.status_code == 200:
-                #     exportedResults = getReponse.content
-                # else:
-                #     logger.error('Error while fetching the results from the link. Status code: %s', getReponse.status_code)
+            
+            if response_format == 'link':
+                print('Fetching specification from:', exportedResults)
+                getReponse = requests.get(exportedResults)
+                if getReponse.status_code == 200:
+                    exportedResults = getReponse.content.decode()
+                else:
+                    logger.error('Error while fetching the results from the link. Status code: %s', getReponse.status_code)
                         
             if arguments.source_profile:
-                self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
-                print('Results exported to', arguments.source_profile)
+                try:
+                    self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
+                    print('Results exported to', arguments.source_profile)
+                except Exception as e:
+                    logger.error('Error while writing the results to the file. Error: %s', e)
             else:
                 logger.error('Please provide the --file-name to exports the results to.')
         else:
@@ -119,6 +122,98 @@ class ExportSpecificationExtension(ExportSpecification):
                 else:    
                     f.write(results)
 
+class CreateMetadataSchemaExtension(Create):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.source_profile = AAZStrArg(
+            options=["--file-name"],
+            help='Name of the file from that contains the metadata schema.',
+            required=False,
+            registered=True
+        )
+        return args_schema
+    
+    def pre_operations(self):
+        args = self.ctx.args
+      
+        data = None
+        value = args.schema
+
+        # Load the JSON file
+        if args.source_profile:
+            rawdata = open(str(args.source_profile), 'rb').read()
+            result = chardet.detect(rawdata)
+            encoding = result['encoding']
+
+            if os.stat(str(args.source_profile)).st_size == 0:
+                raise ValueError('Metadtata schema file is empty. Please provide a valid metadata schema file.')
+
+            with open(str(args.source_profile), 'r', encoding=encoding) as f:
+                data = json.load(f)
+                if data:
+                    value = json.dumps(data)
+  
+        # If any of the fields are None, get them from self.args
+        if value is None:
+           logger.error('Please provide the schema to create the metadata schema through --schema option or through --file-name option via a file.')
+
+        # Reassign the values to self.args
+        self.ctx.args.schema = value
+
+class ExportMetadataSchemaExtension(ExportMetadataSchema):
+    
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.source_profile = AAZStrArg(
+            options=["--file-name"],
+            help='Name of the file where to export the metadata schema to.',
+            required=True,
+            registered=True
+        )
+        return args_schema
+    
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        arguments = self.ctx.args
+
+        if result:
+            print('Results found. Exporting to', arguments.source_profile)
+        
+            response_format = result['format']
+            exportedResults = result['value']
+            
+            if response_format == 'link':
+                print('Fetching metadata from:', exportedResults)
+                getReponse = requests.get(exportedResults)
+                if getReponse.status_code == 200:
+                    exportedResults = getReponse.content.decode()
+                else:
+                    logger.error('Error while fetching the results from the link. Status code: %s', getReponse.status_code)
+                        
+            if arguments.source_profile:
+                try:
+                    self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
+                    print('Results exported to', arguments.source_profile)
+                except Exception as e:
+                    logger.error('Error while writing the results to the file. Error: %s', e)
+            else:
+                logger.error('Please provide the --file-name to exports the results to.')
+        else:
+            logger.error('No results found.')
+
+    def writeResultsToFile(self, results, file_name):
+        if file_name:
+            with open(file_name, 'w') as f:
+                if os.path.splitext(file_name)[1] == '.json':
+                    if isinstance(results, str):
+                        results = json.loads(results)
+                    json.dump(results, f, indent=4, separators=(',', ':'))
+                else:    
+                    f.write(results)
+
+# Quick Import
 def register_apic(cmd, api_location, resource_group, service_name, environment_name=None):
 
     # Load the JSON file
@@ -130,6 +225,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
         result = chardet.detect(rawdata)
         encoding = result['encoding']
 
+        # TODO - read other file types later
         with open(str(api_location), 'r', encoding=encoding) as f:
             data = json.load(f)
             if data:
@@ -164,7 +260,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             extracted_api_title = info.get('title', 'API Title').replace(" ", "-").lower()
             extracted_api_version = info.get('version', 'v1').replace(".", "-").lower()
             extracted_api_version_title = info.get('version', 'v1').replace(".", "-").lower()
-            #TODO - Create API Version lifecycle_stage. Ask Alex about this
+            #TODO -Create API Version lifecycle_stage
 
             # Create API - Get the contact details from info in spec
             contact = info.get('contact')
@@ -206,7 +302,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 
             #TODO: Create API - custom-properties
             # - "The custom metadata defined for API catalog entities. #1
-            #Ask Alex about this
                  
 
             # Create API -------------------------------------------------------------------------------------
@@ -232,7 +327,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             
 
 
-
             # Create API Version -----------------------------------------------------------------------------
 
             from .aaz.latest.apic.api.version import Create as CreateAPIVersion
@@ -249,7 +343,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
 
             createAPIVersionResults = CreateAPIVersion(cli_ctx=cmd.cli_ctx)(command_args=api_version_args)
             print("API version was created successfully")
-
 
 
 

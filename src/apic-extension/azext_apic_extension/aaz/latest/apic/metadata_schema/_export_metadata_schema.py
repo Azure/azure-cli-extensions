@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic service export-metadata-schema",
+    "apic metadata-schema export-metadata-schema",
 )
 class ExportMetadataSchema(AAZCommand):
     """Exports the effective metadata schema.

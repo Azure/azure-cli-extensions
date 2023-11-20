@@ -11,7 +11,6 @@
 from .__cmd_group import *
 from ._create import *
 from ._delete import *
-from ._export_metadata_schema import *
 from ._import_from_apim import *
 from ._list import *
 from ._show import *
