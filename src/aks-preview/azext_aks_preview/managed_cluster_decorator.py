@@ -3437,8 +3437,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         network_policy = self.context.get_network_policy()
         if network_policy:
             mc.network_profile.network_policy = network_policy
-
-        if network_dataplane == CONST_NETWORK_DATAPLANE_CILIUM:
+        elif network_dataplane == CONST_NETWORK_DATAPLANE_CILIUM:
+            # force network_policy to "cilium" when network_dataplane is "cilium" to pass validation in aks rp
+            # this was needed because api version 2023-08-02preview introduced --network-policy=none
+            # without forcing network_policy to "cilium" here, when upgrading to cilium without specifying --network-policy, it will be set to none by default and validation in aks rp will fail.
             mc.network_profile.network_policy = CONST_NETWORK_POLICY_CILIUM
 
         return mc
