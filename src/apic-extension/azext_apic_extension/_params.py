@@ -11,7 +11,7 @@
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
 
-    with self.argument_context("apic service register") as c:
+    with self.argument_context("apic api register") as c:
             c.argument(
                 "api_location",
                 options_list=['--api-location', '-l'],

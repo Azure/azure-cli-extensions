@@ -23,5 +23,5 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table['apic metadata-schema create'] = CreateMetadataSchemaExtension(loader=self)
         self.command_table['apic metadata-schema export-metadata-schema'] = ExportMetadataSchemaExtension(loader=self)
         
-    with self.command_group('apic service') as g: 
+    with self.command_group('apic api') as g: 
         g.custom_command("register", "register_apic")

@@ -18,13 +18,13 @@ class ExportMetadataSchema(AAZCommand):
     """Exports the effective metadata schema.
 
     :example: Export Metadata Schema assigned to api
-        az apic metadata-schema export-metadata-schema -g api-center-test -s contosoeuap --assigned-to api --file-name C:\Users\arpishah\examples\cli-examples\exported-results\exported-schema-3.json
+        az apic metadata-schema export-metadata-schema -g api-center-test -s contosoeuap --assigned-to api --file-name filepath
 
     :example: Export Metadata Schema assigned to deployment
-        az apic metadata-schema export-metadata-schema -g api-center-test -s contosoeuap --assigned-to deployment --file-name C:\Users\arpishah\examples\cli-examples\exported-results\exported-schema-5.json
+        az apic metadata-schema export-metadata-schema -g api-center-test -s contosoeuap --assigned-to deployment --file-name filepath
 
     :example: Export Metadata Schema assigned to environment
-        az apic metadata-schema export-metadata-schema -g api-center-test -s contosoeuap --assigned-to environment --file-name C:\Users\arpishah\examples\cli-examples\exported-results\exported-schema-6.json
+        az apic metadata-schema export-metadata-schema -g api-center-test -s contosoeuap --assigned-to environment --file-name filepath
     """
 
     _aaz_info = {
