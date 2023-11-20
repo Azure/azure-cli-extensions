@@ -224,7 +224,7 @@ class TestSpringCloudCreateWithAI(BasicTest):
         self.assertEqual(True, self.monitoring_settings_resource.properties.trace_enabled)
 
 
-class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
+class TestSpringCloudCreateEnterpriseWithApplicationInsights(BasicTest):
     def _get_application_insights_client(ctx, type, api_version=None):
         application_insights_create_resource = mock.MagicMock()
         application_insights_create_resource.connection_string = 'fake-create-connection-string'
@@ -241,6 +241,7 @@ class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
         super().__init__(methodName=methodName)
         self.buildpack_binding_resource = None
 
+    @mock.patch('azext_spring.buildpack_binding.get_mgmt_service_client', _get_application_insights_client)
     @mock.patch('azext_spring.custom.get_mgmt_service_client', _get_application_insights_client)
     def _execute(self, resource_group, name, **kwargs):
         client = kwargs.pop('client', None) or _get_basic_mock_client()
