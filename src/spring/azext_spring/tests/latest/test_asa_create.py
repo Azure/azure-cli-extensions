@@ -170,7 +170,7 @@ class TestSpringAppsCreateWithApplicationAccelerator(BasicTest):
 
 
 class TestSpringCloudCreateWithAI(BasicTest):
-    def _get_ai_client(ctx, type):
+    def _get_ai_client(ctx, type, api_version=None):
         ai_create_resource = mock.MagicMock()
         ai_create_resource.connection_string = 'fake-connection'
         free_mock_client.components.create_or_update.return_value = ai_create_resource
