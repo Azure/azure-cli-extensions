@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.5.2
+++++++++++++++++++
+* Update help text on configuration-settings and configuration-protected-settings properties.
+
 1.5.1
 ++++++++++++++++++
 * microsoft.kubernetes.azuredefender: Fixed installation bug where LogAnalytics Workspace details were not being fetched correctly.

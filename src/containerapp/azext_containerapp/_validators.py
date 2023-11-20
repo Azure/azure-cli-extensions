@@ -21,18 +21,18 @@ logger = get_logger(__name__)
 
 
 # called directly from custom method bc otherwise it disrupts the --environment auto RID functionality
-def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait, source=None, repo=None, yaml=None, environment_type=None):
+def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait, source=None, artifact=None, repo=None, yaml=None, environment_type=None):
     if source and repo:
         raise MutuallyExclusiveArgumentError("Usage error: --source and --repo cannot be used together. Can either deploy from a local directory or a GitHub repository")
     if (source or repo) and yaml:
         raise MutuallyExclusiveArgumentError("Usage error: --source or --repo cannot be used with --yaml together. Can either deploy from a local directory or provide a yaml file")
     if (source or repo) and environment_type == CONNECTED_ENVIRONMENT_TYPE:
         raise MutuallyExclusiveArgumentError("Usage error: --source or --repo cannot be used with --environment-type connectedEnvironment together. Please use --environment-type managedEnvironment")
-    if source or repo:
+    if repo:
         if not registry_server:
-            raise RequiredArgumentMissingError('Usage error: --registry-server is required while using --source or --repo')
+            raise RequiredArgumentMissingError('Usage error: --registry-server is required while using --repo')
         if ACR_IMAGE_SUFFIX not in registry_server:
-            raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source or --repo")
+            raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --repo")
     if repo and registry_server and "azurecr.io" in registry_server:
         parsed = urlparse(registry_server)
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]

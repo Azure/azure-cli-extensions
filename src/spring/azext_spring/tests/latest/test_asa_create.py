@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
-from ...vendored_sdks.appplatform.v2023_09_01_preview import models
+from ...vendored_sdks.appplatform.v2023_11_01_preview import models
 from ...spring_instance import (spring_create)
 from ..._utils import (_get_sku_name)
 try:
