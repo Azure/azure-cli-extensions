@@ -14,6 +14,10 @@ Pending
 * Vendor new SDK and bump API version to 2023-10-02-preview.
 * Update the enum for `--os-sku` in command `az aks nodepool update` to only accept the expected Ubuntu and AzureLinux OSSKUs.
 
+0.5.172
++++++++
+* Fix for regression issue with `az aks create --enable-addon` command for enabling App Routing
+
 0.5.171
 +++++++
 * Fix the issue that the value passed by option `--os-sku` in command `az aks nodepool update` is not processed.
