@@ -729,19 +729,19 @@ helps['aks update'] = """
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
-          long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+          long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. 
         - name: --load-balancer-managed-outbound-ipv6-count
           type: int
           short-summary: Load balancer managed outbound IPv6 IP count.
-          long-summary: Desired number of managed outbound IPv6 IPs for load balancer outbound connection. Valid for dual-stack (--ip-families IPv4,IPv6) only. If updated, it will wipe off the existing setting on Load balancer managed outbound IPv6 count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+          long-summary: Desired number of managed outbound IPv6 IPs for load balancer outbound connection. Valid for dual-stack (--ip-families IPv4,IPv6) only.
         - name: --load-balancer-outbound-ips
           type: string
           short-summary: Load balancer outbound IP resource IDs.
-          long-summary: Comma-separated public IP resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+          long-summary: Comma-separated public IP resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. 
         - name: --load-balancer-outbound-ip-prefixes
           type: string
           short-summary: Load balancer outbound IP prefix resource IDs.
-          long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+          long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
         - name: --load-balancer-outbound-ports
           type: int
           short-summary: Load balancer outbound allocated ports.
