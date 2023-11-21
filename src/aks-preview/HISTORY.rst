@@ -13,6 +13,7 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-10-02-preview.
 * Update the enum for `--os-sku` in command `az aks nodepool update` to only accept the expected Ubuntu and AzureLinux OSSKUs.
+* Update description `az aks update` and remove description about outbound ip limit.
 
 0.5.171
 +++++++
