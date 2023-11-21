@@ -53,10 +53,10 @@ def _validate_subnet_id(subnet_id, name):
 
 
 def validate_assign_identity(namespace):
-    if namespace.assign_identity is not None:
-        if namespace.assign_identity == '':
-            return
-        from msrestazure.tools import is_valid_resource_id
-        if not is_valid_resource_id(namespace.assign_identity):
-            raise CLIError(
-                "--assign-identity is not a valid Azure resource ID.")
+    # The user assigned MSI has different parameter names depending upon the command.
+    # --mi-user-assigned | --user-assigned
+    paraName = "mi_user_assigned" if hasattr(namespace, "mi_user_assigned") else "user_assigned"
+    value = getattr(namespace, paraName)
+
+    if value and not is_valid_resource_id(value):
+        raise CLIError(f"{paraName} is not a valid Azure resource ID.")

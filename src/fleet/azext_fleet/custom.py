@@ -30,8 +30,8 @@ def create_fleet(cmd,
                  enable_vnet_integration=False,
                  apiserver_subnet_id=None,
                  agent_subnet_id=None,
-                 enable_managed_identity=False,
-                 assign_identity=None,
+                 mi_system_assigned=False,
+                 mi_user_assigned=None,
                  no_wait=False):
 
     fleet_model = cmd.get_models(
@@ -95,19 +95,21 @@ def create_fleet(cmd,
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleets"
     )
+    
+    # Handle all 6 permutations of mi_system & mi_user assigned parameters
     managed_service_identity = fleet_managed_service_identity_model(type="None")
-    if enable_managed_identity:
+    if mi_system_assigned is True and mi_user_assigned is not None:
+        raise CLIError("A fleet can either have a system or user assigned identity but not both.")
+    if mi_system_assigned is True and mi_user_assigned is None:
         managed_service_identity.type = "SystemAssigned"
-        if assign_identity is not None:
-            user_assigned_identity_model = cmd.get_models(
-                "UserAssignedIdentity",
-                resource_type=CUSTOM_MGMT_FLEET,
-                operation_group="fleets"
-            )
-            managed_service_identity.type = "UserAssigned"
-            managed_service_identity.user_assigned_identities = {assign_identity: user_assigned_identity_model()}
-    elif assign_identity is not None:
-        raise CLIError("Cannot assign identity without enabling managed identity.")
+    if mi_user_assigned is not None:
+        user_assigned_identity_model = cmd.get_models(
+            "UserAssignedIdentity",
+            resource_type=CUSTOM_MGMT_FLEET,
+            operation_group="fleets"
+        )
+        managed_service_identity.type = "UserAssigned"
+        managed_service_identity.user_assigned_identities = {mi_user_assigned: user_assigned_identity_model()}
 
     fleet = fleet_model(
         location=location,
@@ -128,8 +130,8 @@ def update_fleet(cmd,
                  client,
                  resource_group_name,
                  name,
-                 enable_managed_identity=None,
-                 assign_identity=None,
+                 mi_system_assigned=None,
+                 mi_user_assigned=None,
                  tags=None,
                  no_wait=False):
     fleet_patch_model = cmd.get_models(
@@ -143,22 +145,24 @@ def update_fleet(cmd,
         operation_group="fleets"
     )
 
-    if enable_managed_identity is None:
+    # Handle all 6 permutations of mi_system & mi_user assigned parameters
+    if mi_system_assigned is True and mi_user_assigned is not None:
+        raise CLIError("A fleet can either have a system or user assigned identity, not both.")
+    if mi_system_assigned is None and mi_user_assigned is None:
         managed_service_identity = None
-        if assign_identity is not None:
-            raise CLIError("Cannot assign identity without enabling managed identity.")
-    elif enable_managed_identity is False:
+    elif mi_system_assigned is False and mi_user_assigned is None:
         managed_service_identity = fleet_managed_service_identity_model(type="None")
-    else:
+    elif mi_system_assigned is True and mi_user_assigned is None:
         managed_service_identity = fleet_managed_service_identity_model(type="SystemAssigned")
-        if assign_identity is not None:
-            user_assigned_identity_model = cmd.get_models(
+    else:
+        managed_service_identity = fleet_managed_service_identity_model(type="UserAssigned")
+        user_assigned_identity_model = cmd.get_models(
                 "UserAssignedIdentity",
                 resource_type=CUSTOM_MGMT_FLEET,
                 operation_group="fleets"
             )
-            managed_service_identity.type = "UserAssigned"
-            managed_service_identity.user_assigned_identities = {assign_identity: user_assigned_identity_model()}
+        managed_service_identity.user_assigned_identities = {mi_user_assigned: user_assigned_identity_model()}
+        
 
     fleet_patch = fleet_patch_model(
         tags=tags,
@@ -210,6 +214,89 @@ def get_credentials(cmd,  # pylint: disable=unused-argument
             path, kubeconfig, overwrite_existing, context_name)
     except (IndexError, ValueError):
         raise CLIError("Fail to find kubeconfig file.")
+
+
+def assign_fleet_identity(cmd,
+                 client,
+                 resource_group_name,
+                 name,
+                 system_assigned=None,
+                 user_assigned=None,
+                 no_wait=False):
+    fleet_patch_model = cmd.get_models(
+        "FleetPatch",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleets"
+    )
+    fleet_managed_service_identity_model = cmd.get_models(
+        "ManagedServiceIdentity",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleets"
+    )
+
+    # Handle all 6 permutations of mi_system & mi_user assigned parameters
+    if system_assigned is True and user_assigned is not None:
+        raise CLIError("A fleet can either have a system or user assigned identity, not both.")
+    if system_assigned is None and user_assigned is None:
+        managed_service_identity = None
+    elif system_assigned is False and user_assigned is None:
+        managed_service_identity = fleet_managed_service_identity_model(type="None")
+    elif system_assigned is True and user_assigned is None:
+        managed_service_identity = fleet_managed_service_identity_model(type="SystemAssigned")
+    else:
+        managed_service_identity = fleet_managed_service_identity_model(type="UserAssigned")
+        user_assigned_identity_model = cmd.get_models(
+                "UserAssignedIdentity",
+                resource_type=CUSTOM_MGMT_FLEET,
+                operation_group="fleets"
+            )
+        managed_service_identity.user_assigned_identities = {user_assigned: user_assigned_identity_model()}
+
+    fleet_patch = fleet_patch_model(
+        identity=managed_service_identity
+    )
+
+    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch, polling_interval=5)
+
+
+def remove_fleet_identity(cmd,
+                 client,
+                 resource_group_name,
+                 name,
+                 system_assigned=False,
+                 user_assigned=False,
+                 no_wait=False):
+    fleet_patch_model = cmd.get_models(
+        "FleetPatch",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleets"
+    )
+    fleet_managed_service_identity_model = cmd.get_models(
+        "ManagedServiceIdentity",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleets"
+    )
+
+    if system_assigned is False and user_assigned is False:
+        raise CLIError("Either --system-assigned is set to true, or pass an empty --user-assigned")
+    else:
+        managed_service_identity = fleet_managed_service_identity_model(type="None")
+
+    fleet_patch = fleet_patch_model(
+        identity=managed_service_identity
+    )
+
+    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch, polling_interval=5)
+
+
+def show_fleet_identity(cmd,  # pylint: disable=unused-argument
+               client,
+               resource_group_name,
+               name):
+    
+    identity = getattr(client.get(resource_group_name, name), 'identity', [])
+    
+    return identity
 
 
 def create_fleet_member(cmd,

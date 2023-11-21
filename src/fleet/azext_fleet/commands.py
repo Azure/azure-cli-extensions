@@ -44,6 +44,13 @@ def load_command_table(self, _):
         g.custom_command("get-credentials", "get_credentials")
         g.wait_command("wait")
 
+    # fleet identity command group
+    with self.command_group("fleet identity", fleets_sdk, client_factory=cf_fleets) as g:
+        g.custom_command("assign", "assign_fleet_identity", supports_no_wait=True)
+        g.custom_command("remove", "remove_fleet_identity", supports_no_wait=True, confirmation=True)
+        g.custom_show_command("show", "show_fleet_identity")
+        g.wait_command("wait")
+
     # fleet members command group
     with self.command_group("fleet member", fleet_members_sdk, client_factory=cf_fleet_members) as g:
         g.custom_command("create", "create_fleet_member", supports_no_wait=True)

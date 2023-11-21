@@ -65,3 +65,8 @@ Release History
 ++++++
 * Updated help examples.
 * Fixed serialization bug.
+
+1.0.2
+++++++
+* Added fleet identity sub command group.
+* Updated identity parameter names to match design guidelines.
