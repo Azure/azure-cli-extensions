@@ -12,21 +12,21 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine private-link-scope list",
+    "connectedmachine license list",
+    is_preview=True,
 )
 class List(AAZCommand):
-    """Get a list of Azure Arc PrivateLinkScopes within a resource                                          group. And Gets a list of all Azure Arc PrivateLinkScopes within a subscription.
+    """List operation to get all licenses of a non-Azure machine
 
-    :example: Sample command for private-link-scope list
-        az connectedmachine private-link-scope list --resource-group my-resource-group
-        az connectedmachine private-link-scope list
+    :example: Sample command for license list
+        az connectedmachine license list --subscription "mySubscription"
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2023-10-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2022-12-27"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/licenses", "2023-10-03-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses", "2023-10-03-preview"],
         ]
     }
 
@@ -53,9 +53,9 @@ class List(AAZCommand):
         condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
         if condition_0:
-            self.PrivateLinkScopesListByResourceGroup(ctx=self.ctx)()
+            self.LicensesListByResourceGroup(ctx=self.ctx)()
         if condition_1:
-            self.PrivateLinkScopesList(ctx=self.ctx)()
+            self.LicensesListBySubscription(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,7 +71,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class PrivateLinkScopesListByResourceGroup(AAZHttpOperation):
+    class LicensesListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -85,7 +85,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/privateLinkScopes",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/licenses",
                 **self.url_parameters
             )
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2023-10-03-preview",
                     required=True,
                 ),
             }
@@ -168,7 +168,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -179,70 +181,34 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.private_endpoint_connections = AAZListType(
-                serialized_name="privateEndpointConnections",
-                flags={"read_only": True},
+            properties.license_details = AAZObjectType(
+                serialized_name="licenseDetails",
             )
-            properties.private_link_scope_id = AAZStrType(
-                serialized_name="privateLinkScopeId",
-                flags={"read_only": True},
+            properties.license_type = AAZStrType(
+                serialized_name="licenseType",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.public_network_access = AAZStrType(
-                serialized_name="publicNetworkAccess",
+            properties.tenant_id = AAZStrType(
+                serialized_name="tenantId",
             )
 
-            private_endpoint_connections = cls._schema_on_200.value.Element.properties.private_endpoint_connections
-            private_endpoint_connections.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element
-            _element.id = AAZStrType(
+            license_details = cls._schema_on_200.value.Element.properties.license_details
+            license_details.assigned_licenses = AAZIntType(
+                serialized_name="assignedLicenses",
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
+            license_details.edition = AAZStrType()
+            license_details.immutable_id = AAZStrType(
+                serialized_name="immutableId",
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties
-            properties.group_ids = AAZListType(
-                serialized_name="groupIds",
-                flags={"read_only": True},
-            )
-            properties.private_endpoint = AAZObjectType(
-                serialized_name="privateEndpoint",
-            )
-            properties.private_link_service_connection_state = AAZObjectType(
-                serialized_name="privateLinkServiceConnectionState",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            group_ids = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.group_ids
-            group_ids.Element = AAZStrType()
-
-            private_endpoint = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.private_endpoint
-            private_endpoint.id = AAZStrType()
-
-            private_link_service_connection_state = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
-            private_link_service_connection_state.actions_required = AAZStrType(
-                serialized_name="actionsRequired",
-                flags={"read_only": True},
-            )
-            private_link_service_connection_state.description = AAZStrType(
-                flags={"required": True},
-            )
-            private_link_service_connection_state.status = AAZStrType(
-                flags={"required": True},
-            )
+            license_details.processors = AAZIntType()
+            license_details.state = AAZStrType()
+            license_details.target = AAZStrType()
+            license_details.type = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -269,7 +235,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class PrivateLinkScopesList(AAZHttpOperation):
+    class LicensesListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -283,7 +249,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.HybridCompute/privateLinkScopes",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.HybridCompute/licenses",
                 **self.url_parameters
             )
 
@@ -309,7 +275,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2023-10-03-preview",
                     required=True,
                 ),
             }
@@ -362,7 +328,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -373,70 +341,34 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.private_endpoint_connections = AAZListType(
-                serialized_name="privateEndpointConnections",
-                flags={"read_only": True},
+            properties.license_details = AAZObjectType(
+                serialized_name="licenseDetails",
             )
-            properties.private_link_scope_id = AAZStrType(
-                serialized_name="privateLinkScopeId",
-                flags={"read_only": True},
+            properties.license_type = AAZStrType(
+                serialized_name="licenseType",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.public_network_access = AAZStrType(
-                serialized_name="publicNetworkAccess",
+            properties.tenant_id = AAZStrType(
+                serialized_name="tenantId",
             )
 
-            private_endpoint_connections = cls._schema_on_200.value.Element.properties.private_endpoint_connections
-            private_endpoint_connections.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element
-            _element.id = AAZStrType(
+            license_details = cls._schema_on_200.value.Element.properties.license_details
+            license_details.assigned_licenses = AAZIntType(
+                serialized_name="assignedLicenses",
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
+            license_details.edition = AAZStrType()
+            license_details.immutable_id = AAZStrType(
+                serialized_name="immutableId",
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties
-            properties.group_ids = AAZListType(
-                serialized_name="groupIds",
-                flags={"read_only": True},
-            )
-            properties.private_endpoint = AAZObjectType(
-                serialized_name="privateEndpoint",
-            )
-            properties.private_link_service_connection_state = AAZObjectType(
-                serialized_name="privateLinkServiceConnectionState",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            group_ids = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.group_ids
-            group_ids.Element = AAZStrType()
-
-            private_endpoint = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.private_endpoint
-            private_endpoint.id = AAZStrType()
-
-            private_link_service_connection_state = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
-            private_link_service_connection_state.actions_required = AAZStrType(
-                serialized_name="actionsRequired",
-                flags={"read_only": True},
-            )
-            private_link_service_connection_state.description = AAZStrType(
-                flags={"required": True},
-            )
-            private_link_service_connection_state.status = AAZStrType(
-                flags={"required": True},
-            )
+            license_details.processors = AAZIntType()
+            license_details.state = AAZStrType()
+            license_details.target = AAZStrType()
+            license_details.type = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

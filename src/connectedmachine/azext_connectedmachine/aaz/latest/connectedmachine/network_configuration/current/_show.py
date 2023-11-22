@@ -12,19 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine extension show",
+    "connectedmachine network-configuration current show",
+    is_preview=True,
 )
 class Show(AAZCommand):
-    """The operation to create or update the extension.
+    """Get a Network Configuration for the target resource.
 
-    :example: Sample command for extension show
-        az connectedmachine extension show --name CustomScriptExtension --machine-name myMachine --resource-group myResourceGroup
+    :example: Sample command for network-configuration show
+        az connectedmachine network-configuration show --resource-uri "myResourceUri"
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2023-10-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2022-12-27"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridcompute/networkconfigurations/current", "2023-10-03-preview"],
         ]
     }
 
@@ -44,31 +45,16 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.extension_name = AAZStrArg(
-            options=["-n", "--name", "--extension-name"],
-            help="The name of the machine extension.",
-            required=True,
-            id_part="child_name_1",
-        )
-        _args_schema.machine_name = AAZStrArg(
-            options=["--machine-name"],
-            help="The name of the machine containing the extension.",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
-                max_length=54,
-                min_length=1,
-            ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.resource_uri = AAZStrArg(
+            options=["--resource-uri"],
+            help="The fully qualified Azure Resource manager identifier of the resource to be connected.",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MachineExtensionsGet(ctx=self.ctx)()
+        self.NetworkConfigurationsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,7 +69,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MachineExtensionsGet(AAZHttpOperation):
+    class NetworkConfigurationsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -97,7 +83,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/extensions/{extensionName}",
+                "/{resourceUri}/providers/Microsoft.HybridCompute/networkConfigurations/current",
                 **self.url_parameters
             )
 
@@ -113,19 +99,8 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "extensionName", self.ctx.args.extension_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "machineName", self.ctx.args.machine_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "resourceUri", self.ctx.args.resource_uri,
+                    skip_quote=True,
                     required=True,
                 ),
             }
@@ -135,7 +110,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2023-10-03-preview",
                     required=True,
                 ),
             }
@@ -171,65 +146,46 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.auto_upgrade_minor_version = AAZBoolType(
-                serialized_name="autoUpgradeMinorVersion",
+            properties.key_properties = AAZObjectType(
+                serialized_name="keyProperties",
             )
-            properties.enable_automatic_upgrade = AAZBoolType(
-                serialized_name="enableAutomaticUpgrade",
+            properties.location = AAZStrType()
+            properties.network_configuration_scope_id = AAZStrType(
+                serialized_name="networkConfigurationScopeId",
             )
-            properties.force_update_tag = AAZStrType(
-                serialized_name="forceUpdateTag",
+            properties.network_configuration_scope_resource_id = AAZStrType(
+                serialized_name="networkConfigurationScopeResourceId",
+                flags={"required": True},
             )
-            properties.instance_view = AAZObjectType(
-                serialized_name="instanceView",
-            )
-            properties.protected_settings = AAZFreeFormDictType(
-                serialized_name="protectedSettings",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
+            properties.tenant_id = AAZStrType(
+                serialized_name="tenantId",
                 flags={"read_only": True},
             )
-            properties.publisher = AAZStrType()
-            properties.settings = AAZFreeFormDictType()
-            properties.type = AAZStrType()
-            properties.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-            )
 
-            instance_view = cls._schema_on_200.properties.instance_view
-            instance_view.name = AAZStrType()
-            instance_view.status = AAZObjectType()
-            instance_view.type = AAZStrType()
-            instance_view.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
+            key_properties = cls._schema_on_200.properties.key_properties
+            key_properties.candidate_public_key = AAZObjectType(
+                serialized_name="candidatePublicKey",
             )
-
-            status = cls._schema_on_200.properties.instance_view.status
-            status.code = AAZStrType()
-            status.display_status = AAZStrType(
-                serialized_name="displayStatus",
+            _ShowHelper._build_schema_key_details_read(key_properties.candidate_public_key)
+            key_properties.client_public_key = AAZObjectType(
+                serialized_name="clientPublicKey",
             )
-            status.level = AAZStrType()
-            status.message = AAZStrType()
-            status.time = AAZStrType()
+            _ShowHelper._build_schema_key_details_read(key_properties.client_public_key)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -251,14 +207,41 @@ class Show(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
 class _ShowHelper:
     """Helper class for Show"""
+
+    _schema_key_details_read = None
+
+    @classmethod
+    def _build_schema_key_details_read(cls, _schema):
+        if cls._schema_key_details_read is not None:
+            _schema.not_after = cls._schema_key_details_read.not_after
+            _schema.public_key = cls._schema_key_details_read.public_key
+            _schema.renew_after = cls._schema_key_details_read.renew_after
+            return
+
+        cls._schema_key_details_read = _schema_key_details_read = AAZObjectType()
+
+        key_details_read = _schema_key_details_read
+        key_details_read.not_after = AAZStrType(
+            serialized_name="notAfter",
+            flags={"read_only": True},
+        )
+        key_details_read.public_key = AAZStrType(
+            serialized_name="publicKey",
+            flags={"read_only": True},
+        )
+        key_details_read.renew_after = AAZStrType(
+            serialized_name="renewAfter",
+            flags={"read_only": True},
+        )
+
+        _schema.not_after = cls._schema_key_details_read.not_after
+        _schema.public_key = cls._schema_key_details_read.public_key
+        _schema.renew_after = cls._schema_key_details_read.renew_after
 
 
 __all__ = ["Show"]

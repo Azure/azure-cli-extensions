@@ -12,19 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine extension list",
+    "connectedmachine run-command list",
+    is_preview=True,
 )
 class List(AAZCommand):
-    """The operation to get all extensions of a Non-Azure machine.
+    """List operation to get all the run commands of a non-Azure machine.
 
-    :example: Sample command for extension list
-        az connectedmachine extension list --machine-name myMachine --resource-group myResourceGroup
+    :example: Sample command for run-command list
+        az connectedmachine run-command list --resource-group "myResourceGroup" --machine-name "myMachine"
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2023-10-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands", "2023-10-03-preview"],
         ]
     }
 
@@ -45,12 +46,10 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.machine_name = AAZStrArg(
             options=["--machine-name"],
-            help="The name of the machine containing the extension.",
+            help="The name of the hybrid machine.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
-                max_length=54,
-                min_length=1,
+                pattern="[a-zA-Z0-9-_\.]+",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -64,7 +63,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MachineExtensionsList(ctx=self.ctx)()
+        self.MachineRunCommandsList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -80,7 +79,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class MachineExtensionsList(AAZHttpOperation):
+    class MachineRunCommandsList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,7 +93,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/extensions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/runCommands",
                 **self.url_parameters
             )
 
@@ -131,7 +130,7 @@ class List(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2023-10-03-preview",
                     required=True,
                 ),
             }
@@ -182,7 +181,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -193,48 +194,98 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.auto_upgrade_minor_version = AAZBoolType(
-                serialized_name="autoUpgradeMinorVersion",
+            properties.async_execution = AAZBoolType(
+                serialized_name="asyncExecution",
             )
-            properties.enable_automatic_upgrade = AAZBoolType(
-                serialized_name="enableAutomaticUpgrade",
+            properties.error_blob_managed_identity = AAZObjectType(
+                serialized_name="errorBlobManagedIdentity",
             )
-            properties.force_update_tag = AAZStrType(
-                serialized_name="forceUpdateTag",
+            _ListHelper._build_schema_run_command_managed_identity_read(properties.error_blob_managed_identity)
+            properties.error_blob_uri = AAZStrType(
+                serialized_name="errorBlobUri",
             )
             properties.instance_view = AAZObjectType(
                 serialized_name="instanceView",
             )
-            properties.protected_settings = AAZFreeFormDictType(
-                serialized_name="protectedSettings",
+            properties.output_blob_managed_identity = AAZObjectType(
+                serialized_name="outputBlobManagedIdentity",
+            )
+            _ListHelper._build_schema_run_command_managed_identity_read(properties.output_blob_managed_identity)
+            properties.output_blob_uri = AAZStrType(
+                serialized_name="outputBlobUri",
+            )
+            properties.parameters = AAZListType()
+            properties.protected_parameters = AAZListType(
+                serialized_name="protectedParameters",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.publisher = AAZStrType()
-            properties.settings = AAZFreeFormDictType()
-            properties.type = AAZStrType()
-            properties.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
+            properties.run_as_password = AAZStrType(
+                serialized_name="runAsPassword",
+                flags={"secret": True},
+            )
+            properties.run_as_user = AAZStrType(
+                serialized_name="runAsUser",
+            )
+            properties.source = AAZObjectType()
+            properties.timeout_in_seconds = AAZIntType(
+                serialized_name="timeoutInSeconds",
             )
 
             instance_view = cls._schema_on_200.value.Element.properties.instance_view
-            instance_view.name = AAZStrType()
-            instance_view.status = AAZObjectType()
-            instance_view.type = AAZStrType()
-            instance_view.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
+            instance_view.end_time = AAZStrType(
+                serialized_name="endTime",
             )
+            instance_view.error = AAZStrType()
+            instance_view.execution_message = AAZStrType(
+                serialized_name="executionMessage",
+            )
+            instance_view.execution_state = AAZStrType(
+                serialized_name="executionState",
+            )
+            instance_view.exit_code = AAZIntType(
+                serialized_name="exitCode",
+            )
+            instance_view.output = AAZStrType()
+            instance_view.start_time = AAZStrType(
+                serialized_name="startTime",
+            )
+            instance_view.statuses = AAZListType()
 
-            status = cls._schema_on_200.value.Element.properties.instance_view.status
-            status.code = AAZStrType()
-            status.display_status = AAZStrType(
+            statuses = cls._schema_on_200.value.Element.properties.instance_view.statuses
+            statuses.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.instance_view.statuses.Element
+            _element.code = AAZStrType()
+            _element.display_status = AAZStrType(
                 serialized_name="displayStatus",
             )
-            status.level = AAZStrType()
-            status.message = AAZStrType()
-            status.time = AAZStrType()
+            _element.level = AAZStrType()
+            _element.message = AAZStrType()
+            _element.time = AAZStrType()
+
+            parameters = cls._schema_on_200.value.Element.properties.parameters
+            parameters.Element = AAZObjectType()
+            _ListHelper._build_schema_run_command_input_parameter_read(parameters.Element)
+
+            protected_parameters = cls._schema_on_200.value.Element.properties.protected_parameters
+            protected_parameters.Element = AAZObjectType()
+            _ListHelper._build_schema_run_command_input_parameter_read(protected_parameters.Element)
+
+            source = cls._schema_on_200.value.Element.properties.source
+            source.command_id = AAZStrType(
+                serialized_name="commandId",
+            )
+            source.script = AAZStrType()
+            source.script_uri = AAZStrType(
+                serialized_name="scriptUri",
+            )
+            source.script_uri_managed_identity = AAZObjectType(
+                serialized_name="scriptUriManagedIdentity",
+            )
+            _ListHelper._build_schema_run_command_managed_identity_read(source.script_uri_managed_identity)
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -264,6 +315,50 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_run_command_input_parameter_read = None
+
+    @classmethod
+    def _build_schema_run_command_input_parameter_read(cls, _schema):
+        if cls._schema_run_command_input_parameter_read is not None:
+            _schema.name = cls._schema_run_command_input_parameter_read.name
+            _schema.value = cls._schema_run_command_input_parameter_read.value
+            return
+
+        cls._schema_run_command_input_parameter_read = _schema_run_command_input_parameter_read = AAZObjectType()
+
+        run_command_input_parameter_read = _schema_run_command_input_parameter_read
+        run_command_input_parameter_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        run_command_input_parameter_read.value = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.name = cls._schema_run_command_input_parameter_read.name
+        _schema.value = cls._schema_run_command_input_parameter_read.value
+
+    _schema_run_command_managed_identity_read = None
+
+    @classmethod
+    def _build_schema_run_command_managed_identity_read(cls, _schema):
+        if cls._schema_run_command_managed_identity_read is not None:
+            _schema.client_id = cls._schema_run_command_managed_identity_read.client_id
+            _schema.object_id = cls._schema_run_command_managed_identity_read.object_id
+            return
+
+        cls._schema_run_command_managed_identity_read = _schema_run_command_managed_identity_read = AAZObjectType()
+
+        run_command_managed_identity_read = _schema_run_command_managed_identity_read
+        run_command_managed_identity_read.client_id = AAZStrType(
+            serialized_name="clientId",
+        )
+        run_command_managed_identity_read.object_id = AAZStrType(
+            serialized_name="objectId",
+        )
+
+        _schema.client_id = cls._schema_run_command_managed_identity_read.client_id
+        _schema.object_id = cls._schema_run_command_managed_identity_read.object_id
 
 
 __all__ = ["List"]
