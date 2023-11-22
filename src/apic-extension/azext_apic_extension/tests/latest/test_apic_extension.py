@@ -6,8 +6,134 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
+import unittest
 
 
 class ApicExtensionScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+
+    @unittest.skip('Test account does not have permissions to create service')
+    def test_apic_scenarios(self):
+        
+        # create service - TODO in future. Use fixed service for now
+
+        #parameters for common use
+        from datetime import datetime
+        self.kwargs.update({
+            'resource_group': 'api-center-test',
+            'service_name': 'contosoeuap',
+            'api_name': 'cli-test-api-100',
+            'api_version': 'cli-test-2023-01-02',
+            'api_definition_name': 'cli-test-openapi'
+        })
+
+        # create environment
+        import json
+        server_details = {
+            "type": "Azure API Management",
+            "managementPortalUri": [
+                "management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"
+            ]
+        }
+        self.kwargs.update({
+            'server_details': server_details,
+            'environment_name': 'cli-test-public'
+        })
+        self.cmd('az apic environment create -g {resource_group} -s {service_name} --name {environment_name} --title "Public cloud" --kind "development" --server "{server_details}"')
+    
+        # create api
+        self.cmd('az apic api create -g {resource_group} -s {service_name} --api-name {api_name} --description "CLI Test API" --kind rest --title "CLI Test API"')
+
+        # create api version
+        self.cmd('az apic api version create -g {resource_group} -s {service_name} --api-name {api_name} --name {api_version} --title {api_version}')
+
+        # create api definition
+        self.cmd('az apic api definition create -g {resource_group} -s {service_name} --api-name {api_name} --version {api_version} --name {api_definition_name} --title "OpenAPI" ')
+
+        # import specification
+        import os
+        TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+        templateFile = os.path.join(
+            TEST_DIR,
+            "data",
+            "import_spec_payload.json",
+        )
+        specification_details = '{"name":"openapi","version":"3.0.0"}'
+        self.kwargs.update({
+            'templateFile': templateFile,
+            'specification_details': specification_details
+        })
+        self.cmd('az apic api definition import-specification -g {resource_group} -s {service_name} --api-name {api_name} --version {api_version} --name {api_definition_name} --format inline --specification {specification_details} --file-name "{templateFile}"')
+
+        # export specification
+        templateOutputFile = os.path.join(
+            TEST_DIR,
+            "data",
+            "exported_spec.json",
+        )
+        self.kwargs.update({
+            'templateFile': templateOutputFile
+        })
+        self.cmd('az apic api definition export-specification -g {resource_group} -s {service_name} --api-name {api_name} --version {api_version} --name {api_definition_name} --file-name "{templateFile}"')
+
+        # create deployment
+        environment_id = "/workspaces/default/environments/"+self.kwargs['environment_name']
+        definition_id = "/workspaces/default/apis/"+self.kwargs['api_name']+"/versions/"+self.kwargs['api_version']+"/definitions/"+self.kwargs['api_definition_name']
+        server = {"runtime-uri": ["https://api.contoso.com"]}
+        self.kwargs.update({
+            'environment_id': environment_id,
+            'definition_id' : definition_id,
+            'deployment_name': 'production',
+            'server': server,
+        })
+        self.cmd('az apic api deployment create -g {resource_group} -s {service_name} --api-name {api_name} --name {deployment_name} --title "CLI Test Production deployment" --description "CLI Test Public cloud production deployment." --environment-id {environment_id} --definition-id {definition_id} --server "{server}"')
+
+        # create metadata schema
+        templateInputSchemaFile = os.path.join(
+            TEST_DIR,
+            "data",
+            "import_metadataschema_input.json",
+        )
+        self.kwargs.update({
+            'schemaName': 'cli-test-metadata-schema-1',
+            'templateFile': templateInputSchemaFile
+
+        })
+        self.cmd('az apic metadata-schema create -g {resource_group} -s {service_name} --name {schemaName} --file-name "{templateFile}"')
+
+        # export metadata schema
+        templateOutputApiSchemaFile = os.path.join(
+            TEST_DIR,
+            "data",
+            "exported_md_schema_api.json",
+        )
+        templateOutputDeploymentSchemaFile = os.path.join(
+            TEST_DIR,
+            "data",
+            "exported_md_schema_deployment.json",
+        )
+        templateOutputEnvSchemaFile = os.path.join(
+            TEST_DIR,
+            "data",
+            "exported_md_schema_env.json",
+        )
+        self.kwargs.update({
+            'templateFileApi': templateOutputApiSchemaFile,
+            'templateFileDeployment': templateOutputDeploymentSchemaFile,
+            'templateFileEnvironment': templateOutputEnvSchemaFile
+        })
+        self.cmd('az apic metadata-schema export-metadata-schema -g {resource_group} -s {service_name} --assigned-to api --file-name "{templateFileApi}"')
+        self.cmd('az apic metadata-schema export-metadata-schema -g {resource_group} -s {service_name} --assigned-to deployment --file-name "{templateFileDeployment}"')
+        self.cmd('az apic metadata-schema export-metadata-schema -g {resource_group} -s {service_name} --assigned-to environment --file-name "{templateFileEnvironment}"')
+
+        # register api - quick add
+        templateQuickAddFile = os.path.join(
+            TEST_DIR,
+            "data",
+            "register_quickadd_openai_spec.json",
+        )
+        self.kwargs.update({
+            'templateFile': templateQuickAddFile,
+            'environment_name': self.kwargs['environment_name']
+        })
+        self.cmd('az apic api register -g {resource_group} -s {service_name} --api-location "{templateFile}" --environment-name {environment_name}')
+
