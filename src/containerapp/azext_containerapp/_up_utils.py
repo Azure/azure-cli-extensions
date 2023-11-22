@@ -903,7 +903,7 @@ def _get_app_env_and_group(
             )
 
 
-def _get_env_and_group_from_log_analytics(
+def _get_env_and_group_fron_app_or_log_analytics(
     cmd,
     resource_group_name,
     env: "ContainerAppEnvironment",
@@ -937,21 +937,22 @@ def _get_env_and_group_from_log_analytics(
                 env_list = [e for e in env_list if format_location(e["location"]) == format_location(location)]
             if env_list:
                 # TODO check how many CA in env
-                print("App Name :" + app.name)
-                logger.warning(f"Logging application name '{app.name}'")
-                if app.name:
-                    container_app = show_containerapp(cmd, app.name, resource_group_name)
-                    env_name = parse_resource_id(container_app["properties"]["environmentId"])["resource_name"]
-                   # print(environmentId)
-                  #  env_name = environmentId
-                    print(env_name)
-                    env.set_name(env_name)
-                    print(env.name)
-                    resource_group.name = resource_group_name
-                else:
-                    env_details = parse_resource_id(env_list[0]["id"])
-                    env.set_name(env_details["name"])
-                    resource_group.name = env_details["resource_group"]
+                # Get container app list in resource_group
+                containerapp_list = list_containerapp(cmd = cmd, resource_group_name = resource_group_name)
+                if containerapp_list and len(containerapp_list) > 0:
+                    # Get container app in resource_group with same name as app
+                    container_app = next((c for c in containerapp_list if c.get("name", "").lower() == app.name.lower()), None) if app.name else None
+                    if container_app:
+                        # If container app exists, get environmentId and resource_group from container app
+                        logger.info(f"Setting environment for Container App : '{app.name}'")
+                        env_details = parse_resource_id(container_app["properties"]["environmentId"])
+                        # Set environment name and resource_group for the container app
+                        env.set_name(env_details["name"])
+                        resource_group.name = env_details["resource_group"]
+                        return
+                env_details = parse_resource_id(env_list[0]["id"])
+                env.set_name(env_details["name"])
+                resource_group.name = env_details["resource_group"]
 
 def _get_acr_from_image(cmd, app):
     if app.image is not None and "azurecr.io" in app.image:
@@ -1075,8 +1076,9 @@ def _set_up_defaults(
     # If no RG passed in and a singular app exists with the same name, get its env and rg
     _get_app_env_and_group(cmd, name, resource_group, env, location)
 
-    # If no env passed in (and not creating a new RG), then try getting an env by location / log analytics ID
-    _get_env_and_group_from_log_analytics(
+    # If no env passed in (and not creating a new RG), then get env by location from the container app if it exsists
+    # or log analytics ID
+    _get_env_and_group_fron_app_or_log_analytics(
         cmd, resource_group_name, env, app,  resource_group, logs_customer_id, location
     )
 
