@@ -157,7 +157,7 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     if ip_connect:
         if int(resource_port) not in [22, 3389]:
             raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is 22, 3389.")
-        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}"
+        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}" \
         f"/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
 
     _validate_resourceid(target_resource_id)
@@ -241,7 +241,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     })
 
     if not resource_port:
-        resource_port = 3389
+        resource_port = 3389    
 
     if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and \
        bastion['enableTunneling'] is not True:
@@ -250,6 +250,9 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
 
     if auth_type is None:
+        # do nothing
+        pass
+    elif auth_type.lower() == "password":
         # do nothing
         pass
     elif auth_type.lower() == "aad":
@@ -264,7 +267,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
         if int(resource_port) not in [22, 3389]:
             raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is 22, 3389.")
 
-        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}"
+        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}" \
         f"/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
 
     _validate_resourceid(target_resource_id)
@@ -379,7 +382,7 @@ def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_g
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
     if ip_connect:
-        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/"
+        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/" \
         f"{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
 
     if ip_connect and int(resource_port) not in [22, 3389]:
