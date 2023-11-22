@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* Cloud Build Bugfix - 500 Internal Server Error (Wrong env selected to create builder)
 
 0.3.44
 ++++++
