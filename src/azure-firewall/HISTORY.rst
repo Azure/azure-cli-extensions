@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.14.9
+++++++
+* `az network firewall policy create/update`: Collections and rule collection group: add parameter `--http-headers-to-insert`s
 
 0.14.8
 ++++++
