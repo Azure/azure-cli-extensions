@@ -254,6 +254,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
         pass
     elif auth_type.lower() == "password":
         # do nothing
+        logger.warning("No need to provide auth-type password for RDP connections.")
         pass
     elif auth_type.lower() == "aad":
         enable_mfa = True
