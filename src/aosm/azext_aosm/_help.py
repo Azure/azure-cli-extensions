@@ -13,28 +13,35 @@ helps[
 """
 
 helps[
-    "aosm nfd"
+    "aosm onboard"
+] = """
+    type: group
+    short-summary: Commands to aid onboarding network functions and network services to AOSM.
+"""
+
+helps[
+    "aosm onboard nfd"
 ] = """
     type: group
     short-summary: Manage AOSM publisher Network Function Definitions.
 """
 
 helps[
-    "aosm nfd generate-config"
+    "aosm onboard nfd generate-config"
 ] = """
     type: command
     short-summary: Generate configuration file for building an AOSM publisher Network Function Definition.
 """
 
 helps[
-    "aosm nfd build"
+    "aosm onboard nfd build"
 ] = """
     type: command
     short-summary: Build an AOSM Network Function Definition.
 """
 
 helps[
-    "aosm nfd publish"
+    "aosm onboard nfd publish"
 ] = """
     type: command
     short-summary: Publish a pre-built AOSM Network Function definition.
@@ -42,35 +49,35 @@ helps[
 
 
 helps[
-    "aosm nfd delete"
+    "aosm onboard nfd delete"
 ] = """
     type: command
     short-summary: Delete AOSM Network Function Definition.
 """
 
 helps[
-    "aosm nsd"
+    "aosm onboard nsd"
 ] = """
     type: group
     short-summary: Manage AOSM publisher Network Service Designs.
 """
 
 helps[
-    "aosm nsd generate-config"
+    "aosm onboard nsd generate-config"
 ] = """
     type: command
     short-summary: Generate configuration file for building an AOSM publisher Network Service Design.
 """
 
 helps[
-    "aosm nsd build"
+    "aosm onboard nsd build"
 ] = """
     type: command
     short-summary: Build an AOSM Network Service Design.
 """
 
 helps[
-    "aosm nsd publish"
+    "aosm onboard nsd publish"
 ] = """
     type: command
     short-summary: Publish a pre-built AOSM Network Service Design.
@@ -78,7 +85,7 @@ helps[
 
 
 helps[
-    "aosm nfd delete"
+    "aosm onboard nfd delete"
 ] = """
     type: command
     short-summary: Delete AOSM Network Function Definition.
