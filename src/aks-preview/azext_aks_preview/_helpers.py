@@ -284,11 +284,7 @@ def check_is_private_link_cluster(mc: ManagedCluster) -> bool:
     """Check `mc` object to determine whether private link cluster is enabled.
     :return: bool
     """
-    if mc and mc.api_server_access_profile:
-        if check_is_apiserver_vnet_integration_cluster(mc):
-            return False
-        return bool(mc.api_server_access_profile.enable_private_cluster)
-    return False
+    return check_is_private_cluster(mc) and not check_is_apiserver_vnet_integration_cluster(mc)
 
 
 def check_is_private_cluster(mc: ManagedCluster) -> bool:
