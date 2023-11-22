@@ -1078,7 +1078,7 @@ def _set_up_defaults(
 
     # If no env passed in (and not creating a new RG), then get env by location from the container app if it exsists
     # or log analytics ID
-    _get_env_and_group_fron_app_or_log_analytics(cmd, resource_group_name, env, app,  resource_group, logs_customer_id, location)
+    _get_env_and_group_fron_app_or_log_analytics(cmd, resource_group_name, env, app, resource_group, logs_customer_id, location)
 
     # try to set RG name by env name
     if env.name and not resource_group.name:
