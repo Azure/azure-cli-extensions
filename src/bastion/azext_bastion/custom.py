@@ -241,7 +241,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     })
 
     if not resource_port:
-        resource_port = 3389    
+        resource_port = 3389
 
     if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and \
        bastion['enableTunneling'] is not True:
