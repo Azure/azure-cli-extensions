@@ -50,7 +50,7 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
             'customScriptName': 'custom-' + rand_string,
         })
 
-        # Prepare network
+        # Create resource group
         self.cmd('az group create -n {rg} -l {location}',
                     checks=self.check('name', '{rg}'))
 
