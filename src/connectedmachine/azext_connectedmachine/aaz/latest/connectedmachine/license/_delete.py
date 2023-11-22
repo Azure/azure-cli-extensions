@@ -12,20 +12,21 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine extension delete",
+    "connectedmachine license delete",
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """The operation to delete the extension.
+    """Delete operation to delete a license.
 
-    :example: Sample command for extension delete
-        az connectedmachine extension delete --name myName --machine-name myMachine --resource-group myResourceGroup
+    :example: Sample command for license delete
+        az connectedmachine license delete --license-name "myLicenseName" --resource-group "myResourceGroup" --subscription "mySubscription"
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2023-10-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2023-10-03-preview"],
         ]
     }
 
@@ -46,21 +47,13 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.extension_name = AAZStrArg(
-            options=["-n", "--name", "--extension-name"],
-            help="The name of the machine extension.",
-            required=True,
-            id_part="child_name_1",
-        )
-        _args_schema.machine_name = AAZStrArg(
-            options=["--machine-name"],
-            help="The name of the machine where the extension should be deleted.",
+        _args_schema.license_name = AAZStrArg(
+            options=["-n", "--name", "--license-name"],
+            help="The name of the license.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
-                max_length=54,
-                min_length=1,
+                pattern="[a-zA-Z0-9-_\.]+",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -70,7 +63,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.MachineExtensionsDelete(ctx=self.ctx)()
+        yield self.LicensesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -81,7 +74,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class MachineExtensionsDelete(AAZHttpOperation):
+    class LicensesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -120,7 +113,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/extensions/{extensionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/licenses/{licenseName}",
                 **self.url_parameters
             )
 
@@ -136,11 +129,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "extensionName", self.ctx.args.extension_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "machineName", self.ctx.args.machine_name,
+                    "licenseName", self.ctx.args.license_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -158,7 +147,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2023-10-03-preview",
                     required=True,
                 ),
             }

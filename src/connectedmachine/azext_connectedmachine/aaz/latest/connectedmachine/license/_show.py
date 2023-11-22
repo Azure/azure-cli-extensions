@@ -12,25 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine extension list",
+    "connectedmachine license show",
+    is_preview=True,
 )
-class List(AAZCommand):
-    """The operation to get all extensions of a Non-Azure machine.
+class Show(AAZCommand):
+    """Get information about the view of a license.
 
-    :example: Sample command for extension list
-        az connectedmachine extension list --machine-name myMachine --resource-group myResourceGroup
+    :example: Sample command for license show
+        az connectedmachine license show --license-name "myLicenseName" --resource-group "myResourceGroup" --subscription "mySubscription"
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2023-10-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2023-10-03-preview"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -43,28 +45,23 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.machine_name = AAZStrArg(
-            options=["--machine-name"],
-            help="The name of the machine containing the extension.",
+        _args_schema.license_name = AAZStrArg(
+            options=["-n", "--name", "--license-name"],
+            help="The name of the license.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
-                max_length=54,
-                min_length=1,
+                pattern="[a-zA-Z0-9-_\.]+",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.expand = AAZStrArg(
-            options=["--expand"],
-            help="The expand expression to apply on the operation.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MachineExtensionsList(ctx=self.ctx)()
+        self.LicensesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,11 +73,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class MachineExtensionsList(AAZHttpOperation):
+    class LicensesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,7 +90,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/extensions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/licenses/{licenseName}",
                 **self.url_parameters
             )
 
@@ -110,7 +106,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "machineName", self.ctx.args.machine_name,
+                    "licenseName", self.ctx.args.license_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -128,10 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "$expand", self.ctx.args.expand,
-                ),
-                **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2023-10-03-preview",
                     required=True,
                 ),
             }
@@ -164,79 +157,58 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType(
+            _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
-            properties.auto_upgrade_minor_version = AAZBoolType(
-                serialized_name="autoUpgradeMinorVersion",
+            properties = cls._schema_on_200.properties
+            properties.license_details = AAZObjectType(
+                serialized_name="licenseDetails",
             )
-            properties.enable_automatic_upgrade = AAZBoolType(
-                serialized_name="enableAutomaticUpgrade",
-            )
-            properties.force_update_tag = AAZStrType(
-                serialized_name="forceUpdateTag",
-            )
-            properties.instance_view = AAZObjectType(
-                serialized_name="instanceView",
-            )
-            properties.protected_settings = AAZFreeFormDictType(
-                serialized_name="protectedSettings",
+            properties.license_type = AAZStrType(
+                serialized_name="licenseType",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.publisher = AAZStrType()
-            properties.settings = AAZFreeFormDictType()
-            properties.type = AAZStrType()
-            properties.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
+            properties.tenant_id = AAZStrType(
+                serialized_name="tenantId",
             )
 
-            instance_view = cls._schema_on_200.value.Element.properties.instance_view
-            instance_view.name = AAZStrType()
-            instance_view.status = AAZObjectType()
-            instance_view.type = AAZStrType()
-            instance_view.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
+            license_details = cls._schema_on_200.properties.license_details
+            license_details.assigned_licenses = AAZIntType(
+                serialized_name="assignedLicenses",
+                flags={"read_only": True},
             )
-
-            status = cls._schema_on_200.value.Element.properties.instance_view.status
-            status.code = AAZStrType()
-            status.display_status = AAZStrType(
-                serialized_name="displayStatus",
+            license_details.edition = AAZStrType()
+            license_details.immutable_id = AAZStrType(
+                serialized_name="immutableId",
+                flags={"read_only": True},
             )
-            status.level = AAZStrType()
-            status.message = AAZStrType()
-            status.time = AAZStrType()
+            license_details.processors = AAZIntType()
+            license_details.state = AAZStrType()
+            license_details.target = AAZStrType()
+            license_details.type = AAZStrType()
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -256,14 +228,14 @@ class List(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.value.Element.tags
+            tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["List"]
+__all__ = ["Show"]

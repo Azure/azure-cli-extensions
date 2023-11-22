@@ -1,0 +1,57 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "properties": {"licenseDetails": {"edition":
+      "Datacenter", "processors": 16, "state": "Activated", "target": "Windows Server
+      2012", "type": "pCore"}, "licenseType": "ESU"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine license create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '200'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --subscription --license-name --license-type --license-details
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense?api-version=2023-10-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense","name":"myLicense","location":"eastus2euap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"e213bef9-5048-481e-9615-1667d5bde78e"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '509'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Nov 2023 22:45:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+version: 1
