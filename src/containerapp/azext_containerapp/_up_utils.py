@@ -76,8 +76,7 @@ from .custom import (
     containerapp_up_logic,
     list_containerapp,
     list_managed_environments,
-    create_or_update_github_action,
-    show_containerapp
+    create_or_update_github_action
 )
 
 from ._cloud_build_utils import (
