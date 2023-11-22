@@ -57,6 +57,8 @@ from .vendored_sdks.connectedvmware.models import (
     DiskMode,
     HardwareProfile,
     InfrastructureProfile,
+    InventoryItem,
+    InventoryType,
     IPAddressAllocationMethod,
     NetworkInterface,
     NetworkInterfaceUpdate,
@@ -158,6 +160,7 @@ def connect_vcenter(
             creds['password'] = pwinput('Please provide vcenter password: ')
             if not creds['password']:
                 print('Parameter is required, please try again')
+                continue
             passwdConfim = pwinput('Please confirm vcenter password: ')
             if creds['password'] != passwdConfim:
                 print('Passwords do not match, please try again')
@@ -230,13 +233,26 @@ def list_vcenter(client: VCentersOperations, resource_group_name=None):
 
 
 def show_inventory_item(
+    cmd,
     client: InventoryItemsOperations,
     resource_group_name,
     vcenter,
     inventory_item
 ):
 
-    return client.get(resource_group_name, vcenter.split('/')[-1], inventory_item.split('/')[-1])
+    inventory_item_id = get_resource_id(
+        cmd,
+        resource_group_name,
+        VMWARE_NAMESPACE,
+        VCENTER_RESOURCE_TYPE,
+        vcenter,
+        child_type_1=INVENTORY_ITEM_TYPE,
+        child_name_1=inventory_item,
+    )
+    assert inventory_item_id is not None
+    vcenter_sub = inventory_item_id.split("/")[2]
+    resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
+    return resources_client.get_by_id(inventory_item_id, VCENTER_KIND_GET_API_VERSION)
 
 
 def list_inventory_item(
@@ -966,19 +982,23 @@ def create_vm(
     machine = None
     try:
         machine = machine_client.get(resource_group_name, resource_name)
+        machine_kind = None
         if f"{machine.kind}".lower() != f"{vcenter.kind}".lower():
-            raise InvalidArgumentValueError(
-                "The existing Machine resource is not of the same kind as the vCenter. " +
-                f"Machine kind: '{machine.kind}', vCenter kind: '{vcenter.kind}'"
-            )
+            if machine.kind:
+                raise InvalidArgumentValueError(
+                    "The existing Machine resource is not of the same kind as the vCenter. " +
+                    f"Machine kind: '{machine.kind}', vCenter kind: '{vcenter.kind}'"
+                )
+            machine_kind = vcenter.kind
         if location is not None and machine.location != location:
             raise InvalidArgumentValueError(
                 "The location of the existing Machine cannot be updated. " +
                 "Either specify the existing location or keep the location unspecified. " +
                 f"Existing location: {machine.location}, Provided location: {location}"
             )
-        if tags is not None:
+        if any(x is not None for x in [machine_kind, tags]):
             m = MachineUpdate(
+                kind=machine_kind,
                 tags=tags,
             )
             machine = machine_client.update(resource_group_name, resource_name, m)

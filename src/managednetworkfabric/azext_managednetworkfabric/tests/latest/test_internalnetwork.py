@@ -24,6 +24,7 @@ def call_scenario1(test):
     ''' # Testcase: scenario1'''
     setup_scenario1(test)
     step_create(test, checks=[])
+    step_update(test, checks=[])
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -37,6 +38,14 @@ def step_create(test, checks=None):
 			 ' --mtu {mtu} --extension {extension} --is-monitoring-enabled {isMonitoringEnabled} --connected-ipv4-subnets {connectedIpv4Subnets}'
              ' --static-route-configuration {staticRouteConf} --bgp-configuration {bgpConf}'
              ' --import-route-policy {importRoutePolicy} --export-route-policy {exportRoutePolicy}', checks=checks)
+
+def step_update(test, checks=None):
+    '''internalnetwork update operation'''
+    if checks is None:
+        checks = []
+    test.cmd('az networkfabric internalnetwork update --resource-group {rg} --resource-name {name} --l3domain {l3domain} '
+			 ' --connected-ipv4-subnets {updatedConnectedIpv4Subnets}  --static-route-configuration {updatedStaticRouteConf}'
+             ' --bgp-configuration {updatedBgpConf}', checks=checks)
 
 def step_show(test, checks=None):
     '''internalnetwork show operation'''
@@ -72,8 +81,11 @@ class GA_InternalNetworkScenarioTest1(ScenarioTest):
             'extension': CONFIG.get('INTERNAL_NETWORK', 'extension'),
             'isMonitoringEnabled': CONFIG.get('INTERNAL_NETWORK', 'is_monitoring_enabled'),
             'connectedIpv4Subnets': CONFIG.get('INTERNAL_NETWORK', 'connected_Ipv4_subnets'),
+            'updatedConnectedIpv4Subnets': CONFIG.get('INTERNAL_NETWORK', 'updated_connected_Ipv4_subnets'),
             'staticRouteConf': CONFIG.get('INTERNAL_NETWORK', 'static_route_conf'),
+            'updatedStaticRouteConf': CONFIG.get('INTERNAL_NETWORK', 'updated_static_route_conf'),
             'bgpConf': CONFIG.get('INTERNAL_NETWORK', 'bgp_conf'),
+            'updatedBgpConf': CONFIG.get('INTERNAL_NETWORK', 'updated_bgp_conf'),
             'importRoutePolicy': CONFIG.get('INTERNAL_NETWORK', 'import_route_policy'),
             'exportRoutePolicy': CONFIG.get('INTERNAL_NETWORK', 'export_route_policy'),
         })

@@ -16,9 +16,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-05-01",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptexecutions/{}", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptexecutions/{}", "2023-03-01"],
         ]
     }
 
@@ -51,6 +51,9 @@ class Create(AAZCommand):
             options=["-n", "--name", "--script-execution-name"],
             help="Name of the user-invoked script execution resource",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[-\w\._]+$",
+            ),
         )
 
         # define Arg Group "Properties"
@@ -253,7 +256,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }

@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/locations/{}/usages", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/locations/{}/usages", "2023-10-01-preview"],
         ]
     }
 
@@ -112,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -160,6 +160,7 @@ class List(AAZCommand):
             _element.current_value = AAZIntType(
                 serialized_name="currentValue",
             )
+            _element.id = AAZStrType()
             _element.limit = AAZIntType()
             _element.name = AAZObjectType()
             _element.unit = AAZStrType()

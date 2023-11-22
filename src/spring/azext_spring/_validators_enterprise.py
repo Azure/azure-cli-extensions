@@ -14,10 +14,9 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2023_09_01_preview.models import (ApmReference, CertificateReference)
-from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
+from .vendored_sdks.appplatform.v2023_11_01_preview.models import (ApmReference, CertificateReference)
+from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
@@ -351,7 +350,7 @@ def validate_acs_create(namespace):
             raise ArgumentUsageError("--application-configuration-service-generation can only be set when enable application configuration service.")
 
 
-def validate_gateway_update(namespace):
+def validate_gateway_update(cmd, namespace):
     _validate_sso(namespace)
     validate_cpu(namespace)
     validate_memory(namespace)
@@ -359,6 +358,7 @@ def validate_gateway_update(namespace):
     _validate_gateway_apm_types(namespace)
     _validate_gateway_envs(namespace)
     _validate_gateway_secrets(namespace)
+    validate_apm_reference(cmd, namespace)
 
 
 def validate_api_portal_update(namespace):
@@ -531,9 +531,10 @@ def validate_apm_reference(cmd, namespace):
 
     result = []
     for apm_name in apm_names:
-        resource_id = '{}/apms/{}'.format(service_resource_id, apm_name)
-        apm_reference = ApmReference(resource_id=resource_id)
-        result.append(apm_reference)
+        if apm_name != "":
+            resource_id = '{}/apms/{}'.format(service_resource_id, apm_name)
+            apm_reference = ApmReference(resource_id=resource_id)
+            result.append(apm_reference)
 
     namespace.apms = result
 

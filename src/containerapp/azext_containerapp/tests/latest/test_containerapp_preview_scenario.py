@@ -6,12 +6,14 @@
 import os
 import time
 from time import sleep
+
+from msrestazure.tools import parse_resource_id
+
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
-from subprocess import run
 
 from .common import (write_test_file, TEST_LOCATION, clean_up_test_file)
 from .custom_preparers import ConnectedClusterPreparer
-from .utils import create_containerapp_env
+from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -128,15 +130,16 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
     def test_containerapp_preview_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
 
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
 
         self.cmd(
-            f'az containerapp create --name {ca_name} --resource-group {resource_group} --environment {env_name} --image "mcr.microsoft.com/k8se/quickstart:latest" --environment-type managed',
+            f'az containerapp create --name {ca_name} --resource-group {resource_group} --environment {env_id} --image "mcr.microsoft.com/k8se/quickstart:latest" --environment-type managed',
             checks=[
                 JMESPathCheck('properties.environmentId', containerapp_env['id']),
                 JMESPathCheck('properties.provisioningState', "Succeeded")
