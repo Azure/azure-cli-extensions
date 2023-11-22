@@ -77,6 +77,7 @@ from .custom import (
     list_containerapp,
     list_managed_environments,
     create_or_update_github_action,
+    show_containerapp
 )
 
 from ._cloud_build_utils import (
@@ -906,6 +907,7 @@ def _get_env_and_group_from_log_analytics(
     cmd,
     resource_group_name,
     env: "ContainerAppEnvironment",
+    app: "ContainerApp",
     resource_group: "ResourceGroup",
     logs_customer_id,
     location,
@@ -935,10 +937,21 @@ def _get_env_and_group_from_log_analytics(
                 env_list = [e for e in env_list if format_location(e["location"]) == format_location(location)]
             if env_list:
                 # TODO check how many CA in env
-                env_details = parse_resource_id(env_list[0]["id"])
-                env.set_name(env_details["name"])
-                resource_group.name = env_details["resource_group"]
-
+                print("App Name :" + app.name)
+                logger.warning(f"Logging application name '{app.name}'")
+                if app.name:
+                    container_app = show_containerapp(cmd, app.name, resource_group_name)
+                    env_name = parse_resource_id(container_app["properties"]["environmentId"])["resource_name"]
+                   # print(environmentId)
+                  #  env_name = environmentId
+                    print(env_name)
+                    env.set_name(env_name)
+                    print(env.name)
+                    resource_group.name = resource_group_name
+                else:
+                    env_details = parse_resource_id(env_list[0]["id"])
+                    env.set_name(env_details["name"])
+                    resource_group.name = env_details["resource_group"]
 
 def _get_acr_from_image(cmd, app):
     if app.image is not None and "azurecr.io" in app.image:
@@ -1064,7 +1077,7 @@ def _set_up_defaults(
 
     # If no env passed in (and not creating a new RG), then try getting an env by location / log analytics ID
     _get_env_and_group_from_log_analytics(
-        cmd, resource_group_name, env, resource_group, logs_customer_id, location
+        cmd, resource_group_name, env, app,  resource_group, logs_customer_id, location
     )
 
     # try to set RG name by env name

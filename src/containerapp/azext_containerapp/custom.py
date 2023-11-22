@@ -1061,11 +1061,11 @@ def containerapp_up(cmd,
     env = ContainerAppEnvironment(cmd, managed_env, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id)
     app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress)
 
-    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app)
-
     if app.check_exists():
         if app.get()["properties"]["provisioningState"] == "InProgress":
             raise ValidationError("Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
+    
+    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app)
 
     resource_group.create_if_needed()
     env.create_if_needed(name)
