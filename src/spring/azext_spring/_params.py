@@ -16,7 +16,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
                           validate_remote_debugging_port, validate_ingress_client_auth_certificates,
-                          validate_managed_environment, validate_dataplane_public_endpoint)
+                          validate_managed_environment, validate_dataplane_public_endpoint, validate_server_version,
+                          validate_planned_maintenance)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_source_path, validate_artifact_path, validate_build_create,
                                      validate_build_update, validate_container_registry_create,
@@ -31,7 +32,7 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
-                                     validate_build_cert_reference, validate_acs_create)
+                                     validate_build_cert_reference, validate_acs_create, not_support_enterprise)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -41,7 +42,7 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import (ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType, ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -251,6 +252,28 @@ def load_arguments(self, _):
                    options_list=['--enable-dataplane-public-endpoint', '--enable-dppa'],
                    help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
 
+        c.argument('enable_planned_maintenance',
+                   arg_group='Planned Maintenance',
+                   action='store_true',
+                   validator=validate_planned_maintenance,
+                   is_preview=True,
+                   options_list=['--enable-planned-maintenance', '--enable-pm'],
+                   help='If set, enable planned maintenance for the instance.')
+        c.argument('planned_maintenance_day',
+                   arg_group='Planned Maintenance',
+                   arg_type=get_enum_type(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']),
+                   validator=validate_planned_maintenance,
+                   is_preview=True,
+                   options_list=['--planned-maintenance-day', '--pm-day'],
+                   help='Day of the week which planned maintenance will be scheduled on.')
+        c.argument('planned_maintenance_start_hour',
+                   arg_group='Planned Maintenance',
+                   type=int,
+                   validator=validate_planned_maintenance,
+                   is_preview=True,
+                   options_list=['--planned-maintenance-start-hour', '--pm-start-hour'],
+                   help='Start time of the planned maintenance window in UTC. Must be between 0 and 23.')
+
     for scope in ['spring create', 'spring update']:
         with self.argument_context(scope) as c:
             c.argument('tags', arg_type=tags_type)
@@ -258,6 +281,9 @@ def load_arguments(self, _):
     with self.argument_context('spring test-endpoint renew-key') as c:
         c.argument('type', type=str, arg_type=get_enum_type(
             TestKeyType), help='Type of test-endpoint key')
+
+    with self.argument_context('spring list-support-server-versions') as c:
+            c.argument('service', service_name_type, validator=not_support_enterprise)
 
     with self.argument_context('spring app') as c:
         c.argument('service', service_name_type)
@@ -490,7 +516,7 @@ def load_arguments(self, _):
                 'artifact_path', options_list=['--artifact-path',
                                                c.deprecate(target='--jar-path', redirect='--artifact-path', hide=True),
                                                c.deprecate(target='-p', redirect='--artifact-path', hide=True)],
-                help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_jar)
+                help='Deploy the specified pre-built artifact (jar, war or netcore zip, war is in public preview).', validator=validate_jar)
             c.argument(
                 'disable_validation', arg_type=get_three_state_flag(),
                 help='If true, disable jar validation.')
@@ -528,6 +554,7 @@ def load_arguments(self, _):
             c.argument('build_certificates', nargs='*',
                        help='(Enterprise Tier Only) Space-separated certificate names, the certificates are used during build time.',
                        validator=validate_build_cert_reference)
+            c.argument('server_version', help='(Standard and Basic Tiers Only) Tomcat server version. List all supported server versions by running `az spring list-support-server-versions -o table`. This feature is in public preview.', validator=validate_server_version)
 
     with self.argument_context('spring app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
@@ -676,6 +703,12 @@ def load_arguments(self, _):
                    help='If true, only import public certificate part from key vault.', default=False)
         c.argument('public_certificate_file', options_list=['--public-certificate-file', '-f'],
                    help='A file path for the public certificate to be uploaded')
+        c.argument('enable_auto_sync', arg_type=get_three_state_flag(),
+                   help='Whether to automatically synchronize certificate from key vault', default=False)
+
+    with self.argument_context('spring certificate update') as c:
+        c.argument('enable_auto_sync', arg_type=get_three_state_flag(),
+                   help='Whether to automatically synchronize certificate from key vault')
 
     with self.argument_context('spring certificate list') as c:
         c.argument('certificate_type', help='Type of uploaded certificate',
@@ -865,7 +898,7 @@ def load_arguments(self, _):
         c.argument('api_doc_location', arg_group='API metadata', help="Location of additional documentation for the APIs available on the Gateway instance.")
         c.argument('api_version', arg_group='API metadata', help="Version of APIs available on this Gateway instance.")
         c.argument('server_url', arg_group='API metadata', help="Base URL that API consumers will use to access APIs on the Gateway instance.")
-        c.argument('apm_types', nargs='*',
+        c.argument('apm_types', nargs='*', arg_group='APM',
                    help="Space-separated list of APM integrated with Gateway. Allowed values are: " + ', '.join(list(ApmType)))
         c.argument('properties', nargs='*',
                    help='Non-sensitive properties for environment variables. Format "key[=value]" and separated by space.')
@@ -891,6 +924,8 @@ def load_arguments(self, _):
         c.argument('certificate_names', arg_group='Client Certificate Authentication', help="Comma-separated list of certificate names in Azure Spring Apps.")
         c.argument('addon_configs_json', arg_group='Add-on Configurations', help="JSON string of add-on configurations.")
         c.argument('addon_configs_file', arg_group='Add-on Configurations', help="The file path of JSON string of add-on configurations.")
+        c.argument('apms', arg_group='APM', nargs='*',
+                   help="Space-separated list of APM reference names in Azure Spring Apps to integrate with Gateway.")
 
     for scope in ['spring gateway custom-domain',
                   'spring api-portal custom-domain']:
@@ -1012,16 +1047,18 @@ def load_arguments(self, _):
     for scope in ['spring application-accelerator customized-accelerator create',
                   'spring application-accelerator customized-accelerator update']:
         with self.argument_context(scope) as c:
-            c.argument('display_name', type=str, help='Display name for customized accelerator.')
-            c.argument('description', type=str, help='Description for customized accelerator.')
-            c.argument('icon_url', type=str, help='Icon url for customized accelerator.')
-            c.argument('accelerator_tags', type=str, help="Comma-separated list of tags on the customized accelerator.")
+            c.argument('display_name', help='Display name for customized accelerator.')
+            c.argument('description', help='Description for customized accelerator.')
+            c.argument('icon_url', help='Icon url for customized accelerator.')
+            c.argument('accelerator_tags', help="Comma-separated list of tags on the customized accelerator.")
+            c.argument('type', help='Type of customized accelerator.', arg_type=get_enum_type(CustomizedAcceleratorType))
 
             c.argument('git_url', help='Git URL', validator=validate_acc_git_url)
+            c.argument('git_sub_path', help='Folder path inside the git repository to consider as the root of the accelerator or fragment.')
             c.argument('git_interval', type=int, help='Interval in seconds for checking for updates to Git or image repository.', validator=validate_git_interval)
-            c.argument('git_branch', type=str, help='Git repository branch to be used.', validator=validate_acc_git_refs)
-            c.argument('git_commit', type=str, help='Git repository commit to be used.', validator=validate_acc_git_refs)
-            c.argument('git_tag', type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
+            c.argument('git_branch', help='Git repository branch to be used.', validator=validate_acc_git_refs)
+            c.argument('git_commit', help='Git repository commit to be used.', validator=validate_acc_git_refs)
+            c.argument('git_tag', help='Git repository tag to be used.', validator=validate_acc_git_refs)
 
             c.argument('ca_cert_name', help='CA certificate name.')
             c.argument('username', help='Username of git repository basic auth.')

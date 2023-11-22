@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "storage-mover project update",
 )
 class Update(AAZCommand):
-    """Updates a Project resource, which is a logical grouping of related jobs.
+    """Update a Project resource, which is a logical grouping of related jobs.
 
     :example: project update
         az storage-mover project update -g {rg} --storage-mover-name {mover_name} -n {project_name} --description ProjectDesc2
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}", "2023-10-01"],
         ]
     }
 
@@ -155,7 +155,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-10-01",
                     required=True,
                 ),
             }
@@ -242,7 +242,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-10-01",
                     required=True,
                 ),
             }

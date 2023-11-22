@@ -8,13 +8,19 @@ import sys
 
 from pkg_resources import parse_version
 from knack.log import get_logger
-from azext_confcom.config import DEFAULT_REGO_FRAGMENTS
+from azext_confcom.config import DEFAULT_REGO_FRAGMENTS, DATA_FOLDER
 from azext_confcom import os_util
-from azext_confcom.template_util import pretty_print_func, print_func, str_to_sha256
+from azext_confcom.template_util import (
+    pretty_print_func,
+    print_func,
+    str_to_sha256,
+    inject_policy_into_template,
+    print_existing_policy_from_arm_template,
+)
 from azext_confcom.init_checks import run_initial_docker_checks
-from azext_confcom.template_util import inject_policy_into_template, print_existing_policy_from_arm_template
 from azext_confcom import security_policy
 from azext_confcom.security_policy import OutputType
+from azext_confcom.kata_proxy import KataPolicyGenProxy
 
 
 logger = get_logger(__name__)
@@ -51,6 +57,16 @@ def acipolicygen_confcom(
         )
     elif save_to_file and arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
         error_out("Must print policy to terminal when saving to file")
+
+    if print_existing_policy or outraw or outraw_pretty_print:
+        logger.warning(
+            "%s %s %s %s %s",
+            "Secrets that are included in the provided arm template or configuration files ",
+            "in the container env or cmd sections will be printed out with this flag.",
+            "These are outputed secrets that you must protect. Be sure that you do not include these secrets in your",
+            "source control. Also verify that no secrets are present in the logs of your command or script.",
+            "For additional information, see http://aka.ms/clisecrets. \n",
+        )
 
     if print_existing_policy:
         print_existing_policy_from_arm_template(arm_template, arm_template_parameters)
@@ -138,6 +154,34 @@ def acipolicygen_confcom(
                 policy.save_to_file(save_to_file, output_type)
 
     sys.exit(exit_code)
+
+
+def katapolicygen_confcom(
+    yaml_path: str,
+    config_map_file: str,
+    outraw: bool = False,
+    print_policy: bool = False,
+    use_cached_files: bool = False,
+    settings_file_name: str = None,
+):
+
+    if settings_file_name:
+        if "genpolicy-settings.json" in settings_file_name:
+            error_out("Cannot use default settings file names")
+        os_util.copy_file(settings_file_name, DATA_FOLDER)
+
+    kata_proxy = KataPolicyGenProxy()
+
+    output = kata_proxy.kata_genpolicy(
+        yaml_path,
+        config_map_file=config_map_file,
+        outraw=outraw,
+        print_policy=print_policy,
+        use_cached_files=use_cached_files,
+        settings_file_name=settings_file_name,
+    )
+    print(output)
+    sys.exit(0)
 
 
 def update_confcom(cmd, instance, tags=None):

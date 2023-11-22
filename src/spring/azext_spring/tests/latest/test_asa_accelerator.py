@@ -86,3 +86,41 @@ class ApidAcceleratorTest(ScenarioTest):
 
         result = self.cmd('spring application-accelerator customized-accelerator list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) == 0)
+
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
+    def test_customized_accelerator_of_fragment_type(self, resource_group, spring):
+        
+        self.kwargs.update({
+            'serviceName': spring,
+            'rg': resource_group,
+            'name': 'fragment-name',
+            'displayName': 'fragment-name',
+            'gitUrl': 'https://github.com/sample-accelerators/fragments.git',
+            'gitSubPath': 'java-version',
+            'gitBranch': 'main',
+        })
+
+        self.cmd('spring application-accelerator customized-accelerator create -n {name} -g {rg} -s {serviceName} --type Fragment --display-name {displayName} --git-sub-path {gitSubPath} --git-url {gitUrl} --git-branch {gitBranch} --git-interval 10', 
+        checks=[
+            self.check('properties.acceleratorType', "Fragment"),
+            self.check('properties.gitRepository.subPath', "java-version"),
+            self.check('properties.imports', ["java-version"]),
+            self.check('properties.provisioningState', "Succeeded")
+        ])
+
+        self.cmd('spring application-accelerator customized-accelerator update -n {name} -g {rg} -s {serviceName} --type Fragment --display-name {displayName} --git-sub-path {gitSubPath} --git-url {gitUrl} --git-branch {gitBranch} --description desc', 
+        checks=[
+            self.check('properties.acceleratorType', "Fragment"),
+            self.check('properties.gitRepository.subPath', "java-version"),
+            self.check('properties.imports', ["java-version"]),
+            self.check('properties.provisioningState', "Succeeded")
+        ])
+
+        self.cmd('spring application-accelerator customized-accelerator show -n {name} -g {rg} -s {serviceName}', 
+        checks=[
+            self.check('properties.acceleratorType', "Fragment"),
+            self.check('properties.gitRepository.subPath', "java-version"),
+            self.check('properties.imports', ["java-version"]),
+            self.check('properties.provisioningState', "Succeeded")
+        ])

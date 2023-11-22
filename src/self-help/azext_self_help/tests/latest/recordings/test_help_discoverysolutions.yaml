@@ -11,27 +11,24 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --scope
+      - --scope --filter
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/discoverySolutions?api-version=2023-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/discoverySolutions?$filter=ProblemClassificationId%20eq%20%2700000000-0000-0000-0000-000000000000%27&api-version=2023-09-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/discoverySolutions/KeyVaultSoftDeleteNotEnabledInsight","name":"KeyVaultSoftDeleteNotEnabledInsight","type":"Microsoft.Help/discoverySolutions","properties":{"solutionId":"KeyVaultSoftDeleteNotEnabledInsight","solutionType":"Diagnostics","description":"Checks
-        a vault''s soft delete enabled setting.","requiredParameterSets":[["ResourceUri"]]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/discoverySolutions/KeyVaultThrottlingData","name":"KeyVaultThrottlingData","type":"Microsoft.Help/discoverySolutions","properties":{"solutionId":"KeyVaultThrottlingData","solutionType":"Diagnostics","description":"Checks
-        a vault''s throttling status.","requiredParameterSets":[["ResourceUri"]]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/discoverySolutions/KeyVaultUnauthorizedNetworkInsight","name":"KeyVaultUnauthorizedNetworkInsight","type":"Microsoft.Help/discoverySolutions","properties":{"solutionId":"KeyVaultUnauthorizedNetworkInsight","solutionType":"Diagnostics","description":"Checks
-        a vault for unauthorized network requests.","requiredParameterSets":[["ResourceUri"]]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/discoverySolutions/KeyVaultUnauthorizedAclInsight","name":"KeyVaultUnauthorizedAclInsight","type":"Microsoft.Help/discoverySolutions","properties":{"solutionId":"KeyVaultUnauthorizedAclInsight","solutionType":"Diagnostics","description":"Checks
-        a vault for unauthorized by ACLs requests.","requiredParameterSets":[["ResourceUri"]]}}],"nextLink":""}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/discoverySolutions/00000000-0000-0000-0000-000000000000","name":"00000000-0000-0000-0000-000000000000","type":"Microsoft.Help/discoverySolutions","properties":{"solutions":[{"solutionId":"StorageFailureTransactionInsight","solutionType":"Diagnostics","description":"Analyze
+        storage failure transaction details","requiredInputs":["SapId","ResourceUri"]}]}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2006'
+      - '533'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 20:04:10 GMT
+      - Fri, 13 Oct 2023 16:57:03 GMT
       expires:
       - '-1'
       pragma:

@@ -6,6 +6,11 @@ Release History
 ++++++
 * `az network firewall policy create/update`: Collections and rule collection group: add parameter `--http-headers-to-insert`s
 
+1.0.0
+++++++
+* [Fix] `az network firewall threat-intel-allowlist create/update/delete`: Remove the argument `--ids` as sub command should not support it.
+* Make extension from preview to stable.
+
 0.14.8
 ++++++
 * `az network firewall policy`: Fix unhashable `--identity`

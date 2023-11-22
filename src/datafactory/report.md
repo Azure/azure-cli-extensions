@@ -223,6 +223,7 @@ az datafactory create --location "East US" --name "exampleFactoryName" --resourc
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--if-match**|string|ETag of the factory entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
 |**--location**|string|The resource location.|location|location|
+|**--public-network-access**|string|Whether or not public network access is allowed for the data factory.|public_network_access|publicNetworkAccess|
 |**--tags**|dictionary|The resource tags.|tags|tags|
 |**--factory-vsts-configuration**|object|Factory's VSTS repo information.|factory_vsts_configuration|FactoryVSTSConfiguration|
 |**--factory-git-hub-configuration**|object|Factory's GitHub repo information.|factory_git_hub_configuration|FactoryGitHubConfiguration|
@@ -243,6 +244,7 @@ az datafactory update --name "exampleFactoryName" --tags exampleTag="exampleValu
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--public-network-access**|string|Whether or not public network access is allowed for the data factory.|public_network_access|publicNetworkAccess|
 |**--tags**|dictionary|The resource tags.|tags|tags|
 
 #### <a name="FactoriesDelete">Command `az datafactory delete`</a>

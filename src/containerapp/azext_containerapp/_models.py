@@ -20,7 +20,8 @@ ManagedEnvironment = {
         "vnetConfiguration": None,  # VnetConfiguration
         "appLogsConfiguration": None,
         "customDomainConfiguration": None,  # CustomDomainConfiguration,
-        "workloadProfiles": None
+        "workloadProfiles": None,
+        "InfrastructureResourceGroup": None
     }
 }
 
@@ -169,6 +170,7 @@ Ingress = {
     "targetPort": None,
     "transport": None,  # 'auto', 'http', 'http2', 'tcp'
     "exposedPort": None,
+    "allowInsecure": False,
     "traffic": None,  # TrafficWeight
     "customDomains": None,  # [CustomDomain]
     "ipSecurityRestrictions": None,  # [IPSecurityRestrictions]
@@ -289,6 +291,83 @@ ContainerAppsJob = {
     "tags": None
 }
 
+DaprComponentResiliency = {
+    "properties": {
+        "inboundPolicy": {
+            "timeoutPolicy": {
+                "responseTimeoutInSeconds": None,
+            },
+            "httpRetryPolicy": {
+                "maxRetries": None,
+                "retryBackOff": {
+                    "initialDelayInMilliseconds": None,
+                    "maxIntervalInMilliseconds": None,
+                }
+            },
+        },
+        "outboundPolicy": {
+            "timeoutPolicy": {
+                "responseTimeoutInSeconds": None,
+            },
+            "httpRetryPolicy": {
+                "maxRetries": None,
+                "retryBackOff": {
+                    "initialDelayInMilliseconds": None,
+                    "maxIntervalInMilliseconds": None,
+                }
+            },
+        }
+    }
+}
+
+ContainerAppsResiliency = {
+    "properties": {
+        "timeoutPolicy": None,
+        "httpRetryPolicy": None,
+        "tcpRetryPolicy": None,
+        "circuitBreakerPolicy": None,
+        "tcpConnectionPool": None,
+        "httpConnectionPool": None
+    }
+}
+
+HttpRetryPolicy = {
+    "maxRetries": None,
+    "retryBackOff": {
+        "initialDelayInMilliseconds": None,
+        "maxIntervalInMilliseconds": None,
+    },
+    "matches": {
+        "headers": None,
+        "httpStatusCodes": None,
+        "errors": None
+    }
+}
+
+TcpConnectionPool = {
+    "maxConnections": None
+}
+
+TimeoutPolicy = {
+    "responseTimeoutInSeconds": None,
+    "connectionTimeoutInSeconds": None
+}
+
+TcpRetryPolicy = {
+    "maxConnectAttempts": None
+}
+
+CircuitBreakerPolicy = {
+    "consecutiveErrors": None,
+    "intervalInSeconds": None,
+    "maxEjectionPercent": None
+}
+
+HttpConnectionPool = {
+    "http1MaxPendingRequests": None,
+    "http2MaxRequests": None
+}
+
 ContainerAppCertificateEnvelope = {
     "location": None,
     "properties": {
@@ -299,20 +378,28 @@ ContainerAppCertificateEnvelope = {
 
 DaprComponent = {
     "properties": {
-        "componentType": None,  # String
-        "version": None,
-        "ignoreErrors": None,
-        "initTimeout": None,
-        "secrets": None,
-        "metadata": None,
-        "scopes": None
+        "componentType": None,  # str
+        "ignoreErrors": None,  # str
+        "initTimeout": None,  # str
+        "metadata": None,  # [DaprMetadata]
+        "scopes": None,  # [str]
+        "secrets": None,  # [Secret]
+        "secretStoreComponent": None,  # str
+        "serviceComponentBind": None,  # DaprServiceComponentBinding
+        "version": None,  # str
     }
 }
 
+DaprServiceComponentBinding = {
+    "name": None,  # str
+    "serviceId": None,  # str
+    "metadata": None,  # Dict[str, str]
+}
+
 DaprMetadata = {
-    "key": None,  # str
+    "name": None,  # str
     "value": None,  # str
-    "secret_ref": None  # str
+    "secretRef": None  # str
 }
 
 SourceControl = {
@@ -398,11 +485,28 @@ ImagePatchableCheck = {
     "reason": None,
 }
 
-OryxMarinerRunImgTagProperty = {
+OryxRunImageTagProperty = {
     "fullTag": None,
     "framework": None,
     "version": None,
-    "marinerVersion": None,
+    "os": None,
     "architectures": None,
     "support": None,
+}
+
+
+# model for preview extension
+ConnectedEnvironment = {
+    "extendedLocation": None,
+    "tags": None,
+    "location": None,
+    "properties": {
+        "staticIp": None,
+        "daprAIConnectionString": None
+    }
+}
+
+ExtendedLocation = {
+    "name": None,
+    "type": None
 }

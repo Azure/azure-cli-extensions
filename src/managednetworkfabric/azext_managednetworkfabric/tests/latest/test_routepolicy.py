@@ -33,6 +33,7 @@ def call_scenario1(test):
     setup_scenario1(test)
     step_create_s1(test, checks=[])
     step_show(test, checks=[])
+    step_update(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
     cleanup_scenario1(test)
@@ -50,13 +51,13 @@ def step_create_s1(test, checks=None):
     '''routepolicy create operation with IpCommunities'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --nf-id {nfId} --address-family-type {addressFamilyType} --statements {statements_with_ipcommunity}', checks=checks)
+    test.cmd('az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --default-action {defaultAction} --nf-id {nfId} --address-family-type {addressFamilyType} --statements {statements_with_ipcommunity}', checks=checks)
 
 def step_create_s2(test, checks=None):
     '''routepolicy create operation with IpExtendedCommunities'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --nf-id {nfId} --address-family-type {addressFamilyType} --statements {statements_with_ipextcommunity}', checks=checks)
+    test.cmd('az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --default-action {defaultAction} --nf-id {nfId} --address-family-type {addressFamilyType} --statements {statements_with_ipextcommunity}', checks=checks)
 
 def step_show(test, checks=None):
     '''routepolicy show operation'''
@@ -64,6 +65,13 @@ def step_show(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric routepolicy show --resource-name {name} --resource-group {rg}')
+
+def step_update(test, checks=None):
+    '''routepolicy update operation'''
+    if checks is None:
+        checks = []
+    test.cmd(
+        'az networkfabric routepolicy update --resource-group {rg} --resource-name {name} --statements {updated_statements_with_ipcommunity}', checks=checks)
 
 def step_list_resource_group(test, checks=None):
     '''routepolicy list by resource group operation'''
@@ -91,7 +99,9 @@ class GA_RoutePolicyScenarioTest1(ScenarioTest):
             'location': CONFIG.get('ROUTE_POLICY', 'location'),
             'nfId': CONFIG.get('ROUTE_POLICY', 'nf_id'),
             'addressFamilyType': CONFIG.get('ROUTE_POLICY', 'address_family_type'),
+            'defaultAction': CONFIG.get('ROUTE_POLICY', 'default_action'),
             'statements_with_ipcommunity': CONFIG.get('ROUTE_POLICY', 'statements_with_ipcommunity'),
+            'updated_statements_with_ipcommunity': CONFIG.get('ROUTE_POLICY', 'updated_statements_with_ipcommunity'),
             'statements_with_ipextcommunity': CONFIG.get('ROUTE_POLICY', 'statements_with_ipextcommunity')
         })
 

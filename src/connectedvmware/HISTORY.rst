@@ -2,6 +2,32 @@
 
 Release History
 ===============
+0.2.3
+++++++
+* Fix docs and help for vm creation from template with disk override.
+* Convert any HCRP machine with empty kind to VMWare / AVS kind, while enabling vm from inventory.
+* Reprompt fix for password for vcenter connect.
+
+0.2.2
+++++++
+* GA release: Using stable API version for all operations.
+* `az connectedvmware inventory item show` shows inventory-type specific properties.
+
+0.2.1
+++++++
+* Bug fix for `get-resource-id` internal function, which was not honoring resource-group override.
+
+0.2.0
+++++++
+* Using New Resource Model for all VM operations:
+    * `vm` command : Create, Update, Delete, Show, Start, Stop, Restart VirtualMachineInstance
+    * `vm guest-agent` command : Enable, Show VMInstanceGuestAgent
+    * `vm extension` command : Create, Update, Delete, Show, List MachineExtensions
+* If underlying machine is not present, it gets created during vm create
+* Added delete-from-host flag for `vm delete`
+* Deprecated VM List option as VM Instance is a child resource of Machines.
+* Updated tests and helps accordingly.
+* raising better exception types instead of CLIError
 
 0.1.12
 ++++++

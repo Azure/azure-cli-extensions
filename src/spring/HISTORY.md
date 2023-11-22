@@ -1,5 +1,30 @@
 Release History
 ===============
+1.16.0
+---
+* Add arguments `--enable-planned-maintenance`, `--planned-maintenance-day` and `--planned-maintenance-start-hour` in `az spring update` to support configuring Planned Maintenance.
+
+1.15.1
+---
+* Add arguments `--apms` for Spring Cloud Gateway.
+
+1.15.0
+---
+* Add arguments `--type` and `--git-sub-path` in `spring application-accelerator customized-accelerator create` and `spring application-accelerator customized-accelerator update` for accelerator fragment support.
+* Add new argument `--server-version` in `az spring app deploy` and `az spring app deployment create` to support WAR file deployment in Standard tier. 
+* Add argument `--enable-auto-sync` in `az spring certificate add`.
+* Add new command `az spring certificate update` to update a certificate.
+* Add new command `az spring list-support-server-versions` to list all supported server versions.
+* Fix `list-marketplace-plan` command.
+
+1.14.3
+---
+* Make error message for `az spring app logs` more readable.  
+
+1.14.2
+---
+* Add new command `az spring flush-virtualnetwork-dns-settings` to flush virtual network DNS settings for the service instance.
+
 1.14.1
 ---
 * Support up to 1000 app instances in Enterprise tier.
