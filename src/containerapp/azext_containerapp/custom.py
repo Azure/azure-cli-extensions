@@ -1000,7 +1000,7 @@ def get_replica(cmd, resource_group_name, name, replica, revision=None):
 def containerapp_up(cmd,
                     name,
                     resource_group_name=None,
-                    managed_env=None,
+                    environment=None,
                     location=None,
                     registry_server=None,
                     image=None,
@@ -1035,7 +1035,7 @@ def containerapp_up(cmd,
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _validate_up_args(cmd, source, artifact, image, repo, registry_server)
     _validate_custom_location_connected_cluster_args(cmd,
-                                                     env=managed_env,
+                                                     env=environment,
                                                      resource_group_name=resource_group_name,
                                                      location=location,
                                                      custom_location_id=custom_location_id,
@@ -1045,7 +1045,7 @@ def containerapp_up(cmd,
         # At this point we know for sure that source isn't set (else _validate_up_args would have failed), so we can build with this value.
         source = artifact
     validate_container_app_name(name, AppType.ContainerApp.name)
-    check_env_name_on_rg(cmd, managed_env, resource_group_name, location, custom_location_id, connected_cluster_id)
+    check_env_name_on_rg(cmd, environment, resource_group_name, location, custom_location_id, connected_cluster_id)
 
     image = _reformat_image(source, repo, image)
     token = get_token(cmd, repo, token)
@@ -1068,7 +1068,7 @@ def containerapp_up(cmd,
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
     custom_location = CustomLocation(cmd, name=custom_location_id, resource_group_name=resource_group_name, connected_cluster_id=connected_cluster_id)
     extension = Extension(cmd, logs_rg=resource_group_name, logs_location=location, logs_share_key=logs_key, logs_customer_id=logs_customer_id, connected_cluster_id=connected_cluster_id)
-    env = ContainerAppEnvironment(cmd, managed_env, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
+    env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
     app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress)
 
     _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app, custom_location, extension)

@@ -144,12 +144,10 @@ def load_arguments(self, _):
         c.argument('pubsub', help="The pubsub component and dev service to create.")
 
     with self.argument_context('containerapp up') as c:
-        c.argument('managed_env', validator=validate_env_name_or_id_for_up, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
+        c.argument('environment', validator=validate_env_name_or_id_for_up, options_list=['--environment'], help="Name or resource ID of the container app's managed environment or connected environment.")
         c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)
-
-    with self.argument_context('containerapp up', arg_group='Connected environment', is_preview=True) as c:
-        c.argument('custom_location_id', options_list=['--custom-location'], help="Resource ID of custom location. List using 'az customlocation list'.")
-        c.argument('connected_cluster_id', help="Resource ID of connected cluster. List using 'az connectedk8s list'.", configured_default='connected_cluster_id')
+        c.argument('custom_location_id', options_list=['--custom-location'], help="Resource ID of custom location. List using 'az customlocation list'.", is_preview=True)
+        c.argument('connected_cluster_id', help="Resource ID of connected cluster. List using 'az connectedk8s list'.", configured_default='connected_cluster_id', is_preview=True)
 
     with self.argument_context('containerapp up', arg_group='Github Repo') as c:
         c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/<owner>/<repository-name> or <owner>/<repository-name>')

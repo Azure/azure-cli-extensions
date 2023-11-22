@@ -37,7 +37,8 @@ from ._client_factory import custom_location_client_factory, k8s_extension_clien
 from ._models import OryxRunImageTagProperty
 from ._constants import (CONTAINER_APP_EXTENSION_TYPE,
                          CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, DEV_SERVICE_LIST,
-                         MANAGED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APPS_RP, CONNECTED_CLUSTER_TYPE)
+                         MANAGED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APPS_RP, CONNECTED_CLUSTER_TYPE,
+                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE)
 
 logger = get_logger(__name__)
 
@@ -654,7 +655,7 @@ def create_extension(cmd, extension_name, connected_cluster_id=None, namespace=N
 
 
 def create_custom_location(cmd, custom_location_name=None, resource_group=None, connected_cluster_id=None,
-                           namespace='containerapp-ns', cluster_extension_id=None, location=None):
+                           namespace=DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE, cluster_extension_id=None, location=None):
     from azure.mgmt.extendedlocation import models
 
     parameters = models.CustomLocation(name=custom_location_name,

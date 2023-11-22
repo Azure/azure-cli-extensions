@@ -73,7 +73,8 @@ from ._constants import (MAXIMUM_SECRET_LENGTH,
                          ACA_BUILDER_BOOKWORM_IMAGE, EXTENDED_LOCATION_RP, KUBERNETES_CONFIGURATION_RP,
                          CONNECTED_ENVIRONMENT_TYPE, CUSTOM_LOCATION_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE,
                          CONNECTED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE,
-                         CONTAINER_APP_EXTENSION_TYPE)
+                         CONTAINER_APP_EXTENSION_TYPE, DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAME,
+                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE)
 
 from .custom import (
     create_managed_environment,
@@ -1138,7 +1139,7 @@ def _prepare_custom_location_args(
 ):
     if custom_location.name is None:
         if custom_location.connected_cluster_id is None:
-            raise ValidationError("please specify one of connected-cluster-id or custom location you want to create the Connected environment.")
+            raise ValidationError("please specify one of --connected-cluster-id or --custom-location you want to create the Connected Environment or specify the existing Connected Environment with --environment.")
 
         connected_cluster = get_connected_k8s(cmd, custom_location.connected_cluster_id)
         custom_location.location = connected_cluster.location
@@ -1430,12 +1431,12 @@ def _infer_existing_custom_location_or_extension(
                 env.custom_location_id = custom_location.get_rid()
                 # If not existed extension, set up values for creating
                 if not extension.exists:
-                    extension.name = 'containerapp-ext'
-                    extension.namespace = 'containerapp-ns'
+                    extension.name = DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAME
+                    extension.namespace = DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE
                     extension.logs_rg = resource_group.name
                     extension.logs_location = resource_group.location
                     extension.connected_environment_name = env.name
-                    custom_location.namespace = 'containerapp-ns'
+                    custom_location.namespace = DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE
                     custom_location.cluster_extension_id = extension.get_rid()
 
 
@@ -1538,22 +1539,22 @@ def check_env_name_on_rg(cmd, env, resource_group_name, location, custom_locatio
         resource_type = env_dict.get("resource_type")
     if resource_type is None:
         if custom_location_id or connected_cluster_id:
-            resource_type = CONNECTED_ENVIRONMENT_TYPE
+            resource_type = CONNECTED_ENVIRONMENT_RESOURCE_TYPE
     if location:
-        _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
+        _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, resource_type if resource_type else "managedEnvironments")
     if env and resource_group_name:
         env_def = None
         try:
-            if resource_type and CONNECTED_ENVIRONMENT_TYPE.lower() == resource_type.lower():
+            if resource_type and CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower() == resource_type.lower():
                 env_def = ConnectedEnvironmentClient.show(cmd, resource_group_name, env_name)
             else:
                 env_def = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, env_name)
         except Exception as e:  # pylint: disable=bare-except
             handle_non_404_status_code_exception(e)
         if env_def:
-            if location and location != format_location(env_def["location"]):
+            if location and format_location(location) != format_location(env_def["location"]):
                 raise ValidationError("Environment {} already exists in resource group {} on location {}, cannot change location of existing environment to {}.".format(env_name, resource_group_name, env_def["location"], location))
-            if resource_type and CONNECTED_ENVIRONMENT_TYPE.lower() == resource_type.lower():
+            if resource_type and CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower() == resource_type.lower():
                 if custom_location_id and env_def["extendedLocation"]["name"].lower() != custom_location_id.lower():
                     raise ValidationError("Environment {} already exists in resource group {} with custom location {}, cannot change custom location of existing environment to {}.".format(env_name, resource_group_name, env_def["extendedLocation"]["name"], custom_location_id))
                 if connected_cluster_id:
