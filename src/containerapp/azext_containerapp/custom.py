@@ -1064,7 +1064,7 @@ def containerapp_up(cmd,
     if app.check_exists():
         if app.get()["properties"]["provisioningState"] == "InProgress":
             raise ValidationError("Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
-    
+
     _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app)
 
     resource_group.create_if_needed()

@@ -937,7 +937,7 @@ def _get_env_and_group_fron_app_or_log_analytics(
             if env_list:
                 # TODO check how many CA in env
                 # Get container app list in resource_group
-                containerapp_list = list_containerapp(cmd = cmd, resource_group_name = resource_group_name)
+                containerapp_list = list_containerapp(cmd=cmd, resource_group_name=resource_group_name)
                 if containerapp_list and len(containerapp_list) > 0:
                     # Get container app in resource_group with same name as app
                     container_app = next((c for c in containerapp_list if c.get("name", "").lower() == app.name.lower()), None) if app.name else None
@@ -952,6 +952,7 @@ def _get_env_and_group_fron_app_or_log_analytics(
                 env_details = parse_resource_id(env_list[0]["id"])
                 env.set_name(env_details["name"])
                 resource_group.name = env_details["resource_group"]
+
 
 def _get_acr_from_image(cmd, app):
     if app.image is not None and "azurecr.io" in app.image:
@@ -1077,9 +1078,7 @@ def _set_up_defaults(
 
     # If no env passed in (and not creating a new RG), then get env by location from the container app if it exsists
     # or log analytics ID
-    _get_env_and_group_fron_app_or_log_analytics(
-        cmd, resource_group_name, env, app,  resource_group, logs_customer_id, location
-    )
+    _get_env_and_group_fron_app_or_log_analytics(cmd, resource_group_name, env, app,  resource_group, logs_customer_id, location)
 
     # try to set RG name by env name
     if env.name and not resource_group.name:
