@@ -102,6 +102,7 @@ examples:
 helps['webapp auth-classic update'] = """
 type: command
 short-summary: Update the authentication settings for the webapp in the classic format.
+long-summary: Note that authentication settings are no longer returned as a result. Please use the `az webapp auth-classic show` command to view setting values.
 examples:
   - name: Enable Azure Active Directory by enabling authentication and setting Azure Active Directory-associated parameters. Default provider is set to AAD. Must have created a AAD service principal beforehand.
     text: >

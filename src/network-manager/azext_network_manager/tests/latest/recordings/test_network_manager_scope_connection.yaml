@@ -1,8 +1,8 @@
 interactions:
 - request:
-    body: '{"location": "eastus2euap", "properties": {"description": "My Test Network
-      Manager", "networkManagerScopes": {"subscriptions": ["/subscriptions/00000000-0000-0000-0000-000000000000"]},
-      "networkManagerScopeAccesses": ["SecurityAdmin", "Connectivity"]}}'
+    body: '{"location": "eastus2", "properties": {"description": "My Test Network
+      Manager", "networkManagerScopeAccesses": ["SecurityAdmin", "Connectivity"],
+      "networkManagerScopes": {"subscriptions": ["/subscriptions/00000000-0000-0000-0000-000000000000"]}}}'
     headers:
       Accept:
       - application/json
@@ -13,29 +13,28 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '251'
+      - '247'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --description --display-name --scope-accesses --network-manager-scopes
-        -l --resource-group
+      - --name --description --scope-accesses --network-manager-scopes -l --resource-group
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2022-01-01
   response:
     body:
-      string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2euap","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"displayName":"","description":"My
-        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"7aaba49d-666a-4cac-acb5-afefb3bbdd6f"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-06-27T07:12:55.4722776Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-06-27T07:12:55.4722776Z"}}'
+      string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"description":"My
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"dd4b4721-b89f-47df-ada2-d462eb2973f2"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T04:08:10.5784012Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T04:08:10.5784012Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '903'
+      - '880'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 27 Jun 2022 07:12:58 GMT
+      - Mon, 28 Aug 2023 04:08:11 GMT
       expires:
       - '-1'
       pragma:
@@ -50,15 +49,17 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/d2ef8289-0520-4dcb-b39d-c56fe33c4b37
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1191'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"tenantId": "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a", "resourceId":
-      "/subscriptions/00000000-0000-0000-0000-000000000000", "description": "My Test
-      Network Manager Scope Connection"}}'
+    body: '{"properties": {"description": "My Test Network Manager Scope Connection",
+      "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000", "tenantId":
+      "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"}}'
     headers:
       Accept:
       - application/json
@@ -75,22 +76,22 @@ interactions:
       ParameterSetName:
       - --resource-group --network-manager-name --name --description --tenant-id --resource-id
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection?api-version=2022-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection","name":"myTestScopeConnection","type":"Microsoft.Network/networkManagers/scopeConnections","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000","connectionState":"Pending","description":"My
-        Test Network Manager Scope Connection"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-06-27T07:12:59.6367770Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-06-27T07:12:59.6367770Z"}}'
+        Test Network Manager Scope Connection"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T04:08:13.2783128Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T04:08:13.2783128Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '771'
+      - '769'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 27 Jun 2022 07:13:00 GMT
+      - Mon, 28 Aug 2023 04:08:12 GMT
       expires:
       - '-1'
       pragma:
@@ -106,7 +107,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1194'
     status:
       code: 200
       message: OK
@@ -124,13 +125,13 @@ interactions:
       ParameterSetName:
       - -g --network-manager-name --name
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection?api-version=2022-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection","name":"myTestScopeConnection","type":"Microsoft.Network/networkManagers/scopeConnections","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000","connectionState":"Pending","description":"My
-        Test Network Manager Scope Connection"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-06-27T07:12:59.6367770Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-06-27T07:12:59.6367770Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection","name":"myTestScopeConnection","type":"Microsoft.Network/networkManagers/scopeConnections","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000","connectionState":"Connected","description":"My
+        Test Network Manager Scope Connection"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T04:08:13.2783128Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T04:08:13.2783128Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -139,7 +140,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 27 Jun 2022 07:13:02 GMT
+      - Mon, 28 Aug 2023 04:08:15 GMT
       expires:
       - '-1'
       pragma:
@@ -171,13 +172,13 @@ interactions:
       ParameterSetName:
       - -g --network-manager-name --name --description
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection?api-version=2022-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection","name":"myTestScopeConnection","type":"Microsoft.Network/networkManagers/scopeConnections","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000","connectionState":"Pending","description":"My
-        Test Network Manager Scope Connection"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-06-27T07:12:59.6367770Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-06-27T07:12:59.6367770Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection","name":"myTestScopeConnection","type":"Microsoft.Network/networkManagers/scopeConnections","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000","connectionState":"Connected","description":"My
+        Test Network Manager Scope Connection"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T04:08:13.2783128Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T04:08:13.2783128Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -186,7 +187,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 27 Jun 2022 07:13:03 GMT
+      - Mon, 28 Aug 2023 04:08:17 GMT
       expires:
       - '-1'
       pragma:
@@ -205,9 +206,9 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"tenantId": "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a", "resourceId":
-      "/subscriptions/00000000-0000-0000-0000-000000000000", "description": "My Test
-      Network Manager Scope Connection Updated Description"}}'
+    body: '{"properties": {"description": "My Test Network Manager Scope Connection
+      Updated Description", "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000",
+      "tenantId": "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"}}'
     headers:
       Accept:
       - application/json
@@ -224,13 +225,13 @@ interactions:
       ParameterSetName:
       - -g --network-manager-name --name --description
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection?api-version=2022-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection","name":"myTestScopeConnection","type":"Microsoft.Network/networkManagers/scopeConnections","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000","connectionState":"Pending","description":"My
-        Test Network Manager Scope Connection Updated Description"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-06-27T07:13:05.0759338Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-06-27T07:13:05.0759338Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection","name":"myTestScopeConnection","type":"Microsoft.Network/networkManagers/scopeConnections","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000","connectionState":"Connected","description":"My
+        Test Network Manager Scope Connection Updated Description"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T04:08:17.8337764Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T04:08:17.8337764Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -239,7 +240,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 27 Jun 2022 07:13:06 GMT
+      - Mon, 28 Aug 2023 04:08:18 GMT
       expires:
       - '-1'
       pragma:
@@ -255,7 +256,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1190'
     status:
       code: 200
       message: OK
@@ -273,13 +274,13 @@ interactions:
       ParameterSetName:
       - -g --network-manager-name
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections?api-version=2022-01-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection","name":"myTestScopeConnection","type":"Microsoft.Network/networkManagers/scopeConnections","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000","connectionState":"Pending","description":"My
-        Test Network Manager Scope Connection Updated Description"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-06-27T07:13:05.0759338Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-06-27T07:13:05.0759338Z"}}],"nextLink":""}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection","name":"myTestScopeConnection","type":"Microsoft.Network/networkManagers/scopeConnections","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000","connectionState":"Connected","description":"My
+        Test Network Manager Scope Connection Updated Description"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T04:08:17.8337764Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T04:08:17.8337764Z"}}],"nextLink":""}'
     headers:
       cache-control:
       - no-cache
@@ -288,7 +289,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 27 Jun 2022 07:13:07 GMT
+      - Mon, 28 Aug 2023 04:08:19 GMT
       expires:
       - '-1'
       pragma:
@@ -310,7 +311,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -322,7 +323,7 @@ interactions:
       ParameterSetName:
       - -g --network-manager-name --name --yes
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/scopeConnections/myTestScopeConnection?api-version=2022-01-01
   response:
@@ -334,51 +335,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 27 Jun 2022 07:13:08 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network manager delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --resource-group --name --force --yes
-      User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2022-01-01&force=true
-  response:
-    body:
-      string: ''
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 27 Jun 2022 07:13:12 GMT
+      - Mon, 28 Aug 2023 04:08:22 GMT
       expires:
       - '-1'
       pragma:
@@ -391,6 +348,50 @@ interactions:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14998'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name --force --yes
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_scope_connection000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?force=true&api-version=2022-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 28 Aug 2023 04:08:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14992'
     status:
       code: 200
       message: OK

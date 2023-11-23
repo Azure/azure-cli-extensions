@@ -23,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backuppolicies/{}", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backuppolicies/{}", "2023-05-01"],
         ]
     }
 
@@ -55,7 +55,7 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.vault_name = AAZStrArg(
-            options=["--vault-name"],
+            options=["-v", "--vault-name"],
             help="The name of the backup vault.",
             required=True,
             id_part="name",
@@ -131,7 +131,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }

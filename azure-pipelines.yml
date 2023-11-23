@@ -57,9 +57,9 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.10'
+    displayName: 'Use Python 3.11'
     inputs:
-      versionSpec: 3.10
+      versionSpec: 3.11
   - template: .azure-pipelines/templates/azdev_setup.yml
   - bash: |
       #!/usr/bin/env bash
@@ -105,9 +105,9 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.10'
+    displayName: 'Use Python 3.11'
     inputs:
-      versionSpec: 3.10
+      versionSpec: 3.11
   - bash: |
       #!/usr/bin/env bash
       set -ev
@@ -128,6 +128,8 @@ jobs:
         python.version: '3.9'
       Python310:
         python.version: '3.10'
+      Python311:
+        python.version: '3.11'
   steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python $(python.version)'
@@ -154,9 +156,9 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.10'
+      displayName: 'Use Python 3.11'
       inputs:
-        versionSpec: 3.10
+        versionSpec: 3.11
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -178,9 +180,9 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.10'
+    displayName: 'Use Python 3.11'
     inputs:
-      versionSpec: 3.10
+      versionSpec: 3.11
   - bash: pip install wheel==0.30.0
     displayName: 'Install wheel==0.30.0'
   - task: Bash@3

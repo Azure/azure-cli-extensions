@@ -8,7 +8,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
 from .common import TEST_LOCATION
-from .utils import create_containerapp_env
+from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerAppAuthTest(ScenarioTest):
@@ -16,10 +16,9 @@ class ContainerAppAuthTest(ScenarioTest):
     @ResourceGroupPreparer(location=TEST_LOCATION)
     def test_containerapp_auth_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        env = self.create_random_name(prefix='containerapp-env', length=24)
         app = self.create_random_name(prefix='containerapp-auth', length=24)
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80'.format(resource_group, app, env))
 
@@ -48,13 +47,20 @@ class ContainerAppAuthTest(ScenarioTest):
             JMESPathCheck('identityProviders.azureActiveDirectory.registration.openIdIssuer', issuer),
         ])
 
-        self.cmd('containerapp auth update  -g {} -n {} --unauthenticated-client-action AllowAnonymous'.format(resource_group, app), checks=[
+        sasUrl = "sasurl"
+        self.cmd('containerapp auth update  -g {} -n {} --unauthenticated-client-action AllowAnonymous --token-store true --sas-url-secret {} --yes'.format(resource_group, app, sasUrl), checks=[
             JMESPathCheck('name', "current"),
             JMESPathCheck('properties.globalValidation.unauthenticatedClientAction', "AllowAnonymous"),
             JMESPathCheck('properties.identityProviders.azureActiveDirectory.registration.clientId', client_id),
             JMESPathCheck('properties.identityProviders.azureActiveDirectory.registration.clientSecretSettingName',
                           "microsoft-provider-authentication-secret"),
             JMESPathCheck('properties.identityProviders.azureActiveDirectory.registration.openIdIssuer', issuer),
+            JMESPathCheck('properties.login.tokenStore.enabled', True),
+            JMESPathCheck('properties.login.tokenStore.azureBlobStorage.sasUrlSettingName', "blob-storage-token-store-sasurl-secret"),
+        ])
+
+        self.cmd("az containerapp secret list --resource-group {} --name {}".format(resource_group, app), checks=[
+            JMESPathCheck('length(@)', 2),
         ])
 
         self.cmd('containerapp auth show  -g {} -n {}'.format(resource_group, app), checks=[
@@ -63,6 +69,8 @@ class ContainerAppAuthTest(ScenarioTest):
             JMESPathCheck('identityProviders.azureActiveDirectory.registration.clientSecretSettingName',
                           "microsoft-provider-authentication-secret"),
             JMESPathCheck('identityProviders.azureActiveDirectory.registration.openIdIssuer', issuer),
+            JMESPathCheck('login.tokenStore.enabled', True),
+            JMESPathCheck('login.tokenStore.azureBlobStorage.sasUrlSettingName', "blob-storage-token-store-sasurl-secret"),
         ])
 
         self.cmd('containerapp auth update -g {} -n {} --proxy-convention Standard --redirect-provider Facebook --unauthenticated-client-action AllowAnonymous'.format(
@@ -79,3 +87,4 @@ class ContainerAppAuthTest(ScenarioTest):
         self.cmd('containerapp show  -g {} -n {}'.format(resource_group, app), checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded")
         ])
+        self.cmd('containerapp delete  -g {} -n {} --yes'.format(resource_group, app), expect_failure=False)

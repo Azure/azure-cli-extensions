@@ -156,6 +156,8 @@ CUSTOMER_REGO_POLICY = os_util.load_str_from_file(REGO_FILE_PATH)
 SIDECAR_REGO_FILE = "./data/sidecar_rego_policy.txt"
 SIDECAR_REGO_FILE_PATH = f"{script_directory}/{SIDECAR_REGO_FILE}"
 SIDECAR_REGO_POLICY = os_util.load_str_from_file(SIDECAR_REGO_FILE_PATH)
+# data folder
+DATA_FOLDER = os.path.join(script_directory, "data")
 
 # api version
 API_VERSION = _config["version_api"]
@@ -167,3 +169,39 @@ DEFAULT_USER = _config["default_user"]
 DEFAULT_UNPRIVILEGED_CAPABILITIES = _config["default_unprivileged_capabilities"]
 # default priviliged user capabilities to be added for security context
 DEFAULT_PRIVILEGED_CAPABILITIES = _config["default_privileged_capabilities"]
+# these signals are hardcoded because the signals package in python is not portable across platforms
+SIGNALS = {
+    "SIGHUP": 1,
+    "SIGINT": 2,
+    "SIGQUIT": 3,
+    "SIGILL": 4,
+    "SIGTRAP": 5,
+    "SIGABRT": 6,
+    "SIGIOT": 6,
+    "SIGBUS": 7,
+    "SIGFPE": 8,
+    "SIGKILL": 9,
+    "SIGUSR1": 10,
+    "SIGSEGV": 11,
+    "SIGUSR2": 12,
+    "SIGPIPE": 13,
+    "SIGALRM": 14,
+    "SIGTERM": 15,
+    "SIGSTKFLT": 16,
+    "SIGCHLD": 17,
+    "SIGCONT": 18,
+    "SIGSTOP": 19,
+    "SIGTSTP": 20,
+    "SIGTTIN": 21,
+    "SIGTTOU": 22,
+    "SIGURG": 23,
+    "SIGXCPU": 24,
+    "SIGXFSZ": 25,
+    "SIGVTALRM": 26,
+    "SIGPROF": 27,
+    "SIGWINCH": 28,
+    "SIGIO": 29,
+    "SIGPWR": 30,
+    "SIGSYS": 31,
+    "SIGUNUSED": 31
+}

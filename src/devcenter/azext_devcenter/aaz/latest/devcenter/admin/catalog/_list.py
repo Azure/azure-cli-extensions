@@ -22,11 +22,13 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs", "2023-10-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -47,9 +49,13 @@ class List(AAZCommand):
             options=["-d", "--dev-center", "--dev-center-name"],
             help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
+                max_length=26,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema
@@ -120,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -187,10 +193,21 @@ class List(AAZCommand):
                 serialized_name="adoGit",
             )
             _ListHelper._build_schema_git_catalog_read(properties.ado_git)
+            properties.connection_state = AAZStrType(
+                serialized_name="connectionState",
+                flags={"read_only": True},
+            )
             properties.git_hub = AAZObjectType(
                 serialized_name="gitHub",
             )
             _ListHelper._build_schema_git_catalog_read(properties.git_hub)
+            properties.last_connection_time = AAZStrType(
+                serialized_name="lastConnectionTime",
+                flags={"read_only": True},
+            )
+            properties.last_sync_stats = AAZObjectType(
+                serialized_name="lastSyncStats",
+            )
             properties.last_sync_time = AAZStrType(
                 serialized_name="lastSyncTime",
                 flags={"read_only": True},
@@ -201,6 +218,31 @@ class List(AAZCommand):
             )
             properties.sync_state = AAZStrType(
                 serialized_name="syncState",
+                flags={"read_only": True},
+            )
+            properties.sync_type = AAZStrType(
+                serialized_name="syncType",
+            )
+
+            last_sync_stats = cls._schema_on_200.value.Element.properties.last_sync_stats
+            last_sync_stats.added = AAZIntType(
+                flags={"read_only": True},
+            )
+            last_sync_stats.removed = AAZIntType(
+                flags={"read_only": True},
+            )
+            last_sync_stats.synchronization_errors = AAZIntType(
+                serialized_name="synchronizationErrors",
+                flags={"read_only": True},
+            )
+            last_sync_stats.unchanged = AAZIntType(
+                flags={"read_only": True},
+            )
+            last_sync_stats.updated = AAZIntType(
+                flags={"read_only": True},
+            )
+            last_sync_stats.validation_errors = AAZIntType(
+                serialized_name="validationErrors",
                 flags={"read_only": True},
             )
 

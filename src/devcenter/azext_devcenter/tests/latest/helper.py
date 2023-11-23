@@ -4,6 +4,9 @@
 # license information.
 #
 # --------------------------------------------------------------------------
+import time
+
+
 def create_dev_center(self):
     dev_center = self.cmd(
         "az devcenter admin devcenter create "
@@ -74,6 +77,28 @@ def create_virtual_network_with_subnet(self):
     ).get_output_in_json()
 
 
+def create_virtual_network_with_subnet_euap(self):
+    self.kwargs.update(
+        {
+            "vNetName": self.create_random_name(prefix="cli", length=24),
+            "subnetName": self.create_random_name(prefix="cli", length=24),
+            "nsgName": self.create_random_name(prefix="cli", length=12),
+        }
+    )
+
+    self.cmd(
+        'az network vnet create -n "{vNetName}" --location "canadacentral" -g "{rg}"'
+    )
+
+    self.cmd(
+        'az network nsg create -n "{nsgName}" --location "canadacentral" -g "{rg}"'
+    )
+
+    return self.cmd(
+        'az network vnet subnet create --nsg "{nsgName}" -n "{subnetName}" --vnet-name "{vNetName}" -g "{rg}" --address-prefixes "10.0.0.0/21"'
+    ).get_output_in_json()
+
+
 def create_sig(self):
     self.kwargs.update(
         {
@@ -108,7 +133,7 @@ def create_sig(self):
     self.cmd(
         'az vm create -n "{computeVmName}" '
         '-g "{rg}" '
-        '--image "MicrosoftWindowsDesktop:Windows-10:win10-21h2-entn-g2:19044.2486.230107" '
+        '--image "MicrosoftWindowsDesktop:Windows-10:win10-21h2-entn-g2:19044.3324.230801" '
         '--location "{location}" '
         "--security-type TrustedLaunch "
         '--admin-password "{computeVmPassword}" '
@@ -157,9 +182,9 @@ def create_sig_role_assignments(self):
 def create_kv_policy(self):
     if self.is_live:
         self.cmd(
-            'az keyvault set-policy -n "amlim-cli" '
-            "--secret-permissions get list "
-            '--object-id "{identityPrincipalId}"'
+            'az role assignment create --role "Key Vault Secrets Officer" '
+            '--assignee "{identityPrincipalId}" '
+            '--scope "/subscriptions/0000000000000000000000000000000/resourceGroups/rg/providers/Microsoft.KeyVault/vaults/vault"'
         )
 
 
@@ -210,8 +235,10 @@ def get_endpoint(self):
 
 
 def create_network_connection(self):
-    subnet = create_virtual_network_with_subnet(self)
-
+    if self.kwargs.get("location", "") == "centraluseuap":
+        subnet = create_virtual_network_with_subnet_euap(self)
+    else:
+        subnet = create_virtual_network_with_subnet(self)
     self.kwargs.update(
         {
             "subnetId": subnet["id"],
@@ -239,7 +266,10 @@ def create_network_connection(self):
 
 
 def create_network_connection_dp(self):
-    subnet = create_virtual_network_with_subnet(self)
+    if self.kwargs.get("location", "") == "centraluseuap":
+        subnet = create_virtual_network_with_subnet_euap(self)
+    else:
+        subnet = create_virtual_network_with_subnet(self)
 
     self.kwargs.update(
         {
@@ -284,7 +314,7 @@ def create_attached_network_dev_box_definition(self):
             "imageRefId": imageRefId,
             "devBoxDefinitionName": self.create_random_name(prefix="c1", length=12),
             "osStorageType": "ssd_1024gb",
-            "skuName": "general_a_8c32gb_v1",
+            "skuName": "general_a_8c32gb1024ssd_v2",
             "attachedNetworkName": self.create_random_name(prefix="c2", length=12),
             "devBoxDefinitionName2": self.create_random_name(prefix="c2", length=12),
         }
@@ -344,6 +374,16 @@ def create_env_type(self):
     )
 
 
+def get_aad_id(self):
+    if self.is_live:
+        user = self.cmd('az ad user show --id "{userName}"').get_output_in_json()
+        self.kwargs.update(
+            {
+                "userId": user["id"],
+            }
+        )
+
+
 def add_dev_box_user_role_to_project(self):
     project = self.cmd(
         "az devcenter admin project show "
@@ -354,18 +394,12 @@ def add_dev_box_user_role_to_project(self):
     self.kwargs.update({"projectId": project["id"]})
 
     if self.is_live:
-        user = self.cmd("az ad signed-in-user show").get_output_in_json()
-        self.kwargs.update(
-            {
-                "userId": user["id"],
-            }
-        )
-
         self.cmd(
             'az role assignment create --role "DevCenter Dev Box User" '
             '--assignee "{userId}" '
             '--scope "{projectId}"'
         )
+        time.sleep(180)
 
 
 def create_pool(self):
@@ -377,7 +411,7 @@ def create_pool(self):
             "imageRefId": imageRefId,
             "devBoxDefinitionName": self.create_random_name(prefix="c1", length=12),
             "osStorageType": "ssd_1024gb",
-            "skuName": "general_a_8c32gb_v1",
+            "skuName": "general_a_8c32gb1024ssd_v2",
             "attachedNetworkName": self.create_random_name(prefix="c2", length=12),
             "time": "18:30",
             "timeZone": "America/Los_Angeles",
@@ -436,18 +470,12 @@ def add_deployment_env_user_role_to_project(self):
     self.kwargs.update({"projectId": project["id"]})
 
     if self.is_live:
-        user = self.cmd("az ad signed-in-user show").get_output_in_json()
-        self.kwargs.update(
-            {
-                "userId": user["id"],
-            }
-        )
-
         self.cmd(
             'az role assignment create --role "/subscriptions/{subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/18e40d4e-8d2e-438d-97e1-9528336e149c" '
             '--assignee "{userId}" '
             '--scope "{projectId}"'
         )
+        time.sleep(180)
 
 
 def catalog_create_and_sync_cmds(self):
@@ -456,7 +484,7 @@ def catalog_create_and_sync_cmds(self):
             "catalogName": self.create_random_name(prefix="c2", length=12),
             "branch": "main",
             "path": "/Environments",
-            "secretIdentifier": "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
+            "secretIdentifier": "https://dummy.fake.net/secrets/dummy/00000000000000000000000000000007",
             "uri": "https://domain.com/dummy/dummy.git",
         }
     )
@@ -476,6 +504,13 @@ def catalog_create_and_sync_cmds(self):
         '--name "{catalogName}" '
         '--resource-group "{rg}" '
     )
+
+
+def create_catalog_control_plane(self):
+    create_dev_center_with_identity(self)
+    create_kv_policy(self)
+    create_project(self)
+    catalog_create_and_sync_cmds(self)
 
 
 def create_catalog(self):
@@ -526,6 +561,12 @@ def add_role_to_subscription(self):
             '--assignee "{identityPrincipalId}" '
             '--scope "/subscriptions/{subscriptionId}"'
         )
+        self.cmd(
+            'az role assignment create --role "Owner" '
+            '--assignee "{userId}" '
+            '--scope "/subscriptions/{subscriptionId}"'
+        )
+        time.sleep(180)
 
 
 def create_dev_center_with_identities(self):
@@ -576,3 +617,8 @@ def create_dev_box_dependencies(self):
     create_project(self)
     add_dev_box_user_role_to_project(self)
     create_pool(self)
+
+
+def login_account(self):
+    if self.is_live:
+        self.cmd("az login -t 003b06c3-d471-4452-9686-9e7f3ca85f0a")

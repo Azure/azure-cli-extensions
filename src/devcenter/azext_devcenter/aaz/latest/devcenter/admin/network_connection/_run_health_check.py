@@ -10,6 +10,7 @@
 
 from azure.cli.core.aaz import *
 
+
 @register_command(
     "devcenter admin network-connection run-health-check",
 )
@@ -21,9 +22,9 @@ class RunHealthCheck(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/runhealthchecks", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/runhealthchecks", "2023-10-01-preview"],
         ]
     }
 
@@ -49,9 +50,13 @@ class RunHealthCheck(AAZCommand):
             help="Name of the network connection that can be applied to a pool.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema
@@ -133,7 +138,7 @@ class RunHealthCheck(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }

@@ -23,9 +23,9 @@ class Find(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/findrestorabletimeranges", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/findrestorabletimeranges", "2023-05-01"],
         ]
     }
 
@@ -47,6 +47,12 @@ class Find(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.vault_name = AAZStrArg(
+            options=["-v", "--vault-name"],
+            help="The name of the backup vault.",
+            required=True,
+            id_part="name",
         )
         _args_schema.end_time = AAZStrArg(
             options=["--end-time"],
@@ -72,13 +78,6 @@ class Find(AAZCommand):
             help="The name of the backup instance.",
             required=True,
             id_part="child_name_1",
-        )
-        _args_schema.vault_name = AAZStrArg(
-            options=["--vault-name"],
-            arg_group="Resource Id",
-            help="The name of the backup vault.",
-            required=True,
-            id_part="name",
         )
         return cls._args_schema
 
@@ -151,7 +150,7 @@ class Find(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }

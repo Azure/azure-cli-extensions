@@ -489,31 +489,6 @@ def _fetch_compatible_windows_os_urn(source_vm):
     return urns[0]
 
 
-def _suse_image_selector(distro):
-    fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen1 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
-    urns = loads(_call_az_command(fetch_urn_command))
-
-    # Raise exception when not finding SUSE image
-    if not urns:
-        raise SuseNotAvailableError()
-
-    return urns[0]
-
-
-def _suse_image_selector_gen2(distro):
-    fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen2 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
-    urns = loads(_call_az_command(fetch_urn_command))
-
-    # Raise exception when not finding SUSE image
-    if not urns:
-        raise SuseNotAvailableError()
-
-    logger.debug('Fetched urns: \n%s', urns)
-    # Returning the first URN as it is the latest image with no special use like HPC or SAP
-    logger.debug('Return the first URN : %s', urns[0])
-    return urns[0]
-
-
 def _select_distro_linux(distro):
     image_lookup = {
         'rhel6': 'RedHat:RHEL:6.10:latest',
@@ -527,8 +502,8 @@ def _select_distro_linux(distro):
         'oracle6': 'Oracle:Oracle-Linux:6.10:latest',
         'oracle7': 'Oracle:Oracle-Linux:ol79:latest',
         'oracle8': 'Oracle:Oracle-Linux:ol82:latest',
-        'sles12': _suse_image_selector('sles-12'),
-        'sles15': _suse_image_selector('sles-15')
+        'sles12': 'SUSE:sles-12-sp5:gen1:latest',
+        'sles15': 'SUSE:sles-15-sp3:gen1:latest',
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
@@ -538,13 +513,32 @@ def _select_distro_linux(distro):
             os_image_urn = distro
         else:
             logger.info('No specific distro was provided , using the default Ubuntu distro')
-            os_image_urn = "UbuntuLTS"
+            os_image_urn = "Ubuntu2204"
+    return os_image_urn
+
+
+def _select_distro_linux_Arm64(distro):
+    image_lookup = {
+        'rhel8': 'RedHat:rhel-arm64:8_8-arm64:latest',
+        'rhel9': 'RedHat:rhel-arm64:9_2-arm64:latest',
+        'ubuntu18': 'Canonical:UbuntuServer:18_04-lts-arm64:latest',
+        'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-arm64:latest',
+        'centos7': 'OpenLogic:CentOS:7_9-arm64:latest',
+    }
+    if distro in image_lookup:
+        os_image_urn = image_lookup[distro]
+    else:
+        if distro.count(":") == 3:
+            logger.info('A custom URN was provided , will be used as distro for the recovery VM')
+            os_image_urn = distro
+        else:
+            logger.info('No specific distro was provided , using the default ARM64 Ubuntu distro')
+            os_image_urn = "Canonical:UbuntuServer:18_04-lts-arm64:latest"
     return os_image_urn
 
 
 def _select_distro_linux_gen2(distro):
     # base on the document : https://docs.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
-    # RHEL/Centos/Oracle 6 are not supported for Gen 2
     image_lookup = {
         'rhel6': 'RedHat:rhel-raw:7-raw-gen2:latest',
         'rhel7': 'RedHat:rhel-raw:7-raw-gen2:latest',
@@ -557,8 +551,8 @@ def _select_distro_linux_gen2(distro):
         'oracle6': 'Oracle:Oracle-Linux:ol79-gen2:latest',
         'oracle7': 'Oracle:Oracle-Linux:ol79-gen2:latest',
         'oracle8': 'Oracle:Oracle-Linux:ol82-gen2:latest',
-        'sles12': _suse_image_selector_gen2('sles-12'),
-        'sles15': _suse_image_selector_gen2('sles-15')
+        'sles12': 'SUSE:sles-12-sp5:gen2:latest',
+        'sles15': 'SUSE:sles-15-sp3:gen2:latest',
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
@@ -720,3 +714,18 @@ def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, r
     _call_az_command(create_repair_vm_command + ' --validate', secure_params=[repair_password, repair_username])
     logger.info('Creating repair VM...')
     _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
+
+
+def _fetch_architecture(source_vm):
+    """
+    Returns the architecture of the source VM.
+    """
+    location = source_vm.location
+    vm_size = source_vm.hardware_profile.vm_size
+    architecture_type_cmd = 'az vm list-skus -l {loc} --size {vm_size} --query "[].capabilities[?name==\'CpuArchitectureType\'].value" -o json' \
+                            .format(loc=location, vm_size=vm_size)
+
+    logger.info('Fetching architecture type of the source VM...')
+    architecture = loads(_call_az_command(architecture_type_cmd).strip('\n'))
+
+    return architecture[0][0]

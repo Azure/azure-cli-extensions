@@ -30,7 +30,7 @@ class VmInstanceHybridIdentityMetadataOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure_arc_vmware_management_service_api.models
+    :type models: ~azure.mgmt.connectedvmware.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -60,7 +60,7 @@ class VmInstanceHybridIdentityMetadataOperations:
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VmInstanceHybridIdentityMetadata, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.VmInstanceHybridIdentityMetadata
+        :rtype: ~azure.mgmt.connectedvmware.models.VmInstanceHybridIdentityMetadata
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VmInstanceHybridIdentityMetadata"]
@@ -69,7 +69,7 @@ class VmInstanceHybridIdentityMetadataOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
         
         request = build_get_request(
@@ -119,10 +119,10 @@ class VmInstanceHybridIdentityMetadataOperations:
         :return: An iterator like instance of either VmInstanceHybridIdentityMetadataList or the result
          of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.VmInstanceHybridIdentityMetadataList]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.VmInstanceHybridIdentityMetadataList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VmInstanceHybridIdentityMetadataList"]
         error_map = {

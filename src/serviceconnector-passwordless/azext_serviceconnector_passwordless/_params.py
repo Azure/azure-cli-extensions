@@ -14,7 +14,8 @@ from azure.cli.command_modules.serviceconnector._params import (
     add_vnet_block,
     add_connection_string_argument,
     add_secret_store_argument,
-    add_local_connection_block
+    add_local_connection_block,
+    add_customized_keys_argument
 )
 from azure.cli.command_modules.serviceconnector._validators import (
     get_default_object_id_of_current_user
@@ -26,7 +27,7 @@ from azure.cli.command_modules.serviceconnector._resource_config import (
 )
 from ._resource_config import (
     AUTH_TYPE_PARAMS,
-    SUPPORTED_AUTH_TYPE,
+    EX_SUPPORTED_AUTH_TYPE,
     TARGET_RESOURCES_PARAMS,
 )
 
@@ -37,7 +38,7 @@ yes_arg_type = CLIArgumentType(
 
 
 def add_auth_block(context, source, target):
-    support_auth_types = SUPPORTED_AUTH_TYPE.get(
+    support_auth_types = EX_SUPPORTED_AUTH_TYPE.get(
         source, {}).get(target, [])
     for auth_type in AUTH_TYPE_PARAMS:
         if auth_type in support_auth_types:
@@ -63,6 +64,7 @@ def load_arguments(self, _):
             add_secret_store_argument(c)
             add_vnet_block(c, target)
             add_local_connection_block(c)
+            add_customized_keys_argument(c)
             c.argument('yes', arg_type=yes_arg_type)
 
     for source in SOURCE_RESOURCES_PARAMS:
@@ -77,4 +79,5 @@ def load_arguments(self, _):
                 add_secret_store_argument(c)
                 add_vnet_block(c, target)
                 add_connection_string_argument(c, source, target)
+                add_customized_keys_argument(c)
                 c.argument('yes', arg_type=yes_arg_type)
