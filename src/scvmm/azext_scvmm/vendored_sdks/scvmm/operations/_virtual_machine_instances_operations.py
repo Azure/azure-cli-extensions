@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 from msrest import Serializer
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
@@ -24,7 +25,7 @@ from .._vendor import _convert_request, _format_url_section
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Iterable, Optional, TypeVar, Union
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
@@ -37,7 +38,7 @@ def build_get_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -70,7 +71,7 @@ def build_create_or_update_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -106,7 +107,7 @@ def build_update_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -142,9 +143,9 @@ def build_delete_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
-    force = kwargs.pop('force', None)  # type: Optional[bool]
-    delete_from_host = kwargs.pop('delete_from_host', None)  # type: Optional[bool]
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
+    force = kwargs.pop('force', None)  # type: Optional[Union[str, "_models.Force"]]
+    delete_from_host = kwargs.pop('delete_from_host', None)  # type: Optional[Union[str, "_models.DeleteFromHost"]]
 
     accept = "application/json"
     # Construct URL
@@ -159,9 +160,9 @@ def build_delete_request_initial(
     _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
     _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
     if force is not None:
-        _query_parameters['force'] = _SERIALIZER.query("force", force, 'bool')
+        _query_parameters['force'] = _SERIALIZER.query("force", force, 'str')
     if delete_from_host is not None:
-        _query_parameters['deleteFromHost'] = _SERIALIZER.query("delete_from_host", delete_from_host, 'bool')
+        _query_parameters['deleteFromHost'] = _SERIALIZER.query("delete_from_host", delete_from_host, 'str')
 
     # Construct headers
     _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
@@ -181,7 +182,7 @@ def build_list_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -214,7 +215,7 @@ def build_stop_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -250,7 +251,7 @@ def build_start_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -283,7 +284,7 @@ def build_restart_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -316,7 +317,7 @@ def build_create_checkpoint_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -352,7 +353,7 @@ def build_delete_checkpoint_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -388,7 +389,7 @@ def build_restore_checkpoint_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -426,7 +427,7 @@ class VirtualMachineInstancesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~scvmm.models
+    :type models: ~azure.mgmt.scvmm.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -457,7 +458,7 @@ class VirtualMachineInstancesOperations(object):
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachineInstance, or the result of cls(response)
-        :rtype: ~scvmm.models.VirtualMachineInstance
+        :rtype: ~azure.mgmt.scvmm.models.VirtualMachineInstance
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineInstance"]
@@ -466,7 +467,7 @@ class VirtualMachineInstancesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         
         request = build_get_request(
@@ -512,7 +513,7 @@ class VirtualMachineInstancesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -572,7 +573,7 @@ class VirtualMachineInstancesOperations(object):
          Compute machine resource to be extended.
         :type resource_uri: str
         :param body: Request payload.
-        :type body: ~scvmm.models.VirtualMachineInstance
+        :type body: ~azure.mgmt.scvmm.models.VirtualMachineInstance
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -583,10 +584,10 @@ class VirtualMachineInstancesOperations(object):
          Retry-After header is present.
         :return: An instance of LROPoller that returns either VirtualMachineInstance or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~scvmm.models.VirtualMachineInstance]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.scvmm.models.VirtualMachineInstance]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineInstance"]
@@ -641,7 +642,7 @@ class VirtualMachineInstancesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -671,11 +672,16 @@ class VirtualMachineInstancesOperations(object):
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize('VirtualMachineInstance', pipeline_response)
 
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -698,7 +704,7 @@ class VirtualMachineInstancesOperations(object):
          Compute machine resource to be extended.
         :type resource_uri: str
         :param body: Resource properties to update.
-        :type body: ~scvmm.models.VirtualMachineInstanceUpdate
+        :type body: ~azure.mgmt.scvmm.models.VirtualMachineInstanceUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -709,10 +715,10 @@ class VirtualMachineInstancesOperations(object):
          Retry-After header is present.
         :return: An instance of LROPoller that returns either VirtualMachineInstance or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~scvmm.models.VirtualMachineInstance]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.scvmm.models.VirtualMachineInstance]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineInstance"]
@@ -757,8 +763,8 @@ class VirtualMachineInstancesOperations(object):
     def _delete_initial(  # pylint: disable=inconsistent-return-statements
         self,
         resource_uri,  # type: str
-        force=None,  # type: Optional[bool]
-        delete_from_host=None,  # type: Optional[bool]
+        force=None,  # type: Optional[Union[str, "_models.Force"]]
+        delete_from_host=None,  # type: Optional[Union[str, "_models.DeleteFromHost"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -768,7 +774,7 @@ class VirtualMachineInstancesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         
         request = build_delete_request_initial(
@@ -788,12 +794,17 @@ class VirtualMachineInstancesOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default"}  # type: ignore
 
@@ -802,8 +813,8 @@ class VirtualMachineInstancesOperations(object):
     def begin_delete(  # pylint: disable=inconsistent-return-statements
         self,
         resource_uri,  # type: str
-        force=None,  # type: Optional[bool]
-        delete_from_host=None,  # type: Optional[bool]
+        force=None,  # type: Optional[Union[str, "_models.Force"]]
+        delete_from_host=None,  # type: Optional[Union[str, "_models.DeleteFromHost"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
@@ -815,9 +826,9 @@ class VirtualMachineInstancesOperations(object):
          Compute machine resource to be extended.
         :type resource_uri: str
         :param force: Whether force delete was specified.
-        :type force: bool
+        :type force: str or ~azure.mgmt.scvmm.models.Force
         :param delete_from_host: Whether to disable the VM from azure and also delete it from VMM.
-        :type delete_from_host: bool
+        :type delete_from_host: str or ~azure.mgmt.scvmm.models.DeleteFromHost
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -830,7 +841,7 @@ class VirtualMachineInstancesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -874,7 +885,7 @@ class VirtualMachineInstancesOperations(object):
         resource_uri,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.VirtualMachineInstanceListResult"
+        # type: (...) -> Iterable["_models.VirtualMachineInstanceListResult"]
         """Implements List virtual machine instances.
 
         Lists all of the virtual machine instances within the specified parent resource.
@@ -883,48 +894,70 @@ class VirtualMachineInstancesOperations(object):
          Compute machine resource to be extended.
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: VirtualMachineInstanceListResult, or the result of cls(response)
-        :rtype: ~scvmm.models.VirtualMachineInstanceListResult
+        :return: An iterator like instance of either VirtualMachineInstanceListResult or the result of
+         cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.scvmm.models.VirtualMachineInstanceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
+
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineInstanceListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+        def prepare_request(next_link=None):
+            if not next_link:
+                
+                request = build_list_request(
+                    resource_uri=resource_uri,
+                    api_version=api_version,
+                    template_url=self.list.metadata['url'],
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+            else:
+                
+                request = build_list_request(
+                    resource_uri=resource_uri,
+                    api_version=api_version,
+                    template_url=next_link,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+                request.method = "GET"
+            return request
 
-        
-        request = build_list_request(
-            resource_uri=resource_uri,
-            api_version=api_version,
-            template_url=self.list.metadata['url'],
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize("VirtualMachineInstanceListResult", pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
+
+        def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+                request,
+                stream=False,
+                **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+
+        return ItemPaged(
+            get_next, extract_data
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
-
-        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-            request,
-            stream=False,
-            **kwargs
-        )
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('VirtualMachineInstanceListResult', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-
     list.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances"}  # type: ignore
-
 
     def _stop_initial(  # pylint: disable=inconsistent-return-statements
         self,
@@ -939,7 +972,7 @@ class VirtualMachineInstancesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -964,12 +997,16 @@ class VirtualMachineInstancesOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _stop_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/stop"}  # type: ignore
 
@@ -990,7 +1027,7 @@ class VirtualMachineInstancesOperations(object):
          Compute machine resource to be extended.
         :type resource_uri: str
         :param body: Virtualmachine stop action payload.
-        :type body: ~scvmm.models.StopVirtualMachineOptions
+        :type body: ~azure.mgmt.scvmm.models.StopVirtualMachineOptions
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -1003,7 +1040,7 @@ class VirtualMachineInstancesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
@@ -1054,7 +1091,7 @@ class VirtualMachineInstancesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         
         request = build_start_request_initial(
@@ -1072,12 +1109,16 @@ class VirtualMachineInstancesOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _start_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/start"}  # type: ignore
 
@@ -1108,7 +1149,7 @@ class VirtualMachineInstancesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -1156,7 +1197,7 @@ class VirtualMachineInstancesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         
         request = build_restart_request_initial(
@@ -1174,12 +1215,16 @@ class VirtualMachineInstancesOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _restart_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/restart"}  # type: ignore
 
@@ -1210,7 +1255,7 @@ class VirtualMachineInstancesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -1259,7 +1304,7 @@ class VirtualMachineInstancesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -1284,12 +1329,16 @@ class VirtualMachineInstancesOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _create_checkpoint_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/createCheckpoint"}  # type: ignore
 
@@ -1310,7 +1359,7 @@ class VirtualMachineInstancesOperations(object):
          Compute machine resource to be extended.
         :type resource_uri: str
         :param body: Virtualmachine create checkpoint action payload.
-        :type body: ~scvmm.models.VirtualMachineCreateCheckpoint
+        :type body: ~azure.mgmt.scvmm.models.VirtualMachineCreateCheckpoint
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -1323,7 +1372,7 @@ class VirtualMachineInstancesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
@@ -1375,7 +1424,7 @@ class VirtualMachineInstancesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -1400,12 +1449,16 @@ class VirtualMachineInstancesOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_checkpoint_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/deleteCheckpoint"}  # type: ignore
 
@@ -1426,7 +1479,7 @@ class VirtualMachineInstancesOperations(object):
          Compute machine resource to be extended.
         :type resource_uri: str
         :param body: Virtualmachine delete checkpoint action payload.
-        :type body: ~scvmm.models.VirtualMachineDeleteCheckpoint
+        :type body: ~azure.mgmt.scvmm.models.VirtualMachineDeleteCheckpoint
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -1439,7 +1492,7 @@ class VirtualMachineInstancesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
@@ -1491,7 +1544,7 @@ class VirtualMachineInstancesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -1516,12 +1569,16 @@ class VirtualMachineInstancesOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _restore_checkpoint_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/restoreCheckpoint"}  # type: ignore
 
@@ -1542,7 +1599,7 @@ class VirtualMachineInstancesOperations(object):
          Compute machine resource to be extended.
         :type resource_uri: str
         :param body: Virtualmachine restore checkpoint action payload.
-        :type body: ~scvmm.models.VirtualMachineRestoreCheckpoint
+        :type body: ~azure.mgmt.scvmm.models.VirtualMachineRestoreCheckpoint
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -1555,7 +1612,7 @@ class VirtualMachineInstancesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]

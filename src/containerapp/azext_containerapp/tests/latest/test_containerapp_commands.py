@@ -8,7 +8,7 @@ import os
 import time
 import unittest
 
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, CLIInternalError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
@@ -703,6 +703,229 @@ class ContainerappDaprTests(ScenarioTest):
 
 
 class ContainerappServiceBindingTests(ScenarioTest):
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_dev_service_binding_customized_keys_yaml_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        ca_name = self.create_random_name(prefix='containerapp1', length=24)
+        redis_ca_name = 'redis-yaml'
+        postgres_ca_name = 'postgres-yaml'
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+
+        redis_resource_id = self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded")
+        ]).get_output_in_json()["id"]
+
+        postgres_resource_id = self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(env_rg, postgres_ca_name, env_name)).get_output_in_json()["id"]
+        # test create
+        containerapp_yaml_text = f"""
+                                location: {TEST_LOCATION}
+                                type: Microsoft.App/containerApps
+                                properties:
+                                  managedEnvironmentId: {env_id}
+                                  configuration:
+                                    activeRevisionsMode: single
+                                  template:
+                                    containers:
+                                      - image: mcr.microsoft.com/k8se/quickstart:latest
+                                        name: {ca_name}
+                                    serviceBinds:
+                                      - serviceId: {redis_resource_id}
+                                        name: redis
+                                        clientType: dotnet
+                                        customizedKeys:
+                                         CACHE_1_ENDPOINT: REDIS_HOST
+                                         CACHE_1_PASSWORD: REDIS_PASSWORD
+                                      - serviceId: {postgres_resource_id}
+                                        name: postgres
+                                        clientType: none
+                                        customizedKeys:
+                                          DB_ENDPOINT: POSTGRES_HOST
+                                          DB_PASSWORD: POSTGRES_PASSWORD
+                                """
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(
+            f'containerapp create -n {ca_name} -g {resource_group} --environment {env_id} --yaml {containerapp_file_name}', checks=[
+                JMESPathCheck("properties.provisioningState", "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_PASSWORD', "REDIS_PASSWORD"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', "postgres"),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DB_ENDPOINT', "POSTGRES_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DB_PASSWORD', "POSTGRES_PASSWORD")
+            ])
+        # test update customizedKeys without clientType
+        self.cmd(
+            'containerapp update -n {} -g  {} --bind {}:redis,resourcegroup={} --customized-keys CACHE_2_ENDPOINT=REDIS_HOST CACHE_2_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name, resource_group, redis_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_2_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_2_PASSWORD', "REDIS_PASSWORD"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', "postgres"),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DB_ENDPOINT', "POSTGRES_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DB_PASSWORD', "POSTGRES_PASSWORD")
+            ])
+
+        # test update customizedKeys with yaml
+        containerapp_yaml_text = f"""
+                                        properties:
+                                          template:
+                                            serviceBinds:
+                                              - serviceId: {redis_resource_id}
+                                                name: redis
+                                                customizedKeys:
+                                                 CACHE_3_ENDPOINT: REDIS_HOST
+                                                 CACHE_3_PASSWORD: REDIS_PASSWORD
+                                              - serviceId: {postgres_resource_id}
+                                                name: postgres
+                                                customizedKeys:
+                                                  DB_2_ENDPOINT: POSTGRES_HOST
+                                                  DB_2_PASSWORD: POSTGRES_PASSWORD
+                                        """
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(
+            f'containerapp update -n {ca_name} -g {resource_group} --yaml {containerapp_file_name}',
+            checks=[
+                JMESPathCheck("properties.provisioningState", "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_3_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_3_PASSWORD', "REDIS_PASSWORD"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', "postgres"),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DB_2_ENDPOINT', "POSTGRES_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DB_2_PASSWORD', "POSTGRES_PASSWORD")
+            ])
+
+        # test update with yaml to clean customizedKeys
+        containerapp_yaml_text = f"""
+                                                properties:
+                                                  template:
+                                                    serviceBinds:
+                                                      - serviceId: {redis_resource_id}
+                                                        name: redis
+                                                      - serviceId: {postgres_resource_id}
+                                                        name: postgres
+                                                """
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(
+            f'containerapp update -n {ca_name} -g {resource_group} --yaml {containerapp_file_name}',
+            checks=[
+                JMESPathCheck("properties.provisioningState", "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys', None),
+                JMESPathCheck('properties.template.serviceBinds[1].name', "postgres"),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys', None),
+            ])
+
+        self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(env_rg, redis_ca_name), expect_failure=False)
+        self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(env_rg, postgres_ca_name), expect_failure=False)
+        self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name, resource_group), expect_failure=False)
+        clean_up_test_file(containerapp_file_name)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_dev_service_binding_customized_keys_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        ca_name = self.create_random_name(prefix='containerapp1', length=24)
+        redis_ca_name = 'redis'
+        postgres_ca_name = 'postgres'
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+
+        redis_resource_id = self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded")
+        ]).get_output_in_json()["id"]
+
+        self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(env_rg, postgres_ca_name, env_name))
+        self.cmd(
+            'containerapp create -n {} -g  {} --environment {} --bind {},clientType=dotnet,resourcegroup={} {},clientType=none,resourcegroup={}'.format(
+                ca_name, resource_group, env_id, redis_ca_name, env_rg, postgres_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', redis_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', postgres_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+            ])
+        # For multi-bind with --customized-keys throw error out
+        ca_name2 = self.create_random_name(prefix='containerapp2', length=24)
+        err_msg = None
+        try:
+            self.cmd(
+                'containerapp create -n {} -g  {} --environment {} --bind {},clientType=dotnet {} --customized-keys CACHE_1_ENDPOINT=REDIS_HOST CACHE_1_PASSWORD=REDIS_PASSWORD'.format(
+                    ca_name2, resource_group, env_id, redis_ca_name, postgres_ca_name))
+        except Exception as e:
+            err_msg = e.error_msg
+        self.assertIsNotNone(err_msg)
+        self.assertTrue(err_msg.__contains__(
+            '--bind have multiple values, but --customized-keys only can be set when --bind is single'))
+        err_msg = None
+        try:
+            self.cmd(
+            'containerapp update -n {} -g  {} --bind {},clientType=dotnet {} --customized-keys CACHE_1_ENDPOINT=REDIS_HOST CACHE_1_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name, resource_group, redis_ca_name, postgres_ca_name))
+        except Exception as e:
+            err_msg = e.error_msg
+        self.assertIsNotNone(err_msg)
+        self.assertTrue(err_msg.__contains__(
+            '--bind have multiple values, but --customized-keys only can be set when --bind is single'))
+
+        # For single-bind with --customized-keys
+        self.cmd(
+            'containerapp update -n {} -g  {} --bind {},clientType=dotnet,resourcegroup={} --customized-keys CACHE_1_ENDPOINT=REDIS_HOST CACHE_1_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name, resource_group, redis_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', redis_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_PASSWORD', "REDIS_PASSWORD"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', postgres_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys', None),
+            ])
+        self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name, resource_group), expect_failure=False)
+
+        self.cmd(
+            'containerapp create -n {} -g  {} --environment {} --bind {},clientType=dotnet,resourcegroup={} --customized-keys CACHE_2_ENDPOINT=REDIS_HOST CACHE_2_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name2, resource_group, env_id, redis_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 1),
+                JMESPathCheck('properties.template.serviceBinds[0].name', redis_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_2_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_2_PASSWORD', "REDIS_PASSWORD")
+            ])
+        self.cmd('containerapp update -n {} -g {} --unbind {}'.format(
+            ca_name2, resource_group, redis_ca_name), checks=[
+            JMESPathCheck('properties.template.serviceBinds', None),
+        ])
+        self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(env_rg, redis_ca_name))
+        self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(env_rg, postgres_ca_name))
+        self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name2, resource_group), expect_failure=False)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_service_binding_e2e(self, resource_group):
@@ -730,7 +953,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service mariadb create -g {} -n {} --environment {}'.format(
             resource_group, mariadb_ca_name, env_name))
-        
+
         self.cmd('containerapp service qdrant create -g {} -n {} --environment {}'.format(
             resource_group, qdrant_ca_name, env_name))
 
@@ -765,13 +988,96 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service mariadb delete -g {} -n {} --yes'.format(
             resource_group, mariadb_ca_name, env_name))
-    
+
         self.cmd('containerapp service qdrant delete -g {} -n {} --yes'.format(
             resource_group, qdrant_ca_name, env_name))
 
-        self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes') 
+        self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes')
 
         self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd('containerapp list -g {} --environment {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_addon_binding_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        redis_ca_name = 'redis'
+        postgres_ca_name = 'postgres'
+        kafka_ca_name = 'kafka'
+        mariadb_ca_name = 'mariadb'
+        qdrant_ca_name = "qdrant"
+        ADDON_LIST = ["redis", "postgres", "kafka", "mariadb", "qdrant"]
+        create_containerapp_env(self, env_name, resource_group)
+
+        self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(
+            resource_group, redis_ca_name, env_name))
+
+        self.cmd('containerapp add-on postgres create -g {} -n {} --environment {}'.format(
+            resource_group, postgres_ca_name, env_name))
+
+        self.cmd('containerapp add-on kafka create -g {} -n {} --environment {}'.format(
+            resource_group, kafka_ca_name, env_name))
+
+        self.cmd('containerapp add-on mariadb create -g {} -n {} --environment {}'.format(
+            resource_group, mariadb_ca_name, env_name))
+
+        self.cmd('containerapp add-on qdrant create -g {} -n {} --environment {}'.format(
+            resource_group, qdrant_ca_name, env_name))
+
+        for addon in ADDON_LIST:
+            self.cmd(f'containerapp show -g {resource_group} -n {addon}', checks=[
+                JMESPathCheck("properties.provisioningState", "Succeeded")])
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
+            resource_group, ca_name, env_name, image), checks=[
+            JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
+        ])
+
+        self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
+            resource_group, ca_name, image), checks=[
+            JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+        ])
+
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant'.format(
+            resource_group, ca_name, image), checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
+            JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
+            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant")
+        ])
+
+        self.cmd('containerapp add-on postgres delete -g {} -n {} --yes'.format(
+            resource_group, postgres_ca_name, env_name))
+
+        self.cmd('containerapp add-on redis delete -g {} -n {} --yes'.format(
+            resource_group, redis_ca_name, env_name))
+
+        self.cmd('containerapp add-on kafka delete -g {} -n {} --yes'.format(
+            resource_group, kafka_ca_name, env_name))
+
+        self.cmd('containerapp add-on mariadb delete -g {} -n {} --yes'.format(
+            resource_group, mariadb_ca_name, env_name))
+
+        self.cmd('containerapp add-on qdrant delete -g {} -n {} --yes'.format(
+            resource_group, qdrant_ca_name, env_name))
+
+        self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes')
+
+        self.cmd('containerapp add-on list -g {} --environment {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
 
@@ -790,14 +1096,14 @@ class ContainerappServiceBindingTests(ScenarioTest):
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         mysqlserver = "mysqlflexsb"
         postgresqlserver = "postgresqlflexsb"
-        
+
         mysqlflex_json= self.cmd('mysql flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, mysqlserver, "None")).output
         postgresqlflex_json= self.cmd('postgres flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, postgresqlserver, "None")).output
         mysqlflex_dict = json.loads(mysqlflex_json)
 
         mysqlusername = mysqlflex_dict['username']
         mysqlpassword = mysqlflex_dict['password']
-        
+
         mysqldb = mysqlflex_dict['databaseName']
         flex_binding="mysqlflex_binding"
         postgresqlflex_dict = json.loads(postgresqlflex_json)
@@ -1147,6 +1453,58 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
         ])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_scale_update_azure_queue(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        app = self.create_random_name(prefix='aca', length=24)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value', checks=[JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "")])
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
+        ])
+        queue_name = self.create_random_name(prefix='queue', length=24)
+        containerapp_yaml_text = f"""
+properties:
+    template:
+        containers:
+        -   image: nginx
+            name: azure-equeue-container
+            resources:
+              cpu: 0.5
+              memory: 1Gi
+              ephemeralStorage: 2Gi
+        scale:
+            minReplicas: 0
+            maxReplicas: 1
+            rules:
+            - name: azure-queue-scale-rule
+              azureQueue:
+                queueName: {queue_name}
+                queueLength: 1
+                auth:
+                - secretRef: azure-storage
+                  triggerParameter: connection
+"""
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.scale.rules[0].name", "azure-queue-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.queueName", queue_name),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.queueLength", 1),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata", None),
+        ])
+        clean_up_test_file(containerapp_file_name)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
@@ -1187,13 +1545,12 @@ class ContainerappScaleTests(ScenarioTest):
     def test_containerapp_replica_commands(self, resource_group):
         self.cmd(f'configure --defaults location={TEST_LOCATION}')
 
-        env_name = self.create_random_name(prefix='env', length=24)
         app_name = self.create_random_name(prefix='aca', length=24)
         replica_count = 3
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'containerapp create -g {resource_group} -n {app_name} --environment {env_name} --ingress external --target-port 80 --min-replicas {replica_count}').get_output_in_json()
+        self.cmd(f'containerapp create -g {resource_group} -n {app_name} --environment {env} --ingress external --target-port 80 --min-replicas {replica_count}').get_output_in_json()
 
         count = self.cmd(f"containerapp replica count -g {resource_group} -n {app_name}").output
         self.assertEqual(int(count), replica_count)
@@ -1203,7 +1560,6 @@ class ContainerappScaleTests(ScenarioTest):
         ])
 
         self.cmd(f'containerapp delete -g {resource_group} -n {app_name} --yes')
-        self.cmd(f'containerapp env delete -n {env_name} -g {resource_group} --yes')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")

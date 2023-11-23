@@ -1,5 +1,9 @@
 Release History
 ===============
+1.16.0
+---
+* Add arguments `--enable-planned-maintenance`, `--planned-maintenance-day` and `--planned-maintenance-start-hour` in `az spring update` to support configuring Planned Maintenance.
+
 1.15.1
 ---
 * Add arguments `--apms` for Spring Cloud Gateway.

@@ -36,7 +36,7 @@ from azure.cli.command_modules.containerapp._utils import (_validate_subscriptio
                                                            generate_randomized_cert_name, load_cert_file,
                                                            generate_randomized_managed_cert_name,
                                                            check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                                                           get_current_mariner_tags, trigger_workflow,
+                                                           trigger_workflow,
                                                            AppType)
 
 from knack.log import get_logger
@@ -47,7 +47,20 @@ from msrest.exceptions import DeserializationError
 
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
-from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator
+from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
+from .containerapp_resiliency_decorator import (
+    ContainerAppResiliencyPreviewCreateDecorator,
+    ContainerAppResiliencyPreviewShowDecorator,
+    ContainerAppResiliencyPreviewDeleteDecorator,
+    ContainerAppResiliencyPreviewListDecorator,
+    ContainerAppResiliencyPreviewUpdateDecorator)
+from .daprcomponent_resiliency_decorator import (
+    DaprComponentResiliencyPreviewCreateDecorator,
+    DaprComponentResiliencyPreviewDeleteDecorator,
+    DaprComponentResiliencyPreviewShowDecorator,
+    DaprComponentResiliencyPreviewListDecorator,
+    DaprComponentResiliencyPreviewUpdateDecorator
+)
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from ._client_factory import handle_raw_exception
@@ -57,6 +70,8 @@ from ._clients import (
     AuthPreviewClient,
     SubscriptionPreviewClient,
     ContainerAppsJobPreviewClient,
+    ContainerAppsResiliencyPreviewClient,
+    DaprComponentResiliencyPreviewClient,
     ManagedEnvironmentPreviewClient,
     ConnectedEnvDaprComponentClient,
     ConnectedEnvironmentClient,
@@ -72,13 +87,14 @@ from ._models import (
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     AzureFileProperties as AzureFilePropertiesModel)
 
-from ._utils import connected_env_check_cert_name_availability, patchable_check, get_pack_exec_path, is_docker_running
+from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running
 
 from ._constants import (CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
-                         DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
+                         DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
+                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST)
 
 logger = get_logger(__name__)
 
@@ -150,6 +166,195 @@ def delete_qdrant_service(cmd, service_name, resource_group_name, no_wait=False)
     return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_QDRANT_SERVICE_TYPE)
 
 
+def create_container_app_resiliency(cmd, name, resource_group_name, container_app_name,
+                                    yaml=None,
+                                    no_wait=False,
+                                    disable_warnings=False,
+                                    tcp_retry_max_connect_attempts=None,
+                                    circuit_breaker_consecutive_errors=None,
+                                    circuit_breaker_interval=None,
+                                    circuit_breaker_max_ejection=None,
+                                    tcp_connection_pool_max_connections=None,
+                                    http_connection_pool_http1_max_pending_req=None,
+                                    http_connection_pool_http2_max_req=None,
+                                    timeout_response_in_seconds=None,
+                                    timeout_connection_in_seconds=None,
+                                    http_retry_max=None,
+                                    http_retry_delay_in_milliseconds=None,
+                                    http_retry_interval_in_milliseconds=None,
+                                    http_retry_status_codes=None,
+                                    http_retry_errors=None,
+                                    default=False):
+    raw_parameters = locals()
+    containerapp_resiliency_create_decorator = ContainerAppResiliencyPreviewCreateDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_resiliency_create_decorator.validate_arguments()
+    containerapp_resiliency_create_decorator.construct_payload()
+    return containerapp_resiliency_create_decorator.create()
+
+
+def update_container_app_resiliency(cmd, name, resource_group_name, container_app_name,
+                                    yaml=None,
+                                    no_wait=False,
+                                    disable_warnings=False,
+                                    tcp_retry_max_connect_attempts=None,
+                                    circuit_breaker_consecutive_errors=None,
+                                    circuit_breaker_interval=None,
+                                    circuit_breaker_max_ejection=None,
+                                    tcp_connection_pool_max_connections=None,
+                                    http_connection_pool_http1_max_pending_req=None,
+                                    http_connection_pool_http2_max_req=None,
+                                    timeout_response_in_seconds=None,
+                                    timeout_connection_in_seconds=None,
+                                    http_retry_max=None,
+                                    http_retry_delay_in_milliseconds=None,
+                                    http_retry_interval_in_milliseconds=None,
+                                    http_retry_status_codes=None,
+                                    http_retry_errors=None):
+
+    raw_parameters = locals()
+    containerapp_resiliency_update_decorator = ContainerAppResiliencyPreviewUpdateDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_resiliency_update_decorator.validate_arguments()
+    containerapp_resiliency_update_decorator.construct_payload()
+    return containerapp_resiliency_update_decorator.update()
+
+
+def delete_container_app_resiliency(cmd, name, resource_group_name, container_app_name, no_wait=False):
+
+    raw_parameters = locals()
+    containerapp_resiliency_delete_decorator = ContainerAppResiliencyPreviewDeleteDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_delete_decorator.delete()
+
+
+def show_container_app_resiliency(cmd, name, resource_group_name, container_app_name):
+
+    raw_parameters = locals()
+    containerapp_resiliency_show_decorator = ContainerAppResiliencyPreviewShowDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_show_decorator.show()
+
+
+def list_container_app_resiliencies(cmd, resource_group_name, container_app_name):
+
+    raw_parameters = locals()
+    containerapp_resiliency_list_decorator = ContainerAppResiliencyPreviewListDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_list_decorator.list()
+
+
+def create_dapr_component_resiliency(cmd, name, resource_group_name, dapr_component_name, environment,
+                                     yaml=None,
+                                     no_wait=False,
+                                     disable_warnings=False,
+                                     in_timeout_response_in_seconds=None,
+                                     out_timeout_response_in_seconds=None,
+                                     in_http_retry_max=None,
+                                     out_http_retry_max=None,
+                                     in_http_retry_delay_in_milliseconds=None,
+                                     out_http_retry_delay_in_milliseconds=None,
+                                     in_http_retry_interval_in_milliseconds=None,
+                                     out_http_retry_interval_in_milliseconds=None):
+    raw_parameters = locals()
+    component_resiliency_create_decorator = DaprComponentResiliencyPreviewCreateDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    component_resiliency_create_decorator.validate_arguments()
+    component_resiliency_create_decorator.construct_payload()
+    return component_resiliency_create_decorator.create()
+
+
+def update_dapr_component_resiliency(cmd, name, resource_group_name, dapr_component_name, environment,
+                                     yaml=None,
+                                     no_wait=False,
+                                     disable_warnings=False,
+                                     in_timeout_response_in_seconds=None,
+                                     out_timeout_response_in_seconds=None,
+                                     in_http_retry_max=None,
+                                     out_http_retry_max=None,
+                                     in_http_retry_delay_in_milliseconds=None,
+                                     out_http_retry_delay_in_milliseconds=None,
+                                     in_http_retry_interval_in_milliseconds=None,
+                                     out_http_retry_interval_in_milliseconds=None):
+
+    raw_parameters = locals()
+    component_resiliency_update_decorator = DaprComponentResiliencyPreviewUpdateDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    component_resiliency_update_decorator.validate_arguments()
+    component_resiliency_update_decorator.construct_payload()
+    return component_resiliency_update_decorator.update()
+
+
+def delete_dapr_component_resiliency(cmd, name, resource_group_name, environment, dapr_component_name, no_wait=False):
+
+    raw_parameters = locals()
+    containerapp_resiliency_delete_decorator = DaprComponentResiliencyPreviewDeleteDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_delete_decorator.delete()
+
+
+def show_dapr_component_resiliency(cmd, name, resource_group_name, environment, dapr_component_name, no_wait=False):
+
+    raw_parameters = locals()
+    containerapp_resiliency_show_decorator = DaprComponentResiliencyPreviewShowDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_show_decorator.show()
+
+
+def list_dapr_component_resiliencies(cmd, resource_group_name, dapr_component_name, environment, no_wait=False):
+
+    raw_parameters = locals()
+    containerapp_resiliency_list_decorator = DaprComponentResiliencyPreviewListDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_list_decorator.list()
+
+
 def create_containerapp(cmd,
                         name,
                         resource_group_name,
@@ -187,6 +392,7 @@ def create_containerapp(cmd,
                         dapr_enable_api_logging=False,
                         service_type=None,
                         service_bindings=None,
+                        customized_keys=None,
                         revision_suffix=None,
                         startup_command=None,
                         args=None,
@@ -201,6 +407,7 @@ def create_containerapp(cmd,
                         secret_volume_mount=None,
                         environment_type="managed",
                         source=None,
+                        artifact=None,
                         repo=None,
                         token=None,
                         branch=None,
@@ -240,6 +447,7 @@ def update_containerapp_logic(cmd,
                               scale_rule_metadata=None,
                               scale_rule_auth=None,
                               service_bindings=None,
+                              customized_keys=None,
                               unbind_service_bindings=None,
                               set_env_vars=None,
                               remove_env_vars=None,
@@ -261,7 +469,8 @@ def update_containerapp_logic(cmd,
                               registry_user=None,
                               registry_pass=None,
                               secret_volume_mount=None,
-                              source=None):
+                              source=None,
+                              artifact=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -294,6 +503,7 @@ def update_containerapp(cmd,
                         scale_rule_auth=None,
                         unbind_service_bindings=None,
                         service_bindings=None,
+                        customized_keys=None,
                         set_env_vars=None,
                         remove_env_vars=None,
                         replace_env_vars=None,
@@ -308,7 +518,8 @@ def update_containerapp(cmd,
                         termination_grace_period=None,
                         no_wait=False,
                         secret_volume_mount=None,
-                        source=None):
+                        source=None,
+                        artifact=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -325,6 +536,7 @@ def update_containerapp(cmd,
                                      scale_rule_metadata=scale_rule_metadata,
                                      scale_rule_auth=scale_rule_auth,
                                      service_bindings=service_bindings,
+                                     customized_keys=customized_keys,
                                      unbind_service_bindings=unbind_service_bindings,
                                      set_env_vars=set_env_vars,
                                      remove_env_vars=remove_env_vars,
@@ -340,7 +552,8 @@ def update_containerapp(cmd,
                                      termination_grace_period=termination_grace_period,
                                      no_wait=no_wait,
                                      secret_volume_mount=secret_volume_mount,
-                                     source=source)
+                                     source=source,
+                                     artifact=artifact)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -432,7 +645,9 @@ def create_managed_environment(cmd,
                                certificate_password=None,
                                enable_workload_profiles=True,
                                mtls_enabled=None,
-                               no_wait=False):
+                               enable_dedicated_gpu=False,
+                               no_wait=False,
+                               logs_dynamic_json_columns=False):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -466,9 +681,10 @@ def update_managed_environment(cmd,
                                min_nodes=None,
                                max_nodes=None,
                                mtls_enabled=None,
-                               no_wait=False):
+                               no_wait=False,
+                               logs_dynamic_json_columns=None):
     raw_parameters = locals()
-    containerapp_env_update_decorator = ContainerAppEnvUpdateDecorator(
+    containerapp_env_update_decorator = ContainerappEnvPreviewUpdateDecorator(
         cmd=cmd,
         client=ManagedEnvironmentPreviewClient,
         raw_parameters=raw_parameters,
@@ -789,6 +1005,7 @@ def containerapp_up(cmd,
                     registry_server=None,
                     image=None,
                     source=None,
+                    artifact=None,
                     ingress=None,
                     target_port=None,
                     registry_user=None,
@@ -814,7 +1031,11 @@ def containerapp_up(cmd,
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
-    _validate_up_args(cmd, source, image, repo, registry_server)
+    _validate_up_args(cmd, source, artifact, image, repo, registry_server)
+    if artifact:
+        # Artifact is mostly a convenience argument provided to use --source specifically with a single artifact file.
+        # At this point we know for sure that source isn't set (else _validate_up_args would have failed), so we can build with this value.
+        source = artifact
     validate_container_app_name(name, AppType.ContainerApp.name)
     check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
 
@@ -854,12 +1075,13 @@ def containerapp_up(cmd,
             _get_registry_from_app(app, source)  # if the app exists, get the registry
         _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
-    app.create_acr_if_needed()
-
+    used_default_container_registry = False
     if source:
-        app.run_acr_build(dockerfile, source, quiet=False, build_from_source=not _has_dockerfile(source, dockerfile))
+        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=True, registry_server=registry_server)
+    else:
+        app.create_acr_if_needed()
 
-    app.create(no_registry=bool(repo))
+    app.create(no_registry=bool(repo or used_default_container_registry))
     if repo:
         _create_github_action(app, env, service_principal_client_id, service_principal_client_secret,
                               service_principal_tenant_id, branch, token, repo, context_path)
@@ -1074,15 +1296,26 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
     return containerapps_from_compose
 
 
+def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
+
+
 def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
+    # Ensure that Docker is running locally before attempting to use the pack CLI
     if is_docker_running() is False:
         logger.error("Please install or start Docker and try again.")
         return
+
+    # Ensure that the pack CLI is installed locally
     pack_exec_path = get_pack_exec_path()
     if pack_exec_path is None:
         return
+
+    # List all Container Apps in the given resource group and managed environment
     logger.warning("Listing container apps...")
     ca_list = list_containerapp(cmd, resource_group_name, managed_env)
+
+    # Fetch all images currently deployed to containers for the listed Container Apps
     imgs = []
     if ca_list:
         for ca in ca_list:
@@ -1100,115 +1333,94 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
                     targetContainerAppEnvironmentName=managed_env_name,
                     targetResourceGroup=resource_group_name)
                 imgs.append(result)
-    # Inspect the images
+
+    # Iterate over each image and execute the `pack inspect` command to fetch the run image used (if previously built via buildpacks)
     results = []
     inspect_results = []
-    # Multi-worker
     logger.warning("Inspecting container apps images...")
     with ThreadPoolExecutor(max_workers=10) as executor:
         [executor.submit(patch_get_image_inspection, pack_exec_path, img, inspect_results) for img in imgs]
 
-    # Get the current tags of Dotnet Mariners
-    oryx_run_img_tags = get_current_mariner_tags()
-    failed_reason = "Failed to inspect the image. Please make sure that you are authenticated to the container registry and that the image exists."
-    not_based_mariner_reason = "Image not based on Mariner"
-    mcr_check_reason = "Image not from mcr.microsoft.com/oryx/builder"
+    # Fetch the list of Oryx-based run images that could be used to patch previously built images
+    oryx_run_images = get_oryx_run_image_tags()
+
+    # Start checking if the images are based on an Oryx image
     results = []
-    # Start checking if the images are based on Mariner
     logger.warning("Checking for patches...")
     for inspect_result in inspect_results:
-        if inspect_result["remote_info"] == 401:
-            results.append(dict(
-                targetContainerName=inspect_result["targetContainerName"],
-                targetContainerAppName=inspect_result["targetContainerAppName"],
-                targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
-                targetResourceGroup=inspect_result["targetResourceGroup"],
-                targetImageName=inspect_result["image_name"],
-                oldRunImage=None,
-                newRunImage=None,
-                id=None,
-                reason=failed_reason))
-        else:
-            # Divide run-images into different parts by "/"
-            run_images_props = inspect_result["remote_info"]["run_images"]
-            if run_images_props is None:
-                results.append(dict(
-                    targetContainerName=inspect_result["targetContainerName"],
-                    targetContainerAppName=inspect_result["targetContainerAppName"],
-                    targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
-                    targetResourceGroup=inspect_result["targetResourceGroup"],
-                    targetImageName=inspect_result["image_name"],
-                    oldRunImage=None,
-                    newRunImage=None,
-                    id=None,
-                    reason=not_based_mariner_reason))
-            else:
-                for run_images_prop in run_images_props:
-                    if run_images_prop["name"].find("mcr.microsoft.com/oryx/builder") != -1:
-                        run_images_prop = run_images_prop["name"].split(":")
-                        run_images_tag = run_images_prop[1]
-                        # Based on Mariners
-                        if run_images_tag.find('mariner') != -1:
-                            check_result = patchable_check(run_images_tag, oryx_run_img_tags, inspect_result=inspect_result)
-                            results.append(check_result)
-                        else:
-                            results.append(dict(
-                                targetContainerName=inspect_result["targetContainerName"],
-                                targetContainerAppName=inspect_result["targetContainerAppName"],
-                                targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
-                                targetResourceGroup=inspect_result["targetResourceGroup"],
-                                targetImageName=inspect_result["image_name"],
-                                oldRunImage=run_images_tag,
-                                newRunImage=None,
-                                id=None,
-                                reason=failed_reason))
-                    else:
-                        # Not based on image from mcr.microsoft.com/oryx/builder
-                        results.append(dict(
-                            targetContainerAppName=inspect_result["targetContainerAppName"],
-                            targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
-                            targetResourceGroup=inspect_result["targetResourceGroup"],
-                            oldRunImage=inspect_result["remote_info"]["run_images"],
-                            newRunImage=None,
-                            id=None,
-                            reason=mcr_check_reason))
+        results.append(_get_patchable_check_result(inspect_result, oryx_run_images))
     if show_all is False:
         results = [result for result in results if result["id"] is not None]
     if not results:
         logger.warning("No container apps available to patch at this time. Use --show-all to show the container apps that cannot be patched.")
-        return
     return results
 
 
+def _get_patchable_check_result(inspect_result, oryx_run_images):
+    # Define reasons for patchable check failure
+    failed_reason = "Failed to inspect the image. Please make sure that you are authenticated to the container registry and that the image exists."
+    not_based_on_oryx_reason = "Image not based on an Oryx runtime."
+    mcr_check_reason = "Image does not have a base pulled from a supported platform MCR repository."
+
+    # Define base result object
+    result = dict(
+        targetContainerName=inspect_result["targetContainerName"],
+        targetContainerAppName=inspect_result["targetContainerAppName"],
+        targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+        targetResourceGroup=inspect_result["targetResourceGroup"],
+        oldRunImage=None,
+        newRunImage=None,
+        id=None,
+    )
+
+    # Check if the image was previously found
+    if inspect_result["remote_info"] == 401:
+        result.update(
+            targetImageName=inspect_result["image_name"],
+            reason=failed_reason
+        )
+        return result
+
+    # Divide run-images into different parts by "/"
+    run_images_props = inspect_result["remote_info"]["run_images"]
+
+    # Check if a base run image was found for the image
+    if run_images_props is None:
+        result.update(
+            targetImageName=inspect_result["image_name"],
+            reason=not_based_on_oryx_reason)
+        return result
+
+    # Define the MCR repositories that are supported for patching
+    mcr_repos = ["oryx/dotnetcore", "oryx/node", "oryx/python", "azure-buildpacks/java"]
+
+    # Iterate over each base run image found to see if a patch can be applied
+    for run_images_prop in run_images_props:
+        base_run_image_name = run_images_prop["name"]
+        if any(base_run_image_name.find(repo) != -1 for repo in mcr_repos):
+            return patchable_check(base_run_image_name, oryx_run_images, inspect_result=inspect_result)
+
+        # Not based on a supported MCR repository
+        result.update(
+            oldRunImage=inspect_result["remote_info"]["run_images"],
+            reason=mcr_check_reason)
+        return result
+
+
 def patch_get_image_inspection(pack_exec_path, img, info_list):
-    if (img["imageName"].find("run-dotnet") != -1) and (img["imageName"].find("cbl-mariner") != -1):
-        inspect_result = {
-            "remote_info":
-            {
-                "run_images":
-                [{
-                    "name": "mcr.microsoft.com/oryx/builder:" + img["imageName"].split(":")[-1]
-                }]
-            },
-            "image_name": img["imageName"],
+    # Execute the 'pack inspect' command on an image and return the result (with additional Container App metadata)
+    with subprocess.Popen(pack_exec_path + " inspect-image " + img["imageName"] + " --output json", shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE) as img_info:
+        img_info_out, img_info_err = img_info.communicate()
+        if img_info_err.find(b"status code 401 Unauthorized") != -1 or img_info_err.find(b"unable to find image") != -1:
+            inspect_result = dict(remote_info=401, image_name=img["imageName"])
+        else:
+            inspect_result = json.loads(img_info_out)
+        inspect_result.update({
             "targetContainerName": img["targetContainerName"],
             "targetContainerAppName": img["targetContainerAppName"],
             "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"],
             "targetResourceGroup": img["targetResourceGroup"]
-        }
-    else:
-        with subprocess.Popen(pack_exec_path + " inspect-image " + img["imageName"] + " --output json", shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE) as img_info:
-            img_info_out, img_info_err = img_info.communicate()
-            if img_info_err.find(b"status code 401 Unauthorized") != -1 or img_info_err.find(b"unable to find image") != -1:
-                inspect_result = dict(remote_info=401, image_name=img["imageName"])
-            else:
-                inspect_result = json.loads(img_info_out)
-            inspect_result.update({
-                "targetContainerName": img["targetContainerName"],
-                "targetContainerAppName": img["targetContainerAppName"],
-                "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"],
-                "targetResourceGroup": img["targetResourceGroup"]
-            })
+        })
     info_list.append(inspect_result)
 
 
@@ -1304,7 +1516,7 @@ def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
 def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, pack_exec_path):
     try:
         logger.warning("Applying patch for container app: " + container_app_name + " container: " + container_name)
-        subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image}", shell=True, check=True)
+        subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image} --force", shell=True, check=True)
         new_target_image_name = target_image_name.split(":")[0] + ":" + new_run_image.split(":")[1]
         subprocess.run(f"docker tag {target_image_name} {new_target_image_name}", shell=True, check=True)
         logger.debug(f"Publishing {new_target_image_name} to registry...")
@@ -1597,3 +1809,40 @@ def connected_env_remove_storage(cmd, storage_name, name, resource_group_name):
         return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name)
     except CLIError as e:
         handle_raw_exception(e)
+
+
+def init_dapr_components(cmd, resource_group_name, environment_name, statestore="redis", pubsub="redis"):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if statestore not in DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST:
+        raise ValidationError(
+            f"Statestore {statestore} is not supported. Supported statestores are {', '.join(DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST)}."
+        )
+    if pubsub not in DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST:
+        raise ValidationError(
+            f"Pubsub {pubsub} is not supported. Supported pubsubs are {', '.join(DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST)}."
+        )
+
+    from ._dapr_utils import DaprUtils
+
+    statestore_metadata = {"actorStateStore": "true"}
+    statestore_service_id, statestore_component_id = DaprUtils.create_dapr_component_with_service(
+        cmd, "state", statestore, resource_group_name, environment_name, component_metadata=statestore_metadata)
+
+    if statestore == pubsub:
+        # For cases where statestore and pubsub are the same, we don't need to create another service.
+        # E.g. Redis can be used for both statestore and pubsub.
+        pubsub_service_id, pubsub_component_id = DaprUtils.create_dapr_component_with_service(
+            cmd, "pubsub", pubsub, resource_group_name, environment_name, service_id=statestore_service_id)
+    else:
+        pubsub_service_id, pubsub_component_id = DaprUtils.create_dapr_component_with_service(
+            cmd, "pubsub", pubsub, resource_group_name, environment_name)
+
+    return {
+        "message": "Operation successful.",
+        "resources": {
+            # Remove duplicates for services like Redis, which can be used for both statestore and pubsub
+            "devServices": list(set([statestore_service_id, pubsub_service_id])),
+            "daprComponents": [statestore_component_id, pubsub_component_id]
+        }
+    }

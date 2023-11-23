@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -257,9 +257,18 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.runtime_protection_configuration = AAZObjectType(
+                serialized_name="runtimeProtectionConfiguration",
+            )
+            properties.secret_archive = AAZObjectType(
+                serialized_name="secretArchive",
+            )
             properties.support_expiry_date = AAZStrType(
                 serialized_name="supportExpiryDate",
                 flags={"read_only": True},
+            )
+            properties.update_strategy = AAZObjectType(
+                serialized_name="updateStrategy",
             )
             properties.workload_resource_ids = AAZListType(
                 serialized_name="workloadResourceIds",
@@ -327,7 +336,7 @@ class Wait(AAZWaitCommand):
                 flags={"required": True},
             )
             cluster_service_principal.password = AAZStrType(
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             cluster_service_principal.principal_id = AAZStrType(
                 serialized_name="principalId",
@@ -356,6 +365,40 @@ class Wait(AAZWaitCommand):
             managed_resource_group_configuration = cls._schema_on_200.properties.managed_resource_group_configuration
             managed_resource_group_configuration.location = AAZStrType()
             managed_resource_group_configuration.name = AAZStrType()
+
+            runtime_protection_configuration = cls._schema_on_200.properties.runtime_protection_configuration
+            runtime_protection_configuration.enforcement_level = AAZStrType(
+                serialized_name="enforcementLevel",
+            )
+
+            secret_archive = cls._schema_on_200.properties.secret_archive
+            secret_archive.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                flags={"required": True},
+            )
+            secret_archive.use_key_vault = AAZStrType(
+                serialized_name="useKeyVault",
+            )
+
+            update_strategy = cls._schema_on_200.properties.update_strategy
+            update_strategy.max_unavailable = AAZIntType(
+                serialized_name="maxUnavailable",
+            )
+            update_strategy.strategy_type = AAZStrType(
+                serialized_name="strategyType",
+                flags={"required": True},
+            )
+            update_strategy.threshold_type = AAZStrType(
+                serialized_name="thresholdType",
+                flags={"required": True},
+            )
+            update_strategy.threshold_value = AAZIntType(
+                serialized_name="thresholdValue",
+                flags={"required": True},
+            )
+            update_strategy.wait_time_minutes = AAZIntType(
+                serialized_name="waitTimeMinutes",
+            )
 
             workload_resource_ids = cls._schema_on_200.properties.workload_resource_ids
             workload_resource_ids.Element = AAZStrType()
@@ -402,7 +445,7 @@ class _WaitHelper:
 
         administrative_credentials_read = _schema_administrative_credentials_read
         administrative_credentials_read.password = AAZStrType(
-            flags={"required": True, "secret": True},
+            flags={"secret": True},
         )
         administrative_credentials_read.username = AAZStrType(
             flags={"required": True},

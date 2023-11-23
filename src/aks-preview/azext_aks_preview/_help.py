@@ -294,7 +294,7 @@ helps['aks create'] = """
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000].
         - name: --vm-set-type
           type: string
-          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only).
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview).
         - name: --enable-pod-security-policy
           type: bool
           short-summary: Enable pod security policy.
@@ -497,6 +497,9 @@ helps['aks create'] = """
         - name: --image-cleaner-interval-hours
           type: int
           short-summary: ImageCleaner scanning interval.
+        - name: --enable-image-integrity
+          type: bool
+          short-summary: Enable ImageIntegrity Service.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
@@ -573,6 +576,12 @@ helps['aks create'] = """
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
+        - name: --node-provisioning-mode
+          type: string
+          short-summary: Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.
+        - name: --enable-app-routing
+          type: bool
+          short-summary: Enable Application Routing addon.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -720,19 +729,19 @@ helps['aks update'] = """
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
-          long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+          long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
         - name: --load-balancer-managed-outbound-ipv6-count
           type: int
           short-summary: Load balancer managed outbound IPv6 IP count.
-          long-summary: Desired number of managed outbound IPv6 IPs for load balancer outbound connection. Valid for dual-stack (--ip-families IPv4,IPv6) only. If updated, it will wipe off the existing setting on Load balancer managed outbound IPv6 count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+          long-summary: Desired number of managed outbound IPv6 IPs for load balancer outbound connection. Valid for dual-stack (--ip-families IPv4,IPv6) only.
         - name: --load-balancer-outbound-ips
           type: string
           short-summary: Load balancer outbound IP resource IDs.
-          long-summary: Comma-separated public IP resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+          long-summary: Comma-separated public IP resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
         - name: --load-balancer-outbound-ip-prefixes
           type: string
           short-summary: Load balancer outbound IP prefix resource IDs.
-          long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+          long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
         - name: --load-balancer-outbound-ports
           type: int
           short-summary: Load balancer outbound allocated ports.
@@ -854,6 +863,10 @@ helps['aks update'] = """
           type: string
           short-summary: A CIDR notation IP range from which to assign pod IPs when kubenet is used.
           long-summary: This range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+        - name: --network-plugin
+          type: string
+          short-summary: The Kubernetes network plugin to use.
+          long-summary: Specify "azure" for routable pod IPs from VNET, "kubenet" for non-routable pod IPs with an overlay network, or "none" for no networking configured.
         - name: --network-plugin-mode
           type: string
           short-summary: The network plugin mode to use.
@@ -980,6 +993,9 @@ helps['aks update'] = """
         - name: --image-cleaner-interval-hours
           type: int
           short-summary: ImageCleaner scanning interval.
+        - name: --enable-image-integrity
+          type: bool
+          short-summary: Enable ImageIntegrity Service.
         - name: --disable-image-integrity
           type: bool
           short-summary: Disable ImageIntegrity Service.
@@ -1081,12 +1097,18 @@ helps['aks update'] = """
         - name: --enable-network-observability
           type: bool
           short-summary: Enable network observability on a cluster.
+        - name: --disable-network-observability
+          type: bool
+          short-summary: Disable network observability on a cluster
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
         - name: --disable-cost-analysis
           type: bool
           short-summary: Disable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
+        - name: --node-provisioning-mode
+          type: string
+          short-summary: Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1540,7 +1562,7 @@ helps['aks nodepool add'] = """
           long-summary: If not specified, defaults based on network-plugin. 30 for "azure", 110 for "kubenet", or 250 for "none".
         - name: --zones -z
           type: string array
-          short-summary: Space-separated list of availability zones where agent nodes will be placed.
+          short-summary: Space-separated list of availability zones where agent nodes will be placed. Must use VMSS agent pool type.
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
@@ -1549,10 +1571,10 @@ helps['aks nodepool add'] = """
           short-summary: The ID of a subnet in an existing VNet into which to assign pods in the cluster (requires azure network-plugin)
         - name: --ppg
           type: string
-          short-summary: The ID of a PPG.
+          short-summary: The ID of a PPG. Must use VMSS agent pool type.
         - name: --os-type
           type: string
-          short-summary: The OS Type. Linux or Windows.
+          short-summary: The OS Type. Linux or Windows. Windows not supported yet for "VirtualMachines" VM set type.
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner when os-type is Linux, default is Ubuntu if not set; Windows2019 or Windows2022 when os-type is Windows, the current default is Windows2019 if not set, and the default will be changed to Windows2022 after Windows2019 is deprecated.
@@ -1561,7 +1583,7 @@ helps['aks nodepool add'] = """
           short-summary: Use FIPS-enabled OS on agent nodes.
         - name: --enable-cluster-autoscaler -e
           type: bool
-          short-summary: Enable cluster autoscaler.
+          short-summary: Enable cluster autoscaler. Must use VMSS agent pool type.
         - name: --min-count
           type: int
           short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
@@ -1585,10 +1607,10 @@ helps['aks nodepool add'] = """
           short-summary: It can only be set when --priority is Spot. Specify the maximum price you are willing to pay in US Dollars. Possible values are any decimal value greater than zero or -1 which indicates default price to be up-to on-demand. It can only include up to 5 decimal places.
         - name: --enable-node-public-ip
           type: bool
-          short-summary: Enable VMSS node public IP.
+          short-summary: Enable VMSS node public IP. Must use VMSS agent pool type.
         - name: --node-public-ip-prefix-id
           type: string
-          short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
+          short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes. Must use VMSS agent pool type.
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
@@ -1597,13 +1619,19 @@ helps['aks nodepool add'] = """
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
         - name: --vm-set-type
           type: string
-          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only).
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview).
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --drain-timeout
+          type: int
+          short-summary: When nodes are drain how many minutes to wait for all pods to be evicted
+        - name: --node-soak-duration
+          type: int
+          short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
         - name: --kubelet-config
           type: string
           short-summary: Kubelet configurations for agent nodes.
@@ -1615,7 +1643,7 @@ helps['aks nodepool add'] = """
           short-summary: Enable EncryptionAtHost on agent node pool.
         - name: --enable-ultra-ssd
           type: bool
-          short-summary: Enable UltraSSD on agent node pool.
+          short-summary: Enable UltraSSD on agent node pool. Must use VMSS agent pool type.
         - name: --workload-runtime
           type: string
           short-summary: Determines the type of workload a node can run. Defaults to OCIContainer.
@@ -1624,13 +1652,13 @@ helps['aks nodepool add'] = """
           short-summary: GPU instance profile to partition multi-gpu Nvidia GPUs.
         - name: --snapshot-id
           type: string
-          short-summary: The source snapshot id used to create this nodepool.
+          short-summary: The source snapshot id used to create this nodepool. Must use VMSS agent pool type.
         - name: --crg-id
           type: string
-          short-summary: The crg-id used to associate the new nodepool with the existed Capacity Reservation Group resource.
+          short-summary: The crg-id used to associate the new nodepool with the existed Capacity Reservation Group resource. Must use VMSS agent pool type.
         - name: --host-group-id
           type: string
-          short-summary: (PREVIEW) The fully qualified dedicated host group id used to provision agent node pool.
+          short-summary: (PREVIEW) The fully qualified dedicated host group id used to provision agent node pool. Must use VMSS agent pool type.
         - name: --message-of-the-day
           type: string
           short-summary: Path to a file containing the desired message of the day. Only valid for linux nodes. Will be written to /etc/motd.
@@ -1639,16 +1667,19 @@ helps['aks nodepool add'] = """
           short-summary: Enable Custom CA Trust on agent node pool.
         - name: --disable-windows-outbound-nat
           type: bool
-          short-summary: Disable Windows OutboundNAT on Windows agent node pool.
+          short-summary: Disable Windows OutboundNAT on Windows agent node pool. Must use VMSS agent pool type.
         - name: --allowed-host-ports
           type: string
-          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP. Must use VMSS agent pool type.
         - name: --asg-ids
           type: string
-          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs. Must use VMSS agent pool type.
         - name: --node-public-ip-tags
           type: string
-          short-summary: The ipTags of the node public IPs.
+          short-summary: The ipTags of the node public IPs. Must use VMSS agent pool type.
+        - name: --enable-artifact-streaming
+          type: bool
+          short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1691,12 +1722,18 @@ helps['aks nodepool upgrade'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --drain-timeout
+          type: int
+          short-summary: When nodes are drain how many minutes to wait for all pods to be evicted
+        - name: --node-soak-duration
+          type: int
+          short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --snapshot-id
           type: string
-          short-summary: The source snapshot id used to upgrade this nodepool.
+          short-summary: The source snapshot id used to upgrade this nodepool. Must use VMSS agent pool type.
 """
 
 helps['aks nodepool update'] = """
@@ -1706,7 +1743,7 @@ helps['aks nodepool update'] = """
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
-          short-summary: Enable cluster autoscaler.
+          short-summary: Enable cluster autoscaler. Must use VMSS agent pool type.
         - name: --disable-cluster-autoscaler -d
           type: bool
           short-summary: Disable cluster autoscaler.
@@ -1725,6 +1762,12 @@ helps['aks nodepool update'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --drain-timeout
+          type: int
+          short-summary: When nodes are drain how many minutes to wait for all pods to be evicted
+        - name: --node-soak-duration
+          type: int
+          short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
@@ -1745,10 +1788,16 @@ helps['aks nodepool update'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --allowed-host-ports
           type: string
-          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP. Must use VMSS agent pool type.
         - name: --asg-ids
           type: string
-          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs. Must use VMSS agent pool type.
+        - name: --enable-artifact-streaming
+          type: bool
+          short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
+        - name: --os-sku
+          type: string
+          short-summary: The os-sku of the agent node pool.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2774,4 +2823,94 @@ helps['aks mesh disable-egress-gateway'] = """
     examples:
       - name: Disable an egress gateway.
         text: az aks mesh disable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks approuting'] = """
+    type: group
+    short-summary: Commands to manage App Routing aadon.
+    long-summary: A group of commands to manage App Routing in given cluster.
+"""
+
+helps['aks approuting enable'] = """
+    type: command
+    short-summary: Enable App Routing.
+    long-summary: This command enables App Routing in given cluster.
+    parameters:
+      - name: --enable-kv
+        type: bool
+        short-summary: Enable the keyvault secrets provider.
+        long-summary: This optional flag enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
+      - name: --attach-kv
+        type: string
+        short-summary: Attach a keyvault id to access secrets and certificates.
+        long-summary: This optional flag attaches a keyvault id to access secrets and certificates.
+"""
+
+helps['aks approuting disable'] = """
+    type: command
+    short-summary: Disable App Routing addon.
+    long-summary: This command disables App Routing in given cluster.
+"""
+
+helps['aks approuting update'] = """
+    type: command
+    short-summary: Update App Routing addon.
+    long-summary: This command is used to update keyvault id in App Routing addon.
+    parameters:
+      - name: --attach-kv
+        type: string
+        short-summary: Attach a keyvault id to access secrets and certificates.
+        long-summary: This optional flag attaches a keyvault id to access secrets and certificates.
+      - name: --enable-kv
+        type: bool
+        short-summary: Enable the keyvault secrets provider addon.
+        long-summary: This optional flag enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
+"""
+
+helps['aks approuting zone'] = """
+    type: group
+    short-summary: Commands to manage App Routing DNS Zones.
+    long-summary: A group of commands to manage App Routing DNS zones in given cluster.
+"""
+
+helps['aks approuting zone add'] = """
+    type: command
+    short-summary: Add DNS Zone(s) to App Routing.
+    long-summary: This command adds multiple DNS zone resource IDs to App Routing.
+    parameters:
+      - name: --ids
+        type: string
+        short-summary: Comma-separated list of DNS zone resource IDs to add to App Routing.
+      - name: --attach-zones
+        type: bool
+        short-summary: Grant DNS zone Contributor permissions on all zone IDs specified in --ids.
+"""
+
+helps['aks approuting zone delete'] = """
+    type: command
+    short-summary: Delete DNS Zone(s) from App Routing.
+    long-summary: This command deletes DNS zone resource IDs from App Routing in given cluster.
+    parameters:
+      - name: --ids
+        type: string
+        short-summary: Comma-separated list of DNS zone resource IDs to delete from App Routing.
+"""
+
+helps['aks approuting zone update'] = """
+    type: command
+    short-summary: Replace DNS Zone(s) in App Routing.
+    long-summary: This command replaces the DNS zone resource IDs used in App Routing.
+    parameters:
+      - name: --ids
+        type: string
+        short-summary: Comma-separated list of DNS zone resource IDs to replace in App Routing.
+      - name: --attach-zones
+        type: bool
+        short-summary: Grant DNS zone Contributor permissions on all zone IDs specified in --ids.
+"""
+
+helps['aks approuting zone list'] = """
+    type: command
+    short-summary: List DNS Zone IDs in App Routing.
+    long-summary: This command lists the DNS zone resources used in App Routing.
 """

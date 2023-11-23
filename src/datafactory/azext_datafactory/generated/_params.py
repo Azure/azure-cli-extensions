@@ -72,7 +72,7 @@ def load_arguments(self, _):
             validator=get_default_location_from_resource_group,
         )
         c.argument(
-            "publicnetworkaccess",
+            "public_network_access",
             type=str,
             required=False,
             help="Whether or not public network access is allowed for the data factory.",
@@ -109,7 +109,7 @@ def load_arguments(self, _):
             id_part="name",
         )
         c.argument(
-            "publicnetworkaccess",
+            "public_network_access",
             type=str,
             required=False,
             help="Whether or not public network access is allowed for the data factory.",

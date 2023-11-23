@@ -52,6 +52,7 @@ sa_params = {
     "length": 20,
 }
 
+
 class LoadTestScenario(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(LoadTestScenario, self).__init__(*args, **kwargs)
@@ -80,7 +81,7 @@ class LoadTestScenario(ScenarioTest):
                 "keyvault_reference_id": LoadTestConstants.KEYVAULT_REFERENCE_ID,
                 "env": LoadTestConstants.VALID_ENV_RPS,
                 "split_csv": LoadTestConstants.SPLIT_CSV_TRUE,
-                "subnet_id": subnet_id
+                "subnet_id": subnet_id,
             }
         )
 
@@ -135,7 +136,9 @@ class LoadTestScenario(ScenarioTest):
         )
 
         # verify failureCriteria
-        pass_fail_metric = response.get("passFailCriteria",{}).get("passFailMetrics",{})
+        pass_fail_metric = response.get("passFailCriteria", {}).get(
+            "passFailMetrics", {}
+        )
         for item in pass_fail_metric.values():
             if item.get("clientMetric") == "requests_per_sec":
                 assert item.get("value") == 78.0
@@ -151,7 +154,7 @@ class LoadTestScenario(ScenarioTest):
                 assert item.get("aggregate") == "avg"
                 assert item.get("requestName") == "GetCustomerDetails"
 
-        #Invalid create test cases
+        # Invalid create test cases
         # 1. Creating test with existing test id
         try:
             self.cmd(
@@ -174,7 +177,7 @@ class LoadTestScenario(ScenarioTest):
             )
         except Exception as e:
             assert "Provided path" in str(e)
-        
+
         self.kwargs.update(
             {
                 "certificate": LoadTestConstants.INVALID_CERTIFICATE,
@@ -408,7 +411,7 @@ class LoadTestScenario(ScenarioTest):
             )
         except Exception as e:
             assert "Provided path" in str(e)
-        
+
         time.sleep(10)
 
     @ResourceGroupPreparer(**rg_params)
@@ -458,6 +461,80 @@ class LoadTestScenario(ScenarioTest):
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
+    def test_load_test_update_with_config(self, rg, load):
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.UPDATE_WITH_CONFIG_TEST_ID,
+                "display_name": "Create_with_args_test",
+                "test_description": "This is a load test created with arguments",
+                "test_plan": LoadTestConstants.TEST_PLAN,
+                "engine_instances": "5",
+                "env": "a=2 b=3",
+            }
+        )
+
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+            JMESPathCheck("loadTestConfiguration.engineInstances", 5),
+            JMESPathCheck("environmentVariables.a", 2),
+            JMESPathCheck("environmentVariables.b", 3),
+        ]
+
+        test = self.cmd(
+            "az load test create "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--display-name '{display_name}' "
+            "--description '{test_description}' "
+            '--test-plan "{test_plan}" '
+            "--engine-instances {engine_instances} "
+            "--env {env} ",
+            checks=checks,
+        ).get_output_in_json()
+
+        assert self.kwargs["test_id"] == test.get("testId")
+
+        self.kwargs.pop("test_description")
+        self.kwargs.pop("test_plan")
+        self.kwargs.pop("engine_instances")
+        self.kwargs.pop("env")
+        self.kwargs.update(
+            {
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE,
+                "env": "c=5",
+            }
+        )
+        checks = [
+            JMESPathCheck("loadTestConfiguration.engineInstances", 1),
+            JMESPathCheck("keyvaultReferenceIdentityType", "SystemAssigned"),
+            JMESPathCheck("loadTestConfiguration.splitAllCSVs", True),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} "
+            "--env {env} ",
+            checks=checks,
+        )
+
+        response = self.cmd(
+            "az load test show "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} ",
+        ).get_output_in_json()
+
+        assert self.kwargs["test_id"] == response.get("testId")
+        assert response.get("loadTestConfiguration").get("splitAllCSVs")
+        assert response.get("environmentVariables").get("c") == "5"
+        assert response.get("environmentVariables").get("rps") == "1"
+        assert not response.get("environmentVariables").get("a")
+
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
     def test_load_test_update(self, rg, load):
         self.kwargs.update(
             {
@@ -472,7 +549,7 @@ class LoadTestScenario(ScenarioTest):
             {
                 "engine_instance": 11,
                 "keyvault_reference_id": "null",
-                "split_csv": LoadTestConstants.SPLIT_CSV_FALSE
+                "split_csv": LoadTestConstants.SPLIT_CSV_FALSE,
             }
         )
         checks = [
@@ -690,7 +767,7 @@ class LoadTestScenario(ScenarioTest):
         server_metric = server_metrics.get("metrics", {}).get(
             self.kwargs["server_metric_id"]
         )
-        
+
         # REMOVE SERVER METRIC AND LIST IT TO CHECK
         assert server_metric is not None
         # assert self.kwargs[
