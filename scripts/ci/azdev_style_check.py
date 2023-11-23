@@ -18,13 +18,14 @@ logger.addHandler(ch)
 
 
 def azdev_style_check(diff_ref):
-    cmd = ['azdev', 'style']
+    extensions = ''
     for tname, ext_path in diff_ref:
-        cmd += [tname]
-        logger.info(f'cmd: {cmd}')
-        out = run(cmd, shell=True)
-        if out.returncode:
-            raise RuntimeError(f"{cmd} failed")
+        extensions += f'{tname} '
+    cmd = f'azdev style {extensions} --verbose'
+    logger.info(f'cmd: {cmd}')
+    out = run(cmd, shell=True)
+    if out.returncode:
+        raise RuntimeError(f"{cmd} failed")
 
 
 def main():
