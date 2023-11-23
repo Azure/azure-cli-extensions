@@ -109,6 +109,8 @@ from azext_aks_preview._consts import (
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
+    CONST_SSH_ACCESS_DISABLED,
+    CONST_SSH_ACCESS_LOCALUSER,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -171,6 +173,17 @@ from azext_aks_preview._validators import (
     validate_force_upgrade_disable_and_enable_parameters,
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
+    validate_ssh_access,
+)
+from azure.cli.core.commands.parameters import (
+    edge_zone_type,
+    file_type,
+    get_enum_type,
+    get_resource_name_completion_list,
+    get_three_state_flag,
+    name_type,
+    tags_type,
+    zones_type,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
@@ -814,6 +827,8 @@ def load_arguments(self, _):
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
             )
         )
+        # in creation scenario, use "localuser" as default
+        c.argument('ssh_access', type=str, default=CONST_SSH_ACCESS_LOCALUSER, is_preview=True, validator=validate_ssh_access)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1191,6 +1206,8 @@ def load_arguments(self, _):
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
             )
         )
+        # In update scenario, use emtpy str as default.
+        c.argument('ssh_access', type=str, is_preview=True, validator=validate_ssh_access)
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1341,6 +1358,8 @@ def load_arguments(self, _):
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
         c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
+        # in creation scenario, use "localuser" as default
+        c.argument('ssh_access', type=str, default=CONST_SSH_ACCESS_LOCALUSER, is_preview=True, validator=validate_ssh_access)
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1396,6 +1415,9 @@ def load_arguments(self, _):
             arg_type=get_enum_type(node_os_skus_update),
             validator=validate_os_sku,
         )
+        # In update scenario, use emtpy str as default.
+        c.argument('ssh_access', type=str, is_preview=True, validator=validate_ssh_access)
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context("aks nodepool upgrade") as c:
         c.argument("max_surge", validator=validate_max_surge)

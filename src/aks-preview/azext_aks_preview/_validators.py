@@ -846,3 +846,14 @@ def validate_artifact_streaming(namespace):
     if namespace.enable_artifact_streaming:
         if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() == "windows":
             raise ArgumentUsageError('--enable-artifact-streaming can only be set for Linux nodepools')
+
+
+def validate_ssh_access(namespace):
+    """Validates the ssh access string."""
+    if namespace.ssh_access is not None:
+        if namespace.ssh_access == '':
+            return
+        if namespace.ssh_access.lower() != "disabled" and \
+            namespace.ssh_access.lower() != "localuser":
+            raise InvalidArgumentValueError(
+                "--ssh-access can only be disabled or localuser")
