@@ -12,17 +12,16 @@ from msrestazure.tools import parse_resource_id
 from azure.cli.testsdk import (JMESPathCheck)
 
 
-def prepare_containerapp_env_for_app_e2e_tests(test_cls):
+def prepare_containerapp_env_for_app_e2e_tests(test_cls, location=TEST_LOCATION):
     from azure.cli.core.azclierror import CLIInternalError
-    from .common import TEST_LOCATION
-    rg_name = f'client.env_rg_{TEST_LOCATION}'.lower().replace(" ", "").replace("(", "").replace(")", "")
-    env_name = f'env-{TEST_LOCATION}'.lower().replace(" ", "").replace("(", "").replace(")", "")
+    rg_name = f'client.env_rg_{location}'.lower().replace(" ", "").replace("(", "").replace(")", "")
+    env_name = f'env-{location}'.lower().replace(" ", "").replace("(", "").replace(")", "")
     managed_env = None
     try:
         managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
     except CLIInternalError as e:
         if e.error_msg.__contains__('ResourceGroupNotFound') or e.error_msg.__contains__('ResourceNotFound'):
-            test_cls.cmd(f'group create -n {rg_name}')
+            test_cls.cmd(f'group create -n {rg_name} -l eastus')
             test_cls.cmd(f'containerapp env create -g {rg_name} -n {env_name} --logs-destination none')
             managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
 
@@ -34,7 +33,7 @@ def prepare_containerapp_env_for_app_e2e_tests(test_cls):
 
 def create_containerapp_env(test_cls, env_name, resource_group, location=None):
     logs_workspace_name = test_cls.create_random_name(prefix='containerapp-env', length=24)
-    logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l {}'.format(resource_group, logs_workspace_name, TEST_LOCATION)).get_output_in_json()["customerId"]
+    logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
     logs_workspace_key = test_cls.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
     if location:
