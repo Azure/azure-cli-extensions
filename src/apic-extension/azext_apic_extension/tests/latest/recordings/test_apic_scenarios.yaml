@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"properties": {"kind": "development", "server": {"managementPortalUri":
-      ["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"],
+      ["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service-0"],
       "type": "Azure API Management"}, "title": "Public cloud"}}'
     headers:
       Accept:
@@ -13,7 +13,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '309'
+      - '311'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -24,21 +24,21 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public","name":"cli-test-public","systemData":{"createdAt":"2023-11-22T16:52:05.746898Z","lastModifiedAt":"2023-11-22T17:34:52.812953Z"},"properties":{"title":"Public
-        cloud","kind":"development","server":{"type":"Azure API Management","managementPortalUri":["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"]},"customProperties":{}}}'
+      string: '{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public","name":"cli-test-public","systemData":{"createdAt":"2023-11-22T16:52:05.746898Z","lastModifiedAt":"2023-11-23T23:38:55.7280282Z"},"properties":{"title":"Public
+        cloud","kind":"development","server":{"type":"Azure API Management","managementPortalUri":["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service-0"]},"customProperties":{}}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01
       cache-control:
       - no-cache
       content-length:
-      - '691'
+      - '694'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:34:52 GMT
+      - Thu, 23 Nov 2023 23:38:54 GMT
       etag:
-      - 04001e85-0000-3300-0000-655e3bbc0000
+      - 05006f4b-0000-3300-0000-655fe28f0000
       expires:
       - '-1'
       pragma:
@@ -61,44 +61,98 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"description": "CLI Test API", "kind": "rest", "title":
-      "CLI Test API"}}'
+    body: null
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - apic api create
+      - apic environment update
       Connection:
       - keep-alive
-      Content-Length:
-      - '88'
-      Content-Type:
-      - application/json
       ParameterSetName:
-      - -g -s --api-name --description --kind --title
+      - -g -s --name --title --kind --server
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-100?api-version=2024-03-01
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/apis","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-100","name":"cli-test-api-100","systemData":{"createdAt":"2023-11-22T17:34:01.033101Z","lastModifiedAt":"2023-11-22T17:34:53.5142499Z"},"properties":{"title":"CLI
-        Test API","description":"CLI Test API","kind":"rest","lifecycleStage":"design","externalDocumentation":[],"contacts":[],"customProperties":{}}}'
+      string: '{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public","name":"cli-test-public","systemData":{"createdAt":"2023-11-22T16:52:05.746898Z","lastModifiedAt":"2023-11-23T23:38:55.7280282Z"},"properties":{"title":"Public
+        cloud","kind":"development","server":{"type":"Azure API Management","managementPortalUri":["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service-0"]},"customProperties":{}}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01
       cache-control:
       - no-cache
       content-length:
-      - '527'
+      - '694'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:34:53 GMT
+      - Thu, 23 Nov 2023 23:38:55 GMT
       etag:
-      - 3f00d6a5-0000-3300-0000-655e3bbd0000
+      - 05006f4b-0000-3300-0000-655fe28f0000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"customProperties": {}, "kind": "development", "server":
+      {"managementPortalUri": ["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"],
+      "type": "Azure API Management"}, "title": "Public cloud"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic environment update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '333'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s --name --title --kind --server
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public","name":"cli-test-public","systemData":{"createdAt":"2023-11-22T16:52:05.746898Z","lastModifiedAt":"2023-11-23T23:38:56.6775124Z"},"properties":{"title":"Public
+        cloud","kind":"development","server":{"type":"Azure API Management","managementPortalUri":["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"]},"customProperties":{}}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '692'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:38:55 GMT
+      etag:
+      - 0500704b-0000-3300-0000-655fe2900000
       expires:
       - '-1'
       pragma:
@@ -115,6 +169,374 @@ interactions:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic environment show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --name
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public","name":"cli-test-public","systemData":{"createdAt":"2023-11-22T16:52:05.746898Z","lastModifiedAt":"2023-11-23T23:38:56.6775124Z"},"properties":{"title":"Public
+        cloud","kind":"development","server":{"type":"Azure API Management","managementPortalUri":["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"]},"customProperties":{}}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '692'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:38:56 GMT
+      etag:
+      - 0500704b-0000-3300-0000-655fe2900000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic environment list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments?api-version=2024-03-01
+  response:
+    body:
+      string: '{"value":[{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/metadata-test-env","name":"metadata-test-env","systemData":{"createdAt":"2023-08-02T15:06:50.5631147Z","lastModifiedAt":"2023-09-05T14:11:02.7886448Z"},"properties":{"title":"Metadata
+        test env","server":{"type":"azure-api-management","managementPortalUri":[]},"onboarding":{"developerPortalUri":[]},"customProperties":{}}},{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/production","name":"production","systemData":{"createdAt":"2023-08-28T20:40:54.4152308Z","lastModifiedAt":"2023-08-28T20:40:54.4152526Z"},"properties":{"title":"Contoso
+        Europe Azure API Management","description":"The primary Azure API Management
+        service for the European division of Contoso.","server":{"type":"Azure API
+        Management","managementPortalUri":["https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"]},"onboarding":{"instructions":"Sign
+        in or sign up in the specified developer portal to request API access. You
+        must complete the internal privacy training for your account to be approved.","developerPortalUri":["https://developer.contoso.com"]},"customProperties":{}}},{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/test-env-for-depl","name":"test-env-for-depl","systemData":{"createdAt":"2023-08-30T14:28:25.8546451Z","lastModifiedAt":"2023-11-14T22:54:17.5088956Z"},"properties":{"title":"Contoso
+        Europe Azure API Management","kind":"production","description":"The primary
+        Azure API Management service for the European division of Contoso.","server":{"type":"Azure
+        API Management","managementPortalUri":["https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"]},"onboarding":{"instructions":"Sign
+        in or sign up in the specified developer portal to request API access. You
+        must complete the internal privacy training for your account to be approved.","developerPortalUri":["https://developer.contoso.com"]},"customProperties":{}}},{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/apim-test","name":"apim-test","systemData":{"createdAt":"2023-11-01T14:39:10.2346949Z","lastModifiedAt":"2023-11-14T23:09:47.5310688Z"},"properties":{"title":"Contoso
+        Europe Azure API Management","kind":"production","description":"The primary
+        Azure API Management service for the European division of Contoso.","server":{"type":"Azure
+        API Management","managementPortalUri":["https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"]},"onboarding":{"instructions":"Sign
+        in or sign up in the specified developer portal to request API access. You
+        must complete the internal privacy training for your account to be approved.","developerPortalUri":["https://developer.contoso.com"]},"customProperties":{}}},{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/apim","name":"apim","systemData":{"createdAt":"2023-11-09T01:37:33.3789162Z","lastModifiedAt":"2023-11-14T23:09:41.5126901Z"},"properties":{"title":"Contoso
+        Europe Azure API Management","kind":"production","description":"The primary
+        Azure API Management service for the European division of Contoso.","server":{"type":"Azure
+        API Management","managementPortalUri":["https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"]},"onboarding":{"instructions":"Sign
+        in or sign up in the specified developer portal to request API access. You
+        must complete the internal privacy training for your account to be approved.","developerPortalUri":["https://developer.contoso.com"]},"customProperties":{}}},{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/public","name":"public","systemData":{"createdAt":"2023-11-14T21:49:10.918597Z","lastModifiedAt":"2023-11-22T15:49:31.2162878Z"},"properties":{"title":"Public
+        cloud","kind":"development","server":{"type":"Azure API Management","managementPortalUri":["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"]},"customProperties":{}}},{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/apim-ignite23","name":"apim-ignite23","systemData":{"createdAt":"2023-11-15T18:21:12.5751434Z","lastModifiedAt":"2023-11-15T18:21:12.5751436Z"},"properties":{"title":"Ignite
+        2023 Azure API Management","kind":"production","description":"The primary
+        Azure API Management service for European division of Contoso","server":{"type":"azure-api-management","managementPortalUri":["https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service"]},"onboarding":{"instructions":"Sign
+        in or sign up","developerPortalUri":["https://developer.abcd.com"]},"customProperties":{}}},{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/public-2","name":"public-2","systemData":{"createdAt":"2023-11-20T20:46:43.0550419Z","lastModifiedAt":"2023-11-20T20:46:43.0550789Z"},"properties":{"title":"Public
+        cloud","kind":"development","customProperties":{}}},{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/public-3","name":"public-3","systemData":{"createdAt":"2023-11-20T20:52:17.473183Z","lastModifiedAt":"2023-11-23T22:09:43.7311785Z"},"properties":{"title":"Public
+        cloud","kind":"development","server":{"type":"Azure API Management","managementPortalUri":["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"]},"customProperties":{}}},{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/testpublic","name":"testpublic","systemData":{"createdAt":"2023-11-22T15:50:59.2415397Z","lastModifiedAt":"2023-11-22T16:50:42.7816893Z"},"properties":{"title":"Public
+        cloud","kind":"development","server":{"type":"Azure API Management","managementPortalUri":["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"]},"customProperties":{}}},{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public","name":"cli-test-public","systemData":{"createdAt":"2023-11-22T16:52:05.746898Z","lastModifiedAt":"2023-11-23T23:38:56.6775124Z"},"properties":{"title":"Public
+        cloud","kind":"development","server":{"type":"Azure API Management","managementPortalUri":["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"]},"customProperties":{}}}]}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '8805'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:38:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "CLI Test API 0", "kind": "rest", "title":
+      "CLI Test API 0"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s --api-name --description --kind --title
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/apis","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102","name":"cli-test-api-102","systemData":{"createdAt":"2023-11-23T23:38:58.5936277Z","lastModifiedAt":"2023-11-23T23:38:58.5936278Z"},"properties":{"title":"CLI
+        Test API 0","description":"CLI Test API 0","kind":"rest","lifecycleStage":"design","externalDocumentation":[],"contacts":[],"customProperties":{}}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:38:58 GMT
+      etag:
+      - 4900911b-0000-3300-0000-655fe2920000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-name
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/apis","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102","name":"cli-test-api-102","systemData":{"createdAt":"2023-11-23T23:38:58.5936277Z","lastModifiedAt":"2023-11-23T23:38:58.5936278Z"},"properties":{"title":"CLI
+        Test API 0","description":"CLI Test API 0","kind":"rest","lifecycleStage":"design","externalDocumentation":[],"contacts":[],"customProperties":{}}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:38:58 GMT
+      etag:
+      - 4900911b-0000-3300-0000-655fe2920000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis?api-version=2024-03-01
+  response:
+    body:
+      string: "{\"value\":[{\"type\":\"Microsoft.ApiCenter/services/apis\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/petstore-api\",\"name\":\"petstore-api\",\"systemData\":{\"createdAt\":\"2023-11-08T18:57:32.3783991Z\",\"lastModifiedAt\":\"2023-11-08T18:57:32.3784001Z\"},\"properties\":{\"title\":\"Petstore-Api\",\"kind\":\"rest\",\"lifecycleStage\":\"design\",\"externalDocumentation\":[],\"contacts\":[],\"customProperties\":{}}},{\"type\":\"Microsoft.ApiCenter/services/apis\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cat-facts-api\",\"name\":\"cat-facts-api\",\"systemData\":{\"createdAt\":\"2023-11-08T18:58:24.8668354Z\",\"lastModifiedAt\":\"2023-11-21T21:13:08.617789Z\"},\"properties\":{\"title\":\"cat-facts-api\",\"summary\":\"API
+        Description\",\"description\":\"API Description\",\"kind\":\"rest\",\"lifecycleStage\":\"design\",\"termsOfService\":{},\"externalDocumentation\":[],\"contacts\":[],\"customProperties\":{}}},{\"type\":\"Microsoft.ApiCenter/services/apis\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/ensight-servicereports\",\"name\":\"ensight-servicereports\",\"systemData\":{\"createdAt\":\"2023-11-10T22:24:10.4970866Z\",\"lastModifiedAt\":\"2023-11-10T22:24:10.4971093Z\"},\"properties\":{\"title\":\"ensight-servicereports\",\"description\":\"**ENSIGHT
+        Servicereports API** verf\xFCgt \xFCber den prim\xE4ren Endpunkt [Get Servicereports](https://dev-core-base-apim.developer.azure-api.net/api-details#api=ENSIGHT-API-Servicereportsv1&operation=GlobalServiceProtocol)
+        mithilfe dessen Servicereports - Dokumentationen von Betriebs- und Instandhaltungsmassnahmen
+        von Kraftwerken f\xFCr erneuerbare Energien - in Form des Globalen Service
+        Protokolls (GSP, engl. 'Global Service Protocol') abgefragt werden k\xF6nnen.
+        Derzeit stehen die Servicereports folgender Dienstleister f\xFCr Betriebs-
+        und Instandhaltungsmassnahmen zur Verf\xFCgung:\\r\\n- CWS Connected Wind
+        Services GmbH (seit --/----),\\r\\n- EnBW Energie Baden-W\xFCrttemberg AG
+        (seit 12/2019),\\r\\n- Nordex Energy GmbH (seit 11/2017),\\r\\n- Siemens Gamesa
+        Renewable Energy AG (seit 12/2019), und\\r\\n- Vestas Deutschland GmbH (seit
+        07/2016).\\r\\n*Stand: 03. August 2022*\\r\\n\\r\\nDas Globale Service Protokoll
+        ist ein Teil der technischen Richtlinie f\xFCr Erzeugungseinheiten, die zum
+        01.01.2014 von der FGW F\xF6rdergesellschaft Windenergie und andere Erneuerbare
+        Energien e.V. herausgegeben wurde. Ziel des GSP ist 'die Bereitstellung eines
+        einheitlichen elektronischen Datenformates, welches die Kommunikation verschiedener
+        an der Instandhaltung von erneuerbaren Energieanlagen beteiligter Akteure
+        erm\xF6glicht'.\\r\\n\\r\\nDie Entit\xE4tstypen aus dem Entity Data Model
+        der Globalen Service Protokolle sowie deren Eigenschaften werden \xFCber den
+        Endpunkt [Get Metadata](https://dev-core-base-apim.developer.azure-api.net/api-details#api=ENSIGHT-API-Servicereportsv1&operation=metadata)
+        im XML-Format bereitgestellt.\\r\\n### Datenquellen\\r\\nDie Daten f\xFCr
+        Betrieb- und Instandhaltungsmassnahmen werden von den entsprechenden Dienstleistern
+        bezogen, wobei sich die Quellformate wie folgt unterscheiden:\\r\\n- CWS Connected
+        Wind Services GmbH via REST API,\\r\\n- EnBW Energie Baden-W\xFCrttemberg
+        AG via SAP,\\r\\n- Nordex Energy GmbH via *.pdf,\\r\\n- Siemens Gamesa Renewable
+        Energy AG via *.xlsx, und\\r\\n- Vestas Deutschland GmbH via *.xml.\\r\\n###
+        OData\\r\\nBei ENSIGHT Servicereports ist die OData-Funktionalit\xE4t gegeben.
+        Hierdurch k\xF6nnen die im Folgenden aufgef\xFChrten Optionen sowie vergleichende
+        und logische Operatoren f\xFCr eine Abfrage spezifiziert werden.\\r\\n\\r\\n**Optionen**\\r\\n\\r\\n-
+        *apply*,\\r\\n- *count*,\\r\\n- *filter*,\\r\\n- *orderby*,\\r\\n- *select*,\\r\\n-
+        *skip*, und\\r\\n- *top*.\\r\\n\\r\\n**Vergleichsoperatoren**\\r\\n\\r\\n-
+        *eq*,\\r\\n- *ne*,\\r\\n- *gt*,\\r\\n- *lt*,\\r\\n- *ge*, und\\r\\n- *le*.\\r\\n\\r\\nWeitere
+        Informationen zu Vergleichsoperatoren werden hier von Microsoft angeboten:
+        [Comparison Operators](https://docs.microsoft.com/en-us/azure/search/search-query-odata-comparison-operators)\\r\\n\\r\\n**Logische
+        Operatoren**\\r\\n\\r\\n- *and*,\\r\\n- *or*, und\\r\\n- *not*.\\r\\n\\r\\nWeitere
+        Informationen zu logischen Operatoren werden hier von Microsoft angeboten:
+        [Logical Operators](https://docs.microsoft.com/en-us/azure/search/search-query-odata-logical-operators)\\r\\n\\r\\n\\r\\nBeispielhafte
+        Anwendungen von OData-Abfragen werden hier von Microsoft aufgef\xFChrt: [Query
+        Options Overview](https://docs.microsoft.com/en-us/odata/concepts/queryoptions-overview).\\r\\nDie
+        Optionen k\xF6nnen der Abfrage entweder als Parameter oder direkt \xFCber
+        die URL hinzugef\xFCgt werden, wie es hier von Microsoft beschrieben wird:
+        [URL Query](https://docs.microsoft.com/en-us/odata/concepts/url-components).\\r\\nWeitere,
+        umf\xE4ngliche Informationen zu OData sind hier in der Dokumentation zu finden:
+        [OData Documentation](https://www.odata.org/documentation/)\\r\\n\\r\\n*F\xFCr
+        den Umgang mit Daten im OData-Kontext bedarf es folgendes Format: ISO 8601.
+        Besipiel: 2019-06-03T00:00:00Z.*\\r\\n\\r\\n**Beispiele f\xFCr ENSIGHT Servicereports**\\r\\n\\r\\n*Anzahl
+        der Servicereports nach Dienstleister*\\r\\n\\r\\n    [URL]?$apply=groupby((workOrder/contractor/name),
+        aggregate(id with countdistinct as total))\\r\\n\\r\\n*Anzahl der Servicereports
+        nach Windpark*\\r\\n\\r\\n    [URL]?$apply=groupby((powerPlant/id), aggregate(id
+        with countdistinct as total))\\r\\n\\r\\n*Name und Beschreibung des Vestas-Servicereports
+        55636522*\\r\\n\\r\\n    [URL]?$filter=gspInfo/documentId eq 'VESTAS_55636522'&$select=workReport/items/name,workReport/items/longDescription\\r\\n\\r\\n*Materialverbrauch
+        des Nordex-Serviceberichts 600180286*\\r\\n\\r\\n    [URL]?$filter=gspInfo/documentId
+        eq 'NORDEX_600180286'&$select=workReport/items/materials\",\"lifecycleStage\":\"design\",\"externalDocumentation\":[],\"contacts\":[],\"customProperties\":{}}},{\"type\":\"Microsoft.ApiCenter/services/apis\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/customer-issue\",\"name\":\"customer-issue\",\"systemData\":{\"createdAt\":\"2023-11-11T00:29:24.954375Z\",\"lastModifiedAt\":\"2023-11-11T00:29:24.9543769Z\"},\"properties\":{\"title\":\"customer-issue\",\"lifecycleStage\":\"design\",\"externalDocumentation\":[],\"contacts\":[],\"customProperties\":{}}},{\"type\":\"Microsoft.ApiCenter/services/apis\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/swagger_arpi_test\",\"name\":\"swagger_arpi_test\",\"systemData\":{\"createdAt\":\"2023-11-14T18:50:27.2999397Z\",\"lastModifiedAt\":\"2023-11-14T18:50:27.2999398Z\"},\"properties\":{\"title\":\"Swagger
+        Arpi Test\",\"summary\":\"A sample Arpi API that uses a petstore as an example
+        to demonstrate features in the OpenAPI 3.0 specification\",\"description\":\"A
+        sample Arpi API that uses a petstore as an example to demonstrate features
+        in the OpenAPI 3.0 specification\",\"kind\":\"rest\",\"lifecycleStage\":\"design\",\"termsOfService\":{\"url\":\"http://swagger.io/terms/\"},\"license\":{\"name\":\"Apache
+        2.0\",\"url\":\"https://www.apache.org/licenses/LICENSE-2.0.html\"},\"externalDocumentation\":[],\"contacts\":[{\"name\":\"Arpi
+        Swagger API Team\",\"url\":\"http://swagger.io\",\"email\":\"arpiapiteam@swagger.io\"}],\"customProperties\":{}}},{\"type\":\"Microsoft.ApiCenter/services/apis\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/swagger_arpi_test_2\",\"name\":\"swagger_arpi_test_2\",\"systemData\":{\"createdAt\":\"2023-11-14T18:51:10.5761684Z\",\"lastModifiedAt\":\"2023-11-14T18:51:10.5761685Z\"},\"properties\":{\"title\":\"Swagger
+        Arpi Test 2\",\"summary\":\"A sample Arpi API that uses a petstore as an example
+        to demonstrate features in the OpenAPI 3.0 specification\",\"description\":\"A
+        sample Arpi API that uses a petstore as an example to demonstrate features
+        in the OpenAPI 3.0 specification\",\"kind\":\"rest\",\"lifecycleStage\":\"design\",\"termsOfService\":{\"url\":\"http://swagger.io/terms/\"},\"license\":{\"name\":\"Apache
+        2.0\",\"url\":\"https://www.apache.org/licenses/LICENSE-2.0.html\"},\"externalDocumentation\":[],\"contacts\":[{\"name\":\"Arpi
+        Swagger API Team\",\"url\":\"http://swagger.io\",\"email\":\"arpiapiteam@swagger.io\"}],\"customProperties\":{}}},{\"type\":\"Microsoft.ApiCenter/services/apis\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/uber-api\",\"name\":\"uber-api\",\"systemData\":{\"createdAt\":\"2023-11-14T20:32:01.6772075Z\",\"lastModifiedAt\":\"2023-11-14T20:36:19.4958358Z\"},\"properties\":{\"title\":\"Uber
+        API\",\"summary\":\"Move your app forward with the Uber API\",\"description\":\"Move
+        your app forward with the Uber API\",\"kind\":\"rest\",\"lifecycleStage\":\"design\",\"termsOfService\":{},\"externalDocumentation\":[],\"contacts\":[],\"customProperties\":{}}},{\"type\":\"Microsoft.ApiCenter/services/apis\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/swagger-petstore\",\"name\":\"swagger-petstore\",\"systemData\":{\"createdAt\":\"2023-11-15T00:39:28.4314069Z\",\"lastModifiedAt\":\"2023-11-15T00:39:28.4314279Z\"},\"properties\":{\"title\":\"swagger-petstore\",\"description\":\"This
+        is a sample server Petstore server.  You can find out more about Swagger at
+        [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).
+        \ For this sample, you can use the api key `special-key` to test the authorization
+        filters.\",\"lifecycleStage\":\"design\",\"externalDocumentation\":[],\"contacts\":[],\"customProperties\":{}}},{\"type\":\"Microsoft.ApiCenter/services/apis\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/femeji-openai-test\",\"name\":\"femeji-openai-test\",\"systemData\":{\"createdAt\":\"2023-11-15T18:23:02.5833933Z\",\"lastModifiedAt\":\"2023-11-15T18:24:32.7488369Z\"},\"properties\":{\"title\":\"femeji-openai-test\",\"summary\":\"Ignite
+        2023: openAI summarize reviews API\",\"description\":\"Ignite 2023: openAI
+        summarize reviews API\",\"kind\":\"rest\",\"lifecycleStage\":\"design\",\"termsOfService\":{},\"externalDocumentation\":[],\"contacts\":[],\"customProperties\":{}}},{\"type\":\"Microsoft.ApiCenter/services/apis\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102\",\"name\":\"cli-test-api-102\",\"systemData\":{\"createdAt\":\"2023-11-23T23:38:58.5936277Z\",\"lastModifiedAt\":\"2023-11-23T23:38:58.5936278Z\"},\"properties\":{\"title\":\"CLI
+        Test API 0\",\"description\":\"CLI Test API 0\",\"kind\":\"rest\",\"lifecycleStage\":\"design\",\"externalDocumentation\":[],\"contacts\":[],\"customProperties\":{}}}]}"
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '10935'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:38:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
       x-powered-by:
       - ASP.NET
     status:
@@ -140,10 +562,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-100/versions/cli-test-2023-01-02?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/versions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-100/versions/cli-test-2023-01-02","name":"cli-test-2023-01-02","systemData":{"createdAt":"2023-11-22T17:34:01.7581196Z","lastModifiedAt":"2023-11-22T17:34:54.3894085Z"},"properties":{"title":"cli-test-2023-01-02","lifecycleStage":"design"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/versions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02","name":"cli-test-2023-01-02","systemData":{"createdAt":"2023-11-23T23:39:00.4074868Z","lastModifiedAt":"2023-11-23T23:39:00.4074868Z"},"properties":{"title":"cli-test-2023-01-02","lifecycleStage":"design"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01
@@ -154,9 +576,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:34:53 GMT
+      - Thu, 23 Nov 2023 23:38:59 GMT
       etag:
-      - 4d0040bb-0000-3300-0000-655e3bbe0000
+      - 5d00134b-0000-3300-0000-655fe2940000
       expires:
       - '-1'
       pragma:
@@ -172,7 +594,223 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api version update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-name --name --title
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/versions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02","name":"cli-test-2023-01-02","systemData":{"createdAt":"2023-11-23T23:39:00.4074868Z","lastModifiedAt":"2023-11-23T23:39:00.4074868Z"},"properties":{"title":"cli-test-2023-01-02","lifecycleStage":"design"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '465'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:00 GMT
+      etag:
+      - 5d00134b-0000-3300-0000-655fe2940000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"lifecycleStage": "design", "title": "CLI Test API Version
+      0"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api version update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '79'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s --api-name --name --title
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/versions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02","name":"cli-test-2023-01-02","systemData":{"createdAt":"2023-11-23T23:39:00.4074868Z","lastModifiedAt":"2023-11-23T23:39:01.3160351Z"},"properties":{"title":"CLI
+        Test API Version 0","lifecycleStage":"design"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '468'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:01 GMT
+      etag:
+      - 5d002d4b-0000-3300-0000-655fe2950000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api version show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-name --name
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/versions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02","name":"cli-test-2023-01-02","systemData":{"createdAt":"2023-11-23T23:39:00.4074868Z","lastModifiedAt":"2023-11-23T23:39:01.3160351Z"},"properties":{"title":"CLI
+        Test API Version 0","lifecycleStage":"design"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '468'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:01 GMT
+      etag:
+      - 5d002d4b-0000-3300-0000-655fe2950000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api version list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-name
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions?api-version=2024-03-01
+  response:
+    body:
+      string: '{"value":[{"type":"Microsoft.ApiCenter/services/versions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02","name":"cli-test-2023-01-02","systemData":{"createdAt":"2023-11-23T23:39:00.4074868Z","lastModifiedAt":"2023-11-23T23:39:01.3160351Z"},"properties":{"title":"CLI
+        Test API Version 0","lifecycleStage":"design"}}]}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '480'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
       x-powered-by:
       - ASP.NET
     status:
@@ -198,23 +836,134 @@ interactions:
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-100/versions/cli-test-2023-01-02/definitions/cli-test-openapi?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/definitions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-100/versions/cli-test-2023-01-02/definitions/cli-test-openapi","name":"cli-test-openapi","systemData":{"createdAt":"2023-11-22T17:32:32.5795832Z","lastModifiedAt":"2023-11-22T17:34:55.0820634Z"},"properties":{"title":"OpenAPI","specification":{"name":"openapi","version":"3.0.0"}}}'
+      string: '{"type":"Microsoft.ApiCenter/services/definitions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi","name":"cli-test-openapi","systemData":{"createdAt":"2023-11-23T23:22:11.3530106Z","lastModifiedAt":"2023-11-23T23:39:03.207786Z"},"properties":{"title":"OpenAPI","specification":{"name":"openapi","version":"3.0.0"}}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01
       cache-control:
       - no-cache
       content-length:
-      - '509'
+      - '508'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:34:54 GMT
+      - Thu, 23 Nov 2023 23:39:02 GMT
       etag:
-      - 00008000-0000-3300-0000-655e3bbf0000
+      - 0000c600-0000-3300-0000-655fe2970000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api definition update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-name --version --name --title
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/definitions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi","name":"cli-test-openapi","systemData":{"createdAt":"2023-11-23T23:22:11.3530106Z","lastModifiedAt":"2023-11-23T23:39:03.207786Z"},"properties":{"title":"OpenAPI","specification":{"name":"openapi","version":"3.0.0"}}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '508'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:03 GMT
+      etag:
+      - 0000c600-0000-3300-0000-655fe2970000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"title": "CLI Test API Definition 0"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api definition update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '54'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s --api-name --version --name --title
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/definitions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi","name":"cli-test-openapi","systemData":{"createdAt":"2023-11-23T23:22:11.3530106Z","lastModifiedAt":"2023-11-23T23:39:04.1298296Z"},"properties":{"title":"CLI
+        Test API Definition 0","specification":{"name":"openapi","version":"3.0.0"}}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '527'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:03 GMT
+      etag:
+      - 0000c700-0000-3300-0000-655fe2980000
       expires:
       - '-1'
       pragma:
@@ -231,6 +980,110 @@ interactions:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api definition show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-name --version --name
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/definitions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi","name":"cli-test-openapi","systemData":{"createdAt":"2023-11-23T23:22:11.3530106Z","lastModifiedAt":"2023-11-23T23:39:04.1298296Z"},"properties":{"title":"CLI
+        Test API Definition 0","specification":{"name":"openapi","version":"3.0.0"}}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '527'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:04 GMT
+      etag:
+      - 0000c700-0000-3300-0000-655fe2980000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api definition list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-name --version
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions?api-version=2024-03-01
+  response:
+    body:
+      string: '{"value":[{"type":"Microsoft.ApiCenter/services/definitions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi","name":"cli-test-openapi","systemData":{"createdAt":"2023-11-23T23:22:11.3530106Z","lastModifiedAt":"2023-11-23T23:39:04.1298296Z"},"properties":{"title":"CLI
+        Test API Definition 0","specification":{"name":"openapi","version":"3.0.0"}}}]}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '539'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
       x-powered-by:
       - ASP.NET
     status:
@@ -293,7 +1146,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-100/versions/cli-test-2023-01-02/definitions/cli-test-openapi/importSpecification?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi/importSpecification?api-version=2024-03-01
   response:
     body:
       string: ''
@@ -305,11 +1158,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 22 Nov 2023 17:34:55 GMT
+      - Thu, 23 Nov 2023 23:39:05 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-100/versions/cli-test-2023-01-02/definitions/cli-test-openapi/operationResults/b4eb2313-5b2b-44a3-9990-848626e5c10a?api-version=2024-03-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi/operationResults/4096e2a5-b305-4e83-b214-d62b27a172c2?api-version=2024-03-01
       pragma:
       - no-cache
       server:
@@ -341,7 +1194,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-100/versions/cli-test-2023-01-02/definitions/cli-test-openapi/operationResults/b4eb2313-5b2b-44a3-9990-848626e5c10a?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi/operationResults/4096e2a5-b305-4e83-b214-d62b27a172c2?api-version=2024-03-01
   response:
     body:
       string: '{"apiName":"default","apiVersion":"cli-test-2023-01-02","catalogName":"contosoeuap","provisioningState":"Succeeded","error":{"message":""}}'
@@ -355,7 +1208,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:34:55 GMT
+      - Thu, 23 Nov 2023 23:39:06 GMT
       expires:
       - '-1'
       pragma:
@@ -393,7 +1246,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-100/versions/cli-test-2023-01-02/definitions/cli-test-openapi/exportSpecification?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi/exportSpecification?api-version=2024-03-01
   response:
     body:
       string: '{"format":"inline","value":"{\"openapi\": \"3.0.0\", \"info\": {\"title\":
@@ -444,7 +1297,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:34:57 GMT
+      - Thu, 23 Nov 2023 23:39:06 GMT
       expires:
       - '-1'
       pragma:
@@ -467,7 +1320,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"definitionId": "/workspaces/default/apis/cli-test-api-100/versions/cli-test-2023-01-02/definitions/cli-test-openapi",
+    body: '{"properties": {"definitionId": "/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi",
       "description": "CLI Test Public cloud production deployment.", "environmentId":
       "/workspaces/default/environments/cli-test-public", "server": {"runtimeUri":
       ["https://api.contoso.com"]}, "title": "CLI Test Production deployment"}}'
@@ -490,12 +1343,12 @@ interactions:
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-100/deployments/mock-deployment?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/deployments/mock-deployment?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/deployments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-100/deployments/production","name":"production","systemData":{"createdAt":"2023-11-22T17:34:05.7313342Z","lastModifiedAt":"2023-11-22T17:34:58.3840388Z"},"properties":{"title":"CLI
+      string: '{"type":"Microsoft.ApiCenter/services/deployments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/deployments/production","name":"production","systemData":{"createdAt":"2023-11-23T23:39:08.5478416Z","lastModifiedAt":"2023-11-23T23:39:08.5478416Z"},"properties":{"title":"CLI
         Test Production deployment","description":"CLI Test Public cloud production
-        deployment.","environmentId":"/workspaces/default/environments/cli-test-public","definitionId":"/workspaces/default/apis/cli-test-api-100/versions/cli-test-2023-01-02/definitions/cli-test-openapi","server":{"runtimeUri":["https://api.contoso.com"]},"customProperties":{},"recommended":false}}'
+        deployment.","environmentId":"/workspaces/default/environments/cli-test-public","definitionId":"/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi","server":{"runtimeUri":["https://api.contoso.com"]},"customProperties":{},"recommended":false}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01
@@ -506,9 +1359,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:34:57 GMT
+      - Thu, 23 Nov 2023 23:39:08 GMT
       etag:
-      - 06005c30-0000-3300-0000-655e3bc20000
+      - 0700768e-0000-3300-0000-655fe29c0000
       expires:
       - '-1'
       pragma:
@@ -524,7 +1377,230 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api deployment show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-name --name
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/deployments/mock-deployment?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/deployments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/deployments/production","name":"production","systemData":{"createdAt":"2023-11-23T23:39:08.5478416Z","lastModifiedAt":"2023-11-23T23:39:08.5478416Z"},"properties":{"title":"CLI
+        Test Production deployment","description":"CLI Test Public cloud production
+        deployment.","environmentId":"/workspaces/default/environments/cli-test-public","definitionId":"/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi","server":{"runtimeUri":["https://api.contoso.com"]},"customProperties":{},"recommended":false}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '777'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:08 GMT
+      etag:
+      - 0700768e-0000-3300-0000-655fe29c0000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api deployment update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-name --name --title
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/deployments/mock-deployment?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/deployments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/deployments/production","name":"production","systemData":{"createdAt":"2023-11-23T23:39:08.5478416Z","lastModifiedAt":"2023-11-23T23:39:08.5478416Z"},"properties":{"title":"CLI
+        Test Production deployment","description":"CLI Test Public cloud production
+        deployment.","environmentId":"/workspaces/default/environments/cli-test-public","definitionId":"/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi","server":{"runtimeUri":["https://api.contoso.com"]},"customProperties":{},"recommended":false}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '777'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:09 GMT
+      etag:
+      - 0700768e-0000-3300-0000-655fe29c0000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"customProperties": {}, "definitionId": "/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi",
+      "description": "CLI Test Public cloud production deployment.", "environmentId":
+      "/workspaces/default/environments/cli-test-public", "server": {"runtimeUri":
+      ["https://api.contoso.com"]}, "title": "CLI Test Production deployment update"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api deployment update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '396'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s --api-name --name --title
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/deployments/mock-deployment?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/deployments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/deployments/production","name":"production","systemData":{"createdAt":"2023-11-23T23:39:08.5478416Z","lastModifiedAt":"2023-11-23T23:39:10.0281119Z"},"properties":{"title":"CLI
+        Test Production deployment update","description":"CLI Test Public cloud production
+        deployment.","environmentId":"/workspaces/default/environments/cli-test-public","definitionId":"/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi","server":{"runtimeUri":["https://api.contoso.com"]},"customProperties":{},"recommended":false}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '784'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:09 GMT
+      etag:
+      - 07007e8e-0000-3300-0000-655fe29e0000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api deployment list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-name
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/deployments?api-version=2024-03-01
+  response:
+    body:
+      string: '{"value":[{"type":"Microsoft.ApiCenter/services/deployments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-api-102/deployments/production","name":"production","systemData":{"createdAt":"2023-11-23T23:39:08.5478416Z","lastModifiedAt":"2023-11-23T23:39:10.0281119Z"},"properties":{"title":"CLI
+        Test Production deployment update","description":"CLI Test Public cloud production
+        deployment.","environmentId":"/workspaces/default/environments/cli-test-public","definitionId":"/workspaces/default/apis/cli-test-api-102/versions/cli-test-2023-01-02/definitions/cli-test-openapi","server":{"runtimeUri":["https://api.contoso.com"]},"customProperties":{},"recommended":false}}]}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '796'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
       x-powered-by:
       - ASP.NET
     status:
@@ -554,7 +1630,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/metadataSchemas/cli-test-metadata-schema-1?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/metadataSchema","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/metadataSchema/cli-test-metadata-schema-1","name":"cli-test-metadata-schema-1","systemData":{"createdAt":"2023-11-22T16:49:20.9590785Z","lastModifiedAt":"2023-11-22T17:34:59.0580864Z"},"properties":{"assignedTo":[],"schema":"{\"type\":
+      string: '{"type":"Microsoft.ApiCenter/services/metadataSchema","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/metadataSchema/cli-test-metadata-schema-1","name":"cli-test-metadata-schema-1","systemData":{"createdAt":"2023-11-23T23:38:10.2395175Z","lastModifiedAt":"2023-11-23T23:39:12.1707537Z"},"properties":{"assignedTo":[],"schema":"{\"type\":
         \"string\", \"title\": \"CLI Test First name\", \"pattern\": \"^[a-zA-Z0-9
         ]+$\"}"}}'
     headers:
@@ -567,7 +1643,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:34:58 GMT
+      - Thu, 23 Nov 2023 23:39:11 GMT
       expires:
       - '-1'
       pragma:
@@ -583,7 +1659,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -644,7 +1720,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:34:59 GMT
+      - Thu, 23 Nov 2023 23:39:12 GMT
       expires:
       - '-1'
       pragma:
@@ -707,7 +1783,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:34:59 GMT
+      - Thu, 23 Nov 2023 23:39:12 GMT
       expires:
       - '-1'
       pragma:
@@ -772,7 +1848,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:35:01 GMT
+      - Thu, 23 Nov 2023 23:39:14 GMT
       expires:
       - '-1'
       pragma:
@@ -795,9 +1871,61 @@ interactions:
       code: 200
       message: OK
 - request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic metadata-schema show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --name
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/metadataSchemas/cli-test-metadata-schema-1?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/metadataSchema","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/metadataSchema/cli-test-metadata-schema-1","name":"cli-test-metadata-schema-1","systemData":{"createdAt":"2023-11-23T23:38:10.2395175Z","lastModifiedAt":"2023-11-23T23:39:12.1707537Z"},"properties":{"assignedTo":[],"schema":"{\"type\":
+        \"string\", \"title\": \"CLI Test First name\", \"pattern\": \"^[a-zA-Z0-9
+        ]+$\"}"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '514'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Nov 2023 23:39:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
     body: '{"properties": {"description": "APIs for sampling from and fine-tuning
       language models", "kind": "rest", "summary": "APIs for sampling from and fine-tuning
-      language models", "termsOfService": {}, "title": "cli-test-openai-api-01"}}'
+      language models", "termsOfService": {}, "title": "cli-test-openai-api-100"}}'
     headers:
       Accept:
       - application/json
@@ -808,7 +1936,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '231'
+      - '232'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -816,10 +1944,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-01?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-100?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/apis","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-01","name":"cli-test-openai-api-01","systemData":{"createdAt":"2023-11-22T17:35:03.182864Z","lastModifiedAt":"2023-11-22T17:35:03.1828641Z"},"properties":{"title":"cli-test-openai-api-01","summary":"APIs
+      string: '{"type":"Microsoft.ApiCenter/services/apis","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-100","name":"cli-test-openai-api-100","systemData":{"createdAt":"2023-11-23T23:39:15.907503Z","lastModifiedAt":"2023-11-23T23:39:15.9075031Z"},"properties":{"title":"cli-test-openai-api-100","summary":"APIs
         for sampling from and fine-tuning language models","description":"APIs for
         sampling from and fine-tuning language models","kind":"rest","lifecycleStage":"design","termsOfService":{},"externalDocumentation":[],"contacts":[],"customProperties":{}}}'
     headers:
@@ -828,13 +1956,13 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '678'
+      - '681'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:35:02 GMT
+      - Thu, 23 Nov 2023 23:39:15 GMT
       etag:
-      - 3f000ca6-0000-3300-0000-655e3bc70000
+      - 4900e91b-0000-3300-0000-655fe2a30000
       expires:
       - '-1'
       pragma:
@@ -876,23 +2004,23 @@ interactions:
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-01/versions/1-2-0?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-100/versions/1-2-0?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/versions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-01/versions/1-2-0","name":"1-2-0","systemData":{"createdAt":"2023-11-22T17:35:03.7737195Z","lastModifiedAt":"2023-11-22T17:35:03.7737195Z"},"properties":{"title":"1-2-0","lifecycleStage":"design"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/versions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-100/versions/1-2-0","name":"1-2-0","systemData":{"createdAt":"2023-11-23T23:39:16.4231969Z","lastModifiedAt":"2023-11-23T23:39:16.4231969Z"},"properties":{"title":"1-2-0","lifecycleStage":"design"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01
       cache-control:
       - no-cache
       content-length:
-      - '429'
+      - '430'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:35:03 GMT
+      - Thu, 23 Nov 2023 23:39:15 GMT
       etag:
-      - 4d0094bb-0000-3300-0000-655e3bc70000
+      - 5d00f74b-0000-3300-0000-655fe2a40000
       expires:
       - '-1'
       pragma:
@@ -908,7 +2036,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
@@ -935,10 +2063,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-01/versions/1-2-0/definitions/openapi?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-100/versions/1-2-0/definitions/openapi?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/definitions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-01/versions/1-2-0/definitions/openapi","name":"openapi","systemData":{"createdAt":"2023-11-22T17:35:04.33803Z","lastModifiedAt":"2023-11-22T17:35:04.33803Z"},"properties":{"title":"openapi","description":"APIs
+      string: '{"type":"Microsoft.ApiCenter/services/definitions","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-100/versions/1-2-0/definitions/openapi","name":"openapi","systemData":{"createdAt":"2023-11-23T23:39:16.872308Z","lastModifiedAt":"2023-11-23T23:39:16.872308Z"},"properties":{"title":"openapi","description":"APIs
         for sampling from and fine-tuning language models"}}'
     headers:
       api-supported-versions:
@@ -946,13 +2074,13 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '497'
+      - '500'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:35:04 GMT
+      - Thu, 23 Nov 2023 23:39:16 GMT
       etag:
-      - 00008200-0000-3300-0000-655e3bc80000
+      - 0000c900-0000-3300-0000-655fe2a40000
       expires:
       - '-1'
       pragma:
@@ -968,7 +2096,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -978,7 +2106,7 @@ interactions:
     body: '{"format": "inline", "specification": {"name": "openapi", "version": "3-0-0"},
       "value": "{\"openapi\": \"3.0.0\", \"servers\": [{\"url\": \"https://api.openai.com/v1\"}],
       \"info\": {\"description\": \"APIs for sampling from and fine-tuning language
-      models\", \"title\": \"CLI Test OpenAI API 01\", \"version\": \"1.2.0\", \"x-apisguru-categories\":
+      models\", \"title\": \"CLI Test OpenAI API 100\", \"version\": \"1.2.0\", \"x-apisguru-categories\":
       [\"machine_learning\"], \"x-logo\": {\"url\": \"https://learnodo-newtonic.com/wp-content/uploads/2020/04/Logo-of-OpenAI-768x161.jpg\"},
       \"x-origin\": [{\"format\": \"openapi\", \"url\": \"https://raw.githubusercontent.com/openai/openai-openapi/master/openapi.yaml\",
       \"version\": \"3.0\"}], \"x-providerName\": \"openai.com\"}, \"tags\": [{\"description\":
@@ -2278,7 +3406,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '112971'
+      - '112972'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -2286,7 +3414,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-01/versions/1-2-0/definitions/openapi/importSpecification?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-100/versions/1-2-0/definitions/openapi/importSpecification?api-version=2024-03-01
   response:
     body:
       string: ''
@@ -2298,11 +3426,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 22 Nov 2023 17:35:04 GMT
+      - Thu, 23 Nov 2023 23:39:17 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-01/versions/1-2-0/definitions/openapi/operationResults/07c6ccd6-cdf9-4789-b740-90e79dd9df80?api-version=2024-03-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-100/versions/1-2-0/definitions/openapi/operationResults/fdb530d3-5cee-4d91-a761-e3da08de1ade?api-version=2024-03-01
       pragma:
       - no-cache
       server:
@@ -2334,7 +3462,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-01/versions/1-2-0/definitions/openapi/operationResults/07c6ccd6-cdf9-4789-b740-90e79dd9df80?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-100/versions/1-2-0/definitions/openapi/operationResults/fdb530d3-5cee-4d91-a761-e3da08de1ade?api-version=2024-03-01
   response:
     body:
       string: '{"apiName":"default","apiVersion":"1-2-0","catalogName":"contosoeuap","provisioningState":"InProgress","error":{"message":""}}'
@@ -2348,7 +3476,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:35:04 GMT
+      - Thu, 23 Nov 2023 23:39:17 GMT
       expires:
       - '-1'
       pragma:
@@ -2387,7 +3515,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public","name":"cli-test-public","systemData":{"createdAt":"2023-11-22T16:52:05.746898Z","lastModifiedAt":"2023-11-22T17:34:52.812953Z"},"properties":{"title":"Public
+      string: '{"type":"Microsoft.ApiCenter/services/environments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/environments/cli-test-public","name":"cli-test-public","systemData":{"createdAt":"2023-11-22T16:52:05.746898Z","lastModifiedAt":"2023-11-23T23:38:56.6775124Z"},"properties":{"title":"Public
         cloud","kind":"development","server":{"type":"Azure API Management","managementPortalUri":["management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service"]},"customProperties":{}}}'
     headers:
       api-supported-versions:
@@ -2395,13 +3523,13 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '691'
+      - '692'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:35:05 GMT
+      - Thu, 23 Nov 2023 23:39:18 GMT
       etag:
-      - 04001e85-0000-3300-0000-655e3bbc0000
+      - 0500704b-0000-3300-0000-655fe2900000
       expires:
       - '-1'
       pragma:
@@ -2422,10 +3550,10 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"definitionId": "/workspaces/default/apis/cli-test-openai-api-01/versions/1-2-0/definitions/openapi",
-      "description": "clitestopenaiapi01deployment", "environmentId": "/workspaces/default/environments/cli-test-public",
+    body: '{"properties": {"definitionId": "/workspaces/default/apis/cli-test-openai-api-100/versions/1-2-0/definitions/openapi",
+      "description": "clitestopenaiapi100deployment", "environmentId": "/workspaces/default/environments/cli-test-public",
       "server": {"runtimeUri": ["https://api.openai.com/v1"]}, "state": "active",
-      "title": "clitestopenaiapi01deployment"}}'
+      "title": "clitestopenaiapi100deployment"}}'
     headers:
       Accept:
       - application/json
@@ -2436,7 +3564,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '351'
+      - '354'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -2444,23 +3572,23 @@ interactions:
       User-Agent:
       - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-01/deployments/mock-deployment?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-100/deployments/mock-deployment?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/deployments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-01/deployments/clitestopenaiapi01deployment","name":"clitestopenaiapi01deployment","systemData":{"createdAt":"2023-11-22T17:35:06.7806676Z","lastModifiedAt":"2023-11-22T17:35:06.7806676Z"},"properties":{"title":"clitestopenaiapi01deployment","description":"clitestopenaiapi01deployment","environmentId":"/workspaces/default/environments/cli-test-public","definitionId":"/workspaces/default/apis/cli-test-openai-api-01/versions/1-2-0/definitions/openapi","server":{"runtimeUri":["https://api.openai.com/v1"]},"customProperties":{},"recommended":false}}'
+      string: '{"type":"Microsoft.ApiCenter/services/deployments","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/workspaces/default/apis/cli-test-openai-api-100/deployments/clitestopenaiapi100deployment","name":"clitestopenaiapi100deployment","systemData":{"createdAt":"2023-11-23T23:39:19.3972298Z","lastModifiedAt":"2023-11-23T23:39:19.3972298Z"},"properties":{"title":"clitestopenaiapi100deployment","description":"clitestopenaiapi100deployment","environmentId":"/workspaces/default/environments/cli-test-public","definitionId":"/workspaces/default/apis/cli-test-openai-api-100/versions/1-2-0/definitions/openapi","server":{"runtimeUri":["https://api.openai.com/v1"]},"customProperties":{},"recommended":false}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01
       cache-control:
       - no-cache
       content-length:
-      - '786'
+      - '792'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Nov 2023 17:35:06 GMT
+      - Thu, 23 Nov 2023 23:39:18 GMT
       etag:
-      - 06006730-0000-3300-0000-655e3bca0000
+      - 0700868e-0000-3300-0000-655fe2a70000
       expires:
       - '-1'
       pragma:

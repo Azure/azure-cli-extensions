@@ -13,6 +13,7 @@ from .custom import ImportSpecificationExtension
 from .custom import ExportSpecificationExtension
 from .custom import ExportMetadataSchemaExtension
 from .custom import CreateMetadataSchemaExtension
+from .custom import UpdateMetadataSchemaExtension
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group('apic api definition') as g:
@@ -21,6 +22,7 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
 
     with self.command_group('apic metadata-schema') as g:
         self.command_table['apic metadata-schema create'] = CreateMetadataSchemaExtension(loader=self)
+        self.command_table['apic metadata-schema update'] = UpdateMetadataSchemaExtension(loader=self)
         self.command_table['apic metadata-schema export-metadata-schema'] = ExportMetadataSchemaExtension(loader=self)
         
     with self.command_group('apic api') as g: 

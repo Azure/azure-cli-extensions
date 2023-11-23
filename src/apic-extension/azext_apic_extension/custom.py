@@ -13,6 +13,7 @@ from knack.log import get_logger
 from .aaz.latest.apic.api.definition import ImportSpecification
 from .aaz.latest.apic.api.definition import ExportSpecification
 from .aaz.latest.apic.metadata_schema import Create
+from .aaz.latest.apic.metadata_schema import Update
 from .aaz.latest.apic.metadata_schema import ExportMetadataSchema
 
 from azure.cli.core.aaz import *
@@ -161,6 +162,45 @@ class CreateMetadataSchemaExtension(Create):
         # Reassign the values to self.args
         self.ctx.args.schema = value
 
+class UpdateMetadataSchemaExtension(Update):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.source_profile = AAZStrArg(
+            options=["--file-name"],
+            help='Name of the file from that contains the metadata schema.',
+            required=False,
+            registered=True
+        )
+        return args_schema
+    
+    def pre_operations(self):
+        args = self.ctx.args
+      
+        data = None
+        value = args.schema
+
+        # Load the JSON file
+        if args.source_profile:
+            rawdata = open(str(args.source_profile), 'rb').read()
+            result = chardet.detect(rawdata)
+            encoding = result['encoding']
+
+            if os.stat(str(args.source_profile)).st_size == 0:
+                raise ValueError('Metadtata schema file is empty. Please provide a valid metadata schema file.')
+
+            with open(str(args.source_profile), 'r', encoding=encoding) as f:
+                data = json.load(f)
+                if data:
+                    value = json.dumps(data)
+  
+        # If any of the fields are None, get them from self.args
+        if value is None:
+           logger.error('Please provide the schema to update the metadata schema through --schema option or through --file-name option via a file.')
+
+        # Reassign the values to self.args
+        self.ctx.args.schema = value
+
 class ExportMetadataSchemaExtension(ExportMetadataSchema):
     
     @classmethod
@@ -219,7 +259,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
     # Load the JSON file
     if api_location:
 
-        #TODO Confirm its a file and not link
+        #TODO Future Confirm its a file and not link
 
         rawdata = open(str(api_location), 'rb').read()
         result = chardet.detect(rawdata)
@@ -305,7 +345,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                  
 
             # Create API -------------------------------------------------------------------------------------
-
             from .aaz.latest.apic.api import Create as CreateAPI
             
             api_args = {
@@ -326,9 +365,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             print("API was created successfully")
             
 
-
             # Create API Version -----------------------------------------------------------------------------
-
             from .aaz.latest.apic.api.version import Create as CreateAPIVersion
             
             api_version_args = {
@@ -345,9 +382,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             print("API version was created successfully")
 
 
-
             # Create API Definition -----------------------------------------------------------------------------
-
             from .aaz.latest.apic.api.definition import Create as CreateAPIDefinition
 
             api_definition_args = {
@@ -365,9 +400,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             print("API definition was created successfully")
 
 
-
             # Import Specification -----------------------------------------------------------------------------
-
             from azure.cli.core.commands import LongRunningOperation
 
             # uses customized ImportSpecificationExtension class
@@ -395,7 +428,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
 
 
             # Create API Deployment -----------------------------------------------------------------------------
-
             from .aaz.latest.apic.api.deployment import Create as CreateAPIDeployment
             from .aaz.latest.apic.environment import Show as GetEnvironment
             from datetime import datetime

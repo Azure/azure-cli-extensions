@@ -21,13 +21,30 @@ class ApicExtensionScenario(ScenarioTest):
         self.kwargs.update({
             'resource_group': 'api-center-test',
             'service_name': 'contosoeuap',
-            'api_name': 'cli-test-api-100',
+            'api_name': 'cli-test-api-102',
             'api_version': 'cli-test-2023-01-02',
             'api_definition_name': 'cli-test-openapi'
         })
 
+        # ------------------------------------------- Environment -------------------------------------------
         # create environment
-        import json
+        server_details = {
+            "type": "Azure API Management",
+            "managementPortalUri": [
+                "management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.ApiManagement/service/my-api-management-service-0"
+            ]
+        }
+        self.kwargs.update({
+            'server_details': server_details,
+            'environment_name': 'cli-test-public'
+        })
+        self.cmd('az apic environment create -g {resource_group} -s {service_name} --name {environment_name} --title "Public cloud" --kind "development" --server "{server_details}"',
+                 checks=[
+                    self.check('name', self.kwargs['environment_name']),
+                    self.check('title', 'Public cloud'),
+                    self.check('kind', 'development')])
+    
+        # update environment
         server_details = {
             "type": "Azure API Management",
             "managementPortalUri": [
@@ -36,19 +53,96 @@ class ApicExtensionScenario(ScenarioTest):
         }
         self.kwargs.update({
             'server_details': server_details,
-            'environment_name': 'cli-test-public'
         })
-        self.cmd('az apic environment create -g {resource_group} -s {service_name} --name {environment_name} --title "Public cloud" --kind "development" --server "{server_details}"')
-    
-        # create api
-        self.cmd('az apic api create -g {resource_group} -s {service_name} --api-name {api_name} --description "CLI Test API" --kind rest --title "CLI Test API"')
+        self.cmd('az apic environment update -g {resource_group} -s {service_name} --name {environment_name} --title "Public cloud" --kind "development" --server "{server_details}"',
+                    checks=[
+                        self.check('name', self.kwargs['environment_name']),
+                        self.check('title', 'Public cloud'),
+                        self.check('kind', 'development'),
+                        self.check('server', self.kwargs['server_details'])])
+        
+        # show environment
+        self.cmd('az apic environment show -g {resource_group} -s {service_name} --name {environment_name}',
+                 checks=[
+                    self.check('name', self.kwargs['environment_name']),
+                    self.check('title', 'Public cloud'),
+                    self.check('kind', 'development')])
 
+        # list environment
+        list_env_reult = self.cmd('az apic environment list -g {resource_group} -s {service_name}')
+        
+        # ------------------------------------------- API -------------------------------------------
+        # create api
+        self.kwargs.update({
+            'api_description': "CLI Test API 0",
+            'api_title': "CLI Test API 0"
+        })
+        self.cmd('az apic api create -g {resource_group} -s {service_name} --api-name {api_name} --description "{api_description}" --kind rest --title "{api_title}"',
+                 checks=[
+                    self.check('name', self.kwargs['api_name']),
+                    self.check('title', self.kwargs['api_title']),
+                    self.check('description', self.kwargs['api_description']),
+                    self.check('kind', 'rest')])
+        
+        # show api
+        self.cmd('az apic api show -g {resource_group} -s {service_name} --api-name {api_name}',
+                 checks=[
+                    self.check('name', self.kwargs['api_name']),
+                    self.check('title', self.kwargs['api_title']),
+                    self.check('description', self.kwargs['api_description']),
+                    self.check('kind', 'rest')])
+        
+        # list api
+        list_api_result = self.cmd('az apic api list -g {resource_group} -s {service_name}')
+        
+        
+        # ------------------------------------------- API Version -------------------------------------------
         # create api version
         self.cmd('az apic api version create -g {resource_group} -s {service_name} --api-name {api_name} --name {api_version} --title {api_version}')
+
+        # update api version
+        self.kwargs.update({
+            'api_version_title_update': "CLI Test API Version 0"
+        })
+        self.cmd('az apic api version update -g {resource_group} -s {service_name} --api-name {api_name} --name {api_version} --title "{api_version_title_update}"',
+                    checks=[
+                        self.check('name', self.kwargs['api_version']),
+                        self.check('title', self.kwargs['api_version_title_update'])])
+        
+        # show api version
+        self.cmd('az apic api version show -g {resource_group} -s {service_name} --api-name {api_name} --name {api_version}',
+                 checks=[
+                    self.check('name', self.kwargs['api_version']),
+                    self.check('title', self.kwargs['api_version_title_update'])])
+        
+        # list api version
+        list_api_version_result = self.cmd('az apic api version list -g {resource_group} -s {service_name} --api-name {api_name}')
+        
+        
+        # ------------------------------------------- API Definition -------------------------------------------
 
         # create api definition
         self.cmd('az apic api definition create -g {resource_group} -s {service_name} --api-name {api_name} --version {api_version} --name {api_definition_name} --title "OpenAPI" ')
 
+        # update api definition
+        self.kwargs.update({
+            'api_definition_title_update': "CLI Test API Definition 0"
+        })
+        self.cmd('az apic api definition update -g {resource_group} -s {service_name} --api-name {api_name} --version {api_version} --name {api_definition_name} --title "{api_definition_title_update}"',
+                    checks=[
+                        self.check('name', self.kwargs['api_definition_name']),
+                        self.check('title', self.kwargs['api_definition_title_update'])])
+        
+        # show api definition
+        self.cmd('az apic api definition show -g {resource_group} -s {service_name} --api-name {api_name} --version {api_version} --name {api_definition_name}',
+                    checks=[
+                        self.check('name', self.kwargs['api_definition_name']),
+                        self.check('title', self.kwargs['api_definition_title_update'])])
+        
+        # list api definition
+        list_api_definition_result = self.cmd('az apic api definition list -g {resource_group} -s {service_name} --api-name {api_name} --version {api_version}')
+        
+        #------------------------------------------------ Import Specification -------------------------------------------
         # import specification
         import os
         TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -75,6 +169,8 @@ class ApicExtensionScenario(ScenarioTest):
         })
         self.cmd('az apic api definition export-specification -g {resource_group} -s {service_name} --api-name {api_name} --version {api_version} --name {api_definition_name} --file-name "{templateFile}"')
 
+        # ------------------------------------------- Deployment -------------------------------------------
+        
         # create deployment
         environment_id = "/workspaces/default/environments/"+self.kwargs['environment_name']
         definition_id = "/workspaces/default/apis/"+self.kwargs['api_name']+"/versions/"+self.kwargs['api_version']+"/definitions/"+self.kwargs['api_definition_name']
@@ -85,8 +181,30 @@ class ApicExtensionScenario(ScenarioTest):
             'deployment_name': 'production',
             'server': server,
         })
-        self.cmd('az apic api deployment create -g {resource_group} -s {service_name} --api-name {api_name} --name {deployment_name} --title "CLI Test Production deployment" --description "CLI Test Public cloud production deployment." --environment-id {environment_id} --definition-id {definition_id} --server "{server}"')
-
+        self.cmd('az apic api deployment create -g {resource_group} -s {service_name} --api-name {api_name} --name {deployment_name} --title "CLI Test Production deployment" --description "CLI Test Public cloud production deployment." --environment-id {environment_id} --definition-id {definition_id} --server "{server}"',
+                    checks=[
+                        self.check('name', self.kwargs['deployment_name']),
+                        self.check('title', 'CLI Test Production deployment'),
+                        self.check('description', 'CLI Test Public cloud production deployment.')])
+        
+        # show deployment
+        self.cmd('az apic api deployment show -g {resource_group} -s {service_name} --api-name {api_name} --name {deployment_name}',
+                    checks=[
+                        self.check('name', self.kwargs['deployment_name'])])
+        
+        # update deployment
+        self.kwargs.update({
+            'deployment_title_update': 'CLI Test Production deployment update'
+        })
+        self.cmd('az apic api deployment update -g {resource_group} -s {service_name} --api-name {api_name} --name {deployment_name} --title "{deployment_title_update}"',
+                    checks=[
+                        self.check('name', self.kwargs['deployment_name']),
+                        self.check('title', self.kwargs['deployment_title_update'])])
+        
+        # list deployment
+        list_deployment_result = self.cmd('az apic api deployment list -g {resource_group} -s {service_name} --api-name {api_name}')
+        
+        # ------------------------------------------- Metadata Schema -------------------------------------------
         # create metadata schema
         templateInputSchemaFile = os.path.join(
             TEST_DIR,
@@ -125,6 +243,16 @@ class ApicExtensionScenario(ScenarioTest):
         self.cmd('az apic metadata-schema export-metadata-schema -g {resource_group} -s {service_name} --assigned-to deployment --file-name "{templateFileDeployment}"')
         self.cmd('az apic metadata-schema export-metadata-schema -g {resource_group} -s {service_name} --assigned-to environment --file-name "{templateFileEnvironment}"')
 
+        # show metadata schema
+        self.kwargs.update({
+            'schemaName': 'cli-test-metadata-schema-1'
+        })
+        self.cmd('az apic metadata-schema show -g {resource_group} -s {service_name} --name {schemaName}',
+                    checks=[
+                        self.check('name', self.kwargs['schemaName'])])
+
+        
+        # ------------------------------------------- Quick Add -------------------------------------------
         # register api - quick add
         templateQuickAddFile = os.path.join(
             TEST_DIR,
@@ -136,4 +264,3 @@ class ApicExtensionScenario(ScenarioTest):
             'environment_name': self.kwargs['environment_name']
         })
         self.cmd('az apic api register -g {resource_group} -s {service_name} --api-location "{templateFile}" --environment-name {environment_name}')
-
