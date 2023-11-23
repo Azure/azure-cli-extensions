@@ -1423,12 +1423,16 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_service_binding_customized_keys_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if location == STAGE_LOCATION:
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
         ca_name = self.create_random_name(prefix='containerapp1', length=24)
         redis_ca_name = 'redis'
         postgres_ca_name = 'postgres'
 
-        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
         env_rg = parse_resource_id(env_id).get('resource_group')
         env_name = parse_resource_id(env_id).get('name')
 
@@ -1507,7 +1511,11 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_service_binding_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if location == STAGE_LOCATION:
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -1668,7 +1676,11 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_managed_service_binding_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # `mysql flexible-server create`: type 'locations/checkNameAvailability' is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if location == STAGE_LOCATION:
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -1952,7 +1964,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled --location eastus')
         self.cmd(f'acr import -n {acr} --source {image_source}')
 
         self.cmd(f'containerapp create -g {resource_group} -n {app}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io')
