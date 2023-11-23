@@ -20,8 +20,7 @@ logger.addHandler(ch)
 def azdev_style_check(diff_ref):
     cmd = ['azdev', 'style']
     for tname, ext_path in diff_ref:
-        ext_name = ext_path.split('/')[-1]
-        cmd += [ext_name]
+        cmd += [tname]
         logger.info(f'cmd: {cmd}')
         out = run(cmd, capture_output=True, text=True)
         if out.returncode:
