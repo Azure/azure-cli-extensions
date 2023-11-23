@@ -902,7 +902,7 @@ def _get_app_env_and_group(
             )
 
 
-def _get_env_and_group_fron_app_or_log_analytics(
+def _get_env_and_group_from_app_or_log_analytics(
     cmd,
     resource_group_name,
     env: "ContainerAppEnvironment",
