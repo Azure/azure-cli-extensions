@@ -22,7 +22,7 @@ def azdev_style_check(diff_ref):
     for tname, ext_path in diff_ref:
         cmd += [tname]
         logger.info(f'cmd: {cmd}')
-        out = run(cmd, capture_output=True, text=True)
+        out = run(cmd, shell=True)
         if out.returncode:
             raise RuntimeError(f"{cmd} failed")
 
