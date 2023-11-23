@@ -73,31 +73,30 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.10'
+      displayName: 'Use Python 3.11'
       inputs:
-        versionSpec: 3.10
+        versionSpec: 3.11
     - bash: pip install wheel==0.30.0 "pylint>=2.12,<3" flake8==6.0.0 requests
       displayName: 'Install wheel, pylint, flake8, requests'
     - bash: python scripts/ci/source_code_static_analysis.py
       displayName: "Static Analysis"
 
 - job: StaticAnalysisv2
-  displayName: "Static Analysis v2"
+  displayName: "Azdev Static Analysis"
   pool:
     name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.10'
+      displayName: 'Use Python 3.11'
       inputs:
-        versionSpec: 3.10
+        versionSpec: 3.11
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
         set -ev
         source ./env/bin/activate
-        azdev style EXT --debug --verbose
-        # azdev style --repo azure-cli --tgt upstream/master --src upstream/dev
-      displayName: "Static Analysis v2"
+        python scripts/ci/azdev_style_check.py
+      displayName: "Azdev Style"
 
 - job: IndexVerify
   displayName: "Verify Extensions Index"
