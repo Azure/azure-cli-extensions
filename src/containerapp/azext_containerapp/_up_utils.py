@@ -1388,7 +1388,8 @@ def _infer_existing_connected_env(
             env_list.append(e)
 
         if len(env_list) == 1:
-            resource_group.name = parse_resource_id(env_list[0]["id"])["resource_group"]
+            if not resource_group.name:
+                resource_group.name = parse_resource_id(env_list[0]["id"])["resource_group"]
             env.set_name(env_list[0]["id"])
             env.custom_location_id = env_list[0]["extendedLocation"]["name"]
         if len(env_list) > 1:
@@ -1398,7 +1399,8 @@ def _infer_existing_connected_env(
                     "Please specify which resource group your Connected environment is in."
                 )  # get ACR details from --image, if possible
             else:
-                resource_group.name = parse_resource_id(env_list[0]["id"])["resource_group"]
+                if not resource_group.name:
+                    resource_group.name = parse_resource_id(env_list[0]["id"])["resource_group"]
                 env.set_name(env_list[0]["id"])
                 env.custom_location_id = env_list[0]["extendedLocation"]["name"]
 
