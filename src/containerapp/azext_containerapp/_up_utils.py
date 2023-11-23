@@ -1074,7 +1074,7 @@ def _set_up_defaults(
     # If no RG passed in and a singular app exists with the same name, get its env and rg
     _get_app_env_and_group(cmd, name, resource_group, env, location)
 
-    # If no env passed or set in the previous step (and not creating a new RG), then get env by location from tor log analytics ID
+    # If no env passed or set in the previous step (and not creating a new RG), then get env by location from log analytics ID
     _get_env_and_group_from_log_analytics(cmd, resource_group_name, env, resource_group, logs_customer_id, location)
 
     # try to set RG name by env name
