@@ -78,6 +78,9 @@ class AzdevExtensionHelper:
     def linter(self):
         self._cmd('azdev linter --include-whl-extensions {}'.format(self.extension_name))
 
+    def style(self):
+        self._cmd('azdev style {}'.format(self.extension_name))
+
     def build(self):
         pass
 
@@ -161,6 +164,7 @@ def linter_on_external_extension(index_json):
 
         azdev_extension = AzdevExtensionHelper(name)
         azdev_extension.linter()
+        azdev_extension.style()
 
         print('Checking service name for external extensions')
         service_name.check()
@@ -186,6 +190,7 @@ def linter_on_internal_extension(modified_files):
         azdev_extension = AzdevExtensionHelper(name)
         azdev_extension.add_from_code()
         azdev_extension.linter()
+        azdev_extension.style()
 
         print('Checking service name for internal extensions')
         service_name.check()
