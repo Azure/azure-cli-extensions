@@ -4581,9 +4581,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         ssh_access = self.context.get_ssh_access()
         if ssh_access is not None:
             msg = (
-                    "You're going to update ALL agentpool ssh access to '{}' "
-                    "This change will take effect after you upgrade the nodepool. Proceed?".format(ssh_access)
-                )
+                "You're going to update ALL agentpool ssh access to '{}' "
+                "This change will take effect after you upgrade the nodepool. Proceed?".format(ssh_access)
+            )
             if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
                 raise DecoratorEarlyExitException()
             for agent_pool_profile in mc.agent_pool_profiles:

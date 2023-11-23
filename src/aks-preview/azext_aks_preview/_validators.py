@@ -854,6 +854,6 @@ def validate_ssh_access(namespace):
         if namespace.ssh_access == '':
             return
         if namespace.ssh_access.lower() != "disabled" and \
-            namespace.ssh_access.lower() != "localuser":
+                namespace.ssh_access.lower() != "localuser":
             raise InvalidArgumentValueError(
                 "--ssh-access can only be disabled or localuser")
