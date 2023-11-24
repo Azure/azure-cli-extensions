@@ -21,9 +21,9 @@ class ApicExtensionScenario(ScenarioTest):
         self.kwargs.update({
             'resource_group': 'api-center-test',
             'service_name': 'contosoeuap',
-            'api_name': 'cli-test-api-102',
+            'api_name': 'cli-test-api-106',
             'api_version': 'cli-test-2023-01-02',
-            'api_definition_name': 'cli-test-openapi'
+            'api_definition_name': 'cli-test-openapi-106',
         })
 
         # ------------------------------------------- Environment -------------------------------------------
@@ -74,8 +74,8 @@ class ApicExtensionScenario(ScenarioTest):
         # ------------------------------------------- API -------------------------------------------
         # create api
         self.kwargs.update({
-            'api_description': "CLI Test API 0",
-            'api_title': "CLI Test API 0"
+            'api_description': "CLI Test API 106",
+            'api_title': "CLI Test API 106"
         })
         self.cmd('az apic api create -g {resource_group} -s {service_name} --api-name {api_name} --description "{api_description}" --kind rest --title "{api_title}"',
                  checks=[

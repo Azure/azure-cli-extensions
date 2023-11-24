@@ -19,11 +19,10 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group('apic api definition') as g:
         self.command_table['apic api definition import-specification'] = ImportSpecificationExtension(loader=self)
         self.command_table['apic api definition export-specification'] = ExportSpecificationExtension(loader=self)
-
     with self.command_group('apic metadata-schema') as g:
         self.command_table['apic metadata-schema create'] = CreateMetadataSchemaExtension(loader=self)
         self.command_table['apic metadata-schema update'] = UpdateMetadataSchemaExtension(loader=self)
         self.command_table['apic metadata-schema export-metadata-schema'] = ExportMetadataSchemaExtension(loader=self)
-        
     with self.command_group('apic api') as g: 
         g.custom_command("register", "register_apic")
+        

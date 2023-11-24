@@ -8,22 +8,18 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+import os
+import sys
+import json
+import requests
 from knack.log import get_logger
-
+import chardet
+from azure.cli.core.aaz import *
 from .aaz.latest.apic.api.definition import ImportSpecification
 from .aaz.latest.apic.api.definition import ExportSpecification
 from .aaz.latest.apic.metadata_schema import Create
 from .aaz.latest.apic.metadata_schema import Update
 from .aaz.latest.apic.metadata_schema import ExportMetadataSchema
-
-from azure.cli.core.aaz import *
-from urllib.parse import urlparse, urlunparse
-import json
-import sys
-import requests
-import os
-import chardet
-
 
 logger = get_logger(__name__)
 
@@ -42,7 +38,6 @@ class ImportSpecificationExtension(ImportSpecification):
 
     def pre_operations(self):
         args = self.ctx.args
-      
         data = None
         value = None
 
@@ -56,11 +51,11 @@ class ImportSpecificationExtension(ImportSpecification):
                 data = json.load(f)
                 if data:
                     value = json.dumps(data)
-  
+
         # If any of the fields are None, get them from self.args
         if value is None:
             value = args.value
-   
+
         # Reassign the values to self.args
         args.value = value
 
@@ -90,10 +85,10 @@ class ExportSpecificationExtension(ExportSpecification):
 
         if result:
             print('Results found. Exporting to', arguments.source_profile)
-        
+
             response_format = result['format']
             exportedResults = result['value']
-            
+
             if response_format == 'link':
                 print('Fetching specification from:', exportedResults)
                 getReponse = requests.get(exportedResults)
@@ -101,7 +96,7 @@ class ExportSpecificationExtension(ExportSpecification):
                     exportedResults = getReponse.content.decode()
                 else:
                     logger.error('Error while fetching the results from the link. Status code: %s', getReponse.status_code)
-                        
+
             if arguments.source_profile:
                 try:
                     self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
@@ -120,7 +115,7 @@ class ExportSpecificationExtension(ExportSpecification):
                     if isinstance(results, str):
                         results = json.loads(results)
                     json.dump(results, f, indent=4, separators=(',', ':'))
-                else:    
+                else:
                     f.write(results)
 
 class CreateMetadataSchemaExtension(Create):
@@ -134,10 +129,9 @@ class CreateMetadataSchemaExtension(Create):
             registered=True
         )
         return args_schema
-    
+
     def pre_operations(self):
         args = self.ctx.args
-      
         data = None
         value = args.schema
 
@@ -154,10 +148,10 @@ class CreateMetadataSchemaExtension(Create):
                 data = json.load(f)
                 if data:
                     value = json.dumps(data)
-  
+
         # If any of the fields are None, get them from self.args
         if value is None:
-           logger.error('Please provide the schema to create the metadata schema through --schema option or through --file-name option via a file.')
+            logger.error('Please provide the schema to create the metadata schema through --schema option or through --file-name option via a file.')
 
         # Reassign the values to self.args
         self.ctx.args.schema = value
@@ -173,10 +167,9 @@ class UpdateMetadataSchemaExtension(Update):
             registered=True
         )
         return args_schema
-    
+
     def pre_operations(self):
         args = self.ctx.args
-      
         data = None
         value = args.schema
 
@@ -193,16 +186,16 @@ class UpdateMetadataSchemaExtension(Update):
                 data = json.load(f)
                 if data:
                     value = json.dumps(data)
-  
+
         # If any of the fields are None, get them from self.args
         if value is None:
-           logger.error('Please provide the schema to update the metadata schema through --schema option or through --file-name option via a file.')
+            logger.error('Please provide the schema to update the metadata schema through --schema option or through --file-name option via a file.')
 
         # Reassign the values to self.args
         self.ctx.args.schema = value
 
 class ExportMetadataSchemaExtension(ExportMetadataSchema):
-    
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -213,17 +206,17 @@ class ExportMetadataSchemaExtension(ExportMetadataSchema):
             registered=True
         )
         return args_schema
-    
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         arguments = self.ctx.args
 
         if result:
             print('Results found. Exporting to', arguments.source_profile)
-        
+
             response_format = result['format']
             exportedResults = result['value']
-            
+
             if response_format == 'link':
                 print('Fetching metadata from:', exportedResults)
                 getReponse = requests.get(exportedResults)
@@ -231,7 +224,7 @@ class ExportMetadataSchemaExtension(ExportMetadataSchema):
                     exportedResults = getReponse.content.decode()
                 else:
                     logger.error('Error while fetching the results from the link. Status code: %s', getReponse.status_code)
-                        
+
             if arguments.source_profile:
                 try:
                     self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
@@ -250,7 +243,7 @@ class ExportMetadataSchemaExtension(ExportMetadataSchema):
                     if isinstance(results, str):
                         results = json.loads(results)
                     json.dump(results, f, indent=4, separators=(',', ':'))
-                else:    
+                else:
                     f.write(results)
 
 # Quick Import
@@ -276,8 +269,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             logger.error('Could not load json file')
             return
 
-        value_dict = json.loads(value)
-
         # Check if the first field is 'swagger', 'openapi', or something else and get the definition name and version
         first_key, first_value = list(data.items())[0]
         if first_key in ['swagger', 'openapi']:
@@ -289,7 +280,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             extracted_definition_version = 'v1'
             extracted_api_kind = 'rest'
             #TODO how to determine other kinds - enum={"graphql": "graphql", "grpc": "grpc", "rest": "rest", "soap": "soap", "webhook": "webhook", "websocket": "websocket"}
-    
+
         # Create API and Create API Version
         info = data['info']
         if info:
@@ -339,14 +330,14 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 extracted_api_external_documentation = {'description': extracted_api_external_documentation_description, 'title': extracted_api_external_documentation_title, 'url': extracted_api_external_documentation_url}
             else:
                 extracted_api_external_documentation = None
-                
+
             #TODO: Create API - custom-properties
             # - "The custom metadata defined for API catalog entities. #1
-                 
+
 
             # Create API -------------------------------------------------------------------------------------
             from .aaz.latest.apic.api import Create as CreateAPI
-            
+
             api_args = {
                 'api_name': extracted_api_name,
                 'resource_group': resource_group,
@@ -361,9 +352,10 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'external_documentation': extracted_api_external_documentation,
                 'description': extracted_api_description,
                 }
-            createAPIResults = CreateAPI(cli_ctx=cmd.cli_ctx)(command_args=api_args)
+
+            CreateAPI(cli_ctx=cmd.cli_ctx)(command_args=api_args)
             print("API was created successfully")
-            
+
 
             # Create API Version -----------------------------------------------------------------------------
             from .aaz.latest.apic.api.version import Create as CreateAPIVersion
@@ -378,7 +370,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'title' : extracted_api_version_title
             }
 
-            createAPIVersionResults = CreateAPIVersion(cli_ctx=cmd.cli_ctx)(command_args=api_version_args)
+            CreateAPIVersion(cli_ctx=cmd.cli_ctx)(command_args=api_version_args)
             print("API version was created successfully")
 
 
@@ -396,7 +388,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'description' : extracted_api_description,  #TODO Extract from spec
             }
 
-            createAPIDefinitionResults = CreateAPIDefinition(cli_ctx=cmd.cli_ctx)(command_args=api_definition_args)
+            CreateAPIDefinition(cli_ctx=cmd.cli_ctx)(command_args=api_definition_args)
             print("API definition was created successfully")
 
 
@@ -405,7 +397,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
 
             # uses customized ImportSpecificationExtension class
             specification_details = {'name':extracted_definition_name,'version':extracted_definition_version}
-            format = 'inline'
             #TODO format - Link - what if the link is just pasted in the value?
             #TODO format - inline - what if spec is just pasted in the value?
             #TODO - other non json spec formats
@@ -426,16 +417,14 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             importAPISpecificationResults_Polled = LongRunningOperation(cmd.cli_ctx)(importAPISpecificationResults)
             print("API specification was imported successfully")
 
-
             # Create API Deployment -----------------------------------------------------------------------------
             from .aaz.latest.apic.api.deployment import Create as CreateAPIDeployment
             from .aaz.latest.apic.environment import Show as GetEnvironment
-            from datetime import datetime
 
             environment_id = None
             if environment_name:
                 # GET Environment ID
-               
+
                 environment_args = {
                     'resource_group': resource_group,
                     'service_name': service_name,
@@ -444,13 +433,12 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 }
 
                 getEnvironmentResults = GetEnvironment(cli_ctx=cmd.cli_ctx)(command_args=environment_args)
-                environment_id = getEnvironmentResults['id']  
+                environment_id = getEnvironmentResults['id']
                 # full envId, extract actual envId if to be used later
 
             servers = data.get('servers')
             if environment_id and servers:
                 for server in servers:
-                                     
                     default_deployment_title = (extracted_api_name + "deployment").replace("-", "")
                     extracted_deployment_name = server.get('name', default_deployment_title).replace(" ", "-")
                     extracted_deployment_title = server.get('title', default_deployment_title).replace(" ", "-")
@@ -479,5 +467,5 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                         # TODO custom properties
                     }
 
-                    createAPIDeploymentResults = CreateAPIDeployment(cli_ctx=cmd.cli_ctx)(command_args=api_deployment_args)
+                    CreateAPIDeployment(cli_ctx=cmd.cli_ctx)(command_args=api_deployment_args)
                     print("API deployment was created successfully")
