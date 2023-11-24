@@ -1,7 +1,7 @@
 interactions:
 - request:
-    body: '{"location": "centralus", "sku": {"name": "Standard"}, "properties": {"state":
-      "Enabled"}}'
+    body: '{"location": "centralus", "properties": {"state": "Enabled"}, "sku": {"name":
+      "Standard"}}'
     headers:
       Accept:
       - application/json
@@ -18,7 +18,7 @@ interactions:
       ParameterSetName:
       - --location --sku --name --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts/cli_test_000004?api-version=2019-05-01
   response:
@@ -32,23 +32,30 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:02 GMT
+      - Fri, 24 Nov 2023 06:32:55 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=5438b719719a236f0061a2df82ee876e245535582e51f65e9a5afcc69a780aee;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=5438b719719a236f0061a2df82ee876e245535582e51f65e9a5afcc69a780aee;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 834C29A2702D49DCAE259B6E02868E98 Ref B: TYO201100113009 Ref C: 2023-11-24T06:32:54Z'
     status:
       code: 201
       message: Created
 - request:
-    body: '{"location": "centralus", "sku": {"name": "Standard"}, "properties": {"state":
-      "Enabled"}}'
+    body: '{"location": "centralus", "properties": {"state": "Enabled"}, "sku": {"name":
+      "Standard"}}'
     headers:
       Accept:
       - application/json
@@ -65,7 +72,7 @@ interactions:
       ParameterSetName:
       - --location --input-path --name --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts/cli_test_000004?api-version=2019-05-01
   response:
@@ -79,21 +86,26 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:04 GMT
+      - Fri, 24 Nov 2023 06:32:57 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=5438b719719a236f0061a2df82ee876e245535582e51f65e9a5afcc69a780aee;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=5438b719719a236f0061a2df82ee876e245535582e51f65e9a5afcc69a780aee;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: D89455D218ED406292D9798D166B10FE Ref B: TYO201100115053 Ref C: 2023-11-24T06:32:57Z'
     status:
       code: 200
       message: OK
@@ -121,31 +133,38 @@ interactions:
       ParameterSetName:
       - --resource-group --location --definition --name
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T03:43:09.8214583Z","changedTime":"2023-06-26T03:43:09.8203656Z","state":"Enabled","version":"08585138558956768772","accessEndpoint":"https://prod-12.centralus.logic.azure.com:443/workflows/2e63547be957434296fc8e533168207b","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}'
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-11-24T06:32:59.352431Z","changedTime":"2023-11-24T06:32:59.3459805Z","state":"Enabled","version":"08585007993061495360","accessEndpoint":"https://prod-21.centralus.logic.azure.com:443/workflows/0487e33d1b2a49a79250fd7f17d5e1d3","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2088'
+      - '2087'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:10 GMT
+      - Fri, 24 Nov 2023 06:32:59 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=c7e558761f58304444ef69618be1b9c131674d1fae66a08eb93775ce72c520da;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=c7e558761f58304444ef69618be1b9c131674d1fae66a08eb93775ce72c520da;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 239B7BD8800941CB8CAC03DB3059459B Ref B: TYO201100115037 Ref C: 2023-11-24T06:32:58Z'
     status:
       code: 201
       message: Created
@@ -163,7 +182,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts/cli_test_000004?api-version=2019-05-01
   response:
@@ -177,19 +196,24 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:12 GMT
+      - Fri, 24 Nov 2023 06:33:00 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=6e079698df7882eaf22e06fefcd5651a3566a6f76cfbe4c50e9be46eda9ede95;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=6e079698df7882eaf22e06fefcd5651a3566a6f76cfbe4c50e9be46eda9ede95;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 4983642AB9254B9BA03A9613FD264EE5 Ref B: TYO201100116033 Ref C: 2023-11-24T06:33:00Z'
     status:
       code: 200
       message: OK
@@ -207,35 +231,40 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T03:43:09.8214583Z","changedTime":"2023-06-26T03:43:09.8203656Z","state":"Enabled","version":"08585138558956768772","accessEndpoint":"https://prod-12.centralus.logic.azure.com:443/workflows/2e63547be957434296fc8e533168207b","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}'
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-11-24T06:32:59.352431Z","changedTime":"2023-11-24T06:32:59.3459805Z","state":"Enabled","version":"08585007993061495360","accessEndpoint":"https://prod-21.centralus.logic.azure.com:443/workflows/0487e33d1b2a49a79250fd7f17d5e1d3","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2088'
+      - '2087'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:14 GMT
+      - Fri, 24 Nov 2023 06:33:01 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=404c30ae164cea1996847a74bb6b599076bae071bff69e3a69c7f1aed31d448b;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=404c30ae164cea1996847a74bb6b599076bae071bff69e3a69c7f1aed31d448b;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '19999'
+      x-msedge-ref:
+      - 'Ref A: F70885D58259468E8702EB2AE27AD234 Ref B: TYO201100116029 Ref C: 2023-11-24T06:33:01Z'
     status:
       code: 200
       message: OK
@@ -253,7 +282,7 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts?api-version=2019-05-01
   response:
@@ -267,19 +296,24 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:17 GMT
+      - Fri, 24 Nov 2023 06:33:03 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=98ea9fa6eaf31c7e77fa9d3f5a13d5d9b5ae0eaa634c1583eb0dd9158c80b7a4;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=98ea9fa6eaf31c7e77fa9d3f5a13d5d9b5ae0eaa634c1583eb0dd9158c80b7a4;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 84A698DEE0254E2983A8D1AAD6A9123C Ref B: TYO201100115051 Ref C: 2023-11-24T06:33:03Z'
     status:
       code: 200
       message: OK
@@ -297,35 +331,40 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows?api-version=2019-05-01
   response:
     body:
-      string: '{"value":[{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T03:43:09.8214583Z","changedTime":"2023-06-26T03:43:09.8203656Z","state":"Enabled","version":"08585138558956768772","accessEndpoint":"https://prod-12.centralus.logic.azure.com:443/workflows/2e63547be957434296fc8e533168207b","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}]}'
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","createdTime":"2023-11-24T06:32:59.352431Z","changedTime":"2023-11-24T06:32:59.3459805Z","state":"Enabled","version":"08585007993061495360","accessEndpoint":"https://prod-21.centralus.logic.azure.com:443/workflows/0487e33d1b2a49a79250fd7f17d5e1d3","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2100'
+      - '2099'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:18 GMT
+      - Fri, 24 Nov 2023 06:33:25 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=f9874cfcec5b209c3abef41406e1b5ce057493cc5d949e7c78aaa4e7d5a7ddf1;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=f9874cfcec5b209c3abef41406e1b5ce057493cc5d949e7c78aaa4e7d5a7ddf1;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '19999'
+      x-msedge-ref:
+      - 'Ref A: 86D82B5AE44349FCAEB2923863799CA0 Ref B: TYO201100113051 Ref C: 2023-11-24T06:33:25Z'
     status:
       code: 200
       message: OK
@@ -341,34 +380,38 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Logic/integrationAccounts?api-version=2019-05-01
   response:
     body:
-      string: '{"value":[{"properties":{"state":"Enabled"},"sku":{"name":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts/cli_test_000004","name":"cli_test_000004","type":"Microsoft.Logic/integrationAccounts","location":"centralus"},{"properties":{"state":"Enabled"},"sku":{"name":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/lgtest/providers/Microsoft.Logic/integrationAccounts/iacc1","name":"iacc1","type":"Microsoft.Logic/integrationAccounts","location":"eastus"}]}'
+      string: '{"value":[{"properties":{"state":"Enabled"},"sku":{"name":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_djtazfrw443eq5hf3l4ba5l2dpqxkhddcuulupupjuek3pz5ob63bit45ghgvh5msg/providers/Microsoft.Logic/integrationAccounts/cli_test_q7wfkn7p44xq4bc","name":"cli_test_q7wfkn7p44xq4bc","type":"Microsoft.Logic/integrationAccounts","location":"centralus"},{"properties":{"state":"Enabled"},"sku":{"name":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts/cli_test_000004","name":"cli_test_000004","type":"Microsoft.Logic/integrationAccounts","location":"centralus"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '591'
+      - '701'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:20 GMT
+      - Fri, 24 Nov 2023 06:33:26 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=c7e558761f58304444ef69618be1b9c131674d1fae66a08eb93775ce72c520da;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=c7e558761f58304444ef69618be1b9c131674d1fae66a08eb93775ce72c520da;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
       - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-original-request-ids:
-      - centralus:f6550be8-9491-48c7-8ce3-ba3904e96415
-      - eastus:27bcf5e7-4583-4118-b80b-61e53d13ccb8
+      x-msedge-ref:
+      - 'Ref A: 44D0D205569E412BB34DE46BC1574E43 Ref B: TYO201100116017 Ref C: 2023-11-24T06:33:26Z'
     status:
       code: 200
       message: OK
@@ -384,49 +427,287 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Logic/workflows?api-version=2019-05-01
   response:
     body:
-      string: '{"value":[{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T03:43:09.8214583Z","changedTime":"2023-06-26T03:43:09.8203656Z","state":"Enabled","version":"08585138558956768772","accessEndpoint":"https://prod-12.centralus.logic.azure.com:443/workflows/2e63547be957434296fc8e533168207b","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"},{"properties":{"provisioningState":"Succeeded","createdTime":"2019-11-18T06:41:01.5064237Z","changedTime":"2023-05-09T01:58:21.8749723Z","state":"Enabled","version":"08585180093836149808","accessEndpoint":"https://prod-29.westus.logic.azure.com:443/workflows/cf5bb036a7fa41d4ad8b964d5eea3343","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Trigger_at_Mon,_Wed,_Sat_every_week":{"recurrence":{"frequency":"Week","interval":1,"schedule":{"hours":["18"],"weekDays":["Monday","Wednesday","Saturday"]},"timeZone":"China
-        Standard Time"},"evaluatedRecurrence":{"frequency":"Week","interval":1,"schedule":{"hours":["18"],"weekDays":["Monday","Wednesday","Saturday"]},"timeZone":"China
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","createdTime":"2023-11-24T06:32:59.352431Z","changedTime":"2023-11-24T06:32:59.3459805Z","state":"Enabled","version":"08585007993061495360","accessEndpoint":"https://prod-21.centralus.logic.azure.com:443/workflows/0487e33d1b2a49a79250fd7f17d5e1d3","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-11-23T16:16:04.1903946Z","changedTime":"2023-11-23T16:16:04.1895313Z","state":"Enabled","version":"08585008507213080502","accessEndpoint":"https://prod-07.centralus.logic.azure.com:443/workflows/65cd94e0e9c142828acba04e3b9751ce","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_logic_logic1patsfxuwdmtfanpjru5jhlvmljjhfm73hmshhccz6pu2szq5xnwm3y/providers/Microsoft.Logic/workflows/cli_test_pzt7rbo4wogrpeb","name":"cli_test_pzt7rbo4wogrpeb","type":"Microsoft.Logic/workflows","location":"centralus"},{"properties":{"provisioningState":"Succeeded","createdTime":"2019-11-18T06:41:01.5064237Z","changedTime":"2023-08-05T09:36:28.0713386Z","state":"Enabled","version":"08585103786974170056","accessEndpoint":"https://prod-29.westus.logic.azure.com:443/workflows/cf5bb036a7fa41d4ad8b964d5eea3343","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Trigger_at_6_pm_every_day":{"recurrence":{"frequency":"Day","interval":1,"schedule":{"hours":["18"]},"timeZone":"China
+        Standard Time"},"evaluatedRecurrence":{"frequency":"Day","interval":1,"schedule":{"hours":["18"]},"timeZone":"China
         Standard Time"},"type":"Recurrence"}},"actions":{"Delete_resource_groups":{"foreach":"@body(''Filter_elements_except_resource_group_name_is_equal_to_\"AzureSDKTest_reserved\"'')","actions":{"Delete_a_resource_group":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"delete","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups/@{encodeURIComponent(items(''Delete_resource_groups'')?[''name''])}","queries":{"x-ms-api-version":"2016-06-01"}}}},"runAfter":{"Filter_elements_except_resource_group_name_is_equal_to_\"AzureSDKTest_reserved\"":["Succeeded"]},"type":"Foreach"},"Filter_elements_except_resource_group_name_is_equal_to_\"AzureSDKTest_reserved\"":{"runAfter":{"List_resource_groups":["Succeeded"]},"type":"Query","inputs":{"from":"@body(''List_resource_groups'')?[''value'']","where":"@not(equals(item()?[''name''],
         ''AzureSDKTest_reserved''))"}},"List_resource_groups":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"get","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups","queries":{"x-ms-api-version":"2016-06-01"}}}},"outputs":{}},"parameters":{"$connections":{"value":{"arm_1":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/arm-1","connectionName":"arm-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/arm"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"52.160.92.112"},{"address":"40.118.244.241"},{"address":"40.118.241.243"},{"address":"157.56.162.53"},{"address":"157.56.167.147"},{"address":"104.42.49.145"},{"address":"40.83.164.80"},{"address":"104.42.38.32"},{"address":"13.86.223.0"},{"address":"13.86.223.1"},{"address":"13.86.223.2"},{"address":"13.86.223.3"},{"address":"13.86.223.4"},{"address":"13.86.223.5"},{"address":"104.40.34.169"},{"address":"104.40.32.148"},{"address":"52.160.70.221"},{"address":"52.160.70.105"},{"address":"13.91.81.221"},{"address":"13.64.231.196"},{"address":"13.87.204.182"},{"address":"40.78.65.193"},{"address":"13.87.207.39"},{"address":"104.42.44.28"},{"address":"40.83.134.97"},{"address":"40.78.65.112"},{"address":"168.62.9.74"},{"address":"168.62.28.191"}],"accessEndpointIpAddresses":[{"address":"52.160.90.237"},{"address":"138.91.188.137"},{"address":"13.91.252.184"},{"address":"157.56.160.212"},{"address":"104.40.34.112"},{"address":"52.160.68.27"},{"address":"13.88.168.158"},{"address":"104.42.40.164"},{"address":"13.87.207.79"},{"address":"13.87.204.210"},{"address":"168.62.9.100"}]},"connector":{"outgoingIpAddresses":[{"address":"13.93.148.62"},{"address":"104.42.122.49"},{"address":"40.112.195.87"},{"address":"13.86.223.32/27"},{"address":"40.112.243.160/28"},{"address":"20.59.77.0/27"},{"address":"20.66.6.112/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Logic/workflows/AzureSDKTest_ScheduledCleaner","name":"AzureSDKTest_ScheduledCleaner","type":"Microsoft.Logic/workflows","location":"westus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2020-04-24T06:33:36.5052747Z","changedTime":"2020-04-24T06:33:36.4986025Z","state":"Enabled","version":"08586138968690384726","accessEndpoint":"https://prod-123.westus.logic.azure.com:443/workflows/72b1a436cf5a4f65950d224869dd7484","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{},"triggers":{},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"52.160.92.112"},{"address":"40.118.244.241"},{"address":"40.118.241.243"},{"address":"157.56.162.53"},{"address":"157.56.167.147"},{"address":"104.42.49.145"},{"address":"40.83.164.80"},{"address":"104.42.38.32"},{"address":"13.86.223.0"},{"address":"13.86.223.1"},{"address":"13.86.223.2"},{"address":"13.86.223.3"},{"address":"13.86.223.4"},{"address":"13.86.223.5"},{"address":"104.40.34.169"},{"address":"104.40.32.148"},{"address":"52.160.70.221"},{"address":"52.160.70.105"},{"address":"13.91.81.221"},{"address":"13.64.231.196"},{"address":"13.87.204.182"},{"address":"40.78.65.193"},{"address":"13.87.207.39"},{"address":"104.42.44.28"},{"address":"40.83.134.97"},{"address":"40.78.65.112"},{"address":"168.62.9.74"},{"address":"168.62.28.191"}],"accessEndpointIpAddresses":[{"address":"52.160.90.237"},{"address":"138.91.188.137"},{"address":"13.91.252.184"},{"address":"157.56.160.212"},{"address":"104.40.34.112"},{"address":"52.160.68.27"},{"address":"13.88.168.158"},{"address":"104.42.40.164"},{"address":"13.87.207.79"},{"address":"13.87.204.210"},{"address":"168.62.9.100"}]},"connector":{"outgoingIpAddresses":[{"address":"13.93.148.62"},{"address":"104.42.122.49"},{"address":"40.112.195.87"},{"address":"13.86.223.32/27"},{"address":"40.112.243.160/28"},{"address":"20.59.77.0/27"},{"address":"20.66.6.112/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Logic/workflows/FetchModules","name":"FetchModules","type":"Microsoft.Logic/workflows","location":"westus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2022-07-05T02:21:31.5244292Z","changedTime":"2023-05-11T10:14:57.8703848Z","state":"Enabled","version":"08585178067876160392","accessEndpoint":"https://prod-179.westus.logic.azure.com:443/workflows/9744517e1ea54c55b94046389d510479","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Trigger_at_6pm_every_day":{"recurrence":{"frequency":"Day","interval":1,"schedule":{"hours":["18"]},"timeZone":"China
         Standard Time"},"evaluatedRecurrence":{"frequency":"Day","interval":1,"schedule":{"hours":["18"]},"timeZone":"China
-        Standard Time"},"type":"Recurrence"}},"actions":{"Delete_VM":{"foreach":"@body(''List_VM'')?[''value'']","actions":{"Delete_a_VM":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"delete","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups/@{encodeURIComponent(split(toLower(items(''Delete_VM'')?[''id'']),''resourcegroups/'')[1])}","queries":{"x-ms-api-version":"2022-03-01"}}}},"runAfter":{"List_VM":["Succeeded"]},"type":"Foreach"},"Delete_VM_resourcegroup":{"foreach":"@body(''List_VM'')?[''value'']","actions":{"Delete_a_VM_resourcegroup":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"delete","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups/@{encodeURIComponent(split(split(toLower(items(''Delete_VM_resourcegroup'')?[''id'']),''resourcegroups/'')[1],''/providers'')[0])}","queries":{"x-ms-api-version":"2016-06-01"}}}},"runAfter":{"List_VM":["Succeeded"]},"type":"Foreach"},"Delete_public_ip":{"foreach":"@body(''List_public_ip'')?[''value'']","actions":{"Delete_a_public_ip":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"delete","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups/@{encodeURIComponent(split(toLower(items(''Delete_public_ip'')?[''id'']),''resourcegroups/'')[1])}","queries":{"x-ms-api-version":"2021-08-01"}}}},"runAfter":{"List_public_ip":["Succeeded"]},"type":"Foreach"},"Delete_public_ip_resourcegroup":{"foreach":"@body(''List_public_ip'')?[''value'']","actions":{"Delete_a_public_ip_resourcegroup":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"delete","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups/@{encodeURIComponent(split(split(toLower(items(''Delete_public_ip_resourcegroup'')?[''id'']),''resourcegroups/'')[1],''/providers'')[0])}","queries":{"x-ms-api-version":"2016-06-01"}}}},"runAfter":{"List_public_ip":["Succeeded"]},"type":"Foreach"},"List_VM":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"get","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/providers/Microsoft.Compute/virtualMachines","queries":{"x-ms-api-version":"2022-03-01"}}},"List_public_ip":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"get","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/providers/Microsoft.Network/publicIPAddresses","queries":{"x-ms-api-version":"2021-08-01"}}}},"outputs":{}},"parameters":{"$connections":{"value":{"arm_1":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/arm-1","connectionName":"arm-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/arm"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"52.160.92.112"},{"address":"40.118.244.241"},{"address":"40.118.241.243"},{"address":"157.56.162.53"},{"address":"157.56.167.147"},{"address":"104.42.49.145"},{"address":"40.83.164.80"},{"address":"104.42.38.32"},{"address":"13.86.223.0"},{"address":"13.86.223.1"},{"address":"13.86.223.2"},{"address":"13.86.223.3"},{"address":"13.86.223.4"},{"address":"13.86.223.5"},{"address":"104.40.34.169"},{"address":"104.40.32.148"},{"address":"52.160.70.221"},{"address":"52.160.70.105"},{"address":"13.91.81.221"},{"address":"13.64.231.196"},{"address":"13.87.204.182"},{"address":"40.78.65.193"},{"address":"13.87.207.39"},{"address":"104.42.44.28"},{"address":"40.83.134.97"},{"address":"40.78.65.112"},{"address":"168.62.9.74"},{"address":"168.62.28.191"}],"accessEndpointIpAddresses":[{"address":"52.160.90.237"},{"address":"138.91.188.137"},{"address":"13.91.252.184"},{"address":"157.56.160.212"},{"address":"104.40.34.112"},{"address":"52.160.68.27"},{"address":"13.88.168.158"},{"address":"104.42.40.164"},{"address":"13.87.207.79"},{"address":"13.87.204.210"},{"address":"168.62.9.100"}]},"connector":{"outgoingIpAddresses":[{"address":"13.93.148.62"},{"address":"104.42.122.49"},{"address":"40.112.195.87"},{"address":"13.86.223.32/27"},{"address":"40.112.243.160/28"},{"address":"20.59.77.0/27"},{"address":"20.66.6.112/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Logic/workflows/HighRiskResource_ScheduledCleaner","name":"HighRiskResource_ScheduledCleaner","type":"Microsoft.Logic/workflows","location":"westus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2019-11-25T03:03:51.6406922Z","changedTime":"2020-03-02T03:30:46.8880289Z","state":"Disabled","version":"08586184870386928444","accessEndpoint":"https://prod-52.westus.logic.azure.com:443/workflows/ad25d96f848444caaf7c4ec48853fbcf","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Recurrence":{"recurrence":{"frequency":"Day","interval":3},"type":"Recurrence"}},"actions":{"List_resource_groups":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm''][''connectionId'']"}},"method":"get","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups","queries":{"x-ms-api-version":"2016-06-01"}}},"Run_query_and_list_results":{"runAfter":{"List_resource_groups":["Succeeded"]},"type":"ApiConnection","inputs":{"body":"[].eventTimestamp","host":{"connection":{"name":"@parameters(''$connections'')[''azuremonitorlogs''][''connectionId'']"}},"method":"post","path":"/queryData","queries":{"resourcegroups":"new-experiences","resourcename":"Microsoft.ClassicCompute","resourcetype":"virtualMachines","subscriptions":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","timerange":"60"}}}},"outputs":{}},"parameters":{"$connections":{"value":{"arm":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/arm","connectionName":"arm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/arm"},"azuremonitorlogs":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/azuremonitorlogs","connectionName":"azuremonitorlogs","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/azuremonitorlogs"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"52.160.92.112"},{"address":"40.118.244.241"},{"address":"40.118.241.243"},{"address":"157.56.162.53"},{"address":"157.56.167.147"},{"address":"104.42.49.145"},{"address":"40.83.164.80"},{"address":"104.42.38.32"},{"address":"13.86.223.0"},{"address":"13.86.223.1"},{"address":"13.86.223.2"},{"address":"13.86.223.3"},{"address":"13.86.223.4"},{"address":"13.86.223.5"},{"address":"104.40.34.169"},{"address":"104.40.32.148"},{"address":"52.160.70.221"},{"address":"52.160.70.105"},{"address":"13.91.81.221"},{"address":"13.64.231.196"},{"address":"13.87.204.182"},{"address":"40.78.65.193"},{"address":"13.87.207.39"},{"address":"104.42.44.28"},{"address":"40.83.134.97"},{"address":"40.78.65.112"},{"address":"168.62.9.74"},{"address":"168.62.28.191"}],"accessEndpointIpAddresses":[{"address":"52.160.90.237"},{"address":"138.91.188.137"},{"address":"13.91.252.184"},{"address":"157.56.160.212"},{"address":"104.40.34.112"},{"address":"52.160.68.27"},{"address":"13.88.168.158"},{"address":"104.42.40.164"},{"address":"13.87.207.79"},{"address":"13.87.204.210"},{"address":"168.62.9.100"}]},"connector":{"outgoingIpAddresses":[{"address":"13.93.148.62"},{"address":"104.42.122.49"},{"address":"40.112.195.87"},{"address":"13.86.223.32/27"},{"address":"40.112.243.160/28"},{"address":"20.59.77.0/27"},{"address":"20.66.6.112/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Logic/workflows/TestLogicApp","name":"TestLogicApp","type":"Microsoft.Logic/workflows","location":"westus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T02:53:44.7803191Z","changedTime":"2023-06-26T02:58:14.6682465Z","state":"Enabled","version":"08585138585908197008","accessEndpoint":"https://prod-06.eastus.logic.azure.com:443/workflows/651218ee23a1404fadd59d57b182daf4","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"manual":{"type":"Request","kind":"Http","inputs":{"method":"POST","schema":{"properties":{"content":{"type":"string"},"subject":{"type":"string"},"to":{"type":"string"}},"type":"object"}}}},"actions":{"Send_an_email_(V2)":{"runAfter":{},"type":"ApiConnection","inputs":{"body":{"Body":"<p>@{triggerBody()?[''content'']}</p>","Importance":"Normal","Subject":"@triggerBody()?[''subject'']","To":"@triggerBody()?[''to'']"},"host":{"connection":{"name":"@parameters(''$connections'')[''office365''][''connectionId'']"}},"method":"post","path":"/v2/Mail"}}},"outputs":{}},"parameters":{"$connections":{"value":{"office365":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/office365","connectionName":"office365","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/office365"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Logic/workflows/SendMail","name":"SendMail","type":"Microsoft.Logic/workflows","location":"eastus"},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T03:00:51.7499166Z","changedTime":"2023-06-26T03:07:04.8617385Z","state":"Enabled","version":"08585138580606248885","accessEndpoint":"https://prod-64.eastus.logic.azure.com:443/workflows/a33ef5180fe145109b3e7dca39c74243","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"manual":{"type":"Request","kind":"Http","inputs":{"method":"POST","schema":{"properties":{"content":{"type":"string"},"title":{"type":"string"},"to":{"type":"string"}},"type":"object"}}}},"actions":{"Create_a_chat":{"runAfter":{},"type":"ApiConnection","inputs":{"body":{"members":"@triggerBody()?[''to'']","topic":"@triggerBody()?[''title'']"},"host":{"connection":{"name":"@parameters(''$connections'')[''teams''][''connectionId'']"}},"method":"post","path":"/beta/chats"}},"Get_an_@mention_token_for_a_user":{"runAfter":{"Create_a_chat":["Succeeded"]},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''teams''][''connectionId'']"}},"method":"get","path":"/v1.0/users/@{encodeURIComponent(triggerBody()?[''to''])}"}},"Post_message_in_a_chat_or_channel":{"runAfter":{"Get_an_@mention_token_for_a_user":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"messageBody":"<p>Hi
-        @{body(''Get_an_@mention_token_for_a_user'')?[''atMention'']},<br>\n@{triggerBody()?[''content'']}</p>","recipient":"@body(''Create_a_chat'')?[''id'']"},"host":{"connection":{"name":"@parameters(''$connections'')[''teams''][''connectionId'']"}},"method":"post","path":"/beta/teams/conversation/message/poster/@{encodeURIComponent(''User'')}/location/@{encodeURIComponent(''Group
-        chat'')}"}}},"outputs":{}},"parameters":{"$connections":{"value":{"teams":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/teams","connectionName":"teams","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/teams"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Logic/workflows/SendTeams","name":"SendTeams","type":"Microsoft.Logic/workflows","location":"eastus"},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T02:34:20.53214Z","changedTime":"2023-06-26T02:35:32.3882186Z","state":"Enabled","version":"08585138599531032717","accessEndpoint":"https://prod-57.eastus.logic.azure.com:443/workflows/b978151f07bd4058aec3acd528211234","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/lgtest/providers/Microsoft.Logic/workflows/wf1","name":"wf1","type":"Microsoft.Logic/workflows","location":"eastus","identity":{"type":"SystemAssigned","principalId":"d37820de-597b-4ce3-8887-b2c37eb80b91","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"}}]}'
+        Standard Time"},"type":"Recurrence"}},"actions":{"Delete_VM":{"foreach":"@body(''List_VM'')?[''value'']","actions":{"Delete_a_VM":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"delete","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups/@{encodeURIComponent(split(toLower(items(''Delete_VM'')?[''id'']),''resourcegroups/'')[1])}","queries":{"x-ms-api-version":"2022-03-01"}}}},"runAfter":{"List_VM":["Succeeded"]},"type":"Foreach"},"Delete_VM_resourcegroup":{"foreach":"@body(''List_VM'')?[''value'']","actions":{"Delete_a_VM_resourcegroup":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"delete","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups/@{encodeURIComponent(split(split(toLower(items(''Delete_VM_resourcegroup'')?[''id'']),''resourcegroups/'')[1],''/providers'')[0])}","queries":{"x-ms-api-version":"2016-06-01"}}}},"runAfter":{"List_VM":["Succeeded"]},"type":"Foreach"},"Delete_public_ip":{"foreach":"@body(''List_public_ip'')?[''value'']","actions":{"Delete_a_public_ip":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"delete","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups/@{encodeURIComponent(split(toLower(items(''Delete_public_ip'')?[''id'']),''resourcegroups/'')[1])}","queries":{"x-ms-api-version":"2021-08-01"}}}},"runAfter":{"List_public_ip":["Succeeded"]},"type":"Foreach"},"Delete_public_ip_resourcegroup":{"foreach":"@body(''List_public_ip'')?[''value'']","actions":{"Delete_a_public_ip_resourcegroup":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"delete","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups/@{encodeURIComponent(split(split(toLower(items(''Delete_public_ip_resourcegroup'')?[''id'']),''resourcegroups/'')[1],''/providers'')[0])}","queries":{"x-ms-api-version":"2016-06-01"}}}},"runAfter":{"List_public_ip":["Succeeded"]},"type":"Foreach"},"List_VM":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"get","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/providers/Microsoft.Compute/virtualMachines","queries":{"x-ms-api-version":"2022-03-01"}}},"List_public_ip":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"get","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/providers/Microsoft.Network/publicIPAddresses","queries":{"x-ms-api-version":"2021-08-01"}}}},"outputs":{}},"parameters":{"$connections":{"value":{"arm_1":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/arm-1","connectionName":"arm-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/arm"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"52.160.92.112"},{"address":"40.118.244.241"},{"address":"40.118.241.243"},{"address":"157.56.162.53"},{"address":"157.56.167.147"},{"address":"104.42.49.145"},{"address":"40.83.164.80"},{"address":"104.42.38.32"},{"address":"13.86.223.0"},{"address":"13.86.223.1"},{"address":"13.86.223.2"},{"address":"13.86.223.3"},{"address":"13.86.223.4"},{"address":"13.86.223.5"},{"address":"104.40.34.169"},{"address":"104.40.32.148"},{"address":"52.160.70.221"},{"address":"52.160.70.105"},{"address":"13.91.81.221"},{"address":"13.64.231.196"},{"address":"13.87.204.182"},{"address":"40.78.65.193"},{"address":"13.87.207.39"},{"address":"104.42.44.28"},{"address":"40.83.134.97"},{"address":"40.78.65.112"},{"address":"168.62.9.74"},{"address":"168.62.28.191"}],"accessEndpointIpAddresses":[{"address":"52.160.90.237"},{"address":"138.91.188.137"},{"address":"13.91.252.184"},{"address":"157.56.160.212"},{"address":"104.40.34.112"},{"address":"52.160.68.27"},{"address":"13.88.168.158"},{"address":"104.42.40.164"},{"address":"13.87.207.79"},{"address":"13.87.204.210"},{"address":"168.62.9.100"}]},"connector":{"outgoingIpAddresses":[{"address":"13.93.148.62"},{"address":"104.42.122.49"},{"address":"40.112.195.87"},{"address":"13.86.223.32/27"},{"address":"40.112.243.160/28"},{"address":"20.59.77.0/27"},{"address":"20.66.6.112/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Logic/workflows/HighRiskResource_ScheduledCleaner","name":"HighRiskResource_ScheduledCleaner","type":"Microsoft.Logic/workflows","location":"westus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2019-11-25T03:03:51.6406922Z","changedTime":"2020-03-02T03:30:46.8880289Z","state":"Disabled","version":"08586184870386928444","accessEndpoint":"https://prod-52.westus.logic.azure.com:443/workflows/ad25d96f848444caaf7c4ec48853fbcf","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Recurrence":{"recurrence":{"frequency":"Day","interval":3},"type":"Recurrence"}},"actions":{"List_resource_groups":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm''][''connectionId'']"}},"method":"get","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups","queries":{"x-ms-api-version":"2016-06-01"}}},"Run_query_and_list_results":{"runAfter":{"List_resource_groups":["Succeeded"]},"type":"ApiConnection","inputs":{"body":"[].eventTimestamp","host":{"connection":{"name":"@parameters(''$connections'')[''azuremonitorlogs''][''connectionId'']"}},"method":"post","path":"/queryData","queries":{"resourcegroups":"new-experiences","resourcename":"Microsoft.ClassicCompute","resourcetype":"virtualMachines","subscriptions":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","timerange":"60"}}}},"outputs":{}},"parameters":{"$connections":{"value":{"arm":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/arm","connectionName":"arm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/arm"},"azuremonitorlogs":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/azuremonitorlogs","connectionName":"azuremonitorlogs","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/azuremonitorlogs"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"52.160.92.112"},{"address":"40.118.244.241"},{"address":"40.118.241.243"},{"address":"157.56.162.53"},{"address":"157.56.167.147"},{"address":"104.42.49.145"},{"address":"40.83.164.80"},{"address":"104.42.38.32"},{"address":"13.86.223.0"},{"address":"13.86.223.1"},{"address":"13.86.223.2"},{"address":"13.86.223.3"},{"address":"13.86.223.4"},{"address":"13.86.223.5"},{"address":"104.40.34.169"},{"address":"104.40.32.148"},{"address":"52.160.70.221"},{"address":"52.160.70.105"},{"address":"13.91.81.221"},{"address":"13.64.231.196"},{"address":"13.87.204.182"},{"address":"40.78.65.193"},{"address":"13.87.207.39"},{"address":"104.42.44.28"},{"address":"40.83.134.97"},{"address":"40.78.65.112"},{"address":"168.62.9.74"},{"address":"168.62.28.191"}],"accessEndpointIpAddresses":[{"address":"52.160.90.237"},{"address":"138.91.188.137"},{"address":"13.91.252.184"},{"address":"157.56.160.212"},{"address":"104.40.34.112"},{"address":"52.160.68.27"},{"address":"13.88.168.158"},{"address":"104.42.40.164"},{"address":"13.87.207.79"},{"address":"13.87.204.210"},{"address":"168.62.9.100"}]},"connector":{"outgoingIpAddresses":[{"address":"13.93.148.62"},{"address":"104.42.122.49"},{"address":"40.112.195.87"},{"address":"13.86.223.32/27"},{"address":"40.112.243.160/28"},{"address":"20.59.77.0/27"},{"address":"20.66.6.112/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Logic/workflows/TestLogicApp","name":"TestLogicApp","type":"Microsoft.Logic/workflows","location":"westus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-11-24T02:14:27.786653Z","changedTime":"2023-11-24T06:30:09.2208755Z","state":"Enabled","version":"08585007994769748875","accessEndpoint":"https://prod-27.eastus.logic.azure.com:443/workflows/8a6ae431a0b240568a4de49e9f25291f","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"manual":{"type":"Request","kind":"Http","inputs":{"method":"POST","schema":{"properties":{"description":{"type":"string"},"title":{"type":"string"}},"type":"object"}}}},"actions":{"Create_a_work_item":{"runAfter":{},"type":"ApiConnection","inputs":{"body":{"area":"One\\Azure
+        CLI Tools\\Azure CLI","description":"<p>@{triggerBody()?[''description'']}</p>","dynamicFields":{"System.AssignedTo":"shiyingchen@microsoft.com","System.Tags":"az
+        cli codegen virtual assistant"},"iteration":"One\\Germanium","title":"@triggerBody()?[''title'']"},"host":{"connection":{"name":"@parameters(''$connections'')[''visualstudioteamservices_1''][''connectionId'']"}},"method":"patch","path":"/@{encodeURIComponent(''One'')}/_apis/wit/workitems/$@{encodeURIComponent(''Task'')}","queries":{"account":"msazure"}}}},"outputs":{}},"parameters":{"$connections":{"value":{"visualstudioteamservices_1":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azClientToolsAssistant-rg/providers/Microsoft.Web/connections/visualstudioteamservices-3","connectionName":"visualstudioteamservices-3","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/visualstudioteamservices"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azClientToolsAssistant-rg/providers/Microsoft.Logic/workflows/AutoAdoCreationApp","name":"AutoAdoCreationApp","type":"Microsoft.Logic/workflows","location":"eastus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-11-08T09:16:25.0980768Z","changedTime":"2023-11-10T02:58:52.2971507Z","state":"Enabled","version":"08585020217531987473","accessEndpoint":"https://prod-31.eastus.logic.azure.com:443/workflows/6237dfeab2134e9d9b5f90f8523be8ae","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"manual":{"type":"Request","kind":"Http","inputs":{"method":"POST","schema":{"properties":{"channelId":{"type":"string"},"question":{"type":"string"},"subject":{"type":"string"},"summary":{"type":"string"},"tagId":{"type":"string"},"tagName":{"type":"string"},"teamId":{"type":"string"},"userId":{"type":"string"},"userName":{"type":"string"}},"type":"object"}}}},"actions":{"Invoke_an_HTTP_request":{"runAfter":{},"type":"ApiConnection","inputs":{"body":{"body":"@{base64(concat(''{'',''\n'',''    \"subject\":
+        \"'',triggerBody()?[''subject''],''\",'',''\n'',''    \"body\": {'',''\n'',''      \"content\":
+        \"<p>Hi <at id=\\\"0\\\">'',triggerBody()?[''tagName''],''</at>, could you
+        help <at id=\\\"1\\\">'',triggerBody()?[''userName''],''</at> with the question
+        below?</p> <p>&nbsp;</p> <b>Summary </b> <p>'',triggerBody()?[''summary''],''</p>
+        <p>&nbsp;</p> <b> Raw question </b> <p>'',triggerBody()?[''question''],''</p>\",'',''\n'',''      \"contentType\":
+        \"html\"'',''\n'',''    },'',''\n'',''    \"mentions\": ['',''\n'',''      {'',''\n'',''        \"id\":
+        0,'',''\n'',''        \"mentionText\": \"'',triggerBody()?[''tagName''],''\",'',''\n'',''        \"mentioned\":
+        {'',''\n'',''                        \"tag\": {'',''\n'',''                            \"@odata.type\":
+        \"microsoft.graph.teamworkTagIdentity\",'',''\n'',''                            \"id\":
+        \"'',triggerBody()?[''tagId''],''\",'',''\n'',''                            \"displayName\":
+        \"'',triggerBody()?[''tagName''],''\"'',''\n'',''                         }'',''\n'',''            }'',''\n'',''        },'',''\n'',''        {'',''\n'',''        \"id\":
+        1,'',''\n'',''        \"mentionText\": \"'',triggerBody()?[''userName''],''\",'',''\n'',''        \"mentioned\":
+        {'',''\n'',''                        \"user\": {'',''\n'',''                            \"userIdentityType\":
+        \"aadUser\",'',''\n'',''                            \"id\": \"'',triggerBody()?[''userId''],''\",'',''\n'',''                            \"displayName\":
+        \"'',triggerBody()?[''userName''],''\"'',''\n'',''                         }'',''\n'',''            }'',''\n'',''        }'',''\n'',''    ]'',''\n'',''}'',''\n''))}","headers":{"Content-Type":"application/json"},"method":"POST","url":"https://graph.microsoft.com/v1.0/teams/@{triggerBody()?[''teamId'']}/channels/@{triggerBody()?[''channelId'']}/messages"},"host":{"connection":{"name":"@parameters(''$connections'')[''webcontents''][''connectionId'']"}},"method":"post","path":"/codeless/InvokeHttp"}}},"outputs":{}},"parameters":{"$connections":{"value":{"webcontents":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azClientToolsAssistant-rg/providers/Microsoft.Web/connections/webcontents","connectionName":"webcontents","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/webcontents"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azClientToolsAssistant-rg/providers/Microsoft.Logic/workflows/postchannelmessage","name":"postchannelmessage","type":"Microsoft.Logic/workflows","location":"eastus"},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-09-04T08:16:37.4600247Z","changedTime":"2023-09-19T05:41:52.4965967Z","state":"Enabled","version":"08585065047730012532","accessEndpoint":"https://prod-91.eastus.logic.azure.com:443/workflows/cc82c64b8acf4963ac2e0c7248fdb7d5","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Recurrence":{"recurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"evaluatedRecurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"type":"Recurrence"}},"actions":{"Condition":{"actions":{"Compose":{"runAfter":{"Create_HTML_table":["Succeeded"]},"type":"Compose","inputs":"@concat(''<style>html
+        {font: 0.75em/1.5 sans-serif;color: #333;background-color: #fff;padding: 1em;}
+        table {margin-bottom: 1em;border-collapse: collapse;} th {font-weight: bold;color:
+        #f5d135;background-color: #314472;} th, td {padding: 0.5em;border: 1px solid
+        #adbadc;}</style> <h4>Result</h4><p>'', body(''Create_HTML_table''), ''</p><br
+        />'', if(empty(variables(''AlertAction'')), '''', concat(''<h4>Action</h4><p>'',
+        variables(''AlertAction''), ''</p><br />'')), ''<h4>Kusto Query</h4><p>'',
+        variables(''KustoQuery''), ''</p>'', ''<h4>Kusto Dashboard</h4><p><a href=\"https://dataexplorer.azure.com/dashboards/69e867b2-9152-4c81-be01-c7dcb025184a?p-_startTime=1hours&p-_endTime=now&tile=760b6d4c-93d5-4607-90d7-355501b4fc6a\">Az
+        Keyvault success rate</a></p>'')"},"Create_HTML_table":{"runAfter":{},"type":"Table","inputs":{"format":"HTML","from":"@body(''Run_KQL_query'')?[''value'']"}},"Post_message_in_a_chat_or_channel":{"runAfter":{"Send_an_email":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"messageBody":"<p>CLI
+        @{variables(''Module'')} module success rate lower than @{variables(''MinSuccessRate'')}%
+        or no user fault failure higher than @{variables(''MaxNoUserFaultFailureRate'')}%:<br>\n@{body(''Create_HTML_table'')}<br>\nPlease
+        check:<br>\nRawEventsAzCli<br>\n| where EventTimestamp &gt;= ago(150m) and
+        EventTimestamp &lt; ago(90m)<br>\n| where RawCommand startswith \"keyvault
+        \"<br>\n| summarize total=count(), success=countif(ActionResult==''Success''),
+        no_user_fault_failure=countif(ActionResult!=''Success'' and ActionResult!=''UserFault'')<br>\n|
+        project success, no_user_fault_failure, total, success_rate=todouble(success)*100/total,
+        no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total</p>","recipient":{"channelId":"19:9328d606930f45d6b0c45888fc1df5a9@thread.tacv2","groupId":"9840b1a5-71dd-4b68-a8f7-466bf5801684"}},"host":{"connection":{"name":"@parameters(''$connections'')[''teams''][''connectionId'']"}},"method":"post","path":"/beta/teams/conversation/message/poster/Flow
+        bot/location/@{encodeURIComponent(''Channel'')}"}},"Send_an_email":{"runAfter":{"Compose":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"Body":"<p>@{outputs(''Compose'')}</p>","Importance":"Normal","Subject":"CLI
+        @{variables(''Module'')} module success rate alerts based on Azure Kusto telemetry","To":"@variables(''EmailAddress'')"},"host":{"connection":{"name":"@parameters(''$connections'')[''office365_1''][''connectionId'']"}},"method":"post","path":"/v2/Mail"}}},"runAfter":{"Run_KQL_query":["Succeeded"]},"expression":{"or":[{"less":["@float(body(''Run_KQL_query'')?[''value''][0][''success_rate''])","@variables(''MinSuccessRate'')"]},{"greater":["@float(body(''Run_KQL_query'')?[''value''][0][''no_user_fault_failure_rate''])","@variables(''MaxNoUserFaultFailureRate'')"]}]},"type":"If"},"Initialize_variable_AlertAction":{"runAfter":{"Initialize_variable_MaxNoUserFaultFailureRate":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"AlertAction","type":"string","value":"CLI
+        @{variables(''Module'')} module success rate lower than @{variables(''MinSuccessRate'')}%
+        or no user fault failure higher than @{variables(''MaxNoUserFaultFailureRate'')}%,
+        please check."}]}},"Initialize_variable_EmailAddress":{"runAfter":{"Initialize_variable_Module":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"EmailAddress","type":"string","value":"AzCLIDev@microsoft.com"}]}},"Initialize_variable_KustoQuery":{"runAfter":{"Initialize_variable_EmailAddress":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"KustoQuery","type":"string","value":"RawEventsAzCli\n|
+        where EventTimestamp >= ago(150m) and EventTimestamp < ago(90m)\n| where RawCommand
+        startswith \"keyvault \"\n| summarize total=count(), success=countif(ActionResult==''Success''),
+        no_user_fault_failure=countif(ActionResult!=''Success'' and ActionResult!=''UserFault'')\n|
+        project success, no_user_fault_failure, total, success_rate=todouble(success)*100/total,
+        no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total"}]}},"Initialize_variable_MaxNoUserFaultFailureRate":{"runAfter":{"Initialize_variable_MinSuccessRate":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"MaxNoUserFaultFailureRate","type":"float","value":1}]}},"Initialize_variable_MinSuccessRate":{"runAfter":{"Initialize_variable_KustoQuery":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"MinSuccessRate","type":"float","value":90}]}},"Initialize_variable_Module":{"runAfter":{},"type":"InitializeVariable","inputs":{"variables":[{"name":"Module","type":"string","value":"keyvault"}]}},"Run_KQL_query":{"runAfter":{"Initialize_variable_AlertAction":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"cluster":"https://ddazureclients.kusto.windows.net","csl":"@variables(''KustoQuery'')","db":"AzureCli"},"host":{"connection":{"name":"@parameters(''$connections'')[''kusto''][''connectionId'']"}},"method":"post","path":"/ListKustoResults/false"}}},"outputs":{}},"parameters":{"$connections":{"value":{"kusto":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/kusto","connectionName":"kusto","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/kusto"},"office365_1":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/office365-1","connectionName":"office365-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/office365"},"teams":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/teams-1","connectionName":"teams-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/teams"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Logic/workflows/AzKeyvaultSuccessRateMonitor","name":"AzKeyvaultSuccessRateMonitor","type":"Microsoft.Logic/workflows","location":"eastus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-08-31T08:59:45.7218896Z","changedTime":"2023-10-31T02:12:27.6868589Z","state":"Enabled","version":"08585028885379986744","accessEndpoint":"https://prod-42.eastus.logic.azure.com:443/workflows/8ba1f478252d44b6ac7343dddd0b7557","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Recurrence":{"recurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"evaluatedRecurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"type":"Recurrence"}},"actions":{"Condition":{"actions":{"Compose":{"runAfter":{"Create_HTML_table":["Succeeded"]},"type":"Compose","inputs":"@concat(''<style>html
+        {font: 0.75em/1.5 sans-serif;color: #333;background-color: #fff;padding: 1em;}
+        table {margin-bottom: 1em;border-collapse: collapse;} th {font-weight: bold;color:
+        #f5d135;background-color: #314472;} th, td {padding: 0.5em;border: 1px solid
+        #adbadc;}</style> <h4>Result</h4><p>'', body(''Create_HTML_table''), ''</p><br
+        />'', if(empty(variables(''AlertAction'')), '''', concat(''<h4>Action</h4><p>'',
+        variables(''AlertAction''), ''</p><br />'')), ''<h4>Kusto Query</h4><p>'',
+        variables(''KustoQuery''), ''</p>'', ''<h4>Kusto Dashboard</h4><p><a href=\"https://dataexplorer.azure.com/dashboards/69e867b2-9152-4c81-be01-c7dcb025184a?p-_startTime=1hours&p-_endTime=now&tile=7c02f7ad-7922-48b6-8ac4-f84a4ba1100d\">Az
+        login success rate</a></p>'')"},"Create_HTML_table":{"runAfter":{},"type":"Table","inputs":{"format":"HTML","from":"@body(''Run_KQL_query'')?[''value'']"}},"Post_message_in_a_chat_or_channel":{"runAfter":{"Send_an_email_(V2)":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"messageBody":"<p>Az
+        login success rate lower than 80% or no user fault failure higher than 10%:<br>\n@{body(''Create_HTML_table'')}<br>\nPlease
+        check:<br>\nRawEventsAzCli<br>\n| where EventTimestamp &gt;= ago(150m) and
+        EventTimestamp &lt; ago(90m)<br>\n| where RawCommand == ''login''<br>\n| summarize
+        total=count(), success=countif(ActionResult==''Success''), no_user_fault_failure=countif(ActionResult!=''Success''
+        and ActionResult!=''UserFault'')<br>\n| project success, no_user_fault_failure,
+        total, success_rate=todouble(success)*100/total, no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total</p>","recipient":{"channelId":"19:9328d606930f45d6b0c45888fc1df5a9@thread.tacv2","groupId":"9840b1a5-71dd-4b68-a8f7-466bf5801684"}},"host":{"connection":{"name":"@parameters(''$connections'')[''teams''][''connectionId'']"}},"method":"post","path":"/beta/teams/conversation/message/poster/Flow
+        bot/location/@{encodeURIComponent(''Channel'')}"}},"Send_an_email_(V2)":{"runAfter":{"Compose":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"Body":"<p>@{outputs(''Compose'')}</p>","Importance":"Normal","Subject":"Az
+        login success rate alerts based on Azure Kusto telemetry","To":"@variables(''EmailAddress'')"},"host":{"connection":{"name":"@parameters(''$connections'')[''office365''][''connectionId'']"}},"method":"post","path":"/v2/Mail"}}},"runAfter":{"Run_KQL_query":["Succeeded"]},"expression":{"or":[{"less":["@float(body(''Run_KQL_query'')?[''value''][0][''success_rate''])",80]},{"greater":["@float(body(''Run_KQL_query'')?[''value''][0][''no_user_fault_failure_rate''])",10]}]},"type":"If"},"Initialize_variable_AlertAction":{"runAfter":{"Initialize_variable_KustoQuery":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"AlertAction","type":"string","value":"Az
+        login success rate lower than 80% or no user fault failure higher than 10%,
+        please check."}]}},"Initialize_variable_EmailAddress":{"runAfter":{},"type":"InitializeVariable","inputs":{"variables":[{"name":"EmailAddress","type":"string","value":"AzCLIDev@microsoft.com"}]}},"Initialize_variable_KustoQuery":{"runAfter":{"Initialize_variable_EmailAddress":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"KustoQuery","type":"string","value":"RawEventsAzCli\n|
+        where EventTimestamp >= ago(150m) and EventTimestamp < ago(90m)\n| where RawCommand
+        == ''login''\n| summarize total=count(), success=countif(ActionResult==''Success''),
+        no_user_fault_failure=countif(ActionResult!=''Success'' and ActionResult!=''UserFault'')\n|
+        project success, no_user_fault_failure, total, success_rate=todouble(success)*100/total,
+        no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total"}]}},"Run_KQL_query":{"runAfter":{"Initialize_variable_AlertAction":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"cluster":"https://ddazureclients.kusto.windows.net","csl":"@variables(''KustoQuery'')","db":"AzureCli"},"host":{"connection":{"name":"@parameters(''$connections'')[''kusto''][''connectionId'']"}},"method":"post","path":"/ListKustoResults/false"}}},"outputs":{}},"parameters":{"$connections":{"value":{"kusto":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/kusto","connectionName":"kusto","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/kusto"},"office365":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/office365","connectionName":"office365","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/office365"},"teams":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/teams-1","connectionName":"teams-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/teams"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Logic/workflows/AzLoginSuccessRateMonitor","name":"AzLoginSuccessRateMonitor","type":"Microsoft.Logic/workflows","location":"eastus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-09-04T08:30:59.3057549Z","changedTime":"2023-09-19T05:42:55.8355031Z","state":"Enabled","version":"08585065047096606715","accessEndpoint":"https://prod-07.eastus.logic.azure.com:443/workflows/41b3ba2451db459f93462f5cecb200df","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Recurrence":{"recurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"evaluatedRecurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"type":"Recurrence"}},"actions":{"Condition":{"actions":{"Compose":{"runAfter":{"Create_HTML_table":["Succeeded"]},"type":"Compose","inputs":"@concat(''<style>html
+        {font: 0.75em/1.5 sans-serif;color: #333;background-color: #fff;padding: 1em;}
+        table {margin-bottom: 1em;border-collapse: collapse;} th {font-weight: bold;color:
+        #f5d135;background-color: #314472;} th, td {padding: 0.5em;border: 1px solid
+        #adbadc;}</style> <h4>Result</h4><p>'', body(''Create_HTML_table''), ''</p><br
+        />'', if(empty(variables(''AlertAction'')), '''', concat(''<h4>Action</h4><p>'',
+        variables(''AlertAction''), ''</p><br />'')), ''<h4>Kusto Query</h4><p>'',
+        variables(''KustoQuery''), ''</p>'', ''<h4>Kusto Dashboard</h4><p><a href=\"https://dataexplorer.azure.com/dashboards/69e867b2-9152-4c81-be01-c7dcb025184a?p-_startTime=1hours&p-_endTime=now&tile=fb9a69de-a954-4940-8190-ea5e87d73bbf\">Az
+        Monitor success rate</a></p>'')"},"Create_HTML_table":{"runAfter":{},"type":"Table","inputs":{"format":"HTML","from":"@body(''Run_KQL_query'')?[''value'']"}},"Post_message_in_a_chat_or_channel":{"runAfter":{"Send_an_email":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"messageBody":"<p>CLI
+        @{variables(''Module'')} module success rate lower than @{variables(''MinSuccessRate'')}%
+        or no user fault failure higher than @{variables(''MaxNoUserFaultFailureRate'')}%:<br>\n@{body(''Create_HTML_table'')}<br>\nPlease
+        check:<br>\nRawEventsAzCli<br>\n| where EventTimestamp &gt;= ago(150m) and
+        EventTimestamp &lt; ago(90m)<br>\n| where RawCommand startswith \"monitor
+        \"<br>\n| summarize total=count(), success=countif(ActionResult==''Success''),
+        no_user_fault_failure=countif(ActionResult!=''Success'' and ActionResult!=''UserFault'')<br>\n|
+        project success, no_user_fault_failure, total, success_rate=todouble(success)*100/total,
+        no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total</p>","recipient":{"channelId":"19:9328d606930f45d6b0c45888fc1df5a9@thread.tacv2","groupId":"9840b1a5-71dd-4b68-a8f7-466bf5801684"}},"host":{"connection":{"name":"@parameters(''$connections'')[''teams''][''connectionId'']"}},"method":"post","path":"/beta/teams/conversation/message/poster/Flow
+        bot/location/@{encodeURIComponent(''Channel'')}"}},"Send_an_email":{"runAfter":{"Compose":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"Body":"<p>@{outputs(''Compose'')}</p>","Importance":"Normal","Subject":"CLI
+        @{variables(''Module'')} module success rate alerts based on Azure Kusto telemetry","To":"@variables(''EmailAddress'')"},"host":{"connection":{"name":"@parameters(''$connections'')[''office365_1''][''connectionId'']"}},"method":"post","path":"/v2/Mail"}}},"runAfter":{"Run_KQL_query":["Succeeded"]},"expression":{"or":[{"less":["@float(body(''Run_KQL_query'')?[''value''][0][''success_rate''])","@variables(''MinSuccessRate'')"]},{"greater":["@float(body(''Run_KQL_query'')?[''value''][0][''no_user_fault_failure_rate''])","@variables(''MaxNoUserFaultFailureRate'')"]}]},"type":"If"},"Initialize_variable_AlertAction":{"runAfter":{"Initialize_variable_MaxNoUserFaultFailureRate":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"AlertAction","type":"string","value":"CLI
+        @{variables(''Module'')} module success rate lower than @{variables(''MinSuccessRate'')}%
+        or no user fault failure higher than @{variables(''MaxNoUserFaultFailureRate'')}%,
+        please check."}]}},"Initialize_variable_EmailAddress":{"runAfter":{"Initialize_variable_Module":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"EmailAddress","type":"string","value":"AzCLIDev@microsoft.com"}]}},"Initialize_variable_KustoQuery":{"runAfter":{"Initialize_variable_EmailAddress":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"KustoQuery","type":"string","value":"RawEventsAzCli\n|
+        where EventTimestamp >= ago(150m) and EventTimestamp < ago(90m)\n| where RawCommand
+        startswith \"monitor \"\n| summarize total=count(), success=countif(ActionResult==''Success''),
+        no_user_fault_failure=countif(ActionResult!=''Success'' and ActionResult!=''UserFault'')\n|
+        project success, no_user_fault_failure, total, success_rate=todouble(success)*100/total,
+        no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total"}]}},"Initialize_variable_MaxNoUserFaultFailureRate":{"runAfter":{"Initialize_variable_MinSuccessRate":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"MaxNoUserFaultFailureRate","type":"float","value":5}]}},"Initialize_variable_MinSuccessRate":{"runAfter":{"Initialize_variable_KustoQuery":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"MinSuccessRate","type":"float","value":80}]}},"Initialize_variable_Module":{"runAfter":{},"type":"InitializeVariable","inputs":{"variables":[{"name":"Module","type":"string","value":"monitor"}]}},"Run_KQL_query":{"runAfter":{"Initialize_variable_AlertAction":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"cluster":"https://ddazureclients.kusto.windows.net","csl":"@variables(''KustoQuery'')","db":"AzureCli"},"host":{"connection":{"name":"@parameters(''$connections'')[''kusto''][''connectionId'']"}},"method":"post","path":"/ListKustoResults/false"}}},"outputs":{}},"parameters":{"$connections":{"value":{"kusto":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/kusto","connectionName":"kusto","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/kusto"},"office365_1":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/office365-1","connectionName":"office365-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/office365"},"teams":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/teams-1","connectionName":"teams-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/teams"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Logic/workflows/AzMonitorSuccessRateMonitor","name":"AzMonitorSuccessRateMonitor","type":"Microsoft.Logic/workflows","location":"eastus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-09-04T08:43:46.0946007Z","changedTime":"2023-09-19T05:44:01.4497472Z","state":"Enabled","version":"08585065046444241261","accessEndpoint":"https://prod-74.eastus.logic.azure.com:443/workflows/1449c516f8944a108e4da42bfaf67bde","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Recurrence":{"recurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"evaluatedRecurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"type":"Recurrence"}},"actions":{"Condition":{"actions":{"Compose":{"runAfter":{"Create_HTML_table":["Succeeded"]},"type":"Compose","inputs":"@concat(''<style>html
+        {font: 0.75em/1.5 sans-serif;color: #333;background-color: #fff;padding: 1em;}
+        table {margin-bottom: 1em;border-collapse: collapse;} th {font-weight: bold;color:
+        #f5d135;background-color: #314472;} th, td {padding: 0.5em;border: 1px solid
+        #adbadc;}</style> <h4>Result</h4><p>'', body(''Create_HTML_table''), ''</p><br
+        />'', if(empty(variables(''AlertAction'')), '''', concat(''<h4>Action</h4><p>'',
+        variables(''AlertAction''), ''</p><br />'')), ''<h4>Kusto Query</h4><p>'',
+        variables(''KustoQuery''), ''</p>'', ''<h4>Kusto Dashboard</h4><p><a href=\"https://dataexplorer.azure.com/dashboards/69e867b2-9152-4c81-be01-c7dcb025184a?p-_startTime=1hours&p-_endTime=now&tile=06da3ddd-ea91-43e2-ae44-59b0645ddcbb\">Az
+        Network success rate</a></p>'')"},"Create_HTML_table":{"runAfter":{},"type":"Table","inputs":{"format":"HTML","from":"@body(''Run_KQL_query'')?[''value'']"}},"Post_message_in_a_chat_or_channel":{"runAfter":{"Send_an_email":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"messageBody":"<p>CLI
+        @{variables(''Module'')} module success rate lower than @{variables(''MinSuccessRate'')}%
+        or no user fault failure higher than @{variables(''MaxNoUserFaultFailureRate'')}%:<br>\n@{body(''Create_HTML_table'')}<br>\nPlease
+        check:<br>\nRawEventsAzCli<br>\n| where EventTimestamp &gt;= ago(150m) and
+        EventTimestamp &lt; ago(90m)<br>\n| where RawCommand startswith \"network
+        \"<br>\n| summarize total=count(), success=countif(ActionResult==''Success''),
+        no_user_fault_failure=countif(ActionResult!=''Success'' and ActionResult!=''UserFault'')<br>\n|
+        project success, no_user_fault_failure, total, success_rate=todouble(success)*100/total,
+        no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total</p>","recipient":{"channelId":"19:9328d606930f45d6b0c45888fc1df5a9@thread.tacv2","groupId":"9840b1a5-71dd-4b68-a8f7-466bf5801684"}},"host":{"connection":{"name":"@parameters(''$connections'')[''teams''][''connectionId'']"}},"method":"post","path":"/beta/teams/conversation/message/poster/Flow
+        bot/location/@{encodeURIComponent(''Channel'')}"}},"Send_an_email":{"runAfter":{"Compose":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"Body":"<p>@{outputs(''Compose'')}</p>","Importance":"Normal","Subject":"CLI
+        @{variables(''Module'')} module success rate alerts based on Azure Kusto telemetry","To":"@variables(''EmailAddress'')"},"host":{"connection":{"name":"@parameters(''$connections'')[''office365_1''][''connectionId'']"}},"method":"post","path":"/v2/Mail"}}},"runAfter":{"Run_KQL_query":["Succeeded"]},"expression":{"or":[{"less":["@float(body(''Run_KQL_query'')?[''value''][0][''success_rate''])","@variables(''MinSuccessRate'')"]},{"greater":["@float(body(''Run_KQL_query'')?[''value''][0][''no_user_fault_failure_rate''])","@variables(''MaxNoUserFaultFailureRate'')"]}]},"type":"If"},"Initialize_variable_AlertAction":{"runAfter":{"Initialize_variable_MaxNoUserFaultFailureRate":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"AlertAction","type":"string","value":"CLI
+        @{variables(''Module'')} module success rate lower than @{variables(''MinSuccessRate'')}%
+        or no user fault failure higher than @{variables(''MaxNoUserFaultFailureRate'')}%,
+        please check."}]}},"Initialize_variable_EmailAddress":{"runAfter":{"Initialize_variable_Module":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"EmailAddress","type":"string","value":"AzCLIDev@microsoft.com"}]}},"Initialize_variable_KustoQuery":{"runAfter":{"Initialize_variable_EmailAddress":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"KustoQuery","type":"string","value":"RawEventsAzCli\n|
+        where EventTimestamp >= ago(150m) and EventTimestamp < ago(90m)\n| where RawCommand
+        startswith \"network \"\n| summarize total=count(), success=countif(ActionResult==''Success''),
+        no_user_fault_failure=countif(ActionResult!=''Success'' and ActionResult!=''UserFault'')\n|
+        project success, no_user_fault_failure, total, success_rate=todouble(success)*100/total,
+        no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total"}]}},"Initialize_variable_MaxNoUserFaultFailureRate":{"runAfter":{"Initialize_variable_MinSuccessRate":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"MaxNoUserFaultFailureRate","type":"float","value":1}]}},"Initialize_variable_MinSuccessRate":{"runAfter":{"Initialize_variable_KustoQuery":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"MinSuccessRate","type":"float","value":5}]}},"Initialize_variable_Module":{"runAfter":{},"type":"InitializeVariable","inputs":{"variables":[{"name":"Module","type":"string","value":"network"}]}},"Run_KQL_query":{"runAfter":{"Initialize_variable_AlertAction":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"cluster":"https://ddazureclients.kusto.windows.net","csl":"@variables(''KustoQuery'')","db":"AzureCli"},"host":{"connection":{"name":"@parameters(''$connections'')[''kusto''][''connectionId'']"}},"method":"post","path":"/ListKustoResults/false"}}},"outputs":{}},"parameters":{"$connections":{"value":{"kusto":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/kusto","connectionName":"kusto","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/kusto"},"office365_1":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/office365-1","connectionName":"office365-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/office365"},"teams":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/teams-1","connectionName":"teams-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/teams"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Logic/workflows/AzNetworkSuccessRateMonitor","name":"AzNetworkSuccessRateMonitor","type":"Microsoft.Logic/workflows","location":"eastus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-09-11T09:31:08.9157564Z","changedTime":"2023-09-19T05:44:30.4242155Z","state":"Enabled","version":"08585065046150725389","accessEndpoint":"https://prod-35.eastus.logic.azure.com:443/workflows/bd75040de6c3476ca85116bdaafa0212","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Recurrence":{"recurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"evaluatedRecurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"type":"Recurrence"}},"actions":{"Condition":{"actions":{"Compose":{"runAfter":{"Create_HTML_table":["Succeeded"]},"type":"Compose","inputs":"@concat(''<style>html
+        {font: 0.75em/1.5 sans-serif;color: #333;background-color: #fff;padding: 1em;}
+        table {margin-bottom: 1em;border-collapse: collapse;} th {font-weight: bold;color:
+        #f5d135;background-color: #314472;} th, td {padding: 0.5em;border: 1px solid
+        #adbadc;}</style> <h4>Result</h4><p>'', body(''Create_HTML_table''), ''</p><br
+        />'', if(empty(variables(''AlertAction'')), '''', concat(''<h4>Action</h4><p>'',
+        variables(''AlertAction''), ''</p><br />'')), ''<h4>Kusto Query</h4><p>'',
+        variables(''KustoQuery''), ''</p>'', ''<h4>Kusto Dashboard</h4><p><a href=\"https://dataexplorer.azure.com/dashboards/69e867b2-9152-4c81-be01-c7dcb025184a?p-_startTime=1hours&p-_endTime=now&tile=9fbd113d-ae05-454d-ae7f-2b221e9f2865\">Az
+        Role success rate</a></p>'')"},"Create_HTML_table":{"runAfter":{},"type":"Table","inputs":{"format":"HTML","from":"@body(''Run_KQL_query'')?[''value'']"}},"Post_message_in_a_chat_or_channel":{"runAfter":{"Send_an_email":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"messageBody":"<p>CLI
+        @{variables(''Module'')} module success rate lower than @{variables(''MinSuccessRate'')}%
+        or no user fault failure higher than @{variables(''MaxNoUserFaultFailureRate'')}%:<br>\n@{body(''Create_HTML_table'')}<br>\nPlease
+        check:<br>\nRawEventsAzCli<br>\n| where EventTimestamp &gt;= ago(150m) and
+        EventTimestamp &lt; ago(90m)<br>\n| where RawCommand startswith \"role \"<br>\n|
+        summarize total=count(), success=countif(ActionResult==''Success''), no_user_fault_failure=countif(ActionResult!=''Success''
+        and ActionResult!=''UserFault'')<br>\n| project success, no_user_fault_failure,
+        total, success_rate=todouble(success)*100/total, no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total</p>","recipient":{"channelId":"19:9328d606930f45d6b0c45888fc1df5a9@thread.tacv2","groupId":"9840b1a5-71dd-4b68-a8f7-466bf5801684"}},"host":{"connection":{"name":"@parameters(''$connections'')[''teams''][''connectionId'']"}},"method":"post","path":"/beta/teams/conversation/message/poster/Flow
+        bot/location/@{encodeURIComponent(''Channel'')}"}},"Send_an_email":{"runAfter":{"Compose":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"Body":"<p>@{outputs(''Compose'')}</p>","Importance":"Normal","Subject":"CLI
+        @{variables(''Module'')} module success rate alerts based on Azure Kusto telemetry","To":"@variables(''EmailAddress'')"},"host":{"connection":{"name":"@parameters(''$connections'')[''office365_1''][''connectionId'']"}},"method":"post","path":"/v2/Mail"}}},"runAfter":{"Run_KQL_query":["Succeeded"]},"expression":{"or":[{"less":["@float(body(''Run_KQL_query'')?[''value''][0][''success_rate''])","@variables(''MinSuccessRate'')"]},{"greater":["@float(body(''Run_KQL_query'')?[''value''][0][''no_user_fault_failure_rate''])","@variables(''MaxNoUserFaultFailureRate'')"]}]},"type":"If"},"Initialize_variable_AlertAction":{"runAfter":{"Initialize_variable_MaxNoUserFaultFailureRate":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"AlertAction","type":"string","value":"CLI
+        @{variables(''Module'')} module success rate lower than @{variables(''MinSuccessRate'')}%
+        or no user fault failure higher than @{variables(''MaxNoUserFaultFailureRate'')}%,
+        please check."}]}},"Initialize_variable_EmailAddress":{"runAfter":{"Initialize_variable_Module":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"EmailAddress","type":"string","value":"AzCLIDev@microsoft.com"}]}},"Initialize_variable_KustoQuery":{"runAfter":{"Initialize_variable_EmailAddress":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"KustoQuery","type":"string","value":"RawEventsAzCli\n|
+        where EventTimestamp >= ago(150m) and EventTimestamp < ago(90m)\n| where RawCommand
+        startswith \"role \"\n| summarize total=count(), success=countif(ActionResult==''Success''),
+        no_user_fault_failure=countif(ActionResult!=''Success'' and ActionResult!=''UserFault'')\n|
+        project success, no_user_fault_failure, total, success_rate=todouble(success)*100/total,
+        no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total"}]}},"Initialize_variable_MaxNoUserFaultFailureRate":{"runAfter":{"Initialize_variable_MinSuccessRate":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"MaxNoUserFaultFailureRate","type":"float","value":5}]}},"Initialize_variable_MinSuccessRate":{"runAfter":{"Initialize_variable_KustoQuery":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"MinSuccessRate","type":"float","value":90}]}},"Initialize_variable_Module":{"runAfter":{},"type":"InitializeVariable","inputs":{"variables":[{"name":"Module","type":"string","value":"role"}]}},"Run_KQL_query":{"runAfter":{"Initialize_variable_AlertAction":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"cluster":"https://ddazureclients.kusto.windows.net","csl":"@variables(''KustoQuery'')","db":"AzureCli"},"host":{"connection":{"name":"@parameters(''$connections'')[''kusto''][''connectionId'']"}},"method":"post","path":"/ListKustoResults/false"}}},"outputs":{}},"parameters":{"$connections":{"value":{"kusto":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/kusto","connectionName":"kusto","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/kusto"},"office365_1":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/office365-1","connectionName":"office365-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/office365"},"teams":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/teams-1","connectionName":"teams-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/teams"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Logic/workflows/AzRoleSuccessRateMonitor","name":"AzRoleSuccessRateMonitor","type":"Microsoft.Logic/workflows","location":"eastus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-09-04T08:07:22.7057564Z","changedTime":"2023-09-19T05:45:34.4232359Z","state":"Enabled","version":"08585065045511163660","accessEndpoint":"https://prod-82.eastus.logic.azure.com:443/workflows/50cbcfb91c974eda9e72f108851637e8","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Recurrence":{"recurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"evaluatedRecurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"type":"Recurrence"}},"actions":{"Condition":{"actions":{"Compose":{"runAfter":{"Create_HTML_table":["Succeeded"]},"type":"Compose","inputs":"@concat(''<style>html
+        {font: 0.75em/1.5 sans-serif;color: #333;background-color: #fff;padding: 1em;}
+        table {margin-bottom: 1em;border-collapse: collapse;} th {font-weight: bold;color:
+        #f5d135;background-color: #314472;} th, td {padding: 0.5em;border: 1px solid
+        #adbadc;}</style> <h4>Result</h4><p>'', body(''Create_HTML_table''), ''</p><br
+        />'', if(empty(variables(''AlertAction'')), '''', concat(''<h4>Action</h4><p>'',
+        variables(''AlertAction''), ''</p><br />'')), ''<h4>Kusto Query</h4><p>'',
+        variables(''KustoQuery''), ''</p>'', ''<h4>Kusto Dashboard</h4><p><a href=\"https://dataexplorer.azure.com/dashboards/69e867b2-9152-4c81-be01-c7dcb025184a?p-_startTime=1hours&p-_endTime=now&tile=b1d8485f-9fda-4d7f-85da-a2c3696e2b8d\">Az
+        Storage success rate</a></p>'')"},"Create_HTML_table":{"runAfter":{},"type":"Table","inputs":{"format":"HTML","from":"@body(''Run_KQL_query'')?[''value'']"}},"Post_message_in_a_chat_or_channel":{"runAfter":{"Send_an_email":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"messageBody":"<p>CLI
+        storage module success rate lower than 90% or no user fault failure higher
+        than 3%:<br>\n@{body(''Create_HTML_table'')}<br>\nPlease check:<br>\nRawEventsAzCli<br>\n|
+        where EventTimestamp &gt;= ago(150m) and EventTimestamp &lt; ago(90m)<br>\n|
+        where RawCommand startswith \"storage \"<br>\n| summarize total=count(), success=countif(ActionResult==''Success''),
+        no_user_fault_failure=countif(ActionResult!=''Success'' and ActionResult!=''UserFault'')<br>\n|
+        project success, no_user_fault_failure, total, success_rate=todouble(success)*100/total,
+        no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total</p>","recipient":{"channelId":"19:9328d606930f45d6b0c45888fc1df5a9@thread.tacv2","groupId":"9840b1a5-71dd-4b68-a8f7-466bf5801684"}},"host":{"connection":{"name":"@parameters(''$connections'')[''teams''][''connectionId'']"}},"method":"post","path":"/beta/teams/conversation/message/poster/Flow
+        bot/location/@{encodeURIComponent(''Channel'')}"}},"Send_an_email":{"runAfter":{"Compose":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"Body":"<p>@{outputs(''Compose'')}</p>","Importance":"Normal","Subject":"CLI
+        storage module success rate alerts based on Azure Kusto telemetry","To":"@variables(''EmailAddress'')"},"host":{"connection":{"name":"@parameters(''$connections'')[''office365_1''][''connectionId'']"}},"method":"post","path":"/v2/Mail"}}},"runAfter":{"Run_KQL_query":["Succeeded"]},"expression":{"or":[{"less":["@float(body(''Run_KQL_query'')?[''value''][0][''success_rate''])",90]},{"greater":["@float(body(''Run_KQL_query'')?[''value''][0][''no_user_fault_failure_rate''])",3]}]},"type":"If"},"Initialize_variable_AlertAction":{"runAfter":{"Initialize_variable_KustoQuery":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"AlertAction","type":"string","value":"Az
+        storage success rate lower than 90% or no user fault failure higher than 3%,
+        please check."}]}},"Initialize_variable_EmailAddress":{"runAfter":{},"type":"InitializeVariable","inputs":{"variables":[{"name":"EmailAddress","type":"string","value":"AzCLIDev@microsoft.com"}]}},"Initialize_variable_KustoQuery":{"runAfter":{"Initialize_variable_EmailAddress":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"KustoQuery","type":"string","value":"RawEventsAzCli\n|
+        where EventTimestamp >= ago(150m) and EventTimestamp < ago(90m)\n| where RawCommand
+        startswith \"storage \"\n| summarize total=count(), success=countif(ActionResult==''Success''),
+        no_user_fault_failure=countif(ActionResult!=''Success'' and ActionResult!=''UserFault'')\n|
+        project success, no_user_fault_failure, total, success_rate=todouble(success)*100/total,
+        no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total"}]}},"Run_KQL_query":{"runAfter":{"Initialize_variable_AlertAction":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"cluster":"https://ddazureclients.kusto.windows.net","csl":"@variables(''KustoQuery'')","db":"AzureCli"},"host":{"connection":{"name":"@parameters(''$connections'')[''kusto''][''connectionId'']"}},"method":"post","path":"/ListKustoResults/false"}}},"outputs":{}},"parameters":{"$connections":{"value":{"kusto":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/kusto","connectionName":"kusto","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/kusto"},"office365_1":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/office365-1","connectionName":"office365-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/office365"},"teams":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/teams-1","connectionName":"teams-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/teams"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Logic/workflows/AzStorageSuccessRateMonitor","name":"AzStorageSuccessRateMonitor","type":"Microsoft.Logic/workflows","location":"eastus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-09-11T09:36:50.55927Z","changedTime":"2023-11-13T03:09:22.7774248Z","state":"Enabled","version":"08585017619227164202","accessEndpoint":"https://prod-91.eastus.logic.azure.com:443/workflows/ead65534c1af44858655d6872c3bf404","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Recurrence":{"recurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"evaluatedRecurrence":{"frequency":"Hour","interval":1,"startTime":"2023-09-04T17:00:00Z"},"type":"Recurrence"}},"actions":{"Condition":{"actions":{"Compose":{"runAfter":{"Create_HTML_table":["Succeeded"]},"type":"Compose","inputs":"@concat(''<style>html
+        {font: 0.75em/1.5 sans-serif;color: #333;background-color: #fff;padding: 1em;}
+        table {margin-bottom: 1em;border-collapse: collapse;} th {font-weight: bold;color:
+        #f5d135;background-color: #314472;} th, td {padding: 0.5em;border: 1px solid
+        #adbadc;}</style> <h4>Result</h4><p>'', body(''Create_HTML_table''), ''</p><br
+        />'', if(empty(variables(''AlertAction'')), '''', concat(''<h4>Action</h4><p>'',
+        variables(''AlertAction''), ''</p><br />'')), ''<h4>Kusto Query</h4><p>'',
+        variables(''KustoQuery''), ''</p>'', ''<h4>Kusto Dashboard</h4><p><a href=\"https://dataexplorer.azure.com/dashboards/69e867b2-9152-4c81-be01-c7dcb025184a?p-_startTime=1hours&p-_endTime=now&tile=6647c90b-8c86-4bc9-91d9-8d3d347bf244\">Az
+        VM success rate</a></p>'')"},"Create_HTML_table":{"runAfter":{},"type":"Table","inputs":{"format":"HTML","from":"@body(''Run_KQL_query'')?[''value'']"}},"Post_message_in_a_chat_or_channel":{"runAfter":{"Send_an_email":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"messageBody":"<p>CLI
+        @{variables(''Module'')} module success rate lower than @{variables(''MinSuccessRate'')}%
+        or no user fault failure higher than @{variables(''MaxNoUserFaultFailureRate'')}%:<br>\n@{body(''Create_HTML_table'')}<br>\nPlease
+        check:<br>\nRawEventsAzCli<br>\n| where EventTimestamp &gt;= ago(150m) and
+        EventTimestamp &lt; ago(90m)<br>\n| where RawCommand startswith \"role \"<br>\n|
+        summarize total=count(), success=countif(ActionResult==''Success''), no_user_fault_failure=countif(ActionResult!=''Success''
+        and ActionResult!=''UserFault'')<br>\n| project success, no_user_fault_failure,
+        total, success_rate=todouble(success)*100/total, no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total</p>","recipient":{"channelId":"19:9328d606930f45d6b0c45888fc1df5a9@thread.tacv2","groupId":"9840b1a5-71dd-4b68-a8f7-466bf5801684"}},"host":{"connection":{"name":"@parameters(''$connections'')[''teams''][''connectionId'']"}},"method":"post","path":"/beta/teams/conversation/message/poster/Flow
+        bot/location/@{encodeURIComponent(''Channel'')}"}},"Send_an_email":{"runAfter":{"Compose":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"Body":"<p>@{outputs(''Compose'')}</p>","Importance":"Normal","Subject":"CLI
+        @{variables(''Module'')} module success rate alerts based on Azure Kusto telemetry","To":"@variables(''EmailAddress'')"},"host":{"connection":{"name":"@parameters(''$connections'')[''office365_1''][''connectionId'']"}},"method":"post","path":"/v2/Mail"}}},"runAfter":{"Run_KQL_query":["Succeeded"]},"expression":{"or":[{"less":["@float(body(''Run_KQL_query'')?[''value''][0][''success_rate''])","@variables(''MinSuccessRate'')"]},{"greater":["@float(body(''Run_KQL_query'')?[''value''][0][''no_user_fault_failure_rate''])","@variables(''MaxNoUserFaultFailureRate'')"]}]},"type":"If"},"Initialize_variable_AlertAction":{"runAfter":{"Initialize_variable_MaxNoUserFaultFailureRate":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"AlertAction","type":"string","value":"CLI
+        @{variables(''Module'')} module success rate lower than @{variables(''MinSuccessRate'')}%
+        or no user fault failure higher than @{variables(''MaxNoUserFaultFailureRate'')}%,
+        please check."}]}},"Initialize_variable_EmailAddress":{"runAfter":{"Initialize_variable_Module":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"EmailAddress","type":"string","value":"AzCLIDev@microsoft.com"}]}},"Initialize_variable_KustoQuery":{"runAfter":{"Initialize_variable_EmailAddress":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"KustoQuery","type":"string","value":"RawEventsAzCli\n|
+        where EventTimestamp >= ago(150m) and EventTimestamp < ago(90m)\n| where RawCommand
+        startswith \"vm \"\n| summarize total=count(), success=countif(ActionResult==''Success''),
+        no_user_fault_failure=countif(ActionResult!=''Success'' and ActionResult!=''UserFault'')\n|
+        project success, no_user_fault_failure, total, success_rate=todouble(success)*100/total,
+        no_user_fault_failure_rate=todouble(no_user_fault_failure)*100/total"}]}},"Initialize_variable_MaxNoUserFaultFailureRate":{"runAfter":{"Initialize_variable_MinSuccessRate":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"MaxNoUserFaultFailureRate","type":"float","value":8}]}},"Initialize_variable_MinSuccessRate":{"runAfter":{"Initialize_variable_KustoQuery":["Succeeded"]},"type":"InitializeVariable","inputs":{"variables":[{"name":"MinSuccessRate","type":"float","value":75}]}},"Initialize_variable_Module":{"runAfter":{},"type":"InitializeVariable","inputs":{"variables":[{"name":"Module","type":"string","value":"vm"}]}},"Run_KQL_query":{"runAfter":{"Initialize_variable_AlertAction":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"cluster":"https://ddazureclients.kusto.windows.net","csl":"@variables(''KustoQuery'')","db":"AzureCli"},"host":{"connection":{"name":"@parameters(''$connections'')[''kusto''][''connectionId'']"}},"method":"post","path":"/ListKustoResults/false"}}},"outputs":{}},"parameters":{"$connections":{"value":{"kusto":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/kusto","connectionName":"kusto","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/kusto"},"office365_1":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/office365-1","connectionName":"office365-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/office365"},"teams":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/teams-1","connectionName":"teams-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/teams"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Logic/workflows/AzVMSuccessRateMonitor","name":"AzVMSuccessRateMonitor","type":"Microsoft.Logic/workflows","location":"eastus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T02:53:44.7803191Z","changedTime":"2023-07-20T06:42:01.3214613Z","state":"Enabled","version":"08585117715641583220","accessEndpoint":"https://prod-06.eastus.logic.azure.com:443/workflows/651218ee23a1404fadd59d57b182daf4","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"manual":{"type":"Request","kind":"Http","inputs":{"method":"POST","schema":{"properties":{"content":{"type":"string"},"subject":{"type":"string"},"to":{"type":"string"}},"type":"object"}}}},"actions":{"Send_an_email_(V2)":{"runAfter":{},"type":"ApiConnection","inputs":{"body":{"Body":"<p>@{triggerBody()?[''content'']}</p>","Importance":"Normal","Subject":"@triggerBody()?[''subject'']","To":"@triggerBody()?[''to'']"},"host":{"connection":{"name":"@parameters(''$connections'')[''office365''][''connectionId'']"}},"method":"post","path":"/v2/Mail"}}},"outputs":{}},"parameters":{"$connections":{"value":{"office365":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/office365","connectionName":"office365","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/office365"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Logic/workflows/SendMail","name":"SendMail","type":"Microsoft.Logic/workflows","location":"eastus"},{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T03:00:51.7499166Z","changedTime":"2023-09-14T09:44:35.1231615Z","state":"Enabled","version":"08585069222103730546","accessEndpoint":"https://prod-64.eastus.logic.azure.com:443/workflows/a33ef5180fe145109b3e7dca39c74243","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"manual":{"type":"Request","kind":"Http","inputs":{"method":"POST","schema":{"properties":{"content":{"type":"string"},"title":{"type":"string"},"to":{"type":"string"}},"type":"object"}}}},"actions":{"For_each_to":{"foreach":"@split(triggerBody()?[''to''],
+        '','')","actions":{"Create_a_chat_2":{"runAfter":{},"type":"ApiConnection","inputs":{"body":{"members":"@{items(''For_each_to'')}","topic":"@triggerBody()?[''title'']"},"host":{"connection":{"name":"@parameters(''$connections'')[''teams''][''connectionId'']"}},"method":"post","path":"/beta/chats"}},"Post_message_in_a_chat_or_channel_2":{"runAfter":{"Create_a_chat_2":["Succeeded"]},"type":"ApiConnection","inputs":{"body":{"messageBody":"<p>Hi,<br>\n<br>\n@{triggerBody()?[''content'']}</p>","recipient":"@body(''Create_a_chat_2'')?[''id'']"},"host":{"connection":{"name":"@parameters(''$connections'')[''teams''][''connectionId'']"}},"method":"post","path":"/beta/teams/conversation/message/poster/@{encodeURIComponent(''User'')}/location/@{encodeURIComponent(''Group
+        chat'')}"}}},"runAfter":{},"type":"Foreach"}},"outputs":{}},"parameters":{"$connections":{"value":{"teams":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Web/connections/teams","connectionName":"teams","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/eastus/managedApis/teams"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureClientToolsAutomation/providers/Microsoft.Logic/workflows/SendTeams","name":"SendTeams","type":"Microsoft.Logic/workflows","location":"eastus"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '26660'
+      - '89160'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:21 GMT
+      - Fri, 24 Nov 2023 06:33:51 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - centralus:d58073ee-0322-4c48-92d9-4163ecd033db
-      - westus:1a4e5b1d-c6e9-4697-8cdf-5ae5c7e094ea
-      - eastus:360f061b-f86b-487d-b519-8156d0d61e13
+      - centralus:a97b69ae-2af4-4a7e-bb41-60927382636e
+      - westus:d733fa1c-9f1b-4bad-9c31-73993d437ea0
+      - eastus:86cd6f7b-2bbf-4f64-8dd6-f47fca7e330a
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '19999'
+      x-msedge-ref:
+      - 'Ref A: FEB629201CB04BAA8B052E61ED839BF9 Ref B: TYO201100113047 Ref C: 2023-11-24T06:33:50Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"sku": {"name": "Basic"}}'
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sku --name --resource-group
+      User-Agent:
+      - AZURECLI/2.54.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_000002?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002","name":"cli_test_000002","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_logic","date":"2023-11-24T06:32:32Z","module":"logic","Creator":"v-jingszhang@microsoft.com","DateCreated":"2023-11-24T06:33:25Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '421'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Nov 2023 06:33:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2E7AA3FBB8A24B389570C3C6F762C9F5 Ref B: TYO201100115039 Ref C: 2023-11-24T06:33:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "sku": {"name": "Basic"}}'
     headers:
       Accept:
       - application/json
@@ -437,13 +718,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '26'
+      - '48'
       Content-Type:
       - application/json
       ParameterSetName:
       - --sku --name --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts/cli_test_000004?api-version=2019-05-01
   response:
@@ -457,21 +738,26 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:28 GMT
+      - Fri, 24 Nov 2023 06:33:54 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=5438b719719a236f0061a2df82ee876e245535582e51f65e9a5afcc69a780aee;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=5438b719719a236f0061a2df82ee876e245535582e51f65e9a5afcc69a780aee;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: 0B2FCCE9ADA5407182EC0A357E2010C2 Ref B: TYO201100116047 Ref C: 2023-11-24T06:33:54Z'
     status:
       code: 200
       message: OK
@@ -489,58 +775,106 @@ interactions:
       ParameterSetName:
       - --resource-group --tag --definition --name
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T03:43:09.8214583Z","changedTime":"2023-06-26T03:43:09.8203656Z","state":"Enabled","version":"08585138558956768772","accessEndpoint":"https://prod-12.centralus.logic.azure.com:443/workflows/2e63547be957434296fc8e533168207b","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001","name":"cli_test_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_logic","date":"2023-11-24T06:32:29Z","module":"logic"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2088'
+      - '345'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:30 GMT
+      - Fri, 24 Nov 2023 06:33:55 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '19999'
+      x-msedge-ref:
+      - 'Ref A: 5AADD70C0AFF4777A3D9413D30719BEA Ref B: TYO201100117011 Ref C: 2023-11-24T06:33:55Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "centralus", "tags": {"atag": "123"}, "properties": {"state":
-      "Enabled", "endpointsConfiguration": {"workflow": {"outgoingIpAddresses": [{"address":
-      "13.67.236.125"}, {"address": "104.208.25.27"}, {"address": "40.122.170.198"},
-      {"address": "40.113.218.230"}, {"address": "23.100.86.139"}, {"address": "23.100.87.24"},
-      {"address": "23.100.87.56"}, {"address": "23.100.82.16"}, {"address": "52.141.221.6"},
-      {"address": "52.141.218.55"}, {"address": "20.109.202.36"}, {"address": "20.109.202.29"}],
-      "accessEndpointIpAddresses": [{"address": "13.67.236.76"}, {"address": "40.77.111.254"},
-      {"address": "40.77.31.87"}, {"address": "104.43.243.39"}, {"address": "13.86.98.126"},
-      {"address": "20.109.202.37"}]}, "connector": {"outgoingIpAddresses": [{"address":
-      "52.173.241.27"}, {"address": "52.173.245.164"}, {"address": "13.89.171.80/28"},
-      {"address": "13.89.178.64/27"}, {"address": "40.77.68.110"}, {"address": "20.98.144.224/27"},
-      {"address": "20.98.145.0/28"}, {"address": "20.80.123.134"}, {"address": "20.80.123.57"}]}},
-      "definition": {"$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic workflow update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --tag --definition --name
+      User-Agent:
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-11-24T06:32:59.352431Z","changedTime":"2023-11-24T06:32:59.3459805Z","state":"Enabled","version":"08585007993061495360","accessEndpoint":"https://prod-21.centralus.logic.azure.com:443/workflows/0487e33d1b2a49a79250fd7f17d5e1d3","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2087'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Nov 2023 06:33:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=03653a5ff26f7e0adf0cd33338b896ea4ee4856ba3918ba0940d9b1fda36f29c;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=03653a5ff26f7e0adf0cd33338b896ea4ee4856ba3918ba0940d9b1fda36f29c;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '19998'
+      x-msedge-ref:
+      - 'Ref A: 7E49D2A9D9C2425DA8639B0129521205 Ref B: TYO201100116049 Ref C: 2023-11-24T06:33:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centralus", "properties": {"definition": {"$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
       "actions": {}, "contentVersion": "1.0.0.0", "outputs": {}, "parameters": {"$connections":
       {"defaultValue": {}, "type": "Object"}}, "triggers": {"When_a_feed_item_is_published":
       {"inputs": {"host": {"connection": {"name": "@parameters(''$connections'')[''rss''][''connectionId'']"}},
       "method": "get", "path": "/OnNewFeed", "queries": {"feedUrl": "http://feeds.reuters.com/reuters/topNews"}},
       "recurrence": {"frequency": "Minute", "interval": 2}, "splitOn": "@triggerBody()?[''value'']",
-      "type": "ApiConnection"}}}}}'
+      "type": "ApiConnection"}}}, "endpointsConfiguration": {"connector": {"outgoingIpAddresses":
+      [{"address": "52.173.241.27"}, {"address": "52.173.245.164"}, {"address": "13.89.171.80/28"},
+      {"address": "13.89.178.64/27"}, {"address": "40.77.68.110"}, {"address": "20.98.144.224/27"},
+      {"address": "20.98.145.0/28"}, {"address": "20.80.123.134"}, {"address": "20.80.123.57"}]},
+      "workflow": {"accessEndpointIpAddresses": [{"address": "13.67.236.76"}, {"address":
+      "40.77.111.254"}, {"address": "40.77.31.87"}, {"address": "104.43.243.39"},
+      {"address": "13.86.98.126"}, {"address": "20.109.202.37"}], "outgoingIpAddresses":
+      [{"address": "13.67.236.125"}, {"address": "104.208.25.27"}, {"address": "40.122.170.198"},
+      {"address": "40.113.218.230"}, {"address": "23.100.86.139"}, {"address": "23.100.87.24"},
+      {"address": "23.100.87.56"}, {"address": "23.100.82.16"}, {"address": "52.141.221.6"},
+      {"address": "52.141.218.55"}, {"address": "20.109.202.36"}, {"address": "20.109.202.29"}]}},
+      "provisioningState": "Succeeded", "state": "Enabled"}, "tags": {"atag": "123"}}'
     headers:
       Accept:
       - application/json
@@ -551,18 +885,18 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1676'
+      - '1710'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --tag --definition --name
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T03:43:32.6571013Z","changedTime":"2023-06-26T03:43:32.6393672Z","state":"Enabled","version":"08585138558740241614","accessEndpoint":"https://prod-12.centralus.logic.azure.com:443/workflows/2e63547be957434296fc8e533168207b","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":2},"evaluatedRecurrence":{"frequency":"Minute","interval":2},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus","tags":{"atag":"123"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-11-24T06:33:57.3215606Z","changedTime":"2023-11-24T06:33:57.3037862Z","state":"Enabled","version":"08585007992481778630","accessEndpoint":"https://prod-21.centralus.logic.azure.com:443/workflows/0487e33d1b2a49a79250fd7f17d5e1d3","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":2},"evaluatedRecurrence":{"frequency":"Minute","interval":2},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus","tags":{"atag":"123"}}'
     headers:
       cache-control:
       - no-cache
@@ -571,21 +905,26 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:37 GMT
+      - Fri, 24 Nov 2023 06:33:58 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=eac69d9633b62a80172d43feba694263b4d9fccb8b9d953b364b8fc058f6e946;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=eac69d9633b62a80172d43feba694263b4d9fccb8b9d953b364b8fc058f6e946;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: CB250B7FD1CA46CB817D336B066925B5 Ref B: TYO201100116049 Ref C: 2023-11-24T06:33:57Z'
     status:
       code: 200
       message: OK
@@ -603,59 +942,107 @@ interactions:
       ParameterSetName:
       - --resource-group --tag --name
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T03:43:09.8214583Z","changedTime":"2023-06-26T03:43:32.6393672Z","state":"Enabled","version":"08585138558740241614","accessEndpoint":"https://prod-12.centralus.logic.azure.com:443/workflows/2e63547be957434296fc8e533168207b","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":2},"evaluatedRecurrence":{"frequency":"Minute","interval":2},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus","tags":{"atag":"123"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001","name":"cli_test_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_logic","date":"2023-11-24T06:32:29Z","module":"logic"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2110'
+      - '345'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:40 GMT
+      - Fri, 24 Nov 2023 06:33:59 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '19999'
+      x-msedge-ref:
+      - 'Ref A: 27760A6CED264ADD9B849271B084A626 Ref B: TYO201100116039 Ref C: 2023-11-24T06:33:59Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "centralus", "tags": {"atag": "foo"}, "properties": {"state":
-      "Enabled", "endpointsConfiguration": {"workflow": {"outgoingIpAddresses": [{"address":
-      "13.67.236.125"}, {"address": "104.208.25.27"}, {"address": "40.122.170.198"},
-      {"address": "40.113.218.230"}, {"address": "23.100.86.139"}, {"address": "23.100.87.24"},
-      {"address": "23.100.87.56"}, {"address": "23.100.82.16"}, {"address": "52.141.221.6"},
-      {"address": "52.141.218.55"}, {"address": "20.109.202.36"}, {"address": "20.109.202.29"}],
-      "accessEndpointIpAddresses": [{"address": "13.67.236.76"}, {"address": "40.77.111.254"},
-      {"address": "40.77.31.87"}, {"address": "104.43.243.39"}, {"address": "13.86.98.126"},
-      {"address": "20.109.202.37"}]}, "connector": {"outgoingIpAddresses": [{"address":
-      "52.173.241.27"}, {"address": "52.173.245.164"}, {"address": "13.89.171.80/28"},
-      {"address": "13.89.178.64/27"}, {"address": "40.77.68.110"}, {"address": "20.98.144.224/27"},
-      {"address": "20.98.145.0/28"}, {"address": "20.80.123.134"}, {"address": "20.80.123.57"}]}},
-      "definition": {"$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic workflow update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --tag --name
+      User-Agent:
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-11-24T06:32:59.352431Z","changedTime":"2023-11-24T06:33:57.3037862Z","state":"Enabled","version":"08585007992481778630","accessEndpoint":"https://prod-21.centralus.logic.azure.com:443/workflows/0487e33d1b2a49a79250fd7f17d5e1d3","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":2},"evaluatedRecurrence":{"frequency":"Minute","interval":2},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus","tags":{"atag":"123"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2109'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Nov 2023 06:34:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0632ca9db79921cff52d39e8281a50ff464d1c11d97e789130cd466b9287fce9;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=0632ca9db79921cff52d39e8281a50ff464d1c11d97e789130cd466b9287fce9;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '19999'
+      x-msedge-ref:
+      - 'Ref A: 6E54CD89181B48D98C82F011836A9CFC Ref B: TYO201100116033 Ref C: 2023-11-24T06:34:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centralus", "properties": {"definition": {"$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
       "contentVersion": "1.0.0.0", "parameters": {"$connections": {"defaultValue":
       {}, "type": "Object"}}, "triggers": {"When_a_feed_item_is_published": {"recurrence":
       {"frequency": "Minute", "interval": 2}, "evaluatedRecurrence": {"frequency":
       "Minute", "interval": 2}, "splitOn": "@triggerBody()?[''value'']", "type": "ApiConnection",
       "inputs": {"host": {"connection": {"name": "@parameters(''$connections'')[''rss''][''connectionId'']"}},
       "method": "get", "path": "/OnNewFeed", "queries": {"feedUrl": "http://feeds.reuters.com/reuters/topNews"}}}},
-      "actions": {}, "outputs": {}}}}'
+      "actions": {}, "outputs": {}}, "endpointsConfiguration": {"connector": {"outgoingIpAddresses":
+      [{"address": "52.173.241.27"}, {"address": "52.173.245.164"}, {"address": "13.89.171.80/28"},
+      {"address": "13.89.178.64/27"}, {"address": "40.77.68.110"}, {"address": "20.98.144.224/27"},
+      {"address": "20.98.145.0/28"}, {"address": "20.80.123.134"}, {"address": "20.80.123.57"}]},
+      "workflow": {"accessEndpointIpAddresses": [{"address": "13.67.236.76"}, {"address":
+      "40.77.111.254"}, {"address": "40.77.31.87"}, {"address": "104.43.243.39"},
+      {"address": "13.86.98.126"}, {"address": "20.109.202.37"}], "outgoingIpAddresses":
+      [{"address": "13.67.236.125"}, {"address": "104.208.25.27"}, {"address": "40.122.170.198"},
+      {"address": "40.113.218.230"}, {"address": "23.100.86.139"}, {"address": "23.100.87.24"},
+      {"address": "23.100.87.56"}, {"address": "23.100.82.16"}, {"address": "52.141.221.6"},
+      {"address": "52.141.218.55"}, {"address": "20.109.202.36"}, {"address": "20.109.202.29"}]}},
+      "provisioningState": "Succeeded", "state": "Enabled"}, "tags": {"atag": "foo"}}'
     headers:
       Accept:
       - application/json
@@ -666,18 +1053,18 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1739'
+      - '1773'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --tag --name
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T03:43:40.9525999Z","changedTime":"2023-06-26T03:43:40.9440926Z","state":"Enabled","version":"08585138558645467342","accessEndpoint":"https://prod-12.centralus.logic.azure.com:443/workflows/2e63547be957434296fc8e533168207b","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":2},"evaluatedRecurrence":{"frequency":"Minute","interval":2},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus","tags":{"atag":"foo"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-11-24T06:34:02.1298845Z","changedTime":"2023-11-24T06:34:02.1134752Z","state":"Enabled","version":"08585007992433666563","accessEndpoint":"https://prod-21.centralus.logic.azure.com:443/workflows/0487e33d1b2a49a79250fd7f17d5e1d3","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":2},"evaluatedRecurrence":{"frequency":"Minute","interval":2},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"},{"address":"52.141.221.6"},{"address":"52.141.218.55"},{"address":"20.109.202.36"},{"address":"20.109.202.29"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"},{"address":"13.86.98.126"},{"address":"20.109.202.37"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"},{"address":"20.80.123.134"},{"address":"20.80.123.57"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus","tags":{"atag":"foo"}}'
     headers:
       cache-control:
       - no-cache
@@ -686,21 +1073,26 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 26 Jun 2023 03:43:44 GMT
+      - Fri, 24 Nov 2023 06:34:03 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=0632ca9db79921cff52d39e8281a50ff464d1c11d97e789130cd466b9287fce9;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=0632ca9db79921cff52d39e8281a50ff464d1c11d97e789130cd466b9287fce9;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: A0C2CBB299034D61A2AEE12B809822BB Ref B: TYO201100116033 Ref C: 2023-11-24T06:34:01Z'
     status:
       code: 200
       message: OK
@@ -708,7 +1100,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -720,7 +1112,7 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
   response:
@@ -732,17 +1124,24 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 26 Jun 2023 03:43:54 GMT
+      - Fri, 24 Nov 2023 06:34:10 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=0632ca9db79921cff52d39e8281a50ff464d1c11d97e789130cd466b9287fce9;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=0632ca9db79921cff52d39e8281a50ff464d1c11d97e789130cd466b9287fce9;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
+      x-msedge-ref:
+      - 'Ref A: 1836786E1D294AFB89E8717D79436D64 Ref B: TYO201100115017 Ref C: 2023-11-24T06:34:04Z'
     status:
       code: 200
       message: OK
@@ -750,7 +1149,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -762,7 +1161,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group -y
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts/cli_test_000004?api-version=2019-05-01
   response:
@@ -774,17 +1173,24 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 26 Jun 2023 03:43:59 GMT
+      - Fri, 24 Nov 2023 06:34:13 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      set-cookie:
+      - ARRAffinity=0632ca9db79921cff52d39e8281a50ff464d1c11d97e789130cd466b9287fce9;Path=/;HttpOnly;Secure;Domain=management.centralus.logic.azure.com
+      - ARRAffinitySameSite=0632ca9db79921cff52d39e8281a50ff464d1c11d97e789130cd466b9287fce9;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.centralus.logic.azure.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
+      x-msedge-ref:
+      - 'Ref A: 7536CFF2B3C942C3AF8B8F6FE10C2F38 Ref B: TYO201100113023 Ref C: 2023-11-24T06:34:11Z'
     status:
       code: 200
       message: OK
