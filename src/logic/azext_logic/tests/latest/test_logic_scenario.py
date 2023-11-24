@@ -74,9 +74,13 @@ class LogicManagementClientScenarioTest(ScenarioTest):
                  '--resource-group "{rg}"',
                  checks=[JMESPathCheck('[0].name', self.kwargs.get('testWorkflow', ''))])
 
-        self.cmd('az logic integration-account list')
+        self.cmd('az logic integration-account list --top 2', checks=[
+            self.check('length(@)', 2)
+        ])
 
-        self.cmd('az logic workflow list')
+        self.cmd('az logic workflow list --top 2', checks=[
+            self.check('length(@)', 2)
+        ])
 
         self.cmd('az logic integration-account update '
                  '--sku Basic '

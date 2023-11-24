@@ -13,10 +13,11 @@
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group('logic integration-account'):
-        from azext_logic.custom import IntegrationAccountCreate, IntegrationAccountUpdate, IntegrationAccountImport
+        from azext_logic.custom import IntegrationAccountCreate, IntegrationAccountUpdate, IntegrationAccountImport, IntegrationAccountList
         self.command_table['logic integration-account create'] = IntegrationAccountCreate(loader=self)
         self.command_table['logic integration-account update'] = IntegrationAccountUpdate(loader=self)
         self.command_table['logic integration-account import'] = IntegrationAccountImport(loader=self)
+        self.command_table['logic integration-account list'] = IntegrationAccountList(loader=self)
 
     with self.command_group('logic integration-account map'):
         from azext_logic.custom import MapCreate, MapUpdate
@@ -24,9 +25,10 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table['logic integration-account map update'] = MapUpdate(loader=self)
 
     with self.command_group('logic workflow'):
-        from azext_logic.custom import WorkflowCreate, WorkflowUpdate
+        from azext_logic.custom import WorkflowCreate, WorkflowUpdate, WorkflowList
         self.command_table['logic workflow create'] = WorkflowCreate(loader=self)
         self.command_table['logic workflow update'] = WorkflowUpdate(loader=self)
+        self.command_table['logic workflow list'] = WorkflowList(loader=self)
 
     with self.command_group('logic workflow identity'):
         from azext_logic.custom import IdentityAssign, IdentityRemove

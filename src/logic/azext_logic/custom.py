@@ -13,10 +13,12 @@ from azure.cli.core.aaz import has_value, register_command
 from azure.cli.core.azclierror import RequiredArgumentMissingError
 from azext_logic.aaz.latest.logic.workflow import Create as _WorkflowCreate
 from azext_logic.aaz.latest.logic.workflow import Update as _WorkflowUpdate
+from azext_logic.aaz.latest.logic.workflow import List as _WorkflowList
 from azext_logic.aaz.latest.logic.workflow.identity import Assign as _IdentityAssign
 from azext_logic.aaz.latest.logic.workflow.identity import Remove as _IdentityRemove
 from azext_logic.aaz.latest.logic.integration_account import Create as _IntegrationAccountCreate
 from azext_logic.aaz.latest.logic.integration_account import Update as _IntegrationAccountUpdate
+from azext_logic.aaz.latest.logic.integration_account import List as _IntegrationAccountList
 from azext_logic.aaz.latest.logic.integration_account.map import Create as _MapCreate
 from azext_logic.aaz.latest.logic.integration_account.map import Update as _MapUpdate
 
@@ -289,3 +291,27 @@ class IdentityRemove(_IdentityRemove):
         if not self.ctx.vars.instance.identity.to_serialized_data():
             return {'type': None}
         return self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
+
+
+class IntegrationAccountList(_IntegrationAccountList):
+    def _output(self, *args, **kwargs):
+        args = self.ctx.args
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        if has_value(args.top):
+            next_link = None
+            if len(result) > self.ctx.args.top:
+                result = result[:args.top.to_serialized_data()]
+        return result, next_link
+
+
+class WorkflowList(_WorkflowList):
+    def _output(self, *args, **kwargs):
+        args = self.ctx.args
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        if has_value(args.top):
+            next_link = None
+            if len(result) > self.ctx.args.top:
+                result = result[:args.top.to_serialized_data()]
+        return result, next_link
