@@ -55,6 +55,13 @@ Pending
 * Update the enum for `--os-sku` in command `az aks nodepool update` to only accept the expected Ubuntu and AzureLinux OSSKUs.
 * Update description `az aks update` and remove description about outbound ip limit.
 
+0.5.172
++++++++
+* Add `--ssh-access` to the `az aks create` command.
+* Add `--ssh-access` to the `az aks update` command.
+* Add `--ssh-access` to the `az aks nodepool add` command.
+* Add `--ssh-access` to the `az aks nodepool update` command.
+
 0.5.171
 +++++++
 * Fix the issue that the value passed by option `--os-sku` in command `az aks nodepool update` is not processed.

@@ -828,7 +828,7 @@ def load_arguments(self, _):
             )
         )
         # in creation scenario, use "localuser" as default
-        c.argument('ssh_access', type=str, default=CONST_SSH_ACCESS_LOCALUSER, is_preview=True, validator=validate_ssh_access)
+        c.argument('ssh_access', default=CONST_SSH_ACCESS_LOCALUSER, is_preview=True, validator=validate_ssh_access)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1207,7 +1207,7 @@ def load_arguments(self, _):
             )
         )
         # In update scenario, use emtpy str as default.
-        c.argument('ssh_access', type=str, is_preview=True, validator=validate_ssh_access)
+        c.argument('ssh_access', is_preview=True, validator=validate_ssh_access)
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1359,7 +1359,7 @@ def load_arguments(self, _):
         )
         c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
         # in creation scenario, use "localuser" as default
-        c.argument('ssh_access', type=str, default=CONST_SSH_ACCESS_LOCALUSER, is_preview=True, validator=validate_ssh_access)
+        c.argument('ssh_access', default=CONST_SSH_ACCESS_LOCALUSER, is_preview=True, validator=validate_ssh_access)
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1416,7 +1416,7 @@ def load_arguments(self, _):
             validator=validate_os_sku,
         )
         # In update scenario, use emtpy str as default.
-        c.argument('ssh_access', type=str, is_preview=True, validator=validate_ssh_access)
+        c.argument('ssh_access', is_preview=True, validator=validate_ssh_access)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context("aks nodepool upgrade") as c:
