@@ -669,22 +669,16 @@ def create_custom_location(cmd, custom_location_name=None, resource_group=None, 
     return custom_location
 
 
-def get_randomized_name(prefix, name=None, initial="rg", random_int=None):
+def get_randomized_name(prefix, initial="rg", random_int=None):
     from random import randint
     random_int = random_int if random_int else randint(0, 9999)
-    default = "{}_{}_{:04}".format(prefix, initial, random_int)
-    if name is not None:
-        return name
-    return default
+    return "{}_{}_{:04}".format(prefix, initial, random_int)
 
 
-def get_randomized_name_with_dash(prefix, name=None, initial="rg", random_int=None):
+def get_randomized_name_with_dash(prefix, initial="rg", random_int=None):
     from random import randint
     random_int = random_int if random_int else randint(0, 9999)
-    default = "{}-{}-{:04}".format(prefix, initial, random_int)
-    if name is not None:
-        return name
-    return default
+    return "{}-{}-{:04}".format(prefix, initial, random_int)
 
 
 def log_in_file(log_text, opened_file, no_print=False):

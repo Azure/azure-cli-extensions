@@ -1395,7 +1395,7 @@ def _infer_existing_connected_env(
         if len(env_list) > 1:
             if env.name:
                 raise ValidationError(
-                    f"There are multiple environments with name {env.name} on the subscription. "
+                    f"There are multiple Connected Environments with name {env.name} on the subscription. "
                     "Please specify which resource group your Connected environment is in."
                 )  # get ACR details from --image, if possible
             else:
@@ -1426,9 +1426,9 @@ def _infer_existing_custom_location_or_extension(
                 env.custom_location_id = custom_location.get_rid()
             else:
                 random_int = randint(0, 9999)
-                resource_group.name = get_randomized_name(get_profile_username(), name=resource_group.name, random_int=random_int)
+                resource_group.name = resource_group.name if resource_group.name else get_randomized_name(get_profile_username(), random_int=random_int)
                 env.name = env.name if env.name else "{}-env".format(name).replace("_", "-")
-                custom_location.name = get_randomized_name_with_dash(prefix=get_profile_username(), name=custom_location.name, initial="env-location", random_int=random_int)
+                custom_location.name = custom_location.name if custom_location.name else get_randomized_name_with_dash(prefix=get_profile_username(), initial="env-location", random_int=random_int)
                 custom_location.resource_group_name = resource_group.name
                 env.custom_location_id = custom_location.get_rid()
                 # If not existed extension, set up values for creating
