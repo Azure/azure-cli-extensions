@@ -28,7 +28,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                 'cluster_name': 'azcli-contoso-cluster',
                 'datastore_inventory_item': 'datastore-563660',
                 'datastore_name': 'azcli-contoso-datastore',
-                'host_inventory_item': 'host-1147546',
+                'host_inventory_item': 'host-1147412',
                 'host_name': 'azcli-contoso-host',
                 'vnet_inventory_item': 'network-563661',
                 'vnet_name': 'azcli-contoso-virtual-network',

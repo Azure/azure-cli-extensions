@@ -602,7 +602,10 @@ def get_config_dp_endpoint(cmd, location, values_file, arm_metadata=None):
         config_dp_endpoint, release_train = validate_env_file_dogfood(values_file)
     # Get the values or endpoints required for retreiving the Helm registry URL.
     if "dataplaneEndpoints" in arm_metadata:
-        config_dp_endpoint = arm_metadata["dataplaneEndpoints"]["arcConfigEndpoint"]
+        if "arcConfigEndpoint" in arm_metadata["dataplaneEndpoints"]:
+            config_dp_endpoint = arm_metadata["dataplaneEndpoints"]["arcConfigEndpoint"]
+        else:
+            logger.debug("'arcConfigEndpoint' doesn't exist under 'dataplaneEndpoints' in the ARM metadata.")
     # Get the default config dataplane endpoint.
     if config_dp_endpoint is None:
         config_dp_endpoint = get_default_config_dp_endpoint(cmd, location)

@@ -29,11 +29,10 @@ class SCVMMConfiguration(Configuration):  # pylint: disable=too-many-instance-at
 
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: The Azure subscription ID. This is a GUID-formatted string (e.g.
-     00000000-0000-0000-0000-000000000000).
+    :param subscription_id: The ID of the target subscription. The value must be an UUID.
     :type subscription_id: str
-    :keyword api_version: Api Version. The default value is "2023-04-01-preview". Note that
-     overriding this default value may result in unsupported behavior.
+    :keyword api_version: Api Version. The default value is "2023-10-07". Note that overriding this
+     default value may result in unsupported behavior.
     :paramtype api_version: str
     """
 
@@ -45,7 +44,7 @@ class SCVMMConfiguration(Configuration):  # pylint: disable=too-many-instance-at
     ):
         # type: (...) -> None
         super(SCVMMConfiguration, self).__init__(**kwargs)
-        api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")

@@ -70,7 +70,8 @@ def test_extension():
         logger.info(f'installing extension: {ext_name}')
         cmd = ['azdev', 'extension', 'add', ext_name]
         run_command(cmd, check_return_code=True)
-        test_args = [sys.executable, '-m', 'azdev', 'test', '--no-exitfirst', '--discover', '--verbose', ext_name]
+        # python -m azdev test --no-exitfirst --discover --verbose azext_containerapp
+        test_args = [sys.executable, '-m', 'azdev', 'test', '--no-exitfirst', '--discover', '--verbose', tname]
         logger.warning(f'test_args: {test_args}')
         run_command(test_args, check_return_code=True)
         logger.info(f'uninstalling extension: {ext_name}')

@@ -54,14 +54,13 @@ def create_and_verify_containerapp_up(
             resource_group,
             env_name = None,
             source_path = None,
+            artifact_path = None,
             image = None,
             location = None,
             ingress = None,
             target_port = None,
-            app_name = None):
-        # Configure the default location
-        test_cls.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
+            app_name = None,
+            requires_acr_prerequisite = False):
         # Ensure that the Container App environment is created
         if env_name is None:
            env_name = test_cls.create_random_name(prefix='env', length=24)
@@ -75,12 +74,24 @@ def create_and_verify_containerapp_up(
         up_cmd = f"containerapp up -g {resource_group} -n {app_name} --environment {env_name}"
         if source_path:
             up_cmd += f" --source \"{source_path}\""
+        if artifact_path:
+            up_cmd += f" --artifact \"{artifact_path}\""
         if image:
             up_cmd += f" --image {image}"
         if ingress:
             up_cmd += f" --ingress {ingress}"
         if target_port:
             up_cmd += f" --target-port {target_port}"
+
+        if requires_acr_prerequisite:
+            # Create ACR
+            registry_name = test_cls.create_random_name(prefix='containerapp', length=24)
+            acr = test_cls.cmd('acr create -g {} -n {} --sku Basic --admin-enabled'.format(resource_group, registry_name)).get_output_in_json()
+            registry_server = acr["loginServer"]
+            acr_credentials = test_cls.cmd('acr credential show -g {} -n {}'.format(resource_group, registry_name)).get_output_in_json()
+            registry_user = acr_credentials["username"]
+            registry_pass = acr_credentials["passwords"][0]["value"]
+            up_cmd += f" --registry-server {registry_server} --registry-username {registry_user} --registry-password {registry_pass}"
 
         # Execute the 'az containerapp up' command
         test_cls.cmd(up_cmd)
@@ -201,6 +212,7 @@ def create_and_verify_containerapp_create_and_update(
             resource_group,
             env_name = None,
             source_path = None,
+            artifact_path = None,
             image = None,
             ingress = None,
             target_port = None,
@@ -240,6 +252,8 @@ def create_and_verify_containerapp_create_and_update(
             resource_group, app_name, env_id or env_name, registry_server)
         if source_path:
             create_cmd += f" --source \"{source_path}\""
+        if artifact_path:
+            create_cmd += f" --artifact \"{artifact_path}\""
         if image:
             create_cmd += f" --image {image}"
             image_name = registry_server + "/" + _reformat_image(image)
@@ -264,6 +278,8 @@ def create_and_verify_containerapp_create_and_update(
             resource_group, app_name, env_id or env_name, registry_user, registry_server, registry_pass)
         if source_path:
             create_cmd += f" --source \"{source_path}\""
+        if artifact_path:
+            create_cmd += f" --artifact \"{artifact_path}\""
         if image:
             create_cmd += f" --image {image}"
             image_name = registry_server + "/" + _reformat_image(image)
@@ -289,6 +305,8 @@ def create_and_verify_containerapp_create_and_update(
             resource_group, app_name)
         if source_path:
             update_cmd += f" --source \"{source_path}\""
+        if artifact_path:
+            update_cmd += f" --artifact \"{artifact_path}\""
         if image:
             update_cmd += f" --image {image}"
 

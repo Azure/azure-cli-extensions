@@ -27,10 +27,18 @@ class ContainerAppCreateTest(ScenarioTest):
     @live_only()
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_source_with_buildpack_e2e(self, resource_group):
-        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_buildpack"))
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_bullseye_buildpack_net7"))
         ingress = 'external'
         target_port = '8080'
         create_and_verify_containerapp_create_and_update(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port)
+
+    @live_only()
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_create_artifact_with_buildpack_e2e(self, resource_group):
+        artifact_path = os.path.join(TEST_DIR, os.path.join("data", "artifact_built_using_buildpack", "sample.jar"))
+        ingress = 'external'
+        target_port = '8080'
+        create_and_verify_containerapp_create_and_update(self, resource_group=resource_group, artifact_path=artifact_path, ingress=ingress, target_port=target_port)
 
     @live_only()
     @ResourceGroupPreparer(location="eastus")
@@ -53,12 +61,6 @@ class ContainerAppCreateTest(ScenarioTest):
         repo = "https://github.com/test/repo"
         err = ("Usage error: --source and --repo cannot be used together. Can either deploy from a local directory or a GitHub repository")
         verify_containerapp_create_exception(self, resource_group=resource_group, err= err, source_path=source_path, repo=repo)
-
-    @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_create_source_without_ACR_registry_server_e2e(self, resource_group):
-        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
-        err = ("Usage error: --registry-server is required while using --source or --repo")
-        verify_containerapp_create_exception(self, resource_group, err=err, source_path=source_path)
 
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_source_and_yaml_e2e(self,resource_group):
@@ -87,19 +89,10 @@ class ContainerAppCreateTest(ScenarioTest):
         verify_containerapp_create_exception(self, resource_group=resource_group, err=err, source_path=source_path, environment_type="connected")
 
     @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_create_source_with_non_ACR_registry_server_e2e(self, resource_group):
-        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
-        registry_server = "docker.io"
-        registry_user = "test"
-        registry_pass = "test"
-        err = ("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source or --repo")
-        verify_containerapp_create_exception(self, resource_group, err=err, source_path=source_path, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
-
-    @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_repo_with_non_ACR_registry_server_e2e(self, resource_group):
         repo = "https://github.com/test/repo"
         registry_server = "docker.io"
         registry_user = "test"
         registry_pass = "test"
-        err = ("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source or --repo")
+        err = ("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --repo")
         verify_containerapp_create_exception(self, resource_group, err=err, repo=repo, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)

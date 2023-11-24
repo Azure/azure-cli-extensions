@@ -114,7 +114,7 @@ test_invalid_many_input_types | Makes sure we're only getting input from one sou
 test_diff_wrong_input_type | Makes sure we're only doing the diff command if we're using a ARM Template as the input type
 test_parameters_without_template | Makes sure we error out if a parameter file is getting passed in without an ARM Template
 
-## Tar File (test_confcom_tar.py)
+## Tar File [test file](test_confcom_tar.py)
 
 This is a way to generate a CCE policy without the use of the docker daemon. The tar file that gets passed in is either from the `docker save` command or doing `image.save(named=True)` with the Docker python SDK. It accepts either a path to a tar file or the path to a JSON file with keys being the name of the image and value being the path to that file relative to the JSON file.
 
@@ -124,3 +124,13 @@ test_arm_template_with_parameter_file_clean_room_tar | nginx:1.23 | Create a pol
 test_arm_template_mixed_mode_tar | python:3.9 & nginx:1.22 | Create a policy with one image from a tar file and one image that must be downloaded or used locally from the daemon
 test_arm_template_with_parameter_file_clean_room_tar_invalid | N/A | Fail out if searching for an image in a tar file that does not include it
 test_clean_room_fake_tar_invalid | N/A | Fail out if the path to the tar file doesn't exist
+
+## Tar File [test file](test_confcom_kata.py)
+
+This is how to generate security policies for Confidential Containers on AKS
+
+Test Name | Image Used | Purpose
+---|---|---
+test_invalid_input_path | mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64 | Input a path that does not exist for the pod.yaml file
+test_invalid_config_map_path | mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64 | Input a path that does not exist for the config-map.yaml file
+test_invalid_settings | mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64 | Input an invalid name for a custom settings file

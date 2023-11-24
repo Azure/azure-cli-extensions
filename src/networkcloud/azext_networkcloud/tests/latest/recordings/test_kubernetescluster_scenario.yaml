@@ -39,7 +39,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","name":"cli-test-naks-000001","type":"microsoft.networkcloud/kubernetesclusters","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev08-0a105e4eb74b-hostedresources-16b3aa40/providers/microsoft.extendedlocation/customlocations/dev08-0a105e4eb74b-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-08-18T21:40:16.7874305Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-08-18T21:40:16.7874305Z"},"properties":{"aadConfiguration":{"adminGroupObjectIds":["598f3796-d0dd-45ec-b0fc-e00731b0283f"]},"administratorConfiguration":{"adminUsername":"azureuser","sshPublicKeys":[{"keyData":"ssh-rsa
@@ -51,7 +51,7 @@ interactions:
         northamerica\\priyashet@DESKTOP-SMSPV4Q"}]},"agentOptions":{"hugepagesCount":4,"hugepagesSize":"1G"},"count":1,"mode":"System","name":"systemPool1","upgradeSettings":{"maxSurge":"1"},"vmSkuName":"NC_G4_v1"}],"kubernetesVersion":"1.24.9","networkConfiguration":{"bgpServiceLoadBalancerConfiguration":{"fabricPeeringEnabled":"True","ipAddressPools":[{"addresses":["198.51.102.0/24"],"autoAssign":"True","name":"pool1","onlyUseHostIps":"True"}]},"cloudServicesNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev08-cluster/providers/Microsoft.NetworkCloud/cloudServicesNetworks/pipelinecsn","cniNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev08-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-530","dnsServiceIp":"10.96.0.10","podCidrs":["10.244.0.0/16"],"serviceCidrs":["10.96.0.0/16"]},"managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-naks-000001-HostedResources-5510AC9E"},"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -97,7 +97,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -145,7 +145,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -193,7 +193,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -241,7 +241,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -289,7 +289,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -337,7 +337,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -385,7 +385,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -433,7 +433,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -481,7 +481,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -529,7 +529,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -577,7 +577,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -625,7 +625,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -673,7 +673,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -721,7 +721,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -769,7 +769,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -817,7 +817,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -865,7 +865,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -913,7 +913,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -961,7 +961,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -1009,7 +1009,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -1057,7 +1057,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -1105,7 +1105,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -1153,7 +1153,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -1201,7 +1201,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -1249,7 +1249,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -1297,7 +1297,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -1345,7 +1345,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:40:16.8226115Z"}'
@@ -1393,7 +1393,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"fb18cc5d-a579-4fba-b966-0822ce47a4d3*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Succeeded","startTime":"2023-08-18T21:40:16.8226115Z","properties":null}'
@@ -1441,7 +1441,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","name":"cli-test-naks-000001","type":"microsoft.networkcloud/kubernetesclusters","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev08-0a105e4eb74b-hostedresources-16b3aa40/providers/microsoft.extendedlocation/customlocations/dev08-0a105e4eb74b-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-08-18T21:40:16.7874305Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-08-18T21:53:11.8378792Z"},"properties":{"provisioningState":"Succeeded","aadConfiguration":{"adminGroupObjectIds":["598f3796-d0dd-45ec-b0fc-e00731b0283f"]},"administratorConfiguration":{"adminUsername":"azureuser","sshPublicKeys":[{"keyData":"ssh-rsa
@@ -1515,13 +1515,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001?api-version=2023-10-01-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cefae675-2856-4c25-9a2c-25ef43bd1a3d*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cefae675-2856-4c25-9a2c-25ef43bd1a3d*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1535,7 +1535,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cefae675-2856-4c25-9a2c-25ef43bd1a3d*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cefae675-2856-4c25-9a2c-25ef43bd1a3d*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       mise-correlation-id:
       - 10efbe10-1c6a-4323-b5f1-967ecea5c92b
       pragma:
@@ -1568,7 +1568,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cefae675-2856-4c25-9a2c-25ef43bd1a3d*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cefae675-2856-4c25-9a2c-25ef43bd1a3d*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cefae675-2856-4c25-9a2c-25ef43bd1a3d*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"cefae675-2856-4c25-9a2c-25ef43bd1a3d*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Accepted","startTime":"2023-08-18T21:53:50.6916174Z"}'
@@ -1615,7 +1615,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cefae675-2856-4c25-9a2c-25ef43bd1a3d*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cefae675-2856-4c25-9a2c-25ef43bd1a3d*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cefae675-2856-4c25-9a2c-25ef43bd1a3d*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"cefae675-2856-4c25-9a2c-25ef43bd1a3d*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Succeeded","startTime":"2023-08-18T21:53:50.6916174Z","endTime":"2023-08-18T21:53:59.6169929Z","error":{},"properties":null}'
@@ -1662,7 +1662,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","name":"cli-test-naks-000001","type":"microsoft.networkcloud/kubernetesclusters","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev08-0a105e4eb74b-hostedresources-16b3aa40/providers/microsoft.extendedlocation/customlocations/dev08-0a105e4eb74b-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-08-18T21:40:16.7874305Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-08-18T21:54:00.3459571Z"},"properties":{"aadConfiguration":{"adminGroupObjectIds":["598f3796-d0dd-45ec-b0fc-e00731b0283f"]},"administratorConfiguration":{"adminUsername":"azureuser","sshPublicKeys":[{"keyData":"ssh-rsa
@@ -1730,7 +1730,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","name":"cli-test-naks-000001","type":"microsoft.networkcloud/kubernetesclusters","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev08-0a105e4eb74b-hostedresources-16b3aa40/providers/microsoft.extendedlocation/customlocations/dev08-0a105e4eb74b-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-08-18T21:40:16.7874305Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-08-18T21:54:00.3459571Z"},"properties":{"aadConfiguration":{"adminGroupObjectIds":["598f3796-d0dd-45ec-b0fc-e00731b0283f"]},"administratorConfiguration":{"adminUsername":"azureuser","sshPublicKeys":[{"keyData":"ssh-rsa
@@ -1796,7 +1796,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/kubernetesClusters?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/kubernetesClusters?api-version=2023-10-01-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/secg-naks-simulator-f/providers/Microsoft.NetworkCloud/kubernetesClusters/secgNAKSf","name":"secgNAKSf","type":"microsoft.networkcloud/kubernetesclusters","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-714082D2/providers/Microsoft.ExtendedLocation/customLocations/simulator-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-08-18T18:00:09.1538882Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-08-18T18:36:14.8059634Z"},"properties":{"provisioningState":"Failed","aadConfiguration":{"adminGroupObjectIds":["b7d4a8ff-c577-444a-8172-d8c5522357ea"]},"administratorConfiguration":{"adminUsername":"secgtest","sshPublicKeys":[{"keyData":"ssh-rsa
@@ -2165,7 +2165,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters?api-version=2023-10-01-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","name":"cli-test-naks-000001","type":"microsoft.networkcloud/kubernetesclusters","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev08-0a105e4eb74b-hostedresources-16b3aa40/providers/microsoft.extendedlocation/customlocations/dev08-0a105e4eb74b-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-08-18T21:40:16.7874305Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-08-18T21:54:00.3459571Z"},"properties":{"aadConfiguration":{"adminGroupObjectIds":["598f3796-d0dd-45ec-b0fc-e00731b0283f"]},"administratorConfiguration":{"adminUsername":"azureuser","sshPublicKeys":[{"keyData":"ssh-rsa
@@ -2236,13 +2236,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mikep-rg/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test/restartNode?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mikep-rg/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test/restartNode?api-version=2023-10-01-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2254,7 +2254,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-10-01-preview
       mise-correlation-id:
       - fe9ad282-3fa8-4bdf-ae5b-ec435eec56d6
       pragma:
@@ -2286,13 +2286,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC","name":"fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mikep-rg/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test","status":"Accepted","startTime":"2023-08-18T21:54:22.5654608Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2306,7 +2306,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2332,13 +2332,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC","name":"fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mikep-rg/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test","status":"Provisioning","startTime":"2023-08-18T21:54:22.5654608Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2352,7 +2352,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2378,7 +2378,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC","name":"fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mikep-rg/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test","status":"Succeeded","startTime":"2023-08-18T21:54:22.5654608Z","endTime":"2023-08-18T21:55:01.214715Z","properties":null}'
@@ -2424,7 +2424,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC","name":"fde59d26-e516-4235-a87f-a7e7dc841b74*44F3D06D9C6B448541D5D95D243A9CD120BD1A1E4554017E04BD978498B870AC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mikep-rg/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test","status":"Succeeded","startTime":"2023-08-18T21:54:22.5654608Z","endTime":"2023-08-18T21:55:01.214715Z","properties":null}'
@@ -2472,13 +2472,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001?api-version=2023-10-01-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2492,7 +2492,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2522,13 +2522,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2542,7 +2542,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2568,13 +2568,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2588,7 +2588,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2614,13 +2614,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2634,7 +2634,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2660,13 +2660,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2680,7 +2680,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2706,13 +2706,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2726,7 +2726,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2752,13 +2752,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2772,7 +2772,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2798,13 +2798,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2818,7 +2818,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2844,13 +2844,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2864,7 +2864,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2890,13 +2890,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2910,7 +2910,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2936,13 +2936,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2956,7 +2956,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -2982,13 +2982,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -3002,7 +3002,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -3028,13 +3028,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -3048,7 +3048,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -3074,13 +3074,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -3094,7 +3094,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -3120,13 +3120,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -3140,7 +3140,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -3166,13 +3166,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -3186,7 +3186,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -3212,13 +3212,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -3232,7 +3232,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -3258,13 +3258,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Deleting","startTime":"2023-08-18T21:55:24.5635333Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -3278,7 +3278,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/eastus/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -3304,7 +3304,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Succeeded","startTime":"2023-08-18T21:55:24.5635333Z","properties":null}'
@@ -3350,7 +3350,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.2 Python/3.8.10 (Linux-5.15.0-1042-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","name":"97a5f5c5-4def-46ea-90d2-d533ab0fdceb*791550B83456188FEB75537EA704FB9A9D86881BE8BA77E4C156EF186BCD0D9E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/kubernetesClusters/cli-test-naks-000001","status":"Succeeded","startTime":"2023-08-18T21:55:24.5635333Z","properties":null}'
