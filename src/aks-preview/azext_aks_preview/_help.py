@@ -672,7 +672,7 @@ helps['aks scale'] = """
 
 helps['aks stop'] = """
     type: command
-    short-summary: Stops a managed cluster.
+    short-summary: Stop a managed cluster.
     long-summary: This can only be performed on Azure Virtual Machine Scale set backed clusters. Stopping a
         cluster stops the control plane and agent nodes entirely, while maintaining all object and
         cluster state. A cluster does not accrue charges while it is stopped. See `stopping a
