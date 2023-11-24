@@ -674,7 +674,7 @@ def load_arguments(self, _):
         c.argument('nodepool_name', help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
 
     with self.argument_context('aks stop') as c:
-        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation when stopping a private cluster.', action='store_true')
 
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', help='The cluster name.')
