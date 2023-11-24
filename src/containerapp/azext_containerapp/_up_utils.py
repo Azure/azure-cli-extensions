@@ -1359,8 +1359,8 @@ def _set_up_defaults(
 
 # Try to get existed connected environment
 # 'not env.resource_type' is for command: -n <app_name> --environment <env_name>:
-# 1. Find managed env with env name, if found, use it. We have done this in the previous parts.
-# 2. If manged env is not found, the env.resource_type is None, looks for a connected env with env name, uses it if found. If mutiple connected envs are found, thow a error.
+# When the resource type cannot be parsed from input arguments, we find managed environments with env name first, if found, use it. We have done this in the previous parts.
+# If manged env is not found, the env.resource_type is None, looks for a connected env with env name, uses it if found. If mutiple connected envs are found, thow a error.
 # (env.is_connected_environment() and (not env.name or not resource_group.name or not env.custom_location_id)) is for commands:
 # -n <app_name> --connected-cluster-id
 # -n <app_name> --custom-location

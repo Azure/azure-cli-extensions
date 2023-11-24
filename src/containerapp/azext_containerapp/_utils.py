@@ -609,7 +609,7 @@ def list_cluster_extensions(cmd, connected_cluster_id):
 def create_extension(cmd, extension_name, connected_cluster_id=None, namespace=None, logs_customer_id=None, logs_share_key=None, location=None, logs_rg=None):
     from base64 import b64encode
     from azure.cli.core.commands import LongRunningOperation
-    from azure.mgmt.kubernetesconfiguration import models
+    from azext_containerapp.vendored_sdks.kubernetesconfiguration import models
 
     if logs_customer_id is None or logs_share_key is None:
         logs_customer_id, logs_share_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id,
