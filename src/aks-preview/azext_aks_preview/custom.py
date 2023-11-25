@@ -2578,7 +2578,18 @@ def aks_mesh_get_revisions(
         client,
         location
 ):
-    return client.list_mesh_revision_profiles(location)
+    revisonProfiles = client.list_mesh_revision_profiles(location)
+    # 'revisonProfiles' is an ItemPaged object
+    revisions = []
+    # Iterate over items within pages
+    for page in revisonProfiles.by_page():
+        for item in page:
+            revisions.append(item)
+
+    if revisions:
+        return revisions[0].properties
+    else:
+        return None
 
 
 def aks_mesh_get_upgrades(
@@ -2587,7 +2598,18 @@ def aks_mesh_get_upgrades(
         resource_group_name,
         name
 ):
-    return client.list_mesh_upgrade_profiles(resource_group_name, name)
+    upgradeProfiles = client.list_mesh_upgrade_profiles(resource_group_name, name)
+    # 'upgradeProfiles' is an ItemPaged object
+    upgrades = []
+    # Iterate over items within pages
+    for page in upgradeProfiles.by_page():
+        for item in page:
+            upgrades.append(item)
+
+    if upgrades:
+        return upgrades[0].properties
+    else:
+        return None
 
 
 def aks_mesh_upgrade_start(
