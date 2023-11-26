@@ -914,6 +914,7 @@ def _get_app_env_and_group(
             "Please specify which resource group your Containerapp is in."
         )
 
+
 def _get_env_and_group_from_log_analytics(
     cmd,
     resource_group_name,
