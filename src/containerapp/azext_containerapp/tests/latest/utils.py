@@ -109,6 +109,76 @@ def create_and_verify_containerapp_up(
             test_cls.cmd(up_cmd)
 
 
+def create_and_verify_containerapp_up_with_multiple_environments(
+            test_cls,
+            resource_group,
+            source_path = None,
+            location = None,
+            ingress = None,
+            target_port = None,
+            app_name = None):
+
+        # Create multiple environments
+        first_env_name = test_cls.create_random_name(prefix='env', length=24)
+        test_cls.cmd(f'containerapp env create -g {resource_group} -n {first_env_name}')
+
+        second_env_name = test_cls.create_random_name(prefix='env', length=24)
+        test_cls.cmd(f'containerapp env create -g {resource_group} -n {second_env_name}')
+
+        third_env_name = test_cls.create_random_name(prefix='env', length=24)
+        test_cls.cmd(f'containerapp env create -g {resource_group} -n {third_env_name}')
+
+        if app_name is None:
+            # Generate a name for the Container App
+            app_name = test_cls.create_random_name(prefix='containerapp', length=24)
+
+        # Construct the 'az containerapp up' command
+        up_cmd = f"containerapp up -g {resource_group} -n {app_name} --environment {second_env_name}"
+
+        # Execute the 'az containerapp up' command
+        test_cls.cmd(up_cmd)
+
+        if source_path:
+            up_cmd += f" --source \"{source_path}\""
+        if ingress:
+            up_cmd += f" --ingress {ingress}"
+        if target_port:
+            up_cmd += f" --target-port {target_port}"
+        if location:
+            up_cmd += f" -l {location}"
+
+        # Execute the 'az containerapp up' command
+        test_cls.cmd(up_cmd)
+
+        # Verify that the Container App is running
+        app = test_cls.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
+        url = app["properties"]["configuration"]["ingress"]["fqdn"]
+        containerapp_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(resource_group, second_env_name)).get_output_in_json()
+        test_cls.assertEqual(app["properties"]["environmentId"], containerapp_env["id"])
+        url = url if url.startswith("http") else f"http://{url}"
+        resp = requests.get(url)
+        test_cls.assertTrue(resp.ok)
+
+        test_cls.cmd('containerapp delete -g {} -n {} --yes'.format(resource_group, app_name))
+        test_cls.cmd('containerapp list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        test_cls.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, first_env_name))
+        test_cls.cmd('containerapp env list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        test_cls.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, second_env_name))
+        test_cls.cmd('containerapp env list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        test_cls.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, third_env_name))
+        test_cls.cmd('containerapp env list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
 def create_extension_and_custom_location(test_cls, resource_group, connected_cluster_name, custom_location_name):
     try:
         connected_cluster = test_cls.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
