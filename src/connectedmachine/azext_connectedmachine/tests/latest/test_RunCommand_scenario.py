@@ -28,7 +28,9 @@ from .. import (
     raise_if,
     calc_coverage
 )
-
+from azure.cli.testsdk.scenario_tests import (
+    live_only
+)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
