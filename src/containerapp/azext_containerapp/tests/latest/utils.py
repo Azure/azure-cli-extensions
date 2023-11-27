@@ -161,6 +161,7 @@ def create_and_verify_containerapp_up_with_multiple_environments(
         url = url if url.startswith("http") else f"http://{url}"
         resp = requests.get(url)
         test_cls.assertTrue(resp.ok)
+
         # Delete the Container App and the environments other than the one used for builder creation. (Cannot delete the environment used for builder creation without deleting the builder)
         test_cls.cmd('containerapp delete -g {} -n {} --yes --no-wait'.format(resource_group, app_name))
         test_cls.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, first_env_name))
