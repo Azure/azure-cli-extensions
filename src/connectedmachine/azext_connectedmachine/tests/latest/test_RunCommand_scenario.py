@@ -8,7 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-import os
+import os, json
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from .example_steps import step_private_link_resource_list
@@ -54,12 +54,16 @@ class RunCommandScenarioTest(ScenarioTest):
             'runcommand': 'myRunCommand',
         })
 
+        parameters_string = '''[{"name":"param1","value":"value1"}]'''
+        self.kwargs['parameters'] = json.dumps(parameters_string)
+
         self.cmd('az connectedmachine run-command create '
                 '--resource-group "{rg}" '
                 '--location "{location}" '
                 '--script "Write-Host Hello World!" '
                 '--name "{runcommand}" '
                 '--machine-name "{machine}" '
+                '--parameters "{parameters}" '
                 '--subscription "{subscription}"',
                 checks=[
                     self.check('type','Microsoft.HybridCompute/machines/runcommands'),
