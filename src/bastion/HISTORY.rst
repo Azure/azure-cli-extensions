@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.2.7
+++++++
+* add support for auth type password in RDP connection
+* line formatting issue with IP connect
+
 0.2.6
 ++++++
 * Adding auth type aad for RDP to mimic the enable-mfa flag.
