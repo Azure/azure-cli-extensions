@@ -43,8 +43,8 @@ class UpdateState(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_group_schema_name = AAZStrArg(
-            options=["--configuration-group-schema-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the configuration group schema.",
             required=True,
             id_part="child_name_1",
@@ -141,7 +141,7 @@ class UpdateState(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationGroupSchemaName", self.ctx.args.configuration_group_schema_name,
+                    "configurationGroupSchemaName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

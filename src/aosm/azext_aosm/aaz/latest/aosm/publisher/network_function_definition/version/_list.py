@@ -43,8 +43,8 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_function_definition_group_name = AAZStrArg(
-            options=["--network-function-definition-group-name"],
+        _args_schema.group_name = AAZStrArg(
+            options=["-n", "--group-name"],
             help="The name of the network function definition group.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -114,7 +114,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkFunctionDefinitionGroupName", self.ctx.args.network_function_definition_group_name,
+                    "networkFunctionDefinitionGroupName", self.ctx.args.group_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

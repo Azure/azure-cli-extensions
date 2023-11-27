@@ -41,8 +41,8 @@ class ListCredential(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.artifact_manifest_name = AAZStrArg(
-            options=["--artifact-manifest-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the artifact manifest.",
             required=True,
             id_part="child_name_2",
@@ -123,7 +123,7 @@ class ListCredential(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "artifactManifestName", self.ctx.args.artifact_manifest_name,
+                    "artifactManifestName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

@@ -53,8 +53,8 @@ class UpdateState(AAZCommand):
                 max_length=64,
             ),
         )
-        _args_schema.artifact_version_name = AAZStrArg(
-            options=["-n", "--name", "--artifact-version-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the artifact version.",
             required=True,
             id_part="child_name_2",
@@ -164,7 +164,7 @@ class UpdateState(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "artifactVersionName", self.ctx.args.artifact_version_name,
+                    "artifactVersionName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

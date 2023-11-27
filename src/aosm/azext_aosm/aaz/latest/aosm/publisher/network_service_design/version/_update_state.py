@@ -43,8 +43,8 @@ class UpdateState(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_service_design_group_name = AAZStrArg(
-            options=["--network-service-design-group-name"],
+        _args_schema.group_name = AAZStrArg(
+            options=["-n", "--group-name"],
             help="The name of the network service design group.",
             required=True,
             id_part="child_name_1",
@@ -53,8 +53,8 @@ class UpdateState(AAZCommand):
                 max_length=64,
             ),
         )
-        _args_schema.network_service_design_version_name = AAZStrArg(
-            options=["--network-service-design-version-name"],
+        _args_schema.version_name = AAZStrArg(
+            options=["--version-name"],
             help="The name of the network service design version. The name should conform to the SemVer 2.0.0 specification: https://semver.org/spec/v2.0.0.html.",
             required=True,
             id_part="child_name_2",
@@ -151,11 +151,11 @@ class UpdateState(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkServiceDesignGroupName", self.ctx.args.network_service_design_group_name,
+                    "networkServiceDesignGroupName", self.ctx.args.group_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkServiceDesignVersionName", self.ctx.args.network_service_design_version_name,
+                    "networkServiceDesignVersionName", self.ctx.args.version_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
