@@ -1,0 +1,349 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "properties": {"licenseDetails": {"edition":
+      "Datacenter", "processors": 16, "state": "Activated", "target": "Windows Server
+      2012", "type": "pCore"}, "licenseType": "ESU"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine license create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '200'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --subscription --license-name --license-type --license-details
+      User-Agent:
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense?api-version=2023-10-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense","name":"myLicense","location":"eastus2euap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"b80ac9a6-9cfd-4248-a476-a0768d53e0e8"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '509'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Nov 2023 09:28:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine license list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription
+      User-Agent:
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/licenses?api-version=2023-10-03-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sp-rg/providers/Microsoft.HybridCompute/licenses/sp-license-test","name":"sp-license-test","location":"eastus","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":32,"assignedLicenses":16,"immutableId":"6537bb4c-3e1e-47cd-8c04-f2ca0ac42b34"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dshiferaw/providers/Microsoft.HybridCompute/licenses/dshiferaw-license","name":"dshiferaw-license","location":"eastus2euap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"4a195025-ade8-4d90-8bf7-c268d57a95c0"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense","name":"myLicense","location":"eastus2euap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"b80ac9a6-9cfd-4248-a476-a0768d53e0e8"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/UITestRG/providers/Microsoft.HybridCompute/licenses/hrpux-test-license","name":"hrpux-test-license","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Deactivated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"2a329943-ffcd-4f0d-9bb4-9937357d868a"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2086'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Nov 2023 09:28:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ffa5410d-29fb-4a80-a169-9791166d270b
+      - 65e698f3-9826-432e-ad44-01120083fa2e
+      - c8a5028d-bb86-4dcd-9ff4-76507fae948f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine license list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses?api-version=2023-10-03-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense","name":"myLicense","location":"eastus2euap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"b80ac9a6-9cfd-4248-a476-a0768d53e0e8"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '521'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Nov 2023 09:28:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine license show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --subscription --license-name
+      User-Agent:
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense?api-version=2023-10-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense","name":"myLicense","location":"eastus2euap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"b80ac9a6-9cfd-4248-a476-a0768d53e0e8"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '509'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Nov 2023 09:28:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine license update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --subscription --license-name --license-type --license-details
+      User-Agent:
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense?api-version=2023-10-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense","name":"myLicense","location":"eastus2euap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"b80ac9a6-9cfd-4248-a476-a0768d53e0e8"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '509'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Nov 2023 09:28:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"licenseDetails": {"edition":
+      "Datacenter", "processors": 32, "state": "Activated", "target": "Windows Server
+      2012", "type": "pCore"}, "licenseType": "ESU", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine license update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '252'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --subscription --license-name --license-type --license-details
+      User-Agent:
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense?api-version=2023-10-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense","name":"myLicense","location":"eastus2euap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":32,"assignedLicenses":16,"immutableId":"b80ac9a6-9cfd-4248-a476-a0768d53e0e8"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '510'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Nov 2023 09:28:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine license delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --subscription --resource-group --license-name --yes
+      User-Agent:
+      - AZURECLI/2.54.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/licenses/myLicense?api-version=2023-10-03-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/json
+      date:
+      - Mon, 27 Nov 2023 09:28:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1
