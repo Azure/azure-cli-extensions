@@ -19,6 +19,7 @@ class List(AAZCommand):
 
     :example: Sample command for list
         az connectedmachine list --resource-group myResourceGroup
+        az connectedmachine list
     """
 
     _aaz_info = {

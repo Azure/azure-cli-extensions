@@ -12,19 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine extension list",
+    "connectedmachine license-profile list",
+    is_preview=True,
 )
 class List(AAZCommand):
-    """The operation to get all extensions of a Non-Azure machine.
+    """List operation to get all license profiles of a non-Azure machine
 
-    :example: Sample command for extension list
-        az connectedmachine extension list --machine-name myMachine --resource-group myResourceGroup
+    :example: Sample command for license-profile list
+        az connectedmachine license-profile list --resource-group "myResourceGroup" --subscription "mySubscription" --machine-name "myMachine"
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2023-10-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/licenseprofiles", "2023-10-03-preview"],
         ]
     }
 
@@ -45,7 +46,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.machine_name = AAZStrArg(
             options=["--machine-name"],
-            help="The name of the machine containing the extension.",
+            help="The name of the machine.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-_\.]{1,54}$",
@@ -56,15 +57,11 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.expand = AAZStrArg(
-            options=["--expand"],
-            help="The expand expression to apply on the operation.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MachineExtensionsList(ctx=self.ctx)()
+        self.LicenseProfilesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -80,7 +77,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class MachineExtensionsList(AAZHttpOperation):
+    class LicenseProfilesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,7 +91,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/extensions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/licenseProfiles",
                 **self.url_parameters
             )
 
@@ -128,10 +125,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "$expand", self.ctx.args.expand,
-                ),
-                **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2023-10-03-preview",
                     required=True,
                 ),
             }
@@ -167,7 +161,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -182,7 +178,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -193,48 +191,102 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.auto_upgrade_minor_version = AAZBoolType(
-                serialized_name="autoUpgradeMinorVersion",
+            properties.esu_profile = AAZObjectType(
+                serialized_name="esuProfile",
+                flags={"client_flatten": True},
             )
-            properties.enable_automatic_upgrade = AAZBoolType(
-                serialized_name="enableAutomaticUpgrade",
-            )
-            properties.force_update_tag = AAZStrType(
-                serialized_name="forceUpdateTag",
-            )
-            properties.instance_view = AAZObjectType(
-                serialized_name="instanceView",
-            )
-            properties.protected_settings = AAZFreeFormDictType(
-                serialized_name="protectedSettings",
+            properties.product_profile = AAZObjectType(
+                serialized_name="productProfile",
+                flags={"client_flatten": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.publisher = AAZStrType()
-            properties.settings = AAZFreeFormDictType()
-            properties.type = AAZStrType()
-            properties.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
+            properties.software_assurance = AAZObjectType(
+                serialized_name="softwareAssurance",
+                flags={"client_flatten": True},
             )
 
-            instance_view = cls._schema_on_200.value.Element.properties.instance_view
-            instance_view.name = AAZStrType()
-            instance_view.status = AAZObjectType()
-            instance_view.type = AAZStrType()
-            instance_view.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
+            esu_profile = cls._schema_on_200.value.Element.properties.esu_profile
+            esu_profile.assigned_license = AAZStrType(
+                serialized_name="assignedLicense",
+            )
+            esu_profile.assigned_license_immutable_id = AAZStrType(
+                serialized_name="assignedLicenseImmutableId",
+                flags={"read_only": True},
+            )
+            esu_profile.esu_eligibility = AAZStrType(
+                serialized_name="esuEligibility",
+            )
+            esu_profile.esu_key_state = AAZStrType(
+                serialized_name="esuKeyState",
+            )
+            esu_profile.esu_keys = AAZListType(
+                serialized_name="esuKeys",
+                flags={"read_only": True},
+            )
+            esu_profile.server_type = AAZStrType(
+                serialized_name="serverType",
             )
 
-            status = cls._schema_on_200.value.Element.properties.instance_view.status
-            status.code = AAZStrType()
-            status.display_status = AAZStrType(
-                serialized_name="displayStatus",
+            esu_keys = cls._schema_on_200.value.Element.properties.esu_profile.esu_keys
+            esu_keys.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.esu_profile.esu_keys.Element
+            _element.license_status = AAZStrType(
+                serialized_name="licenseStatus",
             )
-            status.level = AAZStrType()
-            status.message = AAZStrType()
-            status.time = AAZStrType()
+            _element.sku = AAZStrType()
+
+            product_profile = cls._schema_on_200.value.Element.properties.product_profile
+            product_profile.billing_start_date = AAZStrType(
+                serialized_name="billingStartDate",
+                flags={"read_only": True},
+            )
+            product_profile.disenrollment_date = AAZStrType(
+                serialized_name="disenrollmentDate",
+                flags={"read_only": True},
+            )
+            product_profile.enrollment_date = AAZStrType(
+                serialized_name="enrollmentDate",
+                flags={"read_only": True},
+            )
+            product_profile.product_features = AAZListType(
+                serialized_name="productFeatures",
+            )
+            product_profile.product_type = AAZStrType(
+                serialized_name="productType",
+            )
+            product_profile.subscription_status = AAZStrType(
+                serialized_name="subscriptionStatus",
+            )
+
+            product_features = cls._schema_on_200.value.Element.properties.product_profile.product_features
+            product_features.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.product_profile.product_features.Element
+            _element.billing_start_date = AAZStrType(
+                serialized_name="billingStartDate",
+                flags={"read_only": True},
+            )
+            _element.disenrollment_date = AAZStrType(
+                serialized_name="disenrollmentDate",
+                flags={"read_only": True},
+            )
+            _element.enrollment_date = AAZStrType(
+                serialized_name="enrollmentDate",
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType()
+            _element.subscription_status = AAZStrType(
+                serialized_name="subscriptionStatus",
+            )
+
+            software_assurance = cls._schema_on_200.value.Element.properties.software_assurance
+            software_assurance.software_assurance_customer = AAZBoolType(
+                serialized_name="softwareAssuranceCustomer",
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

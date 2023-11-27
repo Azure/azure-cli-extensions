@@ -12,28 +12,30 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine private-link-scope update",
+    "connectedmachine license update",
+    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update an Azure Arc PrivateLinkScope. Note: You cannot                                          specify a different value for InstrumentationKey nor AppId in the Put operation.
+    """Update operation to create or update a license.
 
-    :example: Sample command for private-link-scope update
-        az connectedmachine private-link-scope update --location westus --tags Tag1=Value1 --resource-group my-resource-group --scope-name my-privatelinkscope
+    :example: Sample command for license update
+        az connectedmachine license update --license-name "myLicenseName" --resource-group "myResourceGroup" --subscription "mySubscription" --license-type "ESU" --license-details "{{"state":"Activated", "target":"Windows Server 2012", "edition":"Datacenter", "type":"pCore", "processors":"6"}}"
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2023-10-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2023-10-03-preview"],
         ]
     }
+
+    AZ_SUPPORT_NO_WAIT = True
 
     AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -46,14 +48,17 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
-        _args_schema.scope_name = AAZStrArg(
-            options=["-n", "--name", "--scope-name"],
-            help="The name of the Azure Arc PrivateLinkScope resource.",
+        _args_schema.license_name = AAZStrArg(
+            options=["-n", "--name", "--license-name"],
+            help="The name of the license.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="[a-zA-Z0-9-_\.]+",
+            ),
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
         )
 
         # define Arg Group "Parameters"
@@ -62,7 +67,7 @@ class Update(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Parameters",
-            help="Resource tags",
+            help="Resource tags.",
             nullable=True,
         )
 
@@ -74,23 +79,66 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.public_network_access = AAZStrArg(
-            options=["--public-network-access"],
+        _args_schema.license_details = AAZObjectArg(
+            options=["--license-details"],
             arg_group="Properties",
-            help="Indicates whether machines associated with the private link scope can also use public Azure Arc service endpoints.",
+            help="Describes the properties of a License.",
             nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.license_type = AAZStrArg(
+            options=["--license-type"],
+            arg_group="Properties",
+            help="The type of the license resource.",
+            nullable=True,
+            enum={"ESU": "ESU"},
+        )
+        _args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            arg_group="Properties",
+            help="Describes the tenant id.",
+            nullable=True,
+        )
+
+        license_details = cls._args_schema.license_details
+        license_details.edition = AAZStrArg(
+            options=["edition"],
+            help="Describes the edition of the license. The values are either Standard or Datacenter.",
+            nullable=True,
+            enum={"Datacenter": "Datacenter", "Standard": "Standard"},
+        )
+        license_details.processors = AAZIntArg(
+            options=["processors"],
+            help="Describes the number of processors.",
+            nullable=True,
+        )
+        license_details.state = AAZStrArg(
+            options=["state"],
+            help="Describes the state of the license.",
+            nullable=True,
+            enum={"Activated": "Activated", "Deactivated": "Deactivated"},
+        )
+        license_details.target = AAZStrArg(
+            options=["target"],
+            help="Describes the license target server.",
+            nullable=True,
+            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2"},
+        )
+        license_details.type = AAZStrArg(
+            options=["type"],
+            help="Describes the license core type (pCore or vCore).",
+            nullable=True,
+            enum={"pCore": "pCore", "vCore": "vCore"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PrivateLinkScopesGet(ctx=self.ctx)()
+        self.LicensesGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        self.PrivateLinkScopesCreateOrUpdate(ctx=self.ctx)()
+        yield self.LicensesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -113,7 +161,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class PrivateLinkScopesGet(AAZHttpOperation):
+    class LicensesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -127,7 +175,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/privateLinkScopes/{scopeName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/licenses/{licenseName}",
                 **self.url_parameters
             )
 
@@ -143,11 +191,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "licenseName", self.ctx.args.license_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "scopeName", self.ctx.args.scope_name,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -161,7 +209,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2023-10-03-preview",
                     required=True,
                 ),
             }
@@ -192,25 +240,41 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_hybrid_compute_private_link_scope_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_license_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class PrivateLinkScopesCreateOrUpdate(AAZHttpOperation):
+    class LicensesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/privateLinkScopes/{scopeName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/licenses/{licenseName}",
                 **self.url_parameters
             )
 
@@ -226,11 +290,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "licenseName", self.ctx.args.license_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "scopeName", self.ctx.args.scope_name,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -244,7 +308,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2023-10-03-preview",
                     required=True,
                 ),
             }
@@ -271,25 +335,25 @@ class Update(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_hybrid_compute_private_link_scope_read(cls._schema_on_200_201)
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_license_read(cls._schema_on_200)
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
@@ -302,12 +366,22 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
+                properties.set_prop("licenseDetails", AAZObjectType, ".license_details")
+                properties.set_prop("licenseType", AAZStrType, ".license_type")
+                properties.set_prop("tenantId", AAZStrType, ".tenant_id")
+
+            license_details = _builder.get(".properties.licenseDetails")
+            if license_details is not None:
+                license_details.set_prop("edition", AAZStrType, ".edition")
+                license_details.set_prop("processors", AAZIntType, ".processors")
+                license_details.set_prop("state", AAZStrType, ".state")
+                license_details.set_prop("target", AAZStrType, ".target")
+                license_details.set_prop("type", AAZStrType, ".type")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -327,109 +401,75 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_hybrid_compute_private_link_scope_read = None
+    _schema_license_read = None
 
     @classmethod
-    def _build_schema_hybrid_compute_private_link_scope_read(cls, _schema):
-        if cls._schema_hybrid_compute_private_link_scope_read is not None:
-            _schema.id = cls._schema_hybrid_compute_private_link_scope_read.id
-            _schema.location = cls._schema_hybrid_compute_private_link_scope_read.location
-            _schema.name = cls._schema_hybrid_compute_private_link_scope_read.name
-            _schema.properties = cls._schema_hybrid_compute_private_link_scope_read.properties
-            _schema.system_data = cls._schema_hybrid_compute_private_link_scope_read.system_data
-            _schema.tags = cls._schema_hybrid_compute_private_link_scope_read.tags
-            _schema.type = cls._schema_hybrid_compute_private_link_scope_read.type
+    def _build_schema_license_read(cls, _schema):
+        if cls._schema_license_read is not None:
+            _schema.id = cls._schema_license_read.id
+            _schema.location = cls._schema_license_read.location
+            _schema.name = cls._schema_license_read.name
+            _schema.properties = cls._schema_license_read.properties
+            _schema.system_data = cls._schema_license_read.system_data
+            _schema.tags = cls._schema_license_read.tags
+            _schema.type = cls._schema_license_read.type
             return
 
-        cls._schema_hybrid_compute_private_link_scope_read = _schema_hybrid_compute_private_link_scope_read = AAZObjectType()
+        cls._schema_license_read = _schema_license_read = AAZObjectType()
 
-        hybrid_compute_private_link_scope_read = _schema_hybrid_compute_private_link_scope_read
-        hybrid_compute_private_link_scope_read.id = AAZStrType(
+        license_read = _schema_license_read
+        license_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        hybrid_compute_private_link_scope_read.location = AAZStrType(
+        license_read.location = AAZStrType(
             flags={"required": True},
         )
-        hybrid_compute_private_link_scope_read.name = AAZStrType(
+        license_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        hybrid_compute_private_link_scope_read.properties = AAZObjectType()
-        hybrid_compute_private_link_scope_read.system_data = AAZObjectType(
+        license_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        license_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        hybrid_compute_private_link_scope_read.tags = AAZDictType()
-        hybrid_compute_private_link_scope_read.type = AAZStrType(
+        license_read.tags = AAZDictType()
+        license_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_hybrid_compute_private_link_scope_read.properties
-        properties.private_endpoint_connections = AAZListType(
-            serialized_name="privateEndpointConnections",
-            flags={"read_only": True},
+        properties = _schema_license_read.properties
+        properties.license_details = AAZObjectType(
+            serialized_name="licenseDetails",
         )
-        properties.private_link_scope_id = AAZStrType(
-            serialized_name="privateLinkScopeId",
-            flags={"read_only": True},
+        properties.license_type = AAZStrType(
+            serialized_name="licenseType",
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.public_network_access = AAZStrType(
-            serialized_name="publicNetworkAccess",
+        properties.tenant_id = AAZStrType(
+            serialized_name="tenantId",
         )
 
-        private_endpoint_connections = _schema_hybrid_compute_private_link_scope_read.properties.private_endpoint_connections
-        private_endpoint_connections.Element = AAZObjectType()
-
-        _element = _schema_hybrid_compute_private_link_scope_read.properties.private_endpoint_connections.Element
-        _element.id = AAZStrType(
+        license_details = _schema_license_read.properties.license_details
+        license_details.assigned_licenses = AAZIntType(
+            serialized_name="assignedLicenses",
             flags={"read_only": True},
         )
-        _element.name = AAZStrType(
+        license_details.edition = AAZStrType()
+        license_details.immutable_id = AAZStrType(
+            serialized_name="immutableId",
             flags={"read_only": True},
         )
-        _element.properties = AAZObjectType()
-        _element.type = AAZStrType(
-            flags={"read_only": True},
-        )
+        license_details.processors = AAZIntType()
+        license_details.state = AAZStrType()
+        license_details.target = AAZStrType()
+        license_details.type = AAZStrType()
 
-        properties = _schema_hybrid_compute_private_link_scope_read.properties.private_endpoint_connections.Element.properties
-        properties.group_ids = AAZListType(
-            serialized_name="groupIds",
-            flags={"read_only": True},
-        )
-        properties.private_endpoint = AAZObjectType(
-            serialized_name="privateEndpoint",
-        )
-        properties.private_link_service_connection_state = AAZObjectType(
-            serialized_name="privateLinkServiceConnectionState",
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-
-        group_ids = _schema_hybrid_compute_private_link_scope_read.properties.private_endpoint_connections.Element.properties.group_ids
-        group_ids.Element = AAZStrType()
-
-        private_endpoint = _schema_hybrid_compute_private_link_scope_read.properties.private_endpoint_connections.Element.properties.private_endpoint
-        private_endpoint.id = AAZStrType()
-
-        private_link_service_connection_state = _schema_hybrid_compute_private_link_scope_read.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
-        private_link_service_connection_state.actions_required = AAZStrType(
-            serialized_name="actionsRequired",
-            flags={"read_only": True},
-        )
-        private_link_service_connection_state.description = AAZStrType(
-            flags={"required": True},
-        )
-        private_link_service_connection_state.status = AAZStrType(
-            flags={"required": True},
-        )
-
-        system_data = _schema_hybrid_compute_private_link_scope_read.system_data
+        system_data = _schema_license_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -449,16 +489,16 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        tags = _schema_hybrid_compute_private_link_scope_read.tags
+        tags = _schema_license_read.tags
         tags.Element = AAZStrType()
 
-        _schema.id = cls._schema_hybrid_compute_private_link_scope_read.id
-        _schema.location = cls._schema_hybrid_compute_private_link_scope_read.location
-        _schema.name = cls._schema_hybrid_compute_private_link_scope_read.name
-        _schema.properties = cls._schema_hybrid_compute_private_link_scope_read.properties
-        _schema.system_data = cls._schema_hybrid_compute_private_link_scope_read.system_data
-        _schema.tags = cls._schema_hybrid_compute_private_link_scope_read.tags
-        _schema.type = cls._schema_hybrid_compute_private_link_scope_read.type
+        _schema.id = cls._schema_license_read.id
+        _schema.location = cls._schema_license_read.location
+        _schema.name = cls._schema_license_read.name
+        _schema.properties = cls._schema_license_read.properties
+        _schema.system_data = cls._schema_license_read.system_data
+        _schema.tags = cls._schema_license_read.tags
+        _schema.type = cls._schema_license_read.type
 
 
 __all__ = ["Update"]

@@ -57,13 +57,6 @@ class Update(AAZCommand):
                 min_length=1,
             ),
         )
-
-        _args_schema.location = AAZStrArg(
-            options=["--location"],
-            help="The location of the hybrid machine.",
-            required=True,
-        )
-        
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -77,7 +70,6 @@ class Update(AAZCommand):
             help="Identity for the resource.",
             nullable=True,
         )
-
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Parameters",
@@ -144,13 +136,13 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.parent_cluster_resource_id = AAZStrArg(
-            options=["--parent-cluster-id"],
+            options=["--parent-cluster-resource-id"],
             arg_group="Properties",
             help="The resource id of the parent cluster (Azure HCI) this machine is assigned to, if any.",
             nullable=True,
         )
         _args_schema.private_link_scope_resource_id = AAZStrArg(
-            options=["--private-scope-id"],
+            options=["--private-link-scope-resource-id"],
             arg_group="Properties",
             help="The resource id of the private link scope this machine is assigned to, if any.",
             nullable=True,
