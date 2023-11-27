@@ -115,29 +115,32 @@ def create_and_verify_containerapp_up_with_multiple_environments(
             source_path = None,
             location = None,
             ingress = None,
+            image = None,
             target_port = None,
             app_name = None):
-
-        # Create multiple environments
-        first_env_name = test_cls.create_random_name(prefix='env', length=24)
-        test_cls.cmd(f'containerapp env create -g {resource_group} -n {first_env_name}')
-
-        second_env_name = test_cls.create_random_name(prefix='env', length=24)
-        test_cls.cmd(f'containerapp env create -g {resource_group} -n {second_env_name}')
-
-        third_env_name = test_cls.create_random_name(prefix='env', length=24)
-        test_cls.cmd(f'containerapp env create -g {resource_group} -n {third_env_name}')
 
         if app_name is None:
             # Generate a name for the Container App
             app_name = test_cls.create_random_name(prefix='containerapp', length=24)
+        if image is None:
+            image = "mcr.microsoft.com/k8se/quickstart:latest"
+        if location is None:
+            location = TEST_LOCATION
+
+        # Create multiple environments
+        first_env_name = test_cls.create_random_name(prefix='env', length=24)
+        test_cls.cmd(f'containerapp env create -g {resource_group} -n {first_env_name} -l {location}')
+
+        second_env_name = test_cls.create_random_name(prefix='env', length=24)
+        test_cls.cmd(f'containerapp env create -g {resource_group} -n {second_env_name} -l {location}')
 
         # Construct the 'az containerapp up' command
-        up_cmd = f"containerapp up -g {resource_group} -n {app_name} --environment {second_env_name}"
+        up_cmd = f"containerapp up -g {resource_group} -n {app_name} --environment {second_env_name} --image {image} --location {location}"
 
         # Execute the 'az containerapp up' command
         test_cls.cmd(up_cmd)
 
+        up_cmd = f"containerapp up -g {resource_group} -n {app_name}"
         if source_path:
             up_cmd += f" --source \"{source_path}\""
         if ingress:
@@ -170,11 +173,6 @@ def create_and_verify_containerapp_up_with_multiple_environments(
         ])
 
         test_cls.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, second_env_name))
-        test_cls.cmd('containerapp env list -g {}'.format(resource_group), checks=[
-            JMESPathCheck('length(@)', 0),
-        ])
-
-        test_cls.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, third_env_name))
         test_cls.cmd('containerapp env list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0),
         ])
