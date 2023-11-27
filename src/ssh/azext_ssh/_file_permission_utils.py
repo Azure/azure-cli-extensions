@@ -1,11 +1,13 @@
 import win32security
 import ntsecuritycon as con
-import getpass
+import platform
+import os, stat
 
 def _set_certificate_permissions(path):
-    """
-    Returns the security descriptor of the file at the given path.
-    """
+    if platform.system() != 'Windows':
+        os.chmod(path, 0o644)
+        return
+
     sd = win32security.GetFileSecurity(
         path,
         win32security.DACL_SECURITY_INFORMATION
