@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "aosm publisher nfd version show",
+    "aosm publisher network-function-definition version show",
     is_preview=True,
 )
 class Show(AAZCommand):

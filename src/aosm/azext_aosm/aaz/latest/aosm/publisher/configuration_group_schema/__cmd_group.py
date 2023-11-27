@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "aosm publisher cg-schema",
+    "aosm publisher configuration-group-schema",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):

@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "aosm publisher nfd",
+    "aosm publisher network-function-definition version",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Commands to manage network function definition resources.
+    """Commands to manage network function definition version resources.
     """
     pass
 

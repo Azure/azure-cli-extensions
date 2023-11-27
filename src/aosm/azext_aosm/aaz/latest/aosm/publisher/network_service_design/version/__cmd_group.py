@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "aosm publisher nsd version",
+    "aosm publisher network-service-design version",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):

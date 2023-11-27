@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "aosm publisher nsd version update-state",
+    "aosm publisher network-service-design version update-state",
     is_preview=True,
 )
 class UpdateState(AAZCommand):

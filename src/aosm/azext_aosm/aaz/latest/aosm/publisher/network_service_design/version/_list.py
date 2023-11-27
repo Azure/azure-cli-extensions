@@ -12,24 +12,25 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "aosm publisher nsd version show",
+    "aosm publisher network-service-design version list",
     is_preview=True,
 )
-class Show(AAZCommand):
-    """Get information about a network service design version.
+class List(AAZCommand):
+    """List information about a list of network service design versions under a network service design group.
     """
 
     _aaz_info = {
         "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridnetwork/publishers/{}/networkservicedesigngroups/{}/networkservicedesignversions/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridnetwork/publishers/{}/networkservicedesigngroups/{}/networkservicedesignversions", "2023-09-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -46,19 +47,8 @@ class Show(AAZCommand):
             options=["--network-service-design-group-name"],
             help="The name of the network service design group.",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
-                max_length=64,
-            ),
-        )
-        _args_schema.network_service_design_version_name = AAZStrArg(
-            options=["-n", "--name", "--network-service-design-version-name"],
-            help="The name of the network service design version. The name should conform to the SemVer 2.0.0 specification: https://semver.org/spec/v2.0.0.html.",
-            required=True,
-            id_part="child_name_2",
-            fmt=AAZStrArgFormat(
-                pattern="^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$",
                 max_length=64,
             ),
         )
@@ -66,7 +56,6 @@ class Show(AAZCommand):
             options=["--publisher-name"],
             help="The name of the publisher.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -79,7 +68,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NetworkServiceDesignVersionsGet(ctx=self.ctx)()
+        self.NetworkServiceDesignVersionsListByNetworkServiceDesignGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -91,10 +80,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class NetworkServiceDesignVersionsGet(AAZHttpOperation):
+    class NetworkServiceDesignVersionsListByNetworkServiceDesignGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -108,7 +98,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridNetwork/publishers/{publisherName}/networkServiceDesignGroups/{networkServiceDesignGroupName}/networkServiceDesignVersions/{networkServiceDesignVersionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridNetwork/publishers/{publisherName}/networkServiceDesignGroups/{networkServiceDesignGroupName}/networkServiceDesignVersions",
                 **self.url_parameters
             )
 
@@ -125,10 +115,6 @@ class Show(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "networkServiceDesignGroupName", self.ctx.args.network_service_design_group_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "networkServiceDesignVersionName", self.ctx.args.network_service_design_version_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -183,26 +169,36 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType(
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.location = AAZStrType(
                 flags={"required": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.configuration_group_schema_references = AAZDictType(
                 serialized_name="configurationGroupSchemaReferences",
             )
@@ -221,21 +217,21 @@ class Show(AAZCommand):
                 serialized_name="versionState",
             )
 
-            configuration_group_schema_references = cls._schema_on_200.properties.configuration_group_schema_references
+            configuration_group_schema_references = cls._schema_on_200.value.Element.properties.configuration_group_schema_references
             configuration_group_schema_references.Element = AAZObjectType()
-            _ShowHelper._build_schema_referenced_resource_read(configuration_group_schema_references.Element)
+            _ListHelper._build_schema_referenced_resource_read(configuration_group_schema_references.Element)
 
-            nfvis_from_site = cls._schema_on_200.properties.nfvis_from_site
+            nfvis_from_site = cls._schema_on_200.value.Element.properties.nfvis_from_site
             nfvis_from_site.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.nfvis_from_site.Element
+            _element = cls._schema_on_200.value.Element.properties.nfvis_from_site.Element
             _element.name = AAZStrType()
             _element.type = AAZStrType()
 
-            resource_element_templates = cls._schema_on_200.properties.resource_element_templates
+            resource_element_templates = cls._schema_on_200.value.Element.properties.resource_element_templates
             resource_element_templates.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.resource_element_templates.Element
+            _element = cls._schema_on_200.value.Element.properties.resource_element_templates.Element
             _element.depends_on_profile = AAZObjectType(
                 serialized_name="dependsOnProfile",
             )
@@ -244,7 +240,7 @@ class Show(AAZCommand):
                 flags={"required": True},
             )
 
-            depends_on_profile = cls._schema_on_200.properties.resource_element_templates.Element.depends_on_profile
+            depends_on_profile = cls._schema_on_200.value.Element.properties.resource_element_templates.Element.depends_on_profile
             depends_on_profile.install_depends_on = AAZListType(
                 serialized_name="installDependsOn",
             )
@@ -255,24 +251,24 @@ class Show(AAZCommand):
                 serialized_name="updateDependsOn",
             )
 
-            install_depends_on = cls._schema_on_200.properties.resource_element_templates.Element.depends_on_profile.install_depends_on
+            install_depends_on = cls._schema_on_200.value.Element.properties.resource_element_templates.Element.depends_on_profile.install_depends_on
             install_depends_on.Element = AAZStrType()
 
-            uninstall_depends_on = cls._schema_on_200.properties.resource_element_templates.Element.depends_on_profile.uninstall_depends_on
+            uninstall_depends_on = cls._schema_on_200.value.Element.properties.resource_element_templates.Element.depends_on_profile.uninstall_depends_on
             uninstall_depends_on.Element = AAZStrType()
 
-            update_depends_on = cls._schema_on_200.properties.resource_element_templates.Element.depends_on_profile.update_depends_on
+            update_depends_on = cls._schema_on_200.value.Element.properties.resource_element_templates.Element.depends_on_profile.update_depends_on
             update_depends_on.Element = AAZStrType()
 
-            disc_arm_resource_definition = cls._schema_on_200.properties.resource_element_templates.Element.discriminate_by("type", "ArmResourceDefinition")
+            disc_arm_resource_definition = cls._schema_on_200.value.Element.properties.resource_element_templates.Element.discriminate_by("type", "ArmResourceDefinition")
             disc_arm_resource_definition.configuration = AAZObjectType()
-            _ShowHelper._build_schema_arm_resource_definition_resource_element_template_read(disc_arm_resource_definition.configuration)
+            _ListHelper._build_schema_arm_resource_definition_resource_element_template_read(disc_arm_resource_definition.configuration)
 
-            disc_network_function_definition = cls._schema_on_200.properties.resource_element_templates.Element.discriminate_by("type", "NetworkFunctionDefinition")
+            disc_network_function_definition = cls._schema_on_200.value.Element.properties.resource_element_templates.Element.discriminate_by("type", "NetworkFunctionDefinition")
             disc_network_function_definition.configuration = AAZObjectType()
-            _ShowHelper._build_schema_arm_resource_definition_resource_element_template_read(disc_network_function_definition.configuration)
+            _ListHelper._build_schema_arm_resource_definition_resource_element_template_read(disc_network_function_definition.configuration)
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -292,14 +288,14 @@ class Show(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
+            tags = cls._schema_on_200.value.Element.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
     _schema_arm_resource_definition_resource_element_template_read = None
 
@@ -356,4 +352,4 @@ class _ShowHelper:
         _schema.id = cls._schema_referenced_resource_read.id
 
 
-__all__ = ["Show"]
+__all__ = ["List"]

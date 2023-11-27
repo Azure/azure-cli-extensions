@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "aosm publisher cg-schema update-state",
+    "aosm publisher network-function-definition version update-state",
     is_preview=True,
 )
 class UpdateState(AAZCommand):
-    """Update configuration group schema state.
+    """Update network function definition version state.
     """
 
     _aaz_info = {
         "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridnetwork/publishers/{}/configurationgroupschemas/{}/updatestate", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridnetwork/publishers/{}/networkfunctiondefinitiongroups/{}/networkfunctiondefinitionversions/{}/updatestate", "2023-09-01"],
         ]
     }
 
@@ -43,13 +43,23 @@ class UpdateState(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_group_schema_name = AAZStrArg(
-            options=["--configuration-group-schema-name"],
-            help="The name of the configuration group schema.",
+        _args_schema.network_function_definition_group_name = AAZStrArg(
+            options=["--network-function-definition-group-name"],
+            help="The name of the network function definition group.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
+                max_length=64,
+            ),
+        )
+        _args_schema.network_function_definition_version_name = AAZStrArg(
+            options=["--network-function-definition-version-name"],
+            help="The name of the network function definition version. The name should conform to the SemVer 2.0.0 specification: https://semver.org/spec/v2.0.0.html.",
+            required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$",
                 max_length=64,
             ),
         )
@@ -73,14 +83,14 @@ class UpdateState(AAZCommand):
         _args_schema.version_state = AAZStrArg(
             options=["--version-state"],
             arg_group="Parameters",
-            help="The configuration group schema state.",
-            enum={"Active": "Active", "Deprecated": "Deprecated", "Preview": "Preview", "Unknown": "Unknown"},
+            help="The network function definition version state. Only the 'Active' and 'Deprecated' states are allowed for updates. Other states are used for internal state transitioning.",
+            enum={"Active": "Active", "Deprecated": "Deprecated", "Preview": "Preview", "Unknown": "Unknown", "Validating": "Validating", "ValidationFailed": "ValidationFailed"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ConfigurationGroupSchemasUpdateState(ctx=self.ctx)()
+        yield self.NetworkFunctionDefinitionVersionsUpdateState(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -95,7 +105,7 @@ class UpdateState(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ConfigurationGroupSchemasUpdateState(AAZHttpOperation):
+    class NetworkFunctionDefinitionVersionsUpdateState(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -125,7 +135,7 @@ class UpdateState(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridNetwork/publishers/{publisherName}/configurationGroupSchemas/{configurationGroupSchemaName}/updateState",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridNetwork/publishers/{publisherName}/networkFunctionDefinitionGroups/{networkFunctionDefinitionGroupName}/networkFunctionDefinitionVersions/{networkFunctionDefinitionVersionName}/updateState",
                 **self.url_parameters
             )
 
@@ -141,7 +151,11 @@ class UpdateState(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationGroupSchemaName", self.ctx.args.configuration_group_schema_name,
+                    "networkFunctionDefinitionGroupName", self.ctx.args.network_function_definition_group_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "networkFunctionDefinitionVersionName", self.ctx.args.network_function_definition_version_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
