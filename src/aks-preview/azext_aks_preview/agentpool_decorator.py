@@ -435,6 +435,8 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 skip_gpu_driver_install = not self.agentpool.gpu_profile.install_gpu_driver
 
         return skip_gpu_driver_install
+
+
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
         self,
