@@ -609,18 +609,18 @@ def list_cluster_extensions(cmd, connected_cluster_id):
 def create_extension(cmd, extension_name, connected_cluster_id=None, namespace=None, logs_customer_id=None, logs_share_key=None, location=None, logs_rg=None):
     from base64 import b64encode
     from azure.cli.core.commands import LongRunningOperation
-    from azext_containerapp.vendored_sdks.kubernetesconfiguration import models
+    from .vendored_sdks.kubernetesconfiguration import models
 
     if logs_customer_id is None or logs_share_key is None:
         logs_customer_id, logs_share_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id,
                                                                                    logs_share_key, location, logs_rg)
 
-    parsed_extension = parse_resource_id(connected_cluster_id)
-    subscription = parsed_extension.get("subscription")
-    cluster_rg = parsed_extension.get("resource_group")
-    cluster_rp = parsed_extension.get("namespace")
-    cluster_type = parsed_extension.get("type")
-    cluster_name = parsed_extension.get("name")
+    parsed_cluster = parse_resource_id(connected_cluster_id)
+    subscription = parsed_cluster.get("subscription")
+    cluster_rg = parsed_cluster.get("resource_group")
+    cluster_rp = parsed_cluster.get("namespace")
+    cluster_type = parsed_cluster.get("type")
+    cluster_name = parsed_cluster.get("name")
 
     e = models.Extension()
     e.identity = models.Identity(type="SystemAssigned")
@@ -633,7 +633,6 @@ def create_extension(cmd, extension_name, connected_cluster_id=None, namespace=N
     e.configuration_settings = {
         "Microsoft.CustomLocation.ServiceAccount": "default",
         "appsNamespace": namespace,
-        "clusterName": extension_name,
         "logProcessor.appLogs.destination": "log-analytics"
     }
 

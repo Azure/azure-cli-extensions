@@ -742,8 +742,7 @@ class Extension:
             logs_rg=None,
             logs_customer_id=None,
             logs_share_key=None,
-            connected_cluster_id=None,
-            connected_environment_name=None,
+            connected_cluster_id=None
     ):
         self.cmd = cmd
         self.name = name
@@ -754,7 +753,6 @@ class Extension:
         self.logs_customer_id = logs_customer_id
         self.logs_share_key = logs_share_key
         self.connected_cluster_id = connected_cluster_id
-        self.connected_environment_name = connected_environment_name
 
     def create(self):
         extension = create_extension(cmd=self.cmd,
@@ -1435,7 +1433,6 @@ def _infer_existing_custom_location_or_extension(
                     extension.namespace = DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE
                     extension.logs_rg = resource_group.name
                     extension.logs_location = resource_group.location
-                    extension.connected_environment_name = env.name
                     custom_location.namespace = DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE
                     custom_location.cluster_extension_id = extension.get_rid()
 
