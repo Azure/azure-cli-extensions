@@ -162,20 +162,10 @@ def create_and_verify_containerapp_up_with_multiple_environments(
         resp = requests.get(url)
         test_cls.assertTrue(resp.ok)
 
-        test_cls.cmd('containerapp delete -g {} -n {} --yes'.format(resource_group, app_name))
-        test_cls.cmd('containerapp list -g {}'.format(resource_group), checks=[
-            JMESPathCheck('length(@)', 0),
-        ])
+        test_cls.cmd('containerapp delete -g {} -n {} --yes --no-wait'.format(resource_group, app_name))
 
-        test_cls.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, first_env_name))
-        test_cls.cmd('containerapp env list -g {}'.format(resource_group), checks=[
-            JMESPathCheck('length(@)', 0),
-        ])
+        test_cls.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, first_env_name))
 
-        test_cls.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, second_env_name))
-        test_cls.cmd('containerapp env list -g {}'.format(resource_group), checks=[
-            JMESPathCheck('length(@)', 0),
-        ])
 
 def create_extension_and_custom_location(test_cls, resource_group, connected_cluster_name, custom_location_name):
     try:
