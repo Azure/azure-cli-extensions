@@ -7,6 +7,8 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=line-too-long
+# pylint: disable=too-many-locals
 
 import os
 import sys
@@ -14,7 +16,7 @@ import json
 import requests
 from knack.log import get_logger
 import chardet
-from azure.cli.core.aaz import *
+from azure.cli.core.aaz._arg import AAZStrArg
 from .aaz.latest.apic.api.definition import ImportSpecification
 from .aaz.latest.apic.api.definition import ExportSpecification
 from .aaz.latest.apic.metadata_schema import Create
@@ -43,9 +45,10 @@ class ImportSpecificationExtension(ImportSpecification):
 
         # Load the JSON file
         if args.source_profile:
-            rawdata = open(str(args.source_profile), 'rb').read()
-            result = chardet.detect(rawdata)
-            encoding = result['encoding']
+            with open(str(args.source_profile), 'rb') as f:
+                data = f.read()
+                result = chardet.detect(data)
+                encoding = result['encoding']
 
             with open(str(args.source_profile), 'r', encoding=encoding) as f:
                 data = json.load(f)
@@ -64,7 +67,8 @@ class ImportSpecificationExtension(ImportSpecification):
             value_size_bytes = sys.getsizeof(args.value)
             value_size_mb = value_size_bytes / (1024 * 1024)  # Convert bytes to megabytes
             if value_size_mb > 3:
-                logger.error('The size of "value" is greater than 3 MB. Please use --format "url" to import the specification from a URL for size greater than 3 mb.')
+                logger.error('The size of "value" is greater than 3 MB. '
+                             'Please use --format "url" to import the specification from a URL for size greater than 3 mb.')
 
 class ExportSpecificationExtension(ExportSpecification):
 
@@ -91,17 +95,18 @@ class ExportSpecificationExtension(ExportSpecification):
 
             if response_format == 'link':
                 print('Fetching specification from:', exportedResults)
-                getReponse = requests.get(exportedResults)
+                getReponse = requests.get(exportedResults, timeout=10)
                 if getReponse.status_code == 200:
                     exportedResults = getReponse.content.decode()
                 else:
-                    logger.error('Error while fetching the results from the link. Status code: %s', getReponse.status_code)
+                    logger.error('Error while fetching the results from the link.'
+                                 'Status code: %s', getReponse.status_code)
 
             if arguments.source_profile:
                 try:
                     self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
                     print('Results exported to', arguments.source_profile)
-                except Exception as e:
+                except Exception as e: # pylint: disable=broad-except
                     logger.error('Error while writing the results to the file. Error: %s', e)
             else:
                 logger.error('Please provide the --file-name to exports the results to.')
@@ -110,7 +115,7 @@ class ExportSpecificationExtension(ExportSpecification):
 
     def writeResultsToFile(self, results, file_name):
         if file_name:
-            with open(file_name, 'w') as f:
+            with open(file_name, 'w', encoding='utf-8') as f:
                 if os.path.splitext(file_name)[1] == '.json':
                     if isinstance(results, str):
                         results = json.loads(results)
@@ -137,9 +142,10 @@ class CreateMetadataSchemaExtension(Create):
 
         # Load the JSON file
         if args.source_profile:
-            rawdata = open(str(args.source_profile), 'rb').read()
-            result = chardet.detect(rawdata)
-            encoding = result['encoding']
+            with open(str(args.source_profile), 'rb') as f:
+                data = f.read()
+                result = chardet.detect(data)
+                encoding = result['encoding']
 
             if os.stat(str(args.source_profile)).st_size == 0:
                 raise ValueError('Metadtata schema file is empty. Please provide a valid metadata schema file.')
@@ -151,7 +157,8 @@ class CreateMetadataSchemaExtension(Create):
 
         # If any of the fields are None, get them from self.args
         if value is None:
-            logger.error('Please provide the schema to create the metadata schema through --schema option or through --file-name option via a file.')
+            logger.error('Please provide the schema to create the metadata schema'
+                         'through --schema option or through --file-name option via a file.')
 
         # Reassign the values to self.args
         self.ctx.args.schema = value
@@ -175,9 +182,10 @@ class UpdateMetadataSchemaExtension(Update):
 
         # Load the JSON file
         if args.source_profile:
-            rawdata = open(str(args.source_profile), 'rb').read()
-            result = chardet.detect(rawdata)
-            encoding = result['encoding']
+            with open(str(args.source_profile), 'rb') as f:
+                rawdata = f.read()
+                result = chardet.detect(rawdata)
+                encoding = result['encoding']
 
             if os.stat(str(args.source_profile)).st_size == 0:
                 raise ValueError('Metadtata schema file is empty. Please provide a valid metadata schema file.')
@@ -189,7 +197,8 @@ class UpdateMetadataSchemaExtension(Update):
 
         # If any of the fields are None, get them from self.args
         if value is None:
-            logger.error('Please provide the schema to update the metadata schema through --schema option or through --file-name option via a file.')
+            logger.error('Please provide the schema to update the metadata schema '
+                         'through --schema option or through --file-name option via a file.')
 
         # Reassign the values to self.args
         self.ctx.args.schema = value
@@ -219,7 +228,7 @@ class ExportMetadataSchemaExtension(ExportMetadataSchema):
 
             if response_format == 'link':
                 print('Fetching metadata from:', exportedResults)
-                getReponse = requests.get(exportedResults)
+                getReponse = requests.get(exportedResults, timeout=10)
                 if getReponse.status_code == 200:
                     exportedResults = getReponse.content.decode()
                 else:
@@ -229,7 +238,7 @@ class ExportMetadataSchemaExtension(ExportMetadataSchema):
                 try:
                     self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
                     print('Results exported to', arguments.source_profile)
-                except Exception as e:
+                except Exception as e: # pylint: disable=broad-except
                     logger.error('Error while writing the results to the file. Error: %s', e)
             else:
                 logger.error('Please provide the --file-name to exports the results to.')
@@ -238,7 +247,7 @@ class ExportMetadataSchemaExtension(ExportMetadataSchema):
 
     def writeResultsToFile(self, results, file_name):
         if file_name:
-            with open(file_name, 'w') as f:
+            with open(file_name, 'w', encoding='utf-8') as f:
                 if os.path.splitext(file_name)[1] == '.json':
                     if isinstance(results, str):
                         results = json.loads(results)
@@ -253,10 +262,10 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
     if api_location:
 
         #TODO Future Confirm its a file and not link
-
-        rawdata = open(str(api_location), 'rb').read()
-        result = chardet.detect(rawdata)
-        encoding = result['encoding']
+        with open(str(api_location), 'rb') as f:
+            rawdata = f.read()
+            result = chardet.detect(rawdata)
+            encoding = result['encoding']
 
         # TODO - read other file types later
         with open(str(api_location), 'r', encoding=encoding) as f:
@@ -304,11 +313,11 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 contacts = None
 
             # Create API - Get the license details from info in spec
-            license = info.get('license')
-            if license:
-                extracted_api_license_identifier = license.get('identifier')
-                extracted_api_license_name = license.get('name')
-                extracted_api_license_url = license.get('url')
+            licenseDetails = info.get('license')
+            if licenseDetails:
+                extracted_api_license_identifier = licenseDetails.get('identifier')
+                extracted_api_license_name = licenseDetails.get('name')
+                extracted_api_license_url = licenseDetails.get('url')
                 extracted_api_license = {'identifier': extracted_api_license_identifier, 'name': extracted_api_license_name, 'url': extracted_api_license_url}
             else:
                 extracted_api_license = None
@@ -334,7 +343,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             #TODO: Create API - custom-properties
             # - "The custom metadata defined for API catalog entities. #1
 
-
             # Create API -------------------------------------------------------------------------------------
             from .aaz.latest.apic.api import Create as CreateAPI
 
@@ -356,10 +364,9 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             CreateAPI(cli_ctx=cmd.cli_ctx)(command_args=api_args)
             print("API was created successfully")
 
-
             # Create API Version -----------------------------------------------------------------------------
             from .aaz.latest.apic.api.version import Create as CreateAPIVersion
-            
+
             api_version_args = {
                 'api_name': extracted_api_name,
                 'resource_group': resource_group,
@@ -372,7 +379,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
 
             CreateAPIVersion(cli_ctx=cmd.cli_ctx)(command_args=api_version_args)
             print("API version was created successfully")
-
 
             # Create API Definition -----------------------------------------------------------------------------
             from .aaz.latest.apic.api.definition import Create as CreateAPIDefinition
@@ -390,7 +396,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
 
             CreateAPIDefinition(cli_ctx=cmd.cli_ctx)(command_args=api_definition_args)
             print("API definition was created successfully")
-
 
             # Import Specification -----------------------------------------------------------------------------
             from azure.cli.core.commands import LongRunningOperation
@@ -414,7 +419,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             }
 
             importAPISpecificationResults = ImportSpecificationExtension(cli_ctx=cmd.cli_ctx)(command_args=api_specification_args)
-            importAPISpecificationResults_Polled = LongRunningOperation(cmd.cli_ctx)(importAPISpecificationResults)
+            LongRunningOperation(cmd.cli_ctx)(importAPISpecificationResults)
             print("API specification was imported successfully")
 
             # Create API Deployment -----------------------------------------------------------------------------
@@ -424,7 +429,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             environment_id = None
             if environment_name:
                 # GET Environment ID
-
                 environment_args = {
                     'resource_group': resource_group,
                     'service_name': service_name,
