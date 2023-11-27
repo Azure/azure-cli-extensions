@@ -84,7 +84,6 @@ class Update(AAZCommand):
             help="The name of the workspace.",
             required=True,
             id_part="child_name_1",
-            default="default",
             fmt=AAZStrArgFormat(
                 max_length=90,
                 min_length=1,
