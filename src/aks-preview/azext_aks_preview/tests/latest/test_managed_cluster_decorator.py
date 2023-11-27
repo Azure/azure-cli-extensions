@@ -5104,6 +5104,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 network_plugin="azure",
                 network_plugin_mode="overlay",
                 network_dataplane="cilium",
+                network_policy="",
                 pod_cidr="100.64.0.0/16",
                 service_cidr="192.168.0.0/16"
             ),
@@ -5121,6 +5122,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 network_plugin="azure",
                 network_plugin_mode="overlay",
                 network_dataplane="cilium",
+                network_policy="cilium",
                 pod_cidr="100.64.0.0/16",
                 service_cidr="192.168.0.0/16",
             ),

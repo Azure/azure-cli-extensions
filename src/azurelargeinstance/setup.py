@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-VERSION = '0.2.7'
+VERSION = '1.0.0b1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -34,16 +34,16 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='bastion',
+    name='azurelargeinstance',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Bastion Extension.',
+    description='Microsoft Azure Command-Line Tools Azurelargeinstance Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/bastion',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/azurelargeinstance',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_bastion': ['azext_metadata.json']},
+    package_data={'azext_azurelargeinstance': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
