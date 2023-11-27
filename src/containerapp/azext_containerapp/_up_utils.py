@@ -774,12 +774,12 @@ class Extension:
             return
         if not self.check_exists():
             logger.warning(
-                f"Creating {type(self).__name__} '{self.name}' in cluster {self.connected_cluster_id}"
+                f"Creating {type(self).__name__} '{self.name}' in connected cluster {self.connected_cluster_id}"
             )
             self.create()
         else:
             logger.warning(
-                f"Using {type(self).__name__} '{self.name}' in cluster {self.connected_cluster_id}"
+                f"Using {type(self).__name__} '{self.name}' in connected cluster {self.connected_cluster_id}"
             )  # TODO use .info()
 
     def check_exists(self):
@@ -1334,7 +1334,6 @@ def _set_up_defaults(
     )
     # Find managed env with env name, if found, use it.
     # Try to set RG name by env name
-    # If two environments are found, one manager/one connected, use managed env.
     # If the unique environment is found, use it.
     if not env.is_connected_environment() and env.name and not resource_group.name:
         if not location:
@@ -1425,10 +1424,9 @@ def _infer_existing_custom_location_or_extension(
             if custom_location.exists:
                 env.custom_location_id = custom_location.get_rid()
             else:
-                random_int = randint(0, 9999)
-                resource_group.name = resource_group.name if resource_group.name else get_randomized_name(get_profile_username(), random_int=random_int)
-                env.name = env.name if env.name else "{}-env".format(name).replace("_", "-")
-                custom_location.name = custom_location.name if custom_location.name else get_randomized_name_with_dash(prefix=get_profile_username(), initial="env-location", random_int=random_int)
+                generated_resources_random_int = randint(0, 9999)
+                resource_group.name = resource_group.name if resource_group.name else get_randomized_name(get_profile_username(), random_int=generated_resources_random_int)
+                custom_location.name = custom_location.name if custom_location.name else get_randomized_name_with_dash(prefix=get_profile_username(), initial="env-location", random_int=generated_resources_random_int)
                 custom_location.resource_group_name = resource_group.name
                 env.custom_location_id = custom_location.get_rid()
                 # If not existed extension, set up values for creating
