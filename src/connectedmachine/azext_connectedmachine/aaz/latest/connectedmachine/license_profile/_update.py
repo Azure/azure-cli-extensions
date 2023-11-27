@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update operation to create or update a license profile.
 
     :example: Sample command for license-profile update
-        az connectedmachine licence-profile-update --license-name "myLicenseName" --resource-group "myResourceGroup" --subscription "mySubscription" --software-assurance-customer true --assigned-license "myLicenseResourceId" --subscription-status "Enable" --product-type "WindowsServer" --product-features "{{"name": "HotPatching", "subscriptionStatus": "Enable"}}"
+        az connectedmachine licence-profile-update --license-name "myLicenseName" --resource-group "myResourceGroup" --subscription "mySubscription" --software-assurance-customer true --assigned-license "myLicenseResourceId" --subscription-status "Enable" --product-type "WindowsServer" --product-features "[{"name": "HotPatching", "subscriptionStatus": "Enable"}]"
     """
 
     _aaz_info = {
@@ -142,7 +142,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.software_assurance_customer = AAZBoolArg(
-            options=["--software-assurance-customer"],
+            options=["--software-assurance", "--software-assurance-customer"],
             arg_group="SoftwareAssurance",
             help="Specifies if this machine is licensed as part of a Software Assurance agreement.",
             nullable=True,

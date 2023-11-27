@@ -34,7 +34,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class RunCommandScenarioTest(ScenarioTest):
-
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_runcommand')
     def test_run_command(self):
         rand_string = 'test'
