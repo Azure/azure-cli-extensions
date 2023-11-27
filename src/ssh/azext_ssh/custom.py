@@ -9,7 +9,6 @@ import json
 import tempfile
 import time
 import platform
-import oschmod
 
 from knack import log
 from azure.cli.core import azclierror
@@ -346,7 +345,7 @@ def _check_or_create_public_private_files(public_key_file, private_key_file, cre
 def _write_cert_file(certificate_contents, cert_file):
     with open(cert_file, 'w', encoding='utf-8') as f:
         f.write(f"ssh-rsa-cert-v01@openssh.com {certificate_contents}")
-    _file_permission_utils._set_certificate_permissions(cert_file)
+    _file_permission_utils.set_certificate_permissions(cert_file)
     return cert_file
 
 

@@ -1,9 +1,9 @@
 import win32security
 import ntsecuritycon as con
 import platform
-import os, stat
+import os
 
-def _set_certificate_permissions(path):
+def set_certificate_permissions(path):
     if platform.system() != 'Windows':
         os.chmod(path, 0o644)
         return
