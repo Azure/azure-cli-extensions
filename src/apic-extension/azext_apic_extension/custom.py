@@ -27,6 +27,7 @@ logger = get_logger(__name__)
 
 class ImportSpecificationExtension(ImportSpecification):
 
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -70,6 +71,7 @@ class ImportSpecificationExtension(ImportSpecification):
                 logger.error('The size of "value" is greater than 3 MB. '
                              'Please use --format "url" to import the specification from a URL for size greater than 3 mb.')
 
+
 class ExportSpecificationExtension(ExportSpecification):
 
     @classmethod
@@ -106,7 +108,7 @@ class ExportSpecificationExtension(ExportSpecification):
                 try:
                     self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
                     print('Results exported to', arguments.source_profile)
-                except Exception as e: # pylint: disable=broad-except
+                except Exception as e:  # pylint: disable=broad-except
                     logger.error('Error while writing the results to the file. Error: %s', e)
             else:
                 logger.error('Please provide the --file-name to exports the results to.')
@@ -122,6 +124,7 @@ class ExportSpecificationExtension(ExportSpecification):
                     json.dump(results, f, indent=4, separators=(',', ':'))
                 else:
                     f.write(results)
+
 
 class CreateMetadataSchemaExtension(Create):
     @classmethod
@@ -163,6 +166,7 @@ class CreateMetadataSchemaExtension(Create):
         # Reassign the values to self.args
         self.ctx.args.schema = value
 
+
 class UpdateMetadataSchemaExtension(Update):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -203,6 +207,7 @@ class UpdateMetadataSchemaExtension(Update):
         # Reassign the values to self.args
         self.ctx.args.schema = value
 
+
 class ExportMetadataSchemaExtension(ExportMetadataSchema):
 
     @classmethod
@@ -238,7 +243,7 @@ class ExportMetadataSchemaExtension(ExportMetadataSchema):
                 try:
                     self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
                     print('Results exported to', arguments.source_profile)
-                except Exception as e: # pylint: disable=broad-except
+                except Exception as e:  # pylint: disable=broad-except
                     logger.error('Error while writing the results to the file. Error: %s', e)
             else:
                 logger.error('Please provide the --file-name to exports the results to.')
@@ -255,13 +260,14 @@ class ExportMetadataSchemaExtension(ExportMetadataSchema):
                 else:
                     f.write(results)
 
+
 # Quick Import
 def register_apic(cmd, api_location, resource_group, service_name, environment_name=None):
 
     # Load the JSON file
     if api_location:
 
-        #TODO Future Confirm its a file and not link
+        # TODO Future Confirm its a file and not link
         with open(str(api_location), 'rb') as f:
             rawdata = f.read()
             result = chardet.detect(rawdata)
@@ -288,7 +294,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             extracted_definition_name = 'default'
             extracted_definition_version = 'v1'
             extracted_api_kind = 'rest'
-            #TODO how to determine other kinds - enum={"graphql": "graphql", "grpc": "grpc", "rest": "rest", "soap": "soap", "webhook": "webhook", "websocket": "websocket"}
+            # TODO how to determine other kinds - enum={"graphql": "graphql", "grpc": "grpc", "rest": "rest", "soap": "soap", "webhook": "webhook", "websocket": "websocket"}
 
         # Create API and Create API Version
         info = data['info']
@@ -300,7 +306,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             extracted_api_title = info.get('title', 'API Title').replace(" ", "-").lower()
             extracted_api_version = info.get('version', 'v1').replace(".", "-").lower()
             extracted_api_version_title = info.get('version', 'v1').replace(".", "-").lower()
-            #TODO -Create API Version lifecycle_stage
+            # TODO -Create API Version lifecycle_stage
 
             # Create API - Get the contact details from info in spec
             contact = info.get('contact')
@@ -340,8 +346,8 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             else:
                 extracted_api_external_documentation = None
 
-            #TODO: Create API - custom-properties
-            # - "The custom metadata defined for API catalog entities. #1
+            # TODO: Create API - custom-properties
+            # "The custom metadata defined for API catalog entities. #1
 
             # Create API -------------------------------------------------------------------------------------
             from .aaz.latest.apic.api import Create as CreateAPI
@@ -351,7 +357,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'resource_group': resource_group,
                 'service_name': service_name,
                 'workspace_name': 'default',
-                'title' : extracted_api_title,
+                'title': extracted_api_title,
                 'summary': extracted_api_summary,
                 'kind': extracted_api_kind,
                 'contacts': contacts,
@@ -359,7 +365,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'terms_of_service': extracted_api_terms_of_service,
                 'external_documentation': extracted_api_external_documentation,
                 'description': extracted_api_description,
-                }
+            }
 
             CreateAPI(cli_ctx=cmd.cli_ctx)(command_args=api_args)
             print("API was created successfully")
@@ -373,8 +379,8 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'service_name': service_name,
                 'version_name': extracted_api_version,
                 'workspace_name': 'default',
-                'lifecycle_stage': 'design', #TODO: Extract from spec or not pass. was it required?
-                'title' : extracted_api_version_title
+                'lifecycle_stage': 'design',  # TODO: Extract from spec or not pass. was it required?
+                'title': extracted_api_version_title
             }
 
             CreateAPIVersion(cli_ctx=cmd.cli_ctx)(command_args=api_version_args)
@@ -390,8 +396,8 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'version_name': extracted_api_version,
                 'workspace_name': 'default',
                 'definition_name': extracted_definition_name,
-                'title' : extracted_definition_name,        #TODO Extract from spec
-                'description' : extracted_api_description,  #TODO Extract from spec
+                'title': extracted_definition_name,  # TODO Extract from spec
+                'description': extracted_api_description,  # TODO Extract from spec
             }
 
             CreateAPIDefinition(cli_ctx=cmd.cli_ctx)(command_args=api_definition_args)
@@ -402,9 +408,9 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
 
             # uses customized ImportSpecificationExtension class
             specification_details = {'name':extracted_definition_name,'version':extracted_definition_version}
-            #TODO format - Link - what if the link is just pasted in the value?
-            #TODO format - inline - what if spec is just pasted in the value?
-            #TODO - other non json spec formats
+            # TODO format - Link - what if the link is just pasted in the value?
+            # TODO format - inline - what if spec is just pasted in the value?
+            # TODO - other non json spec formats
 
             api_specification_args = {
                 'resource_group': resource_group,
@@ -414,8 +420,8 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'version_name': extracted_api_version,
                 'definition_name': extracted_definition_name,
                 'format': 'inline',
-                'specification': specification_details, #TODO write the correct spec object
-                'source_profile' : api_location
+                'specification': specification_details, # TODO write the correct spec object
+                'source_profile': api_location
             }
 
             importAPISpecificationResults = ImportSpecificationExtension(cli_ctx=cmd.cli_ctx)(command_args=api_specification_args)
@@ -461,13 +467,13 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                         'service_name': service_name,
                         'workspace_name': 'default',
                         'api_name': extracted_api_name,
-                        'deployment_name' : extracted_deployment_name,
-                        'description' : extracted_deployment_description,
-                        'title' : extracted_deployment_title,
+                        'deployment_name': extracted_deployment_name,
+                        'description': extracted_deployment_description,
+                        'title': extracted_deployment_title,
                         'definition_id': extracted_definition_id,
                         'environment_id': extracted_environment_id,
-                        'server' : extracted_server,
-                        'state' : extracted_state
+                        'server': extracted_server,
+                        'state': extracted_state
                         # TODO custom properties
                     }
 

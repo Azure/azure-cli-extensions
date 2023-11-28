@@ -36,4 +36,3 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             help="Environemnt name",
             required=False,
         )
-        
