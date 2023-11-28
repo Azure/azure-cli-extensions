@@ -9,3 +9,25 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['apic api register'] = """
+    type: command
+    short-summary: Single Command for registering api, api version, api definition, import spec, create deployment provided a spec file.
+    parameters:
+      - name: --api-location -l
+        type: string
+        short-summary: Location of spec file  .
+      - name: --resource-group -g
+        type: string
+        short-summary: Resource group name.
+      - name: --service -s
+        type: string
+        short-summary: APICenter Catalog or Service name.
+      - name: --environment-name -e
+        type: string
+        short-summary: Name of environment created before.
+    examples:
+      - name: Register api by providing spec file.
+        text: |
+          az apic api register -g api-center-test -s contosoeuap --api-location "examples/cli-examples/spec-examples/openai.json" --environment-name public
+"""
