@@ -25,9 +25,8 @@ from .aaz.latest.apic.metadata_schema import ExportMetadataSchema
 
 logger = get_logger(__name__)
 
+
 class ImportSpecificationExtension(ImportSpecification):
-
-
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -289,7 +288,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
         if first_key in ['swagger', 'openapi']:
             extracted_definition_name = 'openapi'
             extracted_definition_version = first_value.replace(".", "-").lower()
-            extracted_api_kind = 'rest' #TODO
+            extracted_api_kind = 'rest'  # TODO determine kind from spec
         else:
             extracted_definition_name = 'default'
             extracted_definition_version = 'v1'
@@ -407,7 +406,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             from azure.cli.core.commands import LongRunningOperation
 
             # uses customized ImportSpecificationExtension class
-            specification_details = {'name':extracted_definition_name,'version':extracted_definition_version}
+            specification_details = {'name': extracted_definition_name, 'version': extracted_definition_version}
             # TODO format - Link - what if the link is just pasted in the value?
             # TODO format - inline - what if spec is just pasted in the value?
             # TODO - other non json spec formats
@@ -420,7 +419,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'version_name': extracted_api_version,
                 'definition_name': extracted_definition_name,
                 'format': 'inline',
-                'specification': specification_details, # TODO write the correct spec object
+                'specification': specification_details,  # TODO write the correct spec object
                 'source_profile': api_location
             }
 
@@ -453,7 +452,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                     extracted_deployment_name = server.get('name', default_deployment_title).replace(" ", "-")
                     extracted_deployment_title = server.get('title', default_deployment_title).replace(" ", "-")
                     extracted_deployment_description = server.get('description', default_deployment_title)
-                    extracted_definition_id = '/workspaces/default/apis/'+ extracted_api_name +'/versions/'+ extracted_api_version +'/definitions/'+ extracted_definition_name
+                    extracted_definition_id = '/workspaces/default/apis/' + extracted_api_name + '/versions/' + extracted_api_version + '/definitions/' + extracted_definition_name
                     extracted_environment_id = '/workspaces/default/environments/' + environment_name
                     extracted_state = server.get('state', 'active')
 
