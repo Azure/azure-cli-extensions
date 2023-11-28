@@ -5,7 +5,7 @@
 
 import time
 import requests
-from azext_containerapp.tests.latest.common import TEST_LOCATION
+from .common import TEST_LOCATION, STAGE_LOCATION
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, RequiredArgumentMissingError, InvalidArgumentValueError
 from msrestazure.tools import parse_resource_id
 
@@ -130,6 +130,9 @@ def create_extension_and_custom_location(test_cls, resource_group, connected_clu
                                  f' --configuration-settings "appsNamespace=appplat-ns"'
                                  f' --configuration-settings "clusterName={connected_cluster_name}"'
                                  f' --configuration-settings "envoy.annotations.service.beta.kubernetes.io/azure-load-balancer-resource-group={resource_group}"').get_output_in_json()
+        custom_location_loc = TEST_LOCATION
+        if custom_location_loc == STAGE_LOCATION:
+            custom_location_loc = "eastus2euap"
         test_cls.cmd(f'az customlocation create -g {resource_group} -n {custom_location_name} -l {TEST_LOCATION} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}')
     except:
         pass

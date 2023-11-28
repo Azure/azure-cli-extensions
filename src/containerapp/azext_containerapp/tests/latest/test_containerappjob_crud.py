@@ -123,7 +123,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
 
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled -l eastus')
         self.cmd(f'acr import -n {acr} --source {image_source}')
         password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
 
@@ -150,7 +150,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
 
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled -l eastus')
         self.cmd(f'acr import -n {acr} --source {image_source}')
         password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
 
