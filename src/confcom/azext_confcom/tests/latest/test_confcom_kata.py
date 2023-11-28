@@ -13,8 +13,6 @@ import pytest
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=1)
 class KataPolicyGen(unittest.TestCase):
 
     pod_string = """
@@ -45,7 +43,7 @@ spec:
                 "fakepath/input.json",
                 None,
             )
-        self.assertNotEqual(wrapped_exit.exception.code, 0)
+        self.assertEqual(wrapped_exit.exception.code, 101)
 
     def test_invalid_config_map_path(self):
         filename = "pod.yaml"
@@ -56,7 +54,29 @@ spec:
                 filename, "fakepath/configmap.yaml",
             )
         os.remove(filename)
-        self.assertNotEqual(wrapped_exit.exception.code, 0)
+        self.assertEqual(wrapped_exit.exception.code, 101)
+
+    def test_valid_cached(self):
+        filename = "pod3.yaml"
+        with open(filename, "w") as f:
+            f.write(KataPolicyGen.pod_string)
+        with self.assertRaises(SystemExit) as wrapped_exit:
+            katapolicygen_confcom(
+                filename, None, use_cached_files=True
+            )
+        os.remove(filename)
+        self.assertEqual(wrapped_exit.exception.code, 0)
+
+    def test_valid(self):
+        filename = "pod4.yaml"
+        with open(filename, "w") as f:
+            f.write(KataPolicyGen.pod_string)
+        with self.assertRaises(SystemExit) as wrapped_exit:
+            katapolicygen_confcom(
+                filename, None
+            )
+        os.remove(filename)
+        self.assertEqual(wrapped_exit.exception.code, 0)
 
     def test_invalid_settings(self):
         filename = "pod2.yaml"
