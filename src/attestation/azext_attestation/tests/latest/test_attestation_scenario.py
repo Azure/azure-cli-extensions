@@ -119,7 +119,7 @@ def test_provider_with_signer_1(test, rg):
         test.exists('Algorithm')
     ])
 
-    test.cmd('az attestation policy show -n {att1} -g {rg} --attestation-type SGX-IntelSDK', checks=[
+    test.cmd('az attestation policy show -n {att1} -g {rg} --attestation-type SgxEnclave', checks=[
         test.check('Algorithm', 'none'),
         test.check('JwtLength', 944),
         test.check('TextLength', 501),
@@ -129,7 +129,7 @@ def test_provider_with_signer_1(test, rg):
 
     from knack.util import CLIError
     with test.assertRaisesRegex(CLIError, 'PolicyParsingError'):
-        test.cmd('az attestation policy set -n {att1} -g {rg} --attestation-type SGX-IntelSDK '
+        test.cmd('az attestation policy set -n {att1} -g {rg} --attestation-type SgxEnclave '
                  '-f "{signed_jwt_policy1_file}" --policy-format JWT',
                  checks=[
                      test.check('Algorithm', 'RSA256'),
@@ -166,16 +166,17 @@ def test_provider_with_signer_2(test, rg):
         test.check('trustModel', 'Isolated')
     ])
 
-    test.cmd('az attestation policy show -n {att2} -g {rg} --attestation-type SGX-IntelSDK', checks=[
+    test.cmd('az attestation policy show -n {att2} -g {rg} --attestation-type SgxEnclave', checks=[
         test.check('Algorithm', 'none'),
         test.check('JwtLength', 944),
         test.check('TextLength', 501),
         test.exists('Jwt'),
         test.exists('Text')
     ])
-    from knack.util import CLIError
-    with test.assertRaisesRegex(CLIError, 'InvalidOperation'):
-        test.cmd('az attestation policy set -n {att2} -g {rg} --attestation-type SGX-IntelSDK '
+
+    from azure.core.exceptions import ResourceNotFoundError
+    with test.assertRaises(ResourceNotFoundError):
+        test.cmd('az attestation policy set -n {att2} -g {rg} --attestation-type SgxEnclave '
                  '-f "{signed_jwt_policy2_file}" --policy-format JWT',
                  checks=[
                      test.check('Algorithm', 'RSA256'),
@@ -194,7 +195,7 @@ def test_provider_without_signer(test, rg):
         test.check('trustModel', 'AAD')
     ])
 
-    test.cmd('az attestation policy show -n {att3} -g {rg} --attestation-type SGX-IntelSDK', checks=[
+    test.cmd('az attestation policy show -n {att3} -g {rg} --attestation-type SgxEnclave', checks=[
         test.check('Algorithm', 'none'),
         test.check('JwtLength', 944),
         test.check('TextLength', 501),
@@ -202,7 +203,7 @@ def test_provider_without_signer(test, rg):
         test.exists('Text')
     ])
 
-    test.cmd('az attestation policy set -n {att3} -g {rg} --attestation-type SGX-IntelSDK '
+    test.cmd('az attestation policy set -n {att3} -g {rg} --attestation-type SgxEnclave '
              '-f "{text_policy_file}"',
              checks=[
                  test.check('Algorithm', 'none'),
@@ -212,7 +213,7 @@ def test_provider_without_signer(test, rg):
                  test.exists('Text')
              ])
 
-    test.cmd('az attestation policy set -n {att3} -g {rg} --attestation-type SGX-IntelSDK '
+    test.cmd('az attestation policy set -n {att3} -g {rg} --attestation-type SgxEnclave '
              '-f "{unsigned_jwt_policy_file}" --policy-format JWT',
              checks=[
                  test.check('Algorithm', 'none'),
@@ -222,7 +223,7 @@ def test_provider_without_signer(test, rg):
                  test.exists('Text')
              ])
 
-    test.cmd('az attestation policy set -n {att3} -g {rg} --attestation-type SGX-IntelSDK '
+    test.cmd('az attestation policy set -n {att3} -g {rg} --attestation-type SgxEnclave '
              '-f "{text_policy_file}"',
              checks=[
                  test.check('Algorithm', 'none'),
@@ -235,7 +236,7 @@ def test_provider_without_signer(test, rg):
     with open(test.kwargs['unsigned_jwt_policy_file']) as f:
         test.kwargs['unsigned_jwt_policy'] = f.read()
 
-    test.cmd('az attestation policy set -n {att3} -g {rg} --attestation-type SGX-IntelSDK '
+    test.cmd('az attestation policy set -n {att3} -g {rg} --attestation-type SgxEnclave '
              '--new-attestation-policy {unsigned_jwt_policy} --policy-format JWT',
              checks=[
                  test.check('Algorithm', 'none'),
@@ -245,7 +246,7 @@ def test_provider_without_signer(test, rg):
                  test.exists('Text')
              ])
 
-    test.cmd('az attestation policy reset -n {att3} -g {rg} --attestation-type SGX-IntelSDK', checks=[
+    test.cmd('az attestation policy reset -n {att3} -g {rg} --attestation-type SgxEnclave', checks=[
         test.check('Algorithm', 'none'),
         test.check('JwtLength', 944),
         test.check('TextLength', 501),

@@ -45,34 +45,34 @@ def load_arguments(self, _):
     with self.argument_context('attestation get-default-by-location') as c:
         c.argument('loc', options_list=['--location', '-l'], help='Location. (eg: "West US")')
 
-    for item in ['list', 'add', 'remove']:
-        with self.argument_context('attestation signer {}'.format(item)) as c:
-            c.extra('resource_group_name', resource_group_name_type, required=False)
-            c.extra('provider_name', provider_name_type, required=False)
-            c.extra('identifier', options_list=['--id'],
-                    help='Resource ID of the provider. Please omit --resource-group/-g or --name/-n '
-                         'if you have already specified --id.')
-            if item in ['add', 'remove']:
-                c.ignore('tenant_base_url')
-                c.argument('signer',
-                           help='The policy certificate to {}. An RFC7519 JSON Web Token containing a claim named '
-                                '"maa-policyCertificate" whose value is an RFC7517 JSON Web Key which specifies a '
-                                'new key to update. The RFC7519 JWT must be signed with one of the existing signing '
-                                'certificates'.format(item))
-                c.argument('signer_file', options_list=['--signer-file', '-f'],
-                           help='File name of the signer. (--signer and --signer-file/-f are mutually exclusive.)')
-
-    for item in ['show', 'set', 'reset']:
-        with self.argument_context('attestation policy {}'.format(item)) as c:
-            c.argument('attestation_type', arg_type=get_enum_type(TeeKind), help='Type of the attestation.')
-            c.argument('provider_name', provider_name_type, required=False)
-            c.extra('identifier', options_list=['--id'],
-                    help='Resource ID of the provider. Please omit --resource-group/-g or --name/-n '
-                         'if you have already specified --id.')
-
-            if item in ['set']:
-                c.argument('policy_format', arg_type=get_enum_type(['Text', 'JWT']), default='Text',
-                           help='Specifies the format for the policy, either Text or JWT (JSON Web Token).')
-                c.argument('new_attestation_policy', help='Content of the new attestation policy (Text or JWT).')
-                c.argument('new_attestation_policy_file', options_list=['--new-attestation-policy-file', '-f'],
-                           help='File name of the new attestation policy.')
+    # for item in ['list', 'add', 'remove']:
+    #     with self.argument_context('attestation signer {}'.format(item)) as c:
+    #         c.extra('resource_group_name', resource_group_name_type, required=False)
+    #         c.extra('provider_name', provider_name_type, required=False)
+    #         c.extra('identifier', options_list=['--id'],
+    #                 help='Resource ID of the provider. Please omit --resource-group/-g or --name/-n '
+    #                      'if you have already specified --id.')
+    #         if item in ['add', 'remove']:
+    #             c.ignore('tenant_base_url')
+    #             c.argument('signer',
+    #                        help='The policy certificate to {}. An RFC7519 JSON Web Token containing a claim named '
+    #                             '"maa-policyCertificate" whose value is an RFC7517 JSON Web Key which specifies a '
+    #                             'new key to update. The RFC7519 JWT must be signed with one of the existing signing '
+    #                             'certificates'.format(item))
+    #             c.argument('signer_file', options_list=['--signer-file', '-f'],
+    #                        help='File name of the signer. (--signer and --signer-file/-f are mutually exclusive.)')
+    #
+    # for item in ['show', 'set', 'reset']:
+    #     with self.argument_context('attestation policy {}'.format(item)) as c:
+    #         c.argument('attestation_type', arg_type=get_enum_type(TeeKind), help='Type of the attestation.')
+    #         c.argument('provider_name', provider_name_type, required=False)
+    #         c.extra('identifier', options_list=['--id'],
+    #                 help='Resource ID of the provider. Please omit --resource-group/-g or --name/-n '
+    #                      'if you have already specified --id.')
+    #
+    #         if item in ['set']:
+    #             c.argument('policy_format', arg_type=get_enum_type(['Text', 'JWT']), default='Text',
+    #                        help='Specifies the format for the policy, either Text or JWT (JSON Web Token).')
+    #             c.argument('new_attestation_policy', help='Content of the new attestation policy (Text or JWT).')
+    #             c.argument('new_attestation_policy_file', options_list=['--new-attestation-policy-file', '-f'],
+    #                        help='File name of the new attestation policy.')

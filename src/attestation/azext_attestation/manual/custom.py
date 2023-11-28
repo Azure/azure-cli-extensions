@@ -26,7 +26,12 @@ from azext_attestation.vendored_sdks.azure_attestation.models._attestation_clien
 from azext_attestation.vendored_sdks.azure_attestation.models._models_py3 import \
     AttestOpenEnclaveRequest, RuntimeData, InitTimeData
 from azext_attestation.vendored_sdks.azure_mgmt_attestation.models import JsonWebKey
-
+from azext_attestation.aaz.latest.attestation import Create as _AttestationCreate, Update as _AttestationUpdate,\
+    Delete as _AttestationDelete, Show as _AttestationShow
+from azext_attestation.aaz.latest.attestation.policy import Reset as _ResetPolicy, Set as _SetPolicy, Show as _GetPolicy
+from azext_attestation.aaz.latest.attestation.signer import Add as _AddSigner, Remove as _RemoveSigner,\
+    List as _ListSigners
+from azure.cli.core.aaz import has_value
 
 tee_mapping = {
     TeeKind.tpm: 'TPM',
@@ -41,6 +46,29 @@ def attestation_attestation_provider_show(client,
     """ Show the status of Attestation Provider. """
     return client.get(resource_group_name=resource_group_name,
                       provider_name=provider_name)
+
+
+class AttestationShow(_AttestationShow):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.id = AAZStrArg(
+            options=["--id"],
+            help="Resource ID of the provider. Please omit --resource-group/-g or --name/-n if you have already specified --id.",
+        )
+        args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
+            help="Name of the attestation provider.",
+        )
+
+        args_schema.provider_name._required = False
+        args_schema.resource_group._required = False
+        args_schema.provider_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        validate_provider_resource_id(self)
 
 
 def _b64url_to_b64(s):
@@ -95,11 +123,114 @@ def attestation_attestation_provider_create(client,
                          certs=certs)
 
 
+class AttestationCreate(_AttestationCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg,AAZListArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.id = AAZStrArg(
+            options=["--id"],
+            help="Resource ID of the provider. Please omit --resource-group/-g or --name/-n if you have already specified --id.",
+        )
+        args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
+            help="Name of the attestation provider.",
+        )
+        args_schema.certs_input_path = AAZListArg(
+            options=["--certs-input-path"],
+            help="Space-separated file paths to PEM/DER files containing certificates.",
+        )
+
+        args_schema.provider_name._required = False
+        args_schema.resource_group._required = False
+        args_schema.certs._registered = False
+        args_schema.provider_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        validate_provider_resource_id(self)
+        certs = []
+        if not has_value(args.certs_input_path):
+            certs_input_path = []
+        else:
+            certs_input_path = args.certs_input_path.to_serialized_data()
+
+        for p in certs_input_path:
+            expand_path = os.path.expanduser(p)
+            if not os.path.exists(expand_path):
+                raise CLIError('Path "{}" does not exist.'.format(expand_path))
+            if not os.path.isfile(expand_path):
+                raise CLIError('"{}" is not a valid file path.'.format(expand_path))
+
+            with open(expand_path, 'rb') as f:
+                pem_data = f.read()
+
+            cert = load_pem_x509_certificate(pem_data, backend=default_backend())
+            key = cert.public_key()
+            if isinstance(key, rsa.RSAPublicKey):
+                kty = 'RSA'
+                alg = 'RS256'
+            else:
+                raise CLIError('Unsupported key type: {}'.format(type(key)))
+
+            jwk = JsonWebKey(kty=kty, alg=alg, use='sig')
+            jwk.x5c = [base64.b64encode(cert.public_bytes(Encoding.DER)).decode('ascii')]
+            certs.append(jwk)
+        args.certs = certs
+
+
 def attestation_attestation_provider_delete(client,
                                             resource_group_name=None,
                                             provider_name=None):
     return client.delete(resource_group_name=resource_group_name,
                          provider_name=provider_name)
+
+
+class AttestationDelete(_AttestationDelete):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.id = AAZStrArg(
+            options=["--id"],
+            help="Resource ID of the provider. Please omit --resource-group/-g or --name/-n if you have already specified --id.",
+        )
+        args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
+            help="Name of the attestation provider.",
+        )
+
+        args_schema.provider_name._required = False
+        args_schema.resource_group._required = False
+        args_schema.provider_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        validate_provider_resource_id(self)
+
+
+class AttestationUpdate(_AttestationUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.id = AAZStrArg(
+            options=["--id"],
+            help="Resource ID of the provider. Please omit --resource-group/-g or --name/-n if you have already specified --id.",
+        )
+        args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
+            help="Name of the attestation provider.",
+        )
+
+        args_schema.provider_name._required = False
+        args_schema.resource_group._required = False
+        args_schema.provider_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        validate_provider_resource_id(self)
 
 
 def add_signer(cmd, client, signer=None, signer_file=None, resource_group_name=None, provider_name=None):
@@ -136,6 +267,64 @@ def add_signer(cmd, client, signer=None, signer_file=None, resource_group_name=N
     return result
 
 
+class AddSigner(_AddSigner):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.signer_file = AAZStrArg(
+            options=["--signer-file", "-f"],
+            help="File name of the signer. (--signer and --signer-file/-f are mutually exclusive.).",
+        )
+        args_schema.id = AAZStrArg(
+            options=["--id"],
+            help="Resource ID of the provider. Please omit --resource-group/-g or --name/-n if you have already specified --id.",
+        )
+        args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
+            help="Name of the attestation provider.",
+        )
+
+        args_schema.signer._required = False
+        args_schema.provider_name._required = False
+        args_schema.resource_group._required = False
+        args_schema.provider_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        validate_provider_resource_id(self)
+        if not has_value(args.signer) and not has_value(args.signer_file):
+            raise CLIError('Please specify one of parameters: --signer or --signer-file/-f')
+        if has_value(args.signer) and has_value(args.signer_file):
+            raise CLIError('--signer and --signer-file/-f are mutually exclusive.')
+        if has_value(args.signer_file):
+            signer_file = os.path.expanduser(args.signer_file.to_serialized_data())
+            if not os.path.exists(signer_file):
+                raise CLIError('Signer file "{}" does not exist.'.format(signer_file))
+            if not os.path.isfile(signer_file):
+                raise CLIError('Signer file "{}" is not a valid file name.'.format(signer_file))
+            with open(signer_file) as f:
+                signer = f.read()
+
+        if has_value(signer):
+            args.signer = str(signer, encoding="utf-8")
+
+    def _output(self, *args, **kwargs):
+        token = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = {'Jwt': token}
+        if has_value(token):
+            header = jwt.get_unverified_header(token)
+            result.update({
+                'Algorithm': header.get('alg', ''),
+                'JKU': header.get('jku', '')
+            })
+            body = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False})
+            result['Certificates'] = body.get('aas-policyCertificates', {}).get('keys', [])
+            result['CertificateCount'] = len(result['Certificates'])
+        return result
+
+
 def remove_signer(cmd, client, signer=None, signer_file=None, resource_group_name=None, provider_name=None):
     if not signer and not signer_file:
         raise CLIError('Please specify one of parameters: --signer or --signer-file/-f')
@@ -158,6 +347,50 @@ def remove_signer(cmd, client, signer=None, signer_file=None, resource_group_nam
     return list_signers(cmd, client, resource_group_name, provider_name)
 
 
+class RemoveSigner(_RemoveSigner):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.signer_file = AAZStrArg(
+            options=["--signer-file", "-f"],
+            help="File name of the signer. (--signer and --signer-file/-f are mutually exclusive.).",
+        )
+        args_schema.id = AAZStrArg(
+            options=["--id"],
+            help="Resource ID of the provider. Please omit --resource-group/-g or --name/-n if you have already specified --id.",
+        )
+        args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
+            help="Name of the attestation provider.",
+        )
+
+        args_schema.signer._required = False
+        args_schema.provider_name._required = False
+        args_schema.resource_group._required = False
+        args_schema.provider_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        validate_provider_resource_id(self)
+        if not has_value(args.signer) and not has_value(args.signer_file):
+            raise CLIError('Please specify one of parameters: --signer or --signer-file/-f')
+        if has_value(args.signer) and has_value(args.signer_file):
+            raise CLIError('--signer and --signer-file/-f are mutually exclusive.')
+        if has_value(args.signer_file):
+            signer_file = os.path.expanduser(args.signer_file.to_serialized_data())
+            if not os.path.exists(signer_file):
+                raise CLIError('Signer file "{}" does not exist.'.format(signer_file))
+            if not os.path.isfile(signer_file):
+                raise CLIError('Signer file "{}" is not a valid file name.'.format(signer_file))
+            with open(signer_file) as f:
+                signer = f.read()
+
+        if has_value(signer):
+            args.signer = str(signer, encoding="utf-8")
+
+
 def list_signers(cmd, client, resource_group_name=None, provider_name=None):
     provider_client = cf_attestation_provider(cmd.cli_ctx)
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
@@ -176,6 +409,45 @@ def list_signers(cmd, client, resource_group_name=None, provider_name=None):
         result['CertificateCount'] = len(result['Certificates'])
 
     return result
+
+
+class ListSigners(_ListSigners):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.id = AAZStrArg(
+            options=["--id"],
+            help="Resource ID of the provider. Please omit --resource-group/-g or --name/-n if you have already specified --id.",
+        )
+        args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
+            help="Name of the attestation provider.",
+        )
+
+        args_schema.provider_name._required = False
+        args_schema.resource_group._required = False
+        args_schema.provider_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        validate_provider_resource_id(self)
+
+    def _output(self, *args, **kwargs):
+        token = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)['token']
+        result = {'Jwt': token}
+
+        if has_value(token):
+            header = jwt.get_unverified_header(token)
+            result.update({
+                'Algorithm': header.get('alg', ''),
+                'JKU': header.get('jku', '')
+            })
+            body = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False})
+            result['Certificates'] = body.get('x-ms-policy-certificates', {}).get('keys', [])
+            result['CertificateCount'] = len(result['Certificates'])
+
+        return result
 
 
 def get_policy(cmd, client, attestation_type, resource_group_name=None, provider_name=None):
@@ -211,6 +483,60 @@ def get_policy(cmd, client, attestation_type, resource_group_name=None, provider
                 result['TextLength'] = 0
 
     return result
+
+
+class GetPolicy(_GetPolicy):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.id = AAZStrArg(
+            options=["--id"],
+            help="Resource ID of the provider. Please omit --resource-group/-g or --name/-n if you have already specified --id.",
+        )
+        args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
+            help="Name of the attestation provider.",
+        )
+
+        args_schema.provider_name._required = False
+        args_schema.resource_group._required = False
+        args_schema.provider_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        validate_provider_resource_id(self)
+
+    def _output(self, *args, **kwargs):
+        token = self.deserialize_output(self.ctx.vars.instance, client_flatten=True).token
+
+        result = {}
+
+        if has_value(token):
+            import jwt
+            policy = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False}).get('x-ms-policy', '')
+            result['Jwt'] = policy
+            result['JwtLength'] = len(policy)
+            result['Algorithm'] = None
+
+            if has_value(policy):
+                try:
+                    decoded_policy = jwt.decode(policy, algorithms=['RS256'], options={"verify_signature": False})
+                    decoded_policy = decoded_policy.get('AttestationPolicy', '')
+                    try:
+                        new_decoded_policy = base64.b64decode(_b64url_to_b64(decoded_policy)).decode('ascii')
+                        decoded_policy = new_decoded_policy
+                    except:  # pylint: disable=bare-except
+                        pass
+                    finally:
+                        result['Text'] = decoded_policy
+                        result['TextLength'] = len(decoded_policy)
+                        result['Algorithm'] = jwt.get_unverified_header(policy).get('alg', None)
+                except:  # pylint: disable=bare-except
+                    result['Text'] = ''
+                    result['TextLength'] = 0
+
+        return result
 
 
 def set_policy(cmd, client, attestation_type, new_attestation_policy=None, new_attestation_policy_file=None,
@@ -264,6 +590,96 @@ def set_policy(cmd, client, attestation_type, new_attestation_policy=None, new_a
                       resource_group_name=resource_group_name, provider_name=provider_name)
 
 
+class SetPolicy(_SetPolicy):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.new_attestation_policy_file = AAZStrArg(
+            options=["--new-attestation-policy-file", "-f"],
+            help="File name of the new attestation policy.",
+        )
+        args_schema.policy_format = AAZStrArg(
+            options=["--policy-format"],
+            default="Text",
+            help="Specifies the format for the policy, either Text or JWT (JSON Web Token).  Allowed values: JWT, Text.",
+        )
+        args_schema.id = AAZStrArg(
+            options=["--id"],
+            help="Resource ID of the provider. Please omit --resource-group/-g or --name/-n if you have already specified --id.",
+        )
+        args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
+            help="Name of the attestation provider.",
+        )
+
+        args_schema.new_attestation_policy._required = False
+        args_schema.provider_name._required = False
+        args_schema.resource_group._required = False
+        args_schema.provider_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        validate_provider_resource_id(self)
+
+        if has_value(args.new_attestation_policy_file) and has_value(args.new_attestation_policy):
+            raise CLIError('Please specify just one of --new-attestation-policy and --new-attestation-policy-file/-f')
+
+        if not has_value(args.new_attestation_policy_file) and not has_value(args.new_attestation_policy):
+            raise CLIError('Please specify --new-attestation-policy or --new-attestation-policy-file/-f')
+
+        if has_value(args.new_attestation_policy_file):
+            file_path = os.path.expanduser(args.new_attestation_policy_file.to_serialized_data())
+            if not os.path.exists(file_path):
+                raise CLIError('Policy file "{}" does not exist.'.format(file_path))
+
+            if not os.path.isfile(file_path):
+                raise CLIError('"{}" is not a valid file name.'.format(file_path))
+
+            with open(file_path) as f:
+                new_attestation_policy = f.read()
+
+        provider_client = cf_attestation_provider(self.cli_ctx)
+        provider = provider_client.get(resource_group_name=args.resource_group, provider_name=args.provider_name)
+
+        if args.policy_format == 'Text':
+            if provider.trust_model != 'AAD':
+                raise CLIError('Only supports Text policy under AAD model. Current model: {}. '
+                               'If you are using signed JWT policy, please specify --policy-format JWT'.
+                               format(provider.trust_model))
+
+            import jwt
+            try:
+                new_attestation_policy = \
+                    base64.urlsafe_b64encode(new_attestation_policy.encode('ascii')).decode('ascii').strip('=')
+                new_attestation_policy = {'AttestationPolicy': new_attestation_policy}
+                new_attestation_policy = jwt.encode(
+                    new_attestation_policy, key='', algorithm='none'
+                )
+            except TypeError as e:
+                print(e)
+                raise CLIError('Failed to encode text content, are you using JWT? If yes, please use --policy-format JWT')
+
+        if has_value(new_attestation_policy):
+            args.new_attestation_policy = str(new_attestation_policy, encoding="utf-8")
+
+
+def validate_provider_resource_id(self):
+    args = self.ctx.args
+    if has_value(args.id):
+        if has_value(args.resource_group) or has_value(args.name):
+            raise CLIError('Please omit --resource-group/-g or --name/-n if you have already specified --id.')
+        resource_id = args.id.to_serialized_data()
+        args.resource_group = resource_id.split('/')[4]
+        args.provider_name = resource_id.split('/')[8]
+    elif not all([has_value(args.resource_group), has_value(args.name)]):
+        raise CLIError('Please specify both --resource-group/-g and --name/-n.')
+
+    if has_value(args.name):
+        args.provider_name = args.name
+
+
 def reset_policy(cmd, client, attestation_type, policy_jws='eyJhbGciOiJub25lIn0..', resource_group_name=None,
                  provider_name=None):
 
@@ -276,6 +692,30 @@ def reset_policy(cmd, client, attestation_type, policy_jws='eyJhbGciOiJub25lIn0.
     )
     return get_policy(cmd, client, attestation_type,
                       resource_group_name=resource_group_name, provider_name=provider_name)
+
+
+class ResetPolicy(_ResetPolicy):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.id = AAZStrArg(
+            options=["--id"],
+            help="Resource ID of the provider. Please omit --resource-group/-g or --name/-n if you have already specified --id.",
+        )
+        args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
+            help="Name of the attestation provider.",
+        )
+
+        args_schema.provider_name._required = False
+        args_schema.resource_group._required = False
+        args_schema.policy_jws._required = False
+        args_schema.provider_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        validate_provider_resource_id(self)
 
 
 def attest_open_enclave(cmd, client, report=None, runtime_data=None, runtime_data_type=None, init_time_data=None,

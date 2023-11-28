@@ -42,6 +42,12 @@ def load_command_table(self, _):
 
     with self.command_group('attestation', attestation_attestation_provider,
                             client_factory=cf_attestation_provider, is_experimental=True) as g:
+        from azext_attestation.manual.custom import AttestationCreate, AttestationUpdate, AttestationShow, \
+            AttestationDelete
+        self.command_table["attestation create"] = AttestationCreate(loader=self)
+        self.command_table["attestation update"] = AttestationUpdate(loader=self)
+        self.command_table["attestation show"] = AttestationShow(loader=self)
+        self.command_table["attestation delete"] = AttestationDelete(loader=self)
         g.custom_command('list', 'attestation_attestation_provider_list',
                          doc_string_source=attestation_provider_doc_template.format('list'))
         g.custom_show_command('show', 'attestation_attestation_provider_show', validator=validate_provider_resource_id,
@@ -60,18 +66,26 @@ def load_command_table(self, _):
 
     with self.command_group('attestation signer', policy_certificates_data_sdk, client_factory=cf_policy_certificates,
                             is_experimental=True) as g:
-        g.custom_command('add', 'add_signer', validator=validate_provider_resource_id,
-                         doc_string_source=policy_certificates_data_tmpl.format('add'))
-        g.custom_command('remove', 'remove_signer', validator=validate_provider_resource_id,
-                         doc_string_source=policy_certificates_data_tmpl.format('remove'))
-        g.custom_command('list', 'list_signers', validator=validate_provider_resource_id,
-                         doc_string_source=policy_certificates_data_tmpl.format('get'))
+        from azext_attestation.manual.custom import AddSigner, RemoveSigner, ListSigners
+        self.command_table["attestation signer add"] = AddSigner(loader=self)
+        self.command_table["attestation signer remove"] = RemoveSigner(loader=self)
+        self.command_table["attestation signer list"] = ListSigners(loader=self)
+        # g.custom_command('add', 'add_signer', validator=validate_provider_resource_id,
+        #                  doc_string_source=policy_certificates_data_tmpl.format('add'))
+        # g.custom_command('remove', 'remove_signer', validator=validate_provider_resource_id,
+        #                  doc_string_source=policy_certificates_data_tmpl.format('remove'))
+        # g.custom_command('list', 'list_signers', validator=validate_provider_resource_id,
+        #                  doc_string_source=policy_certificates_data_tmpl.format('get'))
 
     with self.command_group('attestation policy', policy_data_sdk, client_factory=cf_policy,
                             is_experimental=True) as g:
-        g.custom_command('set', 'set_policy', validator=validate_provider_resource_id,
-                         doc_string_source=policy_data_tmpl.format('set'))
-        g.custom_command('reset', 'reset_policy', validator=validate_provider_resource_id,
-                         doc_string_source=policy_data_tmpl.format('reset'))
-        g.custom_show_command('show', 'get_policy', validator=validate_provider_resource_id,
-                              doc_string_source=policy_data_tmpl.format('get'))
+        from azext_attestation.manual.custom import ResetPolicy, SetPolicy, GetPolicy
+        self.command_table["attestation policy reset"] = ResetPolicy(loader=self)
+        self.command_table["attestation policy set"] = SetPolicy(loader=self)
+        self.command_table["attestation policy show"] = GetPolicy(loader=self)
+        # g.custom_command('set', 'set_policy', validator=validate_provider_resource_id,
+        #                  doc_string_source=policy_data_tmpl.format('set'))
+        # g.custom_command('reset', 'reset_policy', validator=validate_provider_resource_id,
+        #                  doc_string_source=policy_data_tmpl.format('reset'))
+        # g.custom_show_command('show', 'get_policy', validator=validate_provider_resource_id,
+        #                       doc_string_source=policy_data_tmpl.format('get'))
