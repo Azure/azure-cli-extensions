@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Fix for `az aks approuting update` command failing on granting keyvault permissions to managed identity.
 
 0.5.172
 +++++++
