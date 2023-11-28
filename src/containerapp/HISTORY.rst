@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+'az containerapp up': support to create or update a containerapp on connected environment as well as any associated resources (extension on connected cluster, custom location) with --custom-location or --connected-cluster-id
 
 0.3.44
 ++++++

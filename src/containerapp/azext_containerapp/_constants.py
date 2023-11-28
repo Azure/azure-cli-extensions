@@ -7,6 +7,7 @@ CONNECTED_ENVIRONMENT_TYPE = "connected"
 MANAGED_ENVIRONMENT_RESOURCE_TYPE = "managedEnvironments"
 CONNECTED_ENVIRONMENT_RESOURCE_TYPE = "connectedEnvironments"
 CUSTOM_LOCATION_RESOURCE_TYPE = "customLocations"
+CONNECTED_CLUSTER_TYPE = "connectedClusters"
 
 MAXIMUM_SECRET_LENGTH = 20
 MAXIMUM_CONTAINER_APP_NAME_LENGTH = 32
@@ -41,6 +42,7 @@ LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 CONTAINER_APPS_RP = "Microsoft.App"
 SERVICE_LINKER_RP = "Microsoft.ServiceLinker"
 EXTENDED_LOCATION_RP = "Microsoft.ExtendedLocation"
+KUBERNETES_CONFIGURATION_RP = "Microsoft.KubernetesConfiguration"
 CONTAINER_APP_EXTENSION_TYPE = "microsoft.app.environment"
 
 MANAGED_CERTIFICATE_RT = "managedCertificates"
@@ -113,3 +115,6 @@ DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world imag
 HELLO_WORLD_IMAGE = "mcr.microsoft.com/k8se/quickstart:latest"
 
 LOGS_STRING = '[{"category":"ContainerAppConsoleLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}},{"category":"ContainerAppSystemLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}}]'  # pylint: disable=line-too-long
+
+DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAME = "containerapp-ext"
+DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE = "containerapp-ns"
