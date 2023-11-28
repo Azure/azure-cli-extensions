@@ -1,4 +1,4 @@
-# Azure CLI alertsmanagement Extension
+# Azure CLI aPICenter Extension
 
 This extension can help create and manage APICenter Resources
 
@@ -8,7 +8,7 @@ Install this extension using the below CLI command
 az extension add --name apic-extension
 ```
 
-### Alert Processing Rule
+### API Center Extension Info
 APICenter documentation: https://learn.microsoft.com/en-us/azure/api-center/
 
 List Service Examples
