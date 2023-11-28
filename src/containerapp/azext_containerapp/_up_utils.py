@@ -1093,30 +1093,42 @@ def _get_dockerfile_content(repo, branch, token, source, context_path, dockerfil
 def _get_app_env_and_group(
     cmd, name, resource_group: "ResourceGroup", env: "ContainerAppEnvironment", location, custom_location: "CustomLocation"
 ):
+    matched_apps = []
+    # If no resource group is provided, we need to search for the app in all resource groups
     if not resource_group.name and not resource_group.exists:
         matched_apps = [c for c in list_containerapp(cmd) if c["name"].lower() == name.lower()]
-        if env.name:
-            matched_apps = [c for c in matched_apps if parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env.name.lower()]
-        if env.custom_location_id:
-            matched_apps = [c for c in matched_apps if (c.get("extendedLocation") and c["extendedLocation"]["name"].lower() == env.custom_location_id.lower())]
-        elif env.resource_type:
-            matched_apps = [c for c in matched_apps if parse_resource_id(c["properties"]["environmentId"])["resource_type"].lower() == env.resource_type.lower()]
-        if custom_location.connected_cluster_id:
-            matched_apps = _filter_containerapps_by_connected_cluster_id(cmd, matched_apps, custom_location.connected_cluster_id)
-        if location:
-            matched_apps = [c for c in matched_apps if format_location(c["location"]) == format_location(location)]
-        if len(matched_apps) == 1:
-            resource_group.name = parse_resource_id(matched_apps[0]["id"])[
-                "resource_group"
-            ]
-            env.set_name(matched_apps[0]["properties"]["environmentId"])
-            if env.is_connected_environment():
-                env.custom_location_id = matched_apps[0]["extendedLocation"]["name"]
-        elif len(matched_apps) > 1:
-            raise ValidationError(
-                f"There are multiple containerapps with name {name} on the subscription. "
-                "Please specify which resource group your Containerapp is in."
-            )
+
+    # If a resource group is provided, we need to search for the app in that resource group
+    if resource_group.name and resource_group.exists:
+        matched_apps = [c for c in list_containerapp(cmd, resource_group_name=resource_group.name) if c["name"].lower() == name.lower()]
+
+    # If env is provided, we need to search for the app in that env
+    if env.name:
+        matched_apps = [c for c in matched_apps if parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env.name.lower()]
+
+    # If location is provided, we need to search for the app in that location
+    if location:
+        matched_apps = [c for c in matched_apps if format_location(c["location"]) == format_location(location)]
+
+    if env.custom_location_id:
+        matched_apps = [c for c in matched_apps if (c.get("extendedLocation") and c["extendedLocation"]["name"].lower() == env.custom_location_id.lower())]
+    elif env.resource_type:
+        matched_apps = [c for c in matched_apps if parse_resource_id(c["properties"]["environmentId"])["resource_type"].lower() == env.resource_type.lower()]
+    if custom_location.connected_cluster_id:
+        matched_apps = _filter_containerapps_by_connected_cluster_id(cmd, matched_apps, custom_location.connected_cluster_id)
+
+    # If there is only one app that matches the criteria, we can set the env name and resource group name
+    if len(matched_apps) == 1:
+        resource_group.name = parse_resource_id(matched_apps[0]["id"])[
+            "resource_group"
+        ]
+        env.set_name(matched_apps[0]["properties"]["environmentId"])
+    # If there are multiple apps that match the criteria, we need to ask the user to specify the env name and resource group name
+    elif len(matched_apps) > 1:
+        raise ValidationError(
+            f"There are multiple containerapps with name {name} on the subscription. "
+            "Please specify which resource group your Containerapp is in."
+        )
 
 
 def _filter_containerapps_by_connected_cluster_id(cmd, matched_apps, connected_cluster_id):
@@ -1326,10 +1338,10 @@ def _set_up_defaults(
     # If no RG passed in and a singular app exists with the same name, get its env and rg
     _get_app_env_and_group(cmd, name, resource_group, env, location, custom_location)
 
-    # If no env passed in (and not creating a new RG), then try getting an env by location / log analytics ID
-    _get_env_and_group_from_log_analytics(
-        cmd, resource_group_name, env, resource_group, logs_customer_id, location
-    )
+    # If no env passed or set in the previous step (and not creating a new RG), then get env by location from log analytics ID
+    _get_env_and_group_from_log_analytics(cmd, resource_group_name, env, resource_group, logs_customer_id, location)
+
+    # try to set RG name by env name
     # Find managed env with env name, if found, use it.
     # Try to set RG name by env name
     # If the unique environment is found, use it.
