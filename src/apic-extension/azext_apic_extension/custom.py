@@ -225,13 +225,13 @@ class ExportMetadataSchemaExtension(ExportMetadataSchema):
         arguments = self.ctx.args
 
         if result:
-            print('Results found. Exporting to', arguments.source_profile)
+            logger.info('Results found. Exporting to %s', arguments.source_profile)
 
             response_format = result['format']
             exportedResults = result['value']
 
             if response_format == 'link':
-                print('Fetching metadata from:', exportedResults)
+                logger.info('Fetching metadata from: %s', exportedResults)
                 getReponse = requests.get(exportedResults, timeout=10)
                 if getReponse.status_code == 200:
                     exportedResults = getReponse.content.decode()
@@ -241,7 +241,8 @@ class ExportMetadataSchemaExtension(ExportMetadataSchema):
             if arguments.source_profile:
                 try:
                     self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
-                    print('Results exported to', arguments.source_profile)
+                    logger.info('Results exported to %s', arguments.source_profile)
+
                 except Exception as e:  # pylint: disable=broad-except
                     logger.error('Error while writing the results to the file. Error: %s', e)
             else:
@@ -367,7 +368,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             }
 
             CreateAPI(cli_ctx=cmd.cli_ctx)(command_args=api_args)
-            print("API was created successfully")
+            logger.info('API was created successfully')
 
             # Create API Version -----------------------------------------------------------------------------
             from .aaz.latest.apic.api.version import Create as CreateAPIVersion
@@ -383,7 +384,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             }
 
             CreateAPIVersion(cli_ctx=cmd.cli_ctx)(command_args=api_version_args)
-            print("API version was created successfully")
+            logger.info('API version was created successfully')
 
             # Create API Definition -----------------------------------------------------------------------------
             from .aaz.latest.apic.api.definition import Create as CreateAPIDefinition
@@ -400,7 +401,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             }
 
             CreateAPIDefinition(cli_ctx=cmd.cli_ctx)(command_args=api_definition_args)
-            print("API definition was created successfully")
+            logger.info('API definition was created successfully')
 
             # Import Specification -----------------------------------------------------------------------------
             from azure.cli.core.commands import LongRunningOperation
@@ -425,7 +426,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
 
             importAPISpecificationResults = ImportSpecificationExtension(cli_ctx=cmd.cli_ctx)(command_args=api_specification_args)
             LongRunningOperation(cmd.cli_ctx)(importAPISpecificationResults)
-            print("API specification was imported successfully")
+            logger.info('API specification was created successfully')
 
             # Create API Deployment -----------------------------------------------------------------------------
             from .aaz.latest.apic.api.deployment import Create as CreateAPIDeployment
@@ -477,4 +478,4 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                     }
 
                     CreateAPIDeployment(cli_ctx=cmd.cli_ctx)(command_args=api_deployment_args)
-                    print("API deployment was created successfully")
+                    logger.info('API deployment was created successfully')
