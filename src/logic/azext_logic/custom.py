@@ -119,14 +119,8 @@ class IntegrationAccountImport(_IntegrationAccountCreate):
 class WorkflowCreate(_WorkflowCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZFreeFormDictArg, AAZFreeFormDictArgFormat, AAZBoolArg, AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat
+        from azure.cli.core.aaz import AAZBoolArg, AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.definition = AAZFreeFormDictArg(
-            options=["--definition"],
-            help="Path to a workflow defintion file",
-            required=True,
-            fmt=AAZFreeFormDictArgFormat()
-        )
         args_schema.mi_system_assigned = AAZBoolArg(
             options=["--mi-system-assigned"],
             help="Enable system assigned identity"
@@ -140,7 +134,6 @@ class WorkflowCreate(_WorkflowCreate):
                                                 "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
         )
         args_schema.identity._registered = False
-        args_schema.definition_org._registered = False
         return args_schema
 
     def pre_operations(self):
@@ -149,7 +142,7 @@ class WorkflowCreate(_WorkflowCreate):
             raise RequiredArgumentMissingError("--definition does not contain a 'definition' key")
         definition = args.definition.to_serialized_data()
         args.access_control = definition.get('accessControl', args.access_control)
-        args.definition_org = definition['definition']
+        args.definition = definition['definition']
         if args.mi_system_assigned:
             args.identity.type = "SystemAssigned"
         if has_value(args.mi_user_assigned):
@@ -165,16 +158,9 @@ class WorkflowCreate(_WorkflowCreate):
 class WorkflowUpdate(_WorkflowUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZFreeFormDictArg, AAZFreeFormDictArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.name._id_part = None
-        args_schema.definition = AAZFreeFormDictArg(
-            options=["--definition"],
-            help="Path to a workflow defintion file",
-            fmt=AAZFreeFormDictArgFormat()
-        )
         args_schema.identity._registered = False
-        args_schema.definition_org._registered = False
         args_schema.endpoints_configuration._registered = False
         args_schema.integration_service_environment._registered = False
         args_schema.integration_account._registered = False
@@ -187,7 +173,7 @@ class WorkflowUpdate(_WorkflowUpdate):
             raise RequiredArgumentMissingError("--definition does not contain a 'definition' key")
         if has_value(args.definition):
             definition = args.definition.to_serialized_data()
-            args.definition_org = definition['definition']
+            args.definition = definition['definition']
             args.access_control = definition.get('accessControl', args.access_control)
 
     def pre_instance_update(self, instance):

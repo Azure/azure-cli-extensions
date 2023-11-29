@@ -72,8 +72,8 @@ class Update(AAZCommand):
             help="The access control configuration.",
             nullable=True,
         )
-        _args_schema.definition_org = AAZFreeFormDictArg(
-            options=["--definition-org"],
+        _args_schema.definition = AAZFreeFormDictArg(
+            options=["--definition"],
             help="The definition.",
             nullable=True,
             blank={},
@@ -707,7 +707,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("accessControl", AAZObjectType, ".access_control")
-                properties.set_prop("definition", AAZFreeFormDictType, ".definition_org")
+                properties.set_prop("definition", AAZFreeFormDictType, ".definition")
                 properties.set_prop("endpointsConfiguration", AAZObjectType, ".endpoints_configuration")
                 properties.set_prop("integrationAccount", AAZObjectType, ".integration_account")
                 properties.set_prop("integrationServiceEnvironment", AAZObjectType, ".integration_service_environment")
