@@ -11,7 +11,6 @@
 
 from knack.help_files import helps
 
-
 helps['communication'] = """
     type: group
     short-summary: Manage communication service with communication
@@ -573,5 +572,173 @@ helps['communication email send'] = """
     examples:
       - name: Send an email from an existing domain
         text: |-
-               az communication email send --sender "NoReply@contoso.com" --subject "Contoso Update" --to "user1@user1-domain.com" "user2@user2-domain.com" --text "Hello valued client. There is an update."
+               az communication email send --sender NoReply@contoso.com --subject "Contoso Update" --to user1@user1-domain.com user2@user2-domain.com --text "Hello valued client. There is an update."
 """
+
+#  Help for email communication services
+helps['communication email create'] = """
+    type: command
+    short-summary: "Creates a new Email Communication Service or update an existing one."
+    examples:
+      - name: Create or update email communication resource
+        text: |-
+               az communication email create -n ResourceName -g ResourceGroup --location global --data-location unitedstates
+"""
+
+helps['communication email update'] = """
+    type: command
+    short-summary: "Updates an existing email communication service."
+    examples:
+      - name: Update resource
+        text: |-
+               az communication email update -n ResourceName -g ResourceGroup --tags newTag="newVal"
+"""
+
+helps['communication email delete'] = """
+    type: command
+    short-summary: "Deletes an existing email communication service."
+    examples:
+      - name: Delete resource
+        text: |-
+               az communication email delete -n ResourceName -g ResourceGroup
+"""
+
+helps['communication email list'] = """
+    type: command
+    short-summary: "Handles requests to list all resources in a resource group or a subscription."
+    examples:
+      - name: List by resource group
+        text: |-
+               az communication email list -g ResourceGroup
+      - name: List by subscription
+        text: |-
+               az communication email list
+"""
+
+helps['communication email show'] = """
+    type: command
+    short-summary: "Gets the email communication service and its properties."
+    examples:
+      - name: Get resource
+        text: |-
+               az communication email show -n ResourceName -g ResourceGroup
+"""
+
+helps['communication email wait'] = """
+    type: command
+    short-summary: Places the CLI in a waiting state until a condition of the communication is met.
+    examples:
+      - name: Pause executing next line of CLI script until the email communication is successfully created.
+        text: |-
+               az communication email wait -n ResourceName -g ResourceGroup --created --interval 10
+      - name: Pause executing next line of CLI script until the email communication is successfully deleted.
+        text: |-
+               az communication email wait -n ResourceName -g ResourceGroup --deleted --interval 10
+"""
+
+helps['communication email domain create'] = """
+    type: command
+    short-summary: "Creates a new Domain or update an existing one."
+    examples:
+      - name: Create or update domain
+        text: |-
+               az communication email domain create -n ResourceName -g ResourceGroup --domain-name DomainName --location global --domain-management AzureManaged/CustomerManaged --tags newTag="newVal" --user-engagement-tracking 1/0
+"""
+
+helps['communication email domain update'] = """
+    type: command
+    short-summary: "Updates an existing domain."
+    examples:
+      - name: Update domain
+        text: |-
+              az communication email domain update -n ResourceName -g ResourceGroup --domain-name DomainName --domain-management AzureManaged/CustomerManaged --tags newTag="newVal" --user-engagement-tracking 1/0
+"""
+
+helps['communication email domain delete'] = """
+    type: command
+    short-summary: "Deletes an existing domain."
+    examples:
+      - name: Delete Domain
+        text: |-
+               az communication email domain delete -n ResourceName -g ResourceGroup --domain-name DomainName
+"""
+
+helps['communication email domain list'] = """
+    type: command
+    short-summary: "Handles requests to list all domains in a email communication resource."
+    examples:
+      - name: List Domains
+        text: |-
+               az communication email domain list -g ResourceGroup -n ResourceName
+"""
+
+helps['communication email domain show'] = """
+    type: command
+    short-summary: "Gets the domain and its properties."
+    examples:
+      - name: Get domain
+        text: |-
+               az communication email domain show -n ResourceName -g ResourceGroup 
+"""
+
+helps['communication email domain wait'] = """
+    type: command
+    short-summary: Places the CLI in a waiting state until a condition of the communication is met.
+    examples:
+      - name: Pause executing next line of CLI script until the communication is successfully created.
+        text: |-
+               az communication email domain wait -n ResourceName -g ResourceGroup --domain-name DomainName --created
+      - name: Pause executing next line of CLI script until the communication is successfully deleted.
+        text: |-
+               az communication email domain wait -n ResourceName -g ResourceGroup --domain-name DomainName --deleted
+"""
+
+helps['communication email senderusername create'] = """
+    type: command
+    short-summary: "Creates a new sender username or update an existing one."
+    examples:
+      - name: Create or update sender username
+        text: |-
+               az communication email senderusername create -n ResourceName -g ResourceGroup --domain-name DomainName --sender-username SenderUsername --user-name Username --display-name DisplayName
+"""
+
+helps['communication email senderusername delete'] = """
+    type: command
+    short-summary: "Deletes an existing sender username."
+    examples:
+      - name: Delete sender username
+        text: |-
+               az communication email senderusername delete -n ResourceName -g ResourceGroup --domain-name DomainName --sender-username SenderuserName
+"""
+
+helps['communication email senderusername list'] = """
+    type: command
+    short-summary: "Handles requests to list all sender usernames in a domain."
+    examples:
+      - name: List by Domain Name
+        text: |-
+               az communication email senderusername list -n ResourceNmae -g ResourceGroup --domain-name DomainName
+"""
+
+helps['communication email senderusername show'] = """
+    type: command
+    short-summary: "Gets the sender username and its properties."
+    examples:
+      - name: Get sender username
+        text: |-
+               az communication email senderusername show -n ResourceNmae -g ResourceGroup --domain-name DomainName --sender-username SenderUsername
+"""
+
+helps['communication email senderusername wait'] = """
+    type: command
+    short-summary: Places the CLI in a waiting state until a condition of the communication is met.
+    examples:
+      - name: Pause executing next line of CLI script until the communication is successfully created.
+        text: |-
+               az communication email senderusername wait -n ResourceName -g ResourceGroup --domain-name DomainName --sender-username SenderUsername --created --interval 1
+      - name: Pause executing next line of CLI script until the communication is successfully deleted.
+        text: |-
+               az communication email senderusername wait -n ResourceName -g ResourceGroup --domain-name DomainName --sender-username SenderUsername --deleted --interval 1
+"""
+
+
