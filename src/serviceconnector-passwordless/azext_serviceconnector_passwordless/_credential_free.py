@@ -486,7 +486,7 @@ class SqlHandler(TargetHandler):
                                ' user=%s object id=%s', self.login_username, user_object_id)
                 admin_info = run_cli_cmd('az sql server ad-admin create -g {} --server-name {} --display-name "{}" --object-id {} --subscription {}'.format(
                     self.resource_group, self.server, self.login_username, user_object_id, self.subscription))
-            self.admin_username = admin_info.get('login', self.login_username) if admin_info else self.login_username
+        self.admin_username = admin_info.get('login', self.login_username) if admin_info else self.login_username
 
     def create_aad_user(self):
 
