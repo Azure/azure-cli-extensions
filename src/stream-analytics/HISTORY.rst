@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.3
++++++++++++++++
+* Remove Experimental
+
 0.1.2
 +++++++++++++++
 * Support clusters and private endpoints.
