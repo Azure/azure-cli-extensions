@@ -1,0 +1,177 @@
+{
+    "type":"object",
+    "properties":{
+        "title":{
+            "description":"The name of the API.",
+            "type":"string",
+            "maxLength":50
+        },
+        "summary":{
+            "description":"Short description of the API.",
+            "type":"string",
+            "maxLength":200
+        },
+        "description":{
+            "description":"The description of the API.",
+            "type":"string",
+            "maxLength":1000
+        },
+        "kind":{
+            "description":"Kind of API. For example, REST or GraphQL.",
+            "type":"string"
+        },
+        "lifecycleStage":{
+            "description":"Current lifecycle stage of the API.",
+            "type":"string",
+            "enum":[
+                "design",
+                "development",
+                "testing",
+                "preview",
+                "production",
+                "deprecated",
+                "retired"
+            ]
+        },
+        "termsOfService":{
+            "description":"Terms of service for the API.",
+            "type":"object",
+            "properties":{
+                "url":{
+                    "description":"URL pointing to the terms of service.",
+                    "type":"string",
+                    "maxLength":200,
+                    "format":"uri"
+                }
+            }
+        },
+        "license":{
+            "description":"The license information for the API.",
+            "type":"object",
+            "properties":{
+                "name":{
+                    "description":"Name of the license.",
+                    "type":"string",
+                    "maxLength":50
+                },
+                "url":{
+                    "description":"URL pointing to the license details. The URL field is mutually exclusive of the identifier field.",
+                    "type":"string",
+                    "maxLength":200,
+                    "format":"uri"
+                },
+                "identifier":{
+                    "description":"SPDX license information for the API. The identifier field is mutually exclusive of the URL field.",
+                    "type":"string",
+                    "maxLength":200,
+                    "format":"uri"
+                }
+            }
+        },
+        "externalDocumentation":{
+            "description":"External documentation",
+            "type":"array",
+            "items":{
+                "type":"object",
+                "properties":{
+                    "title":{
+                        "description":"Title of the documentation.",
+                        "type":"string",
+                        "maxLength":50
+                    },
+                    "description":{
+                        "description":"Description of the documentation.",
+                        "type":"string",
+                        "maxLength":1000
+                    },
+                    "url":{
+                        "description":"URL pointing to the documentation.",
+                        "type":"string",
+                        "maxLength":200,
+                        "format":"uri"
+                    }
+                }
+            },
+            "maxItems":20
+        },
+        "contacts":{
+            "description":"Points of contact for the API.",
+            "type":"array",
+            "items":{
+                "type":"object",
+                "properties":{
+                    "name":{
+                        "description":"Name of the contact.",
+                        "type":"string",
+                        "maxLength":100
+                    },
+                    "url":{
+                        "description":"URL for the contact.",
+                        "type":"string",
+                        "maxLength":200,
+                        "format":"uri"
+                    },
+                    "email":{
+                        "description":"Email address for the contact.",
+                        "type":"string",
+                        "maxLength":100,
+                        "format":"email"
+                    }
+                }
+            },
+            "maxItems":10
+        },
+        "customProperties":{
+            "type":"object",
+            "properties":{
+                "compliance-status":{
+                    "type":"string",
+                    "title":"compliance-status",
+                    "oneOf":[
+                        {
+                            "const":"new",
+                            "description":""
+                        },
+                        {
+                            "const":"pending",
+                            "description":""
+                        },
+                        {
+                            "const":"solved",
+                            "description":""
+                        }
+                    ]
+                },
+                "approver":{
+                    "title":"approver",
+                    "type":"string"
+                },
+                "cost-center":{
+                    "title":"cost-center",
+                    "type":"string"
+                },
+                "ownership":{
+                    "title":"ownership",
+                    "type":"string"
+                },
+                "metadata-test-1":{
+                    "title":"metadata-test-1",
+                    "type":"string"
+                },
+                "metadata-test-2":{
+                    "title":"metadata-test-2",
+                    "type":"boolean"
+                }
+            },
+            "unevaluatedProperties":false,
+            "required":[
+                "metadata-test-1",
+                "metadata-test-2"
+            ]
+        }
+    },
+    "required":[
+        "title",
+        "kind"
+    ]
+}
