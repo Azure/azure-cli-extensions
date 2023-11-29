@@ -82,6 +82,7 @@ def confirm_all_ip_allow():
         raise CLIInternalError(
             'Unable to prompt for confirmation as no tty available. Use --yes.') from e
 
+
 def confirm_admin_set():
     try:
         return prompt_y_n(SET_ADMIN_MESSAGE)
