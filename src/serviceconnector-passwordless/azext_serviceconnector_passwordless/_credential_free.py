@@ -99,7 +99,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
             except CLIInternalError as e:
                 if 'AADSTS530003' in e.error_msg:
                     logger.warning(
-                        'Please ask your IT department for help to join this device to Azure Active Directory.')
+                        'Please ask your IT department for help to join this device to Microsoft Entra ID.')
                 raise e
         elif auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserIdentity]:
             mi_client_id = auth_info.get('client_id')
@@ -132,7 +132,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
             except CLIInternalError as e:
                 if 'AADSTS530003' in e.error_msg:
                     logger.warning(
-                        'Please ask your IT department for help to join this device to Azure Active Directory.')
+                        'Please ask your IT department for help to join this device to Microsoft Entra ID.')
                 raise e
 
         # enable target Microsoft Entra authentication and set login user as db Microsoft Entra admin
