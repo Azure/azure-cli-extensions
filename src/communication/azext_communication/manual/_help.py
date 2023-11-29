@@ -11,6 +11,7 @@
 
 from knack.help_files import helps
 
+
 helps['communication'] = """
     type: group
     short-summary: Manage communication service with communication
@@ -572,7 +573,7 @@ helps['communication email send'] = """
     examples:
       - name: Send an email from an existing domain
         text: |-
-               az communication email send --sender NoReply@contoso.com --subject "Contoso Update" --to user1@user1-domain.com user2@user2-domain.com --text "Hello valued client. There is an update."
+               az communication email send --sender "NoReply@contoso.com" --subject "Contoso Update" --to "user1@user1-domain.com" "user2@user2-domain.com" --text "Hello valued client. There is an update."
 """
 
 #  Help for email communication services
@@ -582,7 +583,7 @@ helps['communication email create'] = """
     examples:
       - name: Create or update email communication resource
         text: |-
-               az communication email create -n ResourceName -g ResourceGroup --location global --data-location unitedstates
+               az communication email create --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --location "Global" --data-location "UnitedStates"
 """
 
 helps['communication email update'] = """
@@ -591,7 +592,7 @@ helps['communication email update'] = """
     examples:
       - name: Update resource
         text: |-
-               az communication email update -n ResourceName -g ResourceGroup --tags newTag="newVal"
+               az communication email update --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --tags newTag="newVal"
 """
 
 helps['communication email delete'] = """
@@ -600,7 +601,7 @@ helps['communication email delete'] = """
     examples:
       - name: Delete resource
         text: |-
-               az communication email delete -n ResourceName -g ResourceGroup
+               az communication email delete --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup"
 """
 
 helps['communication email list'] = """
@@ -609,7 +610,7 @@ helps['communication email list'] = """
     examples:
       - name: List by resource group
         text: |-
-               az communication email list -g ResourceGroup
+               az communication email list --resource-group "MyResourceGroup"
       - name: List by subscription
         text: |-
                az communication email list
@@ -621,7 +622,7 @@ helps['communication email show'] = """
     examples:
       - name: Get resource
         text: |-
-               az communication email show -n ResourceName -g ResourceGroup
+               az communication email show --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup"
 """
 
 helps['communication email wait'] = """
@@ -633,7 +634,7 @@ helps['communication email wait'] = """
                az communication email wait -n ResourceName -g ResourceGroup --created --interval 10
       - name: Pause executing next line of CLI script until the email communication is successfully deleted.
         text: |-
-               az communication email wait -n ResourceName -g ResourceGroup --deleted --interval 10
+               az communication email wait --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --deleted --interval 10
 """
 
 helps['communication email domain create'] = """
@@ -642,7 +643,7 @@ helps['communication email domain create'] = """
     examples:
       - name: Create or update domain
         text: |-
-               az communication email domain create -n ResourceName -g ResourceGroup --domain-name DomainName --location global --domain-management AzureManaged/CustomerManaged --tags newTag="newVal" --user-engagement-tracking 1/0
+               az communication email domain create --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "AzureManagedDomain/MyCustomDomainName.net" --location "Global" --domain-management "AzureManaged/CustomerManaged" --tags newTag="newVal" --user-engagement-tracking 1/0
 """
 
 helps['communication email domain update'] = """
@@ -651,7 +652,7 @@ helps['communication email domain update'] = """
     examples:
       - name: Update domain
         text: |-
-              az communication email domain update -n ResourceName -g ResourceGroup --domain-name DomainName --domain-management AzureManaged/CustomerManaged --tags newTag="newVal" --user-engagement-tracking 1/0
+              az communication email domain update --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --domain-management "AzureManaged/CustomerManaged" --tags newTag="newVal" --user-engagement-tracking 1/0
 """
 
 helps['communication email domain delete'] = """
@@ -660,7 +661,7 @@ helps['communication email domain delete'] = """
     examples:
       - name: Delete Domain
         text: |-
-               az communication email domain delete -n ResourceName -g ResourceGroup --domain-name DomainName
+               az communication email domain delete --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName"
 """
 
 helps['communication email domain list'] = """
@@ -669,7 +670,7 @@ helps['communication email domain list'] = """
     examples:
       - name: List Domains
         text: |-
-               az communication email domain list -g ResourceGroup -n ResourceName
+               az communication email domain list --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup"
 """
 
 helps['communication email domain show'] = """
@@ -678,7 +679,7 @@ helps['communication email domain show'] = """
     examples:
       - name: Get domain
         text: |-
-               az communication email domain show -n ResourceName -g ResourceGroup 
+               az communication email domain show --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup"
 """
 
 helps['communication email domain wait'] = """
@@ -687,10 +688,10 @@ helps['communication email domain wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the communication is successfully created.
         text: |-
-               az communication email domain wait -n ResourceName -g ResourceGroup --domain-name DomainName --created
+               az communication email domain wait --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --created
       - name: Pause executing next line of CLI script until the communication is successfully deleted.
         text: |-
-               az communication email domain wait -n ResourceName -g ResourceGroup --domain-name DomainName --deleted
+               az communication email domain wait --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --deleted
 """
 
 helps['communication email senderusername create'] = """
@@ -699,7 +700,7 @@ helps['communication email senderusername create'] = """
     examples:
       - name: Create or update sender username
         text: |-
-               az communication email senderusername create -n ResourceName -g ResourceGroup --domain-name DomainName --sender-username SenderUsername --user-name Username --display-name DisplayName
+               az communication email senderusername create --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername" --user-name "MyUsername" --display-name "MyDisplayName"
 """
 
 helps['communication email senderusername delete'] = """
@@ -708,7 +709,7 @@ helps['communication email senderusername delete'] = """
     examples:
       - name: Delete sender username
         text: |-
-               az communication email senderusername delete -n ResourceName -g ResourceGroup --domain-name DomainName --sender-username SenderuserName
+               az communication email senderusername delete --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername"
 """
 
 helps['communication email senderusername list'] = """
@@ -717,7 +718,7 @@ helps['communication email senderusername list'] = """
     examples:
       - name: List by Domain Name
         text: |-
-               az communication email senderusername list -n ResourceNmae -g ResourceGroup --domain-name DomainName
+               az communication email senderusername list --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName"
 """
 
 helps['communication email senderusername show'] = """
@@ -726,7 +727,7 @@ helps['communication email senderusername show'] = """
     examples:
       - name: Get sender username
         text: |-
-               az communication email senderusername show -n ResourceNmae -g ResourceGroup --domain-name DomainName --sender-username SenderUsername
+               az communication email senderusername show --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername"
 """
 
 helps['communication email senderusername wait'] = """
@@ -735,10 +736,10 @@ helps['communication email senderusername wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the communication is successfully created.
         text: |-
-               az communication email senderusername wait -n ResourceName -g ResourceGroup --domain-name DomainName --sender-username SenderUsername --created --interval 1
+               az communication email senderusername wait --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername" --created --interval 1
       - name: Pause executing next line of CLI script until the communication is successfully deleted.
         text: |-
-               az communication email senderusername wait -n ResourceName -g ResourceGroup --domain-name DomainName --sender-username SenderUsername --deleted --interval 1
+               az communication email senderusername wait --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername" --deleted --interval 1
 """
 
 
