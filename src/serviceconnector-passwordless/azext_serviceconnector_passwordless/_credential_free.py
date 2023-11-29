@@ -161,31 +161,6 @@ def getTargetHandler(cmd, target_id, target_type, auth_info, client_type, connec
 
 
 class TargetHandler:
-    cmd = None
-    auth_type = ""
-    auth_info = None
-
-    tenant_id = ""
-    subscription = ""
-    resource_group = ""
-    target_id = ""
-    target_type = ""
-    endpoint = ""
-
-    login_username = ""
-    login_usertype = ""  # servicePrincipal, user
-    user_object_id = ""
-    aad_username = ""
-
-    admin_username = ""
-
-    identity_name = ""
-    identity_client_id = ""
-    identity_object_id = ""
-
-    connection_name = ""
-
-    skip_prompt = False
 
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
         self.cmd = cmd
@@ -201,7 +176,7 @@ class TargetHandler:
         self.login_username = run_cli_cmd(
             'az account show').get("user").get("name")
         self.login_usertype = run_cli_cmd(
-            'az account show').get("user").get("type")
+            'az account show').get("user").get("type")  # servicePrincipal, user
         if (self.login_usertype not in ['servicePrincipal', 'user']):
             e = CLIInternalError(
                 f'{self.login_usertype} is not supported. Please login as user or servicePrincipal')
@@ -268,9 +243,6 @@ class TargetHandler:
 
 
 class MysqlFlexibleHandler(TargetHandler):
-
-    server = ""
-    dbname = ""
 
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
         super().__init__(cmd, target_id, target_type,
@@ -468,10 +440,6 @@ class MysqlFlexibleHandler(TargetHandler):
 
 class SqlHandler(TargetHandler):
 
-    server = ""
-    dbname = ""
-    ip = ""
-
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
         super().__init__(cmd, target_id, target_type,
                          auth_info, connection_name, skip_prompt)
@@ -479,6 +447,7 @@ class SqlHandler(TargetHandler):
         target_segments = parse_resource_id(target_id)
         self.server = target_segments.get('name')
         self.dbname = target_segments.get('child_name_1')
+        self.ip = ""
 
     def check_db_existence(self):
         try:
@@ -655,11 +624,6 @@ class SqlHandler(TargetHandler):
 
 class PostgresFlexHandler(TargetHandler):
 
-    db_server = ""
-    host = ""
-    dbname = ""
-    ip = ""
-
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
         super().__init__(cmd, target_id, target_type,
                          auth_info, connection_name, skip_prompt)
@@ -668,14 +632,16 @@ class PostgresFlexHandler(TargetHandler):
         self.db_server = target_segments.get('name')
         self.host = self.db_server + self.endpoint
         self.dbname = target_segments.get('child_name_1')
+        self.ip = ""
 
     def check_db_existence(self):
         try:
             db_info = run_cli_cmd(
-                'az postgres flexible-server db show --ids {}'.format(self.target_id))
+                'az postgres flexible-server db show --server-name {} --database-name {} -g {} --subscription {}'.format(
+                    self.db_server, self.dbname, self.resource_group, self.subscription))
             if db_info is None:
                 e = ResourceNotFoundError(
-                    "No database found with name {}".format(self.dbname))
+                    "No database '{}' found for server '{}'".format(self.dbname, self.db_server))
                 telemetry.set_exception(e, "No-Db")
                 raise e
         except CLIInternalError as e:
@@ -684,7 +650,8 @@ class PostgresFlexHandler(TargetHandler):
 
     def enable_target_aad_auth(self):
         target = run_cli_cmd(
-            'az postgres flexible-server show --ids {}'.format(self.target_id))
+            'az postgres flexible-server show -g {} -n {} --subscription {}'.format(
+                self.resource_group, self.db_server, self.subscription))
         if target.get('authConfig').get('activeDirectoryAuth') == "Enabled":
             return
         run_cli_cmd('az postgres flexible-server update --ids {} --active-directory-auth Enabled'.format(
@@ -968,8 +935,6 @@ def getSourceHandler(source_id, source_type):
 
 # pylint: disable=too-few-public-methods
 class SourceHandler:
-    source_id = ""
-    source_type = ""
 
     def __init__(self, source_id, source_type: RESOURCE):
         self.source_id = source_id
@@ -1027,23 +992,36 @@ class SpringHandler(SourceHandler):
 
 
 class WebappHandler(SourceHandler):
-    def get_identity_name(self):
+    def __init__(self, source_id, source_type: RESOURCE):
+        super().__init__(source_id, source_type)
         segments = parse_resource_id(self.source_id)
-        app_name = segments.get('name')
-        return app_name
+        self.app_name = segments.get('name')
+        self.slot_name = segments.get('child_name_1', None)
+
+    def get_identity_name(self):
+        if self.slot_name is not None:
+            return self.app_name + '/slots/' + self.slot_name
+        return self.app_name
 
     def get_identity_pid(self):
         logger.warning('Checking if WebApp enables System Identity...')
         identity = run_cli_cmd(
-            'az webapp identity show --ids {}'.format(self.source_id))
+            'az webapp identity show --ids {}'.format(self.source_id)) if self.slot_name is None else run_cli_cmd(
+            'az webapp identity show --ids {} --slot {}'.format(self.source_id, self.slot_name))
         if (identity is None or "SystemAssigned" not in identity.get('type')):
             # assign system identity for spring-cloud
             logger.warning('Enabling WebApp System Identity...')
-            run_cli_cmd(
-                'az webapp identity assign --ids {}'.format(self.source_id))
+            if self.slot_name is None:
+                run_cli_cmd(
+                    'az webapp identity assign --ids {}'.format(self.source_id))
 
-            identity = run_cli_cmd(
-                'az webapp identity show --ids {}'.format(self.source_id), 15, 5, output_is_none)
+                identity = run_cli_cmd(
+                    'az webapp identity show --ids {}'.format(self.source_id), 15, 5, output_is_none)
+            else:
+                run_cli_cmd(
+                    'az webapp identity assign --ids {} --slot {}'.format(self.source_id, self.slot_name))
+                identity = run_cli_cmd(
+                    'az webapp identity show --ids {} --slot {}'.format(self.source_id, self.slot_name), 15, 5, output_is_none)
 
         if identity is None:
             ex = CLIInternalError(

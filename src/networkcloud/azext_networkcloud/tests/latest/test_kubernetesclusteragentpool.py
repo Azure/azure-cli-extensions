@@ -35,6 +35,23 @@ def call_scenario1(test):
     cleanup_scenario1(test)
 
 
+def setup_scenario2(test):
+    """Env setup_scenario2"""
+    pass
+
+
+def cleanup_scenario2(test):
+    """Env cleanup_scenario2"""
+    pass
+
+
+def call_scenario2(test):
+    """# Testcase: scenario2"""
+    setup_scenario2(test)
+    step_update_admin_cred(test)
+    cleanup_scenario2(test)
+
+
 def step_create(test, checks=None):
     """Kubernetescluster agentpool create operation"""
     if checks is None:
@@ -96,6 +113,15 @@ def step_delete(test, checks=None):
     )
 
 
+def step_update_admin_cred(test, checks=None):
+    """Kubernetescluster agentpool update admin credentials operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud kubernetescluster agentpool update --name {nameUpdate} --resource-group {rgUpdate} --kubernetes-cluster-name {clusterNameUpdate} --ssh-key-values {sshKeyUpdate}"
+    )
+
+
 class KubernetesClusterAgentPoolScenarioTest(ScenarioTest):
     """Kubernetescluster agentpool scenario tests"""
 
@@ -132,9 +158,22 @@ class KubernetesClusterAgentPoolScenarioTest(ScenarioTest):
                     "KUBERNETESCLUSTER_AGENTPOOL", "availability_zones"
                 ),
                 "maxSurge": CONFIG.get("KUBERNETESCLUSTER_AGENTPOOL", "max_surge"),
+                # scenario 2: update variables
+                "rgUpdate": CONFIG.get("KUBERNETESCLUSTER_AGENTPOOL", "rg_update"),
+                "clusterNameUpdate": CONFIG.get(
+                    "KUBERNETESCLUSTER_AGENTPOOL", "cluster_name_update"
+                ),
+                "nameUpdate": CONFIG.get("KUBERNETESCLUSTER_AGENTPOOL", "name_update"),
+                "sshKeyUpdate": CONFIG.get(
+                    "KUBERNETESCLUSTER_AGENTPOOL", "ssh_key_values_update"
+                ),
             }
         )
 
     def test_kubernetesclusteragentpool_scenario(self):
         """test scenario for kubernetes cluster agentpool CRUD operations"""
         call_scenario1(self)
+
+    def test_kubernetesclusteragentpool_scenario2(self):
+        """test scenario for kubernetes cluster agentpool administrator credentials update operations"""
+        call_scenario2(self)

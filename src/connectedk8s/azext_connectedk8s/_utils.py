@@ -591,24 +591,27 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
 
     # Special configurations from 2022-09-01 ARM metadata.
     if "dataplaneEndpoints" in arm_metadata:
-        notification_endpoint = arm_metadata["dataplaneEndpoints"]["arcGlobalNotificationServiceEndpoint"]
-        config_endpoint = arm_metadata["dataplaneEndpoints"]["arcConfigEndpoint"]
-        his_endpoint = arm_metadata["dataplaneEndpoints"]["arcHybridIdentityServiceEndpoint"]
-        if his_endpoint[-1] != "/":
-            his_endpoint = his_endpoint + "/"
-        his_endpoint = his_endpoint + f"discovery?location={location}&api-version=1.0-preview"
-        relay_endpoint = arm_metadata["suffixes"]["relayEndpointSuffix"]
-        active_directory = arm_metadata["authentication"]["loginEndpoint"]
-        cmd_helm_install.extend(
-            [
-                "--set", "systemDefaultValues.azureResourceManagerEndpoint={}".format(resource_manager),
-                "--set", "systemDefaultValues.azureArcAgents.config_dp_endpoint_override={}".format(config_endpoint),
-                "--set", "systemDefaultValues.clusterconnect-agent.notification_dp_endpoint_override={}".format(notification_endpoint),
-                "--set", "systemDefaultValues.clusterconnect-agent.relay_endpoint_suffix_override={}".format(relay_endpoint),
-                "--set", "systemDefaultValues.clusteridentityoperator.his_endpoint_override={}".format(his_endpoint),
-                "--set", "systemDefaultValues.activeDirectoryEndpoint={}".format(active_directory)
-            ]
-        )
+        if "arcConfigEndpoint" in arm_metadata["dataplaneEndpoints"]:
+            notification_endpoint = arm_metadata["dataplaneEndpoints"]["arcGlobalNotificationServiceEndpoint"]
+            config_endpoint = arm_metadata["dataplaneEndpoints"]["arcConfigEndpoint"]
+            his_endpoint = arm_metadata["dataplaneEndpoints"]["arcHybridIdentityServiceEndpoint"]
+            if his_endpoint[-1] != "/":
+                his_endpoint = his_endpoint + "/"
+            his_endpoint = his_endpoint + f"discovery?location={location}&api-version=1.0-preview"
+            relay_endpoint = arm_metadata["suffixes"]["relayEndpointSuffix"]
+            active_directory = arm_metadata["authentication"]["loginEndpoint"]
+            cmd_helm_install.extend(
+                [
+                    "--set", "systemDefaultValues.azureResourceManagerEndpoint={}".format(resource_manager),
+                    "--set", "systemDefaultValues.azureArcAgents.config_dp_endpoint_override={}".format(config_endpoint),
+                    "--set", "systemDefaultValues.clusterconnect-agent.notification_dp_endpoint_override={}".format(notification_endpoint),
+                    "--set", "systemDefaultValues.clusterconnect-agent.relay_endpoint_suffix_override={}".format(relay_endpoint),
+                    "--set", "systemDefaultValues.clusteridentityoperator.his_endpoint_override={}".format(his_endpoint),
+                    "--set", "systemDefaultValues.activeDirectoryEndpoint={}".format(active_directory)
+                ]
+            )
+        else:
+            logger.debug("'arcConfigEndpoint' doesn't exist under 'dataplaneEndpoints' in the ARM metadata.")
 
     # Add custom-locations related params
     if enable_custom_locations and not enable_private_link:
@@ -826,7 +829,6 @@ def get_metadata(arm_endpoint, api_version="2022-09-01"):
         import requests
         session = requests.Session()
         metadata_endpoint = arm_endpoint + metadata_url_suffix
-        print(f"Retrieving ARM metadata from: {metadata_endpoint}")
         response = session.get(metadata_endpoint)
         if response.status_code == 200:
             return response.json()

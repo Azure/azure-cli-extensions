@@ -35,6 +35,10 @@ def cf_agent_pools(cli_ctx, *_):
     return get_container_service_client(cli_ctx).agent_pools
 
 
+def cf_machines(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).machines
+
+
 def cf_maintenance_configurations(cli_ctx, *_):
     return get_container_service_client(cli_ctx).maintenance_configurations
 
@@ -147,3 +151,11 @@ def get_resource_by_name(cli_ctx, resource_name, resource_type):
 def get_msi_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ManagedServiceIdentityClient,
                                    subscription_id=subscription_id)
+
+
+def get_providers_client_factory(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).providers
+
+
+def get_keyvault_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_KEYVAULT, subscription_id=subscription_id).vaults

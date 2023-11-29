@@ -3,9 +3,9 @@ interactions:
     body: '{"extendedLocation": {"name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc",
       "type": "CustomLocation"}, "location": "eastus", "properties": {"adminUsername":
       "admin", "bootMethod": "UEFI", "cloudServicesNetworkAttachment": {"attachedNetworkId":
-      "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1",
+      "/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1",
       "ipAllocationMethod": "Dynamic"}, "cpuCores": 2, "memorySizeGB": 4, "networkAttachments":
-      [{"attachedNetworkId": "/subscriptions/121213213131/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1",
+      [{"attachedNetworkId": "/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1",
       "defaultGateway": "True", "ipAllocationMethod": "Dynamic"}], "networkData":
       "bmV0d29ya0RhdGVTYW1wbGU=", "placementHints": [], "sshPublicKeys": [], "storageProfile":
       {"osDisk": {"createOption": "Ephemeral", "deleteOption": "Delete", "diskSizeGB":
@@ -33,13 +33,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001?api-version=2023-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","name":"cliTestVM000001","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T21:03:34.0518192Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T21:03:34.0518192Z"},"properties":{"provisioningState":"Accepted","adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/121213213131/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic"}],"networkData":"bmV0d29ya0RhdGVTYW1wbGU=","placementHints":[],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":4}},"userData":"dXNlckRhdGVTYW1wbGU=","vmDeviceModel":"T2","vmImage":"hbusipalleacr2.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"hbusipalleacr2.azurecr.io","username":"user"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","name":"cliTestVM000001","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T21:03:34.0518192Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T21:03:34.0518192Z"},"properties":{"provisioningState":"Accepted","adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic"}],"networkData":"bmV0d29ya0RhdGVTYW1wbGU=","placementHints":[],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":4}},"userData":"dXNlckRhdGVTYW1wbGU=","vmDeviceModel":"T2","vmImage":"hbusipalleacr2.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"hbusipalleacr2.azurecr.io","username":"user"}}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -86,7 +86,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Accepted","startTime":"2023-06-21T21:03:34.0995106Z"}'
@@ -135,7 +135,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Provisioning","startTime":"2023-06-21T21:03:34.0995106Z"}'
@@ -184,7 +184,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Provisioning","startTime":"2023-06-21T21:03:34.0995106Z"}'
@@ -233,7 +233,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Provisioning","startTime":"2023-06-21T21:03:34.0995106Z"}'
@@ -282,7 +282,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Provisioning","startTime":"2023-06-21T21:03:34.0995106Z"}'
@@ -331,7 +331,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"3401bfdd-a938-4983-b3ca-1e80b810c2be*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Succeeded","startTime":"2023-06-21T21:03:34.0995106Z","endTime":"2023-06-21T21:05:49.776752Z","properties":null}'
@@ -380,10 +380,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001?api-version=2023-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","name":"cliTestVM000001","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T21:03:34.0518192Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T21:05:50.4924667Z"},"properties":{"provisioningState":"Succeeded","adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic","defaultGateway":"False","ipv4Address":"169.254.8.2","macAddress":"02:00:00:81:b4:8e","networkAttachmentName":"cloudservices"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/121213213131/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.10.100.9","macAddress":"02:00:00:3c:cb:13","networkAttachmentName":"l3netw-e0b7c"}],"networkData":"bmV0d29ya0RhdGVTYW1wbGU=","placementHints":[],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":4}},"userData":"dXNlckRhdGVTYW1wbGU=","vmDeviceModel":"T2","vmImage":"hbusipalleacr2.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"hbusipalleacr2.azurecr.io","username":"user"},"virtioInterface":"Modern","isolateEmulatorThread":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Running","detailedStatusMessage":"Running
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","name":"cliTestVM000001","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T21:03:34.0518192Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T21:05:50.4924667Z"},"properties":{"provisioningState":"Succeeded","adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic","defaultGateway":"False","ipv4Address":"169.254.8.2","macAddress":"02:00:00:81:b4:8e","networkAttachmentName":"cloudservices"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.10.100.9","macAddress":"02:00:00:3c:cb:13","networkAttachmentName":"l3netw-e0b7c"}],"networkData":"bmV0d29ya0RhdGVTYW1wbGU=","placementHints":[],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":4}},"userData":"dXNlckRhdGVTYW1wbGU=","vmDeviceModel":"T2","vmImage":"hbusipalleacr2.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"hbusipalleacr2.azurecr.io","username":"user"},"virtioInterface":"Modern","isolateEmulatorThread":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Running","detailedStatusMessage":"Running
         - virtual machine is running.","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute03"}}'
     headers:
       cache-control:
@@ -435,13 +435,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001?api-version=2023-10-01-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cf00719a-26a5-40d9-86ce-0b1c63afa15f*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cf00719a-26a5-40d9-86ce-0b1c63afa15f*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -455,7 +455,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cf00719a-26a5-40d9-86ce-0b1c63afa15f*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cf00719a-26a5-40d9-86ce-0b1c63afa15f*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       mise-correlation-id:
       - f21d217c-5262-4dd9-94f4-e0cd120ca773
       pragma:
@@ -487,7 +487,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cf00719a-26a5-40d9-86ce-0b1c63afa15f*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cf00719a-26a5-40d9-86ce-0b1c63afa15f*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cf00719a-26a5-40d9-86ce-0b1c63afa15f*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"cf00719a-26a5-40d9-86ce-0b1c63afa15f*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Accepted","startTime":"2023-06-21T21:06:07.2329129Z"}'
@@ -533,7 +533,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cf00719a-26a5-40d9-86ce-0b1c63afa15f*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cf00719a-26a5-40d9-86ce-0b1c63afa15f*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/cf00719a-26a5-40d9-86ce-0b1c63afa15f*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"cf00719a-26a5-40d9-86ce-0b1c63afa15f*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Succeeded","startTime":"2023-06-21T21:06:07.2329129Z","endTime":"2023-06-21T21:06:25.2398027Z","properties":null}'
@@ -579,10 +579,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001?api-version=2023-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","name":"cliTestVM000001","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T21:03:34.0518192Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T21:06:25.9451755Z"},"properties":{"adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic","defaultGateway":"False","ipv4Address":"169.254.8.2","macAddress":"02:00:00:81:b4:8e","networkAttachmentName":"cloudservices"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/121213213131/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.10.100.9","macAddress":"02:00:00:3c:cb:13","networkAttachmentName":"l3netw-e0b7c"}],"networkData":"bmV0d29ya0RhdGVTYW1wbGU=","placementHints":[],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":4}},"userData":"dXNlckRhdGVTYW1wbGU=","vmDeviceModel":"T2","vmImage":"hbusipalleacr2.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"hbusipalleacr2.azurecr.io","username":"user"},"virtioInterface":"Modern","isolateEmulatorThread":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Running","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute03","provisioningState":"Succeeded","detailedStatusMessage":"Running
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","name":"cliTestVM000001","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T21:03:34.0518192Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T21:06:25.9451755Z"},"properties":{"adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic","defaultGateway":"False","ipv4Address":"169.254.8.2","macAddress":"02:00:00:81:b4:8e","networkAttachmentName":"cloudservices"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.10.100.9","macAddress":"02:00:00:3c:cb:13","networkAttachmentName":"l3netw-e0b7c"}],"networkData":"bmV0d29ya0RhdGVTYW1wbGU=","placementHints":[],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":4}},"userData":"dXNlckRhdGVTYW1wbGU=","vmDeviceModel":"T2","vmImage":"hbusipalleacr2.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"hbusipalleacr2.azurecr.io","username":"user"},"virtioInterface":"Modern","isolateEmulatorThread":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Running","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute03","provisioningState":"Succeeded","detailedStatusMessage":"Running
         - virtual machine is running."}}'
     headers:
       cache-control:
@@ -628,10 +628,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001?api-version=2023-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","name":"cliTestVM000001","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T21:03:34.0518192Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T21:06:25.9451755Z"},"properties":{"adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic","defaultGateway":"False","ipv4Address":"169.254.8.2","macAddress":"02:00:00:81:b4:8e","networkAttachmentName":"cloudservices"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/121213213131/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.10.100.9","macAddress":"02:00:00:3c:cb:13","networkAttachmentName":"l3netw-e0b7c"}],"networkData":"bmV0d29ya0RhdGVTYW1wbGU=","placementHints":[],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":4}},"userData":"dXNlckRhdGVTYW1wbGU=","vmDeviceModel":"T2","vmImage":"hbusipalleacr2.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"hbusipalleacr2.azurecr.io","username":"user"},"virtioInterface":"Modern","isolateEmulatorThread":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Running","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute03","provisioningState":"Succeeded","detailedStatusMessage":"Running
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","name":"cliTestVM000001","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T21:03:34.0518192Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T21:06:25.9451755Z"},"properties":{"adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic","defaultGateway":"False","ipv4Address":"169.254.8.2","macAddress":"02:00:00:81:b4:8e","networkAttachmentName":"cloudservices"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.10.100.9","macAddress":"02:00:00:3c:cb:13","networkAttachmentName":"l3netw-e0b7c"}],"networkData":"bmV0d29ya0RhdGVTYW1wbGU=","placementHints":[],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":4}},"userData":"dXNlckRhdGVTYW1wbGU=","vmDeviceModel":"T2","vmImage":"hbusipalleacr2.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"hbusipalleacr2.azurecr.io","username":"user"},"virtioInterface":"Modern","isolateEmulatorThread":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Running","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute03","provisioningState":"Succeeded","detailedStatusMessage":"Running
         - virtual machine is running."}}'
     headers:
       cache-control:
@@ -675,7 +675,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/virtualMachines?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/virtualMachines?api-version=2023-10-01-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/arijitbose-rg/providers/Microsoft.NetworkCloud/virtualMachines/k5ubuntuab","name":"k5ubuntuab","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/k5-cb777500db29-hostedresources-27b6583a/providers/microsoft.extendedlocation/customlocations/k5-cb777500db29-cstm-loc","type":"CustomLocation"},"tags":{},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-01-03T21:31:11.6582304Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-01-03T21:31:53.0685445Z"},"properties":{"provisioningState":"Failed","adminUsername":"root","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/k5-cluster/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cloudservicesnetwork","defaultGateway":"False","ipAllocationMethod":"Dynamic","macAddress":"02:00:00:e2:b9:0a","networkAttachmentName":"cloudservices","ipv4Address":"169.254.8.2"},"cpuCores":10,"memorySizeGB":24,"networkAttachments":[{"attachedNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/k5-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-502","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.12.34.9","macAddress":"02:00:00:38:0e:4b","networkAttachmentName":"vlan-502"}],"placementHints":[],"sshPublicKeys":[{"keyData":"ssh-rsa
@@ -716,11 +716,11 @@ interactions:
         - virtual machine is running.","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j17-f96136f77dcb-HostedResources-299D1CBF/providers/Microsoft.NetworkCloud/bareMetalMachines/j17r750wkr4"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/virtualMachines/pipelinevmVqRe0INyDdBIlQ","name":"pipelinevmVqRe0INyDdBIlQ","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-487bb720ddfb-hostedresources-25e56565/providers/microsoft.extendedlocation/customlocations/m16-1-487bb720ddfb-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"virtualmachine","ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-06-20T09:12:06.5611156Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-20T09:14:04.7998031Z"},"properties":{"provisioningState":"Succeeded","adminUsername":"clouduser","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/cloudServicesNetworks/pipelinecsn","ipAllocationMethod":"Dynamic","defaultGateway":"False","macAddress":"02:00:00:85:74:4c","networkAttachmentName":"cloudservices","ipv4Address":"169.254.8.1"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-535","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.1.100.8","macAddress":"02:00:00:f6:5f:a7","networkAttachmentName":"vlan-535"}],"placementHints":[],"sshPublicKeys":[{"keyData":"ssh-rsa
         AAAAB3NzaC1yc2EAAAADAQABAAABgQCjxBjt9iSrZqTJOp+LqGLJN/6x5BhbkReh1F9WtKY5I30NMm8NyJpoTef5tRKWJOFenyhHv92Q1CVbjIOfToM1o+0omzruJnWvzNOIqRfktBgpaAvI3NBW8jyP88dU370R79pCcHS258sEsYZu7Pt3bPHWnJynqqpi3e/icJ902gwR0ZCHWkLS+Kojn6+60TdxnPBlACi/QDQcXE9BtuEO6O9Owtzd9j9q2WdaQTElZHyrjBudDcv8DGVErOl2yPRD9a2kGF3zE9OFemq75UH4YeXDb0FgUdgxq9vvXWlWSm7banZ681MgdMYksYUDuSfvtrnwQl9LBcxvk+Z3eHCaAcHHQ/S5h/lAG5xbGaeE6A9woTMKrnqzXvL/XCg02gM01smgUxO7aIIcMquPaTJBc8rSd4wSihg1iRY93OAMVvj4U8ZqLwIt03Z8aIhrVvAmzkmlZ9YwvSXYBDg0KdMNKG4zrnRqWP7ge7ayb+hPxN6UZ0E7Z3VoVw+2R2NxjHE=
         azureuser@B37-VNET-DEP1"}],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":10}},"vmImage":"nccacheacr.azurecr.io/nc-resource-custom:0.1.7-217","vmImageRepositoryCredentials":{"username":"00000000-0000-0000-0000-000000000000","registryUrl":"nc-resource-custom"},"virtioInterface":"Modern","isolateEmulatorThread":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-487bb720ddfb","detailedStatus":"Running","detailedStatusMessage":"Running
-        - virtual machine is running.","powerState":"On","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-487bb720ddfb-HostedResources-25E56565/providers/Microsoft.NetworkCloud/bareMetalMachines/m16r750wkr4"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole","name":"testvmconsole","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.ExtendedLocation/customLocations/simulator-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-20T16:46:52.0865051Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-20T16:48:37.5972205Z"},"properties":{"provisioningState":"Succeeded","adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic","defaultGateway":"False","ipv4Address":"169.254.8.1","macAddress":"02:00:00:23:94:b9","networkAttachmentName":"cloudservices"},"cpuCores":2,"isolateEmulatorThread":"False","memorySizeGB":1,"networkAttachments":[{"attachedNetworkId":"/subscriptions/121213213131/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.10.100.8","macAddress":"02:00:00:b5:35:66","networkAttachmentName":"l3network1"}],"placementHints":[{"hintType":"Affinity","resourceId":"/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${MANAGED_RESOURCE_GROUP}/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute01","schedulingExecution":"Hard","scope":"Machine"}],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":16}},"virtioInterface":"Modern","vmDeviceModel":"T2","vmImage":"afoinccitools.azurecr.io/manual/cirros-kubevirt:0.5.2","vmImageRepositoryCredentials":{"registryUrl":"afoinccitools.azurecr.io","username":"00000000-0000-0000-0000-000000000000"},"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Running","detailedStatusMessage":"Running
+        - virtual machine is running.","powerState":"On","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-487bb720ddfb-HostedResources-25E56565/providers/Microsoft.NetworkCloud/bareMetalMachines/m16r750wkr4"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole","name":"testvmconsole","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.ExtendedLocation/customLocations/simulator-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-20T16:46:52.0865051Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-20T16:48:37.5972205Z"},"properties":{"provisioningState":"Succeeded","adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic","defaultGateway":"False","ipv4Address":"169.254.8.1","macAddress":"02:00:00:23:94:b9","networkAttachmentName":"cloudservices"},"cpuCores":2,"isolateEmulatorThread":"False","memorySizeGB":1,"networkAttachments":[{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.10.100.8","macAddress":"02:00:00:b5:35:66","networkAttachmentName":"l3network1"}],"placementHints":[{"hintType":"Affinity","resourceId":"/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${MANAGED_RESOURCE_GROUP}/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute01","schedulingExecution":"Hard","scope":"Machine"}],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":16}},"virtioInterface":"Modern","vmDeviceModel":"T2","vmImage":"afoinccitools.azurecr.io/manual/cirros-kubevirt:0.5.2","vmImageRepositoryCredentials":{"registryUrl":"afoinccitools.azurecr.io","username":"00000000-0000-0000-0000-000000000000"},"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Running","detailedStatusMessage":"Running
         - virtual machine is running.","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute01"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-api-testing-e41a236b-4217-43ee-8bd6-4ff1b1540dc5/providers/Microsoft.NetworkCloud/virtualMachines/VirtualMachinesffc012","name":"VirtualMachinesffc012","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-57ca2d1c/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"buildID":"919385","from":"cloudtest"},"systemData":{"createdBy":"76a1c3a1-1aaa-4cbe-b809-1b4f9dfe41e0","createdByType":"Application","createdAt":"2023-06-20T22:04:39.9327993Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-20T22:06:27.2040355Z"},"properties":{"provisioningState":"Succeeded","adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-api-testing-e41a236b-4217-43ee-8bd6-4ff1b1540dc5/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cloudServicesNetworksa68109","defaultGateway":"False","ipAllocationMethod":"Dynamic","networkAttachmentName":"cloudservices","macAddress":"02:00:00:eb:71:39","ipv4Address":"169.254.8.1"},"cpuCores":2,"isolateEmulatorThread":"False","memorySizeGB":1,"networkAttachments":[{"attachedNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-api-testing-e41a236b-4217-43ee-8bd6-4ff1b1540dc5/providers/Microsoft.NetworkCloud/l3Networks/l3network2","defaultGateway":"False","ipAllocationMethod":"Dynamic","ipv4Address":"10.20.101.8","macAddress":"02:00:00:26:db:bb","networkAttachmentName":"vlan-1004"}],"placementHints":[],"sshPublicKeys":[{"keyData":"ssh-rsa
         AAAAB3NzaC1yc2EAAAADAQABAAABgQDLYVAibDxCYQcs4xeiGLcHMw+DvwKVAhMPG0OP85JKsBmFkeMPm5+2fEzQqjmE2r46V0+Idjdq3BYHwOzxPVb0p0Ekb4o7G3eEE/aCoSkr9S+cTn2CzCgDn3S8d1Muee56XlVJU4Z3G2oIcQchXetqYdD5NNwTyYZuDIaPoxCkGy1g+mYHsj7yxs65KfBNM/ucnvKy5cphI/uGNgcYUki0tRPT2/3H2QGVQVDfIficjPKBt9Jp08psvdJGs2Lk0Z5KrkgKyzb4VCDYmgV5AYoCPIO640n97nBwZlhVXkd4hSWHksVBBN+sajoWrWlU7h4ihwwwZcO90RYIiaHrJm9YmSMO3Y4AARHIKJ1+UerpAloAR3Jp01gTVzZdQrd9T0YfNnF7/ltg7OTo9m/mDn7zh1ZKFjyJv7bPQdhSIGbhdGrewyPe04+tSDGyH7bjpjm1A99qDYj6SeoEr790N0Lw2QGdP10Lo55+uMwzzbLyyIWzodHVIH4pPfz7mg1oWAs=
         osh@osh"}],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":5}},"virtioInterface":"Modern","vmImage":"afoinctempacr.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"azurecr.io","username":"afoinctempacr"},"detailedStatus":"Running","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kilburn-simulator-06-08/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatusMessage":"Running
-        - virtual machine is running.","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-57CA2D1C/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-5B8B7F1E/providers/Microsoft.NetworkCloud/virtualMachines/sshmuxtestvm","name":"sshmuxtestvm","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-5B8B7F1E/providers/Microsoft.ExtendedLocation/customLocations/simulator-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:19:04.9221779Z","lastModifiedBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T21:03:34.0518192Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T21:06:25.9451755Z"},"properties":{"adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic","defaultGateway":"False","ipv4Address":"169.254.8.2","macAddress":"02:00:00:81:b4:8e","networkAttachmentName":"cloudservices"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/121213213131/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.10.100.9","macAddress":"02:00:00:3c:cb:13","networkAttachmentName":"l3netw-e0b7c"}],"networkData":"bmV0d29ya0RhdGVTYW1wbGU=","placementHints":[],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":4}},"userData":"dXNlckRhdGVTYW1wbGU=","vmDeviceModel":"T2","vmImage":"hbusipalleacr2.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"hbusipalleacr2.azurecr.io","username":"user"},"virtioInterface":"Modern","isolateEmulatorThread":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Running","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute03","provisioningState":"Succeeded","detailedStatusMessage":"Running
+        - virtual machine is running.","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-57CA2D1C/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-5B8B7F1E/providers/Microsoft.NetworkCloud/virtualMachines/sshmuxtestvm","name":"sshmuxtestvm","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-5B8B7F1E/providers/Microsoft.ExtendedLocation/customLocations/simulator-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:19:04.9221779Z","lastModifiedBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T21:03:34.0518192Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T21:06:25.9451755Z"},"properties":{"adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic","defaultGateway":"False","ipv4Address":"169.254.8.2","macAddress":"02:00:00:81:b4:8e","networkAttachmentName":"cloudservices"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.10.100.9","macAddress":"02:00:00:3c:cb:13","networkAttachmentName":"l3netw-e0b7c"}],"networkData":"bmV0d29ya0RhdGVTYW1wbGU=","placementHints":[],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":4}},"userData":"dXNlckRhdGVTYW1wbGU=","vmDeviceModel":"T2","vmImage":"hbusipalleacr2.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"hbusipalleacr2.azurecr.io","username":"user"},"virtioInterface":"Modern","isolateEmulatorThread":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Running","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute03","provisioningState":"Succeeded","detailedStatusMessage":"Running
         - virtual machine is running."}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/virtualMachines/simvm","name":"simvm","type":"microsoft.networkcloud/virtualmachines","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-427177bf/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-04-20T18:58:23.4532151Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-06T07:02:17.33293Z"},"properties":{"provisioningState":"Failed","adminUsername":"root","bootMethod":"BIOS","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/cloudServicesNetworks/rgcsn","defaultGateway":"False","ipAllocationMethod":"Dynamic","macAddress":"02:00:00:e1:65:a5","networkAttachmentName":"cloudservices","ipv4Address":"169.254.8.4"},"cpuCores":3,"memorySizeGB":1,"networkAttachments":[],"placementHints":[],"sshPublicKeys":[{"keyData":"ssh-rsa
         AAAAB3NzaC1yc2EAAAADAQABAAABgQC7gM31o+AjEcDpaqnvxxeIaoJCPt62GUzfFmZdFOzq4gPmHKZLWEBpX+xgGRQsOC1mb2oaNwcB6A8wwb5uitsPhJCfPKrM5AOZkvIESBMLpfzMBQqwKvHudy4r3lzSYFneYrkwr9MvokAidllSRbcn43zrFLExVSYca15nYzo28YdgMR77uS6OkvGbVmk89KUr5t9/Iuve3A40zqUyhCPWkC4M2sDS/3brvNSalcpDQo68gFgiWK9V0wMWhAFP2gPCpWbQYmyFX7T0PRuuPliB0X3o8V+gY4Ag0stHvJiwSF1/g6sJMw3PEBhR7I9MfwJiKuwlD8WGd6RPG8lPWLklFEzAhBSGVKL4yj/oD3Pr3azebbxOAd11lEYu+KKqXK2IVxkhXXg8zpWWJjZipDP3M+1zJBHtdmXEgnE9lKyopUwOOt4sDKx1tuimuya/IE79eiXKcg/jI5FSW75H4/7HhkWEDJggecBVWQxIzdRA5WuaAwQDPPZdl6NB2k/qNyc=
         azureuser@ipv6jump01"}],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":10}},"vmImage":"afoinctempacr.azurecr.io/ubuntu-2204-cloudimg:20230110","vmImageRepositoryCredentials":{"registryUrl":"afoinctempacr.azurecr.io","username":"afoinctempacr"},"virtioInterface":"Transitional","isolateEmulatorThread":"True","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Available","detailedStatusMessage":"Running
@@ -868,10 +868,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines?api-version=2023-10-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","name":"cliTestVM000001","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T21:03:34.0518192Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T21:06:25.9451755Z"},"properties":{"adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic","defaultGateway":"False","ipv4Address":"169.254.8.2","macAddress":"02:00:00:81:b4:8e","networkAttachmentName":"cloudservices"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/121213213131/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.10.100.9","macAddress":"02:00:00:3c:cb:13","networkAttachmentName":"l3netw-e0b7c"}],"networkData":"bmV0d29ya0RhdGVTYW1wbGU=","placementHints":[],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":4}},"userData":"dXNlckRhdGVTYW1wbGU=","vmDeviceModel":"T2","vmImage":"hbusipalleacr2.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"hbusipalleacr2.azurecr.io","username":"user"},"virtioInterface":"Modern","isolateEmulatorThread":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Running","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute03","provisioningState":"Succeeded","detailedStatusMessage":"Running
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","name":"cliTestVM000001","type":"microsoft.networkcloud/virtualmachines","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T21:03:34.0518192Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T21:06:25.9451755Z"},"properties":{"adminUsername":"admin","bootMethod":"UEFI","cloudServicesNetworkAttachment":{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn1","ipAllocationMethod":"Dynamic","defaultGateway":"False","ipv4Address":"169.254.8.2","macAddress":"02:00:00:81:b4:8e","networkAttachmentName":"cloudservices"},"cpuCores":2,"memorySizeGB":4,"networkAttachments":[{"attachedNetworkId":"/subscriptions/a3eeb848-665a-4dbf-80a4-eb460930fb23/resourceGroups/op317q-rg/providers/Microsoft.NetworkCloud/l3Networks/l3network1","defaultGateway":"True","ipAllocationMethod":"Dynamic","ipv4Address":"10.10.100.9","macAddress":"02:00:00:3c:cb:13","networkAttachmentName":"l3netw-e0b7c"}],"networkData":"bmV0d29ya0RhdGVTYW1wbGU=","placementHints":[],"sshPublicKeys":[],"storageProfile":{"osDisk":{"createOption":"Ephemeral","deleteOption":"Delete","diskSizeGB":4}},"userData":"dXNlckRhdGVTYW1wbGU=","vmDeviceModel":"T2","vmImage":"hbusipalleacr2.azurecr.io/ubuntu:20.04","vmImageRepositoryCredentials":{"registryUrl":"hbusipalleacr2.azurecr.io","username":"user"},"virtioInterface":"Modern","isolateEmulatorThread":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","powerState":"On","detailedStatus":"Running","bareMetalMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-4AE3464D/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute03","provisioningState":"Succeeded","detailedStatusMessage":"Running
         - virtual machine is running."}}]}'
     headers:
       cache-control:
@@ -917,13 +917,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001/reimage?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001/reimage?api-version=2023-10-01-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -935,7 +935,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       mise-correlation-id:
       - 3075479d-addb-48ed-bd3c-9f94fb4a9526
       pragma:
@@ -967,7 +967,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Accepted","startTime":"2023-06-21T21:06:41.2872831Z"}'
@@ -1009,7 +1009,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Provisioning","startTime":"2023-06-21T21:06:41.2872831Z"}'
@@ -1051,7 +1051,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Provisioning","startTime":"2023-06-21T21:06:41.2872831Z"}'
@@ -1093,7 +1093,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Provisioning","startTime":"2023-06-21T21:06:41.2872831Z"}'
@@ -1135,7 +1135,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Provisioning","startTime":"2023-06-21T21:06:41.2872831Z"}'
@@ -1177,7 +1177,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Provisioning","startTime":"2023-06-21T21:06:41.2872831Z"}'
@@ -1219,7 +1219,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Succeeded","startTime":"2023-06-21T21:06:41.2872831Z","endTime":"2023-06-21T21:09:17.3753324Z","properties":null}'
@@ -1265,7 +1265,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"f3f8ca8d-05a1-477e-86ef-ea54a1bb41ae*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Succeeded","startTime":"2023-06-21T21:06:41.2872831Z","endTime":"2023-06-21T21:09:17.3753324Z","properties":null}'
@@ -1313,13 +1313,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001/restart?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001/restart?api-version=2023-10-01-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1331,7 +1331,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       mise-correlation-id:
       - 261d48db-0d04-47c5-ae86-e5c6fd7bc9e2
       pragma:
@@ -1363,7 +1363,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Accepted","startTime":"2023-06-21T21:09:43.7141663Z"}'
@@ -1405,7 +1405,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Provisioning","startTime":"2023-06-21T21:09:43.7141663Z"}'
@@ -1447,7 +1447,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Succeeded","startTime":"2023-06-21T21:09:43.7141663Z","endTime":"2023-06-21T21:10:35.5334757Z","properties":null}'
@@ -1493,7 +1493,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"c254e0df-e3e8-409e-be5f-6b387fce8cb7*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Succeeded","startTime":"2023-06-21T21:09:43.7141663Z","endTime":"2023-06-21T21:10:35.5334757Z","properties":null}'
@@ -1543,13 +1543,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001/powerOff?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001/powerOff?api-version=2023-10-01-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1561,7 +1561,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       mise-correlation-id:
       - 73e5f3e4-453a-43b5-b855-8ab45350ec37
       pragma:
@@ -1593,7 +1593,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Accepted","startTime":"2023-06-21T21:10:45.2562554Z"}'
@@ -1635,7 +1635,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Succeeded","startTime":"2023-06-21T21:10:45.2562554Z","endTime":"2023-06-21T21:10:57.7007599Z","properties":null}'
@@ -1681,7 +1681,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"482f1172-f11d-4a74-995a-921aacdc29ca*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Succeeded","startTime":"2023-06-21T21:10:45.2562554Z","endTime":"2023-06-21T21:10:57.7007599Z","properties":null}'
@@ -1729,13 +1729,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001/start?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001/start?api-version=2023-10-01-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1747,7 +1747,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       mise-correlation-id:
       - 832ed940-aed4-4d24-b2d1-3ec6e267d199
       pragma:
@@ -1779,7 +1779,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Accepted","startTime":"2023-06-21T21:11:17.1142369Z"}'
@@ -1821,7 +1821,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Succeeded","startTime":"2023-06-21T21:11:17.1142369Z","endTime":"2023-06-21T21:11:31.650427Z","properties":null}'
@@ -1867,7 +1867,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"efd8626c-f327-40db-9913-037617e40637*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Succeeded","startTime":"2023-06-21T21:11:17.1142369Z","endTime":"2023-06-21T21:11:31.650427Z","properties":null}'
@@ -1915,13 +1915,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001?api-version=2023-10-01-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1935,7 +1935,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -1965,7 +1965,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Deleting","startTime":"2023-06-21T21:11:49.3163496Z"}'
@@ -2007,7 +2007,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Deleting","startTime":"2023-06-21T21:11:49.3163496Z"}'
@@ -2049,7 +2049,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Deleting","startTime":"2023-06-21T21:11:49.3163496Z"}'
@@ -2091,7 +2091,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Succeeded","startTime":"2023-06-21T21:11:49.3163496Z","properties":null}'
@@ -2137,7 +2137,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86?api-version=2023-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","name":"b0e34126-c849-4448-ae13-3a6364deff84*9F1319066D34F14E2A2F27000B7DCDB84EE2F120A720B1449F39DEA358C8DC86","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/virtualMachines/cliTestVM000001","status":"Succeeded","startTime":"2023-06-21T21:11:49.3163496Z","properties":null}'

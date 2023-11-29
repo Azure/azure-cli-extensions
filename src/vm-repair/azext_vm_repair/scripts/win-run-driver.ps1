@@ -1,4 +1,4 @@
-Param([Parameter(Mandatory=$true)][string]$script_path,[Parameter(Mandatory=$false)][bool]$init=$true,[Parameter(Mandatory=$false)][string]$params='')
+Param([Parameter(Mandatory=$true)][string]$script_path,[Parameter(Mandatory=$false)][string]$repo_fork, [Parameter(Mandatory=$false)][string]$repo_branch, [Parameter(Mandatory=$false)][bool]$init=$true,[Parameter(Mandatory=$false)][string]$params='')
 if ($init)
 {
 	try {
@@ -11,7 +11,9 @@ if ($init)
 		$logFileName = "logs-$curDate.txt"
 		Set-Content -Path "./$logFileName" -Value "[Log-Start $(Get-Date)]"
 		$logFile = (Resolve-Path "./$logFileName").Path
-		(new-object net.webclient).DownloadFile('https://github.com/Azure/repair-script-library/zipball/master/', (Join-Path $pwd 'repair-script-library.zip'))
+		
+		$url = "https://github.com/$repo_fork/repair-script-library/zipball/$repo_branch/"
+		(new-object net.webclient).DownloadFile($url, (Join-Path $pwd 'repair-script-library.zip'))
 		Expand-Archive -Path 'repair-script-library.zip' -DestinationPath 'repair-script-library'
 		$reponame = dir repair-script-library -n
 		Set-Location (Join-Path 'repair-script-library' $reponame)

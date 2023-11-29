@@ -109,5 +109,9 @@ Released version and adopted API version
       - 2023-05-02-preview
     * - 0.5.150 ~ 0.5.153
       - 2023-06-02-preview
-    * - 0.5.154 ~ latest
+    * - 0.5.154 ~ 0.5.161
       - 2023-07-02-preview
+    * - 0.5.162 ~ 0.5.166
+      - 2023-08-02-preview
+    * - 0.5.167 ~ latest
+      - 2023-08-02-preview
