@@ -673,9 +673,6 @@ def load_arguments(self, _):
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
 
-    with self.argument_context('aks stop') as c:
-        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation when stopping a private cluster.', action='store_true')
-
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', help='The cluster name.')
         c.argument('nodepool_name', options_list=['--nodepool-name', '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')

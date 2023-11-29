@@ -822,15 +822,13 @@ def aks_show(cmd, client, resource_group_name, name, aks_custom_headers=None):
     return _remove_nulls([mc])[0]
 
 
-def aks_stop(cmd, client, resource_group_name, name, no_wait=False, yes=False):
+def aks_stop(cmd, client, resource_group_name, name, no_wait=False):
     instance = client.get(resource_group_name, name)
-    # print warning and prompt when stopping a private cluster
+    # print warning when stopping a private cluster
     if check_is_private_link_cluster(instance):
-        msg = 'Your private cluster apiserver IP might get changed when it\'s stopped and started.\n' \
+        logger.warning('Your private cluster apiserver IP might get changed when it\'s stopped and started.\n' \
             'Any user provisioned private endpoints linked to this private cluster will need to be deleted and created again. ' \
-            'Any user managed DNS record also needs to be updated with the new IP.\nAre you sure you want to perform this operation?'
-        if not yes and not prompt_y_n(msg, default="n"):
-            return None
+            'Any user managed DNS record also needs to be updated with the new IP.\n')
     return sdk_no_wait(no_wait, client.begin_stop, resource_group_name, name)
 
 
