@@ -89,13 +89,11 @@ class ExportSpecificationExtension(ExportSpecification):
         arguments = self.ctx.args
 
         if result:
-            print('Results found. Exporting to', arguments.source_profile)
-
             response_format = result['format']
             exportedResults = result['value']
 
             if response_format == 'link':
-                print('Fetching specification from:', exportedResults)
+                logger.warning('Fetching specification from: %s', exportedResults)
                 getReponse = requests.get(exportedResults, timeout=10)
                 if getReponse.status_code == 200:
                     exportedResults = getReponse.content.decode()
@@ -106,7 +104,7 @@ class ExportSpecificationExtension(ExportSpecification):
             if arguments.source_profile:
                 try:
                     self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
-                    logger.info('Results exported to %s', arguments.source_profile)
+                    logger.warning('Results exported to %s', arguments.source_profile)
                 except Exception as e:  # pylint: disable=broad-except
                     logger.error('Error while writing the results to the file. Error: %s', e)
             else:
@@ -225,13 +223,10 @@ class ExportMetadataSchemaExtension(ExportMetadataSchema):
         arguments = self.ctx.args
 
         if result:
-            logger.info('Results found. Exporting to %s', arguments.source_profile)
-
             response_format = result['format']
             exportedResults = result['value']
 
             if response_format == 'link':
-                logger.info('Fetching metadata from: %s', exportedResults)
                 getReponse = requests.get(exportedResults, timeout=10)
                 if getReponse.status_code == 200:
                     exportedResults = getReponse.content.decode()
@@ -241,7 +236,7 @@ class ExportMetadataSchemaExtension(ExportMetadataSchema):
             if arguments.source_profile:
                 try:
                     self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
-                    logger.info('Results exported to %s', arguments.source_profile)
+                    logger.warning('Results exported to %s', arguments.source_profile)
 
                 except Exception as e:  # pylint: disable=broad-except
                     logger.error('Error while writing the results to the file. Error: %s', e)
@@ -368,7 +363,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             }
 
             CreateAPI(cli_ctx=cmd.cli_ctx)(command_args=api_args)
-            logger.info('API was created successfully')
+            logger.warning('API was created successfully')
 
             # Create API Version -----------------------------------------------------------------------------
             from .aaz.latest.apic.api.version import Create as CreateAPIVersion
@@ -384,7 +379,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             }
 
             CreateAPIVersion(cli_ctx=cmd.cli_ctx)(command_args=api_version_args)
-            logger.info('API version was created successfully')
+            logger.warning('API version was created successfully')
 
             # Create API Definition -----------------------------------------------------------------------------
             from .aaz.latest.apic.api.definition import Create as CreateAPIDefinition
@@ -401,7 +396,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             }
 
             CreateAPIDefinition(cli_ctx=cmd.cli_ctx)(command_args=api_definition_args)
-            logger.info('API definition was created successfully')
+            logger.warning('API definition was created successfully')
 
             # Import Specification -----------------------------------------------------------------------------
             from azure.cli.core.commands import LongRunningOperation
@@ -426,7 +421,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
 
             importAPISpecificationResults = ImportSpecificationExtension(cli_ctx=cmd.cli_ctx)(command_args=api_specification_args)
             LongRunningOperation(cmd.cli_ctx)(importAPISpecificationResults)
-            logger.info('API specification was created successfully')
+            logger.warning('API specification was created successfully')
 
             # Create API Deployment -----------------------------------------------------------------------------
             from .aaz.latest.apic.api.deployment import Create as CreateAPIDeployment
@@ -478,4 +473,4 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                     }
 
                     CreateAPIDeployment(cli_ctx=cmd.cli_ctx)(command_args=api_deployment_args)
-                    logger.info('API deployment was created successfully')
+                    logger.warning('API deployment was created successfully')
