@@ -5,6 +5,11 @@ Release History
 upcoming
 ++++++
 
+0.3.45
+++++++
+* 'az containerapp up': Cloud Build Bugfix - 500 Internal Server Error (Wrong env selected to create builder)
+* 'az containerapp up': support to create or update a containerapp on connected environment as well as any associated resources (extension on connected cluster, custom location) with --custom-location or --connected-cluster-id
+
 0.3.44
 ++++++
 * 'az containerapp env workload-profile set': deprecate command

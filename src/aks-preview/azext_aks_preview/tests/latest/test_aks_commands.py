@@ -1436,7 +1436,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'node_pool_name': node_pool_name,
             'ssh_key_value': self.generate_ssh_keys(),
             'machine_name': machine_name,
-        })    
+        })
         show_cmd = 'aks machine show '\
             '--resource-group={resource_group} --cluster-name={name} ' \
             '--nodepool-name={node_pool_name} --machine-name={machine_name} -o json'
@@ -4681,7 +4681,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--network-plugin azure --ssh-key-value={ssh_key_value} --kubernetes-version {k8s_version} ' \
                      '--network-plugin-mode=overlay'
-        
+
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.networkPlugin', 'azure'),
@@ -6398,28 +6398,34 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_create_web_application_routing_dns_zone_not_exist(self, resource_group, resource_group_location):
+    def test_aks_create_web_application_routing_with_private_dns_zone(self, resource_group, resource_group_location):
         # Test creation failure when using an non-existing dns zone resource ID.
         aks_name = self.create_random_name('cliakstest', 16)
+        private_dns_zone_name = self.create_random_name('cliakstest', 16) + ".xyz"
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
-            'ssh_key_value': self.generate_ssh_keys()
+            'ssh_key_value': self.generate_ssh_keys(),
+            'private_dns_zone_name': private_dns_zone_name
         })
+
+        create_private_dns_zone_cmd = 'network private-dns zone create -g {resource_group} -n {private_dns_zone_name}'
+        private_dns_zone_id = self.cmd(create_private_dns_zone_cmd, checks=[
+            self.check('name', private_dns_zone_name),
+        ]).get_output_in_json()['id']
+
+        self.kwargs.update({ 'private_dns_zone_id': private_dns_zone_id })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--enable-addons web_application_routing ' \
-                     '--dns-zone-resource-ids "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourcegroups/notexist/providers/Microsoft.Network/dnsZones/notexist.com" ' \
+                     '--dns-zone-resource-ids={private_dns_zone_id} ' \
                      '--ssh-key-value={ssh_key_value} -o json'
-        try:
-            self.cmd(create_cmd, checks=[])
-            raise Exception("didn't get expected failure")
-        except (HttpResponseError, BadRequestError, AzureInternalError):
-            # expected failure
-            # HttpResponseError for without error mapping
-            # BadRequestError for not a valid dns zone resource
-            # AzureInternalError for requesting from a different tenant
-            pass
+
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('ingressProfile.webAppRouting.enabled', True),
+            self.check('ingressProfile.webAppRouting.dnsZoneResourceIds[0]', private_dns_zone_id),
+        ])
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -8025,8 +8031,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
-        
-    
+
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_premium_sku(self, resource_group, resource_group_location):
