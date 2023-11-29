@@ -81,7 +81,7 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
                 service_bind = {
                     "serviceId": containerapp_def["id"],
                     "name": binding_name,
-                    "clientType": arg_dict.get("clientType")
+                    "clientType": arg_dict.get(binding_name+"_clientType")
                 }
                 if customized_keys:
                     service_bind["customizedKeys"] = customized_keys
@@ -155,16 +155,6 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
     for service_binding_str in service_bindings_list:
         parts = service_binding_str.split(",")
         arg_dict = {}
-
-        for part in parts:
-            key_value = part.split("=")
-
-            if len(key_value) == 1:
-                # This means we don't have comma separated args
-                pass
-            else:
-                arg_dict[key_value[0]] = key_value[1]
-
         service_binding = parts[0].split(':')
         service_name = service_binding[0]
 
@@ -172,6 +162,19 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
             binding_name = service_name
         else:
             binding_name = service_binding[1]
+
+        for part in parts:
+            key_value = part.split("=")
+            clientType=binding_name+"_clientType"
+            if len(key_value) == 1:
+                # This means we don't have comma separated args
+                arg_dict[clientType] = "none"
+                pass
+            else:
+                if key_value[0] == "clientType":
+                    arg_dict[clientType] = key_value[1]
+
+
 
         if not validate_binding_name(binding_name):
             raise InvalidArgumentValueError("The Binding Name can only contain letters, numbers (0-9), periods ('.'), "
