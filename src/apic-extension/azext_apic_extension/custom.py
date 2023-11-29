@@ -106,7 +106,7 @@ class ExportSpecificationExtension(ExportSpecification):
             if arguments.source_profile:
                 try:
                     self.writeResultsToFile(results=exportedResults, file_name=str(arguments.source_profile))
-                    print('Results exported to', arguments.source_profile)
+                    logger.info('Results exported to %s', arguments.source_profile)
                 except Exception as e:  # pylint: disable=broad-except
                     logger.error('Error while writing the results to the file. Error: %s', e)
             else:

@@ -54,7 +54,7 @@ class ApicExtensionScenario(ScenarioTest):
         self.kwargs.update({
             'server_details': server_details,
         })
-        self.cmd('az apic environment update -g {resource_group} -s {service_name} --name {environment_name} --title "Public cloud" --kind "development" --server "{server_details}"',
+        self.cmd('az apic environment update -g {resource_group} -s {service_name} --name {environment_name} --title "Public cloud" --kind "development" --server "{server_details}" -w default',
                     checks=[
                         self.check('name', self.kwargs['environment_name']),
                         self.check('title', 'Public cloud'),
@@ -104,7 +104,7 @@ class ApicExtensionScenario(ScenarioTest):
         self.kwargs.update({
             'api_version_title_update': "CLI Test API Version 0"
         })
-        self.cmd('az apic api version update -g {resource_group} -s {service_name} --api-name {api_name} --name {api_version} --title "{api_version_title_update}"',
+        self.cmd('az apic api version update -g {resource_group} -s {service_name} --api-name {api_name} --name {api_version} --title "{api_version_title_update}" -w default',
                     checks=[
                         self.check('name', self.kwargs['api_version']),
                         self.check('title', self.kwargs['api_version_title_update'])])
@@ -128,7 +128,7 @@ class ApicExtensionScenario(ScenarioTest):
         self.kwargs.update({
             'api_definition_title_update': "CLI Test API Definition 0"
         })
-        self.cmd('az apic api definition update -g {resource_group} -s {service_name} --api-name {api_name} --version {api_version} --name {api_definition_name} --title "{api_definition_title_update}"',
+        self.cmd('az apic api definition update -g {resource_group} -s {service_name} --api-name {api_name} --version {api_version} --name {api_definition_name} --title "{api_definition_title_update}" -w default',
                     checks=[
                         self.check('name', self.kwargs['api_definition_name']),
                         self.check('title', self.kwargs['api_definition_title_update'])])
@@ -196,7 +196,7 @@ class ApicExtensionScenario(ScenarioTest):
         self.kwargs.update({
             'deployment_title_update': 'CLI Test Production deployment update'
         })
-        self.cmd('az apic api deployment update -g {resource_group} -s {service_name} --api-name {api_name} --name {deployment_name} --title "{deployment_title_update}"',
+        self.cmd('az apic api deployment update -g {resource_group} -s {service_name} --api-name {api_name} --name {deployment_name} --title "{deployment_title_update}" -w default',
                     checks=[
                         self.check('name', self.kwargs['deployment_name']),
                         self.check('title', self.kwargs['deployment_title_update'])])

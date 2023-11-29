@@ -1,4 +1,4 @@
-# Azure CLI aPICenter Extension
+# Azure CLI APICenter Extension
 
 This extension can help create and manage APICenter Resources
 
