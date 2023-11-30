@@ -9,6 +9,10 @@ from azure.cli.testsdk import (ScenarioTest, record_only)
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
+
+"""
+Mark record_only to use the recording files as the mocked server to run the tests.
+"""
 @record_only()
 class GatewayResponseCacheTest(ScenarioTest):
     def test_response_cache(self):
