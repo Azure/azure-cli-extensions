@@ -27,7 +27,7 @@ from azext_attestation.vendored_sdks.azure_attestation.models._models_py3 import
     AttestOpenEnclaveRequest, RuntimeData, InitTimeData
 from azext_attestation.vendored_sdks.azure_mgmt_attestation.models import JsonWebKey
 from azext_attestation.aaz.latest.attestation import Create as _AttestationCreate, Update as _AttestationUpdate,\
-    Delete as _AttestationDelete, Show as _AttestationShow
+    Delete as _AttestationDelete, Show as _AttestationShow, GetDefaultByLocation as _AttestationGetDefaultByLocation
 from azext_attestation.aaz.latest.attestation.policy import Reset as _ResetPolicy, Set as _SetPolicy, Show as _GetPolicy
 from azext_attestation.aaz.latest.attestation.signer import Add as _AddSigner, Remove as _RemoveSigner,\
     List as _ListSigners
@@ -126,7 +126,7 @@ def attestation_attestation_provider_create(client,
 class AttestationCreate(_AttestationCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg,AAZListArg
+        from azure.cli.core.aaz import AAZStrArg, AAZListArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.id = AAZStrArg(
             options=["--id"],
@@ -140,7 +140,7 @@ class AttestationCreate(_AttestationCreate):
             options=["--certs-input-path"],
             help="Space-separated file paths to PEM/DER files containing certificates.",
         )
-
+        args_schema.certs_input_path.Element = AAZStrArg()
         args_schema.provider_name._required = False
         args_schema.resource_group._required = False
         args_schema.certs._registered = False
@@ -174,8 +174,8 @@ class AttestationCreate(_AttestationCreate):
             else:
                 raise CLIError('Unsupported key type: {}'.format(type(key)))
 
-            jwk = JsonWebKey(kty=kty, alg=alg, use='sig')
-            jwk.x5c = [base64.b64encode(cert.public_bytes(Encoding.DER)).decode('ascii')]
+            jwk = {'kty': kty, 'alg': alg, 'use': 'sig',
+                   'x5c': [base64.b64encode(cert.public_bytes(Encoding.DER)).decode('ascii')]}
             certs.append(jwk)
         args.certs = certs
 
@@ -298,6 +298,7 @@ class AddSigner(_AddSigner):
             raise CLIError('Please specify one of parameters: --signer or --signer-file/-f')
         if has_value(args.signer) and has_value(args.signer_file):
             raise CLIError('--signer and --signer-file/-f are mutually exclusive.')
+        signer = None
         if has_value(args.signer_file):
             signer_file = os.path.expanduser(args.signer_file.to_serialized_data())
             if not os.path.exists(signer_file):
@@ -307,8 +308,11 @@ class AddSigner(_AddSigner):
             with open(signer_file) as f:
                 signer = f.read()
 
-        if has_value(signer):
-            args.signer = str(signer, encoding="utf-8")
+        if signer:
+            if type(signer) == bytes:
+                args.signer = str(signer, encoding="utf-8")
+            else:
+                args.signer = signer
 
     def _output(self, *args, **kwargs):
         token = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -378,6 +382,7 @@ class RemoveSigner(_RemoveSigner):
             raise CLIError('Please specify one of parameters: --signer or --signer-file/-f')
         if has_value(args.signer) and has_value(args.signer_file):
             raise CLIError('--signer and --signer-file/-f are mutually exclusive.')
+        signer = None
         if has_value(args.signer_file):
             signer_file = os.path.expanduser(args.signer_file.to_serialized_data())
             if not os.path.exists(signer_file):
@@ -387,8 +392,29 @@ class RemoveSigner(_RemoveSigner):
             with open(signer_file) as f:
                 signer = f.read()
 
-        if has_value(signer):
-            args.signer = str(signer, encoding="utf-8")
+        if signer:
+            if type(signer) == bytes:
+                args.signer = str(signer, encoding="utf-8")
+            else:
+                args.signer = signer
+
+    def _output(self, *args, **kwargs):
+        args = self.ctx.args
+        list_args = {"resource_group": args.resource_group, "provider_name": args.provider_name}
+        from azext_attestation.aaz.latest.attestation.signer import List
+        token = List(cli_ctx=self.cli_ctx)(command_args=list_args)['token']
+        result = {'Jwt': token}
+        if has_value(token):
+            header = jwt.get_unverified_header(token)
+            result.update({
+                'Algorithm': header.get('alg', ''),
+                'JKU': header.get('jku', '')
+            })
+            body = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False})
+            result['Certificates'] = body.get('x-ms-policy-certificates', {}).get('keys', [])
+            result['CertificateCount'] = len(result['Certificates'])
+
+        return result
 
 
 def list_signers(cmd, client, resource_group_name=None, provider_name=None):
@@ -508,35 +534,37 @@ class GetPolicy(_GetPolicy):
         validate_provider_resource_id(self)
 
     def _output(self, *args, **kwargs):
-        token = self.deserialize_output(self.ctx.vars.instance, client_flatten=True).token
+        token = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)['token']
+        return handle_policy_output(token)
 
-        result = {}
 
-        if has_value(token):
-            import jwt
-            policy = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False}).get('x-ms-policy', '')
-            result['Jwt'] = policy
-            result['JwtLength'] = len(policy)
-            result['Algorithm'] = None
+def handle_policy_output(token):
+    result = {}
 
-            if has_value(policy):
+    if has_value(token):
+        import jwt
+        policy = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False}).get('x-ms-policy', '')
+        result['Jwt'] = policy
+        result['JwtLength'] = len(policy)
+        result['Algorithm'] = None
+
+        if has_value(policy):
+            try:
+                decoded_policy = jwt.decode(policy, algorithms=['RS256'], options={"verify_signature": False})
+                decoded_policy = decoded_policy.get('AttestationPolicy', '')
                 try:
-                    decoded_policy = jwt.decode(policy, algorithms=['RS256'], options={"verify_signature": False})
-                    decoded_policy = decoded_policy.get('AttestationPolicy', '')
-                    try:
-                        new_decoded_policy = base64.b64decode(_b64url_to_b64(decoded_policy)).decode('ascii')
-                        decoded_policy = new_decoded_policy
-                    except:  # pylint: disable=bare-except
-                        pass
-                    finally:
-                        result['Text'] = decoded_policy
-                        result['TextLength'] = len(decoded_policy)
-                        result['Algorithm'] = jwt.get_unverified_header(policy).get('alg', None)
+                    new_decoded_policy = base64.b64decode(_b64url_to_b64(decoded_policy)).decode('ascii')
+                    decoded_policy = new_decoded_policy
                 except:  # pylint: disable=bare-except
-                    result['Text'] = ''
-                    result['TextLength'] = 0
-
-        return result
+                    pass
+                finally:
+                    result['Text'] = decoded_policy
+                    result['TextLength'] = len(decoded_policy)
+                    result['Algorithm'] = jwt.get_unverified_header(policy).get('alg', None)
+            except:  # pylint: disable=bare-except
+                result['Text'] = ''
+                result['TextLength'] = 0
+    return result
 
 
 def set_policy(cmd, client, attestation_type, new_attestation_policy=None, new_attestation_policy_file=None,
@@ -629,6 +657,7 @@ class SetPolicy(_SetPolicy):
         if not has_value(args.new_attestation_policy_file) and not has_value(args.new_attestation_policy):
             raise CLIError('Please specify --new-attestation-policy or --new-attestation-policy-file/-f')
 
+        new_attestation_policy = None
         if has_value(args.new_attestation_policy_file):
             file_path = os.path.expanduser(args.new_attestation_policy_file.to_serialized_data())
             if not os.path.exists(file_path):
@@ -661,8 +690,18 @@ class SetPolicy(_SetPolicy):
                 print(e)
                 raise CLIError('Failed to encode text content, are you using JWT? If yes, please use --policy-format JWT')
 
-        if has_value(new_attestation_policy):
-            args.new_attestation_policy = str(new_attestation_policy, encoding="utf-8")
+        if new_attestation_policy:
+            if type(new_attestation_policy) == bytes:
+                args.new_attestation_policy = str(new_attestation_policy, encoding="utf-8")
+            else:
+                args.new_attestation_policy = new_attestation_policy
+
+    def _output(self, *args, **kwargs):
+        args = self.ctx.args
+        show_args = {"resource_group": args.resource_group, "provider_name": args.provider_name, "attestation_type": args.attestation_type}
+        from azext_attestation.aaz.latest.attestation.policy import Show
+        token = Show(cli_ctx=self.cli_ctx)(command_args=show_args)['token']
+        return handle_policy_output(token)
 
 
 def validate_provider_resource_id(self):
@@ -717,6 +756,13 @@ class ResetPolicy(_ResetPolicy):
     def pre_operations(self):
         validate_provider_resource_id(self)
 
+    def _output(self, *args, **kwargs):
+        args = self.ctx.args
+        show_args = {"resource_group": args.resource_group, "provider_name": args.provider_name, "attestation_type": args.attestation_type}
+        from azext_attestation.aaz.latest.attestation.policy import Show
+        token = Show(cli_ctx=self.cli_ctx)(command_args=show_args)['token']
+        return handle_policy_output(token)
+
 
 def attest_open_enclave(cmd, client, report=None, runtime_data=None, runtime_data_type=None, init_time_data=None,
                         init_time_data_type=None, resource_group_name=None, provider_name=None):
@@ -745,3 +791,11 @@ def attest_open_enclave(cmd, client, report=None, runtime_data=None, runtime_dat
 def attestation_attestation_provider_get_default_by_location(client,
                                                              loc):
     return client.get_default_by_location(location=loc)
+
+
+class AttestationGetDefaultByLocation(_AttestationGetDefaultByLocation):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.location._fmt = None
+        return args_schema

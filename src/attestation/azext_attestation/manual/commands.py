@@ -43,11 +43,12 @@ def load_command_table(self, _):
     with self.command_group('attestation', attestation_attestation_provider,
                             client_factory=cf_attestation_provider, is_experimental=True) as g:
         from azext_attestation.manual.custom import AttestationCreate, AttestationUpdate, AttestationShow, \
-            AttestationDelete
+            AttestationDelete, AttestationGetDefaultByLocation
         self.command_table["attestation create"] = AttestationCreate(loader=self)
         self.command_table["attestation update"] = AttestationUpdate(loader=self)
         self.command_table["attestation show"] = AttestationShow(loader=self)
         self.command_table["attestation delete"] = AttestationDelete(loader=self)
+        self.command_table["attestation get-default-by-location"] = AttestationGetDefaultByLocation(loader=self)
         g.custom_command('list', 'attestation_attestation_provider_list',
                          doc_string_source=attestation_provider_doc_template.format('list'))
         g.custom_show_command('show', 'attestation_attestation_provider_show', validator=validate_provider_resource_id,

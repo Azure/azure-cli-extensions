@@ -111,6 +111,16 @@ class Show(AAZCommand):
             return "ODataV4Format"
 
         @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "attestationType", self.ctx.args.attestation_type,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
