@@ -26,22 +26,23 @@ class QuotaScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='test_quota', location='eastus')
     def test_quota_crud(self, resource_group):
         self.kwargs.update({
-            'resource_name': 'StandardSkuPublicIpAddresses',
-            'resource_type': 'PublicIPAddresses',
-            'sub':  '/subscriptions/{}/providers/Microsoft.Network/locations/eastus'.format(self.get_subscription_id())
+            'resource_name': 'standardFSv2Family',
+            'resource_type': 'dedicated',
+            'sub':  '/subscriptions/{}/providers/Microsoft.Compute/locations/eastus'.format(self.get_subscription_id())
         })
 
         quota = self.cmd('quota show --resource-name {resource_name} --scope {sub}').get_output_in_json()
-        self.kwargs['value'] = quota['properties']['limit']['value']
+        self.kwargs['value'] = quota['properties']['limit']['value'] + 1
+        self.kwargs['new_value'] = quota['properties']['limit']['value'] + 2
 
         self.cmd('quota create --resource-name {resource_name} --scope {sub} --resource-type {resource_type} --limit-object value={value}',
                  checks=[self.check('properties.limit.value', '{value}')]).get_output_in_json()
 
-        self.cmd('quota update --resource-name {resource_name} --scope {sub} --resource-type {resource_type} --limit-object value={value}',
-                 checks=[self.check('properties.limit.value', '{value}')])
+        self.cmd('quota update --resource-name {resource_name} --scope {sub} --resource-type {resource_type} --limit-object value={new_value}',
+                 checks=[self.check('properties.limit.value', '{new_value}')])
         self.cmd('quota list --scope {sub}')
         self.cmd('quota show --resource-name {resource_name} --scope {sub}',
-                 checks=[self.check('properties.limit.value', '{value}')])
+                 checks=[self.check('properties.limit.value', '{new_value}')])
 
         self.cmd('quota usage show --resource-name {resource_name} --scope {sub}')
         self.cmd('quota usage list --scope {sub}')
