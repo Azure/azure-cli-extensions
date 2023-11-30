@@ -169,7 +169,6 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
             if len(key_value) == 1:
                 # This means we don't have comma separated args
                 arg_dict[clientType] = "none"
-                pass
             else:
                 if key_value[0] == "clientType":
                     arg_dict[clientType] = key_value[1]
