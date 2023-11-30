@@ -5,6 +5,7 @@ Release History
 upcoming
 ++++++
 * 'az containerapp create': Fix BadRequest Error about the clientType with --bind
+* 'az containerapp update': Fix bug for --min-replicas is not set when the value is 0
 
 0.3.45
 ++++++
