@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp create --bind': support clientType field in all binds
 
 0.3.45
 ++++++

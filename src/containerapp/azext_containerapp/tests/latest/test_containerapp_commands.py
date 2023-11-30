@@ -957,24 +957,32 @@ class ContainerappServiceBindingTests(ScenarioTest):
         self.cmd('containerapp service qdrant create -g {} -n {} --environment {}'.format(
             resource_group, qdrant_ca_name, env_name))
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
+        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis,clientType=dotnet'.format(
             resource_group, ca_name, env_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
-            JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
+            JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "redis"),
+            JMESPathCheck('properties.template.serviceBinds[1].clientType', "dotnet")
         ])
 
         self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+            JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet")
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb,clientType=dotnet qdrant'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+            JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
+            JMESPathCheck('properties.template.serviceBinds[2].clientType', "none"),
             JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
-            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant")
+            JMESPathCheck('properties.template.serviceBinds[3].clientType', "dotnet"),
+            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant"),
+            JMESPathCheck('properties.template.serviceBinds[4].clientType', "none")
         ])
 
         self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(
@@ -1039,25 +1047,32 @@ class ContainerappServiceBindingTests(ScenarioTest):
             self.cmd(f'containerapp show -g {resource_group} -n {addon}', checks=[
                 JMESPathCheck("properties.provisioningState", "Succeeded")])
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
+        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis,clientType=dotnet'.format(
             resource_group, ca_name, env_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
-            JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
+            JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "redis"),
+            JMESPathCheck('properties.template.serviceBinds[1].clientType', "dotnet")
         ])
 
         self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+            JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet")
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb,clientType=dotnet qdrant'.format(
             resource_group, ca_name, image), checks=[
-            JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+            JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
+            JMESPathCheck('properties.template.serviceBinds[2].clientType', "none"),
             JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
-            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant")
+            JMESPathCheck('properties.template.serviceBinds[3].clientType', "dotnet"),
+            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant"),
+            JMESPathCheck('properties.template.serviceBinds[4].clientType', "none")
         ])
 
         self.cmd('containerapp add-on postgres delete -g {} -n {} --yes'.format(
