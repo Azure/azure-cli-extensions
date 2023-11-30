@@ -1839,7 +1839,7 @@ properties:
                               cpu: 0.5
                               memory: 1Gi
                         scale:
-                          minReplicas: 0
+                          minReplicas: 1
                           maxReplicas: 3
                           rules: []
                     """
@@ -1857,7 +1857,7 @@ properties:
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision2"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
-            JMESPathCheck("properties.template.scale.minReplicas", 0),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
             JMESPathCheck("properties.template.scale.rules", None)
         ])
