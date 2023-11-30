@@ -729,7 +729,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
         ])
 
         self.cmd(
-            'containerapp create -n {} -g  {} --environment {} --bind {},clientType=dotnet,resourcegroup={} {},clientType=none,resourcegroup={}'.format(
+            'containerapp create -n {} -g {} --environment {} --bind {},clientType=dotnet,resourcegroup={} {},clientType=none,resourcegroup={}'.format(
                 ca_name, resource_group, env_id, redis_ca_name, env_rg, postgres_ca_name, env_rg), expect_failure=False, checks=[
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck('length(properties.template.serviceBinds)', 2),
@@ -739,8 +739,20 @@ class ContainerappServiceBindingTests(ScenarioTest):
                 JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
             ])
 
+        # test clean clientType
         self.cmd(
-            'containerapp create -n {} -g  {} --environment {} --bind {},resourcegroup={}'.format(
+            'containerapp update -n {} -g {} --bind {},clientType=none,resourcegroup={}'.format(
+                ca_name, resource_group, redis_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', redis_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', postgres_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+            ])
+
+        self.cmd(
+            'containerapp create -n {} -g {} --environment {} --bind {},resourcegroup={}'.format(
                 ca_name, resource_group, env_id, kafka_ca_name, env_rg), expect_failure=False,
             checks=[
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
