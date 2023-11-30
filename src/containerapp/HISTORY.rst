@@ -5,6 +5,10 @@ Release History
 upcoming
 ++++++
 
+0.3.46
+++++++
+* 'az containerapp create': Fix BadRequest Error about clientType with --bind
+
 0.3.45
 ++++++
 * 'az containerapp up': Cloud Build Bugfix - 500 Internal Server Error (Wrong env selected to create builder)

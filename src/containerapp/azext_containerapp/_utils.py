@@ -81,8 +81,9 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
                 service_bind = {
                     "serviceId": containerapp_def["id"],
                     "name": binding_name,
-                    "clientType": arg_dict.get("clientType")
                 }
+                if arg_dict.get("clientType"):
+                    service_bind["clientType"] = arg_dict.get("clientType")
                 if customized_keys:
                     service_bind["customizedKeys"] = customized_keys
                 service_bindings_def_list.append(service_bind)
