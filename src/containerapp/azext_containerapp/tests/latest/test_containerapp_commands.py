@@ -1550,13 +1550,20 @@ properties:
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'containerapp create -g {resource_group} -n {app_name} --environment {env} --ingress external --target-port 80 --min-replicas {replica_count}').get_output_in_json()
+        self.cmd(f'containerapp create -g {resource_group} -n {app_name} --environment {env} --ingress external --target-port 80 --min-replicas {replica_count}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.scale.minReplicas", 3)
+        ]).get_output_in_json()
 
         count = self.cmd(f"containerapp replica count -g {resource_group} -n {app_name}").output
         self.assertEqual(int(count), replica_count)
 
         self.cmd(f'containerapp replica list -g {resource_group} -n {app_name}', checks=[
             JMESPathCheck('length(@)', replica_count),
+        ])
+        self.cmd(f'containerapp update -g {resource_group} -n {app_name} --min-replicas 0', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.scale.minReplicas", 0)
         ])
 
         self.cmd(f'containerapp delete -g {resource_group} -n {app_name} --yes')
@@ -1832,7 +1839,7 @@ properties:
                               cpu: 0.5
                               memory: 1Gi
                         scale:
-                          minReplicas: 1
+                          minReplicas: 0
                           maxReplicas: 3
                           rules: []
                     """
@@ -1850,7 +1857,7 @@ properties:
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision2"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
-            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.minReplicas", 0),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
             JMESPathCheck("properties.template.scale.rules", None)
         ])
