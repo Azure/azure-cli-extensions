@@ -3,10 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """Contains class for deploying generated definitions using the Python SDK."""
+from time import sleep
 from typing import Optional
-from knack.log import get_logger
 
 from azure.cli.core.commands import LongRunningOperation
+from azure.core.exceptions import ResourceExistsError
 from azext_aosm._configuration import (
     Configuration,
     NFConfiguration,
@@ -15,6 +16,7 @@ from azext_aosm._configuration import (
 )
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.util.utils import input_ack
+from knack.log import get_logger
 
 logger = get_logger(__name__)
 
@@ -296,16 +298,29 @@ class ResourceDeleter:
         message = f"Delete Publisher {self.config.publisher_name}"
         logger.debug(message)
         print(message)
-        try:
-            poller = self.api_clients.aosm_client.publishers.begin_delete(
-                resource_group_name=self.config.publisher_resource_group_name,
-                publisher_name=self.config.publisher_name,
-            )
-            LongRunningOperation(self.cli_ctx, "Deleting Publisher...")(poller)
-            logger.info("Deleted Publisher")
-        except Exception:
-            logger.error("Failed to delete publisher")
-            raise
+        # Occasionally nested resources that have just been deleted (e.g. artifact store) will
+        # still appear to exist, raising ResourceExistsError. We handle this by retrying up to
+        # 6 times, with a 30 second wait between each.
+        for attempt in range(6):
+            try:
+                poller = self.api_clients.aosm_client.publishers.begin_delete(
+                    resource_group_name=self.config.publisher_resource_group_name,
+                    publisher_name=self.config.publisher_name,
+                )
+                LongRunningOperation(self.cli_ctx, "Deleting Publisher...")(poller)
+                logger.info("Deleted Publisher")
+                break
+            except ResourceExistsError:
+                if attempt == 5:
+                    logger.error("Failed to delete publisher")
+                    raise
+                logger.debug(
+                    "ResourceExistsError: This may be nested resource is not finished deleting. Wait and retry."
+                )
+                sleep(30)
+            except Exception:
+                logger.error("Failed to delete publisher")
+                raise
 
     def delete_config_group_schema(self) -> None:
         """Delete the Configuration Group Schema."""
