@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 """
-This script is used to verify linter on extensions.
+This script is used to run azdev linter and azdev style on extensions.
 
 It's only working on ADO by default. If want to run locally,
 please update the target branch/commit to find diff in function find_modified_files_against_master_branch()
@@ -134,10 +134,10 @@ def contain_extension_code(files):
     return False
 
 
-def linter_on_external_extension(index_json):
+def azdev_on_external_extension(index_json):
     """
     Check if the modified metadata items in index.json refer to the extension in repo.
-    If not, az extension linter on wheel. Otherwise skip it.
+    If not, az extension check on wheel. Otherwise skip it.
     """
 
     public_extensions = json.loads(check_output('az extension list-available -d', shell=True))
@@ -172,7 +172,7 @@ def linter_on_external_extension(index_json):
         az_extension.remove()
 
 
-def linter_on_internal_extension(modified_files):
+def azdev_on_internal_extension(modified_files):
     extension_names = set()
 
     for f in modified_files:
@@ -182,7 +182,7 @@ def linter_on_internal_extension(modified_files):
 
     if not extension_names:
         separator_line()
-        print('no extension source code modified, no extension needs to be linter')
+        print('no extension source code modified, no extension needs to be checked')
 
     for name in extension_names:
         separator_line()
@@ -206,8 +206,8 @@ def main():
         # This scenarios is for modify index.json only.
         # If the modified metadata items refer to the extension code exits in this repo, PR is be created via Pipeline.
         # If the modified metadata items refer to the extension code doesn't exist, PR is created from Service Team.
-        # We try to verify linter on it.
-        linter_on_external_extension(modified_files[0])
+        # We try to run azdev linter and azdev style on it.
+        azdev_on_external_extension(modified_files[0])
     else:
         # modified files contain more than one file
 
@@ -216,10 +216,10 @@ def main():
             if contain_index_json(modified_files):
                 raise ModifiedFilesNotAllowedError()
 
-            linter_on_internal_extension(modified_files)
+            azdev_on_internal_extension(modified_files)
         else:
             separator_line()
-            print('no extension source code modified, no extension needs to be linter')
+            print('no extension source code modified, no extension needs to be checked')
             separator_line()
 
 

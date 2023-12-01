@@ -67,37 +67,6 @@ jobs:
       source ./env/bin/activate
       azdev verify license
 
-- job: StaticAnalysis
-  displayName: "Static Analysis"
-  pool:
-    name: 'pool-ubuntu-2004'
-  steps:
-    - task: UsePythonVersion@0
-      displayName: 'Use Python 3.11'
-      inputs:
-        versionSpec: 3.11
-    - bash: pip install wheel==0.30.0 "pylint>=2.12,<3" flake8==6.0.0 requests
-      displayName: 'Install wheel, pylint, flake8, requests'
-    - bash: python scripts/ci/source_code_static_analysis.py
-      displayName: "Static Analysis"
-
-- job: StaticAnalysisv2
-  displayName: "Azdev Static Analysis"
-  pool:
-    name: 'pool-ubuntu-2004'
-  steps:
-    - task: UsePythonVersion@0
-      displayName: 'Use Python 3.11'
-      inputs:
-        versionSpec: 3.11
-    - template: .azure-pipelines/templates/azdev_setup.yml
-    - bash: |
-        #!/usr/bin/env bash
-        set -ev
-        source ./env/bin/activate
-        python scripts/ci/azdev_style_check.py
-      displayName: "Azdev Style"
-
 - job: IndexVerify
   displayName: "Verify Extensions Index"
   pool:
@@ -148,8 +117,8 @@ jobs:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
-- job: LintModifiedExtensions
-  displayName: "CLI Linter on Modified Extensions"
+- job: AzdevModifiedExtensions
+  displayName: "azdev linter && style on Modified Extensions"
   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
   pool:
     name: 'pool-ubuntu-2004'
@@ -166,8 +135,8 @@ jobs:
         # overwrite the default AZURE_EXTENSION_DIR set by ADO
         AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
 
-        AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/verify_linter.py
-      displayName: "CLI Linter on Modified Extension"
+        AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/azdev_linter_style.py
+      displayName: "azdev linter && style on Modified Extensions"
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
