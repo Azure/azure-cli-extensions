@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Remove --enable-artifact-streaming from `az aks nodepool update` command, as it is currently not supported in all regions.
 
 0.5.171
 +++++++
