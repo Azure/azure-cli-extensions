@@ -55,6 +55,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
 )
 from azext_aks_preview._helpers import (
+    check_is_private_link_cluster,
     get_cluster_snapshot_by_snapshot_id,
     get_nodepool_snapshot_by_snapshot_id,
     print_or_merge_credentials,
@@ -819,6 +820,16 @@ def aks_show(cmd, client, resource_group_name, name, aks_custom_headers=None):
     headers = get_aks_custom_headers(aks_custom_headers)
     mc = client.get(resource_group_name, name, headers=headers)
     return _remove_nulls([mc])[0]
+
+
+def aks_stop(cmd, client, resource_group_name, name, no_wait=False):
+    instance = client.get(resource_group_name, name)
+    # print warning when stopping a private cluster
+    if check_is_private_link_cluster(instance):
+        logger.warning('Your private cluster apiserver IP might get changed when it\'s stopped and started.\n'
+                       'Any user provisioned private endpoints linked to this private cluster will need to be deleted and created again. '
+                       'Any user managed DNS record also needs to be updated with the new IP.')
+    return sdk_no_wait(no_wait, client.begin_stop, resource_group_name, name)
 
 
 # pylint: disable=unused-argument

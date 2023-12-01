@@ -670,6 +670,16 @@ helps['aks scale'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
+helps['aks stop'] = """
+    type: command
+    short-summary: Stop a managed cluster.
+    long-summary: This can only be performed on Azure Virtual Machine Scale set backed clusters. Stopping a
+        cluster stops the control plane and agent nodes entirely, while maintaining all object and
+        cluster state. A cluster does not accrue charges while it is stopped. See `stopping a
+        cluster <https://docs.microsoft.com/azure/aks/start-stop-cluster>`_ for more details about
+        stopping a cluster.
+"""
+
 helps['aks upgrade'] = """
     type: command
     short-summary: Upgrade a managed Kubernetes cluster to a newer version.

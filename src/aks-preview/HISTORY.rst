@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.173
++++++++
+* Add warning when stopping a private link cluster.
+
 0.5.172
 +++++++
 * Fix for regression issue with `az aks create --enable-addon` command for enabling App Routing
