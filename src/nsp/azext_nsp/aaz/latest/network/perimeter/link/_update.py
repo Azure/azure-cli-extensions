@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-02-01-preview",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/links/{}", "2021-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/links/{}", "2023-07-01-preview"],
         ]
     }
 
@@ -183,7 +183,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-02-01-preview",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -270,7 +270,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-02-01-preview",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -328,7 +328,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -382,7 +382,9 @@ class _UpdateHelper:
         nsp_link_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        nsp_link_read.properties = AAZObjectType()
+        nsp_link_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
         nsp_link_read.type = AAZStrType(
             flags={"read_only": True},
         )
