@@ -70,12 +70,17 @@ def test_extension():
         logger.info(f'installing extension: {ext_name}')
         cmd = ['azdev', 'extension', 'add', ext_name]
         run_command(cmd, check_return_code=True)
+
         # Use azext_$ext_name, a unique long name for testing, to avoid the following error when the main module and extension name have the same name:
-        # TODO
+        # 'containerapp' exists in both 'azext_containerapp' and 'containerapp'. Resolve using `azext_containerapp.containerapp` or `containerapp.containerapp`
+        # 'containerapp' not found. If newly added, re-run with --discover
+        # No tests selected to run.
+        # ----------------------------------------------------------------------
         # For the recommended azdev test example, please refer to: `azdev test --help`
         # `python -m azdev test --no-exitfirst --discover --verbose azext_containerapp`
         test_args = [sys.executable, '-m', 'azdev', 'test', '--no-exitfirst', '--discover', '--verbose', pkg_name]
         logger.warning(f'test_args: {test_args}')
+
         run_command(test_args, check_return_code=True)
         logger.info(f'uninstalling extension: {ext_name}')
         cmd = ['azdev', 'extension', 'remove', ext_name]
