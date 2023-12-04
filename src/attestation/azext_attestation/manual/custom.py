@@ -252,6 +252,7 @@ def add_signer(cmd, client, signer=None, signer_file=None, resource_group_name=N
     provider_client = cf_attestation_provider(cmd.cli_ctx)
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
     token = client.add(tenant_base_url=provider.attest_uri, policy_certificate_to_add=signer)
+    token = token.split(" ")[1].replace("}", "").strip("'")
     result = {'Jwt': token}
 
     if token:
@@ -315,7 +316,7 @@ class AddSigner(_AddSigner):
                 args.signer = signer
 
     def _output(self, *args, **kwargs):
-        token = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        token = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)['token']
         result = {'Jwt': token}
         if has_value(token):
             header = jwt.get_unverified_header(token)

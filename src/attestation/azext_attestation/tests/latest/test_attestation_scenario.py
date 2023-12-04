@@ -29,6 +29,7 @@ def setup(test, rg):
         'signed_jwt_policy2_file': os.path.join(TEST_DIR, 'policies', 'signed_jwt_sgx_policy_2.txt'),
         'unsigned_jwt_policy_file': os.path.join(TEST_DIR, 'policies', 'unsigned_jwt_sgx_policy.txt'),
         'text_policy_file': os.path.join(TEST_DIR, 'policies', 'text_sgx_policy.txt'),
+        'att0': test.create_random_name('att0', 16),
         'att1': test.create_random_name('att1', 16),
         'att2': test.create_random_name('att2', 16),
         'att3': test.create_random_name('att3', 16)
@@ -39,10 +40,10 @@ def setup(test, rg):
 @try_manual
 def step__attestationproviders_put(test, rg):
     test.cmd('az attestation create -l westus '
-             '-n "testattestationprovider" '
+             '-n {att0} '
              '--resource-group "{rg}"',
              checks=[
-                 test.check('name', 'testattestationprovider'),
+                 test.check('name', '{att0}'),
                  test.check('status', 'Ready'),
                  test.check('trustModel', 'AAD')
              ])
@@ -52,10 +53,10 @@ def step__attestationproviders_put(test, rg):
 @try_manual
 def step__attestationproviders_get(test, rg):
     test.cmd('az attestation show '
-             '-n "testattestationprovider" '
+             '-n {att0} '
              '--resource-group "{rg}"',
              checks=[
-                 test.check('name', 'testattestationprovider'),
+                 test.check('name', '{att0}'),
                  test.check('status', 'Ready')
              ])
 
@@ -67,7 +68,7 @@ def step__attestationproviders_get2(test, rg):
              '--resource-group "{rg}"',
              checks=[
                  test.check('length(value)', 1),
-                 test.check('value[0].name', 'testattestationprovider'),
+                 test.check('value[0].name', '{att0}'),
                  test.check('value[0].status', 'Ready')
              ])
 
@@ -82,7 +83,7 @@ def step__attestationproviders_get3(test, rg):
 @try_manual
 def step__attestationproviders_patch(test, rg):
     test.cmd('az attestation update '
-             '-n "testattestationprovider" '
+             '-n "{att0}" '
              '--resource-group "{rg}" '
              '--tags Property1="Value1" Property2="Value2" Property3="Value3"',
              checks=[
@@ -96,7 +97,7 @@ def step__attestationproviders_patch(test, rg):
 @try_manual
 def step__attestationproviders_delete(test, rg):
     test.cmd('az attestation delete -y '
-             '-n "testattestationprovider" '
+             '-n "{att0}" '
              '--resource-group "{rg}"')
 
 
@@ -127,20 +128,34 @@ def test_provider_with_signer_1(test, rg):
         test.exists('Text')
     ])
 
-    from azure.core.exceptions import HttpResponseError
-    with test.assertRaisesRegex(HttpResponseError, 'PolicyParsingError'):
-        test.cmd('az attestation policy set -n {att1} -g {rg} --attestation-type SgxEnclave '
-                 '-f "{signed_jwt_policy1_file}" --policy-format JWT',
-                 checks=[
-                     test.check('Algorithm', 'RSA256'),
-                     test.check('JwtLength', 2862),
-                     test.check('TextLength', 608),
-                     test.exists('Jwt'),
-                     test.exists('Text')
-                 ])
+    # from azure.core.exceptions import HttpResponseError
+    # with test.assertRaisesRegex(HttpResponseError, 'PolicyParsingError'):
+    # test.cmd('az attestation policy set -n {att1} -g {rg} --attestation-type SgxEnclave '
+    #          '-f "{signed_jwt_policy1_file}" --policy-format JWT',
+    #          checks=[
+    #              test.check('Algorithm', 'RSA256'),
+    #              test.check('JwtLength', 2862),
+    #              test.check('TextLength', 608),
+    #              test.exists('Jwt'),
+    #              test.exists('Text')
+    #          ])
 
-    test.cmd('az attestation signer add -n {att1} -g {rg} -f "{new_signer_jwt_file}"',
-             checks=test.check('CertificateCount', 2))
+    test.cmd('az attestation signer add -n {att1} -g {rg} -f "{new_signer_jwt_file}"')
+
+    test.cmd('az attestation signer list -n {att1} -g {rg}', checks=test.check('CertificateCount', 2))
+
+    test.cmd('az attestation signer remove -n {att1} -g {rg} -f "{new_signer_jwt_file}"',
+             checks=test.check('CertificateCount', 1))
+
+    with open(test.kwargs['new_signer_jwt_file']) as f:
+        test.kwargs['new_signer_jwt'] = f.read()
+
+    test.cmd('az attestation signer add -n {att1} -g {rg} --signer {new_signer_jwt}')
+
+    test.cmd('az attestation signer list -n {att1} -g {rg}', checks=test.check('CertificateCount', 2))
+
+    test.cmd('az attestation signer remove -n {att1} -g {rg} --signer {new_signer_jwt}',
+             checks=test.check('CertificateCount', 1))
     """ Bypass this since the test file can be only used on old api version
 
     test.cmd('az attestation signer add -n {att1} -g {rg} -f "{new_signer_jwt_file}"',
@@ -176,17 +191,17 @@ def test_provider_with_signer_2(test, rg):
         test.exists('Text')
     ])
 
-    from azure.core.exceptions import HttpResponseError
-    with test.assertRaises(HttpResponseError):
-        test.cmd('az attestation policy set -n {att2} -g {rg} --attestation-type SgxEnclave '
-                 '-f "{signed_jwt_policy2_file}" --policy-format JWT',
-                 checks=[
-                     test.check('Algorithm', 'RSA256'),
-                     test.check('JwtLength', 2862),
-                     test.check('TextLength', 608),
-                     test.exists('Jwt'),
-                     test.exists('Text')
-                 ])
+    # from azure.core.exceptions import HttpResponseError
+    # with test.assertRaises(HttpResponseError):
+    test.cmd('az attestation policy set -n {att2} -g {rg} --attestation-type SgxEnclave '
+             '-f "{signed_jwt_policy2_file}" --policy-format JWT',
+             checks=[
+                 test.check('Algorithm', 'RSA256'),
+                 test.check('JwtLength', 2862),
+                 test.check('TextLength', 608),
+                 test.exists('Jwt'),
+                 test.exists('Text')
+             ])
 
 
 @try_manual
@@ -285,7 +300,7 @@ def call_scenario(test, rg):
     test_get_default_provider_by_location(test, rg)
     test_provider_with_signer_1(test, rg)
     # test_provider_with_signer_2(test, rg)
-    # test_provider_without_signer(test, rg)
+    test_provider_without_signer(test, rg)
     cleanup(test, rg)
 
 
