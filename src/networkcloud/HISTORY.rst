@@ -6,9 +6,6 @@ Release History
 2.0.0b2
 ++++++++
 * Examples updated to include new property user-principal-name for baremetalmachinekeyset and bmckeyset create and update commands.
-* kubernetescluster update command now allows removal of the earlier provisioned SSH keys for the cluster administrator. It can be done by providing an empty value.
-* kubernetescluster update command now allows removal of the earlier provisioned SSH keys for the cluster control plane. It can be done by providing an empty array.
-* kubernetescluster agentpool update command now allows removal of the earlier provisioned SSH keys for the agent pool. It can be done by providing an empty value.
 
 2.0.0b1
 ++++++++

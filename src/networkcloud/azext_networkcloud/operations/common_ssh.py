@@ -107,13 +107,9 @@ class CustomSshOptions:
         return key_data
 
     @staticmethod
+    # pylint: disable=unused-argument
     def build_ssh_arg_schema(args_schema, is_update, group):
         ssh_help = "The list of space-separated SSH public keys."
-        if is_update:
-            ssh_help = (
-                ssh_help
-                + " Special case: in order to remove the existing keys, provide an empty string and no other AdministratorConfiguration parameters."
-            )
         args_schema.ssh_key_values = AAZListArg(
             options=["--ssh-key-values"],
             arg_group=group,
