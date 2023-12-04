@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
-from abc import ABC
 from unittest import mock
 
 from azext_networkcloud import NetworkcloudCommandsLoader

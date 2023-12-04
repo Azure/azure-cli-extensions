@@ -71,6 +71,7 @@ class Update(AAZCommand):
         _args_schema.ssh_public_keys = AAZListArg(
             options=["--ssh-public-keys"],
             arg_group="AdministratorConfiguration",
+            help="SshPublicKey represents the public key used to authenticate with a resource through SSH.",
         )
 
         ssh_public_keys = cls._args_schema.ssh_public_keys
@@ -79,6 +80,7 @@ class Update(AAZCommand):
         _element = cls._args_schema.ssh_public_keys.Element
         _element.key_data = AAZStrArg(
             options=["key-data"],
+            help="The SSH public key data.",
             required=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -114,6 +116,7 @@ class Update(AAZCommand):
         control_plane_node_configuration = cls._args_schema.control_plane_node_configuration
         control_plane_node_configuration.ssh_public_keys = AAZListArg(
             options=["ssh-public-keys"],
+            help="SshPublicKey represents the public key used to authenticate with a resource through SSH.",
         )
         control_plane_node_configuration.count = AAZIntArg(
             options=["count"],
@@ -129,6 +132,7 @@ class Update(AAZCommand):
         _element = cls._args_schema.control_plane_node_configuration.ssh_public_keys.Element
         _element.key_data = AAZStrArg(
             options=["key-data"],
+            help="The SSH public key data.",
             required=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
