@@ -64,8 +64,8 @@ class Create(AAZCommand):
             help="The target azure resource URI.",
             required=True,
         )
-        _args_schema.properties_org = AAZObjectArg(
-            options=["--properties-org"],
+        _args_schema.properties = AAZFreeFormDictArg(
+            options=["--properties"],
             help="Additional properties for the specific resource provider.",
             blank={},
         )
@@ -220,7 +220,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("limit", AAZObjectType)
                 properties.set_prop("name", AAZObjectType, ".name")
-                properties.set_prop("properties", AAZObjectType, ".properties_org")
+                properties.set_prop("properties", AAZFreeFormDictType, ".properties")
                 properties.set_prop("resourceType", AAZStrType, ".resource_type")
 
             limit = _builder.get(".properties.limit")
@@ -236,6 +236,10 @@ class Create(AAZCommand):
             name = _builder.get(".properties.name")
             if name is not None:
                 name.set_prop("value", AAZStrType, ".value")
+
+            properties = _builder.get(".properties.properties")
+            if properties is not None:
+                properties.set_anytype_elements(".")
 
             return self.serialize_content(_content_value)
 
@@ -275,7 +279,7 @@ class Create(AAZCommand):
             )
             properties.limit = AAZObjectType()
             properties.name = AAZObjectType()
-            properties.properties = AAZObjectType()
+            properties.properties = AAZFreeFormDictType()
             properties.quota_period = AAZStrType(
                 serialized_name="quotaPeriod",
                 flags={"read_only": True},

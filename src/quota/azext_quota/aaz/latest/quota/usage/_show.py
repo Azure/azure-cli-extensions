@@ -168,7 +168,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             properties.name = AAZObjectType()
-            properties.properties = AAZObjectType()
+            properties.properties = AAZFreeFormDictType()
             properties.quota_period = AAZStrType(
                 serialized_name="quotaPeriod",
                 flags={"read_only": True},
