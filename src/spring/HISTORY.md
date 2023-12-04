@@ -1,9 +1,13 @@
 Release History
 ===============
 
-1.16.1
+1.19.1
 ---
 * Create workspace-based Application Insights instead, since classic Application Insights will be retired on 29 February 2024.
+
+1.17.0
+---
+* Add arguments `--enable-api-try-out` in `spring api-portal update`
 
 1.16.0
 ---
