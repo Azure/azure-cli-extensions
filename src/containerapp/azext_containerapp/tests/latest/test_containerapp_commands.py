@@ -1284,6 +1284,63 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_dev_service_binding_none_client_type(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        ca_name = self.create_random_name(prefix='containerapp1', length=24)
+        redis_ca_name = 'redis'
+        postgres_ca_name = 'postgres'
+        kafka_ca_name = 'kafka'
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+
+        self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded")
+        ])
+
+        self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(env_rg, postgres_ca_name, env_name), checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded")
+        ])
+        self.cmd('containerapp service kafka create -g {} -n {} --environment {}'.format(env_rg, kafka_ca_name, env_name), checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded")
+        ])
+
+        self.cmd(
+            'containerapp create -n {} -g {} --environment {} --bind {},clientType=dotnet,resourcegroup={} {},clientType=none,resourcegroup={}'.format(
+                ca_name, resource_group, env_id, redis_ca_name, env_rg, postgres_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', redis_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', postgres_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+            ])
+
+        # test clean clientType
+        self.cmd(
+            'containerapp update -n {} -g {} --bind {},clientType=none,resourcegroup={}'.format(
+                ca_name, resource_group, redis_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', redis_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', postgres_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+            ])
+
+        self.cmd(
+            'containerapp create -n {} -g {} --environment {} --bind {},resourcegroup={}'.format(
+                ca_name, resource_group, env_id, kafka_ca_name, env_rg), expect_failure=False,
+            checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 1),
+                JMESPathCheck('properties.template.serviceBinds[0].name', kafka_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
+            ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_service_binding_customized_keys_yaml_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         ca_name = self.create_random_name(prefix='containerapp1', length=24)
@@ -2163,13 +2220,20 @@ properties:
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'containerapp create -g {resource_group} -n {app_name} --environment {env} --ingress external --target-port 80 --min-replicas {replica_count}').get_output_in_json()
+        self.cmd(f'containerapp create -g {resource_group} -n {app_name} --environment {env} --ingress external --target-port 80 --min-replicas {replica_count}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.scale.minReplicas", 3)
+        ]).get_output_in_json()
 
         count = self.cmd(f"containerapp replica count -g {resource_group} -n {app_name}").output
         self.assertEqual(int(count), replica_count)
 
         self.cmd(f'containerapp replica list -g {resource_group} -n {app_name}', checks=[
             JMESPathCheck('length(@)', replica_count),
+        ])
+        self.cmd(f'containerapp update -g {resource_group} -n {app_name} --min-replicas 0', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.scale.minReplicas", 0)
         ])
 
         self.cmd(f'containerapp delete -g {resource_group} -n {app_name} --yes')

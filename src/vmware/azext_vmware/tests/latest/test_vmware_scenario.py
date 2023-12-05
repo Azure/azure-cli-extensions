@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
 import unittest
 
@@ -48,7 +49,9 @@ class VmwareScenarioTest(ScenarioTest):
         self.assertGreaterEqual(count, 1, 'subscription private cloud count expected to be more than 1')
 
         # get admin credentials
-        self.cmd('vmware private-cloud listadmincredentials -g {rg} -c {privatecloud}')
+        creds = self.cmd('vmware private-cloud list-admin-credentials -g {rg} -c {privatecloud}').get_output_in_json()
+        self.assertEqual("nsxtPassword" in creds, True)
+        self.assertEqual("vcenterPassword" in creds, True)
 
         # rotate passwords
         self.cmd('vmware private-cloud rotate-vcenter-password -g {rg} -c {privatecloud} --yes')

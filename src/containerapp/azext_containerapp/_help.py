@@ -104,16 +104,22 @@ helps['containerapp up'] = """
     examples:
     - name: Create a container app from a dockerfile in a GitHub repo (setting up github actions)
       text: |
-          az containerapp up -n MyContainerapp --repo https://github.com/myAccount/myRepo
+          az containerapp up -n my-containerapp --repo https://github.com/myAccount/myRepo
     - name: Create a container app from a dockerfile in a local directory (or autogenerate a container if no dockerfile is found)
       text: |
-          az containerapp up -n MyContainerapp --source .
+          az containerapp up -n my-containerapp --source .
     - name: Create a container app from an image in a registry
       text: |
-          az containerapp up -n MyContainerapp --image myregistry.azurecr.io/myImage:myTag
+          az containerapp up -n my-containerapp --image myregistry.azurecr.io/myImage:myTag
     - name: Create a container app from an image in a registry with ingress enabled and a specified environment
       text: |
-          az containerapp up -n MyContainerapp --image myregistry.azurecr.io/myImage:myTag --ingress external --target-port 80 --environment MyEnv
+          az containerapp up -n my-containerapp --image myregistry.azurecr.io/myImage:myTag --ingress external --target-port 80 --environment MyEnv
+    - name: Create a container app from an image in a registry on a Connected cluster
+      text: |
+          az containerapp up -n my-containerapp --image myregistry.azurecr.io/myImage:myTag --connected-cluster-id MyConnectedClusterResourceId
+    - name: Create a container app from an image in a registry on a connected environment
+      text: |
+          az containerapp up -n my-containerapp --image myregistry.azurecr.io/myImage:myTag --environment MyConnectedEnvironmentId
 """
 
 helps['containerapp show-custom-domain-verification-id'] = """
@@ -134,10 +140,10 @@ helps['containerapp replica count'] = """
     examples:
     - name: Count replicas of a particular revision
       text: |
-          az containerapp replica count -n MyContainerapp -g MyResourceGroup --revision MyRevision
+          az containerapp replica count -n my-containerapp -g MyResourceGroup --revision MyRevision
     - name: Count replicas of the latest revision
       text: |
-          az containerapp replica count -n MyContainerapp -g MyResourceGroup
+          az containerapp replica count -n my-containerapp -g MyResourceGroup
 """
 
 # Environment Commands
@@ -282,16 +288,16 @@ helps['containerapp resiliency create'] = """
     - name: Create recommended resiliency policies.
       text: |
           az containerapp resiliency create -g MyResourceGroup \\
-            -n MyResiliencyName --container-app-name MyContainerApp --recommended
+            -n MyResiliencyName --container-app-name my-containerapp --recommended
     - name: Create the timeout resiliency policy.
       text: |
           az containerapp resiliency create -g MyResourceGroup \\
-            -n MyResiliencyName --container-app-name MyContainerApp \\
+            -n MyResiliencyName --container-app-name my-containerapp \\
             --timeout 15 --timeout-connect 5
     - name: Create resiliency policies using a yaml configuration.
       text: |
           az containerapp resiliency create -g MyResourceGroup \\
-            -n MyResiliencyName --container-app-name MyContainerApp \\
+            -n MyResiliencyName --container-app-name my-containerapp \\
             --yaml "path/to/yaml/file.yml"
 """
 
@@ -302,12 +308,12 @@ helps['containerapp resiliency update'] = """
     - name: Update the TCP Connection Pool resiliency policy.
       text: |
           az containerapp resiliency update -g MyResourceGroup \\
-            -n MyResiliencyName --container-app-name MyContainerApp \\
+            -n MyResiliencyName --container-app-name my-containerapp \\
             --tcp-connections 1024
     - name: Update resiliency policies using a yaml configuration.
       text: |
           az containerapp resiliency update -g MyResourceGroup \\
-            -n MyResiliencyName --container-app-name MyContainerApp \\
+            -n MyResiliencyName --container-app-name my-containerapp \\
             --yaml "path/to/yaml/file.yml"
 
 """
@@ -516,7 +522,7 @@ helps['containerapp job delete'] = """
     short-summary: Delete a Container Apps Job.
     examples:
     - name: Delete a job.
-      text: az containerapp job delete -n MyContainerAppJob -g MyResourceGroup
+      text: az containerapp job delete -n my-containerapp-job -g MyResourceGroup
 """
 
 helps['containerapp job show'] = """
@@ -525,7 +531,7 @@ helps['containerapp job show'] = """
     examples:
     - name: Show the details of a job.
       text: |
-          az containerapp job show -n MyContainerAppJob -g MyResourceGroup
+          az containerapp job show -n my-containerapp-job -g MyResourceGroup
 """
 
 helps['containerapp job list'] = """
@@ -545,9 +551,9 @@ helps['containerapp job start'] = """
     short-summary: Start a Container Apps Job execution.
     examples:
     - name: Start a job execution.
-      text: az containerapp job start -n MyContainerAppJob -g MyResourceGroup
+      text: az containerapp job start -n my-containerapp-job -g MyResourceGroup
     - name: Start a job with different image and configurations.
-      text: az containerapp job start -n MyContainerAppJob -g MyResourceGroup --image MyImageName --cpu 0.5 --memory 1.0Gi
+      text: az containerapp job start -n my-containerapp-job -g MyResourceGroup --image MyImageName --cpu 0.5 --memory 1.0Gi
 """
 
 helps['containerapp job stop'] = """
@@ -555,11 +561,11 @@ helps['containerapp job stop'] = """
     short-summary: Stops a Container Apps Job execution.
     examples:
     - name: Stop a job execution.
-      text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup
+      text: az containerapp job stop -n my-containerapp-job -g MyResourceGroup
     - name: Stop a job execution giving a specific job execution name.
-      text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup --job-execution-name MyContainerAppJob-66v9xh0
+      text: az containerapp job stop -n my-containerapp-job -g MyResourceGroup --job-execution-name MyContainerAppJob-66v9xh0
     - name: Stop multiple job executions giving a list of execution names.
-      text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup --execution-name-list MyContainerAppJob-66v9xh0,MyContainerAppJob-66v9xh1
+      text: az containerapp job stop -n my-containerapp-job -g MyResourceGroup --execution-name-list MyContainerAppJob-66v9xh0,MyContainerAppJob-66v9xh1
 """
 
 # Certificates Commands
@@ -638,21 +644,21 @@ helps['containerapp github-action add'] = """
     short-summary: Add a GitHub Actions workflow to a repository to deploy a container app.
     examples:
     - name: Add GitHub Actions, using Azure Container Registry and personal access token.
-      text: az containerapp github-action add -g MyResourceGroup -n MyContainerapp --repo-url https://github.com/userid/repo --branch main
+      text: az containerapp github-action add -g MyResourceGroup -n my-containerapp --repo-url https://github.com/userid/repo --branch main
           --registry-url myregistryurl.azurecr.io
           --service-principal-client-id 00000000-0000-0000-0000-00000000
           --service-principal-tenant-id 00000000-0000-0000-0000-00000000
           --service-principal-client-secret ClientSecret
           --token MyAccessToken
     - name: Add GitHub Actions, using Azure Container Registry and log in to GitHub flow to retrieve personal access token.
-      text: az containerapp github-action add -g MyResourceGroup -n MyContainerapp --repo-url https://github.com/userid/repo --branch main
+      text: az containerapp github-action add -g MyResourceGroup -n my-containerapp --repo-url https://github.com/userid/repo --branch main
           --registry-url myregistryurl.azurecr.io
           --service-principal-client-id 00000000-0000-0000-0000-00000000
           --service-principal-tenant-id 00000000-0000-0000-0000-00000000
           --service-principal-client-secret ClientSecret
           --login-with-github
     - name: Add GitHub Actions, using Docker Hub and log in to GitHub flow to retrieve personal access token.
-      text: az containerapp github-action add -g MyResourceGroup -n MyContainerapp --repo-url https://github.com/userid/repo --branch main
+      text: az containerapp github-action add -g MyResourceGroup -n my-containerapp --repo-url https://github.com/userid/repo --branch main
           --registry-username MyUsername
           --registry-password MyPassword
           --service-principal-client-id 00000000-0000-0000-0000-00000000
@@ -672,10 +678,10 @@ helps['containerapp hostname bind'] = """
     examples:
     - name: Add or update hostname and binding with a provided certificate.
       text: |
-          az containerapp hostname bind -n MyContainerapp -g MyResourceGroup --hostname MyHostname --certificate MyCertificateId
+          az containerapp hostname bind -n my-containerapp -g MyResourceGroup --hostname MyHostname --certificate MyCertificateId
     - name: Look for or create a managed certificate and bind with the hostname if no certificate or thumbprint is provided.
       text: |
-          az containerapp hostname bind -n MyContainerapp -g MyResourceGroup --hostname MyHostname
+          az containerapp hostname bind -n my-containerapp -g MyResourceGroup --hostname MyHostname
 """
 
 # Auth commands
@@ -689,7 +695,7 @@ type: command
 short-summary: Show the authentication settings for the containerapp.
 examples:
   - name: Show the authentication settings for the containerapp.
-    text: az containerapp auth show --name MyContainerapp --resource-group MyResourceGroup
+    text: az containerapp auth show --name my-containerapp --resource-group MyResourceGroup
 """
 
 helps['containerapp auth update'] = """
@@ -698,19 +704,19 @@ short-summary: Update the authentication settings for the containerapp.
 examples:
   - name: Update the client ID of the AAD provider already configured.
     text: |
-        az containerapp auth update -g myResourceGroup --name MyContainerapp --set identityProviders.azureActiveDirectory.registration.clientId=my-client-id
+        az containerapp auth update -g myResourceGroup --name my-containerapp --set identityProviders.azureActiveDirectory.registration.clientId=my-client-id
   - name: Configure the app with file based authentication by setting the config file path.
     text: |
-        az containerapp auth update -g myResourceGroup --name MyContainerapp --config-file-path D:\\home\\site\\wwwroot\\auth.json
+        az containerapp auth update -g myResourceGroup --name my-containerapp --config-file-path D:\\home\\site\\wwwroot\\auth.json
   - name: Configure the app to allow unauthenticated requests to hit the app.
     text: |
-        az containerapp auth update -g myResourceGroup --name MyContainerapp --unauthenticated-client-action AllowAnonymous
+        az containerapp auth update -g myResourceGroup --name my-containerapp --unauthenticated-client-action AllowAnonymous
   - name: Configure the app to redirect unauthenticated requests to the Facebook provider.
     text: |
-        az containerapp auth update -g myResourceGroup --name MyContainerapp --redirect-provider Facebook
+        az containerapp auth update -g myResourceGroup --name my-containerapp --redirect-provider Facebook
   - name: Configure the app to listen to the forward headers X-FORWARDED-HOST and X-FORWARDED-PROTO.
     text: |
-        az containerapp auth update -g myResourceGroup --name MyContainerapp --proxy-convention Standard
+        az containerapp auth update -g myResourceGroup --name my-containerapp --proxy-convention Standard
 """
 
 helps['containerapp env workload-profile set'] = """
@@ -810,26 +816,26 @@ helps['containerapp create'] = """
     examples:
     - name: Create a container app and retrieve its fully qualified domain name.
       text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image myregistry.azurecr.io/my-app:v1.0 --environment MyContainerappEnv \\
               --ingress external --target-port 80 \\
               --registry-server myregistry.azurecr.io --registry-username myregistry --registry-password $REGISTRY_PASSWORD \\
               --query properties.configuration.ingress.fqdn
     - name: Create a container app with resource requirements and replica count limits.
       text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image nginx --environment MyContainerappEnv \\
               --cpu 0.5 --memory 1.0Gi \\
               --min-replicas 4 --max-replicas 8
     - name: Create a container app with secrets and environment variables.
       text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
               --env-vars GREETING="Hello, world" SECRETENV=secretref:anothersecret
     - name: Create a container app using a YAML configuration. Example YAML configuration - https://aka.ms/azure-container-apps-yaml
       text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
               --environment MyContainerappEnv \\
               --yaml "path/to/yaml/file.yml"
     - name: Create a container app with an http scale rule
@@ -839,7 +845,7 @@ helps['containerapp create'] = """
               --scale-rule-http-concurrency 50
     - name: Create a container app with a custom scale rule
       text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-queue-processor --environment MyContainerappEnv \\
               --min-replicas 4 --max-replicas 8 \\
               --scale-rule-name queue-based-autoscaling \\
@@ -850,24 +856,24 @@ helps['containerapp create'] = """
               --scale-rule-auth "connection=my-connection-string-secret-name"
     - name: Create a container app with secrets and mounts them in a volume.
       text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
               --secret-volume-mount "mnt/secrets"
     - name: Create a container app hosted on a Connected Environment.
       text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappConnectedEnv \\
               --environment-type connected
     - name: Create a container app from a new GitHub Actions workflow in the provided GitHub repository
       text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
           --environment MyContainerappEnv --registry-server MyRegistryServer \\
           --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
           --repo https://github.com/myAccount/myRepo
     - name: Create a Container App from the provided application source
       text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
           --environment MyContainerappEnv --registry-server MyRegistryServer \\
           --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
           --source .
@@ -880,11 +886,11 @@ helps['containerapp update'] = """
     examples:
     - name: Update a container app's container image.
       text: |
-          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+          az containerapp update -n my-containerapp -g MyResourceGroup \\
               --image myregistry.azurecr.io/my-app:v2.0
     - name: Update a container app's resource requirements and scale limits.
       text: |
-          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+          az containerapp update -n my-containerapp -g MyResourceGroup \\
               --cpu 0.5 --memory 1.0Gi \\
               --min-replicas 4 --max-replicas 8
     - name: Update a container app with an http scale rule
@@ -901,7 +907,7 @@ helps['containerapp update'] = """
               --scale-rule-auth triggerparam=secretref triggerparam=secretref
     - name: Update a Container App from the provided application source
       text: |
-          az containerapp update -n MyContainerapp -g MyResourceGroup --source .
+          az containerapp update -n my-containerapp -g MyResourceGroup --source .
 """
 
 # containerapp list for preview

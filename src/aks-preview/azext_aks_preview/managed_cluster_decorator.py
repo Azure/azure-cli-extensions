@@ -68,6 +68,7 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_NETWORK_DATAPLANE_CILIUM,
+    CONST_NETWORK_POLICY_CILIUM,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
     CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
@@ -2750,14 +2751,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         addons = self.context.get_enable_addons()
-        if "web_application_routing" in addons:
+        if "web_application_routing" in addons or self.context.get_enable_app_routing():
             if mc.ingress_profile is None:
                 mc.ingress_profile = self.models.ManagedClusterIngressProfile()
-            dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
-            mc.ingress_profile.web_app_routing = self.models.ManagedClusterIngressProfileWebAppRouting(
-                enabled=True,
-                dns_zone_resource_ids=dns_zone_resource_ids,
-            )
+            mc.ingress_profile.web_app_routing = self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)
+            if "web_application_routing" in addons:
+                dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
+                mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
+
         return mc
 
     def set_up_workload_auto_scaler_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3023,19 +3024,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
-    def set_up_app_routing_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up app routing profile for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        if self.context.get_enable_app_routing():
-            if mc.ingress_profile is None:
-                mc.ingress_profile = self.models.ManagedClusterIngressProfile()
-            mc.ingress_profile.web_app_routing = self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)
-        return mc
-
     def set_up_node_provisioning_mode(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -3082,7 +3070,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # set up cluster snapshot
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
         # set up app routing profile
-        mc = self.set_up_app_routing_profile(mc)
+        mc = self.set_up_ingress_web_app_routing(mc)
         # set up workload auto scaler profile
         mc = self.set_up_workload_auto_scaler_profile(mc)
         # set up vpa
@@ -3436,6 +3424,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         network_policy = self.context.get_network_policy()
         if network_policy:
             mc.network_profile.network_policy = network_policy
+        elif network_dataplane == CONST_NETWORK_DATAPLANE_CILIUM:
+            # force network_policy to "cilium" when network_dataplane is "cilium" to pass validation in aks rp
+            # this was needed because api version 2023-08-02preview introduced --network-policy=none
+            # without forcing network_policy to "cilium" here, when upgrading to cilium without specifying --network-policy, it will be set to none by default and validation in aks rp will fail.
+            mc.network_profile.network_policy = CONST_NETWORK_POLICY_CILIUM
 
         return mc
 
