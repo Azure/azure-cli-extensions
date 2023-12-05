@@ -21,8 +21,8 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerappPreviewScenarioTest(ScenarioTest):
     @serial_test()
-    @ResourceGroupPreparer(location="eastus", random_name_length=15)
-    @ConnectedClusterPreparer(location=TEST_LOCATION)
+    @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
+    @ConnectedClusterPreparer(location="southcentralus")
     def test_containerapp_preview_connected_env_e2e(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         custom_location_name = "my-custom-location"
