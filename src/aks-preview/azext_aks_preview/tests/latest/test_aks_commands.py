@@ -8512,6 +8512,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_keyvault_cmd = 'keyvault create --resource-group={resource_group} --location={location} --name={kv_name} --enable-rbac-authorization=true'
         keyvault = self.cmd(create_keyvault_cmd, checks=[
             self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.enableRbacAuthorization', True),
             self.check('name', kv_name)
         ]).get_output_in_json()
         keyvault_id = keyvault['id']
@@ -8523,18 +8524,68 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create cluster with app routing enabled
         create_cmd = 'aks create --resource-group={resource_group} --name={aks_name} --location={location} ' \
                      '--ssh-key-value={ssh_key_value} --enable-app-routing'
-        self.cmd(create_cmd, checks=[
+        result = self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('ingressProfile.webAppRouting.enabled', True),
-        ])
+        ]).get_output_in_json()
+        object_id = result['ingressProfile']['webAppRouting']['identity']['objectId']
 
-        # update
+        self.kwargs.update({
+            'object_id': object_id
+        })
+
+        # update with enable_rbac_authroization flag in keyvault set to true
         update_cmd = 'aks approuting update --resource-group={resource_group} --name={aks_name} ' \
                      '--attach-kv {keyvault_id}'
 
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('ingressProfile.webAppRouting.enabled', True)
+        ])
+
+        check_role_assignment_cmd = 'role assignment list --scope {keyvault_id} --assignee {object_id} --role "Key Vault Secrets User" --output json'
+        self.cmd(check_role_assignment_cmd, checks=[
+            self.check('length(@)', 1),
+            self.check('[0].roleDefinitionName', 'Key Vault Secrets User'),
+            self.check('[0].principalId', '{object_id}'),
+            self.check('[0].scope', keyvault_id)
+        ])
+
+        # create keyvault with rbac auth disabled
+        kv_name = self.create_random_name('cliakstestkv', 16)
+        self.kwargs.update({
+            'kv_name': kv_name
+        })
+        create_keyvault_cmd = 'keyvault create --resource-group={resource_group} --location={location} --name={kv_name} --enable-rbac-authorization=false'
+        keyvault = self.cmd(create_keyvault_cmd, checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.enableRbacAuthorization', False),
+            self.check('name', kv_name)
+        ]).get_output_in_json()
+        keyvault_id = keyvault['id']
+
+        self.kwargs.update({
+            'keyvault_id': keyvault_id
+        })
+
+        # update with enable_rbac_authroization flag in keyvault set to false
+        update_cmd = 'aks approuting update --resource-group={resource_group} --name={aks_name} ' \
+                     '--attach-kv {keyvault_id}'
+
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('ingressProfile.webAppRouting.enabled', True)
+        ])
+
+        check_access_policy_cmd = 'az keyvault show --resource-group={resource_group} --name={kv_name} --query "properties.accessPolicies[?objectId==\'{object_id}\']" -o json'
+        print(check_access_policy_cmd)
+        self.cmd(check_access_policy_cmd, checks=[
+            self.check('length(@)', 1),
+            self.check('[0].objectId', '{object_id}'),
+            self.check('[0].permissions.certificates', ['Get']),
+            self.check('[0].permissions.keys', None),
+            self.check('[0].permissions.secrets', ['Get']),
+            self.check('[0].permissions.storage', None),
         ])
 
         # update with --enable-kv flag
