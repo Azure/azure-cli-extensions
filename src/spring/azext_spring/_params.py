@@ -889,6 +889,7 @@ def load_arguments(self, _):
             c.argument('client_id', arg_group='Single Sign On (SSO)', help="The public identifier for the application.")
             c.argument('client_secret', arg_group='Single Sign On (SSO)', help="The secret known only to the application and the authorization server.")
             c.argument('issuer_uri', arg_group='Single Sign On (SSO)', help="The URI of Issuer Identifier.")
+            c.argument('enable_api_try_out', arg_type=get_three_state_flag(), arg_group='Try out API', help="Try out the API by sending requests and viewing responses in API portal.")
 
     with self.argument_context('spring gateway update') as c:
         c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
@@ -926,6 +927,23 @@ def load_arguments(self, _):
         c.argument('addon_configs_file', arg_group='Add-on Configurations', help="The file path of JSON string of add-on configurations.")
         c.argument('apms', arg_group='APM', nargs='*',
                    help="Space-separated list of APM reference names in Azure Spring Apps to integrate with Gateway.")
+        c.argument('enable_response_cache',
+                   arg_type=get_three_state_flag(),
+                   arg_group='Response Cache',
+                   help='Enable response cache settings in Spring Cloud Gateway'
+                   )
+        c.argument('response_cache_scope',
+                   arg_group='Response Cache',
+                   help='Scope for response cache, available values are [Route, Instance]'
+                   )
+        c.argument('response_cache_size',
+                   arg_group='Response Cache',
+                   help='Maximum size of the cache that determines whether the cache needs to evict some entries. Examples are [1GB, 10MB, 100KB]. Use "default" to reset, and Gateway will manage this property.'
+                   )
+        c.argument('response_cache_ttl',
+                   arg_group='Response Cache',
+                   help='Time before a cached entry expires. Examples are [1h, 30m, 50s]. Use "default" to reset, and Gateway will manage this property.'
+                   )
 
     for scope in ['spring gateway custom-domain',
                   'spring api-portal custom-domain']:

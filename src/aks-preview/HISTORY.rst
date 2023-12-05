@@ -11,6 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`. 
+
+0.5.173
++++++++
+* Add warning when stopping a private link cluster.
 
 0.5.172
 +++++++

@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.3.0
+++++++
+* Removing preview flag.
+* Fix for AAD login.
+
 0.2.7
 ++++++
 * add support for auth type password in RDP connection
