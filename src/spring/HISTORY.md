@@ -1,5 +1,9 @@
 Release History
 ===============
+1.17.0
+---
+* Add arguments `--enable-api-try-out` in `spring api-portal update`
+
 1.16.0
 ---
 * Add arguments `--enable-planned-maintenance`, `--planned-maintenance-day` and `--planned-maintenance-start-hour` in `az spring update` to support configuring Planned Maintenance.

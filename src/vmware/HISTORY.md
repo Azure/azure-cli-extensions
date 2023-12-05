@@ -1,5 +1,9 @@
 # Release History
 
+## 6.0.1 (2023-12)
+
+- Fix `az vmware private-cloud list-admin-credentials` not returning `nsxtPassword` and `vcenterPassword`
+
 ## 6.0.0 (2023-09)
 
 - Update to AVS 2023-03-01 API
