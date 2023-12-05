@@ -254,7 +254,7 @@ class Wait(AAZWaitCommand):
 
             tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
-
+            
             return cls._schema_on_200
 
 

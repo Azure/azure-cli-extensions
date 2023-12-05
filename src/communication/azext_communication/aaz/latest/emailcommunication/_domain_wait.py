@@ -85,7 +85,7 @@ class DomainWait(AAZWaitCommand):
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
-
+            
             return self.on_error(session.http_response)
 
         @property

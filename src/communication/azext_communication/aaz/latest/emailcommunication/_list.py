@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "communication email list",
 )
 class List(AAZCommand):
-    """List requests to list all email communication resources in a resource group.
+    """List requests to list all email communication resources.
 
     :example: Get all email communication resources from a resource group
         az communication email list -g ResourceGroup

@@ -28,4 +28,5 @@ from ._senderusername_delete import *
 from ._senderusername_list import *
 from ._senderusername_show import *
 from ._senderusername_wait import *
+from ._senderusername_update import *
 

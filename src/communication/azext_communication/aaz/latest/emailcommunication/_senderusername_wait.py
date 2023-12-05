@@ -96,7 +96,7 @@ class SenderUsernameWait(AAZWaitCommand):
 
         @property
         def url(self):
-            return self.client.format_url(
+            return self.client.format_url(  
                 "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}/domains/{domainName}/senderusernames/{senderusername}",
                 **self.url_parameters
             )
@@ -170,14 +170,14 @@ class SenderUsernameWait(AAZWaitCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
+            
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
-            )
+            )            
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -215,7 +215,7 @@ class SenderUsernameWait(AAZWaitCommand):
             properties.version = AAZStrType(
                 flags={"read_only": True},
             )
-
+            
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
@@ -235,7 +235,7 @@ class SenderUsernameWait(AAZWaitCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
-
+            
             return cls._schema_on_200
 
 class _SenderUsernameWaitHelper:

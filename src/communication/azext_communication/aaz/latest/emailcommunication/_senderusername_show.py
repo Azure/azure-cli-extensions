@@ -66,7 +66,7 @@ class SenderUsernameShow(AAZCommand):
         )
         _args_schema.sender_username = AAZStrArg(
             options=["--sender-username"],
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
+            help="Name of the sender username.",
             required=True,
         )
 

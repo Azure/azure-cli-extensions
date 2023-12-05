@@ -61,7 +61,7 @@ class DomainCreate(AAZCommand):
 
         _args_schema.domain_name = AAZStrArg(
             options=["--domain-name"],
-            help="Name of the domain`.",
+            help="Name of the domain. Allowed name for Azure domain is AzureManagedDomain and for Custom domain is user defined name.",
             required=True,
         )       
 
@@ -78,7 +78,7 @@ class DomainCreate(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Parameters",
-            help="Resource tags.",
+            help="Domain tags.",
         )
 
         tags = cls._args_schema.tags
@@ -90,7 +90,7 @@ class DomainCreate(AAZCommand):
             options=["--domain-management"],
             required=True,
             arg_group="Properties",
-            help="Domain Management.",
+            help="Name of the Domain Management Allowed values: AzureManaged/CustomerManaged",
         ) 
 
         domain_management = cls._args_schema.domain_management
@@ -100,7 +100,7 @@ class DomainCreate(AAZCommand):
             options=["--user-engagement-tracking"],
             required=False,
             arg_group="Properties",
-            help="User Engagement Tracking.",
+            help="User Engagement Tracking. Allowed values: 0, 1, Disabled, Enabled",
         ) 
 
         user_engagement_tracking = cls._args_schema.user_engagement_tracking

@@ -60,12 +60,12 @@ class SenderUsernameCreate(AAZCommand):
 
         _args_schema.domain_name = AAZStrArg(
             options=["--domain-name"],
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
+            help="Name of the Domain",
             required=True,
         )
         _args_schema.sender_username = AAZStrArg(
             options=["--sender-username"],
-            help="Name of sender username.",
+            help="Name of the sender username.",
             required=True,
         )
 
@@ -75,14 +75,22 @@ class SenderUsernameCreate(AAZCommand):
             options=["--user-name"],
             required=True,
             arg_group="Properties",
-            help="User name.",
+            help="Name of the User name.",
         ) 
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
             required=False,
             arg_group="Properties",
-            help="Dispaly name.",
+            help="Name of the Dispaly name.",
         ) 
+
+        _args_schema = cls._args_schema
+        _args_schema.data_location = AAZStrArg(
+            options=["--data-location"],
+            required=False,
+            arg_group="Properties",
+            help="The location where the sender username stores its data at rest.",
+        )
 
         return cls._args_schema
 
@@ -200,12 +208,13 @@ class SenderUsernameCreate(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}}) 
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("username", AAZStrType, ".user_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("displayName", AAZStrType, ".display_name", typ_kwargs={"flags": {"required": False}})
+                properties.set_prop("dataLocation", AAZStrType, ".data_location", typ_kwargs={"flags": {"required": False}})
 
             return self.serialize_content(_content_value)
 
@@ -239,7 +248,7 @@ class SenderUsernameCreate(AAZCommand):
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
-            )
+            )            
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -252,6 +261,10 @@ class SenderUsernameCreate(AAZCommand):
 
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
+                flags={"required": True},
+            )
+            properties.data_location = AAZStrType(
+                serialized_name="dataLocation",
                 flags={"required": True},
             )
             properties.host_name = AAZStrType(

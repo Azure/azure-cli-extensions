@@ -11,19 +11,19 @@
 from azure.cli.core.aaz import *
 
 @register_command(
-    "communication email domain update",
+    "communication email senderusername update",
 )
-class DomainUpdate(AAZCommand):
-    """Update an existing Domain.
+class SenderUsernameUpdate(AAZCommand):
+    """Update an existing senderusername.
 
-    :example: update a domain with tags
-        az communication email domain update -n ResourceName -g ResourceGroup --domain-name DomainName --domain-management AzureManaged/CustomerManaged --tags "{tag:tag}" --user-engagement-tracking 1/0
+    :example: update a senderusername with display name
+        az communication email senderusername update -n ResourceName -g ResourceGroup --domain-name DomainName --sender-username SenderUsername --user-name Username --display-name DisplayName
     """
 
     _aaz_info = {
         "version": "2023-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Communication/emailServices/{}/domains/{}", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Communication/emailServices/{}/domains/{}/senderUsernames/{}", "2023-04-01-preview"],
         ]
     }
 
@@ -65,41 +65,26 @@ class DomainUpdate(AAZCommand):
             help="Name of the domain.",
             required=True,
         )
-        
-        # define Arg Group "Parameters"
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Domain tags.",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
+        _args_schema.sender_username = AAZStrArg(
+            options=["--sender-username"],
+            help="Name of the sender username.",
+            required=True,
         )
 
         # define Arg Group "Properties"
-        _args_schema.domain_management = AAZStrArg(
-            options=["--domain-management"],
+        _args_schema.user_name = AAZStrArg(
+            options=["--user-name"],
             required=True,
             arg_group="Properties",
-            help="Name of the Domain management.",
+            help="Name of the User name.",
         ) 
-
-        domain_management = cls._args_schema.domain_management
-        domain_management.Element = AAZStrArg() 
-
-        _args_schema.user_engagement_tracking = AAZStrArg(
-            options=["--user-engagement-tracking"],
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
             required=False,
             arg_group="Properties",
-            help="User Engagement Tracking. Allowed values: 0, 1, Disabled, Enabled",
-        ) 
+            help="Name of the Dispaly name.",
+        )  
 
-        user_engagement_tracking = cls._args_schema.user_engagement_tracking
-        user_engagement_tracking.Element = AAZStrArg()  
         return cls._args_schema
 
     def _execute_operations(self):
@@ -109,7 +94,7 @@ class DomainUpdate(AAZCommand):
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.EmailCommunicationServicesCreateOrUpdateDomain(ctx=self.ctx)()
+        yield self.EmailCommunicationServicesCreateOrUpdateSenderusername(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -146,7 +131,7 @@ class DomainUpdate(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}/domains/{domainName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}/domains/{domainName}/senderUsernames/{senderUsername}",
                 **self.url_parameters
             )
 
@@ -161,6 +146,10 @@ class DomainUpdate(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "senderUsername", self.ctx.args.sender_username,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "domainName", self.ctx.args.domain_name,
                     required=True,
@@ -215,11 +204,11 @@ class DomainUpdate(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_emailcommunication_service_resource_read(cls._schema_on_200)
+            _SenderUsernameUpdateHelper._build_schema_emailcommunication_service_resource_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class EmailCommunicationServicesCreateOrUpdateDomain(AAZHttpOperation):
+    class EmailCommunicationServicesCreateOrUpdateSenderusername(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -249,7 +238,7 @@ class DomainUpdate(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}/domains/{domainName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}/domains/{domainName}/senderUsernames/{senderUsername}",
                 **self.url_parameters
             )
 
@@ -264,6 +253,10 @@ class DomainUpdate(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "senderUsername", self.ctx.args.sender_username,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "domainName", self.ctx.args.domain_name,
                     required=True,
@@ -330,7 +323,7 @@ class DomainUpdate(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_emailcommunication_service_resource_read(cls._schema_on_200_201)
+            _SenderUsernameUpdateHelper._build_schema_emailcommunication_service_resource_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -345,17 +338,12 @@ class DomainUpdate(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")            
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})           
 
             properties = _builder.get(".properties")
             if properties is not None:
-                 properties.set_prop("domainManagement", AAZStrType, ".domain_management", typ_kwargs={"flags": {"required": True}})
-                 properties.set_prop("userEngagementTracking", AAZStrType, ".user_engagement_tracking", typ_kwargs={"flags": {"required": False}})
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
+                 properties.set_prop("username", AAZStrType, ".user_name", typ_kwargs={"flags": {"required": True}})
+                 properties.set_prop("displayName", AAZStrType, ".display_name", typ_kwargs={"flags": {"required": False}})
 
             return _instance_value
 
@@ -367,8 +355,8 @@ class DomainUpdate(AAZCommand):
                 self.ctx.generic_update_args
             )
 
-class _UpdateHelper:
-    """Helper class for Update"""
+class _SenderUsernameUpdateHelper:
+    """Helper class for SenderUsernameUpdate"""
 
     _schema_emailcommunication_service_resource_read = None
 
@@ -376,11 +364,9 @@ class _UpdateHelper:
     def _build_schema_emailcommunication_service_resource_read(cls, _schema):
         if cls._schema_emailcommunication_service_resource_read is not None:
             _schema.id = cls._schema_emailcommunication_service_resource_read.id
-            _schema.location = cls._schema_emailcommunication_service_resource_read.location
             _schema.name = cls._schema_emailcommunication_service_resource_read.name
             _schema.properties = cls._schema_emailcommunication_service_resource_read.properties
             _schema.system_data = cls._schema_emailcommunication_service_resource_read.system_data
-            _schema.tags = cls._schema_emailcommunication_service_resource_read.tags
             _schema.type = cls._schema_emailcommunication_service_resource_read.type
             return
 
@@ -389,10 +375,7 @@ class _UpdateHelper:
         emailcommunication_service_resource_read = _schema_emailcommunication_service_resource_read
         emailcommunication_service_resource_read.id = AAZStrType(
             flags={"read_only": True},
-        )
-        emailcommunication_service_resource_read.location = AAZStrType(
-            flags={"required": True},
-        )
+        )       
         emailcommunication_service_resource_read.name = AAZStrType(
             flags={"read_only": True},
         )
@@ -403,18 +386,17 @@ class _UpdateHelper:
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        emailcommunication_service_resource_read.tags = AAZDictType()
         emailcommunication_service_resource_read.type = AAZStrType(
             flags={"read_only": True},
         )        
 
         properties = _schema_emailcommunication_service_resource_read.properties
-        properties.user_engagement_tracking = AAZStrType(
-            serialized_name="userEngagementTracking",
+        properties.user_name = AAZStrType(
+            serialized_name="username",
             flags={"required": True},
         )
-        properties.data_location = AAZStrType(
-            serialized_name="dataLocation",
+        properties.display_name = AAZStrType(
+            serialized_name="displayName",
             flags={"required": True},
         )
         properties.host_name = AAZStrType(
@@ -457,15 +439,10 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        tags = _schema_emailcommunication_service_resource_read.tags
-        tags.Element = AAZStrType()
-
         _schema.id = cls._schema_emailcommunication_service_resource_read.id
-        _schema.location = cls._schema_emailcommunication_service_resource_read.location
         _schema.name = cls._schema_emailcommunication_service_resource_read.name
         _schema.properties = cls._schema_emailcommunication_service_resource_read.properties
         _schema.system_data = cls._schema_emailcommunication_service_resource_read.system_data
-        _schema.tags = cls._schema_emailcommunication_service_resource_read.tags
         _schema.type = cls._schema_emailcommunication_service_resource_read.type
 
-__all__ = ["DomainUpdate"]
+__all__ = ["SenderUsernameUpdate"]
