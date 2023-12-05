@@ -29,8 +29,6 @@ class Update(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_GENERIC_UPDATE = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
         self._execute_operations()
@@ -47,8 +45,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.provider_name = AAZStrArg(
-            options=["--provider-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="Name of the attestation provider.",
             required=True,
             id_part="name",
@@ -59,23 +57,15 @@ class Update(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             help="The tags that will be assigned to the attestation provider.",
-            nullable=True,
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AttestationProvidersGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        self.AttestationProvidersCreate(ctx=self.ctx)()
+        self.AttestationProvidersUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -86,19 +76,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class AttestationProvidersGet(AAZHttpOperation):
+    class AttestationProvidersUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -118,7 +100,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -128,90 +110,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "providerName", self.ctx.args.provider_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2020-10-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_attestation_provider_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class AttestationProvidersCreate(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Attestation/attestationProviders/{providerName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "PUT"
-
-        @property
-        def error_format(self):
-            return "ODataV4Format"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "providerName", self.ctx.args.provider_name,
+                    "providerName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -251,190 +150,139 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_attestation_provider_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("policySigningCertificates", AAZObjectType)
 
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
 
-            return _instance_value
+            return self.serialize_content(_content_value)
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
             )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.attest_uri = AAZStrType(
+                serialized_name="attestUri",
+            )
+            properties.private_endpoint_connections = AAZListType(
+                serialized_name="privateEndpointConnections",
+                flags={"read_only": True},
+            )
+            properties.status = AAZStrType()
+            properties.trust_model = AAZStrType(
+                serialized_name="trustModel",
+            )
+
+            private_endpoint_connections = cls._schema_on_200.properties.private_endpoint_connections
+            private_endpoint_connections.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.private_endpoint_connections.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties.private_endpoint_connections.Element.properties
+            properties.private_endpoint = AAZObjectType(
+                serialized_name="privateEndpoint",
+            )
+            properties.private_link_service_connection_state = AAZObjectType(
+                serialized_name="privateLinkServiceConnectionState",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            private_endpoint = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.private_endpoint
+            private_endpoint.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            private_link_service_connection_state = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
+            private_link_service_connection_state.actions_required = AAZStrType(
+                serialized_name="actionsRequired",
+            )
+            private_link_service_connection_state.description = AAZStrType()
+            private_link_service_connection_state.status = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_attestation_provider_read = None
-
-    @classmethod
-    def _build_schema_attestation_provider_read(cls, _schema):
-        if cls._schema_attestation_provider_read is not None:
-            _schema.id = cls._schema_attestation_provider_read.id
-            _schema.location = cls._schema_attestation_provider_read.location
-            _schema.name = cls._schema_attestation_provider_read.name
-            _schema.properties = cls._schema_attestation_provider_read.properties
-            _schema.system_data = cls._schema_attestation_provider_read.system_data
-            _schema.tags = cls._schema_attestation_provider_read.tags
-            _schema.type = cls._schema_attestation_provider_read.type
-            return
-
-        cls._schema_attestation_provider_read = _schema_attestation_provider_read = AAZObjectType()
-
-        attestation_provider_read = _schema_attestation_provider_read
-        attestation_provider_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        attestation_provider_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        attestation_provider_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        attestation_provider_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        attestation_provider_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        attestation_provider_read.tags = AAZDictType()
-        attestation_provider_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_attestation_provider_read.properties
-        properties.attest_uri = AAZStrType(
-            serialized_name="attestUri",
-        )
-        properties.private_endpoint_connections = AAZListType(
-            serialized_name="privateEndpointConnections",
-            flags={"read_only": True},
-        )
-        properties.status = AAZStrType()
-        properties.trust_model = AAZStrType(
-            serialized_name="trustModel",
-        )
-
-        private_endpoint_connections = _schema_attestation_provider_read.properties.private_endpoint_connections
-        private_endpoint_connections.Element = AAZObjectType()
-
-        _element = _schema_attestation_provider_read.properties.private_endpoint_connections.Element
-        _element.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        _element.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_attestation_provider_read.properties.private_endpoint_connections.Element.properties
-        properties.private_endpoint = AAZObjectType(
-            serialized_name="privateEndpoint",
-        )
-        properties.private_link_service_connection_state = AAZObjectType(
-            serialized_name="privateLinkServiceConnectionState",
-            flags={"required": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-
-        private_endpoint = _schema_attestation_provider_read.properties.private_endpoint_connections.Element.properties.private_endpoint
-        private_endpoint.id = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        private_link_service_connection_state = _schema_attestation_provider_read.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
-        private_link_service_connection_state.actions_required = AAZStrType(
-            serialized_name="actionsRequired",
-        )
-        private_link_service_connection_state.description = AAZStrType()
-        private_link_service_connection_state.status = AAZStrType()
-
-        system_data = _schema_attestation_provider_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_attestation_provider_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.id = cls._schema_attestation_provider_read.id
-        _schema.location = cls._schema_attestation_provider_read.location
-        _schema.name = cls._schema_attestation_provider_read.name
-        _schema.properties = cls._schema_attestation_provider_read.properties
-        _schema.system_data = cls._schema_attestation_provider_read.system_data
-        _schema.tags = cls._schema_attestation_provider_read.tags
-        _schema.type = cls._schema_attestation_provider_read.type
 
 
 __all__ = ["Update"]

@@ -19,31 +19,31 @@ from azure.cli.core.commands.parameters import \
 def load_arguments(self, _):
     from azext_attestation.vendored_sdks.azure_attestation.models._attestation_client_enums import TeeKind
 
-    provider_name_type = CLIArgumentType(
-        help='Name of the attestation provider.', options_list=['--name', '-n'], metavar='NAME', id_part=None,
-        completer=get_resource_name_completion_list('Microsoft.Attestation/attestationProviders'))
-
-    for item in ['create', 'show', 'update', 'delete']:
-        with self.argument_context('attestation {}'.format(item)) as c:
-            c.argument('provider_name', provider_name_type,
-                       help='Name of the attestation service instance.')
-
-    for item in ['show', 'delete']:
-        with self.argument_context('attestation {}'.format(item)) as c:
-            c.extra('identifier', options_list=['--id'],
-                    help='Resource ID of the provider. Please omit --resource-group/-g or --name/-n '
-                         'if you have already specified --id.')
-
-    for item in ['create', 'update']:
-        with self.argument_context('attestation {}'.format(item)) as c:
-            c.argument('tags', tags_type, nargs='+')
-
-    with self.argument_context('attestation create') as c:
-        c.argument('certs_input_path', nargs='+',
-                   help='Space-separated file paths to PEM/DER files containing certificates.')
-
-    with self.argument_context('attestation get-default-by-location') as c:
-        c.argument('loc', options_list=['--location', '-l'], help='Location. (eg: "West US")')
+    # provider_name_type = CLIArgumentType(
+    #     help='Name of the attestation provider.', options_list=['--name', '-n'], metavar='NAME', id_part=None,
+    #     completer=get_resource_name_completion_list('Microsoft.Attestation/attestationProviders'))
+    #
+    # for item in ['create', 'show', 'update', 'delete']:
+    #     with self.argument_context('attestation {}'.format(item)) as c:
+    #         c.argument('provider_name', provider_name_type,
+    #                    help='Name of the attestation service instance.')
+    #
+    # for item in ['show', 'delete']:
+    #     with self.argument_context('attestation {}'.format(item)) as c:
+    #         c.extra('identifier', options_list=['--id'],
+    #                 help='Resource ID of the provider. Please omit --resource-group/-g or --name/-n '
+    #                      'if you have already specified --id.')
+    #
+    # for item in ['create', 'update']:
+    #     with self.argument_context('attestation {}'.format(item)) as c:
+    #         c.argument('tags', tags_type, nargs='+')
+    #
+    # with self.argument_context('attestation create') as c:
+    #     c.argument('certs_input_path', nargs='+',
+    #                help='Space-separated file paths to PEM/DER files containing certificates.')
+    #
+    # with self.argument_context('attestation get-default-by-location') as c:
+    #     c.argument('loc', options_list=['--location', '-l'], help='Location. (eg: "West US")')
 
     # for item in ['list', 'add', 'remove']:
     #     with self.argument_context('attestation signer {}'.format(item)) as c:

@@ -42,28 +42,28 @@ def load_command_table(self, _):
 
     with self.command_group('attestation', attestation_attestation_provider,
                             client_factory=cf_attestation_provider, is_experimental=True) as g:
-        from azext_attestation.manual.custom import AttestationCreate, AttestationUpdate, AttestationShow, \
+        from azext_attestation.manual.custom import AttestationCreate, AttestationShow, \
             AttestationDelete, AttestationGetDefaultByLocation
         self.command_table["attestation create"] = AttestationCreate(loader=self)
-        self.command_table["attestation update"] = AttestationUpdate(loader=self)
+        # self.command_table["attestation update"] = AttestationUpdate(loader=self)
         self.command_table["attestation show"] = AttestationShow(loader=self)
         self.command_table["attestation delete"] = AttestationDelete(loader=self)
         self.command_table["attestation get-default-by-location"] = AttestationGetDefaultByLocation(loader=self)
-        g.custom_command('list', 'attestation_attestation_provider_list',
-                         doc_string_source=attestation_provider_doc_template.format('list'))
-        g.custom_show_command('show', 'attestation_attestation_provider_show', validator=validate_provider_resource_id,
-                              doc_string_source=attestation_provider_doc_template.format('get'))
-        g.custom_command('create', 'attestation_attestation_provider_create',
-                         doc_string_source=attestation_provider_doc_template.format('create'))
-        g.custom_command('update', 'attestation_attestation_provider_update',
-                         doc_string_source=attestation_provider_doc_template.format('update'))
-        g.custom_command('delete', 'attestation_attestation_provider_delete', confirmation=True,
-                         validator=validate_provider_resource_id,
-                         doc_string_source=attestation_provider_doc_template.format('delete'))
-        g.custom_command('get-default-by-location', 'attestation_attestation_provider_get_default_by_location',
-                         doc_string_source=attestation_provider_doc_template.format('get_default_by_location'))
-        g.custom_command('list-default', 'attestation_attestation_provider_list_default',
-                         doc_string_source=attestation_provider_doc_template.format('list_default'))
+        # g.custom_command('list', 'attestation_attestation_provider_list',
+        #                  doc_string_source=attestation_provider_doc_template.format('list'))
+        # g.custom_show_command('show', 'attestation_attestation_provider_show', validator=validate_provider_resource_id,
+        #                       doc_string_source=attestation_provider_doc_template.format('get'))
+        # g.custom_command('create', 'attestation_attestation_provider_create',
+        #                  doc_string_source=attestation_provider_doc_template.format('create'))
+        # g.custom_command('update', 'attestation_attestation_provider_update',
+        #                  doc_string_source=attestation_provider_doc_template.format('update'))
+        # g.custom_command('delete', 'attestation_attestation_provider_delete', confirmation=True,
+        #                  validator=validate_provider_resource_id,
+        #                  doc_string_source=attestation_provider_doc_template.format('delete'))
+        # g.custom_command('get-default-by-location', 'attestation_attestation_provider_get_default_by_location',
+        #                  doc_string_source=attestation_provider_doc_template.format('get_default_by_location'))
+        # g.custom_command('list-default', 'attestation_attestation_provider_list_default',
+        #                  doc_string_source=attestation_provider_doc_template.format('list_default'))
 
     with self.command_group('attestation signer', policy_certificates_data_sdk, client_factory=cf_policy_certificates,
                             is_experimental=True) as g:

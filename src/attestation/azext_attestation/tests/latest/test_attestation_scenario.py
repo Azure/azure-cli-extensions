@@ -156,23 +156,6 @@ def test_provider_with_signer_1(test, rg):
 
     test.cmd('az attestation signer remove -n {att1} -g {rg} --signer {new_signer_jwt}',
              checks=test.check('CertificateCount', 1))
-    """ Bypass this since the test file can be only used on old api version
-
-    test.cmd('az attestation signer add -n {att1} -g {rg} -f "{new_signer_jwt_file}"',
-             checks=test.check('CertificateCount', 2))
-
-    test.cmd('az attestation signer remove -n {att1} -g {rg} -f "{new_signer_jwt_file}"',
-             checks=test.check('CertificateCount', 1))
-
-    with open(test.kwargs['new_signer_jwt_file']) as f:
-        test.kwargs['new_signer_jwt'] = f.read()
-
-    test.cmd('az attestation signer add -n {att1} -g {rg} --signer {new_signer_jwt}',
-             checks=test.check('CertificateCount', 2))
-
-    test.cmd('az attestation signer remove -n {att1} -g {rg} --signer {new_signer_jwt}',
-             checks=test.check('CertificateCount', 1))
-    """
 
 
 @try_manual
@@ -191,14 +174,12 @@ def test_provider_with_signer_2(test, rg):
         test.exists('Text')
     ])
 
-    # from azure.core.exceptions import HttpResponseError
-    # with test.assertRaises(HttpResponseError):
     test.cmd('az attestation policy set -n {att2} -g {rg} --attestation-type SgxEnclave '
              '-f "{signed_jwt_policy2_file}" --policy-format JWT',
              checks=[
-                 test.check('Algorithm', 'RSA256'),
-                 test.check('JwtLength', 2862),
-                 test.check('TextLength', 608),
+                 test.check('Algorithm', 'RS256'),
+                 test.check('JwtLength', 2766),
+                 test.check('TextLength', 479),
                  test.exists('Jwt'),
                  test.exists('Text')
              ])
@@ -299,7 +280,7 @@ def call_scenario(test, rg):
     step__attestationproviders_delete(test, rg)
     test_get_default_provider_by_location(test, rg)
     test_provider_with_signer_1(test, rg)
-    # test_provider_with_signer_2(test, rg)
+    test_provider_with_signer_2(test, rg)
     test_provider_without_signer(test, rg)
     cleanup(test, rg)
 

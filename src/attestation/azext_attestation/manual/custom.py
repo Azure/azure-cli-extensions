@@ -210,27 +210,23 @@ class AttestationDelete(_AttestationDelete):
         validate_provider_resource_id(self)
 
 
-class AttestationUpdate(_AttestationUpdate):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.id = AAZStrArg(
-            options=["--id"],
-            help="Resource ID of the provider. Please omit --resource-group/-g or --name/-n if you have already specified --id.",
-        )
-        args_schema.name = AAZStrArg(
-            options=["--name", "-n"],
-            help="Name of the attestation provider.",
-        )
-
-        args_schema.provider_name._required = False
-        args_schema.resource_group._required = False
-        args_schema.provider_name._registered = False
-        return args_schema
-
-    def pre_operations(self):
-        validate_provider_resource_id(self)
+# class AttestationUpdate(_AttestationUpdate):
+#     @classmethod
+#     def _build_arguments_schema(cls, *args, **kwargs):
+#         from azure.cli.core.aaz import AAZStrArg
+#         args_schema = super()._build_arguments_schema(*args, **kwargs)
+#         args_schema.name = AAZStrArg(
+#             options=["--name", "-n"],
+#             help="Name of the attestation provider.",
+#         )
+#
+#         args_schema.provider_name._required = False
+#         args_schema.resource_group._required = False
+#         args_schema.provider_name._registered = False
+#         return args_schema
+#
+#     def pre_operations(self):
+#         validate_provider_resource_id(self)
 
 
 def add_signer(cmd, client, signer=None, signer_file=None, resource_group_name=None, provider_name=None):
