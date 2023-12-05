@@ -45,7 +45,6 @@ def load_command_table(self, _):
         from azext_attestation.manual.custom import AttestationCreate, AttestationShow, \
             AttestationDelete, AttestationGetDefaultByLocation
         self.command_table["attestation create"] = AttestationCreate(loader=self)
-        # self.command_table["attestation update"] = AttestationUpdate(loader=self)
         self.command_table["attestation show"] = AttestationShow(loader=self)
         self.command_table["attestation delete"] = AttestationDelete(loader=self)
         self.command_table["attestation get-default-by-location"] = AttestationGetDefaultByLocation(loader=self)

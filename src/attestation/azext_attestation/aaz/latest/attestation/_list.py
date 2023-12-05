@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "attestation list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """Returns a list of attestation providers in a subscription.

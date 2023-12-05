@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "attestation show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get the status of Attestation Provider.

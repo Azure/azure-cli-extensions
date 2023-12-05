@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "attestation create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Creates a new Attestation Provider instance.

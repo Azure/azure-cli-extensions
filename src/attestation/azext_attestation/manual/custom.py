@@ -59,7 +59,7 @@ class AttestationShow(_AttestationShow):
         )
         args_schema.name = AAZStrArg(
             options=["--name", "-n"],
-            help="Name of the attestation provider.",
+            help="Name of the attestation service instance.",
         )
 
         args_schema.provider_name._required = False
@@ -198,7 +198,7 @@ class AttestationDelete(_AttestationDelete):
         )
         args_schema.name = AAZStrArg(
             options=["--name", "-n"],
-            help="Name of the attestation provider.",
+            help="Name of the attestation service instance.",
         )
 
         args_schema.provider_name._required = False

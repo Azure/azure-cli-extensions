@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "attestation update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Updates the Attestation Provider.
