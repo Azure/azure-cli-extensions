@@ -280,6 +280,13 @@ def get_cluster_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot
     return snapshot
 
 
+def check_is_private_link_cluster(mc: ManagedCluster) -> bool:
+    """Check `mc` object to determine whether private link cluster is enabled.
+    :return: bool
+    """
+    return check_is_private_cluster(mc) and not check_is_apiserver_vnet_integration_cluster(mc)
+
+
 def check_is_private_cluster(mc: ManagedCluster) -> bool:
     """Check `mc` object to determine whether private cluster is enabled.
     :return: bool
