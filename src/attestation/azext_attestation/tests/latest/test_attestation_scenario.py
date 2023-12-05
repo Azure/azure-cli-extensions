@@ -11,6 +11,7 @@
 import os
 import time
 from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
 
@@ -288,6 +289,7 @@ def call_scenario(test, rg):
 @try_manual
 class AttestationManagementClientScenarioTest(ScenarioTest):
 
+    @AllowLargeResponse(size_kb=99999)
     @ResourceGroupPreparer(name_prefix='clitestattestation_testrg1'[:7], key='rg', parameter_name='rg')
     def test_attestation(self, rg):
         call_scenario(self, rg)

@@ -10,42 +10,21 @@
 # pylint: disable=too-many-lines
 
 import base64
-import json
 import jwt
 import os
 
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_pem_x509_certificate
 from knack.cli import CLIError
 
-from azext_attestation.generated._client_factory import cf_attestation_provider
-from azext_attestation.vendored_sdks.azure_attestation.models._attestation_client_enums import TeeKind
-from azext_attestation.vendored_sdks.azure_attestation.models._models_py3 import \
-    AttestOpenEnclaveRequest, RuntimeData, InitTimeData
-from azext_attestation.vendored_sdks.azure_mgmt_attestation.models import JsonWebKey
-from azext_attestation.aaz.latest.attestation import Create as _AttestationCreate, Update as _AttestationUpdate,\
-    Delete as _AttestationDelete, Show as _AttestationShow, GetDefaultByLocation as _AttestationGetDefaultByLocation
+from azext_attestation.aaz.latest.attestation import Create as _AttestationCreate, Delete as _AttestationDelete,\
+    Show as _AttestationShow, GetDefaultByLocation as _AttestationGetDefaultByLocation
 from azext_attestation.aaz.latest.attestation.policy import Reset as _ResetPolicy, Set as _SetPolicy, Show as _GetPolicy
 from azext_attestation.aaz.latest.attestation.signer import Add as _AddSigner, Remove as _RemoveSigner,\
     List as _ListSigners
 from azure.cli.core.aaz import has_value
-
-tee_mapping = {
-    TeeKind.tpm: 'TPM',
-    TeeKind.sgx_intel_sdk: 'SgxEnclave',
-    TeeKind.sgx_open_enclave_sdk: 'OpenEnclave'
-}
-
-
-def attestation_attestation_provider_show(client,
-                                          resource_group_name=None,
-                                          provider_name=None):
-    """ Show the status of Attestation Provider. """
-    return client.get(resource_group_name=resource_group_name,
-                      provider_name=provider_name)
 
 
 class AttestationShow(_AttestationShow):
@@ -81,46 +60,6 @@ def _b64_to_b64url(s):
 
 def _b64_padding(s):
     return s + ('=' * (4 - len(s) % 4) if len(s) % 4 else '')
-
-
-def attestation_attestation_provider_create(client,
-                                            resource_group_name,
-                                            provider_name,
-                                            location,
-                                            tags=None,
-                                            certs_input_path=None):
-
-    certs = []
-    if not certs_input_path:
-        certs_input_path = []
-
-    for p in certs_input_path:
-        expand_path = os.path.expanduser(p)
-        if not os.path.exists(expand_path):
-            raise CLIError('Path "{}" does not exist.'.format(expand_path))
-        if not os.path.isfile(expand_path):
-            raise CLIError('"{}" is not a valid file path.'.format(expand_path))
-
-        with open(expand_path, 'rb') as f:
-            pem_data = f.read()
-
-        cert = load_pem_x509_certificate(pem_data, backend=default_backend())
-        key = cert.public_key()
-        if isinstance(key, rsa.RSAPublicKey):
-            kty = 'RSA'
-            alg = 'RS256'
-        else:
-            raise CLIError('Unsupported key type: {}'.format(type(key)))
-
-        jwk = JsonWebKey(kty=kty, alg=alg, use='sig')
-        jwk.x5c = [base64.b64encode(cert.public_bytes(Encoding.DER)).decode('ascii')]
-        certs.append(jwk)
-
-    return client.create(resource_group_name=resource_group_name,
-                         provider_name=provider_name,
-                         location=location,
-                         tags=tags,
-                         certs=certs)
 
 
 class AttestationCreate(_AttestationCreate):
@@ -180,13 +119,6 @@ class AttestationCreate(_AttestationCreate):
         args.certs = certs
 
 
-def attestation_attestation_provider_delete(client,
-                                            resource_group_name=None,
-                                            provider_name=None):
-    return client.delete(resource_group_name=resource_group_name,
-                         provider_name=provider_name)
-
-
 class AttestationDelete(_AttestationDelete):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -208,60 +140,6 @@ class AttestationDelete(_AttestationDelete):
 
     def pre_operations(self):
         validate_provider_resource_id(self)
-
-
-# class AttestationUpdate(_AttestationUpdate):
-#     @classmethod
-#     def _build_arguments_schema(cls, *args, **kwargs):
-#         from azure.cli.core.aaz import AAZStrArg
-#         args_schema = super()._build_arguments_schema(*args, **kwargs)
-#         args_schema.name = AAZStrArg(
-#             options=["--name", "-n"],
-#             help="Name of the attestation provider.",
-#         )
-#
-#         args_schema.provider_name._required = False
-#         args_schema.resource_group._required = False
-#         args_schema.provider_name._registered = False
-#         return args_schema
-#
-#     def pre_operations(self):
-#         validate_provider_resource_id(self)
-
-
-def add_signer(cmd, client, signer=None, signer_file=None, resource_group_name=None, provider_name=None):
-    if not signer and not signer_file:
-        raise CLIError('Please specify one of parameters: --signer or --signer-file/-f')
-
-    if signer and signer_file:
-        raise CLIError('--signer and --signer-file/-f are mutually exclusive.')
-
-    if signer_file:
-        signer_file = os.path.expanduser(signer_file)
-        if not os.path.exists(signer_file):
-            raise CLIError('Signer file "{}" does not exist.'.format(signer_file))
-        if not os.path.isfile(signer_file):
-            raise CLIError('Signer file "{}" is not a valid file name.'.format(signer_file))
-        with open(signer_file) as f:
-            signer = f.read()
-
-    provider_client = cf_attestation_provider(cmd.cli_ctx)
-    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
-    token = client.add(tenant_base_url=provider.attest_uri, policy_certificate_to_add=signer)
-    token = token.split(" ")[1].replace("}", "").strip("'")
-    result = {'Jwt': token}
-
-    if token:
-        header = jwt.get_unverified_header(token)
-        result.update({
-            'Algorithm': header.get('alg', ''),
-            'JKU': header.get('jku', '')
-        })
-        body = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False})
-        result['Certificates'] = body.get('aas-policyCertificates', {}).get('keys', [])
-        result['CertificateCount'] = len(result['Certificates'])
-
-    return result
 
 
 class AddSigner(_AddSigner):
@@ -324,28 +202,6 @@ class AddSigner(_AddSigner):
             result['Certificates'] = body.get('aas-policyCertificates', {}).get('keys', [])
             result['CertificateCount'] = len(result['Certificates'])
         return result
-
-
-def remove_signer(cmd, client, signer=None, signer_file=None, resource_group_name=None, provider_name=None):
-    if not signer and not signer_file:
-        raise CLIError('Please specify one of parameters: --signer or --signer-file/-f')
-
-    if signer and signer_file:
-        raise CLIError('--signer and --signer-file/-f are mutually exclusive.')
-
-    if signer_file:
-        signer_file = os.path.expanduser(signer_file)
-        if not os.path.exists(signer_file):
-            raise CLIError('Signer file "{}" does not exist.'.format(signer_file))
-        if not os.path.isfile(signer_file):
-            raise CLIError('Signer file "{}" is not a valid file name.'.format(signer_file))
-        with open(signer_file) as f:
-            signer = f.read()
-
-    provider_client = cf_attestation_provider(cmd.cli_ctx)
-    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
-    client.remove(tenant_base_url=provider.attest_uri, policy_certificate_to_remove=signer)
-    return list_signers(cmd, client, resource_group_name, provider_name)
 
 
 class RemoveSigner(_RemoveSigner):
@@ -412,26 +268,6 @@ class RemoveSigner(_RemoveSigner):
             result['CertificateCount'] = len(result['Certificates'])
 
         return result
-
-
-def list_signers(cmd, client, resource_group_name=None, provider_name=None):
-    provider_client = cf_attestation_provider(cmd.cli_ctx)
-    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
-    signers = client.get(tenant_base_url=provider.attest_uri)
-    token = json.loads(signers.replace('\'', '"')).get('token')
-    result = {'Jwt': token}
-
-    if token:
-        header = jwt.get_unverified_header(token)
-        result.update({
-            'Algorithm': header.get('alg', ''),
-            'JKU': header.get('jku', '')
-        })
-        body = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False})
-        result['Certificates'] = body.get('x-ms-policy-certificates', {}).get('keys', [])
-        result['CertificateCount'] = len(result['Certificates'])
-
-    return result
 
 
 class ListSigners(_ListSigners):
@@ -564,57 +400,6 @@ def handle_policy_output(token):
     return result
 
 
-def set_policy(cmd, client, attestation_type, new_attestation_policy=None, new_attestation_policy_file=None,
-               policy_format='Text', resource_group_name=None,
-               provider_name=None):
-
-    if new_attestation_policy_file and new_attestation_policy:
-        raise CLIError('Please specify just one of --new-attestation-policy and --new-attestation-policy-file/-f')
-
-    if not new_attestation_policy_file and not new_attestation_policy:
-        raise CLIError('Please specify --new-attestation-policy or --new-attestation-policy-file/-f')
-
-    if new_attestation_policy_file:
-        file_path = os.path.expanduser(new_attestation_policy_file)
-        if not os.path.exists(file_path):
-            raise CLIError('Policy file "{}" does not exist.'.format(file_path))
-
-        if not os.path.isfile(file_path):
-            raise CLIError('"{}" is not a valid file name.'.format(file_path))
-
-        with open(file_path) as f:
-            new_attestation_policy = f.read()
-
-    provider_client = cf_attestation_provider(cmd.cli_ctx)
-    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
-
-    if policy_format == 'Text':
-        if provider.trust_model != 'AAD':
-            raise CLIError('Only supports Text policy under AAD model. Current model: {}. '
-                           'If you are using signed JWT policy, please specify --policy-format JWT'.
-                           format(provider.trust_model))
-
-        import jwt
-        try:
-            new_attestation_policy = \
-                base64.urlsafe_b64encode(new_attestation_policy.encode('ascii')).decode('ascii').strip('=')
-            new_attestation_policy = {'AttestationPolicy': new_attestation_policy}
-            new_attestation_policy = jwt.encode(
-                new_attestation_policy, key='', algorithm='none'
-            )
-        except TypeError as e:
-            print(e)
-            raise CLIError('Failed to encode text content, are you using JWT? If yes, please use --policy-format JWT')
-
-    client.set(
-        tenant_base_url=provider.attest_uri,
-        tee=tee_mapping[attestation_type],
-        new_attestation_policy=new_attestation_policy
-    )
-    return get_policy(cmd, client, attestation_type,
-                      resource_group_name=resource_group_name, provider_name=provider_name)
-
-
 class SetPolicy(_SetPolicy):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -666,11 +451,12 @@ class SetPolicy(_SetPolicy):
             with open(file_path) as f:
                 new_attestation_policy = f.read()
 
-        provider_client = cf_attestation_provider(self.cli_ctx)
-        provider = provider_client.get(resource_group_name=args.resource_group, provider_name=args.provider_name)
+        show_args = {"resource_group": args.resource_group, "provider_name": args.provider_name}
+        from azext_attestation.aaz.latest.attestation import Show
+        provider = Show(cli_ctx=self.cli_ctx)(command_args=show_args)
 
         if args.policy_format == 'Text':
-            if provider.trust_model != 'AAD':
+            if provider['trustModel'] != 'AAD':
                 raise CLIError('Only supports Text policy under AAD model. Current model: {}. '
                                'If you are using signed JWT policy, please specify --policy-format JWT'.
                                format(provider.trust_model))
@@ -714,20 +500,6 @@ def validate_provider_resource_id(self):
 
     if has_value(args.name):
         args.provider_name = args.name
-
-
-def reset_policy(cmd, client, attestation_type, policy_jws='eyJhbGciOiJub25lIn0..', resource_group_name=None,
-                 provider_name=None):
-
-    provider_client = cf_attestation_provider(cmd.cli_ctx)
-    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
-    client.reset(
-        tenant_base_url=provider.attest_uri,
-        tee=tee_mapping[attestation_type],
-        policy_jws=policy_jws
-    )
-    return get_policy(cmd, client, attestation_type,
-                      resource_group_name=resource_group_name, provider_name=provider_name)
 
 
 class ResetPolicy(_ResetPolicy):
