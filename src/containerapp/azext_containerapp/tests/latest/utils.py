@@ -21,7 +21,11 @@ def prepare_containerapp_env_for_app_e2e_tests(test_cls, location=TEST_LOCATION)
         managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
     except CLIInternalError as e:
         if e.error_msg.__contains__('ResourceGroupNotFound') or e.error_msg.__contains__('ResourceNotFound'):
-            test_cls.cmd(f'group create -n {rg_name} -l eastus')
+            # resource group is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+            location = TEST_LOCATION
+            if location == STAGE_LOCATION:
+                location = "eastus"
+            test_cls.cmd(f'group create -n {rg_name} -l {location}')
             test_cls.cmd(f'containerapp env create -g {rg_name} -n {env_name} --logs-destination none')
             managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
 
@@ -174,6 +178,9 @@ def create_extension_and_custom_location(test_cls, resource_group, connected_clu
             connected_cluster = test_cls.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
 
         connected_cluster_id = connected_cluster.get('id')
+        location = TEST_LOCATION
+        if location == STAGE_LOCATION:
+            location = "eastus2euap"
         extension = test_cls.cmd(f'az k8s-extension create'
                                  f' --resource-group {resource_group}'
                                  f' --name containerapp-ext'
@@ -188,10 +195,7 @@ def create_extension_and_custom_location(test_cls, resource_group, connected_clu
                                  f' --configuration-settings "appsNamespace=appplat-ns"'
                                  f' --configuration-settings "clusterName={connected_cluster_name}"'
                                  f' --configuration-settings "envoy.annotations.service.beta.kubernetes.io/azure-load-balancer-resource-group={resource_group}"').get_output_in_json()
-        custom_location_loc = TEST_LOCATION
-        if custom_location_loc == STAGE_LOCATION:
-            custom_location_loc = "eastus2euap"
-        test_cls.cmd(f'az customlocation create -g {resource_group} -n {custom_location_name} -l {TEST_LOCATION} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}')
+        test_cls.cmd(f'az customlocation create -g {resource_group} -n {custom_location_name} -l {location} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}')
     except:
         pass
 
@@ -281,7 +285,11 @@ def create_and_verify_containerapp_create_and_update(
             registry_user = None,
             registry_pass = None):
         # Configure the default location
-        test_cls.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # 'Microsoft.ContainerRegistry/registries' is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if location == STAGE_LOCATION:
+            location = "eastus"
+        test_cls.cmd('configure --defaults location={}'.format(location))
 
         # Ensure that the Container App environment is created
         env_id = None
