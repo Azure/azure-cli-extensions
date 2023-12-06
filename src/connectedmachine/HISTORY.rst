@@ -4,7 +4,7 @@ Release History
 ===============
 0.7.0
 +++++	
-* Add run-commands/ESU license API's. 2023/10/03-preview is used for aaz generation. Migrated to aaz.
+* Add run-commands API's. 2023/10/03-preview is used for aaz generation. Migrated to aaz.
 
 0.6.0
 +++++	
