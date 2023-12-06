@@ -309,41 +309,6 @@ class ListSigners(_ListSigners):
         return result
 
 
-def get_policy(cmd, client, attestation_type, resource_group_name=None, provider_name=None):
-    """ Retrieves the current policy for a given kind of attestation type. """
-
-    provider_client = cf_attestation_provider(cmd.cli_ctx)
-    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
-    token = client.get(tenant_base_url=provider.attest_uri, tee=tee_mapping[attestation_type]).token
-    result = {}
-
-    if token:
-        import jwt
-        policy = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False}).get('x-ms-policy', '')
-        result['Jwt'] = policy
-        result['JwtLength'] = len(policy)
-        result['Algorithm'] = None
-
-        if policy:
-            try:
-                decoded_policy = jwt.decode(policy, algorithms=['RS256'], options={"verify_signature": False})
-                decoded_policy = decoded_policy.get('AttestationPolicy', '')
-                try:
-                    new_decoded_policy = base64.b64decode(_b64url_to_b64(decoded_policy)).decode('ascii')
-                    decoded_policy = new_decoded_policy
-                except:  # pylint: disable=bare-except
-                    pass
-                finally:
-                    result['Text'] = decoded_policy
-                    result['TextLength'] = len(decoded_policy)
-                    result['Algorithm'] = jwt.get_unverified_header(policy).get('alg', None)
-            except:  # pylint: disable=bare-except
-                result['Text'] = ''
-                result['TextLength'] = 0
-
-    return result
-
-
 class GetPolicy(_GetPolicy):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -531,35 +496,6 @@ class ResetPolicy(_ResetPolicy):
         from azext_attestation.aaz.latest.attestation.policy import Show
         token = Show(cli_ctx=self.cli_ctx)(command_args=show_args)['token']
         return handle_policy_output(token)
-
-
-def attest_open_enclave(cmd, client, report=None, runtime_data=None, runtime_data_type=None, init_time_data=None,
-                        init_time_data_type=None, resource_group_name=None, provider_name=None):
-
-    provider_client = cf_attestation_provider(cmd.cli_ctx)
-    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
-
-    request = AttestOpenEnclaveRequest(
-        report=report,
-        runtime_data=RuntimeData(
-            data=runtime_data,
-            data_type=runtime_data_type
-        ),
-        init_time_data=InitTimeData(
-            data=init_time_data,
-            data_type=init_time_data_type
-        )
-    )
-
-    return client.attest_open_enclave(
-        tenant_base_url=provider.attest_uri,
-        request=request
-    )
-
-
-def attestation_attestation_provider_get_default_by_location(client,
-                                                             loc):
-    return client.get_default_by_location(location=loc)
 
 
 class AttestationGetDefaultByLocation(_AttestationGetDefaultByLocation):
