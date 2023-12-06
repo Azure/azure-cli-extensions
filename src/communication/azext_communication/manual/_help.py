@@ -576,7 +576,6 @@ helps['communication email send'] = """
                az communication email send --sender "NoReply@contoso.com" --subject "Contoso Update" --to "user1@user1-domain.com" "user2@user2-domain.com" --text "Hello valued client. There is an update."
 """
 
-#  Help for email communication services
 helps['communication email create'] = """
     type: command
     short-summary: "Creates a new Email Communication Service or update an existing one."
