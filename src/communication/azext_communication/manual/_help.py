@@ -643,7 +643,7 @@ helps['communication email domain create'] = """
     examples:
       - name: Create or update domain
         text: |-
-               az communication email domain create --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "AzureManagedDomain/MyCustomDomainName.net" --location "Global" --domain-management "AzureManaged/CustomerManaged" --tags newTag="newVal" --user-engagement-tracking 1/0
+               az communication email domain create --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "AzureManagedDomain/MyCustomDomainName.net" --location "Global" --domain-management "AzureManaged/CustomerManaged" --tags newTag="newVal" --user-engmnt-tracking 1/0
 """
 
 helps['communication email domain update'] = """
@@ -652,7 +652,7 @@ helps['communication email domain update'] = """
     examples:
       - name: Update domain
         text: |-
-              az communication email domain update --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --domain-management "AzureManaged/CustomerManaged" --tags newTag="newVal" --user-engagement-tracking 1/0
+              az communication email domain update --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --domain-management "AzureManaged/CustomerManaged" --tags newTag="newVal" --user-engmnt-tracking 1/0
 """
 
 helps['communication email domain delete'] = """
@@ -679,7 +679,7 @@ helps['communication email domain show'] = """
     examples:
       - name: Get domain
         text: |-
-               az communication email domain show --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup"
+               az communication email domain show --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "DomainName"
 """
 
 helps['communication email domain wait'] = """
@@ -750,5 +750,3 @@ helps['communication email senderusername wait'] = """
         text: |-
                az communication email senderusername wait --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername" --deleted --interval 1
 """
-
-

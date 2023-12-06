@@ -17,7 +17,7 @@ class DomainUpdate(AAZCommand):
     """Update an existing Domain.
 
     :example: update a domain with tags
-        az communication email domain update -n ResourceName -g ResourceGroup --domain-name DomainName --domain-management AzureManaged/CustomerManaged --tags "{tag:tag}" --user-engagement-tracking 1/0
+        az communication email domain update -n ResourceName -g ResourceGroup --domain-name DomainName --domain-management AzureManaged/CustomerManaged --tags "{tag:tag}" --user-engmnt-tracking 1/0
     """
 
     _aaz_info = {
@@ -92,7 +92,7 @@ class DomainUpdate(AAZCommand):
         domain_management.Element = AAZStrArg() 
 
         _args_schema.user_engagement_tracking = AAZStrArg(
-            options=["--user-engagement-tracking"],
+            options=["--user-engmnt-tracking"],
             required=False,
             arg_group="Properties",
             help="User Engagement Tracking. Allowed values: 0, 1, Disabled, Enabled",

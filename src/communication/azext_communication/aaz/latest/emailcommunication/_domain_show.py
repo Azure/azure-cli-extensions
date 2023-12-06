@@ -18,7 +18,7 @@ class DomainShow(AAZCommand):
     """Get the Domain and its properties.
 
     :example: Get a domain properties
-        az communication email domain show -n ResourceName -g ResourceGroup 
+        az communication email domain show -n ResourceName -g ResourceGroup --domain-name DomainName
     """
 
     _aaz_info = {

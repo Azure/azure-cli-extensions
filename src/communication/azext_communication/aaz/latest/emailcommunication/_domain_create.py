@@ -17,7 +17,7 @@ class DomainCreate(AAZCommand):
     """Create a new Domain or update an existing Domain.
 
     :example: Create a domain with tags
-        az communication email domain create -n ResourceName -g ResourceGroup --location global --domain-name DomainName --domain-management AzureManaged/CustomerManaged --tags "{tag:tag}" --user-engagement-tracking 1/0
+        az communication email domain create -n ResourceName -g ResourceGroup --location global --domain-name DomainName --domain-management AzureManaged/CustomerManaged --tags "{tag:tag}" --user-engmnt-tracking 1/0
 
     """
 
@@ -97,7 +97,7 @@ class DomainCreate(AAZCommand):
         domain_management.Element = AAZStrArg()       
 
         _args_schema.user_engagement_tracking = AAZStrArg(
-            options=["--user-engagement-tracking"],
+            options=["--user-engmnt-tracking"],
             required=False,
             arg_group="Properties",
             help="User Engagement Tracking. Allowed values: 0, 1, Disabled, Enabled",
