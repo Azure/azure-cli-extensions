@@ -22,19 +22,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 # Env setup
 @try_manual
 def setup(test, rg):
-    test.kwargs.update({
-        'init_cert1_file': os.path.join(TEST_DIR, 'cert_group_1', 'init_cert.pem'),
-        'init_cert2_file': os.path.join(TEST_DIR, 'cert_group_2', 'init_cert.pem'),
-        'new_signer_jwt_file': os.path.join(TEST_DIR, 'cert_group_1', 'new_signer_jwt.txt'),
-        'signed_jwt_policy1_file': os.path.join(TEST_DIR, 'policies', 'signed_jwt_sgx_policy_1.txt'),
-        'signed_jwt_policy2_file': os.path.join(TEST_DIR, 'policies', 'signed_jwt_sgx_policy_2.txt'),
-        'unsigned_jwt_policy_file': os.path.join(TEST_DIR, 'policies', 'unsigned_jwt_sgx_policy.txt'),
-        'text_policy_file': os.path.join(TEST_DIR, 'policies', 'text_sgx_policy.txt'),
-        'att0': test.create_random_name('att0', 16),
-        'att1': test.create_random_name('att1', 16),
-        'att2': test.create_random_name('att2', 16),
-        'att3': test.create_random_name('att3', 16)
-    })
+    pass
 
 
 # EXAMPLE: /AttestationProviders/put/AttestationProviders_Create
@@ -292,6 +280,19 @@ class AttestationManagementClientScenarioTest(ScenarioTest):
     @AllowLargeResponse(size_kb=99999)
     @ResourceGroupPreparer(name_prefix='clitestattestation_testrg1'[:7], key='rg', parameter_name='rg')
     def test_attestation(self, rg):
+        self.kwargs.update({
+            'init_cert1_file': os.path.join(TEST_DIR, 'cert_group_1', 'init_cert.pem'),
+            'init_cert2_file': os.path.join(TEST_DIR, 'cert_group_2', 'init_cert.pem'),
+            'new_signer_jwt_file': os.path.join(TEST_DIR, 'cert_group_1', 'new_signer_jwt.txt'),
+            'signed_jwt_policy1_file': os.path.join(TEST_DIR, 'policies', 'signed_jwt_sgx_policy_1.txt'),
+            'signed_jwt_policy2_file': os.path.join(TEST_DIR, 'policies', 'signed_jwt_sgx_policy_2.txt'),
+            'unsigned_jwt_policy_file': os.path.join(TEST_DIR, 'policies', 'unsigned_jwt_sgx_policy.txt'),
+            'text_policy_file': os.path.join(TEST_DIR, 'policies', 'text_sgx_policy.txt'),
+            'att0': self.create_random_name('att0', 16),
+            'att1': self.create_random_name('att1', 16),
+            'att2': self.create_random_name('att2', 16),
+            'att3': self.create_random_name('att3', 16)
+        })
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
