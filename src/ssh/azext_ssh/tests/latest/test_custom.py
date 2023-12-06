@@ -308,7 +308,7 @@ class SshCustomCommandTest(unittest.TestCase):
 
         custom._write_cert_file("cert", "publickey-aadcert.pub")
 
-        mock_mode.assert_called_once_with("publickey-aadcert.pub", 0o644)
+        mock_mode.assert_called_once_with("publickey-aadcert.pub", 0o600)
         mock_open.assert_called_once_with("publickey-aadcert.pub", 'w', encoding='utf-8')
         mock_file.write.assert_called_once_with("ssh-rsa-cert-v01@openssh.com cert")
  
