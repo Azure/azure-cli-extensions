@@ -10,7 +10,7 @@
 # pylint: disable=too-many-lines
 
 import base64
-import jwt  # pylint: disable=import-error
+import jwt
 import os
 
 from cryptography.hazmat.backends import default_backend
