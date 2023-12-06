@@ -340,7 +340,6 @@ def handle_policy_output(token):
     result = {}
 
     if has_value(token):
-        import jwt
         policy = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False}).get('x-ms-policy', '')
         result['Jwt'] = policy
         result['JwtLength'] = len(policy)
@@ -426,7 +425,6 @@ class SetPolicy(_SetPolicy):
                                'If you are using signed JWT policy, please specify --policy-format JWT'.
                                format(provider.trust_model))
 
-            import jwt
             try:
                 new_attestation_policy = \
                     base64.urlsafe_b64encode(new_attestation_policy.encode('ascii')).decode('ascii').strip('=')
