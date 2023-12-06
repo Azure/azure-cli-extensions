@@ -11,8 +11,18 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`. 
+
+0.5.173
++++++++
+* Add warning when stopping a private link cluster.
+
+0.5.172
++++++++
+* Fix for regression issue with `az aks create --enable-addon` command for enabling App Routing
 * Vendor new SDK and bump API version to 2023-10-02-preview.
 * Update the enum for `--os-sku` in command `az aks nodepool update` to only accept the expected Ubuntu and AzureLinux OSSKUs.
+* Update description `az aks update` and remove description about outbound ip limit.
 
 0.5.171
 +++++++
