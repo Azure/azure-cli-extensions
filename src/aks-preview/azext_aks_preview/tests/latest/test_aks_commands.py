@@ -8508,6 +8508,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         delete_cmd = 'aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait'
         self.cmd(delete_cmd, checks=[self.is_empty()])
 
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
     def test_aks_approuting_update(self, resource_group, resource_group_location):
