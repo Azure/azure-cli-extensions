@@ -164,7 +164,10 @@ def azdev_on_external_extension(index_json):
 
         azdev_extension = AzdevExtensionHelper(name)
         azdev_extension.linter()
-        azdev_extension.style()
+        # TODO:
+        # azdev style support external extension
+        # azdev test support external extension
+        # azdev_extension.style()
 
         print('Checking service name for external extensions')
         service_name.check()
