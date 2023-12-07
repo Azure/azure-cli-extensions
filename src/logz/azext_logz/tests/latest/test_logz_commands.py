@@ -111,7 +111,7 @@ class LogzClientTest(ScenarioTest):
         # create virtual machine
         self.cmd(
             "vm create -n {vm} -g {rg} \
-            --os-disk-name os-disk --image centos \
+            --os-disk-name os-disk --image OpenLogic:CentOS:7.5:latest \
             --generate-ssh-keys --public-ip-sku standard",
             checks=[
                 self.check("powerState", "VM running")
@@ -274,7 +274,7 @@ class LogzClientTest(ScenarioTest):
         # create virtual machine
         self.cmd(
             "vm create -n {vm} -g {rg} \
-            --os-disk-name os-disk --image centos \
+            --os-disk-name os-disk --image OpenLogic:CentOS:7.5:latest \
             --generate-ssh-keys --public-ip-sku standard",
             checks=[
                 self.check("powerState", "VM running")
