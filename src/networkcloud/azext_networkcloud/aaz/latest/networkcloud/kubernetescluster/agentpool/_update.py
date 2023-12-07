@@ -13,18 +13,22 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster agentpool update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the properties of the provided Kubernetes cluster agent pool, or update the tags associated with the Kubernetes cluster agent pool. Properties and tag updates can be done independently.
 
     :example: Patch agent pool of the Kubernetes cluster
         az networkcloud kubernetescluster agentpool update --name "poolName" --kubernetes-cluster-name "kubernetesClusterName" --resource-group "resourceGroupName" --count 3 --upgrade-settings max-surge="1"
+
+    :example: Update Agent pool administrator credentials
+        az networkcloud kubernetescluster agentpool update --name "poolName" --kubernetes-cluster-name "kubernetesClusterName" --resource-group "resourceGroupName" --ssh-key-values 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgt5SjWU= admin@vm'
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/agentpools/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/agentpools/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -65,6 +69,28 @@ class Update(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "AdministratorConfiguration"
+
+        _args_schema = cls._args_schema
+        _args_schema.ssh_public_keys = AAZListArg(
+            options=["--ssh-public-keys"],
+            arg_group="AdministratorConfiguration",
+            help="SshPublicKey represents the public key used to authenticate with a resource through SSH.",
+        )
+
+        ssh_public_keys = cls._args_schema.ssh_public_keys
+        ssh_public_keys.Element = AAZObjectArg()
+
+        _element = cls._args_schema.ssh_public_keys.Element
+        _element.key_data = AAZStrArg(
+            options=["key-data"],
+            help="The SSH public key data.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
 
         # define Arg Group "AgentPoolUpdateParameters"
@@ -186,7 +212,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -216,8 +242,21 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("administratorConfiguration", AAZObjectType)
                 properties.set_prop("count", AAZIntType, ".count")
                 properties.set_prop("upgradeSettings", AAZObjectType, ".upgrade_settings")
+
+            administrator_configuration = _builder.get(".properties.administratorConfiguration")
+            if administrator_configuration is not None:
+                administrator_configuration.set_prop("sshPublicKeys", AAZListType, ".ssh_public_keys")
+
+            ssh_public_keys = _builder.get(".properties.administratorConfiguration.sshPublicKeys")
+            if ssh_public_keys is not None:
+                ssh_public_keys.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.administratorConfiguration.sshPublicKeys[]")
+            if _elements is not None:
+                _elements.set_prop("keyData", AAZStrType, ".key_data", typ_kwargs={"flags": {"required": True}})
 
             upgrade_settings = _builder.get(".properties.upgradeSettings")
             if upgrade_settings is not None:

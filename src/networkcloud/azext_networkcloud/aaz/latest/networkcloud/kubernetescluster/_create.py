@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new Kubernetes cluster or update the properties of the existing one.
@@ -22,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -339,12 +340,12 @@ class Create(AAZCommand):
             options=["bgp-service-load-balancer-configuration"],
             help="The configuration of the BGP service load balancer for this Kubernetes cluster.",
         )
-        network_configuration.cloud_services_network_id = AAZStrArg(
+        network_configuration.cloud_services_network_id = AAZResourceIdArg(
             options=["cloud-services-network-id"],
             help="The resource ID of the associated Cloud Services network.",
             required=True,
         )
-        network_configuration.cni_network_id = AAZStrArg(
+        network_configuration.cni_network_id = AAZResourceIdArg(
             options=["cni-network-id"],
             help="The resource ID of the Layer 3 network that is used for creation of the Container Networking Interface network.",
             required=True,
@@ -587,7 +588,7 @@ class Create(AAZCommand):
         cls._args_l2_network_attachment_configuration_create = AAZObjectArg()
 
         l2_network_attachment_configuration_create = cls._args_l2_network_attachment_configuration_create
-        l2_network_attachment_configuration_create.network_id = AAZStrArg(
+        l2_network_attachment_configuration_create.network_id = AAZResourceIdArg(
             options=["network-id"],
             help="The resource ID of the network that is being configured for attachment.",
             required=True,
@@ -621,7 +622,7 @@ class Create(AAZCommand):
             default="False",
             enum={"False": "False", "True": "True"},
         )
-        l3_network_attachment_configuration_create.network_id = AAZStrArg(
+        l3_network_attachment_configuration_create.network_id = AAZResourceIdArg(
             options=["network-id"],
             help="The resource ID of the network that is being configured for attachment.",
             required=True,
@@ -671,7 +672,7 @@ class Create(AAZCommand):
         cls._args_trunked_network_attachment_configuration_create = AAZObjectArg()
 
         trunked_network_attachment_configuration_create = cls._args_trunked_network_attachment_configuration_create
-        trunked_network_attachment_configuration_create.network_id = AAZStrArg(
+        trunked_network_attachment_configuration_create.network_id = AAZResourceIdArg(
             options=["network-id"],
             help="The resource ID of the network that is being configured for attachment.",
             required=True,
@@ -767,7 +768,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }

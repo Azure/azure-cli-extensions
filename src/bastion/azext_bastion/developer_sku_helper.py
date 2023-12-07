@@ -24,6 +24,6 @@ def _get_data_pod(cmd, resource_port, target_resource_id, bastion):
 
     web_address = f"https://{bastion['dnsName']}/api/connection"
     response = requests.post(web_address, json=content, headers=headers,
-                             verify=(not should_disable_connection_verify()))
+                             verify=not should_disable_connection_verify())
 
     return response.content.decode("utf-8")

@@ -109,7 +109,7 @@ def load_command_table(self: AzCommandsLoader, _):
         )
         g.custom_show_command('show', 'show_cloud')
         g.custom_command('list', 'list_cloud')
-        g.wait_command('wait')
+        g.custom_wait_command('wait', 'wait_cloud')
 
     with self.command_group(
         'scvmm virtual-network',
@@ -220,7 +220,7 @@ def load_command_table(self: AzCommandsLoader, _):
         )
         g.custom_show_command('show', 'show_avset')
         g.custom_command('list', 'list_avsets')
-        g.wait_command('wait')
+        g.custom_wait_command('wait', 'wait_avset')
 
     with self.command_group(
         'scvmm vmmserver inventory-item', client_factory=cf_inventory_items
@@ -247,5 +247,5 @@ def load_command_table(self: AzCommandsLoader, _):
         g.custom_command('update', 'scvmm_extension_update', supports_no_wait=True)
         g.custom_command('delete', 'scvmm_extension_delete', supports_no_wait=True, confirmation=True)
 
-    with self.command_group('scvmm', is_preview=True):
+    with self.command_group('scvmm', is_preview=False):
         pass

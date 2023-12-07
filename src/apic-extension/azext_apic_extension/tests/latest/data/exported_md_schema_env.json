@@ -1,0 +1,66 @@
+{
+    "type":"object",
+    "properties":{
+        "title":{
+            "description":"The name of the environment.",
+            "type":"string",
+            "maxLength":50
+        },
+        "kind":{
+            "description":"Kind of deployment environment.",
+            "type":"string"
+        },
+        "description":{
+            "description":"Description of the environment.",
+            "type":"string",
+            "maxLength":1000
+        },
+        "server":{
+            "description":"Server information of the environment.",
+            "type":"object",
+            "properties":{
+                "type":{
+                    "description":"Type of the server that represents the environment.",
+                    "type":"string"
+                },
+                "managementPortalUri":{
+                    "description":"URIs of the server's management portal.",
+                    "type":"array",
+                    "items":{
+                        "type":"string"
+                    },
+                    "maxItems":200
+                }
+            }
+        },
+        "onboarding":{
+            "description":"Onboarding information for this environment.",
+            "type":"object",
+            "properties":{
+                "instructions":{
+                    "description":"Instructions how to onboard to the environment.",
+                    "type":"string",
+                    "maxLength":1000
+                },
+                "developerPortalUri":{
+                    "description":"Developer portal URIs of the environment.",
+                    "type":"array",
+                    "items":{
+                        "type":"string"
+                    },
+                    "maxItems":200
+                }
+            }
+        },
+        "customProperties":{
+            "type":"object",
+            "properties":{},
+            "unevaluatedProperties":false,
+            "required":[]
+        }
+    },
+    "required":[
+        "title",
+        "kind"
+    ]
+}

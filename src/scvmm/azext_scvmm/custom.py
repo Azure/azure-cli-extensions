@@ -64,11 +64,11 @@ from .vendored_sdks.scvmm.models import (
     VirtualMachineTemplate,
     VirtualNetwork,
     VMMServer,
-    VMMServerPropertiesCredentials,
+    VMMCredential,
     AllocationMethod,
-    NetworkInterfaces,
+    NetworkInterface,
     NetworkProfile,
-    NetworkInterfacesUpdate,
+    NetworkInterfaceUpdate,
     NetworkProfileUpdate,
     StorageQoSPolicyDetails,
     VirtualDisk,
@@ -181,7 +181,7 @@ def connect_vmmserver(
             print('Please type y/n or leave empty.')
     assert fqdn
 
-    username_creds = VMMServerPropertiesCredentials(
+    username_creds = VMMCredential(
         username=username, password=password
     )
 
@@ -324,6 +324,10 @@ def delete_cloud(
 
 def show_cloud(cmd, client: CloudsOperations, resource_group_name, resource_name):
     return client.get(resource_group_name, resource_name)
+
+
+def wait_cloud(cmd, client: CloudsOperations, resource_group_name, cloud_name):
+    return client.get(resource_group_name, cloud_name)
 
 
 def list_cloud(cmd, client: CloudsOperations, resource_group_name=None):
@@ -974,7 +978,7 @@ def get_network_interfaces(
     nics = []
 
     for input_nic in input_nics:
-        nic = NetworkInterfaces(
+        nic = NetworkInterface(
             ipv4_address_type=AllocationMethod.dynamic.value,
             ipv6_address_type=AllocationMethod.dynamic.value,
             mac_address_type=AllocationMethod.dynamic.value,
@@ -1085,7 +1089,7 @@ def add_nic(
         cmd, resource_group_name, SCVMM_NAMESPACE, VIRTUALNETWORK_RESOURCE_TYPE, network
     )
 
-    nic_to_add = NetworkInterfacesUpdate(
+    nic_to_add = NetworkInterfaceUpdate(
         name=nic_name,
         ipv4_address_type=ipv4_address_type,
         ipv6_address_type=ipv6_address_type,
@@ -1107,7 +1111,7 @@ def add_nic(
         and vm.network_profile.network_interfaces is not None  # noqa: W503
     ):
         for nic in vm.network_profile.network_interfaces:
-            nic_update = NetworkInterfacesUpdate(
+            nic_update = NetworkInterfaceUpdate(
                 name=nic.name,
                 ipv4_address_type=nic.ipv4_address_type,
                 ipv6_address_type=nic.ipv6_address_type,
@@ -1184,7 +1188,7 @@ def update_nic(
         and vm.network_profile.network_interfaces is not None  # noqa: W503
     ):
         for nic in vm.network_profile.network_interfaces:
-            nic_update = NetworkInterfacesUpdate(
+            nic_update = NetworkInterfaceUpdate(
                 name=nic.name,
                 ipv4_address_type=nic.ipv4_address_type,
                 ipv6_address_type=nic.ipv6_address_type,
@@ -1310,7 +1314,7 @@ def delete_nics(
             if nic.name in nics_to_delete:
                 nics_to_delete[nic.name] = False
                 continue
-            nic_update = NetworkInterfacesUpdate(
+            nic_update = NetworkInterfaceUpdate(
                 name=nic.name,
                 ipv4_address_type=nic.ipv4_address_type,
                 ipv6_address_type=nic.ipv6_address_type,
@@ -1695,6 +1699,12 @@ def show_avset(
     cmd, client: AvailabilitySetsOperations, resource_group_name, resource_name
 ):
     return client.get(resource_group_name, resource_name)
+
+
+def wait_avset(
+    cmd, client: AvailabilitySetsOperations, resource_group_name, availability_set_name
+):
+    return client.get(resource_group_name, availability_set_name)
 
 
 def list_avsets(cmd, client: AvailabilitySetsOperations, resource_group_name=None):
