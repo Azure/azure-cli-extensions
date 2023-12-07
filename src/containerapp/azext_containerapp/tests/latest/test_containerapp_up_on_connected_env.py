@@ -5,6 +5,8 @@
 from subprocess import run
 from time import sleep
 
+from azure.cli.command_modules.containerapp._utils import format_location
+
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only, JMESPathCheck,
                                LogAnalyticsWorkspacePreparer)
