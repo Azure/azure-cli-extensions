@@ -10,7 +10,7 @@
 
 from azure.cli.core import AzCommandsLoader
 try:
-    from azext_attestation.manual._help import helps  # pylint: disable=reimported
+    from azext_attestation._help import helps  # pylint: disable=reimported
 except ImportError:
     pass
 
@@ -25,7 +25,7 @@ class AttestationManagementClientCommandsLoader(AzCommandsLoader):
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=attestation_custom)
 
     def load_command_table(self, args):
-        from azext_attestation.generated.commands import load_command_table
+        from azext_attestation.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -38,21 +38,11 @@ class AttestationManagementClientCommandsLoader(AzCommandsLoader):
                 args=args
             )
         load_command_table(self, args)
-        try:
-            from azext_attestation.manual.commands import load_command_table as load_command_table_manual
-            load_command_table_manual(self, args)
-        except ImportError:
-            pass
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_attestation.generated._params import load_arguments
+        from azext_attestation._params import load_arguments
         load_arguments(self, command)
-        try:
-            from azext_attestation.manual._params import load_arguments as load_arguments_manual
-            load_arguments_manual(self, command)
-        except ImportError:
-            pass
 
 
 COMMAND_LOADER_CLS = AttestationManagementClientCommandsLoader
