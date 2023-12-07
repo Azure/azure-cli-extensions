@@ -24,6 +24,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerappIdentityTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_identity_e2e(self, resource_group):
@@ -1437,8 +1438,10 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         image_name = f"{acr}.azurecr.io:443/k8se/quickstart:latest"
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
-
-        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled --location eastus')
+        acr_location = TEST_LOCATION
+        if acr_location == STAGE_LOCATION:
+            acr_location = "eastus"
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled -l {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')
         password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
 
@@ -1474,7 +1477,10 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled --location eastus')
+        acr_location = TEST_LOCATION
+        if acr_location == STAGE_LOCATION:
+            acr_location = "eastus"
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled --location {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')
 
         self.cmd(f'containerapp create -g {resource_group} -n {app}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io')

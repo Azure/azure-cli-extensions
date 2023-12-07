@@ -149,7 +149,10 @@ class ContainerappScenarioTest(ScenarioTest):
         registry_name = self.create_random_name(prefix='containerapp', length=24)
 
         # Create ACR
-        acr = self.cmd('acr create -g {} -n {} --sku Basic --admin-enabled --location eastus'.format(resource_group, registry_name)).get_output_in_json()
+        acr_location = TEST_LOCATION
+        if acr_location == STAGE_LOCATION:
+            acr_location = "eastus"
+        acr = self.cmd('acr create -g {} -n {} --sku Basic --admin-enabled --location {}'.format(resource_group, registry_name, acr_location)).get_output_in_json()
         registry_server = acr["loginServer"]
 
         acr_credentials = self.cmd('acr credential show -g {} -n {}'.format(resource_group, registry_name)).get_output_in_json()
