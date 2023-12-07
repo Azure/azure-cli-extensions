@@ -26,12 +26,6 @@ def load_command_table(self, _):
     support = CliCommandType(
         operations_tmpl='azext_support.vendored_sdks#MicrosoftSupport.{}',
         client_factory=cf_support)
-    support_services = CliCommandType(
-        operations_tmpl='azext_support.vendored_sdks.operations#ServicesOperations.{}',
-        client_factory=cf_services)
-    support_problem_classifications = CliCommandType(
-        operations_tmpl='azext_support.vendored_sdks.operations#ProblemClassificationsOperations.{}',
-        client_factory=cf_problem_classifications)
     support_tickets = CliCommandType(
         operations_tmpl='azext_support.vendored_sdks.operations#SupportTicketsOperations.{}',
         client_factory=cf_support_tickets)
@@ -41,14 +35,15 @@ def load_command_table(self, _):
 
     self.command_group('support', support, client_factory=cf_support)
 
-    with self.command_group('support services', support_services, client_factory=cf_services) as g:
-        g.command('list', method_name='list')
-        g.show_command('show', getter_name='get')
+    with self.command_group('support services'):
+        from .aaz.latest.support.services import List, Show;
+        self.command_table['support services list'] = List(loader=self)
+        self.command_table['support services show'] = Show(loader=self)
 
-    with self.command_group('support services problem-classifications', support_problem_classifications,
-                            client_factory=cf_problem_classifications) as g:
-        g.command('list', method_name='list')
-        g.show_command('show', getter_name='get')
+    with self.command_group('support services problem-classifications'):
+        from .aaz.latest.support.services.problem_classifications import List, Show;
+        self.command_table['support services problem-classifications list'] = List(loader=self)
+        self.command_table['support services problem-classifications show'] = Show(loader=self)
 
     with self.command_group('support tickets', support_tickets,
                             client_factory=cf_support_tickets) as g:
