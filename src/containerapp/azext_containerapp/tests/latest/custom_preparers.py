@@ -4,10 +4,13 @@
 # --------------------------------------------------------------------------------------------
 import time
 
+from azure.cli.command_modules.containerapp._utils import format_location
+
 from azure.cli.testsdk import CliTestError
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 from azure.cli.testsdk.scenario_tests import SingleValueReplacer
 from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer, ResourceGroupPreparer
+from .common import STAGE_LOCATION
 
 
 # pylint: disable=too-many-instance-attributes
@@ -28,7 +31,7 @@ class ConnectedClusterPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             aks_location = self.location
             arc_location = self.location
 
-            if self.location.__contains__('stage'):
+            if format_location(self.location) == format_location(STAGE_LOCATION):
                 aks_location = "southcentralus"
                 arc_location = "eastus2euap"
             self.live_only_execute(self.cli_ctx, f'az aks create --resource-group {group} --name {self.infra_cluster} --enable-aad --generate-ssh-keys --enable-cluster-autoscaler --min-count 4 --max-count 10 --node-count 4 --location {aks_location}')

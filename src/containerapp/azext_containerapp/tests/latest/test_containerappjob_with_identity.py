@@ -5,6 +5,7 @@
 
 import os
 
+from azure.cli.command_modules.containerapp._utils import format_location
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -23,7 +24,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     def test_containerapp_manualjob_withidentity_crudoperations_e2e(self, resource_group):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 

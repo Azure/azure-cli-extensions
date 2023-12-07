@@ -51,7 +51,7 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
         env_list = self.cmd(f'containerapp connected-env list -g {resource_group}').get_output_in_json()
         self.assertEqual(env_list[0]["extendedLocation"]["name"].lower(), custom_location_id.lower())
         if connected_cluster["location"] == 'eastus2euap':
-            self.assertEqual(env_list[0]["location"], STAGE_LOCATION)
+            self.assertEqual(env_list[0]["location"], TEST_LOCATION)
         else:
             self.assertEqual(env_list[0]["location"], connected_cluster["location"])
         env_id = env_list[0]["id"]
@@ -136,7 +136,7 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
         env_list = self.cmd(f'containerapp connected-env list -g {resource_group}').get_output_in_json()
         self.assertEqual(env_list[0]["extendedLocation"]["name"].lower(), custom_location_id.lower())
         if connected_cluster["location"] == 'eastus2euap':
-            self.assertEqual(env_list[0]["location"], STAGE_LOCATION)
+            self.assertEqual(env_list[0]["location"], TEST_LOCATION)
         else:
             self.assertEqual(env_list[0]["location"], connected_cluster["location"])
         env_id = env_list[0]["id"]

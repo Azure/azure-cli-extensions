@@ -6,16 +6,15 @@
 import os
 import time
 
+from azure.cli.command_modules.containerapp._utils import format_location
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
-from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
+from .common import (write_test_file, clean_up_test_file, TEST_LOCATION, STAGE_LOCATION)
+from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-from .common import TEST_LOCATION, STAGE_LOCATION
-from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerAppJobsExecutionsTest(ScenarioTest):
@@ -24,7 +23,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
     def test_containerappjob_create_with_yaml(self, resource_group):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
@@ -267,7 +266,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
     def test_containerappjob_eventtriggered_create_with_yaml(self, resource_group):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 

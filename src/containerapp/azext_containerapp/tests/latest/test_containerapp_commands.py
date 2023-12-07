@@ -8,6 +8,7 @@ import os
 import time
 import unittest
 
+from azure.cli.command_modules.containerapp._utils import format_location
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
@@ -30,7 +31,7 @@ class ContainerappIdentityTests(ScenarioTest):
     def test_containerapp_identity_e2e(self, resource_group):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
@@ -77,7 +78,7 @@ class ContainerappIdentityTests(ScenarioTest):
     def test_containerapp_identity_system(self, resource_group):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
@@ -119,7 +120,7 @@ class ContainerappIdentityTests(ScenarioTest):
     def test_containerapp_identity_user(self, resource_group):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
@@ -731,7 +732,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
     def test_containerapp_dev_service_binding_none_client_type(self, resource_group):
         # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
         ca_name = self.create_random_name(prefix='containerapp1', length=24)
@@ -930,7 +931,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
     def test_containerapp_dev_service_binding_customized_keys_e2e(self, resource_group):
         # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
         ca_name = self.create_random_name(prefix='containerapp1', length=24)
@@ -1018,7 +1019,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
     def test_containerapp_dev_service_binding_e2e(self, resource_group):
         # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
@@ -1100,7 +1101,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
     def test_containerapp_addon_binding_e2e(self, resource_group):
         # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
@@ -1187,7 +1188,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
     def test_containerapp_managed_service_binding_e2e(self, resource_group):
         # `mysql flexible-server create`: type 'locations/checkNameAvailability' is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
@@ -1365,7 +1366,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
     def test_containerapp_registry_identity_user(self, resource_group):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
@@ -1401,7 +1402,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
     def test_containerapp_registry_identity_system(self, resource_group):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
@@ -1439,7 +1440,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
         acr_location = TEST_LOCATION
-        if acr_location == STAGE_LOCATION:
+        if format_location(acr_location) == format_location(STAGE_LOCATION):
             acr_location = "eastus"
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled -l {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')
@@ -1478,7 +1479,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         acr_location = TEST_LOCATION
-        if acr_location == STAGE_LOCATION:
+        if format_location(acr_location) == format_location(STAGE_LOCATION):
             acr_location = "eastus"
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled --location {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')
@@ -1702,7 +1703,7 @@ properties:
     def test_containerapp_preview_create_with_yaml(self, resource_group):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
@@ -1842,7 +1843,7 @@ properties:
     def test_containerapp_create_with_yaml(self, resource_group):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
@@ -2047,7 +2048,7 @@ properties:
     def test_containerapp_create_with_vnet_yaml(self, resource_group):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 

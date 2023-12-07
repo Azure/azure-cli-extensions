@@ -5,6 +5,7 @@
 
 import os
 
+from azure.cli.command_modules.containerapp._utils import format_location
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -123,7 +124,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
 
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
         acr_location = TEST_LOCATION
-        if acr_location == STAGE_LOCATION:
+        if format_location(acr_location) == format_location(STAGE_LOCATION):
             acr_location = "eastus"
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled -l {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')
@@ -152,7 +153,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
 
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
         acr_location = TEST_LOCATION
-        if acr_location == STAGE_LOCATION:
+        if format_location(acr_location) == format_location(STAGE_LOCATION):
             acr_location = "eastus"
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled -l {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')

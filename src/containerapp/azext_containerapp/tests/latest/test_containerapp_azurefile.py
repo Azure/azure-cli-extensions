@@ -7,16 +7,17 @@ import os
 import time
 import unittest
 
+from azure.cli.command_modules.containerapp._utils import format_location
+
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-from .common import TEST_LOCATION, STAGE_LOCATION
+from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
+                     clean_up_test_file,
+                     )
 from .utils import create_containerapp_env
-from azext_containerapp.tests.latest.common import (
-    write_test_file,
-    clean_up_test_file,
-    TEST_DIR, TEST_LOCATION)
+
 
 class ContainerAppMountAzureFileTest(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -29,7 +30,7 @@ class ContainerAppMountAzureFileTest(ScenarioTest):
         storage = self.create_random_name(prefix='storage', length=24)
         share = self.create_random_name(prefix='share', length=10)
         storage_account_location = TEST_LOCATION
-        if storage_account_location == STAGE_LOCATION:
+        if format_location(storage_account_location) == format_location(STAGE_LOCATION):
             storage_account_location = "eastus"
         self.cmd(
             f'az storage account create --resource-group {resource_group}  --name {storage} --location {storage_account_location} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --output none')

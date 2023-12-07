@@ -8,6 +8,8 @@ import platform
 from unittest import mock
 import time
 import unittest
+
+from azure.cli.command_modules.containerapp._utils import format_location
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
@@ -84,7 +86,7 @@ class ContainerappScenarioTest(ScenarioTest):
     def test_containerapp_update(self, resource_group):
         #  identity is unavailable for location 'North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
@@ -150,7 +152,7 @@ class ContainerappScenarioTest(ScenarioTest):
 
         # Create ACR
         acr_location = TEST_LOCATION
-        if acr_location == STAGE_LOCATION:
+        if format_location(acr_location) == format_location(STAGE_LOCATION):
             acr_location = "eastus"
         acr = self.cmd('acr create -g {} -n {} --sku Basic --admin-enabled --location {}'.format(resource_group, registry_name, acr_location)).get_output_in_json()
         registry_server = acr["loginServer"]
@@ -285,7 +287,7 @@ class ContainerappScenarioTest(ScenarioTest):
     def test_containerapp_registry_msi(self, resource_group):
         #  resource type 'Microsoft.ContainerRegistry/registries' is not available in North Central US(Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == STAGE_LOCATION:
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 

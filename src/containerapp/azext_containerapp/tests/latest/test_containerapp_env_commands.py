@@ -6,6 +6,7 @@
 import os
 import time
 import yaml
+from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
@@ -144,7 +145,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         storage_account_name = self.create_random_name(prefix='cappstorage', length=24)
         storage_account_location = TEST_LOCATION
-        if storage_account_location == STAGE_LOCATION:
+        if format_location(storage_account_location) == format_location(STAGE_LOCATION):
             storage_account_location = "eastus"
         storage_account = self.cmd('storage account create -g {} -n {} --location {} --https-only'.format(resource_group, storage_account_name, storage_account_location)).get_output_in_json()["id"]
         self.cmd('containerapp env update -g {} -n {} --logs-destination azure-monitor --storage-account {}'.format(resource_group, env_name, storage_account))
@@ -555,7 +556,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     def test_containerapp_env_internal_only_e2e(self, resource_group):
         # network is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
-        if location == "northcentralusstage":
+        if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
