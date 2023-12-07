@@ -16,7 +16,7 @@ from azure.cli.core.commands import CliCommandType
 def load_command_table(self, _):
 
     with self.command_group('attestation', is_experimental=True):
-        from azext_attestation.manual.custom import AttestationCreate, AttestationShow, \
+        from azext_attestation.custom import AttestationCreate, AttestationShow, \
             AttestationDelete, AttestationGetDefaultByLocation
         self.command_table["attestation create"] = AttestationCreate(loader=self)
         self.command_table["attestation show"] = AttestationShow(loader=self)
@@ -24,13 +24,13 @@ def load_command_table(self, _):
         self.command_table["attestation get-default-by-location"] = AttestationGetDefaultByLocation(loader=self)
 
     with self.command_group('attestation signer', is_experimental=True):
-        from azext_attestation.manual.custom import AddSigner, RemoveSigner, ListSigners
+        from azext_attestation.custom import AddSigner, RemoveSigner, ListSigners
         self.command_table["attestation signer add"] = AddSigner(loader=self)
         self.command_table["attestation signer remove"] = RemoveSigner(loader=self)
         self.command_table["attestation signer list"] = ListSigners(loader=self)
 
     with self.command_group('attestation policy'):
-        from azext_attestation.manual.custom import ResetPolicy, SetPolicy, GetPolicy
+        from azext_attestation.custom import ResetPolicy, SetPolicy, GetPolicy
         self.command_table["attestation policy reset"] = ResetPolicy(loader=self)
         self.command_table["attestation policy set"] = SetPolicy(loader=self)
         self.command_table["attestation policy show"] = GetPolicy(loader=self)
