@@ -50,10 +50,10 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
         self.cmd(f'containerapp up -n {app_name} -g {resource_group} --connected-cluster-id {connected_cluster_id} --image {image}')
         env_list = self.cmd(f'containerapp connected-env list -g {resource_group}').get_output_in_json()
         self.assertEqual(env_list[0]["extendedLocation"]["name"].lower(), custom_location_id.lower())
-        if connected_cluster["location"] == 'eastus2euap':
-            self.assertEqual(env_list[0]["location"], TEST_LOCATION)
+        if format_location(connected_cluster["location"]) == format_location('eastus2euap'):
+            self.assertEqual(format_location(env_list[0]["location"]), format_location(TEST_LOCATION))
         else:
-            self.assertEqual(env_list[0]["location"], connected_cluster["location"])
+            self.assertEqual(format_location(env_list[0]["location"]), format_location(connected_cluster["location"]))
         env_id = env_list[0]["id"]
         env_name = env_list[0]["name"]
         self._validate_app(resource_group, app_name, custom_location_id, env_id)
@@ -135,10 +135,10 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
         self.assertIsNotNone(custom_location_id)
         env_list = self.cmd(f'containerapp connected-env list -g {resource_group}').get_output_in_json()
         self.assertEqual(env_list[0]["extendedLocation"]["name"].lower(), custom_location_id.lower())
-        if connected_cluster["location"] == 'eastus2euap':
-            self.assertEqual(env_list[0]["location"], TEST_LOCATION)
+        if format_location(connected_cluster["location"]) == format_location('eastus2euap'):
+            self.assertEqual(format_location(env_list[0]["location"]), format_location(TEST_LOCATION))
         else:
-            self.assertEqual(env_list[0]["location"], connected_cluster["location"])
+            self.assertEqual(format_location(env_list[0]["location"]), format_location(connected_cluster["location"]))
         env_id = env_list[0]["id"]
         env_name = env_list[0]["name"]
 
