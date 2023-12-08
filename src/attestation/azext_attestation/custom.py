@@ -17,7 +17,6 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_pem_x509_certificate
-from knack.cli import CLIError
 
 from azext_attestation.aaz.latest.attestation import Create as _AttestationCreate, Delete as _AttestationDelete,\
     Show as _AttestationShow, GetDefaultByLocation as _AttestationGetDefaultByLocation
@@ -25,6 +24,7 @@ from azext_attestation.aaz.latest.attestation.policy import Reset as _ResetPolic
 from azext_attestation.aaz.latest.attestation.signer import Add as _AddSigner, Remove as _RemoveSigner,\
     List as _ListSigners
 from azure.cli.core.aaz import has_value
+from azure.cli.core.azclierror import ArgumentUsageError
 
 
 class AttestationShow(_AttestationShow):
@@ -444,22 +444,22 @@ class SetPolicy(_SetPolicy):
 
     def _output(self, *args, **kwargs):
         args = self.ctx.args
-        show_args = {"resource_group": args.resource_group, "provider_name": args.provider_name, "attestation_type": args.attestation_type}
-        from azext_attestation.aaz.latest.attestation.policy import Show
-        token = Show(cli_ctx=self.cli_ctx)(command_args=show_args)['token']
-        return handle_policy_output(token)
+        show_args = {"resource_group": args.resource_group, "name": args.name, "attestation_type": args.attestation_type}
+        return GetPolicy(cli_ctx=self.cli_ctx)(command_args=show_args)
 
 
 def validate_provider_resource_id(self):
     args = self.ctx.args
     if has_value(args.id):
         if has_value(args.resource_group) or has_value(args.name):
-            raise CLIError('Please omit --resource-group/-g or --name/-n if you have already specified --id.')
+            raise ArgumentUsageError('Please omit --resource-group/-g or --name/-n if you have already specified --id.')
         resource_id = args.id.to_serialized_data()
-        args.resource_group = resource_id.split('/')[4]
-        args.provider_name = resource_id.split('/')[8]
+        from azure.mgmt.core.tools import parse_resource_id
+        parts = parse_resource_id(resource_id)
+        args.resource_group = parts['resource_group']
+        args.provider_name = parts['resource_name']
     elif not all([has_value(args.resource_group), has_value(args.name)]):
-        raise CLIError('Please specify both --resource-group/-g and --name/-n.')
+        raise ArgumentUsageError('Please specify both --resource-group/-g and --name/-n.')
 
     if has_value(args.name):
         args.provider_name = args.name
@@ -490,10 +490,8 @@ class ResetPolicy(_ResetPolicy):
 
     def _output(self, *args, **kwargs):
         args = self.ctx.args
-        show_args = {"resource_group": args.resource_group, "provider_name": args.provider_name, "attestation_type": args.attestation_type}
-        from azext_attestation.aaz.latest.attestation.policy import Show
-        token = Show(cli_ctx=self.cli_ctx)(command_args=show_args)['token']
-        return handle_policy_output(token)
+        show_args = {"resource_group": args.resource_group, "name": args.name, "attestation_type": args.attestation_type}
+        return GetPolicy(cli_ctx=self.cli_ctx)(command_args=show_args)
 
 
 class AttestationGetDefaultByLocation(_AttestationGetDefaultByLocation):
