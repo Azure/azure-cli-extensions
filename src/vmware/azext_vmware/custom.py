@@ -169,8 +169,22 @@ def datastore_create():
 
 def script_execution_create(cmd, resource_group_name, private_cloud, name, timeout, script_cmdlet_id=None, parameters=None, hidden_parameters=None, failure_reason=None, retention=None, out=None, named_outputs: List[Tuple[str, str]] = None):
     from .aaz.latest.vmware.script_execution import Create
+    from knack.prompting import prompt_y_n
+
+    msg = 'Attention: {} actions and SLAs are supported for Microsoft approved partners only. Continue?'
+    
+
     if named_outputs is not None:
         named_outputs = dict(named_outputs)
+    if script_cmdlet_id is not None and script_cmdlet_id.lower().find("scriptpackages/microsoft.avs.vmfs") > -1:
+        if not prompt_y_n(msg.format("Microsoft.AVS.VMFS"), default="n"):
+            return None
+    elif script_cmdlet_id is not None and script_cmdlet_id.lower().find("scriptpackages/microsoft.avs.nfs") > -1:
+        if not prompt_y_n(msg.format("Microsoft.AVS.NFS"), default="n"):
+            return None
+    elif script_cmdlet_id is not None and script_cmdlet_id.lower().find("scriptpackages/microsoft.avs.vvols") > -1:
+        if not prompt_y_n(msg.format("Microsoft.AVS.VVOLS"), default="n"):
+            return None
     return Create(cli_ctx=cmd.cli_ctx)(command_args={
         "private_cloud": private_cloud,
         "resource_group": resource_group_name,
