@@ -172,8 +172,6 @@ def script_execution_create(cmd, resource_group_name, private_cloud, name, timeo
     from knack.prompting import prompt_y_n
 
     msg = 'Attention: {} actions and SLAs are supported for Microsoft approved partners only. Continue?'
-    
-
     if named_outputs is not None:
         named_outputs = dict(named_outputs)
     if script_cmdlet_id is not None and not yes and script_cmdlet_id.lower().find("scriptpackages/microsoft.avs.vmfs") > -1:
