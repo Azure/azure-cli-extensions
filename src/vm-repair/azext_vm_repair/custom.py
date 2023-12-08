@@ -430,6 +430,15 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             # Fetch run path from GitHub
             repair_script_path = _fetch_run_script_path(run_id)
             run_command_params.append('script_path="./{}"'.format(repair_script_path))
+        if preview:
+            parts = preview.split('/')
+            if len(parts) < 7 or parts.index('map.json') == -1:
+                raise Exception('Invalid preview url. Write full URL of map.json file. example https://github.com/Azure/repair-script-library/blob/main/map.json')
+            last_index = parts.index('map.json')
+            fork_name = parts[last_index - 4]
+            branch_name = parts[last_index - 1]
+            run_command_params.append('repo_fork="{}"'.format(fork_name))
+            run_command_params.append('repo_branch="{}"'.format(branch_name))
 
         # Custom script scenario for script testers
         else:

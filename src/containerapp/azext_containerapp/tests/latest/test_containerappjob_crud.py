@@ -5,6 +5,7 @@
 
 import os
 
+from azure.cli.command_modules.containerapp._utils import format_location
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -12,7 +13,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-from azext_containerapp.tests.latest.common import TEST_LOCATION
+from .common import TEST_LOCATION, STAGE_LOCATION
 from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
@@ -122,8 +123,10 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
 
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
-
-        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        acr_location = TEST_LOCATION
+        if format_location(acr_location) == format_location(STAGE_LOCATION):
+            acr_location = "eastus"
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled -l {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')
         password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
 
@@ -149,8 +152,10 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         image_name = f"{acr}.azurecr.io:443/k8se/quickstart:latest"
 
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
-
-        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        acr_location = TEST_LOCATION
+        if format_location(acr_location) == format_location(STAGE_LOCATION):
+            acr_location = "eastus"
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled -l {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')
         password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
 
