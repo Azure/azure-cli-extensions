@@ -1,5 +1,9 @@
 # Release History
 
+## 6.1.0 (2023-12)
+
+- [BREAKING CHANGE] Add confirmation prompt to `az vmware script-execution create` if `--script-cmdlet-id` contains `scriptPackages/Microsoft.AVS.VMFS`, `scriptPackages/Microsoft.AVS.NFS`, or `scriptPackages/Microsoft.AVS.VVOLS`
+
 ## 6.0.1 (2023-12)
 
 - Fix `az vmware private-cloud list-admin-credentials` not returning `nsxtPassword` and `vcenterPassword`
