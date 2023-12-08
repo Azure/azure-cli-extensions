@@ -88,7 +88,7 @@ class LoadScenario(ScenarioTest):
 
         # Create a new Key for CMK encryption
         key = self.cmd('az keyvault key create -n {cmk_key1_name} '
-                '-p software '
+                '--protection software '
                 '--vault-name {kv}').get_output_in_json()
 
         self.kwargs['cmk_key1'] = key['key']['kid']

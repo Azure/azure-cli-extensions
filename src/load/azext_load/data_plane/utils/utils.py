@@ -423,7 +423,6 @@ def create_or_update_test_with_config(
     new_body["loadTestConfiguration"]["quickStartTest"] = False
 
     new_body["passFailCriteria"] = {}
-    
     for key in body.get("passFailCriteria", {}):
         new_body["passFailCriteria"][key] = None
     if yaml_test_body.get("passFailCriteria") is not None:
