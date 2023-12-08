@@ -6,11 +6,12 @@
 import os
 import time
 import yaml
+from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
 
-from .common import TEST_LOCATION
+from .common import TEST_LOCATION, STAGE_LOCATION
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -143,7 +144,10 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
         storage_account_name = self.create_random_name(prefix='cappstorage', length=24)
-        storage_account = self.cmd('storage account create -g {} -n {}  --https-only'.format(resource_group, storage_account_name)).get_output_in_json()["id"]
+        storage_account_location = TEST_LOCATION
+        if format_location(storage_account_location) == format_location(STAGE_LOCATION):
+            storage_account_location = "eastus"
+        storage_account = self.cmd('storage account create -g {} -n {} --location {} --https-only'.format(resource_group, storage_account_name, storage_account_location)).get_output_in_json()["id"]
         self.cmd('containerapp env update -g {} -n {} --logs-destination azure-monitor --storage-account {}'.format(resource_group, env_name, storage_account))
 
         env = self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
@@ -550,7 +554,11 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(location="northeurope")
     @live_only()  # passes live but hits CannotOverwriteExistingCassetteException when run from recording
     def test_containerapp_env_internal_only_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # network is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env = self.create_random_name(prefix='env', length=24)
         logs = self.create_random_name(prefix='logs', length=24)
@@ -673,6 +681,6 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         result = self.cmd('containerapp env list-usages --id {}'.format(containerapp_env["id"])).get_output_in_json()
         usages = result["value"]
-        self.assertEqual(len(usages), 3)
+        self.assertEqual(len(usages), 4)
         self.assertGreater(usages[0]["limit"], 0)
         self.assertGreaterEqual(usages[0]["usage"], 0)
