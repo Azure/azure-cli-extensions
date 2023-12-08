@@ -44,6 +44,7 @@ knack_logger = knack.log.get_logger(__name__)
 
 _targets_with_allowed_failure_output = {"microsoft.dft"}
 
+
 def list(cmd, resource_group_name, workspace_name, location):
     """
     Get the list of jobs in a Quantum Workspace.
@@ -549,10 +550,10 @@ def output(cmd, job_id, resource_group_name, workspace_name, location, item=None
             if job_output is not None:
                 return job_output
 
-        return job # If "-o table" is specified, this allows transform_output() in commands.py
-            #             to format the output, so the error info is shown. If "-o json" or no "-o"
-            #             parameter is specified, then the full JSON job output is displayed, being
-            #             consistent with other commands.
+        return job  # If "-o table" is specified, this allows transform_output() in commands.py
+                    # to format the output, so the error info is shown. If "-o json" or no "-o"
+                    # parameter is specified, then the full JSON job output is displayed, being
+                    # consistent with other commands.
 
     return _get_job_output(cmd, job, item)
 
@@ -656,7 +657,6 @@ def _get_job_output(cmd, job, item=None):
             return
 
         blob_service.get_blob_to_path(containerName, blobName, path)
-
 
     with open(path) as json_file:
         lines = [line.strip() for line in json_file.readlines()]
