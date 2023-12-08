@@ -36,9 +36,9 @@ class LoadConstants:
     SPLIT_CSV_FALSE = "false"
 
     INVALID_SUBNET_ID = r"/subscriptions/invalid/resource/id"
-    KEYVAULT_REFERENCE_ID = r"/subscriptions/{subscription_id}/resourceGroups/sample-rg/providers/Microsoft.KeyVault/vaults/sample-kv"
+    KEYVAULT_REFERENCE_ID = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
     # App Component constants
-    APP_COMPONENT_ID = r"/subscriptions/{subscription_id}/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"
+    APP_COMPONENT_ID = r"/subscriptions/0a00b000-0aa0-0aa0-aaa0-000000000/resourceGroups/sample-rg/providers/Microsoft.Compute/virtualMachineScaleSets/sample-vmss"
     APP_COMPONENT_TYPE = r"Microsoft.Compute/virtualMachineScaleSets"
     APP_COMPONENT_NAME = r"temp-vmss"
 
@@ -57,6 +57,7 @@ class LoadConstants:
 
 class LoadTestConstants(LoadConstants):
     # Test IDs for load test commands
+    UPDATE_WITH_CONFIG_TEST_ID = "update-with-config-test-case"
     DELETE_TEST_ID = "delete-test-case"
     CREATE_TEST_ID = "create-test-case"
     UPDATE_TEST_ID = "update-test-case"

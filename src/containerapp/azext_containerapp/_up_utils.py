@@ -3,11 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, arguments-differ, abstract-method, logging-format-interpolation, broad-except
-
-
+from random import randint
 from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
+import os
 import subprocess
+import tempfile
+import uuid
 import requests
 
 from azure.cli.core.azclierror import (
@@ -23,15 +25,8 @@ from azure.cli.command_modules.appservice._create_util import (
 )
 from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.mgmt.containerregistry import ContainerRegistryManagementClient
-from knack.log import get_logger
-
-from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
-
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, ContainerAppsJobClient
-
-from ._utils import (
-    get_randomized_name,
+from azure.cli.command_modules.containerapp._github_oauth import load_github_token_from_cache, get_github_access_token
+from azure.cli.command_modules.containerapp._utils import (
     get_profile_username,
     create_resource_group,
     get_resource_group,
@@ -47,13 +42,25 @@ from ._utils import (
     get_containerapps_job_if_exists,
     _ensure_location_allowed,
     register_provider_if_needed,
-    validate_environment_location,
-    list_environment_locations,
-    format_location,
-    is_docker_running,
-    get_pack_exec_path,
-    get_latest_buildpack_run_tag
+    format_location
+)
+from azure.core.exceptions import HttpResponseError
+from azure.mgmt.containerregistry import ContainerRegistryManagementClient
+from knack.log import get_logger
 
+from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
+
+from ._client_factory import handle_non_404_status_code_exception
+from ._clients import ContainerAppPreviewClient, GitHubActionClient, ContainerAppsJobClient, \
+    ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
+
+from ._utils import (
+    get_pack_exec_path,
+    is_docker_running,
+    get_pack_exec_path, _validate_custom_loc_and_location, _validate_connected_k8s_exists, get_custom_location,
+    create_extension, create_custom_location, get_cluster_extension, validate_environment_location,
+    list_environment_locations, get_randomized_name_with_dash, get_randomized_name, get_connected_k8s,
+    list_cluster_extensions, list_custom_location
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -61,7 +68,13 @@ from ._constants import (MAXIMUM_SECRET_LENGTH,
                          CONTAINER_APPS_RP,
                          ACR_IMAGE_SUFFIX,
                          ACR_TASK_TEMPLATE,
-                         DEFAULT_PORT)
+                         DEFAULT_PORT,
+                         ACA_BUILDER_BULLSEYE_IMAGE,
+                         ACA_BUILDER_BOOKWORM_IMAGE, EXTENDED_LOCATION_RP, KUBERNETES_CONFIGURATION_RP,
+                         CONNECTED_ENVIRONMENT_TYPE, CUSTOM_LOCATION_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE,
+                         CONNECTED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE,
+                         CONTAINER_APP_EXTENSION_TYPE, DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAME,
+                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE)
 
 from .custom import (
     create_managed_environment,
@@ -69,10 +82,12 @@ from .custom import (
     containerapp_up_logic,
     list_containerapp,
     list_managed_environments,
-    create_or_update_github_action,
+    create_or_update_github_action, create_connected_environment, list_connected_environments,
 )
 
-from ._github_oauth import load_github_token_from_cache, get_github_access_token
+from ._cloud_build_utils import (
+    run_cloud_build
+)
 
 logger = get_logger(__name__)
 
@@ -164,22 +179,38 @@ class ContainerAppEnvironment(Resource):
         location=None,
         logs_key=None,
         logs_customer_id=None,
+        custom_location_id=None,
+        connected_cluster_id=None,
     ):
-
+        self.resource_type = None
         super().__init__(cmd, name, resource_group, exists)
         if is_valid_resource_id(name):
-            self.name = parse_resource_id(name)["name"]
-            if "resource_group" in parse_resource_id(name):
-                rg = parse_resource_id(name)["resource_group"]
+            env_dict = parse_resource_id(name)
+            self.name = env_dict["name"]
+            if "resource_group" in env_dict:
+                rg = env_dict["resource_group"]
                 if resource_group.name != rg:
                     self.resource_group = ResourceGroup(cmd, rg, location)
+            if "resource_type" in env_dict:
+                if env_dict["resource_type"].lower() == CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower():
+                    self.resource_type = CONNECTED_ENVIRONMENT_RESOURCE_TYPE
+                else:
+                    self.resource_type = MANAGED_ENVIRONMENT_RESOURCE_TYPE
+
+        if self.resource_type is None:
+            if custom_location_id or connected_cluster_id:
+                self.resource_type = CONNECTED_ENVIRONMENT_RESOURCE_TYPE
+
         self.location = location
         self.logs_key = logs_key
         self.logs_customer_id = logs_customer_id
+        self.custom_location_id = custom_location_id
 
     def set_name(self, name_or_rid):
         if is_valid_resource_id(name_or_rid):
-            self.name = parse_resource_id(name_or_rid)["name"]
+            env_dict = parse_resource_id(name_or_rid)
+            self.name = env_dict["name"]
+            self.resource_type = env_dict["resource_type"]
             if "resource_group" in parse_resource_id(name_or_rid):
                 rg = parse_resource_id(name_or_rid)["resource_group"]
                 if self.resource_group.name != rg:
@@ -191,8 +222,17 @@ class ContainerAppEnvironment(Resource):
         else:
             self.name = name_or_rid
 
+    def is_connected_environment(self):
+        if self.resource_type and self.resource_type == CONNECTED_ENVIRONMENT_RESOURCE_TYPE:
+            return True
+        return False
+
     def _get(self):
-        return ManagedEnvironmentClient.show(
+        if self.is_connected_environment():
+            return ConnectedEnvironmentClient.show(
+                self.cmd, self.resource_group.name, self.name
+            )
+        return ManagedEnvironmentPreviewClient.show(
             self.cmd, self.resource_group.name, self.name
         )
 
@@ -211,6 +251,17 @@ class ContainerAppEnvironment(Resource):
 
     def create(self):
         register_provider_if_needed(self.cmd, LOG_ANALYTICS_RP)
+        # for creating connected environment, the location infer from custom location
+        if self.is_connected_environment():
+            self.location = validate_environment_location(self.cmd, self.location, CONNECTED_ENVIRONMENT_RESOURCE_TYPE)
+            env = create_connected_environment(
+                self.cmd,
+                self.name,
+                location=self.location,
+                custom_location=self.custom_location_id,
+                resource_group_name=self.resource_group.name,
+            )
+            return env
 
         if self.location:
             self.location = validate_environment_location(self.cmd, self.location)
@@ -258,7 +309,7 @@ class ContainerAppEnvironment(Resource):
                 subscription=get_subscription_id(self.cmd.cli_ctx),
                 resource_group=self.resource_group.name,
                 namespace=CONTAINER_APPS_RP,
-                type="managedEnvironments",
+                type=self.resource_type if self.resource_type else MANAGED_ENVIRONMENT_RESOURCE_TYPE,
                 name=self.name,
             )
         return rid
@@ -376,7 +427,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.acr: "AzureContainerRegistry" = None
 
     def _get(self):
-        return ContainerAppClient.show(self.cmd, self.resource_group.name, self.name)
+        return ContainerAppPreviewClient.show(self.cmd, self.resource_group.name, self.name)
 
     def create(self, no_registry=False):
         # no_registry: don't pass in a registry during create even if the app has one (used for GH actions)
@@ -402,6 +453,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             env_vars=self.env_vars,
             workload_profile_name=self.workload_profile_name,
             ingress=self.ingress,
+            environment_type=CONNECTED_ENVIRONMENT_TYPE if self.env.is_connected_environment() else MANAGED_ENVIRONMENT_TYPE
         )
 
     def create_acr_if_needed(self):
@@ -464,7 +516,21 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         except Exception as ex:
             raise CLIError(f"Unable to run 'docker push' command to push image to the container registry: {ex}") from ex
 
-    def build_container_from_source_with_buildpack(self, image_name, source):  # pylint: disable=too-many-statements
+    def build_container_from_source_with_cloud_build_service(self, source, location):
+        logger.warning("Using the Cloud Build Service to build container image...")
+
+        run_full_id = uuid.uuid4().hex
+        logs_file_path = os.path.join(tempfile.gettempdir(), f"{'build{}'.format(run_full_id)[:12]}.txt")
+        logs_file = open(logs_file_path, "w")
+
+        try:
+            resource_group_name = self.resource_group.name
+            return run_cloud_build(self.cmd, source, location, resource_group_name, self.env.name, run_full_id, logs_file, logs_file_path)
+        except Exception as exception:
+            logs_file.close()
+            raise exception
+
+    def build_container_from_source_with_buildpack(self, image_name, source, cache_image_name):  # pylint: disable=too-many-statements
         # Ensure that Docker is running
         if not is_docker_running():
             raise ValidationError("Docker is not running. Please start Docker to use buildpacks.")
@@ -478,61 +544,78 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         registry_name = self.registry_server.lower()
         image_name = f"{registry_name}/{image_name}"
-        builder_image_name = "mcr.microsoft.com/oryx/builder:builder-dotnet-7.0"
+        cache_image_name = f"{registry_name}/{cache_image_name}"
+        builder_image_list = [ACA_BUILDER_BULLSEYE_IMAGE, ACA_BUILDER_BOOKWORM_IMAGE]
+        default_builder_image = builder_image_list[0]
 
-        # Ensure that the builder is trusted
-        command = [pack_exec_path, 'config', 'default-builder', builder_image_name]
+        # Ensure that the default builder is trusted (this DOES NOT affect calls using different builders)
+        command = [pack_exec_path, 'config', 'default-builder', default_builder_image]
         logger.debug(f"Calling '{' '.join(command)}'")
         try:
             with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
                 _, stderr = process.communicate()
                 if process.returncode != 0:
                     raise CLIError(f"Error thrown when running 'pack config': {stderr.decode('utf-8')}")
-                logger.debug(f"Successfully set the default builder to {builder_image_name}.")
+                logger.debug(f"Successfully set the default builder to {default_builder_image}.")
         except Exception as ex:
             raise ValidationError(f"Unable to run 'pack config' command to set default builder: {ex}") from ex
 
-        # Run 'pack build' to produce a runnable application image for the Container App
-        command = [pack_exec_path, 'build', image_name, '--builder', builder_image_name, '--path', source]
-        buildpack_run_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
-        if buildpack_run_tag is not None:
-            buildpack_run_image = f"mcr.microsoft.com/oryx/builder:{buildpack_run_tag}"
-            logger.debug(f"Determined the run image to use as {buildpack_run_image}.")
-            command.extend(['--run-image', buildpack_run_image])
-
         # If the user specifies a target port, pass it to the buildpack
         if self.target_port:
-            command.extend(['--env', f"PORT={self.target_port}"])
+            command.extend(['--env', f"ORYX_RUNTIME_PORT={self.target_port}"])
 
-        logger.debug(f"Calling '{' '.join(command)}'")
-        try:
-            is_non_supported_platform = False
-            with subprocess.Popen(command, stdout=subprocess.PIPE) as process:
+        logger.warning("Selecting a compatible builder for the provided application source...")
+        could_build_image = False
+        for builder_image in builder_image_list:
+            # Run 'pack build' to produce a runnable application image for the Container App
+            # Specify the image as the 'build-cache' image to ensure that the local cache is used for build layers
+            command = [pack_exec_path, 'build', cache_image_name, '--builder', builder_image, '--path', source, '--tag', image_name]
 
-                # Stream output of 'pack build' to warning stream
-                while process.stdout.readable():
-                    line = process.stdout.readline()
-                    if not line:
-                        break
+            logger.debug(f"Calling '{' '.join(command)}'")
+            try:
+                is_non_supported_platform = False
+                is_non_supported_os = False
+                with subprocess.Popen(command, stdout=subprocess.PIPE) as process:
+                    # Stream output of 'pack build' to warning stream
+                    while process.stdout.readable():
+                        line = process.stdout.readline()
+                        if not line:
+                            break
 
-                    stdout_line = str(line.strip(), 'utf-8')
-                    logger.warning(stdout_line)
-                    if not is_non_supported_platform and "No buildpack groups passed detection" in stdout_line:
-                        is_non_supported_platform = True
+                        stdout_line = str(line.strip(), 'utf-8')
+                        logger.warning(stdout_line)
 
-                # Update the result of process.returncode
-                process.communicate()
-                if is_non_supported_platform:
-                    raise ValidationError("Current buildpacks do not support the platform targeted in the provided source code.")
+                        # Check if the application is targeting a platform that's found in the current builder,
+                        # specifically, if none of the buildpacks in the current builder are able to detect a platform
+                        # for the given app source, then we are unable to build the app with the current builder
+                        if not is_non_supported_platform and "No buildpack groups passed detection" in stdout_line:
+                            is_non_supported_platform = True
 
-                if process.returncode != 0:
-                    raise CLIError("Non-zero exit code returned from 'pack build'; please check the above output for more details.")
+                        # Check if the application has a version that it can target from the current builder,
+                        # specifically, if we cannot find a valid Oryx runtime image for the given platform version and
+                        # Debian flavor combination, then we are unable to build the app with the current builder
+                        if not is_non_supported_os and "failed to pull run image" in stdout_line:
+                            is_non_supported_os = True
 
-                logger.debug(f"Successfully built image {image_name} using buildpacks.")
-        except ValidationError as ex:
-            raise ex
-        except Exception as ex:
-            raise CLIError(f"Unable to run 'pack build' command to produce runnable application image: {ex}") from ex
+                    # Update the result of process.returncode
+                    process.communicate()
+                    if is_non_supported_platform:
+                        raise ValidationError(f"Builder {builder_image} does not support the platform targeted in the provided source code.")
+
+                    if is_non_supported_os:
+                        raise ValidationError(f"Builder {builder_image} does not support the version detected for the given operating system.")
+
+                    if process.returncode != 0:
+                        raise CLIError("Non-zero exit code returned from 'pack build'; please check the above output for more details.")
+
+                    could_build_image = True
+                    logger.debug(f"Successfully built image {image_name} using buildpacks.")
+                    break
+            except Exception as ex:
+                logger.warning(f"Unable to run 'pack build' command to produce runnable application image: {ex}")
+
+        if not could_build_image:
+            raise CLIError("No supported builder could be used to build an image from the provided application source.")
 
         # Run 'docker push' to push the image to the container registry
         self._docker_push_to_container_registry(image_name, False)
@@ -541,7 +624,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
         from azure.cli.command_modules.acr._client_factory import cf_acr_tasks, cf_acr_runs
         from azure.cli.core.profiles import ResourceType
-        import os
+
+        # Validate that the source provided is a directory, and not a file.
+        if os.path.isfile(source):
+            raise ValidationError(f"Impossible to build the artifact file {source} with ACR Task. Please make sure that you use --source and target a directory, or if you want to build your artifact locally, please make sure Docker is running on your machine.")
 
         task_name = "cli_build_containerapp"
         registry_name = (self.registry_server[: self.registry_server.rindex(ACR_IMAGE_SUFFIX)]).lower()
@@ -573,7 +659,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 acr_task_run(self.cmd, run_client, task_name, registry_name, file=task_file.name, context_path=source)
             except CLIError as e:
                 logger.error("Failed to automatically generate a docker container from your source. \n"
-                             "See the ACR logs above for more error information. \nPlease check the supported languages for autogenerating docker containers (https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md), "
+                             "See the ACR logs above for more error information. \nPlease check the supported languages for autogenerating docker containers (https://aka.ms/SourceToCloudSupportedVersions), "
                              "or consider using a Dockerfile for your app.")
                 raise e
             finally:
@@ -582,47 +668,27 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         for k, v in old_command_kwargs.items():
             self.cmd.command_kwargs[k] = v
 
-    def run_acr_build(self, dockerfile, source, quiet=False, build_from_source=False):
+    def run_source_to_cloud_flow(self, source, dockerfile, can_create_acr_if_needed, registry_server):
         image_name = self.image if self.image is not None else self.name
         from datetime import datetime
 
         # Creating a tag for the image using the current time to avoid overwriting customer's existing images
         now = datetime.now()
+        tag_cli_prefix = "cli-containerapp"
         tag_now_suffix = str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
-        image_name_with_tag = image_name + ":{}".format(tag_now_suffix)
+        image_name_with_tag = image_name + ":{}-{}".format(tag_cli_prefix, tag_now_suffix)
         self.image = self.registry_server + "/" + image_name_with_tag
 
-        if build_from_source:
-            logger.warning("No dockerfile detected. Attempting to build a container directly from the provided source...")
-
-            try:
-                # First try to build source using buildpacks
-                # Temporary fix: using run time tag as customer image tag
-                # Waiting for buildpacks side to fix this issue: https://github.com/buildpacks/pack/issues/1750
-                logger.warning("Attempting to build image using buildpacks...")
-                buildpack_image_name_with_tag = image_name_with_tag
-                run_image_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
-                if run_image_tag is not None:
-                    buildpack_image_name_with_tag = f"{image_name}:{run_image_tag}-{tag_now_suffix}"
-                self.build_container_from_source_with_buildpack(buildpack_image_name_with_tag, source)
-                self.image = self.registry_server + "/" + buildpack_image_name_with_tag
-                return
-            except ValidationError as e:
-                logger.warning(f"Unable to use buildpacks to build image from source: {e}\nFalling back to ACR Task...")
-            except CLIError as e:
-                logger.error("Failed to use buildpacks to build image from source.")
-                raise e
-
-            # If we're unable to use the buildpack, build source using an ACR Task
-            # Moving tagging img to here
-            # Skipping the buildpacks scenario for now due to issues with buildpacks
-            # Add version tag for acr image
-            logger.warning("Attempting to build image using ACR Task...")
-            self.build_container_from_source_with_acr_task(image_name_with_tag, source)
-        else:
-            # Moving tagging img to here
-            # Skipping the buildpacks scenario for now due to issues with buildpacks
-            # Add version tag for acr image
+        if _has_dockerfile(source, dockerfile):
+            logger.warning("Dockerfile detected. Running the build through ACR.")
+            # ACR Task is the only way we have for now to build a Dockerfile using Docker.
+            if can_create_acr_if_needed:
+                self.create_acr_if_needed()
+            elif not registry_server:
+                raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source with a Dockerfile")
+            elif ACR_IMAGE_SUFFIX not in registry_server:
+                raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source with a Dockerfile")
+            self.image = self.registry_server + "/" + image_name_with_tag
             queue_acr_build(
                 self.cmd,
                 self.acr.resource_group.name,
@@ -630,8 +696,193 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 image_name_with_tag,
                 source,
                 dockerfile,
-                quiet,
+                False
             )
+            return False
+
+        location = "eastus"
+        if self.env.location:
+            location = self.env.location
+        if self.should_create_acr:
+            # No container registry provided. Let's use the default container registry through Cloud Build.
+            self.image = self.build_container_from_source_with_cloud_build_service(source, location)
+            return True
+
+        if can_create_acr_if_needed:
+            self.create_acr_if_needed()
+        elif not registry_server:
+            raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source or --artifact in this context")
+        elif ACR_IMAGE_SUFFIX not in registry_server:
+            raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source or --artifact in this context")
+
+        # At this point in the logic, we know that the customer doesn't have a Dockerfile but has a container registry.
+        # Cloud Build is not an option anymore as we don't support BYO container registry yet.
+
+        if is_docker_running():
+            # Build the app with a constant 'build-cache' tag to leverage the local cache containing build layers
+            # NOTE: this 'build-cache' tag will not be pushed to the user's registry, only maintained locally
+            build_image_name_with_cache_tag = f"{image_name}:build-cache"
+            self.build_container_from_source_with_buildpack(image_name_with_tag, source, build_image_name_with_cache_tag)
+            self.image = self.registry_server + "/" + image_name_with_tag
+            return False
+
+        # Fall back to ACR Task
+        self.build_container_from_source_with_acr_task(image_name_with_tag, source)
+        return False
+
+
+class Extension:
+    def __init__(
+            self,
+            cmd,
+            name=None,
+            exists: bool = None,
+            namespace=None,
+            logs_location=None,
+            logs_rg=None,
+            logs_customer_id=None,
+            logs_share_key=None,
+            connected_cluster_id=None
+    ):
+        self.cmd = cmd
+        self.name = name
+        self.exists = exists
+        self.namespace = namespace
+        self.logs_location = logs_location
+        self.logs_rg = logs_rg
+        self.logs_customer_id = logs_customer_id
+        self.logs_share_key = logs_share_key
+        self.connected_cluster_id = connected_cluster_id
+
+    def create(self):
+        extension = create_extension(cmd=self.cmd,
+                                     extension_name=self.name,
+                                     connected_cluster_id=self.connected_cluster_id,
+                                     namespace=self.namespace,
+                                     logs_customer_id=self.logs_customer_id,
+                                     logs_share_key=self.logs_share_key,
+                                     location=self.logs_location,
+                                     logs_rg=self.logs_rg)
+        self.exists = True
+        return extension
+
+    def create_if_needed(self):
+        # if name is None, that means no need to create an extension
+        if self.name is None:
+            return
+        if not self.check_exists():
+            logger.warning(
+                f"Creating {type(self).__name__} '{self.name}' in connected cluster {self.connected_cluster_id}"
+            )
+            self.create()
+        else:
+            logger.warning(
+                f"Using {type(self).__name__} '{self.name}' in connected cluster {self.connected_cluster_id}"
+            )  # TODO use .info()
+
+    def check_exists(self):
+        if self.name is None or self.connected_cluster_id is None:
+            self.exists = False
+        else:
+            self.exists = self.get() is not None
+        return self.exists
+
+    def get(self):
+        r = None
+        try:
+            r = self._get()
+        except HttpResponseError as ex:  # pylint: disable=bare-except
+            handle_non_404_status_code_exception(ex)
+        return r
+
+    def _get(self):
+        return get_cluster_extension(self.cmd, self.get_rid())
+
+    def get_rid(self):
+        rid = self.name
+        if not is_valid_resource_id(self.name):
+            rid = "{}/providers/Microsoft.KubernetesConfiguration/extensions/{}".format(self.connected_cluster_id, self.name)
+        return rid
+
+
+class CustomLocation(Resource):
+    def __init__(
+        self,
+        cmd,
+        name: str,
+        resource_group_name=None,
+        exists: bool = None,
+        location=None,
+        namespace=None,
+        cluster_extension_id=None,
+        connected_cluster_id=None,
+    ):
+        resource_group = ResourceGroup(cmd, resource_group_name, location)
+        super().__init__(cmd, name, resource_group, exists)
+        self.resource_group_name = resource_group_name
+        self.exists = exists
+        self.location = location
+        self.namespace = namespace
+        self.cluster_extension_id = cluster_extension_id
+        self.connected_cluster_id = connected_cluster_id
+
+        if is_valid_resource_id(name):
+            custom_location_dict = parse_resource_id(name)
+            self.name = custom_location_dict["name"]
+            self.exists = True
+            if "resource_group" in custom_location_dict:
+                self.resource_group_name = custom_location_dict["resource_group"]
+
+    def create(self):
+        register_provider_if_needed(self.cmd, EXTENDED_LOCATION_RP)
+        custom_location = create_custom_location(
+            cmd=self.cmd,
+            custom_location_name=self.name,
+            resource_group=self.resource_group_name,
+            location=self.location,
+            connected_cluster_id=self.connected_cluster_id,
+            cluster_extension_id=self.cluster_extension_id,
+            namespace=self.namespace
+        )
+        self.exists = True
+        return custom_location
+
+    def create_if_needed(self):
+        if self.name is None:
+            return
+        if not self.exists:
+            logger.warning(
+                f"Creating {type(self).__name__} '{self.name}' in resource group {self.resource_group_name}"
+            )
+            self.create()
+        else:
+            logger.warning(
+                f"Using {type(self).__name__} '{self.name}' in resource group {self.resource_group_name}"
+            )  # TODO use .info()
+
+    def _get(self):
+        return get_custom_location(self.cmd, custom_location_id=self.get_rid())
+
+    def set_name(self, name_or_rid):
+        if is_valid_resource_id(name_or_rid):
+            custom_location_dict = parse_resource_id(name_or_rid)
+            self.name = custom_location_dict["name"]
+            if "resource_group" in custom_location_dict:
+                self.resource_group_name = custom_location_dict["resource_group"]
+        else:
+            self.name = name_or_rid
+
+    def get_rid(self):
+        rid = self.name
+        if not is_valid_resource_id(self.name):
+            rid = resource_id(
+                subscription=get_subscription_id(self.cmd.cli_ctx),
+                resource_group=self.resource_group_name,
+                namespace=EXTENDED_LOCATION_RP,
+                type=CUSTOM_LOCATION_RESOURCE_TYPE,
+                name=self.name,
+            )
+        return rid
 
 
 def _create_service_principal(cmd, resource_group_name, env_resource_group_name):
@@ -746,28 +997,58 @@ def _get_ingress_and_target_port(ingress, target_port, dockerfile_content: "list
     return ingress, target_port
 
 
-def _validate_up_args(cmd, source, image, repo, registry_server):
+def _validate_up_args(cmd, source, artifact, image, repo, registry_server):
     disallowed_params = ["--only-show-errors", "--output", "-o"]
     command_args = cmd.cli_ctx.data.get("safe_params", [])
     for a in disallowed_params:
         if a in command_args:
             raise ValidationError(f"Argument {a} is not allowed for 'az containerapp up'")
 
-    if not source and not image and not repo:
+    if not source and not artifact and not image and not repo:
         raise RequiredArgumentMissingError(
-            "You must specify either --source, --repo, or --image"
+            "You must specify either --source, --artifact, --repo, or --image"
         )
     if source and repo:
         raise MutuallyExclusiveArgumentError(
-            "Cannot use --source and --repo togther. "
+            "Cannot use --source and --repo together. "
             "Can either deploy from a local directory or a Github repo"
         )
+    _validate_source_artifact_args(source, artifact)
     if repo and registry_server and "azurecr.io" in registry_server:
         parsed = urlparse(registry_server)
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
         if registry_name and len(registry_name) > MAXIMUM_SECRET_LENGTH:
             raise ValidationError(f"--registry-server ACR name must be less than {MAXIMUM_SECRET_LENGTH} "
                                   "characters when using --repo")
+
+
+def _validate_custom_location_connected_cluster_args(cmd, env, resource_group_name, location, custom_location_id, connected_cluster_id):
+    if custom_location_id or connected_cluster_id:
+        register_provider_if_needed(cmd, EXTENDED_LOCATION_RP)
+        register_provider_if_needed(cmd, KUBERNETES_CONFIGURATION_RP)
+        if location:
+            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, CONNECTED_ENVIRONMENT_RESOURCE_TYPE)
+        if custom_location_id:
+            _validate_custom_loc_and_location(cmd, custom_location_id=custom_location_id, env=env, connected_cluster_id=connected_cluster_id, env_rg=resource_group_name)
+        if connected_cluster_id:
+            _validate_connected_k8s_exists(cmd, connected_cluster_id)
+
+
+def _validate_source_artifact_args(source, artifact):
+    if source and artifact:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot use --source and --artifact together."
+        )
+    if source:
+        if not os.path.exists(source):
+            raise ValidationError(f"Impossible to find the source directory corresponding to {source}. Please make sure that this path exists.")
+        if not os.path.isdir(source):
+            raise ValidationError(f"The path corresponding to {source} is not a directory. Please make sure that the path given to --source is a directory.")
+    if artifact:
+        if not os.path.exists(artifact):
+            raise ValidationError(f"Impossible to find the artifact file corresponding to {artifact}. Please make sure that this path exists.")
+        if not os.path.isfile(artifact):
+            raise ValidationError(f"The path corresponding to {artifact} is not a file. Please make sure that the path given to --artifact is a file.")
 
 
 def _reformat_image(source, repo, image):
@@ -810,24 +1091,86 @@ def _get_dockerfile_content(repo, branch, token, source, context_path, dockerfil
 
 
 def _get_app_env_and_group(
-    cmd, name, resource_group: "ResourceGroup", env: "ContainerAppEnvironment", location
+    cmd, name, resource_group: "ResourceGroup", env: "ContainerAppEnvironment", location, custom_location: "CustomLocation"
 ):
+    matched_apps = []
+    # If no resource group is provided, we need to search for the app in all resource groups
     if not resource_group.name and not resource_group.exists:
         matched_apps = [c for c in list_containerapp(cmd) if c["name"].lower() == name.lower()]
-        if env.name:
-            matched_apps = [c for c in matched_apps if parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env.name.lower()]
-        if location:
-            matched_apps = [c for c in matched_apps if format_location(c["location"]) == format_location(location)]
-        if len(matched_apps) == 1:
-            resource_group.name = parse_resource_id(matched_apps[0]["id"])[
-                "resource_group"
-            ]
-            env.set_name(matched_apps[0]["properties"]["environmentId"])
-        elif len(matched_apps) > 1:
-            raise ValidationError(
-                f"There are multiple containerapps with name {name} on the subscription. "
-                "Please specify which resource group your Containerapp is in."
-            )
+
+    # If a resource group is provided, we need to search for the app in that resource group
+    if resource_group.name and resource_group.exists:
+        matched_apps = [c for c in list_containerapp(cmd, resource_group_name=resource_group.name) if c["name"].lower() == name.lower()]
+
+    # If env is provided, we need to search for the app in that env
+    if env.name:
+        matched_apps = [c for c in matched_apps if parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env.name.lower()]
+
+    # If location is provided, we need to search for the app in that location
+    if location:
+        matched_apps = [c for c in matched_apps if format_location(c["location"]) == format_location(location)]
+
+    if env.custom_location_id:
+        matched_apps = [c for c in matched_apps if (c.get("extendedLocation") and c["extendedLocation"]["name"].lower() == env.custom_location_id.lower())]
+    elif env.resource_type:
+        matched_apps = [c for c in matched_apps if parse_resource_id(c["properties"]["environmentId"])["resource_type"].lower() == env.resource_type.lower()]
+    if custom_location.connected_cluster_id:
+        matched_apps = _filter_containerapps_by_connected_cluster_id(cmd, matched_apps, custom_location.connected_cluster_id)
+
+    # If there is only one app that matches the criteria, we can set the env name and resource group name
+    if len(matched_apps) == 1:
+        resource_group.name = parse_resource_id(matched_apps[0]["id"])[
+            "resource_group"
+        ]
+        env.set_name(matched_apps[0]["properties"]["environmentId"])
+    # If there are multiple apps that match the criteria, we need to ask the user to specify the env name and resource group name
+    elif len(matched_apps) > 1:
+        raise ValidationError(
+            f"There are multiple containerapps with name {name} on the subscription. "
+            "Please specify which resource group your Containerapp is in."
+        )
+
+
+def _filter_containerapps_by_connected_cluster_id(cmd, matched_apps, connected_cluster_id):
+    result_apps = []
+    for app in matched_apps:
+        if app.get("extendedLocation"):
+            custom_location_from_app = get_custom_location(cmd=cmd, custom_location_id=app["extendedLocation"]["name"])
+            if custom_location_from_app and connected_cluster_id.lower() == custom_location_from_app.host_resource_id.lower():
+                result_apps.append(app)
+    return result_apps
+
+
+# If the connected cluster already have a custom location (with ext namespace) bind to the container app ext, uses it.
+def _prepare_custom_location_args(
+        cmd,
+        custom_location: "CustomLocation",
+        extension: "Extension"
+):
+    if custom_location.name is None:
+        if custom_location.connected_cluster_id is None:
+            raise ValidationError("please specify one of --connected-cluster-id or --custom-location you want to create the Connected Environment or specify the existing Connected Environment with --environment.")
+
+        connected_cluster = get_connected_k8s(cmd, custom_location.connected_cluster_id)
+        custom_location.location = connected_cluster.location
+        extension_list = list_cluster_extensions(cmd, connected_cluster_id=custom_location.connected_cluster_id)
+        for e in extension_list:
+            if e.extension_type.lower() == CONTAINER_APP_EXTENSION_TYPE:
+                extension.exists = True
+                extension.name = e.name
+                extension.namespace = e.scope.cluster.release_namespace
+                custom_location.cluster_extension_id = e.id
+                custom_location.namespace = e.scope.cluster.release_namespace
+                custom_location_list = list_custom_location(cmd,
+                                                            connected_cluster_id=custom_location.connected_cluster_id)
+                for c in custom_location_list:
+                    if e.id in c.cluster_extension_ids and e.scope.cluster.release_namespace == c.namespace:
+                        custom_location.set_name(c.id)
+                        custom_location.exists = True
+                        break
+                break
+    else:
+        custom_location.location = get_custom_location(cmd, custom_location_id=custom_location.get_rid()).location
 
 
 def _get_env_and_group_from_log_analytics(
@@ -838,6 +1181,9 @@ def _get_env_and_group_from_log_analytics(
     logs_customer_id,
     location,
 ):
+    # For connected environment, the log customer id is bind in the configuration_protected_settings of connected cluster , which can not be read.
+    if env.is_connected_environment():
+        return
     # resource_group_name is the value the user passed in (if present)
     if not env.name:
         if (resource_group_name == resource_group.name and resource_group.exists) or (
@@ -986,29 +1332,121 @@ def _set_up_defaults(
     resource_group: "ResourceGroup",
     env: "ContainerAppEnvironment",
     app: "ContainerApp",
+    custom_location: "CustomLocation",
+    extension: "Extension"
 ):
     # If no RG passed in and a singular app exists with the same name, get its env and rg
-    _get_app_env_and_group(cmd, name, resource_group, env, location)
+    _get_app_env_and_group(cmd, name, resource_group, env, location, custom_location)
 
-    # If no env passed in (and not creating a new RG), then try getting an env by location / log analytics ID
-    _get_env_and_group_from_log_analytics(
-        cmd, resource_group_name, env, resource_group, logs_customer_id, location
-    )
+    # If no env passed or set in the previous step (and not creating a new RG), then get env by location from log analytics ID
+    _get_env_and_group_from_log_analytics(cmd, resource_group_name, env, resource_group, logs_customer_id, location)
 
     # try to set RG name by env name
-    if env.name and not resource_group.name:
+    # Find managed env with env name, if found, use it.
+    # Try to set RG name by env name
+    # If the unique environment is found, use it.
+    if not env.is_connected_environment() and env.name and not resource_group.name:
         if not location:
             env_list = [e for e in list_managed_environments(cmd=cmd) if e["name"] == env.name]
         else:
             env_list = [e for e in list_managed_environments(cmd=cmd) if e["name"] == env.name and format_location(e["location"]) == format_location(location)]
         if len(env_list) == 1:
             resource_group.name = parse_resource_id(env_list[0]["id"])["resource_group"]
+            env.resource_type = MANAGED_ENVIRONMENT_RESOURCE_TYPE
         if len(env_list) > 1:
             raise ValidationError(
                 f"There are multiple environments with name {env.name} on the subscription. "
                 "Please specify which resource group your Containerapp environment is in."
             )    # get ACR details from --image, if possible
+
+    _infer_existing_connected_env(cmd, location, resource_group, env, custom_location)
+
+    _infer_existing_custom_location_or_extension(cmd, name, location, resource_group, env, custom_location, extension)
+
     _get_acr_from_image(cmd, app)
+
+
+# Try to get existed connected environment
+# 'not env.resource_type' is for command: -n <app_name> --environment <env_name>:
+# When the resource type cannot be parsed from input arguments, we find managed environments with env name first, if found, use it. We have done this in the previous parts.
+# If manged env is not found, the env.resource_type is None, looks for a connected env with env name, uses it if found. If mutiple connected envs are found, thow a error.
+# (env.is_connected_environment() and (not env.name or not resource_group.name or not env.custom_location_id)) is for commands:
+# -n <app_name> --connected-cluster-id
+# -n <app_name> --custom-location
+def _infer_existing_connected_env(
+        cmd,
+        location,
+        resource_group: "ResourceGroup",
+        env: "ContainerAppEnvironment",
+        custom_location: "CustomLocation",
+):
+    if not env.resource_type or (env.is_connected_environment() and (not env.name or not resource_group.name or not env.custom_location_id)):
+        connected_env_list = list_connected_environments(cmd=cmd, resource_group_name=resource_group.name)
+        env_list = []
+        for e in connected_env_list:
+            if env.name and env.name != e["name"]:
+                continue
+            if location and format_location(e["location"]) != location:
+                continue
+            if custom_location.name and e["extendedLocation"]["name"].lower() != custom_location.get_rid().lower():
+                continue
+            if custom_location.connected_cluster_id:
+                custom_location_from_env = get_custom_location(cmd=cmd, custom_location_id=e["extendedLocation"]["name"])
+                if custom_location_from_env is None or custom_location.connected_cluster_id.lower() != custom_location_from_env.host_resource_id.lower():
+                    continue
+            env_list.append(e)
+
+        if len(env_list) == 1:
+            if not resource_group.name:
+                resource_group.name = parse_resource_id(env_list[0]["id"])["resource_group"]
+            env.set_name(env_list[0]["id"])
+            env.custom_location_id = env_list[0]["extendedLocation"]["name"]
+        if len(env_list) > 1:
+            if env.name:
+                raise ValidationError(
+                    f"There are multiple Connected Environments with name {env.name} on the subscription. "
+                    "Please specify which resource group your Connected environment is in."
+                )  # get ACR details from --image, if possible
+            else:
+                if not resource_group.name:
+                    resource_group.name = parse_resource_id(env_list[0]["id"])["resource_group"]
+                env.set_name(env_list[0]["id"])
+                env.custom_location_id = env_list[0]["extendedLocation"]["name"]
+
+
+def _infer_existing_custom_location_or_extension(
+        cmd,
+        name,
+        location,
+        resource_group: "ResourceGroup",
+        env: "ContainerAppEnvironment",
+        custom_location: "CustomLocation",
+        extension: "Extension"
+):
+    # Try to get existed custom location and extension
+    # Set up default values for not existed resources(env, custom location, extension)
+    if env.is_connected_environment():
+        if not env.check_exists():
+            _prepare_custom_location_args(cmd, custom_location=custom_location, extension=extension)
+            if location is None:
+                env.location = custom_location.location
+                resource_group.location = custom_location.location
+            if custom_location.exists:
+                env.custom_location_id = custom_location.get_rid()
+            else:
+                generated_resources_random_int = randint(0, 9999)
+                resource_group.name = resource_group.name if resource_group.name else get_randomized_name(get_profile_username(), random_int=generated_resources_random_int)
+                custom_location.name = custom_location.name if custom_location.name else get_randomized_name_with_dash(prefix=get_profile_username(), initial="env-location", random_int=generated_resources_random_int)
+                custom_location.resource_group_name = resource_group.name
+                env.custom_location_id = custom_location.get_rid()
+                # If not existed extension, set up values for creating
+                if not extension.exists:
+                    extension.name = DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAME
+                    extension.namespace = DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE
+                    extension.logs_rg = resource_group.name
+                    extension.logs_location = resource_group.location
+                    custom_location.namespace = DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE
+                    custom_location.cluster_extension_id = extension.get_rid()
 
 
 def _create_github_action(
@@ -1060,7 +1498,7 @@ def _create_github_action(
 
 def up_output(app: 'ContainerApp', no_dockerfile):
     url = safe_get(
-        ContainerAppClient.show(app.cmd, app.resource_group.name, app.name),
+        ContainerAppPreviewClient.show(app.cmd, app.resource_group.name, app.name),
         "properties",
         "configuration",
         "ingress",
@@ -1100,18 +1538,38 @@ def find_existing_acr(cmd, app: "ContainerApp"):
     return None, None
 
 
-def check_env_name_on_rg(cmd, managed_env, resource_group_name, location):
+def check_env_name_on_rg(cmd, env, resource_group_name, location, custom_location_id=None, connected_cluster_id=None):
+    env_name = env
+    resource_type = None
+    if is_valid_resource_id(env):
+        env_dict = parse_resource_id(env)
+        env_name = env_dict.get("name")
+        resource_group_name = env_dict.get("resource_group")
+        resource_type = env_dict.get("resource_type")
+    if resource_type is None:
+        if custom_location_id or connected_cluster_id:
+            resource_type = CONNECTED_ENVIRONMENT_RESOURCE_TYPE
     if location:
-        _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
-    if managed_env and resource_group_name and location:
+        _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, resource_type if resource_type else "managedEnvironments")
+    if env and resource_group_name:
         env_def = None
         try:
-            env_def = ManagedEnvironmentClient.show(cmd, resource_group_name, parse_resource_id(managed_env)["name"])
-        except:  # pylint: disable=bare-except
-            pass
+            if resource_type and CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower() == resource_type.lower():
+                env_def = ConnectedEnvironmentClient.show(cmd, resource_group_name, env_name)
+            else:
+                env_def = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, env_name)
+        except Exception as e:  # pylint: disable=bare-except
+            handle_non_404_status_code_exception(e)
         if env_def:
-            if format_location(location) != format_location(env_def["location"]):
-                raise ValidationError("Environment {} already exists in resource group {} on location {}, cannot change location of existing environment to {}.".format(parse_resource_id(managed_env)["name"], resource_group_name, env_def["location"], location))
+            if location and format_location(location) != format_location(env_def["location"]):
+                raise ValidationError("Environment {} already exists in resource group {} on location {}, cannot change location of existing environment to {}.".format(env_name, resource_group_name, env_def["location"], location))
+            if resource_type and CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower() == resource_type.lower():
+                if custom_location_id and env_def["extendedLocation"]["name"].lower() != custom_location_id.lower():
+                    raise ValidationError("Environment {} already exists in resource group {} with custom location {}, cannot change custom location of existing environment to {}.".format(env_name, resource_group_name, env_def["extendedLocation"]["name"], custom_location_id))
+                if connected_cluster_id:
+                    custom_location_from_env = get_custom_location(cmd=cmd, custom_location_id=env_def["extendedLocation"]["name"])
+                    if connected_cluster_id.lower() != custom_location_from_env.host_resource_id.lower():
+                        raise ValidationError("Environment {} already exists in resource group {} on connected cluster {}, cannot change connected cluster of existing environment to {}.".format(env_name, custom_location_from_env.host_resource_id, env_def["location"], connected_cluster_id))
 
 
 def get_token(cmd, repo, token):

@@ -35,8 +35,8 @@ class VmwarePlacementPolicyScenarioTest(ScenarioTest):
         placementPolicyVmHostCreate = self.cmd('az vmware placement-policy vm-host create --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name} --state {state} --display-name {display_name} --vm-members {vm_members} --host-members {host_members} --affinity-type {affinity_type} --affinity-strength Must --azure-hybrid-benefit SqlHost').get_output_in_json()
         self.assertEqual(placementPolicyVmHostCreate['name'], 'policy1')
 
-        # placementPolicyVmHostUpdate = self.cmd('az vmware placement-policy vm-host update --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name} --state {state} --vm-members {vm_members} --host-members {host_members}  --affinity-strength Must --azure-hybrid-benefit SqlHost').get_output_in_json()
-        # self.assertEqual(placementPolicyVmHostUpdate['name'], 'policy1')
+        placementPolicyVmHostUpdate = self.cmd('az vmware placement-policy vm-host update --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name} --state {state} --vm-members {vm_members} --host-members {host_members}  --affinity-strength Must --azure-hybrid-benefit SqlHost').get_output_in_json()
+        self.assertEqual(placementPolicyVmHostUpdate['name'], 'policy1')
 
         placementPolicyVmHostDelete = self.cmd('az vmware placement-policy vm-host delete --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name} --yes').output
         self.assertEqual(len(placementPolicyVmHostDelete), 0)
@@ -44,8 +44,8 @@ class VmwarePlacementPolicyScenarioTest(ScenarioTest):
         placementPolicyVmCreate = self.cmd('az vmware placement-policy vm create --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name} --state {state} --display-name {display_name} --vm-members {vm_members} --affinity-type {affinity_type}').get_output_in_json()
         self.assertEqual(placementPolicyVmCreate['name'], 'policy1')
 
-        # placementPolicyVmUpdate = self.cmd('az vmware placement-policy vm update --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name} --state {state} --vm-members {vm_members}').get_output_in_json()
-        # self.assertEqual(placementPolicyVmUpdate['name'], 'policy1')
+        placementPolicyVmUpdate = self.cmd('az vmware placement-policy vm update --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name} --state {state} --vm-members {vm_members}').get_output_in_json()
+        self.assertEqual(placementPolicyVmUpdate['name'], 'policy1')
 
         placementPolicyVmDelete = self.cmd('az vmware placement-policy vm delete --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name}  --yes').output
         self.assertEqual(len(placementPolicyVmDelete), 0)

@@ -135,6 +135,10 @@ class AddCassandraTableAction(argparse._AppendAction):
             namespace.source_cassandra_table = cassandra_table
         elif option_string == "--dest-cassandra-table":
             namespace.dest_cassandra_table = cassandra_table
+        elif option_string == "--src-cassandra":
+            namespace.src_cassandra = cassandra_table
+        elif option_string == "--dest-cassandra":
+            namespace.dest_cassandra = cassandra_table
         else:
             namespace.cassandra_table = cassandra_table
 
@@ -174,6 +178,8 @@ class AddMongoCollectionAction(argparse._AppendAction):
             namespace.source_mongo = mongo_collection
         elif option_string == "--dest-mongo":
             namespace.dest_mongo = mongo_collection
+        elif option_string == "--src-mongo":
+            namespace.src_mongo = mongo_collection
         else:
             namespace.mongo_collection = mongo_collection
 
@@ -207,14 +213,18 @@ class AddSqlContainerAction(argparse._AppendAction):
         if container_name is None:
             raise CLIError(f'usage error: missing key container in {option_string} component')
 
-        sql_container = CosmosSqlDataTransferDataSourceSink(database_name=database_name, container_name=container_name)
+        nosql_container = CosmosSqlDataTransferDataSourceSink(database_name=database_name, container_name=container_name)
 
         if option_string == "--source-sql-container":
-            namespace.source_sql_container = sql_container
+            namespace.source_sql_container = nosql_container
         elif option_string == "--dest-sql-container":
-            namespace.dest_sql_container = sql_container
+            namespace.dest_sql_container = nosql_container
+        elif option_string == "--src-nosql":
+            namespace.src_nosql = nosql_container
+        elif option_string == "--dest-nosql":
+            namespace.dest_nosql = nosql_container
         else:
-            namespace.sql_container = sql_container
+            namespace.sql_container = nosql_container
 
 
 # pylint: disable=protected-access, too-few-public-methods

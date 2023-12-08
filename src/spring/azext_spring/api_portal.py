@@ -6,7 +6,7 @@
 from azure.cli.core.azclierror import ClientRequestError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import resource_id
-from .vendored_sdks.appplatform.v2023_09_01_preview import models
+from .vendored_sdks.appplatform.v2023_11_01_preview import models
 from ._utils import get_spring_sku
 
 DEFAULT_NAME = "default"
@@ -51,7 +51,8 @@ def api_portal_update(cmd, client, resource_group, service,
                       scope=None,
                       client_id=None,
                       client_secret=None,
-                      issuer_uri=None):
+                      issuer_uri=None,
+                      enable_api_try_out=None):
     api_portal = client.api_portals.get(resource_group, service, DEFAULT_NAME)
 
     sso_properties = api_portal.properties.sso_properties
@@ -67,11 +68,14 @@ def api_portal_update(cmd, client, resource_group, service,
                 issuer_uri=issuer_uri,
             )
 
+    target_api_try_out_state = _get_api_try_out_state(enable_api_try_out, api_portal.properties.api_try_out_enabled_state)
+
     properties = models.ApiPortalProperties(
         public=assign_endpoint if assign_endpoint is not None else api_portal.properties.public,
         https_only=https_only if https_only is not None else api_portal.properties.https_only,
         gateway_ids=api_portal.properties.gateway_ids,
-        sso_properties=sso_properties
+        sso_properties=sso_properties,
+        api_try_out_enabled_state=target_api_try_out_state,
     )
 
     sku = models.Sku(name=api_portal.sku.name, tier=api_portal.sku.tier,
@@ -125,3 +129,13 @@ def api_portal_custom_domain_unbind(cmd, client, resource_group, service, domain
     client.api_portal_custom_domains.get(resource_group, service,
                                          DEFAULT_NAME, domain_name)
     return client.api_portal_custom_domains.begin_delete(resource_group, service, DEFAULT_NAME, domain_name)
+
+
+def _get_api_try_out_state(enable_api_try_out, existing_api_try_out_enabled_state):
+    if enable_api_try_out is None:
+        return existing_api_try_out_enabled_state
+
+    if enable_api_try_out:
+        return models.ApiPortalApiTryOutEnabledState.ENABLED
+    else:
+        return models.ApiPortalApiTryOutEnabledState.DISABLED

@@ -19,13 +19,13 @@ class Show(AAZCommand):
     """Get the diagnostics using the 'diagnosticsResourceName' you chose while creating the diagnostic.
 
     :example: Show Diagnostic at Resource Level
-        az self-help diagnostic show --diagnostic-name {diagnostic-name} --scope {scope}
+        az self-help diagnostic show --diagnostic-name diagnostic-name --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
     """
 
     _aaz_info = {
-        "version": "2023-01-01-preview",
+        "version": "2023-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/diagnostics/{}", "2023-01-01-preview"],
+            ["mgmt-plane", "/{scope}/providers/microsoft.help/diagnostics/{}", "2023-09-01-preview"],
         ]
     }
 
@@ -47,7 +47,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.diagnostic_name = AAZStrArg(
             options=["--diagnostic-name"],
-            help="unique resource name for diagnostic proxy resources",
+            help="Unique resource name for insight resources",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9-+@()_]+$",
@@ -124,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01-preview",
+                    "api-version", "2023-09-01-preview",
                     required=True,
                 ),
             }

@@ -44,6 +44,9 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_NODE_SUBNET_NAME,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_CUSTOM_CA_TEST_CERT,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
 )
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolContext
 from azext_aks_preview.managed_cluster_decorator import (
@@ -880,6 +883,35 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.UPDATE,
         )
         self.assertEqual(ctx_3.get_enable_network_observability(), True)
+
+        # Flag set to True and False.
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_network_observability": True,
+                    "disable_network_observability": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on get_enable_network_observability mutual exclusive error
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_4.get_enable_network_observability()
+
+        # Flag set to False.
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_network_observability": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_5.get_enable_network_observability(), False)
 
     def test_get_enable_managed_identity(self):
         # custom value
@@ -4344,6 +4376,26 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
+    def test_set_up_app_routing_profile(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_app_routing": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_ingress_web_app_routing(mc_1)
+        ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
+            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+            )
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_1
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
     def test_construct_mc_profile_preview(self):
         import inspect
 
@@ -5052,6 +5104,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 network_plugin="azure",
                 network_plugin_mode="overlay",
                 network_dataplane="cilium",
+                network_policy="",
                 pod_cidr="100.64.0.0/16",
                 service_cidr="192.168.0.0/16"
             ),
@@ -5069,6 +5122,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 network_plugin="azure",
                 network_plugin_mode="overlay",
                 network_dataplane="cilium",
+                network_policy="cilium",
                 pod_cidr="100.64.0.0/16",
                 service_cidr="192.168.0.0/16",
             ),
@@ -5110,6 +5164,72 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
+        # test update network policy
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "network_policy": "azure",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_policy="",
+            ),
+        )
+
+        dec_6.context.attach_mc(mc_6)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_6.update_network_plugin_settings(None)
+        dec_mc_6 = dec_6.update_network_plugin_settings(mc_6)
+
+        ground_truth_mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_policy="azure",
+            ),
+        )
+
+        self.assertEqual(dec_mc_6, ground_truth_mc_6)
+
+        # test update network plugin for kubenet -> cni overlay migrations
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "network_plugin": "azure",
+                "network_plugin_mode": "overlay",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+            ),
+        )
+
+        dec_7.context.attach_mc(mc_7)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_7.update_network_plugin_settings(None)
+        dec_mc_7 = dec_7.update_network_plugin_settings(mc_7)
+
+        ground_truth_mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+            ),
+        )
+
+        self.assertEqual(dec_mc_7, ground_truth_mc_7)
 
     def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -6233,6 +6353,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_azure_service_mesh": True,
+                "revision": "asm-1-18"
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -6245,7 +6366,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             service_mesh_profile=self.models.ServiceMeshProfile(
                 mode="Istio",
-                istio=self.models.IstioServiceMesh()
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-18"]
+                )
             )
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
@@ -6344,7 +6467,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                         egress_gateways=[
                             self.models.IstioEgressGateway(
                                 enabled=True,
-                                nodeSelector={"istio": "egress"}                                
+                                nodeSelector={"istio": "egress"}
                             )
                         ]
                     )
@@ -6352,6 +6475,213 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
+        # aks mesh upgrade start
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "mesh_upgrade_command": CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+                "revision": "asm-1-18"
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-17"]
+                )
+            )
+        )
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_azure_service_mesh_profile(mc_5)
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-17", "asm-1-18"]
+                )
+            )
+        )
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
+        # aks mesh upgrade complete
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "mesh_upgrade_command": CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-17", "asm-1-18"]
+                )
+            )
+        )
+        dec_6.context.attach_mc(mc_6)
+        with patch(
+                "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
+                return_value=True,
+        ):
+            dec_mc_6 = dec_6.update_azure_service_mesh_profile(mc_6)
+        ground_truth_mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-18"]
+                )
+            )
+        )
+        self.assertEqual(dec_mc_6, ground_truth_mc_6)
+
+        # aks mesh upgrade rollback
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "mesh_upgrade_command": CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-17", "asm-1-18"]
+                )
+            )
+        )
+        dec_7.context.attach_mc(mc_7)
+        with patch(
+                "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
+                return_value=True,
+        ):
+            dec_mc_7 = dec_7.update_azure_service_mesh_profile(mc_7)
+        ground_truth_mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-17"]
+                )
+            )
+        )
+        self.assertEqual(dec_mc_7, ground_truth_mc_7)
+
+        # az aks mesh upgrade rollback - when upgrade is not in progress
+        dec_8 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "mesh_upgrade_command": CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-17"]
+                )
+            )
+        )
+        dec_8.context.attach_mc(mc_8)
+        with self.assertRaises(ArgumentUsageError):
+            dec_8.update_azure_service_mesh_profile(mc_8)
+
+        # az aks mesh upgrade complete - when upgrade is not in progress
+        dec_9 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "mesh_upgrade_command": CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-17"]
+                )
+            )
+        )
+        dec_9.context.attach_mc(mc_9)
+        with self.assertRaises(ArgumentUsageError):
+            dec_9.update_azure_service_mesh_profile(mc_9)
+
+        # az aks mesh enable - when azure service mesh has already been enabled
+        dec_10 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_service_mesh": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-17"]
+                )
+            )
+        )
+        dec_10.context.attach_mc(mc_10)
+        with self.assertRaises(ArgumentUsageError):
+            dec_10.update_azure_service_mesh_profile(mc_10)
+
+        # az aks mesh disable - when azure service mesh has already been disabled
+        dec_10 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_service_mesh": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Disabled",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-17"]
+                )
+            )
+        )
+        dec_10.context.attach_mc(mc_10)
+        with self.assertRaises(ArgumentUsageError):
+            dec_10.update_azure_service_mesh_profile(mc_10)
+
+        # az aks mesh disable - when azure service mesh was never enabled
+        dec_11 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_service_mesh": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_11 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_11.context.attach_mc(mc_11)
+        with self.assertRaises(ArgumentUsageError):
+            dec_11.update_azure_service_mesh_profile(mc_11)
+
 
     def test_update_upgrade_settings(self):
         # Should not update mc if unset
@@ -6553,6 +6883,214 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             dec_6.update_metrics_profile(mc_6)
 
+    def test_update_app_routing_profile(self):
+
+        # enable app routing
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_app_routing": True,
+                "enable_kv": False
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_app_routing_profile(mc_1)
+        ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
+            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+            )
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_1
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # enable app routing with key vault
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_app_routing": True,
+                "enable_kv": True
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_app_routing_profile(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                )
+            ),
+            addon_profiles={CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"}
+                )
+            }
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # disable app routing
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_app_routing": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_app_routing_profile(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=False,
+                )
+            )
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+        # add dns zone resource ids
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "dns_zone_resource_ids": "test_dns_zone_resource_id_1,test_dns_zone_resource_id_2",
+                "add_dns_zone": True
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+            )
+            )
+        )
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_app_routing_profile(mc_4)
+        ground_truth_mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+                dns_zone_resource_ids=["test_dns_zone_resource_id_1","test_dns_zone_resource_id_2"]
+                )
+            )
+        )
+
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
+        # delete dns zone resource ids
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "dns_zone_resource_ids": "test_dns_zone_resource_id_1",
+                "delete_dns_zone": True
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+                dns_zone_resource_ids=["test_dns_zone_resource_id_1","test_dns_zone_resource_id_2"]
+            )
+            )
+        )
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_app_routing_profile(mc_5)
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+                dns_zone_resource_ids=["test_dns_zone_resource_id_2"]
+                )
+            )
+        )
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
+        # update dns zone resource ids
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "dns_zone_resource_ids": "test_dns_zone_resource_id_3,test_dns_zone_resource_id_4",
+                "update_dns_zone" :True
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+                dns_zone_resource_ids=["test_dns_zone_resource_id_1","test_dns_zone_resource_id_2"]
+            )
+            )
+        )
+        dec_6.context.attach_mc(mc_6)
+        dec_mc_6 = dec_6.update_app_routing_profile(mc_6)
+
+        ground_truth_mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+                dns_zone_resource_ids=["test_dns_zone_resource_id_3","test_dns_zone_resource_id_4"]
+            )
+        )
+        )
+        self.assertEqual(dec_mc_6, ground_truth_mc_6)
+
+        # list dns zone resource ids
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "list_dns_zones": True
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+                dns_zone_resource_ids=["test_dns_zone_resource_id_1","test_dns_zone_resource_id_2"]
+            )
+            )
+        )
+        dec_7.context.attach_mc(mc_7)
+        dec_mc_7 = dec_7.update_app_routing_profile(mc_7)
+        ground_truth_mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+                dns_zone_resource_ids=["test_dns_zone_resource_id_1","test_dns_zone_resource_id_2"]
+            )
+            )
+        )
+        self.assertEqual(dec_mc_7, ground_truth_mc_7)
+
     def test_update_mc_profile_preview(self):
         import inspect
 
@@ -6653,6 +7191,116 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         dec_1.context.raw_param.print_usage_statistics()
 
+
+    def test_setup_supportPlan(self):
+        # default value in `aks_create`
+        ltsDecorator = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "k8s_support_plan": "AKSLongTermSupport"
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        premiumSKU = self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Premium")
+        premiumCluster = self.models.ManagedCluster(
+            location="test_location",
+            support_plan=None,
+            sku=premiumSKU,
+        )
+        ltsDecorator.context.attach_mc(premiumCluster)
+
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            ltsDecorator.set_up_k8s_support_plan(None)
+
+        ltsClusterCalculated = ltsDecorator.set_up_k8s_support_plan(premiumCluster)
+        expectedLTSCluster = self.models.ManagedCluster(
+            location="test_location",
+            support_plan="AKSLongTermSupport",
+            sku=premiumSKU,
+        )
+        self.assertEqual(ltsClusterCalculated, expectedLTSCluster)
+
+        nonLTSDecorator = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "k8s_support_plan": "KubernetesOfficial"
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        nonLTSDecorator.context.attach_mc(premiumCluster)
+        nonLTSClusterCalculated = nonLTSDecorator.set_up_k8s_support_plan(premiumCluster)
+        expectedNonLTSCluster = self.models.ManagedCluster(
+            location="test_location",
+            support_plan="KubernetesOfficial",
+            sku=premiumSKU,
+        )
+        self.assertEqual(nonLTSClusterCalculated, expectedNonLTSCluster)
+
+    def test_update_supportPlan(self):
+        # default value in `aks_create`
+        noopDecorator = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        premiumSKU = self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Premium")
+        ltsCluster = self.models.ManagedCluster(
+            location="test_location",
+            sku=premiumSKU,
+            support_plan="AKSLongTermSupport",
+        )
+        noopDecorator.context.attach_mc(ltsCluster)
+
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            noopDecorator.update_k8s_support_plan(None)
+
+        ltsClusterCalculated = noopDecorator.update_k8s_support_plan(ltsCluster)
+        self.assertEqual(ltsClusterCalculated, ltsCluster)
+
+        disableLTSDecorator = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "k8s_support_plan": "KubernetesOfficial"
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        disableLTSDecorator.context.attach_mc(ltsCluster)
+        nonLTSClusterCalculated = disableLTSDecorator.update_k8s_support_plan(ltsCluster)
+        expectedNonLTSCluster = self.models.ManagedCluster(
+            location="test_location",
+            support_plan="KubernetesOfficial",
+            sku=premiumSKU,
+        )
+        self.assertEqual(nonLTSClusterCalculated, expectedNonLTSCluster)
+
+        normalCluster = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Standard"),
+            support_plan="KubernetesOfficial",
+        )
+        noopDecorator3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        noopDecorator3.context.attach_mc(normalCluster)
+        normalClusterCalculated = noopDecorator3.update_k8s_support_plan(normalCluster)
+        self.assertEqual(normalClusterCalculated, normalCluster)
 
 if __name__ == "__main__":
     unittest.main()

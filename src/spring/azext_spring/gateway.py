@@ -11,7 +11,9 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
-from .vendored_sdks.appplatform.v2023_09_01_preview import models
+from .vendored_sdks.appplatform.v2023_11_01_preview import models
+from ._gateway_constant import (GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE,
+                                GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE, GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE)
 from ._utils import get_spring_sku
 
 logger = get_logger(__name__)
@@ -59,6 +61,11 @@ def gateway_update(cmd, client, resource_group, service,
                    certificate_names=None,
                    addon_configs_json=None,
                    addon_configs_file=None,
+                   apms=None,
+                   enable_response_cache=None,
+                   response_cache_scope=None,
+                   response_cache_size=None,
+                   response_cache_ttl=None,
                    no_wait=False
                    ):
     gateway = client.gateways.get(resource_group, service, DEFAULT_NAME)
@@ -95,6 +102,17 @@ def gateway_update(cmd, client, resource_group, service,
 
     addon_configs = _update_addon_configs(gateway.properties.addon_configs, addon_configs_json, addon_configs_file)
 
+    apms = _update_apms(client, resource_group, service, gateway.properties.apms, apms)
+
+    response_cache = _update_response_cache(client,
+                                            resource_group,
+                                            service,
+                                            gateway.properties.response_cache_properties,
+                                            enable_response_cache,
+                                            response_cache_scope,
+                                            response_cache_size,
+                                            response_cache_ttl)
+
     model_properties = models.GatewayProperties(
         public=assign_endpoint if assign_endpoint is not None else gateway.properties.public,
         https_only=https_only if https_only is not None else gateway.properties.https_only,
@@ -102,10 +120,12 @@ def gateway_update(cmd, client, resource_group, service,
         api_metadata_properties=api_metadata_properties,
         cors_properties=cors_properties,
         apm_types=update_apm_types,
+        apms=apms,
         environment_variables=environment_variables,
         client_auth=client_auth,
         addon_configs=addon_configs,
-        resource_requests=resource_requests)
+        resource_requests=resource_requests,
+        response_cache_properties=response_cache)
 
     sku = models.Sku(name=gateway.sku.name, tier=gateway.sku.tier,
                      capacity=instance_count or gateway.sku.capacity)
@@ -273,6 +293,12 @@ def _update_client_auth(client, resource_group, service, existing, enable_certif
     return client_auth
 
 
+def _update_apms(client, resource_group, service, existing, apms):
+    if apms is None:
+        return existing
+    return apms
+
+
 def _update_addon_configs(existing, addon_configs_json, addon_configs_file):
     if addon_configs_file is None and addon_configs_json is None:
         return existing
@@ -354,3 +380,79 @@ def _route_config_property_convert(raw_json):
             replaced_key = re.sub('(?<!^)(?=[A-Z])', '_', key).lower()
             convert_raw_json[replaced_key] = raw_json[key]
     return convert_raw_json
+
+
+def _update_response_cache(client, resource_group, service, existing_response_cache=None,
+                           enable_response_cache=None,
+                           response_cache_scope=None,
+                           response_cache_size=None,
+                           response_cache_ttl=None):
+    if existing_response_cache is None and not enable_response_cache:
+        if response_cache_scope is not None or response_cache_size is not None or response_cache_ttl is not None:
+            raise InvalidArgumentValueError("Response cache is not enabled. "
+                                            "Please use --enable-response-cache together to configure it.")
+
+    if existing_response_cache is None and enable_response_cache:
+        if response_cache_scope is None:
+            raise InvalidArgumentValueError("--response-cache-scope is required when enable response cache.")
+
+    # enable_response_cache can be None, which can still mean to enable response cache
+    if enable_response_cache is False:
+        return None
+
+    target_cache_scope = _get_target_cache_scope(response_cache_scope, existing_response_cache)
+    target_cache_size = _get_target_cache_size(response_cache_size, existing_response_cache)
+    target_cache_ttl = _get_target_cache_ttl(response_cache_ttl, existing_response_cache)
+
+    if target_cache_scope is None:
+        if target_cache_size is None and target_cache_ttl is None:
+            return None
+        else:
+            raise InvalidArgumentValueError("--response-cache-scope is required when enable response cache.")
+
+    if target_cache_scope == GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE:
+        return models.GatewayLocalResponseCachePerRouteProperties(
+            size=target_cache_size, time_to_live=target_cache_ttl)
+    else:
+        return models.GatewayLocalResponseCachePerInstanceProperties(
+            size=target_cache_size, time_to_live=target_cache_ttl)
+
+
+def _get_target_cache_scope(response_cache_scope, existing_response_cache):
+    if response_cache_scope is not None:
+        return response_cache_scope
+
+    if existing_response_cache is None:
+        return None
+
+    if isinstance(existing_response_cache, models.GatewayLocalResponseCachePerRouteProperties):
+        return GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE
+
+    if isinstance(existing_response_cache, models.GatewayLocalResponseCachePerInstanceProperties):
+        return GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE
+
+
+def _get_target_cache_size(size, existing_response_cache):
+    if size is not None:
+        if size == GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE:
+            return None
+        else:
+            return size
+
+    if existing_response_cache is None or existing_response_cache.size is None:
+        return None
+    else:
+        return existing_response_cache.size
+
+
+def _get_target_cache_ttl(ttl, existing_response_cache):
+    if ttl is not None:
+        if ttl == GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE:
+            return None
+        else:
+            return ttl
+
+    if existing_response_cache is None or existing_response_cache.time_to_live is None:
+        return None
+    else:
+        return existing_response_cache.time_to_live

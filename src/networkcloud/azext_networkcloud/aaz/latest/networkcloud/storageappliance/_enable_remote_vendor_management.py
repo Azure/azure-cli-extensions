@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud storageappliance enable-remote-vendor-management",
+    is_preview=True,
 )
 class EnableRemoteVendorManagement(AAZCommand):
     """Enable remote vendor management of the provided storage appliance.
@@ -22,9 +23,9 @@ class EnableRemoteVendorManagement(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances/{}/enableremotevendormanagement", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances/{}/enableremotevendormanagement", "2023-10-01-preview"],
         ]
     }
 
@@ -151,7 +152,7 @@ class EnableRemoteVendorManagement(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }

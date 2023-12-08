@@ -153,5 +153,5 @@ def load_command_table(self, _):
         g.custom_command('create', 'stream_analytics_transformation_create')
         g.custom_command('update', 'stream_analytics_transformation_update')
 
-    with self.command_group('stream-analytics', is_experimental=True):
+    with self.command_group('stream-analytics'):
         pass

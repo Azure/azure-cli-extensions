@@ -19,13 +19,16 @@ class Create(AAZCommand):
     """Create a Volume.
 
     :example: Create a Volume.
-        az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2
+        az elastic-san volume create -g "rg" -e "san_name" -v "vg_name" -n "volume_name" --size-gib 2
+
+    :example: Create a Volume from snapshot.
+        az elastic-san volume create -g "rg" -e "san_name" -v "vg_name" -n "volume_name_2" --size-gib 2 --creation-data '{source-id:"snapshot_id",create-source:VolumeSnapshot}'
     """
 
     _aaz_info = {
-        "version": "2022-12-01-preview",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2022-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2023-01-01"],
         ]
     }
 
@@ -47,7 +50,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -60,7 +63,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["-v", "--volume-group-name"],
+            options=["-v", "--volume-group", "--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -99,11 +102,11 @@ class Create(AAZCommand):
         creation_data.create_source = AAZStrArg(
             options=["create-source"],
             help="This enumerates the possible sources of a volume creation.",
-            enum={"None": "None"},
+            enum={"Disk": "Disk", "DiskRestorePoint": "DiskRestorePoint", "DiskSnapshot": "DiskSnapshot", "None": "None", "VolumeSnapshot": "VolumeSnapshot"},
         )
-        creation_data.source_uri = AAZStrArg(
-            options=["source-uri"],
-            help="If createOption is Copy, this is the ARM id of the source snapshot or disk. If createOption is Restore, this is the ARM-like id of the source disk restore point.",
+        creation_data.source_id = AAZStrArg(
+            options=["source-id"],
+            help="Fully qualified resource ID for the resource. E.g. \"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}\"",
         )
         return cls._args_schema
 
@@ -196,7 +199,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01-preview",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -231,7 +234,7 @@ class Create(AAZCommand):
             creation_data = _builder.get(".properties.creationData")
             if creation_data is not None:
                 creation_data.set_prop("createSource", AAZStrType, ".create_source")
-                creation_data.set_prop("sourceUri", AAZStrType, ".source_uri")
+                creation_data.set_prop("sourceId", AAZStrType, ".source_id")
 
             return self.serialize_content(_content_value)
 
@@ -274,6 +277,13 @@ class Create(AAZCommand):
             properties.creation_data = AAZObjectType(
                 serialized_name="creationData",
             )
+            properties.managed_by = AAZObjectType(
+                serialized_name="managedBy",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
             properties.size_gi_b = AAZIntType(
                 serialized_name="sizeGiB",
                 flags={"required": True},
@@ -291,8 +301,13 @@ class Create(AAZCommand):
             creation_data.create_source = AAZStrType(
                 serialized_name="createSource",
             )
-            creation_data.source_uri = AAZStrType(
-                serialized_name="sourceUri",
+            creation_data.source_id = AAZStrType(
+                serialized_name="sourceId",
+            )
+
+            managed_by = cls._schema_on_200_201.properties.managed_by
+            managed_by.resource_id = AAZStrType(
+                serialized_name="resourceId",
             )
 
             storage_target = cls._schema_on_200_201.properties.storage_target

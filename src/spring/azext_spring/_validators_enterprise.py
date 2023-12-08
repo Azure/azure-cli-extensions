@@ -14,11 +14,12 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2023_09_01_preview.models import (ApmReference, CertificateReference)
-from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
+from .vendored_sdks.appplatform.v2023_11_01_preview.models import (ApmReference, CertificateReference)
+from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
 
+from ._gateway_constant import (GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE,
+                                GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE, GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE)
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
     validate_memory as validate_and_normalize_memory
@@ -351,7 +352,8 @@ def validate_acs_create(namespace):
             raise ArgumentUsageError("--application-configuration-service-generation can only be set when enable application configuration service.")
 
 
-def validate_gateway_update(namespace):
+def validate_gateway_update(cmd, namespace):
+    _validate_gateway_response_cache(namespace)
     _validate_sso(namespace)
     validate_cpu(namespace)
     validate_memory(namespace)
@@ -359,6 +361,7 @@ def validate_gateway_update(namespace):
     _validate_gateway_apm_types(namespace)
     _validate_gateway_envs(namespace)
     _validate_gateway_secrets(namespace)
+    validate_apm_reference(cmd, namespace)
 
 
 def validate_api_portal_update(namespace):
@@ -407,6 +410,73 @@ def _validate_gateway_secrets(namespace):
         for item in namespace.secrets:
             secrets_dict.update(validate_tag(item))
         namespace.secrets = secrets_dict
+
+
+def _validate_gateway_response_cache(namespace):
+    _validate_gateway_response_cache_exclusive(namespace)
+    _validate_gateway_response_cache_scope(namespace)
+    _validate_gateway_response_cache_size(namespace)
+    _validate_gateway_response_cache_ttl(namespace)
+
+
+def _validate_gateway_response_cache_exclusive(namespace):
+    if namespace.enable_response_cache is not None and namespace.enable_response_cache is False \
+        and (namespace.response_cache_scope is not None
+             or namespace.response_cache_size is not None
+             or namespace.response_cache_ttl is not None):
+        raise InvalidArgumentValueError(
+            "Conflict detected: Parameters in ['--response-cache-scope', '--response-cache-scope', '--response-cache-ttl'] "
+            "cannot be set together with '--enable-response-cache false'.")
+
+
+def _validate_gateway_response_cache_scope(namespace):
+    scope = namespace.response_cache_scope
+    if (scope is not None and not isinstance(scope, str)):
+        raise InvalidArgumentValueError("The allowed values for '--response-cache-scope' are [{}, {}]".format(
+            GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE
+        ))
+    if (scope is not None and isinstance(scope, str)):
+        scope = scope.lower()
+        if GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE.lower() != scope \
+                and GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE.lower() != scope:
+            raise InvalidArgumentValueError("The allowed values for '--response-cache-scope' are [{}, {}]".format(
+                GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE
+            ))
+        # Normalize input
+        if GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE.lower() == scope:
+            namespace.response_cache_scope = GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE
+        else:
+            namespace.response_cache_scope = GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE
+
+
+def _validate_gateway_response_cache_size(namespace):
+    if namespace.response_cache_size is not None:
+        size = namespace.response_cache_size
+        if type(size) != str:
+            raise InvalidArgumentValueError('--response-cache-size should be a string')
+        if GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE.lower() == size.lower():
+            # Normalize the input
+            namespace.response_cache_size = GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE
+        else:
+            pattern = r"^[1-9][0-9]{0,9}(GB|MB|KB)$"
+            if not match(pattern, size):
+                raise InvalidArgumentValueError(
+                    "Invalid response cache size '{}', the regex used to validate is '{}'".format(size, pattern))
+
+
+def _validate_gateway_response_cache_ttl(namespace):
+    if namespace.response_cache_ttl is not None:
+        ttl = namespace.response_cache_ttl
+        if type(ttl) != str:
+            raise InvalidArgumentValueError('--response-cache-ttl should be a string')
+        if GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE.lower() == ttl.lower():
+            # Normalize the input
+            namespace.response_cache_ttl = GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE
+        else:
+            pattern = r"^[1-9][0-9]{0,9}(h|m|s)$"
+            if not match(pattern, ttl):
+                raise InvalidArgumentValueError(
+                    "Invalid response cache ttl '{}', the regex used to validate is '{}'".format(ttl, pattern))
 
 
 def validate_routes(namespace):
@@ -531,9 +601,10 @@ def validate_apm_reference(cmd, namespace):
 
     result = []
     for apm_name in apm_names:
-        resource_id = '{}/apms/{}'.format(service_resource_id, apm_name)
-        apm_reference = ApmReference(resource_id=resource_id)
-        result.append(apm_reference)
+        if apm_name != "":
+            resource_id = '{}/apms/{}'.format(service_resource_id, apm_name)
+            apm_reference = ApmReference(resource_id=resource_id)
+            result.append(apm_reference)
 
     namespace.apms = result
 

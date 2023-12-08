@@ -19,9 +19,9 @@ class ListAdminCredentials(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-05-01",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/listadmincredentials", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/listadmincredentials", "2023-03-01"],
         ]
     }
 
@@ -46,6 +46,9 @@ class ListAdminCredentials(AAZCommand):
             help="Name of the private cloud",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[-\w\._]+$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -117,7 +120,7 @@ class ListAdminCredentials(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -152,7 +155,7 @@ class ListAdminCredentials(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.nsxt_password = AAZStrType(
                 serialized_name="nsxtPassword",
-                flags={"secret": True, "read_only": True},
+                flags={"read_only": True},
             )
             _schema_on_200.nsxt_username = AAZStrType(
                 serialized_name="nsxtUsername",
@@ -160,7 +163,7 @@ class ListAdminCredentials(AAZCommand):
             )
             _schema_on_200.vcenter_password = AAZStrType(
                 serialized_name="vcenterPassword",
-                flags={"secret": True, "read_only": True},
+                flags={"read_only": True},
             )
             _schema_on_200.vcenter_username = AAZStrType(
                 serialized_name="vcenterUsername",
