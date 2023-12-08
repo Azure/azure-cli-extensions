@@ -98,9 +98,9 @@ class AttestationCreate(_AttestationCreate):
         for p in certs_input_path:
             expand_path = os.path.expanduser(p)
             if not os.path.exists(expand_path):
-                raise CLIError('Path "{}" does not exist.'.format(expand_path))
+                raise ArgumentUsageError('Path "{}" does not exist.'.format(expand_path))
             if not os.path.isfile(expand_path):
-                raise CLIError('"{}" is not a valid file path.'.format(expand_path))
+                raise ArgumentUsageError('"{}" is not a valid file path.'.format(expand_path))
 
             with open(expand_path, 'rb') as f:
                 pem_data = f.read()
@@ -111,7 +111,7 @@ class AttestationCreate(_AttestationCreate):
                 kty = 'RSA'
                 alg = 'RS256'
             else:
-                raise CLIError('Unsupported key type: {}'.format(type(key)))
+                raise ArgumentUsageError('Unsupported key type: {}'.format(type(key)))
 
             jwk = {'kty': kty, 'alg': alg, 'use': 'sig',
                    'x5c': [base64.b64encode(cert.public_bytes(Encoding.DER)).decode('ascii')]}
@@ -170,16 +170,16 @@ class AddSigner(_AddSigner):
         args = self.ctx.args
         validate_provider_resource_id(self)
         if not has_value(args.signer) and not has_value(args.signer_file):
-            raise CLIError('Please specify one of parameters: --signer or --signer-file/-f')
+            raise ArgumentUsageError('Please specify one of parameters: --signer or --signer-file/-f')
         if has_value(args.signer) and has_value(args.signer_file):
-            raise CLIError('--signer and --signer-file/-f are mutually exclusive.')
+            raise ArgumentUsageError('--signer and --signer-file/-f are mutually exclusive.')
         signer = None
         if has_value(args.signer_file):
             signer_file = os.path.expanduser(args.signer_file.to_serialized_data())
             if not os.path.exists(signer_file):
-                raise CLIError('Signer file "{}" does not exist.'.format(signer_file))
+                raise ArgumentUsageError('Signer file "{}" does not exist.'.format(signer_file))
             if not os.path.isfile(signer_file):
-                raise CLIError('Signer file "{}" is not a valid file name.'.format(signer_file))
+                raise ArgumentUsageError('Signer file "{}" is not a valid file name.'.format(signer_file))
             with open(signer_file) as f:
                 signer = f.read()
 
@@ -232,16 +232,16 @@ class RemoveSigner(_RemoveSigner):
         args = self.ctx.args
         validate_provider_resource_id(self)
         if not has_value(args.signer) and not has_value(args.signer_file):
-            raise CLIError('Please specify one of parameters: --signer or --signer-file/-f')
+            raise ArgumentUsageError('Please specify one of parameters: --signer or --signer-file/-f')
         if has_value(args.signer) and has_value(args.signer_file):
-            raise CLIError('--signer and --signer-file/-f are mutually exclusive.')
+            raise ArgumentUsageError('--signer and --signer-file/-f are mutually exclusive.')
         signer = None
         if has_value(args.signer_file):
             signer_file = os.path.expanduser(args.signer_file.to_serialized_data())
             if not os.path.exists(signer_file):
-                raise CLIError('Signer file "{}" does not exist.'.format(signer_file))
+                raise ArgumentUsageError('Signer file "{}" does not exist.'.format(signer_file))
             if not os.path.isfile(signer_file):
-                raise CLIError('Signer file "{}" is not a valid file name.'.format(signer_file))
+                raise ArgumentUsageError('Signer file "{}" is not a valid file name.'.format(signer_file))
             with open(signer_file) as f:
                 signer = f.read()
 
@@ -398,19 +398,19 @@ class SetPolicy(_SetPolicy):
         validate_provider_resource_id(self)
 
         if has_value(args.new_attestation_policy_file) and has_value(args.new_attestation_policy):
-            raise CLIError('Please specify just one of --new-attestation-policy and --new-attestation-policy-file/-f')
+            raise ArgumentUsageError('Please specify just one of --new-attestation-policy and --new-attestation-policy-file/-f')
 
         if not has_value(args.new_attestation_policy_file) and not has_value(args.new_attestation_policy):
-            raise CLIError('Please specify --new-attestation-policy or --new-attestation-policy-file/-f')
+            raise ArgumentUsageError('Please specify --new-attestation-policy or --new-attestation-policy-file/-f')
 
         new_attestation_policy = None
         if has_value(args.new_attestation_policy_file):
             file_path = os.path.expanduser(args.new_attestation_policy_file.to_serialized_data())
             if not os.path.exists(file_path):
-                raise CLIError('Policy file "{}" does not exist.'.format(file_path))
+                raise ArgumentUsageError('Policy file "{}" does not exist.'.format(file_path))
 
             if not os.path.isfile(file_path):
-                raise CLIError('"{}" is not a valid file name.'.format(file_path))
+                raise ArgumentUsageError('"{}" is not a valid file name.'.format(file_path))
 
             with open(file_path) as f:
                 new_attestation_policy = f.read()
@@ -421,9 +421,9 @@ class SetPolicy(_SetPolicy):
 
         if args.policy_format == 'Text':
             if provider['trustModel'] != 'AAD':
-                raise CLIError('Only supports Text policy under AAD model. Current model: {}. '
-                               'If you are using signed JWT policy, please specify --policy-format JWT'.
-                               format(provider.trust_model))
+                raise ArgumentUsageError('Only supports Text policy under AAD model. Current model: {}. '
+                                         'If you are using signed JWT policy, please specify --policy-format JWT'.
+                                         format(provider.trust_model))
 
             try:
                 new_attestation_policy = \
@@ -434,7 +434,7 @@ class SetPolicy(_SetPolicy):
                 )
             except TypeError as e:
                 print(e)
-                raise CLIError('Failed to encode text content, are you using JWT? If yes, please use --policy-format JWT')
+                raise ArgumentUsageError('Failed to encode text content, are you using JWT? If yes, please use --policy-format JWT')
 
         if new_attestation_policy:
             if type(new_attestation_policy) == bytes:
