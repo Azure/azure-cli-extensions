@@ -644,7 +644,7 @@ def _get_job_output(cmd, job, item=None):
         logger.debug("Downloading job results blob into %s", path)
 
         from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
-        
+
         args = _parse_blob_url(job.output_data_uri)
         blob_service = blob_data_service_factory(cmd.cli_ctx, args)
 
