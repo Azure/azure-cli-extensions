@@ -21,7 +21,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerappPreviewScenarioTest(ScenarioTest):
     @serial_test()
-    @ResourceGroupPreparer(location="eastus", random_name_length=15)
+    @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_preview_connected_env_e2e(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
@@ -74,7 +74,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         ])
 
     @serial_test()
-    @ResourceGroupPreparer(location="eastus", random_name_length=15)
+    @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_preview_connected_env_storage(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
@@ -126,7 +126,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         ])
 
     @serial_test()
-    @ResourceGroupPreparer(location=TEST_LOCATION, random_name_length=15)
+    @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_preview_connected_env_dapr_components(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
@@ -201,7 +201,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
 
     @serial_test()
     @live_only()  # generate_randomized_cert_name cause No match for the request (<Request (PUT) /my-connected-env/certificates/my-connected-e-clitest.rg0000-8d2d-6528?
-    @ResourceGroupPreparer(location="eastus", random_name_length=15)
+    @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_preview_connected_env_certificate(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
@@ -278,8 +278,8 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         self.cmd('containerapp connected-env delete -g {} -n {} --yes'.format(resource_group, env_name), expect_failure=False)
 
     @serial_test()
-    @ResourceGroupPreparer(location="eastus", random_name_length=15)
-    @ConnectedClusterPreparer(location=TEST_LOCATION, skip_delete=True)
+    @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
+    @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_preview_connected_env_certificate_upload_with_certificate_name(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         custom_location_name = "my-custom-location"

@@ -219,7 +219,7 @@ class AutomationScenarioTest(ScenarioTest):
         })
 
         sub = '/subscriptions/' + self.get_subscription_id()
-        vm_id = self.cmd('vm create -n {vm_name} -g {rg} --image ubuntults --generate-ssh-key --nsg-rule NONE --location "West US 2"').get_output_in_json()['id']
+        vm_id = self.cmd('vm create -n {vm_name} -g {rg} --image Canonical:UbuntuServer:18.04-LTS:latest --generate-ssh-key --nsg-rule NONE --location "West US 2"').get_output_in_json()['id']
         self.kwargs.update({
             'vm_id': vm_id,
             'sub': sub,

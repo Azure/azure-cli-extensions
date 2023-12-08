@@ -1,5 +1,21 @@
 # Release History
 
+## 6.0.1 (2023-12)
+
+- Fix `az vmware private-cloud list-admin-credentials` not returning `nsxtPassword` and `vcenterPassword`
+
+## 6.0.0 (2023-09)
+
+- Update to AVS 2023-03-01 API
+- Add `--ext-nw-blocks` argument to `az vmware private-cloud create`
+- Add `--ext-nw-blocks` argument to `az vmware private-cloud update`
+- Add `az vmware private-cloud identity-source` command group
+- Deprecate `az vmware private-cloud add-identity-source` command
+- Deprecate `az vmware private-cloud delete-identity-source` command
+- Fix `--out` argument for `az vmware script-execution create` to accept a list of string values
+- [BREAKING CHANGE] Remove `--port-name argument` argument from `az vmware workload-network segment create` as it is used by a read-only property
+- [BREAKING CHANGE] Remove `--affinity-strength` and `--azure-hybrid-benefit` argument from `az vmware placement-policy vm update` as they are only used for `az vmware placement-policy vm-host update`
+
 ## 5.0.3 (2023-07)
 
 - Fix the mandatory flag of `--hosts` for `az vmware cluster create` [#26653](https://github.com/Azure/azure-cli/issues/26653)

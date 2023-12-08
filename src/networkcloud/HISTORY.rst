@@ -3,6 +3,20 @@
 Release History
 ===============
 
+2.0.0b1
+++++++++
+* This beta version supports NetworkCloud 2023-10-01-preview APIs.
+* Format restrictions and resource type validations are added to fields that represent ARM ID resources.
+* New functionality supported in this release:
+  * New configuration is added to cluster create and update commands for runtime protection scan, secret archive, and cluster update strategy.
+  * New Cluster command scan-runtime is added to trigger the execution of a runtime protection scan.
+  * baremetalmachine returns new properties with runtime protection status.
+  * Additional status "Disconnected" is added to clusterConnectionStatus.
+  * kubernetescluster update command allows modification of SSH keys for cluster administrator and control plane administrator.
+  * kubernetescluster agentpool update command allows modification of SSH keys for the agent pool administrator.
+* This version requires a minimum of 2.51 Azure core CLI.
+* This version upgrades the internal generation tool aaz-dev-tools to 1.8.0. Refer to the release notes for more details: https://github.com/Azure/aaz-dev-tools/releases/tag/v1.8.0.
+
 1.1.0
 ++++++++
 * This version removes the experimental commands for defaultcninetwork and hybridakscluster as these resources are no longer available.

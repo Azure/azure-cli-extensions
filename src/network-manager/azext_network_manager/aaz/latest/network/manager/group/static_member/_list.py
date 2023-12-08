@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "network manager group static-member list",
 )
 class List(AAZCommand):
-    """List the specified static member.
+    """List the static members within a specific network group.
 
     :example: List static member in a network manager group
         az network manager group static-member list --network-manager-name "testNetworkManager" --resource-group "rg1" --network-group-name "testNetworkManagerGroup"

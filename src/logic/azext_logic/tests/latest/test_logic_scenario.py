@@ -4,11 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import time
 
 from azure.cli.testsdk import JMESPathCheck
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer, record_only
-
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -73,11 +74,13 @@ class LogicManagementClientScenarioTest(ScenarioTest):
                  '--resource-group "{rg}"',
                  checks=[JMESPathCheck('[0].name', self.kwargs.get('testWorkflow', ''))])
 
-        self.cmd('az logic integration-account list',
-                 checks=[JMESPathCheck('[0].name', self.kwargs.get('IntegrationAccounts_2', ''))])
+        self.cmd('az logic integration-account list --top 2', checks=[
+            self.check('length(@)', 2)
+        ])
 
-        self.cmd('az logic workflow list',
-                 checks=[JMESPathCheck('[0].name', self.kwargs.get('testWorkflow', ''))])
+        self.cmd('az logic workflow list --top 2', checks=[
+            self.check('length(@)', 2)
+        ])
 
         self.cmd('az logic integration-account update '
                  '--sku Basic '
@@ -143,3 +146,87 @@ class LogicManagementClientScenarioTest(ScenarioTest):
             self.exists('[0].contentLink.uri')
         ])
         self.cmd('logic integration-account map delete -g {rg} -n {map} --integration-account {account} -y')
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer()
+    def test_workflow_identity(self):
+        curr_dir = os.path.dirname(os.path.realpath(__file__))
+        self.kwargs.update({
+            'workflow1': self.create_random_name('workflow', 15),
+            'workflow2': self.create_random_name('workflow', 15),
+            'workflow3': self.create_random_name('workflow', 15),
+            'workflow4': self.create_random_name('workflow', 15),
+            'definition_path': os.path.join(curr_dir, 'workflow.json'),
+            'identity1': self.create_random_name('identity', 15)
+        })
+        identity1 = self.cmd('identity create --name {identity1} -g {rg}')
+        self.kwargs['identity_id1'] = identity1.get_output_in_json()['id']
+        self.cmd('az logic workflow create '
+                 '--resource-group "{rg}" '
+                 '--definition "{definition_path}" '
+                 '--name "{workflow1}" '
+                 '--mi-system-assigned',
+                 checks=[
+                     self.check('identity.type', 'SystemAssigned')
+                 ])
+        self.cmd('az logic workflow create '
+                 '--resource-group "{rg}" '
+                 '--location "centralus" '
+                 '--definition "{definition_path}" '
+                 '--name "{workflow2}" '
+                 '--mi-user-assigned {identity_id1} {identity_id1}',
+                 checks=[
+                     self.check('identity.type', 'UserAssigned')
+                 ])
+        self.cmd('az logic workflow create '
+                 '--resource-group "{rg}" '
+                 '--location "centralus" '
+                 '--definition "{definition_path}" '
+                 '--name "{workflow3}"')
+        self.cmd('az logic workflow create '
+                 '--resource-group "{rg}" '
+                 '--location "centralus" '
+                 '--definition "{definition_path}" '
+                 '--name "{workflow4}"')
+        self.cmd('az logic workflow identity assign '
+                 '--resource-group "{rg}" '
+                 '--name "{workflow3}" '
+                 '--system-assigned',
+                 checks=[
+                     self.check('type', 'SystemAssigned')
+                 ])
+        self.cmd('az logic workflow identity assign '
+                 '--resource-group "{rg}" '
+                 '--name "{workflow4}" '
+                 '--user-assigned {identity_id1}',
+                 checks=[
+                     self.check('type', 'UserAssigned')
+                 ])
+        self.cmd('az logic workflow identity remove '
+                 '--resource-group "{rg}" '
+                 '--name "{workflow1}" '
+                 '--system-assigned',
+                 checks=[
+                     self.check('type', None)
+                 ])
+        self.cmd('az logic workflow identity remove '
+                 '--resource-group "{rg}" '
+                 '--name "{workflow2}" '
+                 '--user-assigned {identity_id1}',
+                 checks=[
+                     self.check('type', None)
+                 ])
+        self.cmd('az logic workflow identity remove '
+                 '--resource-group "{rg}" '
+                 '--name "{workflow3}" '
+                 '--system-assigned',
+                 checks=[
+                     self.check('identity.type', None)
+                 ])
+        self.cmd('az logic workflow identity remove '
+                 '--resource-group "{rg}" '
+                 '--name "{workflow4}" '
+                 '--user-assigned {identity_id1}',
+                 checks=[
+                     self.check('type', None)
+                 ])

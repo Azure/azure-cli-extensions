@@ -8,18 +8,17 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
 from .common import TEST_LOCATION
-from .utils import create_containerapp_env
+from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerAppAuthTest(ScenarioTest):
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location=TEST_LOCATION)
+    @ResourceGroupPreparer(location="eastus")
     def test_containerapp_auth_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        env = self.create_random_name(prefix='containerapp-env', length=24)
         app = self.create_random_name(prefix='containerapp-auth', length=24)
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80'.format(resource_group, app, env))
 
@@ -88,3 +87,4 @@ class ContainerAppAuthTest(ScenarioTest):
         self.cmd('containerapp show  -g {} -n {}'.format(resource_group, app), checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded")
         ])
+        self.cmd('containerapp delete  -g {} -n {} --yes'.format(resource_group, app), expect_failure=False)

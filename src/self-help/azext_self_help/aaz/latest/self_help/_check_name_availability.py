@@ -16,16 +16,18 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class CheckNameAvailability(AAZCommand):
-    """This API is used to check the uniqueness of a resource name used for a diagnostic check.
+    """This API is used to check the uniqueness of a resource name used for a diagnostic, troubleshooter or solutions
 
-    :example: Check Diagnostic Resource Uniqueness
-        az self-help check-name-availability --scope subscriptionId/{subId} --name {diagnostic-name} --type 'Microsoft.Help/diagnostics'
+    :example: Check Resource Uniqueness
+        az self-help check-name-availability --scope subscriptions/00000000-0000-0000-0000-000000000000 --name diagnostic-name --type 'Microsoft.Help/diagnostics'
+        az self-help check-name-availability --scope subscriptions/00000000-0000-0000-0000-000000000000 --name solution-name --type 'Microsoft.Help/solutions'
+        az self-help check-name-availability --scope subscriptions/00000000-0000-0000-0000-000000000000 --name 12345678-BBBb-cCCCC-0000-123456789012 --type 'Microsoft.Help/troubleshooters'
     """
 
     _aaz_info = {
-        "version": "2023-01-01-preview",
+        "version": "2023-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/checknameavailability", "2023-01-01-preview"],
+            ["mgmt-plane", "/{scope}/providers/microsoft.help/checknameavailability", "2023-09-01-preview"],
         ]
     }
 
@@ -68,7 +70,7 @@ class CheckNameAvailability(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DiagnosticsCheckNameAvailability(ctx=self.ctx)()
+        self.CheckNameAvailabilityPost(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,7 +85,7 @@ class CheckNameAvailability(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class DiagnosticsCheckNameAvailability(AAZHttpOperation):
+    class CheckNameAvailabilityPost(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -124,7 +126,7 @@ class CheckNameAvailability(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01-preview",
+                    "api-version", "2023-09-01-preview",
                     required=True,
                 ),
             }
