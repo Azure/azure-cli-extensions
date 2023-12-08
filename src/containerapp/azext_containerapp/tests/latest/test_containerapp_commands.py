@@ -8,6 +8,7 @@ import os
 import time
 import unittest
 
+from azure.cli.command_modules.containerapp._utils import format_location
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
@@ -15,22 +16,29 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 from msrestazure.tools import parse_resource_id
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
-from .common import TEST_LOCATION
+from .common import TEST_LOCATION, STAGE_LOCATION
 from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerappIdentityTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_identity_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name = self.create_random_name(prefix='containerapp', length=24)
 
-        env = prepare_containerapp_env_for_app_e2e_tests(self)
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env))
 
@@ -68,7 +76,11 @@ class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="canadacentral")
     def test_containerapp_identity_system(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -106,13 +118,17 @@ class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_identity_user(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name1 = self.create_random_name(prefix='containerapp-user1', length=24)
         user_identity_name2 = self.create_random_name(prefix='containerapp-user2', length=24)
 
-        env = prepare_containerapp_env_for_app_e2e_tests(self)
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env))
 
@@ -152,7 +168,11 @@ class ContainerappIdentityTests(ScenarioTest):
             JMESPathCheck('type', 'None'),
         ])
 
+
 class ContainerappIngressTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_ingress_e2e(self, resource_group):
@@ -614,6 +634,9 @@ class ContainerappIngressTests(ScenarioTest):
 
 
 class ContainerappDaprTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dapr_e2e(self, resource_group):
@@ -707,13 +730,17 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_service_binding_none_client_type(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
         ca_name = self.create_random_name(prefix='containerapp1', length=24)
         redis_ca_name = 'redis'
         postgres_ca_name = 'postgres'
         kafka_ca_name = 'kafka'
 
-        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location)
         env_rg = parse_resource_id(env_id).get('resource_group')
         env_name = parse_resource_id(env_id).get('name')
 
@@ -902,12 +929,16 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_service_binding_customized_keys_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
         ca_name = self.create_random_name(prefix='containerapp1', length=24)
         redis_ca_name = 'redis'
         postgres_ca_name = 'postgres'
 
-        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
         env_rg = parse_resource_id(env_id).get('resource_group')
         env_name = parse_resource_id(env_id).get('name')
 
@@ -986,7 +1017,11 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_service_binding_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -1064,7 +1099,11 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_addon_binding_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -1147,7 +1186,11 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_managed_service_binding_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # `mysql flexible-server create`: type 'locations/checkNameAvailability' is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -1184,6 +1227,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
 
 class ContainerappEnvStorageTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @live_only()  # Passes locally but fails in CI
     @ResourceGroupPreparer(location="eastus")
@@ -1195,8 +1241,10 @@ class ContainerappEnvStorageTests(ScenarioTest):
         shares_name = self.create_random_name(prefix='share', length=24)
 
         create_containerapp_env(self, env_name, resource_group)
-
-        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS --enable-large-file-share'.format(resource_group, storage_name))
+        storage_account_location = TEST_LOCATION
+        if storage_account_location == STAGE_LOCATION:
+            storage_account_location = "eastus"
+        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --location {}'.format(resource_group, storage_name, storage_account_location))
         self.cmd('storage share-rm create -g {} -n {} --storage-account {} --access-tier "TransactionOptimized" --quota 1024'.format(resource_group, shares_name, storage_name))
 
         storage_keys = self.cmd('az storage account keys list -g {} -n {}'.format(resource_group, storage_name)).get_output_in_json()[0]
@@ -1221,6 +1269,9 @@ class ContainerappEnvStorageTests(ScenarioTest):
 
 
 class ContainerappRevisionTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_revision_label_e2e(self, resource_group):
@@ -1287,6 +1338,9 @@ class ContainerappRevisionTests(ScenarioTest):
 
 
 class ContainerappAnonymousRegistryTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_anonymous_registry(self, resource_group):
@@ -1303,11 +1357,18 @@ class ContainerappAnonymousRegistryTests(ScenarioTest):
 
 
 class ContainerappRegistryIdentityTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_registry_identity_user(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         app = self.create_random_name(prefix='aca', length=24)
         identity = self.create_random_name(prefix='id', length=24)
@@ -1315,7 +1376,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
-        env = prepare_containerapp_env_for_app_e2e_tests(self)
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
 
         identity_rid = self.cmd(f'identity create -g {resource_group} -n {identity}').get_output_in_json()["id"]
 
@@ -1339,14 +1400,18 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
     @ResourceGroupPreparer(location="westeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_registry_identity_system(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         app = self.create_random_name(prefix='aca', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
-        env = prepare_containerapp_env_for_app_e2e_tests(self)
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
 
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
         self.cmd(f'acr import -n {acr} --source {image_source}')
@@ -1374,8 +1439,10 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         image_name = f"{acr}.azurecr.io:443/k8se/quickstart:latest"
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
-
-        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        acr_location = TEST_LOCATION
+        if format_location(acr_location) == format_location(STAGE_LOCATION):
+            acr_location = "eastus"
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled -l {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')
         password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
 
@@ -1411,7 +1478,10 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        acr_location = TEST_LOCATION
+        if format_location(acr_location) == format_location(STAGE_LOCATION):
+            acr_location = "eastus"
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled --location {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')
 
         self.cmd(f'containerapp create -g {resource_group} -n {app}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io')
@@ -1426,6 +1496,9 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
 
 
 class ContainerappScaleTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_scale_create(self, resource_group):
@@ -1628,11 +1701,15 @@ properties:
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_preview_create_with_yaml(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         app = self.create_random_name(prefix='yaml', length=24)
 
-        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
         env_rg = parse_resource_id(env_id).get('resource_group')
         env_name = parse_resource_id(env_id).get('name')
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
@@ -1644,7 +1721,7 @@ properties:
 
         # test managedEnvironmentId
         containerapp_yaml_text = f"""
-                                location: {TEST_LOCATION}
+                                location: {location}
                                 type: Microsoft.App/containerApps
                                 tags:
                                     tagname: value
@@ -1764,11 +1841,15 @@ properties:
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_create_with_yaml(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         app = self.create_random_name(prefix='yaml', length=24)
 
-        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
         env_rg = parse_resource_id(env_id).get('resource_group')
         env_name = parse_resource_id(env_id).get('name')
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
@@ -1779,7 +1860,7 @@ properties:
 
         # test managedEnvironmentId
         containerapp_yaml_text = f"""
-            location: {TEST_LOCATION}
+            location: {location}
             type: Microsoft.App/containerApps
             tags:
                 tagname: value
@@ -1861,7 +1942,7 @@ properties:
 
         # test environmentId
         containerapp_yaml_text = f"""
-                    location: {TEST_LOCATION}
+                    location: {location}
                     type: Microsoft.App/containerApps
                     tags:
                         tagname: value
@@ -1965,7 +2046,11 @@ properties:
     @ResourceGroupPreparer(location="westeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_create_with_vnet_yaml(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env = self.create_random_name(prefix='env', length=24)
         vnet = self.create_random_name(prefix='name', length=24)
@@ -1988,7 +2073,7 @@ properties:
 
         # test create containerapp transport: Tcp, with exposedPort
         containerapp_yaml_text = f"""
-        location: {TEST_LOCATION}
+        location: {location}
         type: Microsoft.App/containerApps
         tags:
             tagname: value
@@ -2045,7 +2130,7 @@ properties:
 
         # test update containerapp transport: Tcp, with exposedPort
         containerapp_yaml_text = f"""
-                location: {TEST_LOCATION}
+                location: {location}
                 type: Microsoft.App/containerApps
                 tags:
                     tagname: value
@@ -2097,7 +2182,7 @@ properties:
 
         # test create containerapp transport: http, with CORS policy
         containerapp_yaml_text = f"""
-                        location: {TEST_LOCATION}
+                        location: {location}
                         type: Microsoft.App/containerApps
                         tags:
                             tagname: value
@@ -2170,6 +2255,9 @@ properties:
 
 
 class ContainerappOtherPropertyTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westus")
     def test_containerapp_get_customdomainverificationid_e2e(self, resource_group):
