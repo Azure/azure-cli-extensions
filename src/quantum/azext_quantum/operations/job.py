@@ -551,9 +551,9 @@ def output(cmd, job_id, resource_group_name, workspace_name, location, item=None
                 return job_output
 
         return job  # If "-o table" is specified, this allows transform_output() in commands.py
-                    # to format the output, so the error info is shown. If "-o json" or no "-o"
-                    # parameter is specified, then the full JSON job output is displayed, being
-                    # consistent with other commands.
+        #             to format the output, so the error info is shown. If "-o json" or no "-o"
+        #             parameter is specified, then the full JSON job output is displayed, being
+        #             consistent with other commands.
 
     return _get_job_output(cmd, job, item)
 

@@ -13,7 +13,7 @@ interactions:
       ParameterSetName:
       - -g -w -l
       User-Agent:
-      - AZURECLI/2.55.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.11.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.55.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
         az-cli-ext/0.20.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-qsharp-tests?api-version=2022-01-10-preview
@@ -28,7 +28,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Dec 2023 00:20:04 GMT
+      - Fri, 08 Dec 2023 02:40:54 GMT
       etag:
       - '"34013ffd-0000-0800-0000-65642dd80000"'
       expires:
@@ -58,23 +58,23 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - az-cli-ext/0.20.0 azsdk-python-quantum/0.0.0.1 Python/3.11.5 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/0.20.0 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-qsharp-tests/providerStatus
   response:
     body:
-      string: '{"value":[{"id":"qci","currentAvailability":"Available","targets":[{"id":"qci.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.machine1","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.simulator.noisy","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://quantumcircuits.com"}]},{"id":"rigetti","currentAvailability":"Degraded","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Degraded","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":null},{"id":"rigetti.qpu.aspen-m-3","currentAvailability":"Degraded","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]},{"id":"ionq","currentAvailability":"Degraded","targets":[{"id":"ionq.qpu","currentAvailability":"Unavailable","averageQueueTime":657971,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1","currentAvailability":"Unavailable","averageQueueTime":2185059,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Unavailable","averageQueueTime":1982988,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":2,"statusPage":"https://status.ionq.co"}]},{"id":"microsoft-qc","currentAvailability":"Available","targets":[{"id":"microsoft.estimator","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"pasqal","currentAvailability":"Degraded","targets":[{"id":"pasqal.sim.emu-tn","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://pasqal.com"},{"id":"pasqal.qpu.fresnel","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://pasqal.com"}]},{"id":"quantinuum","currentAvailability":"Degraded","targets":[{"id":"quantinuum.qpu.h1-1","currentAvailability":"Available","averageQueueTime":257353,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":2,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2sc","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":26,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2e","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"}]}],"nextLink":null}'
+      string: '{"value":[{"id":"qci","currentAvailability":"Available","targets":[{"id":"qci.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.machine1","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.simulator.noisy","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://quantumcircuits.com"}]},{"id":"rigetti","currentAvailability":"Degraded","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Degraded","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":null},{"id":"rigetti.qpu.aspen-m-3","currentAvailability":"Degraded","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]},{"id":"ionq","currentAvailability":"Degraded","targets":[{"id":"ionq.qpu","currentAvailability":"Unavailable","averageQueueTime":666370,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1","currentAvailability":"Unavailable","averageQueueTime":2193787,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Unavailable","averageQueueTime":1991763,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":3,"statusPage":"https://status.ionq.co"}]},{"id":"microsoft-qc","currentAvailability":"Available","targets":[{"id":"microsoft.estimator","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"pasqal","currentAvailability":"Degraded","targets":[{"id":"pasqal.sim.emu-tn","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://pasqal.com"},{"id":"pasqal.qpu.fresnel","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://pasqal.com"}]},{"id":"quantinuum","currentAvailability":"Degraded","targets":[{"id":"quantinuum.qpu.h1-1","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":17,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2sc","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":25,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2e","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"}]}],"nextLink":null}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '2798'
+      - '2793'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Dec 2023 00:20:06 GMT
+      - Fri, 08 Dec 2023 02:40:55 GMT
       mise-correlation-id:
-      - c29a9dc7-4226-4b26-a30a-cc43b711ae47
+      - 8e05e450-c13d-4b11-bf01-cf37294d0595
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
