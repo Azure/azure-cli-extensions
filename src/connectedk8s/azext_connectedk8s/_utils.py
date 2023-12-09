@@ -6,6 +6,7 @@
 import sys
 import os
 import shutil
+from packaging import version
 import subprocess
 from subprocess import Popen, PIPE
 import time
@@ -115,6 +116,10 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
 def pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, new_path, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
     chart_url = registry_path.split(':')[0]
     chart_version = registry_path.split(':')[1]
+    if (version.parse(chart_version) < version.parse("1.14.0")):
+        error_summary = "This CLI version does not support upgrading to Agents versions older than v1.14"
+        telemetry.set_exception(exception='Operation not supported on older Agents', fault_type=consts.Operation_Not_Supported_Fault_Type, summary=error_summary)
+        raise ClientRequestError(error_summary, recommendation="Please select an agent-version >= v1.14 to upgrade to using 'az connectedk8s upgrade -g <rg_name> -n <cluster_name> --agent-version <at-least-1.14>'.")
     if new_path:
         base_path = os.path.dirname(chart_url)
         image_name = os.path.basename(chart_url)
