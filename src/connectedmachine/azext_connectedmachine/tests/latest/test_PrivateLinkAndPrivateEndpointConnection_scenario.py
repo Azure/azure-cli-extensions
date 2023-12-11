@@ -150,3 +150,8 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
                 checks=[
                     self.check('length(@)', 0)
                 ])
+
+        self.cmd('az connectedmachine private-link-scope delete -y '
+                '--resource-group "{rg}" '
+                '--scope-name "{scope}"',
+                checks=[])
