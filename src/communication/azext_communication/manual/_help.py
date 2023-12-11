@@ -737,15 +737,3 @@ helps['communication email senderusername show'] = """
         text: |-
                az communication email senderusername show --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername"
 """
-
-helps['communication email senderusername wait'] = """
-    type: command
-    short-summary: Places the CLI in a waiting state until a condition of the sender username is met.
-    examples:
-      - name: Pause executing next line of CLI script until the sender username is successfully created.
-        text: |-
-               az communication email senderusername wait --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername" --created --interval 1
-      - name: Pause executing next line of CLI script until the sender username is successfully deleted.
-        text: |-
-               az communication email senderusername wait --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername" --deleted --interval 1
-"""
