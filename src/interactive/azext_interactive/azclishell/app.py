@@ -927,7 +927,7 @@ class AzInteractiveShell(object):
                     self.last = result
 
         except Exception as ex:  # pylint: disable=broad-except
-            self.last_exit_code = handle_exception(ex, self.cli_ctx, cmd)
+            self.last_exit_code = handle_exception(ex, self.cli_ctx)
         except SystemExit as ex:
             self.last_exit_code = int(ex.code)
 
