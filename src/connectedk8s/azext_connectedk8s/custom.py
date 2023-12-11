@@ -1069,12 +1069,12 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
 
-    check_operation_support("update (properties)", agent_version)
-
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
         agent_version = connected_cluster.agent_version
         registry_path = reg_path_array[0] + ":" + agent_version
+
+    check_operation_support("update (properties)", agent_version)
 
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
 
@@ -1469,12 +1469,12 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
 
-    check_operation_support("enable-features", agent_version)
-
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
         agent_version = connected_cluster.agent_version
         registry_path = reg_path_array[0] + ":" + agent_version
+
+    check_operation_support("enable-features", agent_version)
 
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
 
@@ -1598,13 +1598,13 @@ def get_chart_and_disable_features(cmd, connected_cluster, kube_config, kube_con
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
-    
-    check_operation_support("disable-features", agent_version)
 
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
         agent_version = connected_cluster.agent_version
         registry_path = reg_path_array[0] + ":" + agent_version
+
+    check_operation_support("disable-features", agent_version)
 
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
 
