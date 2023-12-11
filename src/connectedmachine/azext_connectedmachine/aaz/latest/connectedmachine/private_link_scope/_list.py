@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine private-link-scope list",
 )
 class List(AAZCommand):
-    """Get a list of Azure Arc PrivateLinkScopes within a resource                                          group. And Gets a list of all Azure Arc PrivateLinkScopes within a subscription.
+    """Get a list of Azure Arc PrivateLinkScopes within a resource group. And Gets a list of all Azure Arc PrivateLinkScopes within a subscription.
 
     :example: Sample command for private-link-scope list
         az connectedmachine private-link-scope list --resource-group my-resource-group

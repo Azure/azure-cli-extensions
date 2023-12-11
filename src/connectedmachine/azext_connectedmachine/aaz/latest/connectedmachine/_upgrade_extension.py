@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "connectedmachine upgrade-extension",
-    is_preview=True,
 )
 class UpgradeExtension(AAZCommand):
     """The operation to upgrade Machine Extensions.
@@ -65,7 +64,7 @@ class UpgradeExtension(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.extension_targets = AAZDictArg(
-            options=["--targets", "--extension-targets"],
+            options=["--extension-targets"],
             arg_group="ExtensionUpgradeParameters",
             help="Describes the Extension Target Properties.",
         )
