@@ -9,7 +9,8 @@ import os
 
 from azext_load.data_plane.utils.utils import (
     convert_yaml_to_test,
-    create_or_update_body,
+    create_or_update_test_with_config,
+    create_or_update_test_without_config,
     download_file,
     get_admin_data_plane_client,
     load_yaml,
@@ -54,32 +55,48 @@ def create_test(
         raise InvalidArgumentValueError(msg)
     body = {}
     yaml, yaml_test_body = None, None
-    if load_test_config_file is not None:
-        yaml = load_yaml(load_test_config_file)
-        yaml_test_body = convert_yaml_to_test(yaml)
     if split_csv is None:
         split_csv = False
-    body = create_or_update_body(
-        test_id,
-        body,
-        yaml_test_body,
-        display_name=display_name,
-        test_description=test_description,
-        engine_instances=engine_instances,
-        env=env,
-        secrets=secrets,
-        certificate=certificate,
-        key_vault_reference_identity=key_vault_reference_identity,
-        subnet_id=subnet_id,
-        split_csv=split_csv,
-    )
+    if load_test_config_file is None:
+        body = create_or_update_test_without_config(
+            test_id,
+            body,
+            display_name=display_name,
+            test_description=test_description,
+            engine_instances=engine_instances,
+            env=env,
+            secrets=secrets,
+            certificate=certificate,
+            key_vault_reference_identity=key_vault_reference_identity,
+            subnet_id=subnet_id,
+            split_csv=split_csv,
+        )
+    else:
+        yaml = load_yaml(load_test_config_file)
+        yaml_test_body = convert_yaml_to_test(yaml)
+        body = create_or_update_test_with_config(
+            test_id,
+            body,
+            yaml_test_body,
+            display_name=display_name,
+            test_description=test_description,
+            engine_instances=engine_instances,
+            env=env,
+            secrets=secrets,
+            certificate=certificate,
+            key_vault_reference_identity=key_vault_reference_identity,
+            subnet_id=subnet_id,
+            split_csv=split_csv,
+        )
     logger.debug("Creating test with test ID: %s and body : %s", test_id, body)
     response = client.create_or_update_test(test_id=test_id, body=body)
     logger.debug(
         "Created test with test ID: %s and response obj is %s", test_id, response
     )
     logger.info("Uploading files to test %s", test_id)
-    upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait)
+    upload_files_helper(
+        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait
+    )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
     logger.info("Test %s has been created successfully", test_id)
@@ -118,28 +135,43 @@ def update_test(
     if load_test_config_file is not None:
         yaml = load_yaml(load_test_config_file)
         yaml_test_body = convert_yaml_to_test(yaml)
-
-    body = create_or_update_body(
-        test_id,
-        body,
-        yaml_test_body,
-        display_name=display_name,
-        test_description=test_description,
-        engine_instances=engine_instances,
-        env=env,
-        secrets=secrets,
-        certificate=certificate,
-        key_vault_reference_identity=key_vault_reference_identity,
-        subnet_id=subnet_id,
-        split_csv=split_csv,
-    )
+        body = create_or_update_test_with_config(
+            test_id,
+            body,
+            yaml_test_body,
+            display_name=display_name,
+            test_description=test_description,
+            engine_instances=engine_instances,
+            env=env,
+            secrets=secrets,
+            certificate=certificate,
+            key_vault_reference_identity=key_vault_reference_identity,
+            subnet_id=subnet_id,
+            split_csv=split_csv,
+        )
+    else:
+        body = create_or_update_test_without_config(
+            test_id,
+            body,
+            display_name=display_name,
+            test_description=test_description,
+            engine_instances=engine_instances,
+            env=env,
+            secrets=secrets,
+            certificate=certificate,
+            key_vault_reference_identity=key_vault_reference_identity,
+            subnet_id=subnet_id,
+            split_csv=split_csv,
+        )
     logger.info("Updating test with test ID: %s", test_id)
     response = client.create_or_update_test(test_id=test_id, body=body)
     logger.debug(
         "Updated test with test ID: %s and response obj is %s", test_id, response
     )
     logger.info("Uploading files to test %s", test_id)
-    upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait)
+    upload_files_helper(
+        client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait
+    )
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
     logger.info("Test %s has been updated successfully", test_id)

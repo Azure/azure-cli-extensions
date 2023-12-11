@@ -18,7 +18,6 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_K8S_EXTENSION_NAME,
     CONST_STORAGE_POOL_NAME_PREFIX,
     CONST_STORAGE_POOL_OPTION_NVME,
-    CONST_STORAGE_POOL_RANDOM_LENGTH,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     RP_REGISTRATION_POLLING_INTERVAL_IN_SEC,
@@ -26,8 +25,6 @@ from azext_aks_preview.azurecontainerstorage._consts import (
 
 from datetime import datetime
 from knack.log import get_logger
-import random
-import string
 import time
 
 logger = get_logger(__name__)
@@ -148,11 +145,6 @@ def perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_gr
         logger.error("\nUnable to revoke Role Assignments if any, added for Azure Container Storage.")
 
     return False
-
-
-def generate_random_storage_pool_name():
-    random_name = CONST_STORAGE_POOL_NAME_PREFIX + ''.join(random.choices(string.ascii_lowercase, k=CONST_STORAGE_POOL_RANDOM_LENGTH))
-    return random_name
 
 
 def get_k8s_extension_module(module_name):

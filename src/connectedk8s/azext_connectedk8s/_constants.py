@@ -118,7 +118,6 @@ Linux_Node_Not_Exists = 'Kubernetes cluster doesnt have linux node'
 Operate_RG_Cluster_Name_Conflict = 'The provided cluster name and rg correspond to different cluster being operated on'
 Custom_Locations_Registration_Check_Fault_Type = "Error while checking resource provider registration of custom locations."
 Custom_Locations_OID_Fetch_Fault_Type = "Error while fetching oid for custom locations."
-Application_Details_Not_Provided_For_Azure_RBAC_Fault = 'Application ID or secret not provided for Azure RBAC'
 Successfully_Enabled_Features = 'Successsfully enabled features: {} for the Connected Cluster {}'
 Successfully_Disabled_Features = 'Successsfully disabled features: {} for the Connected Cluster {}'
 Error_enabling_Features = 'Error while updating agents for enabling features. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'

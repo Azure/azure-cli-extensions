@@ -78,3 +78,48 @@ def process_loaded_yaml(yaml_containerapp):
         del yaml_containerapp['properties']['managedEnvironmentId']
 
     return yaml_containerapp
+
+
+def process_containerapp_resiliency_yaml(containerapp_resiliency):
+
+    if type(containerapp_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please provide a valid container app resiliency YAML spec.')
+    if 'additionalProperties' in containerapp_resiliency and not containerapp_resiliency['additionalProperties']:
+        raise ValidationError('Invalid YAML provided. Please provide a valid containerapp resiliency YAML spec.')
+    if not containerapp_resiliency.get('properties'):
+        containerapp_resiliency['properties'] = {}
+
+    nested_properties = ["timeoutPolicy",
+                         "httpRetryPolicy",
+                         "tcpRetryPolicy",
+                         "circuitBreakerPolicy",
+                         "tcpConnectionPool",
+                         "httpConnectionPool"]
+    for nested_property in nested_properties:
+        # Fix this and remove additionalProperties after flattening is avoided
+        tmp = containerapp_resiliency['additionalProperties'].get(nested_property)
+        if nested_property in containerapp_resiliency:
+            containerapp_resiliency['properties'][nested_property] = tmp
+            del containerapp_resiliency[nested_property]
+
+    return containerapp_resiliency
+
+
+def process_dapr_component_resiliency_yaml(dapr_component_resiliency):
+
+    if type(dapr_component_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please provide a valid dapr component resiliency YAML spec.')
+    if 'additionalProperties' in dapr_component_resiliency and not dapr_component_resiliency['additionalProperties']:
+        raise ValidationError('Invalid YAML provided. Please provide a valid dapr component resiliency YAML spec.')
+    if not dapr_component_resiliency.get('properties'):
+        dapr_component_resiliency['properties'] = {}
+
+    nested_properties = ["inboundPolicy",
+                         "outboundPolicy"]
+    for nested_property in nested_properties:
+        tmp = dapr_component_resiliency['additionalProperties'].get(nested_property)
+        if nested_property in dapr_component_resiliency:
+            dapr_component_resiliency['properties'][nested_property] = tmp
+            del dapr_component_resiliency[nested_property]
+
+    return dapr_component_resiliency

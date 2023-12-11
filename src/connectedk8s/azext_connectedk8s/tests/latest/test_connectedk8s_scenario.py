@@ -150,11 +150,10 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_connect(self,resource_group):
-        # TODO: [Kit] Remove this
-        os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
+        # os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.59-preview')
         
         managed_cluster_name = self.create_random_name(prefix='test-connect', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
             'rg': resource_group,
             'name': self.create_random_name(prefix='cc-', length=12),
@@ -181,11 +180,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_forcedelete(self,resource_group):
-        # TODO: [Kit] Remove this
-        os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
-
         managed_cluster_name = self.create_random_name(prefix='test-force-delete', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
             'rg': resource_group,
             'name': self.create_random_name(prefix='cc-', length=12),
@@ -223,8 +219,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_enable_disable_features(self,resource_group):
-        # TODO: [Kit] Remove this
-        os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
+        # os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.59-preview')
 
         managed_cluster_name = self.create_random_name(prefix='test-enable-disable', length=24)
         kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
@@ -246,7 +241,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'rbac_app_secret': CONFIG['rbacAppSecret'],
             'location': CONFIG['location']
         })
-        
+
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
@@ -305,7 +300,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         assert(enabled_cmd1["systemDefaultValues"]['customLocations']['enabled'] == bool(1))
         assert(enabled_cmd1["systemDefaultValues"]['clusterconnect-agent']['enabled'] == bool(1))
 
-        # scenario-4: azure rbac turned off and turning azure rbac on again using app id and app secret
+        # scenario-4: azure rbac turned off and turning azure rbac on again using 1P
         self.cmd('connectedk8s disable-features -n {name} -g {rg} --features azure-rbac --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
@@ -313,7 +308,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(disabled_cmd1["systemDefaultValues"]['guard']['enabled'] == bool(0))
 
-        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --features azure-rbac --app-id {rbac_app_id} --app-secret {rbac_app_secret}')
+        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --features azure-rbac')
 
         # deleting the cluster
         self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
@@ -326,19 +321,16 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_connectedk8s_list(self,resource_group):
-        # TODO: [Kit] Remove this
-        os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
-
         managed_cluster_name = self.create_random_name(prefix='first', length=24)
         managed_cluster_name_second = self.create_random_name(prefix='second', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         kubeconfigpls="%s" % (_get_test_data_file('pls-config.yaml'))
         name = self.create_random_name(prefix='cc-', length=12)
         name_second = self.create_random_name(prefix='cc-', length=12)
         managed_cluster_list=[]
         managed_cluster_list.append(name)
         managed_cluster_list.append(name_second)
-        managed_cluster_list.sort() 
+        managed_cluster_list.sort()
         self.kwargs.update({
             'rg': resource_group,
             'name': name,
@@ -402,9 +394,10 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_upgrade(self,resource_group):
+        # os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.59-preview')
 
         managed_cluster_name = self.create_random_name(prefix='test-upgrade', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
             'name': self.create_random_name(prefix='cc-', length=12),
             'rg': resource_group,
@@ -468,11 +461,10 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_update(self,resource_group):
-        # TODO: [Kit] Remove this
-        os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
+        # os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.59-preview')
 
         managed_cluster_name = self.create_random_name(prefix='test-update', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
             'name': self.create_random_name(prefix='cc-', length=12),
             'kubeconfig': kubeconfig,
@@ -531,9 +523,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_troubleshoot(self,resource_group):
-        # TODO: [Kit] Remove this
-        os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
-
         managed_cluster_name = self.create_random_name(prefix='test-troubleshoot', length=24)
         kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
@@ -567,9 +556,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_proxy(self,resource_group):
-        # TODO: [Kit] Remove this
-        os.environ.setdefault('HELMREGISTRY', 'mcr.microsoft.com/azurearck8s/batch1/preview/azure-arc-k8sagents:1.1.58-preview')
-
         managed_cluster_name = self.create_random_name(prefix='test-proxy', length=24)
         kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         kubeconfig2="%s" % (_get_test_data_file(managed_cluster_name + '-config2.yaml'))
