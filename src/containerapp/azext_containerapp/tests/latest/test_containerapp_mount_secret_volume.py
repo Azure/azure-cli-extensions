@@ -9,7 +9,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
+from .common import TEST_LOCATION
 from .utils import create_containerapp_env
 
 
@@ -17,7 +17,7 @@ class ContainerAppMountSecretTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_container_app_mount_secret_e2e(self, resource_group):
-
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='app1', length=24)
 
@@ -50,7 +50,7 @@ class ContainerAppMountSecretTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_container_app_mount_secret_update_e2e(self, resource_group):
-
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         # test creating a container app that does not have a secret volume mount, then uses update to add a secret volume mount
         app = self.create_random_name(prefix='app2', length=24)
         env = self.create_random_name(prefix='env', length=24)

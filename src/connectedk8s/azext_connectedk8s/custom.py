@@ -1396,10 +1396,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         raise InvalidArgumentValueError("The features 'cluster-connect' and 'custom-locations' cannot be enabled for a private link enabled connected cluster.")
 
     if enable_azure_rbac:
-        if (azrbac_client_id is None) or (azrbac_client_secret is None):
-            telemetry.set_exception(exception='Application ID or secret is not provided for Azure RBAC', fault_type=consts.Application_Details_Not_Provided_For_Azure_RBAC_Fault,
-                                    summary='Application id, application secret is required to enable/update Azure RBAC feature')
-            raise RequiredArgumentMissingError("Please provide Application id, application secret to enable/update Azure RBAC feature")
         if azrbac_skip_authz_check is None:
             azrbac_skip_authz_check = ""
         azrbac_skip_authz_check = escape_proxy_settings(azrbac_skip_authz_check)
@@ -1487,8 +1483,9 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         cmd_helm_upgrade.extend(["--kube-context", kube_context])
     if enable_azure_rbac:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.enabled=true"])
-        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientId={}".format(azrbac_client_id)])
-        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientSecret={}".format(azrbac_client_secret)])
+        # Setting the default authnMode mode as "arc" for guard. This mode uses PoP token based auth. and Arc RBAC 1P apps for authN/authZ.
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.authnMode=arc"])
+        logger.warning("Please use the kubelogin version v0.0.32 or higher which has support for generating PoP token(s). This is needed by guard running in 'arc' authN mode.")
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.skipAuthzCheck={}".format(azrbac_skip_authz_check)])
     if enable_cluster_connect:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"])
@@ -2194,7 +2191,7 @@ def get_custom_locations_oid(cmd, cl_oid):
     try:
         sp_graph_client = get_graph_client_service_principals(cmd.cli_ctx)
         sub_filters = []
-        sub_filters.append("displayName eq '{}'".format("Custom Locations RP"))
+        sub_filters.append("appId eq '{}'".format("bc313c14-388c-4e7d-a58e-70017303ee3b"))  # Lookup using well-known first-party application id
         result = list(sp_graph_client.list(filter=(' and '.join(sub_filters))))
         if len(result) != 0:
             if cl_oid is not None and cl_oid != result[0].object_id:
