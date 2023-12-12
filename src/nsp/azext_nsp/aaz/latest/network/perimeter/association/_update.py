@@ -361,7 +361,7 @@ class Update(AAZCommand):
             )
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("name", AAZStrType, ".association_name")
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -415,9 +415,7 @@ class _UpdateHelper:
         )
         nsp_association_read.location = AAZStrType()
         nsp_association_read.name = AAZStrType()
-        nsp_association_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
+        nsp_association_read.properties = AAZObjectType()
         nsp_association_read.tags = AAZDictType()
         nsp_association_read.type = AAZStrType(
             flags={"read_only": True},
