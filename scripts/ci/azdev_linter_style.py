@@ -202,6 +202,8 @@ def azdev_on_internal_extension(modified_files):
 
 
 def main():
+    # TODO:
+    # Add parameters to control whether azdev linter, azdev style, azdev test needs to be run.
     modified_files = find_modified_files_against_master_branch()
 
     if len(modified_files) == 1 and contain_index_json(modified_files):
