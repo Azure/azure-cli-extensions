@@ -178,7 +178,7 @@ def _list_credentials(cmd, resource_uri, certificate_validity_in_seconds):
     list_cred_args = {
         'endpoint_name': 'default',
         'resource_uri': resource_uri,
-        'expiresin': certificate_validity_in_seconds,
+        'expiresin': int(certificate_validity_in_seconds),
         'service_name': "SSH"
     }
 
