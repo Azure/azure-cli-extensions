@@ -871,6 +871,12 @@ def get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name):
     return client.get(resource_group_name, cluster_name)
 
 
+def get_connectedk8s_2023_11_01(cmd, client, resource_group_name, cluster_name):
+    # Override preview client to show private link properties to customers
+    client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
+    return client.get(resource_group_name, cluster_name)
+
+
 def list_connectedk8s(cmd, client, resource_group_name=None):
     # Override preview client to show private link properties and cluster kind to customers
     client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
@@ -1608,6 +1614,12 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     helm_client_location = install_helm_client()
 
     release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
+
+    # Fetch Connected Cluster for agent version
+    connected_cluster = get_connectedk8s_2023_11_01(cmd, client, resource_group_name, cluster_name)
+
+    if connected_cluster.kind == "provisionedCluster":
+        raise InvalidArgumentValueError("Features cannot be enabled for provisioned clusters.")
 
     kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
 
