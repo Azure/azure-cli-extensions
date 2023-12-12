@@ -116,7 +116,7 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
 def pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, new_path, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
     chart_url = registry_path.split(':')[0]
     chart_version = registry_path.split(':')[1]
-    
+
     if new_path:
         if (version.parse(chart_version) < version.parse("1.14.0")):
             error_summary = "This CLI version does not support upgrading to Agents versions older than v1.14"
