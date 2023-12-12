@@ -4,8 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azext_support._client_factory import (cf_communications,
-                                           cf_problem_classifications,
-                                           cf_services, cf_support,
+                                           cf_support,
                                            cf_support_tickets)
 from azext_support._validators import validate_tickets_create
 from azure.cli.core.commands import CliCommandType
@@ -36,12 +35,12 @@ def load_command_table(self, _):
     self.command_group('support', support, client_factory=cf_support)
 
     with self.command_group('support services'):
-        from .aaz.latest.support.services import List, Show;
+        from .aaz.latest.support.services import List, Show
         self.command_table['support services list'] = List(loader=self)
         self.command_table['support services show'] = Show(loader=self)
 
     with self.command_group('support services problem-classifications'):
-        from .aaz.latest.support.services.problem_classifications import List, Show;
+        from .aaz.latest.support.services.problem_classifications import List, Show
         self.command_table['support services problem-classifications list'] = List(loader=self)
         self.command_table['support services problem-classifications show'] = Show(loader=self)
 
