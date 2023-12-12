@@ -2477,6 +2477,7 @@ def crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
                     output_patch_cmd = Popen(patch_cmd, stdout=PIPE, stderr=PIPE)
                     _, error_helm_delete = output_patch_cmd.communicate()
 
+
 def check_operation_support(operation_name, agent_version):
     error_summary = 'This CLI version does not support {} for Agents older than v1.14'.format(operation_name)
     if (version.parse(agent_version) < version.parse("1.14.0")):
