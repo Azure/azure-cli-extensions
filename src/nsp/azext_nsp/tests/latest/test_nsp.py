@@ -120,7 +120,7 @@ class NspScenario(ScenarioTest):
             'nsp_name': 'TestNetworkSecurityPerimeter',
             'profile_name': 'TestNspProfile',
             'association_name': 'TestNspAssociation',
-            'resource_name': 'kvclinsp7',
+            'resource_name': 'kvclinsp17',
             'sub': self.get_subscription_id()
         })
 
