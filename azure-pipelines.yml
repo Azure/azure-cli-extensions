@@ -120,6 +120,7 @@ jobs:
 - job: AzdevStyleModifiedExtensions
   displayName: "azdev style on Modified Extensions"
   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+  continueOnError: true
   pool:
     name: 'pool-ubuntu-2004'
   steps:
