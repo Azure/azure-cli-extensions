@@ -26,7 +26,9 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    "azure-mgmt-kubernetesconfiguration>=3.1.0",
+]
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()

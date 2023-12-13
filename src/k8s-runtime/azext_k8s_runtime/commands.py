@@ -8,8 +8,14 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-# from azure.cli.core.commands import CliCommandType
+from azure.cli.core.commands import CliCommandType
+
+from azext_k8s_runtime import K8sRuntimeCommandsLoader
 
 
-def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+def load_command_table(self: "K8sRuntimeCommandsLoader", _):  # pylint: disable=unused-argument
+    with self.command_group("k8s-runtime storage-class", is_preview=True) as g:
+        g.custom_command("enable", "enable_storage_class")
+
+ 
+

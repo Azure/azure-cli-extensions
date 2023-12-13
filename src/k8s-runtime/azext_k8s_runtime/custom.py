@@ -10,5 +10,93 @@
 
 from knack.log import get_logger
 
+from azure.cli.core.commands import AzCliCommand
+from azure.mgmt.authorization import AuthorizationManagementClient
+from azure.mgmt.authorization.models import RoleAssignmentCreateParameters, RoleAssignment
+from azure.mgmt.kubernetesconfiguration import SourceControlConfigurationClient
+from azure.mgmt.resource import ResourceManagementClient
+from azure.mgmt.kubernetesconfiguration.models import Extension, Identity
+from uuid import uuid4
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
 logger = get_logger(__name__)
+
+STORAGE_CLASS_CONTRIBUTOR_ROLE_ID = "0cd9749a-3aaf-4ae5-8803-bd217705bf3b"
+STORAGE_CLASS_EXTENSION_NAME = "arc-k8s-storage-class"
+STORAGE_CLASS_EXTENSION_TYPE = "Microsoft.ManagedStorageClass"
+KUBERNETES_RUNTIME_RP = "Microsoft.KubernetesRuntime"
+
+def _register_provider(cmd: AzCliCommand, parent_resource_id: str):
+    sdk: ResourceManagementClient = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient)
+
+    if sdk._config.subscription_id != parent_resource_id.split("/")[2]:
+        raise Exception("The resource uri must be in the current subscription as current logged in user.")
+
+    sdk.providers.register(
+        resource_provider_namespace=KUBERNETES_RUNTIME_RP
+    )
+
+
+
+def _install_extension(cmd: AzCliCommand, parent_resource_id: str) -> Extension:
+    sdk: SourceControlConfigurationClient = get_mgmt_service_client(cmd.cli_ctx, SourceControlConfigurationClient)
+
+    # /subscriptions/b9e38f20-7c9c-4497-a25d-1a0c5eef2108/resourceGroups/jundachen/providers/Microsoft.Kubernetes/connectedClusters/testcluster-arc
+    parsed_resource_uri = parent_resource_id.split("/")
+
+    lro = sdk.extensions.begin_create(
+        resource_group_name=parsed_resource_uri[4],
+        cluster_rp="Microsoft.Kubernetes",
+        cluster_resource_name="connectedClusters",
+        cluster_name=parsed_resource_uri[8],
+        extension_name=STORAGE_CLASS_EXTENSION_NAME,
+        extension=Extension(
+            identity=Identity(
+                type="SystemAssigned"
+            ),
+            extension_type=STORAGE_CLASS_EXTENSION_TYPE,
+            release_train="dev"
+        )
+    )
+
+    # Prevent blocking KeyboardInterrupt
+    while lro.done() is False:
+        lro.wait(1)
+
+    return lro.result()
+
+
+def _assign_role(cmd: AzCliCommand, parent_resource_id: str, principalId: str) -> RoleAssignment:
+    sdk: AuthorizationManagementClient = get_mgmt_service_client(cmd.cli_ctx, AuthorizationManagementClient)
+    return sdk.role_assignments.create(
+        scope=parent_resource_id,
+        role_assignment_name=str(uuid4()),
+        parameters=RoleAssignmentCreateParameters(
+            role_definition_id=STORAGE_CLASS_CONTRIBUTOR_ROLE_ID,
+            principal_id=principalId,
+        )
+    )
+
+def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
+    """
+    Enable storage class service in a connected cluster
+
+    :param resource_uri: The resource uri of the connected cluster
+    """
+
+    print("Register Kubernetes Runtime RP in current logged in subscription...")
+
+    _register_provider(cmd, resource_uri)
+
+    print("Installing Storage class Arc Extension...")
+
+    extension = _install_extension(cmd, resource_uri)
+
+    print("Assign the extension with Storage Class Contributor role under the cluster scope")
+
+    role_assignment = _assign_role(cmd, resource_uri, extension.identity.principal_id)
+
+    return {
+        "extension": extension,
+        "role_assignment": role_assignment
+    }
