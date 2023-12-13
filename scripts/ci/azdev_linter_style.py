@@ -4,22 +4,27 @@
 # --------------------------------------------------------------------------------------------
 
 """
-This script is used to verify linter on extensions.
+This script is used to run azdev linter and azdev style on extensions.
 
 It's only working on ADO by default. If want to run locally,
 please update the target branch/commit to find diff in function find_modified_files_against_master_branch()
 """
-
-import os
 import json
-from subprocess import check_output, check_call
-from pkg_resources import parse_version
+import logging
+import os
+from subprocess import check_call, check_output
 
 import service_name
+from pkg_resources import parse_version
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
 
 def separator_line():
-    print('-' * 100)
+    logger.info('-' * 100)
 
 
 class ModifiedFilesNotAllowedError(Exception):
@@ -50,7 +55,7 @@ class AzExtensionHelper:
 
     @staticmethod
     def _cmd(cmd):
-        print(cmd)
+        logger.info(cmd)
         check_call(cmd, shell=True)
 
     def add_from_url(self, url):
@@ -66,7 +71,7 @@ class AzdevExtensionHelper:
 
     @staticmethod
     def _cmd(cmd):
-        print(cmd)
+        logger.info(cmd)
         check_call(cmd, shell=True)
 
     def add_from_code(self):
@@ -77,6 +82,9 @@ class AzdevExtensionHelper:
 
     def linter(self):
         self._cmd('azdev linter --include-whl-extensions {}'.format(self.extension_name))
+
+    def style(self):
+        self._cmd('azdev style {}'.format(self.extension_name))
 
     def build(self):
         pass
@@ -91,17 +99,17 @@ def find_modified_files_against_master_branch():
     ado_pr_target_branch = 'origin/' + os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
 
     separator_line()
-    print('pull request target branch:', ado_pr_target_branch)
+    logger.info('pull request target branch: %s', ado_pr_target_branch)
 
     cmd = 'git --no-pager diff --name-only --diff-filter=ACMRT {} -- src/'.format(ado_pr_target_branch)
     files = check_output(cmd.split()).decode('utf-8').split('\n')
     files = [f for f in files if len(f) > 0]
 
     if files:
-        print('modified files:')
+        logger.info('modified files:')
         separator_line()
         for f in files:
-            print(f)
+            logger.info(f)
 
     return files
 
@@ -131,10 +139,10 @@ def contain_extension_code(files):
     return False
 
 
-def linter_on_external_extension(index_json):
+def azdev_on_external_extension(index_json, azdev_type):
     """
     Check if the modified metadata items in index.json refer to the extension in repo.
-    If not, az extension linter on wheel. Otherwise skip it.
+    If not, az extension check on wheel. Otherwise skip it.
     """
 
     public_extensions = json.loads(check_output('az extension list-available -d', shell=True))
@@ -160,15 +168,20 @@ def linter_on_external_extension(index_json):
         az_extension.add_from_url(latest_entry['downloadUrl'])
 
         azdev_extension = AzdevExtensionHelper(name)
-        azdev_extension.linter()
+        if azdev_type in ['all', 'linter']:
+            azdev_extension.linter()
+        # TODO:
+        # azdev style support external extension
+        # azdev test support external extension
+        # azdev_extension.style()
 
-        print('Checking service name for external extensions')
+        logger.info('Checking service name for external extensions')
         service_name.check()
 
         az_extension.remove()
 
 
-def linter_on_internal_extension(modified_files):
+def azdev_on_internal_extension(modified_files, azdev_type):
     extension_names = set()
 
     for f in modified_files:
@@ -178,22 +191,34 @@ def linter_on_internal_extension(modified_files):
 
     if not extension_names:
         separator_line()
-        print('no extension source code modified, no extension needs to be linter')
+        logger.info('no extension source code modified, no extension needs to be checked')
 
     for name in extension_names:
         separator_line()
 
         azdev_extension = AzdevExtensionHelper(name)
         azdev_extension.add_from_code()
-        azdev_extension.linter()
+        if azdev_type in ['all', 'linter']:
+            azdev_extension.linter()
+        if azdev_type in ['all', 'style']:
+            azdev_extension.style()
 
-        print('Checking service name for internal extensions')
+        logger.info('Checking service name for internal extensions')
         service_name.check()
 
         azdev_extension.remove()
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description='azdev linter and azdev style on modified extensions')
+    parser.add_argument('--type',
+                        type=str,
+                        help='Control whether azdev linter, azdev style, azdev test needs to be run. '
+                             'Supported values: linter, style, test, all, all is the default.', default='all')
+    args = parser.parse_args()
+    azdev_type = args.type
+    logger.info('azdev type: %s', azdev_type)
     modified_files = find_modified_files_against_master_branch()
 
     if len(modified_files) == 1 and contain_index_json(modified_files):
@@ -201,8 +226,8 @@ def main():
         # This scenarios is for modify index.json only.
         # If the modified metadata items refer to the extension code exits in this repo, PR is be created via Pipeline.
         # If the modified metadata items refer to the extension code doesn't exist, PR is created from Service Team.
-        # We try to verify linter on it.
-        linter_on_external_extension(modified_files[0])
+        # We try to run azdev linter and azdev style on it.
+        azdev_on_external_extension(modified_files[0], azdev_type)
     else:
         # modified files contain more than one file
 
@@ -211,10 +236,10 @@ def main():
             if contain_index_json(modified_files):
                 raise ModifiedFilesNotAllowedError()
 
-            linter_on_internal_extension(modified_files)
+            azdev_on_internal_extension(modified_files, azdev_type)
         else:
             separator_line()
-            print('no extension source code modified, no extension needs to be linter')
+            logger.info('no extension source code modified, no extension needs to be checked')
             separator_line()
 
 
@@ -222,5 +247,5 @@ if __name__ == '__main__':
     try:
         main()
     except ModifiedFilesNotAllowedError as e:
-        print(e)
+        logger.error(e)
         exit(1)
