@@ -7,7 +7,7 @@ i.e. 'az k8s-runtime'
 
 ## How to use ##
 
-Install this extension using the below CLI command
+Install this extension using the below CLI command.
 
 ```
 az extension add --name k8s-runtime
