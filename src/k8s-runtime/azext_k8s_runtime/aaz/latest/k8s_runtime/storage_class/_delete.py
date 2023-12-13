@@ -17,7 +17,10 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a StorageClassResource
+    """Delete a StorageClass
+
+    :example: Delete a storage class
+        az k8s-runtime storage-class delete --storage-class-name sc1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1
     """
 
     _aaz_info = {

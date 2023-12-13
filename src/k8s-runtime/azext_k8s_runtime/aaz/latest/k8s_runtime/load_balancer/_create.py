@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a LoadBalancer
+
+    :example: Create a load balancer
+        az k8s-runtime load-balancer create --load-balancer-name testlb1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --addresses "192.168.50.1/32" --advertise-mode ARP --service-selector ""
     """
 
     _aaz_info = {

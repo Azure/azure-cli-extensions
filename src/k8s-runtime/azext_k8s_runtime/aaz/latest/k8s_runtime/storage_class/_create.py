@@ -16,7 +16,13 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a StorageClassResource
+    """Create a StorageClass
+
+    :example: Create an RWX storage class on top of managed-csi storage class
+        az k8s-runtime storage-class create --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --storage-class-name rwxsc --type-properties rwx.backing-storage-class-name=managed-csi
+
+    :example: Create a Blob storage class
+        az k8s-runtime storage-class create --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --storage-class-name blobsc --type-properties blob.azure-storage-account-key=accountkey blob.azure-storage-account-name=accountname
     """
 
     _aaz_info = {
@@ -135,19 +141,24 @@ class Create(AAZCommand):
         type_properties = cls._args_schema.type_properties
         type_properties.blob = AAZObjectArg(
             options=["blob"],
+            help="Properties of a blob storage class",
         )
         type_properties.nfs = AAZObjectArg(
             options=["nfs"],
+            help="Properties of a NFS storage class",
         )
         type_properties.native = AAZObjectArg(
             options=["native"],
+            help="Properties of a native storage class",
             blank={},
         )
         type_properties.rwx = AAZObjectArg(
             options=["rwx"],
+            help="Properties of a RWX storage class",
         )
         type_properties.smb = AAZObjectArg(
             options=["smb"],
+            help="Properties of an SMB storage class",
         )
 
         blob = cls._args_schema.type_properties.blob

@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a StorageClassResource
+    """Update a StorageClass
+
+    :example: Update the properties of a Blob storage class
+        az k8s-runtime storage-class update --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --storage-class-name blobsc --type-properties azure-storage-account-key=accountkey azure-storage-account-name=accountname
     """
 
     _aaz_info = {

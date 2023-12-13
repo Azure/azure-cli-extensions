@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a BgpPeer
+
+    :example: Delete a BGP peer
+        az k8s-runtime bgp-peer delete --bgp-peer-name bgpPeer1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1
     """
 
     _aaz_info = {

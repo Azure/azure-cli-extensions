@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a BgpPeer
+
+    :example: Create a BGP Peer
+        az k8s-runtime bgp-peer create --bgp-peer-name bgpPeer1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --my-asn 10000 --peer-asn 20000 --peer-address 192.168.50.1
     """
 
     _aaz_info = {

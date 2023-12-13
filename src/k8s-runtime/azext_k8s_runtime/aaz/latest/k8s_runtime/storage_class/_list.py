@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List StorageClassResource resources by parent
+    """List StorageClass resources by parent
+
+    :example: List all storage classes in a cluster
+        az k8s-runtime storage-class list --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1
     """
 
     _aaz_info = {
