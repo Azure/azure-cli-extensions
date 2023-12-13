@@ -18,6 +18,10 @@ import service_name
 from pkg_resources import parse_version
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
 
 def separator_line():
     logger.info('-' * 100)
