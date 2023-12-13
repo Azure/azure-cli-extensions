@@ -52,7 +52,7 @@ def _validate_subnet_id(subnet_id, name):
         raise CLIError(name + " is not a valid Azure resource ID.")
 
 
-def validate_assign_identity(namespace):
+def validate_identity_id(namespace):
     # The user assigned MSI has different parameter names depending upon the command.
     # --mi-user-assigned | --user-assigned
     paraName = "mi_user_assigned" if hasattr(namespace, "mi_user_assigned") else "user_assigned"

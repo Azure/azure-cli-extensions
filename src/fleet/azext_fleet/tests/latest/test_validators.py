@@ -17,7 +17,7 @@ class ApiServerSubnetIDNamespace:
     def __init__(self, apiserver_subnet_id):
         self.apiserver_subnet_id = apiserver_subnet_id
 
-class AssignIdentityNamespace:
+class IdentityNamespace:
 
     def __init__(self, assign_identity):
         self.assign_identity = assign_identity
@@ -124,30 +124,30 @@ class TestValidateAgentSubnetID(unittest.TestCase):
 class TestValidateAssignIdentity(unittest.TestCase):
     def test_invalid_identity_id(self):
         invalid_identity_id = "an invalid identity id"
-        namespace = AssignIdentityNamespace(invalid_identity_id)
+        namespace = IdentityNamespace(invalid_identity_id)
         err = ("--assign-identity is not a valid Azure resource ID.")
 
         with self.assertRaises(CLIError) as cm:
-            validators.validate_assign_identity(namespace)
+            validators.validate_identity_id(namespace)
         self.assertEqual(str(cm.exception), err)
 
     def test_valid_identity_id(self):
         valid_identity_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgname/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identityName"
-        namespace = AssignIdentityNamespace(valid_identity_id)
+        namespace = IdentityNamespace(valid_identity_id)
 
-        self.assertIsNone(validators.validate_assign_identity(namespace))
+        self.assertIsNone(validators.validate_identity_id(namespace))
 
     def test_none_identity_id(self):
         none_identity_id = None
-        namespace = AssignIdentityNamespace(none_identity_id)
+        namespace = IdentityNamespace(none_identity_id)
 
-        self.assertIsNone(validators.validate_assign_identity(namespace))
+        self.assertIsNone(validators.validate_identity_id(namespace))
 
     def test_empty_identity_id(self):
         empty_identity_id = ""
-        namespace = AssignIdentityNamespace(empty_identity_id)
+        namespace = IdentityNamespace(empty_identity_id)
 
-        self.assertIsNone(validators.validate_assign_identity(namespace))
+        self.assertIsNone(validators.validate_identity_id(namespace))
 
 class TestValidateUpdateStrategyName(unittest.TestCase):
     def test_invalid_update_strategy_name(self):
