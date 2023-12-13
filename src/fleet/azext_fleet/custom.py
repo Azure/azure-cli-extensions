@@ -95,8 +95,8 @@ def create_fleet(cmd,
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleets"
     )
-    
-    # Handle all 6 permutations of mi_system & mi_user assigned parameters
+
+    # Handle all permutations mi_system & mi_user assigned parameters
     managed_service_identity = fleet_managed_service_identity_model(type="None")
     if mi_system_assigned is True and mi_user_assigned is not None:
         raise CLIError("A fleet can either have a system or user assigned identity but not both.")
@@ -145,16 +145,12 @@ def update_fleet(cmd,
         operation_group="fleets"
     )
 
-    # Handle all 6 permutations of mi_system & mi_user assigned parameters
+    managed_service_identity = None # Do not patch by default
     if mi_system_assigned is True and mi_user_assigned is not None:
         raise CLIError("A fleet can either have a system or user assigned identity, not both.")
-    if mi_system_assigned is None and mi_user_assigned is None:
-        managed_service_identity = None
-    elif mi_system_assigned is False and mi_user_assigned is None:
-        managed_service_identity = fleet_managed_service_identity_model(type="None")
-    elif mi_system_assigned is True and mi_user_assigned is None:
+    elif mi_system_assigned is True:
         managed_service_identity = fleet_managed_service_identity_model(type="SystemAssigned")
-    else:
+    elif mi_user_assigned is not None:
         managed_service_identity = fleet_managed_service_identity_model(type="UserAssigned")
         user_assigned_identity_model = cmd.get_models(
                 "UserAssignedIdentity",
@@ -162,6 +158,8 @@ def update_fleet(cmd,
                 operation_group="fleets"
             )
         managed_service_identity.user_assigned_identities = {mi_user_assigned: user_assigned_identity_model()}
+    elif mi_system_assigned is False:
+        managed_service_identity = fleet_managed_service_identity_model(type="None")
         
 
     fleet_patch = fleet_patch_model(
@@ -278,15 +276,26 @@ def remove_fleet_identity(cmd,
     )
 
     if system_assigned is False and user_assigned is False:
-        raise CLIError("Either --system-assigned is set to true, or pass an empty --user-assigned")
-    else:
+        raise CLIError("Either --system-assigned or --user-assigned, must be set to true.")
+
+    fleet = client.get(resource_group_name, name)
+    if fleet is not None && fleet.identity is not None:
+        if fleet.identity.type == "None":
+            raise CLIError("The fleet does not have an identity to remove.")
+        elif fleet.identity.type == "SystemAssigned" and user_assigned is True:
+            raise CLIError("The fleet has a system assigned identity, to remove it set --system-assigned to true.")
+        elif fleet.identity.type == "UserAssigned" and system_assigned is True:
+            raise CLIError("The fleet has a user assigned identity, to remove it set --user-assigned to true.")
+
         managed_service_identity = fleet_managed_service_identity_model(type="None")
 
-    fleet_patch = fleet_patch_model(
-        identity=managed_service_identity
-    )
+        fleet_patch = fleet_patch_model(
+            identity=managed_service_identity
+        )
 
-    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch, polling_interval=5)
+        return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch, polling_interval=5)
+    else:
+        raise CLIError("The fleet does not have an identity to remove.")
 
 
 def show_fleet_identity(cmd,  # pylint: disable=unused-argument
@@ -294,7 +303,7 @@ def show_fleet_identity(cmd,  # pylint: disable=unused-argument
                resource_group_name,
                name):
     
-    identity = getattr(client.get(resource_group_name, name), 'identity', [])
+    identity = getattr(client.get(resource_group_name, name), 'identity', {})
     
     return identity
 
