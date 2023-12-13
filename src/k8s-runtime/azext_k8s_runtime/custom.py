@@ -13,7 +13,7 @@ from knack.log import get_logger
 
 from azure.cli.core.commands import AzCliCommand
 from azure.mgmt.authorization import AuthorizationManagementClient
-from azure.mgmt.authorization.models import RoleAssignmentCreateParameters, RoleAssignment
+from azure.mgmt.authorization.models import RoleAssignmentCreateParameters, RoleAssignment, PrincipalType
 from azure.mgmt.kubernetesconfiguration import SourceControlConfigurationClient
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.kubernetesconfiguration.models import Extension, Identity
@@ -21,7 +21,8 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
 logger = get_logger(__name__)
 
-STORAGE_CLASS_CONTRIBUTOR_ROLE_ID = "0cd9749a-3aaf-4ae5-8803-bd217705bf3b"
+# pylint: disable=line-too-long
+STORAGE_CLASS_CONTRIBUTOR_ROLE_ID = "/providers/Microsoft.Authorization/roleDefinitions/0cd9749a-3aaf-4ae5-8803-bd217705bf3b"
 STORAGE_CLASS_EXTENSION_NAME = "arc-k8s-storage-class"
 STORAGE_CLASS_EXTENSION_TYPE = "Microsoft.ManagedStorageClass"
 KUBERNETES_RUNTIME_RP = "Microsoft.KubernetesRuntime"
@@ -75,6 +76,7 @@ def _assign_role(cmd: AzCliCommand, parent_resource_id: str, principalId: str) -
         parameters=RoleAssignmentCreateParameters(
             role_definition_id=STORAGE_CLASS_CONTRIBUTOR_ROLE_ID,
             principal_id=principalId,
+            principal_type=PrincipalType.SERVICE_PRINCIPAL
         ),
     )
 
