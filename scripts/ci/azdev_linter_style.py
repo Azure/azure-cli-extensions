@@ -99,7 +99,7 @@ def find_modified_files_against_master_branch():
     ado_pr_target_branch = 'origin/' + os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
 
     separator_line()
-    logger.info('pull request target branch:', ado_pr_target_branch)
+    logger.info('pull request target branch: %s', ado_pr_target_branch)
 
     cmd = 'git --no-pager diff --name-only --diff-filter=ACMRT {} -- src/'.format(ado_pr_target_branch)
     files = check_output(cmd.split()).decode('utf-8').split('\n')
@@ -218,7 +218,7 @@ def main():
                              'Supported values: linter, style, test, all, all is the default.', default='all')
     args = parser.parse_args()
     azdev_type = args.type
-    logger.info('azdev type:', azdev_type)
+    logger.info('azdev type: %s', azdev_type)
     modified_files = find_modified_files_against_master_branch()
 
     if len(modified_files) == 1 and contain_index_json(modified_files):
