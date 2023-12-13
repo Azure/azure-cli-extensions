@@ -142,8 +142,8 @@ jobs:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
-- job: AzdevModifiedExtensions
-  displayName: "azdev linter && style on Modified Extensions"
+- job: AzdevLinterModifiedExtensions
+  displayName: "azdev linter on Modified Extensions"
   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
   pool:
     name: 'pool-ubuntu-2004'
@@ -162,7 +162,7 @@ jobs:
         
         # TODO: remove --type linter once all extensions are fixed
         AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/azdev_linter_style.py --type linter
-      displayName: "azdev linter && style on Modified Extensions"
+      displayName: "azdev linter on Modified Extensions"
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
