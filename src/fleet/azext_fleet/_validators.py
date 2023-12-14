@@ -36,17 +36,18 @@ def validate_agent_subnet_id(namespace):
 
 def validate_update_strategy_name(namespace):
     if namespace.update_strategy_name is not None and not namespace.update_strategy_name.strip():
-            raise CLIError("--update-strategy-name is not a valid name")
+        raise CLIError("--update-strategy-name is not a valid name")
 
 
 def validate_vm_size(namespace):
     if namespace.vm_size is not None and not namespace.vm_size.strip():
-            raise CLIError("--vm-size is not a valid value")
+        raise CLIError("--vm-size is not a valid value")
 
 
 def _validate_subnet_id(subnet_id, name):
     if subnet_id is None or subnet_id == '':
         return
+
     from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(subnet_id):
         raise CLIError(name + " is not a valid Azure resource ID.")
@@ -57,7 +58,7 @@ def validate_identity_id(namespace):
     # --mi-user-assigned | --user-assigned
     paraName = "mi_user_assigned" if hasattr(namespace, "mi_user_assigned") else "user_assigned"
     value = getattr(namespace, paraName)
-    
+
     from msrestazure.tools import is_valid_resource_id
     if value and not is_valid_resource_id(value):
         raise CLIError(f"{paraName} is not a valid Azure resource ID.")

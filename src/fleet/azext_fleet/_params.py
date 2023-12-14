@@ -44,7 +44,7 @@ def load_arguments(self, _):
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(), default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
 
     with self.argument_context('fleet identity') as c:
-        c.argument('name', options_list=['--name', '-n'], help='Specify the fleet name.')
+        c.argument('name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
 
     with self.argument_context('fleet identity assign') as c:
         c.argument('system_assigned', action='store_true', help='Enable system assigned managed identity (MSI) on the Fleet resource.')

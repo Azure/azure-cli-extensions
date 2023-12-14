@@ -60,13 +60,11 @@ class FleetHublessScenarioTest(ScenarioTest):
 
         self.cmd('fleet wait -g {rg} --fleet-name {fleet_name} --created', checks=[self.is_empty()])
 
-        self.cmd('fleet update -g {rg} -n {fleet_name} --tags foo=doo', checks=[
-            self.check('name', '{fleet_name}'),
-            self.check('tags.foo', 'doo')
-        ])
+        self.cmd('fleet update -g {rg} -n {fleet_name} --tags foo=doo')
 
         self.cmd('fleet show -g {rg} -n {fleet_name}', checks=[
-            self.check('name', '{fleet_name}')
+            self.check('name', '{fleet_name}'),
+            self.check('tags.foo', 'doo')
         ])
 
         self.cmd('fleet list -g {rg}', checks=[
