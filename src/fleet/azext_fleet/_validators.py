@@ -57,6 +57,7 @@ def validate_identity_id(namespace):
     # --mi-user-assigned | --user-assigned
     paraName = "mi_user_assigned" if hasattr(namespace, "mi_user_assigned") else "user_assigned"
     value = getattr(namespace, paraName)
-
+    
+    from msrestazure.tools import is_valid_resource_id
     if value and not is_valid_resource_id(value):
         raise CLIError(f"{paraName} is not a valid Azure resource ID.")

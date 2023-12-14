@@ -279,7 +279,7 @@ def remove_fleet_identity(cmd,
         raise CLIError("Either --system-assigned or --user-assigned, must be set to true.")
 
     fleet = client.get(resource_group_name, name)
-    if fleet is not None && fleet.identity is not None:
+    if fleet is not None and fleet.identity is not None:
         if fleet.identity.type == "None":
             raise CLIError("The fleet does not have an identity to remove.")
         elif fleet.identity.type == "SystemAssigned" and user_assigned is True:
