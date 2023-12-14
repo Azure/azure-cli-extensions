@@ -306,6 +306,11 @@ def load_arguments(self, _):
             help="The base definition of a linked integration "
             "runtime. Expected value: json-string/json-file/@json-file.",
             arg_group="Type Properties",
+        ),
+        c.argument(
+            "self_contained_interactive_authoring_enabled",
+            type=str,
+            help="An alternative option to ensure interactive authoring function when your self-hosted integration runtime is unable to establish a connection with Azure Relay.",
         )
 
     with self.argument_context("datafactory integration-runtime update") as c:
