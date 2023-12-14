@@ -714,6 +714,18 @@ class TestAppCreate(BasicTest):
         with self.assertRaisesRegexp(CLIError, 'Enterprise tier Spring instance does not support --enable-persistent-storage'):
             self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True, client=client)
 
+    def test_app_binding_tanzu_components_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        default_service_registry_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/serviceRegistries/default';
+        default_application_configuration_service_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/configurationServices/default';
+        self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1,
+                      bind_service_registry=default_service_registry_id,
+                      bind_application_configuration_service=default_application_configuration_service_id,
+                      client=client)
+        addon_configs = self.put_app_resource.properties.addon_configs
+        self.assertEqual(default_service_registry_id, addon_configs['serviceRegistry']['resourceId'])
+        self.assertEqual(default_application_configuration_service_id, addon_configs['applicationConfigurationService']['resourceId'])
+
     def test_app_with_persistent_storage(self):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True)
         resource = self.put_app_resource

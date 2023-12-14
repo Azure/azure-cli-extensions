@@ -24,6 +24,7 @@ class DefaultApp:
         kwargs['vnet_addons'] = self._load_vnet_addons(**kwargs)
         kwargs['ingress_settings'] = self._load_ingress_settings(**kwargs)
         kwargs['secrets'] = self._load_secrets_config(**kwargs)
+        kwargs['addon_configs'] = self._load_addon_configs(**kwargs)
         return models.AppResourceProperties(**kwargs)
 
     def _format_identity(self, system_assigned=None, user_assigned=None, **_):
@@ -175,6 +176,22 @@ class DefaultApp:
 
         return secret_var_def
 
+    def _load_addon_configs(self, bind_service_registry=None, bind_application_configuration_service=None, **_):
+        if not bind_service_registry and not bind_application_configuration_service:
+            return None
+
+        addon_configs = {}
+        service_registry = {}
+        application_configuration_service = {}
+
+        if bind_service_registry:
+            service_registry['resourceId'] = bind_service_registry
+        if bind_application_configuration_service:
+            application_configuration_service['resourceId'] = bind_application_configuration_service
+
+        addon_configs['serviceRegistry'] = service_registry
+        addon_configs['applicationConfigurationService'] = application_configuration_service
+        return addon_configs
 
 class BasicTierApp(DefaultApp):
     def _get_persistent_disk_size(self, enable_persistent_storage, **_):

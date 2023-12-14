@@ -32,7 +32,8 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
-                                     validate_build_cert_reference, validate_acs_create, not_support_enterprise)
+                                     validate_build_cert_reference, validate_acs_create, not_support_enterprise,
+                                     validate_create_app_binding_default_application_configuration_service, validate_create_app_binding_default_service_registry)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -333,6 +334,14 @@ def load_arguments(self, _):
                    nargs='+',
                    validator=validate_create_app_with_user_identity_or_warning,
                    help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
+        c.argument('bind_service_registry',
+                   action='store_true',
+                   validator=validate_create_app_binding_default_service_registry,
+                   help='Bind the app to the default Service Registry automatically.')
+        c.argument('bind_application_configuration_service',
+                   action='store_true',
+                   validator=validate_create_app_binding_default_application_configuration_service,
+                   help='Bind the app to the default Application Configuration Service automatically.')
         c.argument('cpu', arg_type=cpu_type)
         c.argument('memory', arg_type=memory_type)
         c.argument('instance_count', type=int,
