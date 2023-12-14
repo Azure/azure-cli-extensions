@@ -220,7 +220,7 @@ class ConnectedCluster(TrackedResource):  # pylint: disable=too-many-instance-at
         "private_link_scope_resource_id": {"key": "properties.privateLinkScopeResourceId", "type": "str"},
         "azure_hybrid_benefit": {"key": "properties.azureHybridBenefit", "type": "str"},
         "miscellaneous_properties": {"key": "properties.miscellaneousProperties", "type": "{str}"},
-        "kind": {"key": "properties.kind", "type": "{str}"},
+        "kind": {"key": "kind", "type": "str"},
     }
 
     def __init__(  # pylint: disable=too-many-locals
