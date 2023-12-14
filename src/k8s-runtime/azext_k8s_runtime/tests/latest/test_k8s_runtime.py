@@ -10,4 +10,12 @@ from azure.cli.testsdk import *
 
 class K8sRuntimeScenario(ScenarioTest):
     # TODO: add tests here
-    pass
+    def test_storage_class_enable_reject_unmatched_subscription_id(self):
+
+        sub = self.get_subscription_id()
+
+        # Modify the subscription id to be invalid
+        sub = sub[0:2] + ('a' if (sub[2] in ['a', 'A']) else 'b') + sub[3:]
+
+        resource = f"/subscriptions/{sub}/resourceGroups/rg/providers/Microsoft.Kubernetes/connectedClusters/cluster"
+        self.cmd(f"k8s-runtime storage-class enable --resource-uri {resource}", expect_failure=True)
