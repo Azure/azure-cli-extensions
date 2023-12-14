@@ -18,25 +18,28 @@ class CommunicationChatScenarios(ScenarioTest):
             URIIdentityReplacer(),
             BodyReplacerProcessor(keys=["id", "token", "rawId"]),
         ])
+
     def __create_thread(self, topic):
         self.kwargs.update({
             'topic': topic})
         return self.cmd('az communication chat thread create --topic \"{topic}\"').get_output_in_json()
+
     def __create_user(self, communication_resource_info):
         connection_str = communication_resource_info[1]
         if self.is_live or self.in_recording:
-            self.kwargs.update({ 'connection_string':connection_str})
+            self.kwargs.update({'connection_string': connection_str})
         else:
             os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = connection_str
         res = self.cmd('az communication user-identity token issue --scope chat').get_output_in_json()
         return res['user_id']
+
     def __get_endpoint_from_resource_info(self, communication_resource_info):
         return communication_resource_info[2]
 
     def __get_or_create_token(self, communication_resource_info):
         if self.is_live or self.in_recording:
             os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
-            self.kwargs.update({'connection_string':communication_resource_info[1]})
+            self.kwargs.update({'connection_string': communication_resource_info[1]})
             res = self.cmd('az communication user-identity token issue --scope chat').get_output_in_json()
             return res['token']
         else:
@@ -51,6 +54,7 @@ class CommunicationChatScenarios(ScenarioTest):
             signature = '1234'
 
             return '{header}.{payload}.{signature}'.format(header=header, payload=payload, signature=signature)
+
     def __update_environ(self, communication_resource_info):
         endpoint = self.__get_endpoint_from_resource_info(communication_resource_info)
         os.environ['AZURE_COMMUNICATION_ENDPOINT'] = endpoint
@@ -453,7 +457,7 @@ class CommunicationChatScenarios(ScenarioTest):
             'thread_id': thread_id,
             'content': content})
         message = self.cmd('az communication chat message send --thread {thread_id} --content {content}').get_output_in_json()
-      
+
         # check that the message is there, and it is not deleted
         self.kwargs.update({
             'message_id': message['id']})

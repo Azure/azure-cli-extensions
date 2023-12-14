@@ -138,6 +138,7 @@ class BodyReplacerProcessor(RecordingProcessor):
 
     def _replace_keys(self, body):
         import collections.abc
+
         def _replace_recursively(data):
 
             if (isinstance(data, str)):

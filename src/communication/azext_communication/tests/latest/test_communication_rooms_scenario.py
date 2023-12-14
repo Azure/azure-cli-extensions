@@ -24,7 +24,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
     def __create_user(self, communication_resource_info):
         connection_str = communication_resource_info[1]
         if self.is_live or self.in_recording:
-            self.kwargs.update({'connection_string':connection_str})
+            self.kwargs.update({'connection_string': connection_str})
         else:
             os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = connection_str
 
@@ -102,7 +102,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
         validFrom = (datetime.utcnow() + timedelta(minutes=60)).isoformat()
         validUntil = (datetime.utcnow() + timedelta(days=200)).isoformat()
 
-        self.kwargs.update({    
+        self.kwargs.update({
             'validFrom': validFrom,
             'validUntil': validUntil})
 
@@ -278,7 +278,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
         room = self.cmd('az communication rooms create').get_output_in_json()
         self.kwargs.update({
             'room_id': room['id']})
-        
+
         self.cmd('az communication rooms delete --room {room_id} --yes')
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -448,7 +448,6 @@ class CommunicationRoomsScenarios(ScenarioTest):
         # verify the defualt participants is null
         assert len(get_participant) == 0
 
-
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_rooms_add_valid_presenter_participant(self, communication_resource_info):
@@ -473,6 +472,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
 
         # verify the type of added participant
         assert role == 'Presenter'
+
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_rooms_add_invalid_consumer_participant(self, communication_resource_info):
@@ -495,6 +495,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
         assert 'Bad Request' in str(raises.exception.reason)
         assert raises.exception.status_code == 400
         assert 'Invalid value for the Participants' in str(raises.exception)
+
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_rooms_update_multiple_participants(self, communication_resource_info):
@@ -527,6 +528,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
         # verify the type of participants
         assert presenter_role == 'Presenter'
         assert consumer_role == 'Consumer'
+
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_rooms_delete_participants(self, communication_resource_info):
