@@ -7,8 +7,8 @@
 
 from azure.cli.testsdk import ScenarioTest
 
+
 class K8sRuntimeScenario(ScenarioTest):
-    # TODO: add tests here
     def test_storage_class_enable(self):
 
         self.kwargs["resource_uri"] = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Kubernetes/managedClusters/cluster"
