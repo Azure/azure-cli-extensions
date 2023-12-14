@@ -12,6 +12,8 @@ from typing import Dict, List, Optional, TYPE_CHECKING, Union
 
 from .. import _serialization
 
+from ._connected_kubernetes_client_enums import ConnectedClusterKind
+
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from .. import models as _models
@@ -166,6 +168,8 @@ class ConnectedCluster(TrackedResource):  # pylint: disable=too-many-instance-at
     :vartype azure_hybrid_benefit: str or ~azure.mgmt.hybridkubernetes.models.AzureHybridBenefit
     :ivar miscellaneous_properties: More properties related to the Connected Cluster.
     :vartype miscellaneous_properties: dict[str, str]
+    :ivar kind: The Connected Cluster kind, indicating the cluster host infrastructure type.
+    :vartype kind: str or ~azure.mgmt.hybridkubernetes.models.ConnectedClusterKind
     """
 
     _validation = {
@@ -216,7 +220,7 @@ class ConnectedCluster(TrackedResource):  # pylint: disable=too-many-instance-at
         "private_link_scope_resource_id": {"key": "properties.privateLinkScopeResourceId", "type": "str"},
         "azure_hybrid_benefit": {"key": "properties.azureHybridBenefit", "type": "str"},
         "miscellaneous_properties": {"key": "properties.miscellaneousProperties", "type": "{str}"},
-        "kind": {"key": "properties.kind", "type": "{str}"},
+        "kind": {"key": "kind", "type": "str"},
     }
 
     def __init__(  # pylint: disable=too-many-locals
@@ -233,7 +237,7 @@ class ConnectedCluster(TrackedResource):  # pylint: disable=too-many-instance-at
         private_link_state: Union[str, "_models.PrivateLinkState"] = "Disabled",
         private_link_scope_resource_id: Optional[str] = None,
         azure_hybrid_benefit: Optional[Union[str, "_models.AzureHybridBenefit"]] = None,
-        kind: str,
+        kind: Optional[Union[str, "_models.ConnectedClusterKind"]] = None,
         **kwargs
     ):
         """
@@ -287,7 +291,6 @@ class ConnectedCluster(TrackedResource):  # pylint: disable=too-many-instance-at
         self.azure_hybrid_benefit = azure_hybrid_benefit
         self.miscellaneous_properties = None
         self.kind = kind
-
 
 class ConnectedClusterIdentity(_serialization.Model):
     """Identity for the connected cluster.

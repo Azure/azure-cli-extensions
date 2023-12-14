@@ -44,7 +44,7 @@ from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import resource_providers_client
 from azext_connectedk8s._client_factory import get_graph_client_service_principals
-from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2022_10_01
+from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2022_10_01, cf_connected_cluster_prev_2023_11_01
 from azext_connectedk8s._client_factory import cf_connectedmachine
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
@@ -832,20 +832,20 @@ def get_server_address(kube_config, kube_context):
 
 
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
-    # Override preview client to show private link properties to customers
-    client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
+    # Override preview client to show private link properties and cluster kind to customers
+    client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
     return client.get(resource_group_name, cluster_name)
 
 
-def get_connectedk8s_2023_11_01(cmd, client, resource_group_name, cluster_name):
-    # Override preview client to show private link properties to customers
-    client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
+def get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name):
+    # Override preview client to show private link properties and cluster kind to customers
+    client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
     return client.get(resource_group_name, cluster_name)
 
 
 def list_connectedk8s(cmd, client, resource_group_name=None):
-    # Override preview client to show private link properties to customers
-    client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
+    # Override preview client to show private link properties and cluster kind to customers
+    client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
     if not resource_group_name:
         return client.list_by_subscription()
     return client.list_by_resource_group(resource_group_name)
@@ -1012,6 +1012,12 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
+    # Fetch Connected Cluster for agent version
+    connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
+
+    if connected_cluster.kind == "ProvisionedCluster":
+        raise InvalidArgumentValueError("Provisioned clusters cannot be updated.")
+
     # Set preview client as most of the patchable fields are available in preview api-version
     client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
 
@@ -1155,6 +1161,12 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
 
 def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, arc_agent_version=None, upgrade_timeout="600"):
+    # Check if cluster supports upgrading
+    connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
+
+    if connected_cluster.kind == "ProvisionedCluster":
+        raise InvalidArgumentValueError("Provisioned clusters cannot perform agent upgrades.")
+    
     logger.warning("This operation might take a while...\n")
 
     # Send cloud information to telemetry
@@ -1401,9 +1413,9 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
 
     # Check if cluster is private link enabled
-    connected_cluster = get_connectedk8s_2023_11_01(cmd, client, resource_group_name, cluster_name)
+    connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
 
-    if connected_cluster.kind == "provisionedCluster":
+    if connected_cluster.kind == "ProvisionedCluster":
         raise InvalidArgumentValueError("Features cannot be enabled for provisioned clusters.")
 
     if connected_cluster.private_link_state.lower() == "enabled" and (enable_cluster_connect or enable_cl):
@@ -1530,6 +1542,12 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     confirmation_message = "Disabling few of the features may adversely impact dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources. \n" + "Are you sure you want to disable these features: {}".format(features)
     utils.user_confirmation(confirmation_message, yes)
 
+    # Fetch Connected Cluster for agent version
+    connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
+
+    if connected_cluster.kind == "ProvisionedCluster":
+        raise InvalidArgumentValueError("Features cannot be enabled for provisioned clusters.")
+
     logger.warning("This operation might take a while...\n")
 
     disable_cluster_connect, disable_azure_rbac, disable_cl = utils.check_features_to_update(features)
@@ -1557,12 +1575,6 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     helm_client_location = install_helm_client()
 
     release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
-
-    # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s_2023_11_01(cmd, client, resource_group_name, cluster_name)
-
-    if connected_cluster.kind == "provisionedCluster":
-        raise InvalidArgumentValueError("Features cannot be enabled for provisioned clusters.")
 
     kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
 

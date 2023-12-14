@@ -79,3 +79,12 @@ class ResourceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     NONE = "None"
     SYSTEM_ASSIGNED = "SystemAssigned"
+
+
+class ConnectedClusterKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The type of identity used for the connected cluster. The type 'SystemAssigned, includes a
+    system created identity. The type 'None' means no identity is assigned to the connected
+    cluster.
+    """
+
+    PROVISIONED_CLUSTER = "ProvisionedCluster"

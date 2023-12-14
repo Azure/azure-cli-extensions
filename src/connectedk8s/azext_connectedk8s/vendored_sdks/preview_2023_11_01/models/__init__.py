@@ -26,6 +26,7 @@ from ._models_py3 import TrackedResource
 
 from ._connected_kubernetes_client_enums import AuthenticationMethod
 from ._connected_kubernetes_client_enums import AzureHybridBenefit
+from ._connected_kubernetes_client_enums import ConnectedClusterKind
 from ._connected_kubernetes_client_enums import ConnectivityStatus
 from ._connected_kubernetes_client_enums import CreatedByType
 from ._connected_kubernetes_client_enums import LastModifiedByType
@@ -56,6 +57,7 @@ __all__ = [
     "TrackedResource",
     "AuthenticationMethod",
     "AzureHybridBenefit",
+    "ConnectedClusterKind",
     "ConnectivityStatus",
     "CreatedByType",
     "LastModifiedByType",
