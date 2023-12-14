@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp create/update/up': Propagate telemetry collection configuration to builder when building provided source locally
 
 0.3.46
 ++++++
