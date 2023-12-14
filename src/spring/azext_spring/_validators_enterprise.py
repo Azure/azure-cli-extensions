@@ -669,7 +669,9 @@ def validate_create_app_binding_default_service_registry(cmd, namespace):
         if len(service_registry_resources) > 1:
             raise ClientRequestError('App cannot bind to multiple service registries.')
         service_registry_resource = service_registry_resources[0]
-    normalize_bind_service_registry(namespace, namespace.bind_service_registry, service_registry_resource)
+    normalize_bind_service_registry(namespace,
+                                    namespace.bind_service_registry,
+                                    service_registry_resource)
 
 def normalize_bind_service_registry(namespace, bind, service_registry_resource):
     namespace.bind_service_registry = service_registry_resource.id if bind else None
@@ -680,11 +682,14 @@ def validate_create_app_binding_default_application_configuration_service(cmd, n
         client = get_client(cmd)
         acs_resources = list(client.configuration_services.list(namespace.resource_group, namespace.service))
         if len(acs_resources) == 0:
-            raise ClientRequestError('App cannot bind to application configuration service because it is not configured.')
+            raise ClientRequestError('App cannot bind to application configuration service '
+                                     'because it is not configured.')
         if len(acs_resources) > 1:
             raise ClientRequestError('App cannot bind to multiple application configuration services.')
         configuration_service_resource = acs_resources[0]
-    normalize_bind_application_configuration_service(namespace, namespace.bind_application_configuration_service, configuration_service_resource)
+    normalize_bind_application_configuration_service(namespace,
+                                                     namespace.bind_application_configuration_service,
+                                                     configuration_service_resource)
 
 def normalize_bind_application_configuration_service(namespace, bind, configuration_service_resource):
     namespace.bind_application_configuration_service = configuration_service_resource.id if bind else None
