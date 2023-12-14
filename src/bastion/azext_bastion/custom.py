@@ -149,7 +149,9 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     if not resource_port:
         resource_port = 22
 
-    if bastion['sku']['name'] == BastionSku.Basic.value or (bastion['sku']['name'] == BastionSku.Standard.value or bastion['sku']['name'] == BastionSku.Premium.value) and bastion['enableTunneling'] is not True:
+    if bastion['sku']['name'] == BastionSku.Basic.value or (bastion['sku']['name'] == BastionSku.Standard.value
+                                                            or bastion['sku']['name'] == BastionSku.Premium.value) and \
+       bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard or Premium and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
@@ -242,7 +244,9 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     if not resource_port:
         resource_port = 3389
 
-    if bastion['sku']['name'] == BastionSku.Basic.value or (bastion['sku']['name'] == BastionSku.Standard.value or bastion['sku']['name'] == BastionSku.Premium.value) and bastion['enableTunneling'] is not True:
+    if bastion['sku']['name'] == BastionSku.Basic.value or (bastion['sku']['name'] == BastionSku.Standard.value
+                                                            or bastion['sku']['name'] == BastionSku.Premium.value) and \
+       bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard or Premium and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
@@ -381,7 +385,9 @@ def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_g
         "name": bastion_host_name
     })
 
-    if bastion['sku']['name'] == BastionSku.Basic.value or (bastion['sku']['name'] == BastionSku.Standard.value or bastion['sku']['name'] == BastionSku.Premium.value) and bastion['enableTunneling'] is not True:
+    if bastion['sku']['name'] == BastionSku.Basic.value or (bastion['sku']['name'] == BastionSku.Standard.value
+                                                            or bastion['sku']['name'] == BastionSku.Premium.value) and \
+       bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard or Premium and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
