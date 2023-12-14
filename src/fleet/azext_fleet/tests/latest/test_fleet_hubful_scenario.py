@@ -8,8 +8,8 @@ import tempfile
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-class FleetHubfulScenarioTest(ScenarioTest):
 
+class FleetHubfulScenarioTest(ScenarioTest):
 
     @classmethod
     def generate_ssh_keys(cls):

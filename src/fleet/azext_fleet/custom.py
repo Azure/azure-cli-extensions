@@ -244,9 +244,9 @@ def assign_fleet_identity(cmd,
     else:
         managed_service_identity = fleet_managed_service_identity_model(type="UserAssigned")
         user_assigned_identity_model = cmd.get_models(
-                "UserAssignedIdentity",
-                resource_type=CUSTOM_MGMT_FLEET,
-                operation_group="fleets"
+            "UserAssignedIdentity",
+            resource_type=CUSTOM_MGMT_FLEET,
+            operation_group="fleets"
             )
         managed_service_identity.user_assigned_identities = {user_assigned: user_assigned_identity_model()}
 
@@ -282,7 +282,7 @@ def remove_fleet_identity(cmd,
     fleet = client.get(resource_group_name, name)
     if fleet is not None and (fleet.identity is None or fleet.identity.type == "None"):
         raise CLIError("The fleet does not have an identity to remove.")
-    if fleet.identity.type == "SystemAssigned" and system_assigned is False and user_assigned is True :
+    if fleet.identity.type == "SystemAssigned" and system_assigned is False and user_assigned is True:
         raise CLIError("The fleet has a system assigned identity, to remove it set --system-assigned to true.")
     if fleet.identity.type == "UserAssigned" and user_assigned is False and system_assigned is True:
         raise CLIError("The fleet has a user assigned identity, to remove it set --user-assigned to true.")

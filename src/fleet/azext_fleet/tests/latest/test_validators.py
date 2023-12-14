@@ -95,6 +95,7 @@ class TestValidateApiServerSubnetID(unittest.TestCase):
 
         self.assertIsNone(validators.validate_apiserver_subnet_id(namespace))
 
+
 class TestValidateAgentSubnetID(unittest.TestCase):
     def test_invalid_agent_subnet_id(self):
         invalid_agent_subnet_id = "an invalid agent_subnet_id"
@@ -190,8 +191,8 @@ class TestValidateVmSize(unittest.TestCase):
     def test_valid_vm_size(self):
         valid_vm_size = "a_valid_vm_size_sku"
         namespace = VMSizeNamespace(vm_size=valid_vm_size)
-
         self.assertIsNone(validators.validate_vm_size(namespace))
+
 
 if __name__ == "__main__":
     unittest.main()
