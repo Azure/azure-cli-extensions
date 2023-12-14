@@ -30,7 +30,7 @@ class URIIdentityReplacer(RecordingProcessor):
         request.uri = re.sub('/rooms/([0-9]+)\?', '/rooms/sanitized?', request.uri)
         request.uri = re.sub(resource, 'sanitized', request.uri)
         return request
-    
+
     def process_response(self, response):
         if 'url' in response:
             response['url'] = re.sub('/phoneNumbers/[%2B\d]+', '/phoneNumbers/sanitized', response['url'])
@@ -90,11 +90,11 @@ class SMSResponseReplacerProcessor(RecordingProcessor):
                         item['repeatabilityRequestId'] = self._replacement
                     if "repeatabilityFirstSent" in item:
                         item['repeatabilityFirstSent'] = self._replacement
-            
+
             request.body = (json.dumps(body)).encode()
         except (KeyError, ValueError, TypeError):
             return request
-            
+
         return request
 
     def process_response(self, response):
@@ -135,13 +135,14 @@ class BodyReplacerProcessor(RecordingProcessor):
             response['body']['string'] = self._replace_keys(response['body']['string'])
 
         return response
-    
+
     def _replace_keys(self, body):
         import collections.abc
         def _replace_recursively(data):
+
             if (isinstance(data, str)):
                 return
-            
+
             if isinstance(data, dict):
                 for key in data:
                     value = data[key]

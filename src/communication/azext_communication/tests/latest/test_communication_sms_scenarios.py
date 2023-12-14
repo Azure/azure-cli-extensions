@@ -14,6 +14,7 @@ import os
 from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer, SMSResponseReplacerProcessor
 from .preparers import CommunicationResourcePreparer
 
+
 class CommunicationSmsScenarios(ScenarioTest):
 
     def __init__(self, method_name):
