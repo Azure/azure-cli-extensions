@@ -99,7 +99,7 @@ helps['quantum job submit'] = """
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --target-capability MyTargetCapability
-      - name: Submit QIR bitcode from a file in the current folder.
+      - name: Submit QIR bitcode or LLVM from a file in the current folder.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
