@@ -247,7 +247,7 @@ def assign_fleet_identity(cmd,
             "UserAssignedIdentity",
             resource_type=CUSTOM_MGMT_FLEET,
             operation_group="fleets"
-            )
+        )
         managed_service_identity.user_assigned_identities = {user_assigned: user_assigned_identity_model()}
 
     fleet_patch = fleet_patch_model(
