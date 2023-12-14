@@ -157,7 +157,8 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
     if ip_connect:
         if int(resource_port) not in [22, 3389]:
-            raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is 22, 3389.")
+            raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is \
+                                             22, 3389.")
         target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}" \
                              f"/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
 
@@ -257,18 +258,19 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     elif auth_type.lower() == "password":
         # do nothing
         logger.warning("No need to provide auth-type password for RDP connections.")
-        pass
     elif auth_type.lower() == "aad":
         enable_mfa = True
 
         if disable_gateway or ip_connect:
             raise UnrecognizedArgumentError("AAD login is not supported for Disable Gateway & IP Connect scenarios.")
     else:
-        raise UnrecognizedArgumentError("Unknown auth type, support auth-types: aad. For non aad login, you dont need to provide auth-type flag.")
+        raise UnrecognizedArgumentError("Unknown auth type, support auth-types: aad. For non aad login, you dont need \
+                                         to provide auth-type flag.")
 
     if ip_connect:
         if int(resource_port) not in [22, 3389]:
-            raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is 22, 3389.")
+            raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is \
+                                            22, 3389.")
 
         target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}" \
                              f"/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
@@ -376,8 +378,8 @@ def _tunnel_close_handler(tunnel):
     sys.exit()
 
 
-def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_group_name, bastion_host_name, resource_port, port,
-                          timeout=None):
+def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_group_name, bastion_host_name,
+                          resource_port, port, timeout=None):
 
     from .aaz.latest.network.bastion import Show
     bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
@@ -396,7 +398,8 @@ def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_g
                              f"{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
 
     if ip_connect and int(resource_port) not in [22, 3389]:
-        raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is 22, 3389.")
+        raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is \
+                                        22, 3389.")
 
     _validate_resourceid(target_resource_id)
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
