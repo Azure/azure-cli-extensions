@@ -523,6 +523,7 @@ class _RemoveHelper:
             serialized_name="integrationServiceEnvironment",
         )
         cls._build_schema_resource_reference_read(properties.integration_service_environment)
+        properties.parameters = AAZFreeFormDictType()
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
         )

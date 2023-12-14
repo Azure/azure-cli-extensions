@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
+* Fix `parameters` in `--definition` not working
+
 1.0.0
 ++++++
 * Add new command group `az logic workflow identity` to support managing identity
