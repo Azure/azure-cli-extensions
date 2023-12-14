@@ -262,7 +262,7 @@ def datafactory_integration_runtime_self_hosted_create(
     if_match=None,
     description=None,
     linked_info=None,
-    self_contained_interactive_authoring_enabled=None,
+    selfcontainedinteractiveauthoringenabled=None,
 ):
     integration_runtime = {}
     integration_runtime["properties"] = {}
@@ -271,8 +271,8 @@ def datafactory_integration_runtime_self_hosted_create(
         integration_runtime["properties"]["description"] = description
     if linked_info is not None:
         integration_runtime["properties"]["linked_info"] = linked_info
-    if self_contained_interactive_authoring_enabled is not None:
-        integration_runtime["properties"]["selfContainedInteractiveAuthoringEnabled"] = self_contained_interactive_authoring_enabled
+    if selfcontainedinteractiveauthoringenabled is not None:
+        integration_runtime["properties"]["selfContainedInteractiveAuthoringEnabled"] = selfcontainedinteractiveauthoringenabled
     return client.create_or_update(
         resource_group_name=resource_group_name,
         factory_name=factory_name,
