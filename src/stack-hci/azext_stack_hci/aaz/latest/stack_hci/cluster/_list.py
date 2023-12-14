@@ -25,12 +25,14 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.azurestackhci/clusters", "2023-03-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.azurestackhci/clusters", "2023-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters", "2023-08-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -117,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-08-01",
                     required=True,
                 ),
             }
@@ -235,8 +237,15 @@ class List(AAZCommand):
             properties.cloud_management_endpoint = AAZStrType(
                 serialized_name="cloudManagementEndpoint",
             )
+            properties.connectivity_status = AAZStrType(
+                serialized_name="connectivityStatus",
+                flags={"read_only": True},
+            )
             properties.desired_properties = AAZObjectType(
                 serialized_name="desiredProperties",
+            )
+            properties.isolated_vm_attestation_configuration = AAZObjectType(
+                serialized_name="isolatedVmAttestationConfiguration",
             )
             properties.last_billing_timestamp = AAZStrType(
                 serialized_name="lastBillingTimestamp",
@@ -284,6 +293,20 @@ class List(AAZCommand):
                 serialized_name="windowsServerSubscription",
             )
 
+            isolated_vm_attestation_configuration = cls._schema_on_200.value.Element.properties.isolated_vm_attestation_configuration
+            isolated_vm_attestation_configuration.attestation_resource_id = AAZStrType(
+                serialized_name="attestationResourceId",
+                flags={"read_only": True},
+            )
+            isolated_vm_attestation_configuration.attestation_service_endpoint = AAZStrType(
+                serialized_name="attestationServiceEndpoint",
+                flags={"read_only": True},
+            )
+            isolated_vm_attestation_configuration.relying_party_service_endpoint = AAZStrType(
+                serialized_name="relyingPartyServiceEndpoint",
+                flags={"read_only": True},
+            )
+
             reported_properties = cls._schema_on_200.value.Element.properties.reported_properties
             reported_properties.cluster_id = AAZStrType(
                 serialized_name="clusterId",
@@ -316,6 +339,10 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             reported_properties.nodes = AAZListType(
+                flags={"read_only": True},
+            )
+            reported_properties.oem_activation = AAZStrType(
+                serialized_name="oemActivation",
                 flags={"read_only": True},
             )
             reported_properties.supported_capabilities = AAZListType(
@@ -359,6 +386,10 @@ class List(AAZCommand):
                 serialized_name="nodeType",
                 flags={"read_only": True},
             )
+            _element.oem_activation = AAZStrType(
+                serialized_name="oemActivation",
+                flags={"read_only": True},
+            )
             _element.os_display_version = AAZStrType(
                 serialized_name="osDisplayVersion",
                 flags={"read_only": True},
@@ -381,9 +412,7 @@ class List(AAZCommand):
             )
 
             supported_capabilities = cls._schema_on_200.value.Element.properties.reported_properties.supported_capabilities
-            supported_capabilities.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            supported_capabilities.Element = AAZStrType()
 
             software_assurance_properties = cls._schema_on_200.value.Element.properties.software_assurance_properties
             software_assurance_properties.last_updated = AAZStrType(
@@ -395,6 +424,7 @@ class List(AAZCommand):
             )
             software_assurance_properties.software_assurance_status = AAZStrType(
                 serialized_name="softwareAssuranceStatus",
+                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
@@ -462,7 +492,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-08-01",
                     required=True,
                 ),
             }
@@ -580,8 +610,15 @@ class List(AAZCommand):
             properties.cloud_management_endpoint = AAZStrType(
                 serialized_name="cloudManagementEndpoint",
             )
+            properties.connectivity_status = AAZStrType(
+                serialized_name="connectivityStatus",
+                flags={"read_only": True},
+            )
             properties.desired_properties = AAZObjectType(
                 serialized_name="desiredProperties",
+            )
+            properties.isolated_vm_attestation_configuration = AAZObjectType(
+                serialized_name="isolatedVmAttestationConfiguration",
             )
             properties.last_billing_timestamp = AAZStrType(
                 serialized_name="lastBillingTimestamp",
@@ -629,6 +666,20 @@ class List(AAZCommand):
                 serialized_name="windowsServerSubscription",
             )
 
+            isolated_vm_attestation_configuration = cls._schema_on_200.value.Element.properties.isolated_vm_attestation_configuration
+            isolated_vm_attestation_configuration.attestation_resource_id = AAZStrType(
+                serialized_name="attestationResourceId",
+                flags={"read_only": True},
+            )
+            isolated_vm_attestation_configuration.attestation_service_endpoint = AAZStrType(
+                serialized_name="attestationServiceEndpoint",
+                flags={"read_only": True},
+            )
+            isolated_vm_attestation_configuration.relying_party_service_endpoint = AAZStrType(
+                serialized_name="relyingPartyServiceEndpoint",
+                flags={"read_only": True},
+            )
+
             reported_properties = cls._schema_on_200.value.Element.properties.reported_properties
             reported_properties.cluster_id = AAZStrType(
                 serialized_name="clusterId",
@@ -661,6 +712,10 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             reported_properties.nodes = AAZListType(
+                flags={"read_only": True},
+            )
+            reported_properties.oem_activation = AAZStrType(
+                serialized_name="oemActivation",
                 flags={"read_only": True},
             )
             reported_properties.supported_capabilities = AAZListType(
@@ -704,6 +759,10 @@ class List(AAZCommand):
                 serialized_name="nodeType",
                 flags={"read_only": True},
             )
+            _element.oem_activation = AAZStrType(
+                serialized_name="oemActivation",
+                flags={"read_only": True},
+            )
             _element.os_display_version = AAZStrType(
                 serialized_name="osDisplayVersion",
                 flags={"read_only": True},
@@ -726,9 +785,7 @@ class List(AAZCommand):
             )
 
             supported_capabilities = cls._schema_on_200.value.Element.properties.reported_properties.supported_capabilities
-            supported_capabilities.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            supported_capabilities.Element = AAZStrType()
 
             software_assurance_properties = cls._schema_on_200.value.Element.properties.software_assurance_properties
             software_assurance_properties.last_updated = AAZStrType(
@@ -740,6 +797,7 @@ class List(AAZCommand):
             )
             software_assurance_properties.software_assurance_status = AAZStrType(
                 serialized_name="softwareAssuranceStatus",
+                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
