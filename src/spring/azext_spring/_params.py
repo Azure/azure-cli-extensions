@@ -336,10 +336,12 @@ def load_arguments(self, _):
                    help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
         c.argument('bind_service_registry',
                    action='store_true',
+                   options_list=['--bind-service-registry', '--bind-sr'],
                    validator=validate_create_app_binding_default_service_registry,
                    help='Bind the app to the default Service Registry automatically.')
         c.argument('bind_application_configuration_service',
                    action='store_true',
+                   options_list=['--bind-application-configuration-service', '--bind-acs'],
                    validator=validate_create_app_binding_default_application_configuration_service,
                    help='Bind the app to the default Application Configuration Service automatically.')
         c.argument('cpu', arg_type=cpu_type)

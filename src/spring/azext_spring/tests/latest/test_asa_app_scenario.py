@@ -149,6 +149,7 @@ class AppCRUD(ScenarioTest):
             self.check('sku.capacity', 1)
         ])
 
+
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
     @SpringAppNamePreparer()
@@ -159,17 +160,12 @@ class AppCRUD(ScenarioTest):
             'rg': resource_group
         })
 
-        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} \
-            --bind-service-registry --bind-application-configuration-service', checks=[
-                self.check('name', '{app}'),
-                self.check('properties.addonConfigs.applicationConfigurationService.resourceId',
-                           "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configurationServices/default".format(
-                               self.get_subscription_id(), resource_group, spring)),
-                self.check('properties.addonConfigs.serviceRegistry.resourceId',
-                           "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/serviceRegistries/default".format(
-                               self.get_subscription_id(), resource_group, spring))
-                ]
-            )
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --bind-service-registry --bind-application-configuration-service', checks=[
+            self.check('name', '{app}'),
+            self.check('properties.addonConfigs.applicationConfigurationService.resourceId', "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configurationServices/default".format(self.get_subscription_id(), resource_group, spring)),
+            self.check('properties.addonConfigs.serviceRegistry.resourceId', "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/serviceRegistries/default".format(self.get_subscription_id(), resource_group, spring))
+        ])
+
 
 class BlueGreenTest(ScenarioTest):
 
