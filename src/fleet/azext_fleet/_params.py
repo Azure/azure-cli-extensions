@@ -52,7 +52,7 @@ def load_arguments(self, _):
 
     with self.argument_context('fleet identity remove') as c:
         c.argument('system_assigned', action='store_true', help='Removes the system assigned identity, resulting in changing the fleet\'s identity to "none".')
-        c.argument('user_assigned',action='store_true',  help='Removes the user assigned identity, resulting in changing the fleet\'s identity to "none".')
+        c.argument('user_assigned', action='store_true', help='Removes the user assigned identity, resulting in changing the fleet\'s identity to "none".')
 
     with self.argument_context('fleet member') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify the fleet member name.')

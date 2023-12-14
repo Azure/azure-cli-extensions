@@ -7,45 +7,47 @@ import unittest
 from azure.cli.core.util import CLIError
 import azext_fleet._validators as validators
 
-class AgentSubnetIDNamespace:
 
+class AgentSubnetIDNamespace:
     def __init__(self, agent_subnet_id):
         self.agent_subnet_id = agent_subnet_id
 
-class ApiServerSubnetIDNamespace:
 
+class ApiServerSubnetIDNamespace:
     def __init__(self, apiserver_subnet_id):
         self.apiserver_subnet_id = apiserver_subnet_id
+
 
 class IdentityNamespace:
     def __init__(self, mi_user_assigned=None, user_assigned=None):
         self.mi_user_assigned = mi_user_assigned
         self.user_assigned = user_assigned
 
-class MemberClusterIDNamespace:
 
+class MemberClusterIDNamespace:
     def __init__(self, member_cluster_id):
         self.member_cluster_id = member_cluster_id
 
-class UpgradeTypeNamespace:
 
+class UpgradeTypeNamespace:
     def __init__(self, upgrade_type):
         self.upgrade_type = upgrade_type
 
-class NodeImageSelectionNamespace:
 
+class NodeImageSelectionNamespace:
     def __init__(self, node_image_selection):
         self.node_image_selection = node_image_selection
 
-class UpdateStrategyNamespace:
 
+class UpdateStrategyNamespace:
     def __init__(self, update_strategy_name):
         self.update_strategy_name = update_strategy_name
 
-class VMSizeNamespace:
 
+class VMSizeNamespace:
     def __init__(self, vm_size):
         self.vm_size = vm_size
+
 
 class TestValidateMemberClusterId(unittest.TestCase):
     def test_invalid_member_cluster_id(self):
@@ -62,6 +64,7 @@ class TestValidateMemberClusterId(unittest.TestCase):
         namespace = MemberClusterIDNamespace(member_cluster_id=valid_member_cluster_id)
 
         self.assertIsNone(validators.validate_member_cluster_id(namespace))
+
 
 class TestValidateApiServerSubnetID(unittest.TestCase):
     def test_invalid_apiserver_subnet_id(self):
@@ -121,6 +124,7 @@ class TestValidateAgentSubnetID(unittest.TestCase):
 
         self.assertIsNone(validators.validate_agent_subnet_id(namespace))
 
+
 class TestValidateAssignIdentity(unittest.TestCase):
     def test_valid_mi_user_assign_identity_id(self):
         valid_identity_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgname/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identityName"
@@ -155,6 +159,7 @@ class TestValidateAssignIdentity(unittest.TestCase):
 
         self.assertIsNone(validators.validate_identity_id(namespace))
 
+
 class TestValidateUpdateStrategyName(unittest.TestCase):
     def test_invalid_update_strategy_name(self):
         invalid_update_strategy_name = ""
@@ -170,6 +175,7 @@ class TestValidateUpdateStrategyName(unittest.TestCase):
         namespace = UpdateStrategyNamespace(update_strategy_name=valid_update_strategy_name)
 
         self.assertIsNone(validators.validate_update_strategy_name(namespace))
+
 
 class TestValidateVmSize(unittest.TestCase):
     def test_invalid_vm_size(self):

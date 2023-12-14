@@ -8,9 +8,11 @@ import tempfile
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
+
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(curr_dir, 'data', filename)
+
 
 class FleetHublessScenarioTest(ScenarioTest):
 

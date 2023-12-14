@@ -10,6 +10,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class FleetHubfulScenarioTest(ScenarioTest):
 
+
     @classmethod
     def generate_ssh_keys(cls):
         # If the `--ssh-key-value` option is not specified, the validator will try to read the ssh-key from the "~/.ssh" directory,
@@ -47,7 +48,7 @@ class FleetHubfulScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys()
         })
 
-        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub  --vm-size Standard_DS1 ' , checks=[
+        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub  --vm-size Standard_DS1 ', checks=[
             self.check('name', '{fleet_name}')
         ])
 

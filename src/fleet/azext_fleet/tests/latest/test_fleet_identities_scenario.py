@@ -8,9 +8,11 @@ import tempfile
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
+
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(curr_dir, 'data', filename)
+
 
 class FleetIdentitiesScenarioTest(ScenarioTest):
 
@@ -92,6 +94,6 @@ class FleetIdentitiesScenarioTest(ScenarioTest):
         self.cmd('fleet show -g {rg} -n {fleet_name}', checks=[
             self.check('identity.type', 'None')
         ])
-        
+
         self.cmd('identity delete -g {rg} -n {identity_name}')
         self.cmd('fleet delete -g {rg} -n {fleet_name} --yes')
