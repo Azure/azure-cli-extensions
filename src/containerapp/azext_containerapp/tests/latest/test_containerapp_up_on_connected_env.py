@@ -5,11 +5,13 @@
 from subprocess import run
 from time import sleep
 
+from azure.cli.command_modules.containerapp._utils import format_location
+
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only, JMESPathCheck,
                                LogAnalyticsWorkspacePreparer)
 
-from .common import TEST_LOCATION
+from .common import TEST_LOCATION, STAGE_LOCATION
 from .utils import create_extension_and_custom_location
 
 from .custom_preparers import ConnectedClusterPreparer
@@ -33,7 +35,7 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
     # If the process contains create custom location, it will use a random name, which will cause playback failed too.
     # So prepare extension and custom location before execute the `up` command
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location=TEST_LOCATION, random_name_length=15)
+    @ResourceGroupPreparer(location="eastus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_up_on_arc_e2e(self, resource_group, connected_cluster_name):
         connected_cluster = self.cmd(
@@ -50,7 +52,10 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
         self.cmd(f'containerapp up -n {app_name} -g {resource_group} --connected-cluster-id {connected_cluster_id} --image {image}')
         env_list = self.cmd(f'containerapp connected-env list -g {resource_group}').get_output_in_json()
         self.assertEqual(env_list[0]["extendedLocation"]["name"].lower(), custom_location_id.lower())
-        self.assertEqual(env_list[0]["location"], connected_cluster["location"])
+        if format_location(connected_cluster["location"]) == format_location('eastus2euap'):
+            self.assertEqual(format_location(env_list[0]["location"]), format_location(TEST_LOCATION))
+        else:
+            self.assertEqual(format_location(env_list[0]["location"]), format_location(connected_cluster["location"]))
         env_id = env_list[0]["id"]
         env_name = env_list[0]["name"]
         self._validate_app(resource_group, app_name, custom_location_id, env_id)
@@ -102,7 +107,7 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
         self._validate_app(resource_group, app_name, custom_location_id, env_id)
 
     @live_only()
-    @ResourceGroupPreparer(location=TEST_LOCATION, random_name_length=15)
+    @ResourceGroupPreparer(location="eastus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_up_on_arc_auto_install_extension_e2e(self, resource_group, connected_cluster_name):
         connected_cluster = self.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
@@ -132,7 +137,10 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
         self.assertIsNotNone(custom_location_id)
         env_list = self.cmd(f'containerapp connected-env list -g {resource_group}').get_output_in_json()
         self.assertEqual(env_list[0]["extendedLocation"]["name"].lower(), custom_location_id.lower())
-        self.assertEqual(env_list[0]["location"], connected_cluster["location"])
+        if format_location(connected_cluster["location"]) == format_location('eastus2euap'):
+            self.assertEqual(format_location(env_list[0]["location"]), format_location(TEST_LOCATION))
+        else:
+            self.assertEqual(format_location(env_list[0]["location"]), format_location(connected_cluster["location"]))
         env_id = env_list[0]["id"]
         env_name = env_list[0]["name"]
 

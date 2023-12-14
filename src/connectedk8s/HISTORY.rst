@@ -2,6 +2,20 @@
 
 Release History
 ===============
+1.6.0
+++++++
+
+* Updated Helm from 3.6.3 to 3.12.2
+
+1.5.6
+++++++
+* Deprecate '--app-id' and '--app-secret' RBAC params.
+* Use 1P apps for authN/authZ when RBAC is enabled.
+* Add warning to use kubelogin version v0.0.32 or higher which has support for generating PoP token.
+
+1.5.5
+++++++
+* Lookup Custom Locations objectId using appId instead of displayName
 
 1.5.4
 ++++++
@@ -86,7 +100,7 @@ Release History
 1.3.10
 ++++++
 * Added CLI heuristics change
-* Added AKS IOT infra support 
+* Added AKS IOT infra support
 * Bug Fix in precheckutils
 
 1.3.9

@@ -13,7 +13,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 
 from .common import (write_test_file, TEST_LOCATION, clean_up_test_file)
 from .custom_preparers import ConnectedClusterPreparer
-from .utils import prepare_containerapp_env_for_app_e2e_tests
+from .utils import prepare_containerapp_env_for_app_e2e_tests, create_extension_and_custom_location
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -25,30 +25,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
     def test_containerapp_preview_environment_type(self, resource_group, infra_cluster, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         custom_location_name = "my-custom-location"
-        try:
-            connected_cluster = self.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
-            while connected_cluster["connectivityStatus"] == "Connecting":
-                time.sleep(5)
-                connected_cluster = self.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
-
-            connected_cluster_id = connected_cluster.get('id')
-            extension = self.cmd(f'az k8s-extension create'
-                                 f' --resource-group {resource_group}'
-                                 f' --name containerapp-ext'
-                                 f' --cluster-type connectedClusters'
-                                 f' --cluster-name {connected_cluster_name}'
-                                 f' --extension-type "Microsoft.App.Environment" '
-                                 f' --release-train stable'
-                                 f' --auto-upgrade-minor-version true'
-                                 f' --scope cluster'
-                                 f' --release-namespace appplat-ns'
-                                 f' --configuration-settings "Microsoft.CustomLocation.ServiceAccount=default"'
-                                 f' --configuration-settings "appsNamespace=appplat-ns"'
-                                 f' --configuration-settings "clusterName={connected_cluster_name}"'
-                                 f' --configuration-settings "envoy.annotations.service.beta.kubernetes.io/azure-load-balancer-resource-group={resource_group}"').get_output_in_json()
-            self.cmd(f'az customlocation create -g {resource_group} -n {custom_location_name} -l {TEST_LOCATION} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}')
-        except:
-            pass
+        create_extension_and_custom_location(self, resource_group, connected_cluster_name, custom_location_name)
 
         # create connected environment with client or create a command for connected?
         sub_id = self.cmd('az account show').get_output_in_json()['id']

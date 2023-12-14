@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b4
+++++++++
+* Fixed: Remove check for Allow-2023-09-01 feature flag that is no longer required (Bug #1063964)
+
 1.0.0b3
 ++++++++
 * Move azure-storage-blob dependency to vendored_sdks (on advice from Azure CLI team to avoid 'azure' namespace issues)
