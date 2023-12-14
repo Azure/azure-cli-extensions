@@ -96,7 +96,6 @@ def create_fleet(cmd,
         operation_group="fleets"
     )
 
-    # Handle all permutations mi_system & mi_user assigned parameters
     managed_service_identity = fleet_managed_service_identity_model(type="None")
     if mi_system_assigned is True and mi_user_assigned is not None:
         raise CLIError("A fleet can either have a system or user assigned identity but not both.")
@@ -232,7 +231,6 @@ def assign_fleet_identity(cmd,
         operation_group="fleets"
     )
 
-    # Handle all 6 permutations of mi_system & mi_user assigned parameters
     if system_assigned is True and user_assigned is not None:
         raise CLIError("A fleet can either have a system or user assigned identity, not both.")
     if system_assigned is None and user_assigned is None:
