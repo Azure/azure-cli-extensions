@@ -716,8 +716,8 @@ class TestAppCreate(BasicTest):
 
     def test_app_binding_tanzu_components_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        default_service_registry_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/serviceRegistries/default';
-        default_application_configuration_service_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/configurationServices/default';
+        default_service_registry_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/serviceRegistries/default'
+        default_application_configuration_service_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/configurationServices/default'
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1,
                       bind_service_registry=default_service_registry_id,
                       bind_application_configuration_service=default_application_configuration_service_id,
