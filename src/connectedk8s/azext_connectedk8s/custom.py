@@ -132,7 +132,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     # Set preview client if latest preview properties are provided.
     if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
-        client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
+        client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
 
     # Checking whether optional extra values file has been provided.
     values_file = utils.get_values_file()
@@ -315,14 +315,23 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
+            preview_cluster_resource = None
+            public_key = None
+
+            try:
+                preview_cluster_resource = get_connectedk8s_2023_11_01(cmd, configmap_rg_name,
+                                        configmap_cluster_name)
+                public_key = preview_cluster_resource.agent_public_key_certificate
+            except Exception as e:  # pylint: disable=broad-except
+                utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
+
             if (configmap_rg_name.lower() == resource_group_name.lower() and
                     configmap_cluster_name.lower() == cluster_name.lower()):
                 # Re-put connected cluster
-                try:
-                    public_key = client.get(configmap_rg_name,
-                                            configmap_cluster_name).agent_public_key_certificate
-                except Exception as e:  # pylint: disable=broad-except
-                    utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
+                
+                # If cluster is of kind provisioned cluster, there are several properties that cannot be updated
+                validate_existing_provisioned_cluster_for_reput(preview_cluster_resource, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, location)    
+
                 cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
                 cc_response = LongRunningOperation(cmd.cli_ctx)(cc_response)
@@ -331,6 +340,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                     disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, release_namespace, helm_client_location)
                 return cc_response
             else:
+                # If cluster is of kind provisioned cluster, there are several properties that cannot be updated
+                validate_existing_provisioned_cluster_for_reput(preview_cluster_resource, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, location)    
+
                 telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
                                         summary='Kubernetes cluster already onboarded')
                 raise ArgumentUsageError("The kubernetes cluster you are trying to onboard " +
@@ -417,6 +429,26 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                kube_context, no_wait, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations,
                                custom_locations_oid, helm_client_location, enable_private_link, arm_metadata, onboarding_timeout, container_log_path)
     return put_cc_response
+
+def validate_existing_provisioned_cluster_for_reput(cluster_resource, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, location):
+    print("cluster kind is: " + str(cluster_resource.kind))
+    if cluster_resource.kind == "ProvisionedCluster":
+        if azure_hybrid_benefit is not None:
+            raise InvalidArgumentValueError("Updating the 'azure hybrid benefit' property of a Provisioned Cluster is not supported from the Connected Cluster CLI. Please use the 'az aksarc update' CLI command.\nhttps://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update")
+
+        validation_values = [
+            kubernetes_distro,
+            kubernetes_infra,
+            converted_priv_link_value,
+            private_link_scope_resource_id,
+            distribution_version,
+            azure_hybrid_benefit,
+            location,
+        ]
+
+        for value in validation_values:
+            if not value is None:
+                raise InvalidArgumentValueError("Updating the following properties of a Provisioned Cluster are not supported from the Connected Cluster CLI: kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, location, public_key.\n\nPlease use the 'az aksarc update' CLI command. https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update")
 
 
 def send_cloud_telemetry(cmd):
@@ -865,6 +897,11 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
     logger.warning("This operation might take a while ...\n")
 
+    # Check if the cluster is of supported type for deletion
+    preview_cluster_resource = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
+    if preview_cluster_resource.kind == "ProvisionedCluster":
+        raise InvalidArgumentValueError("Deleting a Provisioned Cluster is not supported from the Connected Cluster CLI. Please use the 'az aksarc delete' CLI command.\nhttps://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-delete")
+
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
 
@@ -1016,7 +1053,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
 
     if connected_cluster.kind == "ProvisionedCluster":
-        raise InvalidArgumentValueError("Provisioned clusters cannot be updated.")
+        raise InvalidArgumentValueError("Updating a Provisioned Cluster is not supported from the Connected Cluster CLI. Please use the 'az aksarc update' CLI command. https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update")
 
     # Set preview client as most of the patchable fields are available in preview api-version
     client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
@@ -1165,7 +1202,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
 
     if connected_cluster.kind == "ProvisionedCluster":
-        raise InvalidArgumentValueError("Provisioned clusters cannot perform agent upgrades.")
+        raise InvalidArgumentValueError("Upgrading a Provisioned Cluster is not supported from the Connected Cluster CLI. Please use the 'az aksarc upgrade' CLI command. https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-upgrade")
     
     logger.warning("This operation might take a while...\n")
 
@@ -1416,7 +1453,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
 
     if connected_cluster.kind == "ProvisionedCluster":
-        raise InvalidArgumentValueError("Features cannot be enabled for provisioned clusters.")
+        raise InvalidArgumentValueError("Enable feature of a Provisioned Cluster is not supported from the Connected Cluster CLI. For information on how to enable a feature on a Provisioned Cluster using a cluster extension, please refer to: https://learn.microsoft.com/en-us/azure/aks/deploy-extensions-az-cli")
 
     if connected_cluster.private_link_state.lower() == "enabled" and (enable_cluster_connect or enable_cl):
         telemetry.set_exception(exception='Invalid arguments provided', fault_type=consts.Invalid_Argument_Fault_Type,
@@ -1546,7 +1583,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
 
     if connected_cluster.kind == "ProvisionedCluster":
-        raise InvalidArgumentValueError("Features cannot be enabled for provisioned clusters.")
+        raise InvalidArgumentValueError("Disable feature of a Provisioned Cluster is not supported from the Connected Cluster CLI. For information on how to disable a feature on a Provisioned Cluster using a cluster extension, please refer to: https://learn.microsoft.com/en-us/azure/aks/deploy-extensions-az-cli")
 
     logger.warning("This operation might take a while...\n")
 
