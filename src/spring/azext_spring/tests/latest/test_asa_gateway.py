@@ -90,23 +90,29 @@ class GatewayTest(ScenarioTest):
         ])
 
         self.cmd('spring gateway route-config create -g {rg} -s {serviceName} -n {routeName} '
-                 '--app-name customers-service --routes-file {routeFile}', checks=[
-            self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/customers-service'),
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+                 '--app-name customers-service --routes-file {routeFile}',
+                 checks=[
+                     self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/customers-service'),
+                     self.check('properties.provisioningState', "Succeeded")
+                 ]
+        )
 
         self.cmd('spring gateway route-config update -g {rg} -s {serviceName} -n {routeName} '
-                 '--app-name vets-service --routes-file {routesFileV2}', checks=[
-            self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/vets-service'),
-            self.check('properties.provisioningState', "Succeeded"),
-            self.check('properties.ssoEnabled', True)
-        ])
+                 '--app-name vets-service --routes-file {routesFileV2}',
+                 checks=[
+                     self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/vets-service'),
+                     self.check('properties.provisioningState', "Succeeded"),
+                     self.check('properties.ssoEnabled', True)
+                 ]
+        )
 
         self.cmd('spring gateway route-config update -g {rg} -s {serviceName} -n {routeName} '
-                 '--app-name vets-service --routes-file {routesFileV2}', checks=[
-            self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/vets-service'),
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+                 '--app-name vets-service --routes-file {routesFileV2}',
+                 checks=[
+                     self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/vets-service'),
+                     self.check('properties.provisioningState', "Succeeded")
+                 ]
+        )
 
         result = self.cmd('spring gateway route-config list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)

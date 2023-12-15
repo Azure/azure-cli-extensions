@@ -54,9 +54,9 @@ class BasicTest(unittest.TestCase):
     
     def _get_sku(self, tier='Standard'):
         return models.Sku(
-                tier=tier,
-                name=_get_sku_name(tier)
-            )
+            tier=tier,
+            name=_get_sku_name(tier)
+        )
 
     @mock.patch('azext_spring._utils.cf_resource_groups', _cf_resource_group)
     def _execute(self, resource_group, name, **kwargs):

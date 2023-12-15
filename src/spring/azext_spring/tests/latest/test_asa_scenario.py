@@ -134,17 +134,19 @@ class SslTests(ScenarioTest):
 
         self.cmd(
             'spring certificate show --name {digiCert} -g {rg} -s {serviceName}', checks=[
-            self.check('name', '{digiCert}')
-        ])
+                self.check('name', '{digiCert}')
+            ]
+        )
 
         self.cmd(
             'spring certificate show --name {baltiCert} -g {rg} -s {serviceName}', checks=[
-            self.check('name', '{baltiCert}')
-        ])
+                self.check('name', '{baltiCert}')
+            ]
+        )
 
         cert_result = self.cmd(
             'spring certificate list -g {rg} -s {serviceName}').get_output_in_json()
-        self.assertTrue(len(cert_result) >= 2) # in case there are other cert resources
+        self.assertTrue(len(cert_result) >= 2) #  in case there are other cert resources
 
         self.cmd(
             'spring app create --name {app} -f {loadCertPath} -g {rg} -s {serviceName}')

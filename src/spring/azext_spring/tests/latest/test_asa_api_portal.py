@@ -76,8 +76,8 @@ class ApiPortalTest(ScenarioTest):
                      self.check('properties.ssoProperties.issuerUri', "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"),
                      self.check('properties.ssoProperties.scope', ["openid", "profile", "email"]),
                      self.check('properties.provisioningState', "Succeeded")
-                 ]
-        )
+                    ]
+                 )
 
         self.cmd('spring api-portal show -g {rg} -s {serviceName}', checks=[
             self.check('properties.public', True),

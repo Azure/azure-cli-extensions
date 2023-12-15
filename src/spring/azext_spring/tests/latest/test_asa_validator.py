@@ -284,6 +284,7 @@ def _mock_term_client(accepted, registered):
         term = mock.MagicMock()
         term.accepted = accepted
         return term
+
     def _mock_provider_get(namespace):
         provider = mock.MagicMock()
         provider.registration_state = 'Registered' if registered else 'NotRegistered'
@@ -295,14 +296,18 @@ def _mock_term_client(accepted, registered):
     client.providers.get = _mock_provider_get
     return client
 
+
 def _mock_happy_client(cli_ctx, client_type, **kwargs):
     return _mock_term_client(True, True)
+
 
 def _mock_not_accepted_term_client(cli_ctx, client_type, **kwargs):
     return _mock_term_client(False, True)
 
+
 def _mock_not_registered_client(cli_ctx, client_type, **kwargs):
     return _mock_term_client(True, False)
+
 
 class TestSkuValidator(unittest.TestCase):
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client', _mock_happy_client)
@@ -324,4 +329,3 @@ class TestSkuValidator(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as context:
             validate_sku(_get_test_cmd(), ns)
         self.assertTrue('Microsoft.SaaS resource provider is not registered.' in str(context.exception))
-

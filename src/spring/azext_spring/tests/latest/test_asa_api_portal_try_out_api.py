@@ -34,4 +34,3 @@ class ApiPortalTryOutApiTest(ScenarioTest):
 
         self.cmd('spring api-portal update -g {rg} -s {serviceName} --enable-api-try-out true',
                  self.check('properties.apiTryOutEnabledState', 'Enabled'))
-

@@ -150,10 +150,11 @@ class ApiApplicationAcceleratorTest(ScenarioTest):
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        self.cmd('spring application-accelerator create -g {rg} -s {serviceName}', 
-        checks=[
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+        self.cmd('spring application-accelerator create -g {rg} -s {serviceName}',
+                 checks=[
+                     self.check('properties.provisioningState', "Succeeded")
+                 ]
+        )
 
         self.cmd('spring dev-tool show -g {rg} -s {serviceName}', checks=[
             self.check('properties.features.applicationAccelerator.state', 'Enabled')

@@ -17,7 +17,7 @@ class ServiceRegistryTest(ScenarioTest):
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
     @SpringAppNamePreparer()
     def test_service_registry(self, resource_group, spring, app):
-        
+
         self.kwargs.update({
             'serviceName': spring,
             'rg': resource_group,
@@ -25,14 +25,14 @@ class ServiceRegistryTest(ScenarioTest):
         })
 
         self.cmd('spring app create -g {rg} -s {serviceName} -n {app}')
-        
+
         self.cmd('spring service-registry show -g {rg} -s {serviceName}', checks=[
             self.check('properties.provisioningState', "Succeeded")
         ])
 
         self.cmd('spring service-registry bind --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('properties.addonConfigs.serviceRegistry.resourceId',
-            "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/serviceRegistries/default".format(self.get_subscription_id(), resource_group, spring))
+                       "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/serviceRegistries/default".format(self.get_subscription_id(), resource_group, spring))
         ])
         self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
         self.cmd('spring service-registry unbind --app {app} -g {rg} -s {serviceName}')

@@ -71,9 +71,9 @@ class GatewayResponseCacheTest(ScenarioTest):
 
         self.cmd(
             'spring gateway update -g {rg} -s {serviceName} --response-cache-ttl 11m --response-cache-scope Route', checks=[
-            self.check('properties.responseCacheProperties.responseCacheType', 'LocalCachePerRoute'),
-            self.check('properties.responseCacheProperties.size', '10KB'),
-            self.check('properties.responseCacheProperties.timeToLive', '11m')])
+                self.check('properties.responseCacheProperties.responseCacheType', 'LocalCachePerRoute'),
+                self.check('properties.responseCacheProperties.size', '10KB'),
+                self.check('properties.responseCacheProperties.timeToLive', '11m')])
 
         # Update with nothing changed should be succeeded.
         self.cmd('spring gateway update -g {rg} -s {serviceName}', checks=[
@@ -89,9 +89,9 @@ class GatewayResponseCacheTest(ScenarioTest):
 
         self.cmd(
             'spring gateway update -g {rg} -s {serviceName} --enable-response-cache --response-cache-ttl 11m --response-cache-scope Route', checks=[
-            self.check('properties.responseCacheProperties.responseCacheType', 'LocalCachePerRoute'),
-            self.check('properties.responseCacheProperties.size', None),
-            self.check('properties.responseCacheProperties.timeToLive', '11m')])
+                self.check('properties.responseCacheProperties.responseCacheType', 'LocalCachePerRoute'),
+                self.check('properties.responseCacheProperties.size', None),
+                self.check('properties.responseCacheProperties.timeToLive', '11m')])
 
         self.cmd(
             'spring gateway update -g {rg} -s {serviceName} --response-cache-size 13MB --response-cache-ttl default --response-cache-scope Instance',

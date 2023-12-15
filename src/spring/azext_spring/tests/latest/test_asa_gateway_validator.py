@@ -80,9 +80,11 @@ class TestGatewayValidator(unittest.TestCase):
 
     def test_response_cache_ttl(self):
         invalid_cache_ttl_list = ["-2", "0", ",", "00h", "0m", "-1s", "09m", "12345678901s"]
-        valid_cache_ttl_list = ["1234567890h", "1000h", "100h", "10h", "1h",
-                                 "1234567890m", "1000m", "100m", "10m", "1m",
-                                 "1234567890s", "1000s", "100s", "10s", "1s"]
+        valid_cache_ttl_list = [
+            "1234567890h", "1000h", "100h", "10h", "1h",
+            "1234567890m", "1000m", "100m", "10m", "1m",
+            "1234567890s", "1000s", "100s", "10s", "1s"
+        ]
         for size in invalid_cache_ttl_list:
             ns = Namespace(response_cache_ttl=size)
             self._test_invalid_response_cache_ttl(ns)
@@ -188,4 +190,3 @@ class TestGatewayValidator(unittest.TestCase):
 
         for ns in valid_ns_list:
             _validate_gateway_response_cache(ns)
-

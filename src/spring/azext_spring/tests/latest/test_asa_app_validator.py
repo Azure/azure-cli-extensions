@@ -172,7 +172,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment='green1')
         fulfill_deployment_param(_get_test_cmd(), ns)
         self.assertEqual('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.AppPlatform/Spring/asc1/apps/app1/deployments/green1',
-                          ns.deployment.id)
+                         ns.deployment.id)
         self.assertFalse(ns.deployment.properties.active)
 
 
@@ -202,7 +202,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment=None)
         fulfill_deployment_param(_get_test_cmd(), ns)
         self.assertEqual('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.AppPlatform/Spring/asc1/apps/app1/deployments/default',
-                          ns.deployment.id)
+                         ns.deployment.id)
         self.assertTrue(ns.deployment.properties.active)
 
     @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
@@ -217,7 +217,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
         ns = Namespace(app='app1', service='asc1', resource_group='rg1', deployment=None)
         fulfill_deployment_param(_get_test_cmd(), ns)
         self.assertEqual('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.AppPlatform/Spring/asc1/apps/app1/deployments/default',
-                          ns.deployment.id)
+                         ns.deployment.id)
         self.assertTrue(ns.deployment.properties.active)
 
     @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
