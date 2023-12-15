@@ -662,16 +662,8 @@ def validate_build_cert_reference(cmd, namespace):
 def validate_create_app_binding_default_service_registry(cmd, namespace):
     service_registry_resource = None
     if namespace.bind_service_registry:
-        client = get_client(cmd)
-        service_registry_resources = list(client.service_registries.list(namespace.resource_group, namespace.service))
-        if len(service_registry_resources) == 0:
-            raise ClientRequestError('App cannot bind to service registry because it is not configured.')
-        if len(service_registry_resources) > 1:
-            raise ClientRequestError('App cannot bind to multiple service registries.')
-        service_registry_resource = service_registry_resources[0]
-    normalize_bind_service_registry(namespace,
-                                    namespace.bind_service_registry,
-                                    service_registry_resource)
+        service_registry_resource_id = _get_eactly_one_service_registry_resource_id(cmd, namespace.resource_group, namespace.service)
+        namespace.bind_service_registry = service_registry_resource_id
 
 def normalize_bind_service_registry(namespace, bind, service_registry_resource):
     namespace.bind_service_registry = service_registry_resource.id if bind else None
