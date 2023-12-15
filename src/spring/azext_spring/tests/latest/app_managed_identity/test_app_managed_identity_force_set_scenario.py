@@ -112,14 +112,11 @@ class AppIdentityForceSet(ScenarioTest):
                 self.check('identity', None)
             ])
 
-
     def _contains_user_id_1(self, keys):
         return MASKED_USER_IDENTITY_RESOURCE_ID_1.lower() in keys or USER_IDENTITY_RESOURCE_ID_1.lower() in keys
 
-
     def _contains_user_id_2(self, keys):
         return MASKED_USER_IDENTITY_RESOURCE_ID_2.lower() in keys or USER_IDENTITY_RESOURCE_ID_2.lower() in keys
-
 
     def _to_lower(self, str_dict):
         new_dict = {}

@@ -360,7 +360,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self.assertEqual('BuildResult', resource.properties.source.type)
         self.assertEqual(self.result_id, resource.properties.source.build_result_id)
         self.assertIsNone(resource.properties.source.version)
-    
+
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_failed_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()

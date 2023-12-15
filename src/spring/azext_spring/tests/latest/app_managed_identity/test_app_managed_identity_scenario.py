@@ -63,7 +63,7 @@ class AppIdentityAssign(ScenarioTest):
             self.exists('identity.userAssignedIdentities')
         ]).json_value
         user_identity_dict = self._to_lower(app['identity']['userAssignedIdentities'])
-        self.assertTrue(type(user_identity_dict) == dict)
+        self.assertTrue(isinstance(user_identity_dict, dict))
         self.assertTrue(self._contains_user_id_1(user_identity_dict.keys()))
         self.assertTrue(self._contains_user_id_2(user_identity_dict.keys()))
 
@@ -74,7 +74,7 @@ class AppIdentityAssign(ScenarioTest):
             self.exists('identity.userAssignedIdentities')
         ]).json_value
         user_identity_dict = self._to_lower(app['identity']['userAssignedIdentities'])
-        self.assertTrue(type(user_identity_dict) == dict)
+        self.assertTrue(isinstance(user_identity_dict, dict))
         self.assertTrue(len(user_identity_dict) == 1)
         self.assertTrue(self._contains_user_id_2(user_identity_dict.keys()))
 
@@ -102,14 +102,11 @@ class AppIdentityAssign(ScenarioTest):
         self.cmd('spring app identity remove -n {app} -g {rg} -s {serviceName} --system-assigned --user-assigned {ua1} {ua2}',
                  checks=[self.check('identity', None)])
 
-
     def _contains_user_id_1(self, keys):
         return MASKED_USER_IDENTITY_RESOURCE_ID_1.lower() in keys or USER_IDENTITY_RESOURCE_ID_1.lower() in keys
 
-
     def _contains_user_id_2(self, keys):
         return MASKED_USER_IDENTITY_RESOURCE_ID_2.lower() in keys or USER_IDENTITY_RESOURCE_ID_2.lower() in keys
-
 
     def _to_lower(self, str_dict):
         new_dict = {}

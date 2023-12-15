@@ -265,9 +265,9 @@ class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
         self.assertEqual('Enterprise', resource.sku.tier)
         self.assertEqual('ApplicationInsights', self.buildpack_binding_resource.properties.binding_type)
         self.assertEqual('fake-create-connection-string',
-            self.buildpack_binding_resource.properties.launch_properties.properties['connection-string'])
+                         self.buildpack_binding_resource.properties.launch_properties.properties['connection-string'])
         self.assertEqual(10,
-            self.buildpack_binding_resource.properties.launch_properties.properties['sampling-percentage'])
+                         self.buildpack_binding_resource.properties.launch_properties.properties['sampling-percentage'])
 
     def test_asc_create_with_application_insights_key(self):
         self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), app_insights_key='test-application-insights-key', sampling_rate=23)
@@ -276,9 +276,9 @@ class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
         self.assertEqual('Enterprise', resource.sku.tier)
         self.assertEqual('ApplicationInsights', self.buildpack_binding_resource.properties.binding_type)
         self.assertEqual('test-application-insights-key',
-            self.buildpack_binding_resource.properties.launch_properties.properties['connection-string'])
+                         self.buildpack_binding_resource.properties.launch_properties.properties['connection-string'])
         self.assertEqual(23,
-            self.buildpack_binding_resource.properties.launch_properties.properties['sampling-percentage'])
+                         self.buildpack_binding_resource.properties.launch_properties.properties['sampling-percentage'])
 
     def test_asc_create_with_application_insights_name(self):
         self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), app_insights='test-application-insights', sampling_rate=53)
@@ -287,9 +287,9 @@ class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
         self.assertEqual('Enterprise', resource.sku.tier)
         self.assertEqual('ApplicationInsights', self.buildpack_binding_resource.properties.binding_type)
         self.assertEqual('fake-get-connection-string',
-            self.buildpack_binding_resource.properties.launch_properties.properties['connection-string'])
+                         self.buildpack_binding_resource.properties.launch_properties.properties['connection-string'])
         self.assertEqual(53,
-            self.buildpack_binding_resource.properties.launch_properties.properties['sampling-percentage'])
+                         self.buildpack_binding_resource.properties.launch_properties.properties['sampling-percentage'])
 
 
 class TestSpringAppCreateWithIngressConfig(BasicTest):

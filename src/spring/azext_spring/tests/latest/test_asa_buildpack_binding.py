@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
 from azure.cli.testsdk import (ScenarioTest)
 from azure.cli.testsdk.reverse_dependency import (
     get_dummy_cli,
@@ -41,8 +40,6 @@ class BuildpackBindingTest(ScenarioTest):
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
     @TearDown()
     def test_buildpack_binding(self, resource_group, spring):
-        py_path = os.path.abspath(os.path.dirname(__file__))
-        
         self.kwargs.update({
             'serviceName': spring,
             'rg': resource_group,

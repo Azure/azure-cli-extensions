@@ -47,8 +47,8 @@ def _mock_dev_tool_portal(enable_accelerator):
     resource = models.DevToolPortalResource.deserialize(json.loads('{"properties":{"provisioningState": "Succeeded"}}'))
     resource.properties.features = models.DevToolPortalFeatureSettings(
         application_accelerator=models.DevToolPortalFeatureDetail(
-            state=models.DevToolPortalFeatureState.ENABLED if enable_accelerator \
-                    else models.DevToolPortalFeatureState.DISABLED))
+            state=models.DevToolPortalFeatureState.ENABLED if enable_accelerator
+            else models.DevToolPortalFeatureState.DISABLED))
     return resource
 
 
@@ -64,14 +64,14 @@ class ApplicationAccelerator(unittest.TestCase):
     def __init__(self, methodName: str = ...):
         super().__init__(methodName=methodName)
         self.created_resource = None
-        self.dev_tool_portal =None
+        self.dev_tool_portal = None
         self.deleted = False
-    
+
     def setUp(self):
         resp = super().setUp()
         free_mock_client.reset_mock()
         return resp
-    
+
     # @mock.patch('azext_spring._utils.cf_resource_groups', _cf_resource_group)
     def _execute(self, method, cmd, client, *kwargs):
         client = client or _get_basic_mock_client()
@@ -125,6 +125,7 @@ class ApplicationAccelerator(unittest.TestCase):
         self.assertEqual(models.DevToolPortalFeatureState.DISABLED,
                          self.dev_tool_portal.properties.features.application_accelerator.state)
 
+
 '''
 Since the scenarios covered here depend on a Azure Spring service instance creation.
 It cannot support live run. So mark it as record_only.
@@ -136,7 +137,6 @@ class ApiApplicationAcceleratorTest(ScenarioTest):
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE['spring'])
     def test_application_accelerator(self, resource_group, spring):
-        
         self.kwargs.update({
             'serviceName': spring,
             'rg': resource_group

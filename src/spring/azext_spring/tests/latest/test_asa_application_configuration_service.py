@@ -26,7 +26,7 @@ class TearDown(SpringSubResourceWrapper):
     def create_resource(self, *_, **kwargs):
         self.resource_group = self._get_resource_group(**kwargs)
         self.spring = self._get_spring(**kwargs)
-    
+
     def remove_resource(self, *_, **__):
         self.live_only_execute(self.cli_ctx, 'spring application-configuration-service delete -g {}  -s {} --yes'.format(self.resource_group, self.spring))
         self.live_only_execute(self.cli_ctx, 'spring application-configuration-service create -g {}  -s {}'.format(self.resource_group, self.spring))
@@ -39,7 +39,6 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
     @SpringAppNamePreparer()
     @TearDown()
     def test_application_configuration_service(self, resource_group, spring, app):
-        
         self.kwargs.update({
             'serviceName': spring,
             'rg': resource_group,
@@ -49,7 +48,7 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
             "uri": "https://github.com/spring-petclinic/spring-petclinic-microservices-config",
             "app": app
         })
-        
+
         self.cmd('spring app create -g {rg} -s {serviceName} -n {app}')
 
         self.cmd('spring application-configuration-service show -g {rg} -s {serviceName}', checks=[
@@ -70,7 +69,7 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
 
         result = self.cmd('spring application-configuration-service git repo list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)
-        
+
         self.cmd('spring application-configuration-service git repo remove --name {repo} -g {rg} -s {serviceName}')
         result = self.cmd('spring application-configuration-service git repo list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) == 0)

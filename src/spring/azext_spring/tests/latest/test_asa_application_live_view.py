@@ -46,9 +46,10 @@ def _mock_dev_tool_portal(enable_live_view):
     resource = models.DevToolPortalResource.deserialize(json.loads('{"properties":{"provisioningState": "Succeeded"}}'))
     resource.properties.features = models.DevToolPortalFeatureSettings(
         application_live_view=models.DevToolPortalFeatureDetail(
-            state=models.DevToolPortalFeatureState.ENABLED if enable_live_view \
-                    else models.DevToolPortalFeatureState.DISABLED))
+            state=models.DevToolPortalFeatureState.ENABLED if enable_live_view else
+            models.DevToolPortalFeatureState.DISABLED))
     return resource
+
 
 def _mock_enabled_get_dev_tool_portal(*_):
     return _mock_dev_tool_portal(enable_live_view=True)
@@ -66,12 +67,12 @@ class ApplicationLiveView(unittest.TestCase):
         self.deleted = False
         self.created_alv_request = None
         self.dev_tool_portal_request = None
-    
+
     def setUp(self):
         resp = super().setUp()
         free_mock_client.reset_mock()
         return resp
-    
+
     # @mock.patch('azext_spring._utils.cf_resource_groups', _cf_resource_group)
     def _execute(self, method, cmd, client, *kwargs):
         client = client or _get_basic_mock_client()

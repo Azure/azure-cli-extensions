@@ -63,7 +63,7 @@ class SpringSingleValueReplacer(RegexSingleValueReplacer):
 class SpringResourceGroupPreparer(ResourceGroupPreparer):
     def __init__(self, location='uksouth', **kwargs):
         super(SpringResourceGroupPreparer, self).__init__(location=location, **kwargs)
-    
+
     def create_resource(self, name, **kwargs):
         response = super().create_resource(name, **kwargs)
         is_live = self.live_test or self.test_class_instance.in_recording

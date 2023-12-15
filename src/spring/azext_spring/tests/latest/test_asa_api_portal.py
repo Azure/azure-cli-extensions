@@ -43,7 +43,7 @@ class ApiPortalWrapper(SpringSubResourceWrapper):
     def create_resource(self, *_, **kwargs):
         self.resource_group = self._get_resource_group(**kwargs)
         self.spring = self._get_spring(**kwargs)
-    
+
     def remove_resource(self, *_, **__):
         self.live_only_execute(self.cli_ctx, 'spring api-portal delete -g {}  -s {} --yes'.format(self.resource_group, self.spring))
         self.live_only_execute(self.cli_ctx, 'spring api-portal create -g {}  -s {}'.format(self.resource_group, self.spring))
@@ -57,7 +57,6 @@ class ApiPortalTest(ScenarioTest):
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
     @ApiPortalWrapper()
     def test_api_portal(self, resource_group, spring, sp_name, sp_password):
-        
         self.kwargs.update({
             'serviceName': spring,
             'rg': resource_group,
@@ -170,7 +169,7 @@ class ApiPortalUnitTest(unittest.TestCase):
                           'asa',
                           'my-domain.microsoft.com',
                           'my-cert')
-    
+
     def test_custom_domain_unbind(self):
         client = _get_basic_mock_client()
         api_portal_custom_domain_unbind(_get_test_cmd(),
