@@ -373,8 +373,8 @@ def communication_email_send(client,
         else:
             all_attachments = attachments[0].split(',')
             all_attachment_types = attachment_types[0].split(',')
-            for i in range(len(all_attachments)):
-                attachments_list.append(__get_attachment_content(all_attachments[i], all_attachment_types[i]))
+            for i, attachment in enumerate(all_attachments):
+                attachments_list.append(__get_attachment_content(attachment, all_attachment_types[i]))
 
         message = {
             "content": {
