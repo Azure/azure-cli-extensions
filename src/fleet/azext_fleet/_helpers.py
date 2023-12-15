@@ -138,7 +138,7 @@ def _load_kubernetes_configuration(filename):
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
             raise CLIError(f'{filename} does not exist') from ex
+        raise
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
         raise CLIError(f'Error parsing {filename} ({str(ex)})') from ex
 
-    return None
