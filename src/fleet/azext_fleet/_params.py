@@ -30,7 +30,7 @@ def load_arguments(self, _):
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True, help='The subnet to be used when apiserver vnet integration is enabled. It is required when creating a new Fleet with BYO vnet.')
         c.argument('agent_subnet_id', validator=validate_agent_subnet_id, is_preview=True, help='The ID of the subnet which the Fleet hub node will join on startup. If this is not specified, a vnet and subnet will be generated and used.')
         c.argument('enable_managed_identity', action='store_true', help='Enable system assigned managed identity (MSI) on the Fleet resource.')
-        c.argument('assign_identity', validator=validate_assign_identity, help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource. Specify the existing user assigned identity resource.')
+        c.argument('assign_identity', validator=validate_assign_identity, help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource by specifying the user assigned identity\'s resource Id.')
         c.argument('enable_hub', action='store_true', is_preview=True, help='If set, the Fleet will be created with a hub cluster.')
         c.argument('vm_size', is_preview=True, validator=validate_vm_size, help='The virtual machine size of the Fleet hub.')
 
