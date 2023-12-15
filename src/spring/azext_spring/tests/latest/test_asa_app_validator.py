@@ -175,7 +175,6 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
                          ns.deployment.id)
         self.assertFalse(ns.deployment.properties.active)
 
-
     @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
     def test_deployment_provide_but_not_found(self, client_factory_mock):
         client = mock.MagicMock()

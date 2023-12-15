@@ -17,6 +17,7 @@ from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class AppDeploy(ScenarioTest):
     def __init__(self, method_name):
         super(AppDeploy, self).__init__(
@@ -29,7 +30,7 @@ class AppDeploy(ScenarioTest):
     @SpringAppNamePreparer()
     def test_deploy_app(self, resource_group, spring, app):
         py_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
+        file_path = os.path.join(py_path, 'files/test.jar').replace("\\", "/")
         self.kwargs.update({
             'app': app,
             'serviceName': spring,
@@ -217,6 +218,7 @@ class BlueGreenTest(ScenarioTest):
         self.cmd('spring app deployment show -n green --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('properties.active', False)
         ])
+
 
 @record_only()
 class CustomImageTest(ScenarioTest):

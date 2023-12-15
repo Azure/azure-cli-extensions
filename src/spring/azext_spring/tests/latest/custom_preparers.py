@@ -53,6 +53,7 @@ class SpringSubResourceWrapper(NoTrafficRecordingPreparer):
         except Exception:
             pass
 
+
 class SpringSingleValueReplacer(RegexSingleValueReplacer):
     def __init__(self, dev_setting_name, moniker):
         super(SpringSingleValueReplacer, self).__init__(re.compile(f'(?<![a-zA-Z0-9-]){dev_setting_name}(?![a-zA-Z0-9-])', re.IGNORECASE),

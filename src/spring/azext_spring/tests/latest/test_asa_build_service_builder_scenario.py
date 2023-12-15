@@ -15,7 +15,7 @@ from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
-BUILDER_NAME='test-builder'
+BUILDER_NAME = 'test-builder'
 
 
 class TearDown(SpringSubResourceWrapper):
@@ -41,7 +41,7 @@ class BuildServiceBuilderTest(ScenarioTest):
     @TearDown()
     def test_Builder(self, resource_group, spring):
         py_path = os.path.abspath(os.path.dirname(__file__))
-        builder_file = os.path.join(py_path, 'files/build_service_builder.json').replace("\\","/")
+        builder_file = os.path.join(py_path, 'files/build_service_builder.json').replace("\\", "/")
 
         self.kwargs.update({
             'serviceName': spring,

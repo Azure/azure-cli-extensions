@@ -580,7 +580,7 @@ class TestAppUpdate(BasicTest):
         deployment = self._get_deployment()
         deployment.properties.source.type = 'Container'
         deployment.properties.source.custom_container.container_image = 'my-image'
-        self._execute('rg', 'asc', 'app', deployment=deployment, env={'key':'value'})
+        self._execute('rg', 'asc', 'app', deployment=deployment, env={'key': 'value'})
         resource = self.patch_deployment_resource
         self.assertIsNone(resource.properties.source)
         self.assertEqual({'key': 'value'}, resource.properties.deployment_settings.environment_variables)

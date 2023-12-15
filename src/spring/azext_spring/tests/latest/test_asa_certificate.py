@@ -21,6 +21,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 def _get_test_cmd():
     cli_ctx = DummyCli()
     cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'

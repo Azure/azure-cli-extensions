@@ -13,6 +13,7 @@ from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
+
 class TearDown(SpringSubResourceWrapper):
     def __init__(self,
                  resource_group_parameter_name='resource_group',
@@ -59,15 +60,13 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
                  '-n {repo} --label {label} --patterns {patterns} --uri {uri}',
                  checks=[
                      self.check('properties.provisioningState', "Succeeded")
-                 ]
-        )
+                 ])
 
         self.cmd('spring application-configuration-service git repo update -g {rg} -s {serviceName} '
                  '-n {repo} --label {label}',
                  checks=[
                      self.check('properties.provisioningState', "Succeeded")
-                 ]
-        )
+                 ])
 
         result = self.cmd('spring application-configuration-service git repo list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)
@@ -78,7 +77,7 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
 
         self.cmd('spring application-configuration-service bind --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('properties.addonConfigs.applicationConfigurationService.resourceId',
-            "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configurationServices/default".format(self.get_subscription_id(), resource_group, spring))
+                       "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configurationServices/default".format(self.get_subscription_id(), resource_group, spring))
         ])
 
         self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
@@ -89,4 +88,4 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        self.cmd('spring application-configuration-service update -g {rg} -s {serviceName} --generation Gen2', checks=[self.check('properties.provisioningState', "Succeeded") ])
+        self.cmd('spring application-configuration-service update -g {rg} -s {serviceName} --generation Gen2', checks=[self.check('properties.provisioningState', "Succeeded")])

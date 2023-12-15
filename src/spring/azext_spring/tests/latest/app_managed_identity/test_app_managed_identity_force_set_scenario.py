@@ -66,7 +66,7 @@ class AppIdentityForceSet(ScenarioTest):
                 self.exists('identity.userAssignedIdentities')
             ]).json_value
         user_identity_dict = self._to_lower(app['identity']['userAssignedIdentities'])
-        self.assertTrue(type(user_identity_dict) == dict)
+        self.assertTrue(isinstance(user_identity_dict, dict))
         self.assertEquals(1, len(user_identity_dict))
         self.assertTrue(self._contains_user_id_1(user_identity_dict.keys()))
 
@@ -79,7 +79,7 @@ class AppIdentityForceSet(ScenarioTest):
                 self.exists('identity.userAssignedIdentities')
             ]).json_value
         user_identity_dict = self._to_lower(app['identity']['userAssignedIdentities'])
-        self.assertTrue(type(user_identity_dict) == dict)
+        self.assertTrue(isinstance(user_identity_dict, dict))
         self.assertEquals(1, len(user_identity_dict))
         self.assertTrue(self._contains_user_id_2(user_identity_dict.keys()))
 
@@ -92,7 +92,7 @@ class AppIdentityForceSet(ScenarioTest):
                 self.exists('identity.userAssignedIdentities')
             ]).json_value
         user_identity_dict = self._to_lower(app['identity']['userAssignedIdentities'])
-        self.assertTrue(type(user_identity_dict) == dict)
+        self.assertTrue(isinstance(user_identity_dict, dict))
         self.assertEquals(2, len(user_identity_dict))
         self.assertTrue(self._contains_user_id_1(user_identity_dict.keys()))
         self.assertTrue(self._contains_user_id_2(user_identity_dict.keys()))

@@ -13,6 +13,8 @@ from azure.cli.testsdk import (ScenarioTest, record_only)
 """
 Mark record_only to use the recording files as the mocked server to run the tests.
 """
+
+
 @record_only()
 class ApiPortalTryOutApiTest(ScenarioTest):
 

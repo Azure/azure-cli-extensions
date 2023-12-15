@@ -44,4 +44,4 @@ class RegexSingleValueReplacer(RecordingProcessor):
 class SpringTestEndpointReplacer(RegexSingleValueReplacer):
     def __init__(self):
         super(SpringTestEndpointReplacer, self).__init__(re.compile(f'(?<="primaryKey":")[^"]+|(?<="secondaryKey":")[^"]+|(?<="primaryTestEndpoint":")[^"]+|(?<="secondaryTestEndpoint":")[^"]+', re.IGNORECASE),
-                                                   'primary', 'fake')
+                                                         'primary', 'fake')

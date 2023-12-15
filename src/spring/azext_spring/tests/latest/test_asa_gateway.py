@@ -15,10 +15,10 @@ class GatewayTest(ScenarioTest):
 
     def test_gateway(self):
         py_path = os.path.abspath(os.path.dirname(__file__))
-        routes_file = os.path.join(py_path, 'files/gateway_routes.json').replace("\\","/")
-        routes_file_v2 = os.path.join(py_path, 'files/gateway_routes_v2.json').replace("\\","/")
-        addon_configs_file = os.path.join(py_path, 'files/gateway_addon_configs.json').replace("\\","/")
-        
+        routes_file = os.path.join(py_path, 'files/gateway_routes.json').replace("\\", "/")
+        routes_file_v2 = os.path.join(py_path, 'files/gateway_routes_v2.json').replace("\\", "/")
+        addon_configs_file = os.path.join(py_path, 'files/gateway_addon_configs.json').replace("\\", "/")
+
         self.kwargs.update({
             'serviceName': 'tx-enterprise',
             'rg': 'tx',
@@ -69,18 +69,16 @@ class GatewayTest(ScenarioTest):
                      self.check('properties.apmTypes', ["NewRelic", "ElasticAPM"]),
                      self.check('properties.environmentVariables.properties', {'a': 'b', 'c': 'd'}),
                      self.check('properties.environmentVariables.secrets', None),
-                     self.check('properties.addonConfigs', {'javaOpts':'-Djava.awt.headless=true','sso':{'rolesAttributeName':'role','inactiveSessionExpirationInMinutes':1},'envs':[{'name':'xxx','value':'yyy'},{'name':'xxx1','value':'yyy'}]}),
+                     self.check('properties.addonConfigs', {'javaOpts': '-Djava.awt.headless=true', 'sso': {'rolesAttributeName': 'role', 'inactiveSessionExpirationInMinutes': 1}, 'envs': [{'name': 'xxx', 'value': 'yyy'}, {'name': 'xxx1', 'value': 'yyy'}]}),
                      self.check('properties.provisioningState', "Succeeded")
-                 ]
-        )
+                 ])
 
         self.cmd('spring gateway update -g {rg} -s {serviceName} '
                  '--apm-types '' --apms test-ai',
                  checks=[
                      self.check('properties.apms', [{'resourceId': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apms/test-ai'}]),
                      self.check('properties.provisioningState', "Succeeded")
-                 ]
-        )
+                 ])
 
         self.cmd('spring gateway show -g {rg} -s {serviceName}', checks=[
             self.check('properties.public', True),
@@ -94,8 +92,7 @@ class GatewayTest(ScenarioTest):
                  checks=[
                      self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/customers-service'),
                      self.check('properties.provisioningState', "Succeeded")
-                 ]
-        )
+                 ])
 
         self.cmd('spring gateway route-config update -g {rg} -s {serviceName} -n {routeName} '
                  '--app-name vets-service --routes-file {routesFileV2}',
@@ -103,16 +100,14 @@ class GatewayTest(ScenarioTest):
                      self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/vets-service'),
                      self.check('properties.provisioningState', "Succeeded"),
                      self.check('properties.ssoEnabled', True)
-                 ]
-        )
+                 ])
 
         self.cmd('spring gateway route-config update -g {rg} -s {serviceName} -n {routeName} '
                  '--app-name vets-service --routes-file {routesFileV2}',
                  checks=[
                      self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/vets-service'),
                      self.check('properties.provisioningState', "Succeeded")
-                 ]
-        )
+                 ])
 
         result = self.cmd('spring gateway route-config list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)

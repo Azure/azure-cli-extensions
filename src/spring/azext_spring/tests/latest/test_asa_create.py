@@ -20,6 +20,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 free_mock_client = mock.MagicMock()
 
+
 def _get_test_cmd():
     cli_ctx = DummyCli()
     cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
@@ -46,12 +47,12 @@ class BasicTest(unittest.TestCase):
     def __init__(self, methodName: str = ...):
         super().__init__(methodName=methodName)
         self.created_resource = None
-    
+
     def setUp(self):
         resp = super().setUp()
         free_mock_client.reset_mock()
         return resp
-    
+
     def _get_sku(self, tier='Standard'):
         return models.Sku(
             tier=tier,
@@ -122,7 +123,7 @@ class TestSpringAppsCreateWithApplicationLiveView(BasicTest):
         self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_application_live_view=False, disable_app_insights=True)
         self.assertIsNone(self.alv_resource)
         self.assertIsNone(self.dev_tool)
-    
+
     def test_asa_standard_with_alv(self):
         self._execute('rg', 'asc', sku=self._get_sku('Standard'), enable_application_live_view=True, disable_app_insights=True)
         self.assertIsNone(self.alv_resource)
@@ -157,7 +158,7 @@ class TestSpringAppsCreateWithApplicationAccelerator(BasicTest):
         self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_application_accelerator=False, disable_app_insights=True)
         self.assertIsNone(self.acc_resource)
         self.assertIsNone(self.dev_tool)
-    
+
     def test_asa_standard_with_acc(self):
         self._execute('rg', 'asc', sku=self._get_sku('Standard'), enable_application_accelerator=True, disable_app_insights=True)
         self.assertIsNone(self.acc_resource)
@@ -182,7 +183,7 @@ class TestSpringCloudCreateWithAI(BasicTest):
     def __init__(self, methodName: str = ...):
         super().__init__(methodName=methodName)
         self.monitoring_settings_resource = None
-    
+
     @mock.patch('azext_spring.custom.get_mgmt_service_client', _get_ai_client)
     def _execute(self, resource_group, name, **kwargs):
         client = kwargs.pop('client', None) or _get_basic_mock_client()
@@ -306,6 +307,7 @@ class TestSpringAppCreateWithIngressConfig(BasicTest):
         self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), ingress_read_timeout=100, disable_app_insights=True)
         resource = self.created_resource
         self.assertEqual(100, resource.properties.network_profile.ingress_config.read_timeout_in_seconds)
+
 
 class TestSpringAppCreateWithLogStreamConfig(BasicTest):
     def test_asa_create_standard_with_log_stream_config(self):

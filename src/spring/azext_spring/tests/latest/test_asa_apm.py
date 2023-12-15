@@ -5,7 +5,6 @@
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
-import os
 
 from azure.cli.testsdk import (ScenarioTest)
 from azure.cli.testsdk.reverse_dependency import (
@@ -46,8 +45,6 @@ class ApmTest(ScenarioTest):
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
     @TearDown()
     def test_apm(self, resource_group, spring):
-        py_path = os.path.abspath(os.path.dirname(__file__))
-
         self.kwargs.update({
             'serviceName': spring,
             'rg': resource_group,

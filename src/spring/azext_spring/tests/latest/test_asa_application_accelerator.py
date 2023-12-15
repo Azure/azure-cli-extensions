@@ -8,7 +8,7 @@ from azure.cli.testsdk import (ScenarioTest)
 from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 from ...vendored_sdks.appplatform.v2023_11_01_preview import models
-from ...application_accelerator import (application_accelerator_create as create, 
+from ...application_accelerator import (application_accelerator_create as create,
                                         application_accelerator_delete as delete)
 try:
     import unittest.mock as mock
@@ -48,16 +48,17 @@ def _mock_dev_tool_portal(enable_accelerator):
     resource.properties.features = models.DevToolPortalFeatureSettings(
         application_accelerator=models.DevToolPortalFeatureDetail(
             state=models.DevToolPortalFeatureState.ENABLED if enable_accelerator \
-                    else models.DevToolPortalFeatureState.DISABLED
-        )
-    )
+                    else models.DevToolPortalFeatureState.DISABLED))
     return resource
+
 
 def _mock_enabled_get_dev_tool_portal(*_):
     return _mock_dev_tool_portal(enable_accelerator=True)
 
+
 def _mock_disabled_get_dev_tool_portal(*_):
     return _mock_dev_tool_portal(enable_accelerator=False)
+
 
 class ApplicationAccelerator(unittest.TestCase):
     def __init__(self, methodName: str = ...):
@@ -87,13 +88,11 @@ class ApplicationAccelerator(unittest.TestCase):
         self.assertIsNotNone(self.created_resource)
         self.assertIsNone(self.dev_tool_portal)
 
-    
     @mock.patch('azext_spring.application_accelerator.get_dev_tool_portal', _mock_enabled_get_dev_tool_portal)
     def test_asa_acc_create_skip_configure_dev_tool_portal_wait(self):
         self._execute(create, _get_test_cmd(), None, 'asa', 'rg', False)
         self.assertIsNotNone(self.created_resource)
         self.assertIsNone(self.dev_tool_portal)
-
 
     @mock.patch('azext_spring.application_accelerator.get_dev_tool_portal', _mock_disabled_get_dev_tool_portal)
     def test_asa_acc_create_configure_dev_tool_portal_wait(self):
@@ -103,7 +102,6 @@ class ApplicationAccelerator(unittest.TestCase):
         self.assertEqual(models.DevToolPortalFeatureState.ENABLED,
                          self.dev_tool_portal.properties.features.application_accelerator.state)
 
-
     @mock.patch('azext_spring.application_accelerator.get_dev_tool_portal', _mock_not_get_dev_tool_portal)
     def test_asa_acc_delete_dev_tool_portal_disable_wait(self):
         self._execute(delete, _get_test_cmd(), None, 'asa', 'rg', False)
@@ -111,14 +109,12 @@ class ApplicationAccelerator(unittest.TestCase):
         self.assertIsNone(self.dev_tool_portal)
         self.assertTrue(self.deleted)
 
-    
     @mock.patch('azext_spring.application_accelerator.get_dev_tool_portal', _mock_disabled_get_dev_tool_portal)
     def test_asa_acc_delete_skip_configure_dev_tool_portal_wait(self):
         self._execute(delete, _get_test_cmd(), None, 'asa', 'rg', False)
         self.assertIsNone(self.created_resource)
         self.assertTrue(self.deleted)
         self.assertIsNone(self.dev_tool_portal)
-
 
     @mock.patch('azext_spring.application_accelerator.get_dev_tool_portal', _mock_enabled_get_dev_tool_portal)
     def test_asa_acc_delete_configure_dev_tool_portal_wait(self):
@@ -130,9 +126,10 @@ class ApplicationAccelerator(unittest.TestCase):
                          self.dev_tool_portal.properties.features.application_accelerator.state)
 
 '''
-Since the scenarios covered here depend on a Azure Spring service instance creation. 
-It cannot support live run. So mark it as record_only. 
+Since the scenarios covered here depend on a Azure Spring service instance creation.
+It cannot support live run. So mark it as record_only.
 '''
+
 
 class ApiApplicationAcceleratorTest(ScenarioTest):
 
@@ -153,17 +150,16 @@ class ApiApplicationAcceleratorTest(ScenarioTest):
         self.cmd('spring application-accelerator create -g {rg} -s {serviceName}',
                  checks=[
                      self.check('properties.provisioningState', "Succeeded")
-                 ]
-        )
+                 ])
 
         self.cmd('spring dev-tool show -g {rg} -s {serviceName}', checks=[
             self.check('properties.features.applicationAccelerator.state', 'Enabled')
         ])
 
-        self.cmd('spring application-accelerator show -g {rg} -s {serviceName}', 
-        checks=[
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+        self.cmd('spring application-accelerator show -g {rg} -s {serviceName}',
+                 checks=[
+                     self.check('properties.provisioningState', "Succeeded")
+                 ])
 
         self.cmd('spring application-accelerator delete --yes -g {rg} -s {serviceName}')
 

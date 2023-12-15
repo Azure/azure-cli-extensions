@@ -14,6 +14,7 @@ Since the scenarios covered here depend on a Azure Spring service instance creat
 It cannot support live run. So mark it as record_only. 
 '''
 
+
 class ApidAcceleratorTest(ScenarioTest):
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
@@ -29,27 +30,27 @@ class ApidAcceleratorTest(ScenarioTest):
         result = self.cmd('spring application-accelerator predefined-accelerator list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)
 
-        self.cmd('spring application-accelerator predefined-accelerator show -n {name} -g {rg} -s {serviceName}', 
-        checks=[
-            self.check('properties.provisioningState', "Succeeded"),
-            self.check('properties.state', "Enabled")
-        ])
+        self.cmd('spring application-accelerator predefined-accelerator show -n {name} -g {rg} -s {serviceName}',
+                 checks=[
+                     self.check('properties.provisioningState', "Succeeded"),
+                     self.check('properties.state', "Enabled")
+                 ])
 
         self.cmd('spring application-accelerator predefined-accelerator disable -n {name} -g {rg} -s {serviceName}')
 
-        self.cmd('spring application-accelerator predefined-accelerator show -n {name} -g {rg} -s {serviceName}', 
-        checks=[
-            self.check('properties.provisioningState', "Succeeded"),
-            self.check('properties.state', "Disabled")
-        ])
+        self.cmd('spring application-accelerator predefined-accelerator show -n {name} -g {rg} -s {serviceName}',
+                 checks=[
+                     self.check('properties.provisioningState', "Succeeded"),
+                     self.check('properties.state', "Disabled")
+                 ])
 
         self.cmd('spring application-accelerator predefined-accelerator enable -n {name} -g {rg} -s {serviceName}')
 
-        self.cmd('spring application-accelerator predefined-accelerator show -n {name} -g {rg} -s {serviceName}', 
-        checks=[
-            self.check('properties.provisioningState', "Succeeded"),
-            self.check('properties.state', "Enabled")
-        ])
+        self.cmd('spring application-accelerator predefined-accelerator show -n {name} -g {rg} -s {serviceName}',
+                 checks=[
+                     self.check('properties.provisioningState', "Succeeded"),
+                     self.check('properties.state', "Enabled")
+                 ])
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
@@ -64,23 +65,23 @@ class ApidAcceleratorTest(ScenarioTest):
             'gitBranch': 'master',
         })
 
-        self.cmd('spring application-accelerator customized-accelerator create -n {name} -g {rg} -s {serviceName} --display-name {displayName} --git-url {gitUrl} --git-branch {gitBranch} --git-interval 10', 
-        checks=[
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+        self.cmd('spring application-accelerator customized-accelerator create -n {name} -g {rg} -s {serviceName} --display-name {displayName} --git-url {gitUrl} --git-branch {gitBranch} --git-interval 10',
+                 checks=[
+                     self.check('properties.provisioningState', "Succeeded")
+                 ])
 
-        self.cmd('spring application-accelerator customized-accelerator update -n {name} -g {rg} -s {serviceName} --display-name {displayName} --git-url {gitUrl} --git-branch {gitBranch} --description desc', 
-        checks=[
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+        self.cmd('spring application-accelerator customized-accelerator update -n {name} -g {rg} -s {serviceName} --display-name {displayName} --git-url {gitUrl} --git-branch {gitBranch} --description desc',
+                 checks=[
+                     self.check('properties.provisioningState', "Succeeded")
+                 ])
 
         result = self.cmd('spring application-accelerator customized-accelerator list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) == 1)
 
-        self.cmd('spring application-accelerator customized-accelerator show -n {name} -g {rg} -s {serviceName}', 
-        checks=[
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+        self.cmd('spring application-accelerator customized-accelerator show -n {name} -g {rg} -s {serviceName}',
+                 checks=[
+                     self.check('properties.provisioningState', "Succeeded")
+                 ])
 
         self.cmd('spring application-accelerator customized-accelerator delete -n {name} -g {rg} -s {serviceName}')
 
@@ -101,26 +102,26 @@ class ApidAcceleratorTest(ScenarioTest):
             'gitBranch': 'main',
         })
 
-        self.cmd('spring application-accelerator customized-accelerator create -n {name} -g {rg} -s {serviceName} --type Fragment --display-name {displayName} --git-sub-path {gitSubPath} --git-url {gitUrl} --git-branch {gitBranch} --git-interval 10', 
-        checks=[
-            self.check('properties.acceleratorType', "Fragment"),
-            self.check('properties.gitRepository.subPath', "java-version"),
-            self.check('properties.imports', ["java-version"]),
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+        self.cmd('spring application-accelerator customized-accelerator create -n {name} -g {rg} -s {serviceName} --type Fragment --display-name {displayName} --git-sub-path {gitSubPath} --git-url {gitUrl} --git-branch {gitBranch} --git-interval 10',
+                 checks=[
+                     self.check('properties.acceleratorType', "Fragment"),
+                     self.check('properties.gitRepository.subPath', "java-version"),
+                     self.check('properties.imports', ["java-version"]),
+                     self.check('properties.provisioningState', "Succeeded")
+                 ])
 
-        self.cmd('spring application-accelerator customized-accelerator update -n {name} -g {rg} -s {serviceName} --type Fragment --display-name {displayName} --git-sub-path {gitSubPath} --git-url {gitUrl} --git-branch {gitBranch} --description desc', 
-        checks=[
-            self.check('properties.acceleratorType', "Fragment"),
-            self.check('properties.gitRepository.subPath', "java-version"),
-            self.check('properties.imports', ["java-version"]),
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+        self.cmd('spring application-accelerator customized-accelerator update -n {name} -g {rg} -s {serviceName} --type Fragment --display-name {displayName} --git-sub-path {gitSubPath} --git-url {gitUrl} --git-branch {gitBranch} --description desc',
+                 checks=[
+                     self.check('properties.acceleratorType', "Fragment"),
+                     self.check('properties.gitRepository.subPath', "java-version"),
+                     self.check('properties.imports', ["java-version"]),
+                     self.check('properties.provisioningState', "Succeeded")
+                 ])
 
-        self.cmd('spring application-accelerator customized-accelerator show -n {name} -g {rg} -s {serviceName}', 
-        checks=[
-            self.check('properties.acceleratorType', "Fragment"),
-            self.check('properties.gitRepository.subPath', "java-version"),
-            self.check('properties.imports', ["java-version"]),
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+        self.cmd('spring application-accelerator customized-accelerator show -n {name} -g {rg} -s {serviceName}',
+                 checks=[
+                     self.check('properties.acceleratorType', "Fragment"),
+                     self.check('properties.gitRepository.subPath', "java-version"),
+                     self.check('properties.imports', ["java-version"]),
+                     self.check('properties.provisioningState', "Succeeded")
+                 ])

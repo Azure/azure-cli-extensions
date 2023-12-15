@@ -30,6 +30,7 @@ free_mock_client = mock.MagicMock()
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
+
 class ApiPortalWrapper(SpringSubResourceWrapper):
     def __init__(self,
                  resource_group_parameter_name='resource_group',
@@ -76,8 +77,7 @@ class ApiPortalTest(ScenarioTest):
                      self.check('properties.ssoProperties.issuerUri', "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"),
                      self.check('properties.ssoProperties.scope', ["openid", "profile", "email"]),
                      self.check('properties.provisioningState', "Succeeded")
-                    ]
-                 )
+                 ])
 
         self.cmd('spring api-portal show -g {rg} -s {serviceName}', checks=[
             self.check('properties.public', True),
@@ -127,12 +127,11 @@ class ApiPortalUnitTest(unittest.TestCase):
                                         'asa',
                                         'my-domain.microsoft.com')
         args = client.api_portal_custom_domains.begin_create_or_update.call_args_list
-        self.assertEqual(1, len(args)) # one call
-        self.assertEqual(5, len(args[0][0])) # 5 parameters
+        self.assertEqual(1, len(args))  # one call
+        self.assertEqual(5, len(args[0][0]))  # 5 parameters
         self.assertEqual(('rg', 'asa', 'default', 'my-domain.microsoft.com'), args[0][0][0:4])
         resource = args[0][0][4]
         self.assertIsNone(resource.properties.thumbprint)
-
 
     def test_custom_domain_with_cert(self):
         def _get_cert(*_, **__):
@@ -151,8 +150,8 @@ class ApiPortalUnitTest(unittest.TestCase):
                                         'my-domain.microsoft.com',
                                         'my-cert')
         args = client.api_portal_custom_domains.begin_create_or_update.call_args_list
-        self.assertEqual(1, len(args)) # one call
-        self.assertEqual(5, len(args[0][0])) # 5 parameters
+        self.assertEqual(1, len(args))  # one call
+        self.assertEqual(5, len(args[0][0]))  # 5 parameters
         self.assertEqual(('rg', 'asa', 'default', 'my-domain.microsoft.com'), args[0][0][0:4])
         resource = args[0][0][4]
         self.assertEqual('my-thumbprint', resource.properties.thumbprint)
@@ -180,6 +179,6 @@ class ApiPortalUnitTest(unittest.TestCase):
                                         'asa',
                                         'my-domain.microsoft.com')
         args = client.api_portal_custom_domains.begin_delete.call_args_list
-        self.assertEqual(1, len(args)) # one call
-        self.assertEqual(4, len(args[0][0])) # 5 parameters
+        self.assertEqual(1, len(args))  # one call
+        self.assertEqual(4, len(args[0][0]))  # 5 parameters
         self.assertEqual(('rg', 'asa', 'default', 'my-domain.microsoft.com'), args[0][0])
