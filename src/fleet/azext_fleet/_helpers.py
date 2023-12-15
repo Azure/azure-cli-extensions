@@ -141,4 +141,3 @@ def _load_kubernetes_configuration(filename):
         raise
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
         raise CLIError(f'Error parsing {filename} ({str(ex)})') from ex
-
