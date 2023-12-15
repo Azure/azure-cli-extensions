@@ -181,16 +181,11 @@ class DefaultApp:
             return None
 
         addon_configs = {}
-        service_registry = {}
-        application_configuration_service = {}
 
         if bind_service_registry:
-            service_registry['resourceId'] = bind_service_registry
+             addon_configs['serviceRegistry'] = {'resourceId': bind_service_registry}
         if bind_application_configuration_service:
-            application_configuration_service['resourceId'] = bind_application_configuration_service
-
-        addon_configs['serviceRegistry'] = service_registry
-        addon_configs['applicationConfigurationService'] = application_configuration_service
+             addon_configs['applicationConfigurationService'] = {'resourceId': bind_application_configuration_service}
         return addon_configs
 
 class BasicTierApp(DefaultApp):
