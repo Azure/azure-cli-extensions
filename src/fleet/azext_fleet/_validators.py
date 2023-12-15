@@ -23,7 +23,7 @@ def validate_kubernetes_version(namespace):
         found = k8s_release_regex.findall(namespace.kubernetes_version)
         if not found:
             raise InvalidArgumentValueError(
-                '--kubernetes-version should be the full version number or alias minor version, such as "1.7.12" or "1.7"')
+                '--kubernetes-version should be the full version number or alias minor version, such as "1.7.12" or "1.7"') # pylint: disable=line-too-long
 
 
 def validate_apiserver_subnet_id(namespace):
