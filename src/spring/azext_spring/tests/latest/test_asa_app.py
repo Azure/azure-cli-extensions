@@ -29,6 +29,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 def _get_test_cmd():
     cli_ctx = DummyCli()
     cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
@@ -192,7 +193,7 @@ class TestAppDeploy_Patch(BasicTest):
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_continous_deploy_net(self, file_mock):
         file_mock.return_value = mock.MagicMock()
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         deployment.properties.source.type = 'NetCoreZip'
         deployment.properties.source.relative_path = 'my-path'
         deployment.properties.source.runtime_version = 'NetCore_31'
@@ -219,7 +220,7 @@ class TestAppDeploy_Patch(BasicTest):
     @mock.patch('azext_spring._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_continous_deploy_source(self, file_mock):
         file_mock.return_value = mock.MagicMock()
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         deployment.properties.source.type = 'Container'
         deployment.properties.source.relative_path = 'my-path'
         deployment.properties.source.version = '123'
@@ -283,7 +284,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         if build_args and build_args[0]:
             self.assertEqual(1, len(build_args))
             self.assertEqual(5, len(build_args[0][0]))
-            self.assertEqual(args[0:2]+('default',) + (args[2]+'-default',), build_args[0][0][0:4])
+            self.assertEqual(args[0:2] + ('default',) + (args[2] + '-default',), build_args[0][0][0:4])
             self.put_build_resource = build_args[0][0][4]
 
     def _execute(self, *args, **kwargs):
@@ -297,7 +298,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self.assertEqual(5, len(call_args[0][0]))
         self.assertEqual(args[0:3] + ('default',), call_args[0][0][0:4])
         self.patch_deployment_resource = call_args[0][0][4]
- 
+
     def _get_deployment(self):
         deployment = super()._get_deployment()
         deployment.properties.source.type = 'BuildResult'
@@ -600,7 +601,7 @@ class TestAppUpdate(BasicTest):
         deployment.properties.source.net_core_main_entry_path = 'main-entry'
         with self.assertRaisesRegexp(CLIError, '--jvm-options cannot be set when --runtime-version is NetCore_31.'):
             self._execute('rg', 'asc', 'app', jvm_options='test-option', deployment=deployment)
-    
+
     def test_vnet_public_endpoint(self):
         deployment = self._get_deployment()
 
@@ -744,7 +745,7 @@ class TestAppCreate(BasicTest):
         self.assertEqual(True, resource.properties.vnet_addons.public_endpoint)
 
     def test_app_with_ingress_settings(self):
-        self._execute('rg', 'asc', 'app', instance_count=1, ingress_read_timeout=600, ingress_send_timeout=1200, session_affinity='Cookie', 
+        self._execute('rg', 'asc', 'app', instance_count=1, ingress_read_timeout=600, ingress_send_timeout=1200, session_affinity='Cookie',
                       session_max_age=1000, backend_protocol='Default')
         resource = self.put_app_resource
         self.assertEqual(600, resource.properties.ingress_settings.read_timeout_in_seconds)
@@ -878,7 +879,7 @@ class TestDeploymentCreate(BasicTest):
         self.assertEqual('<default>', resource.properties.source.relative_path)
 
     def test_create_deployment_with_ACS_Pattern_in_enterprise(self):
-        deployment=self._get_deployment(sku='Enterprise')
+        deployment = self._get_deployment(sku='Enterprise')
         client = self._get_basic_mock_client('Enterprise', deployment)
         deployment.properties.deployment_settings.addon_configs = {'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}}
         self._execute('rg', 'asc', 'app', 'green', client=client)

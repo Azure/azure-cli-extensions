@@ -51,13 +51,12 @@ class AppDeploy(ScenarioTest):
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v1')
 
-
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
     def test_deploy_app_1(self, resource_group, spring, app):
         py_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
+        file_path = os.path.join(py_path, 'files/test.jar').replace("\\", "/")
         self.kwargs.update({
             'app': app,
             'serviceName': spring,
@@ -122,7 +121,6 @@ class AppCRUD(ScenarioTest):
             self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
 
-
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
@@ -148,7 +146,6 @@ class AppCRUD(ScenarioTest):
             self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
             self.check('sku.capacity', 1)
         ])
-
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
@@ -242,7 +239,6 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.customContainer.containerImage', '{containerImage}'),
             self.check('properties.source.customContainer.languageFramework', None),
         ])
-
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
