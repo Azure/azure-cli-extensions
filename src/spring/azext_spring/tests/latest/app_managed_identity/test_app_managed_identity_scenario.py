@@ -79,20 +79,20 @@ class AppIdentityAssign(ScenarioTest):
         self.assertTrue(self._contains_user_id_2(user_identity_dict.keys()))
 
         self.cmd('spring app identity remove -n {app} -g {rg} -s {serviceName} --user-assigned {ua2}',checks=[
-           self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED, case_sensitive=False),
-           self.exists('identity.tenantId'),
-           self.exists('identity.principalId'),
-           self.check('identity.userAssignedIdentities', None)
+            self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED, case_sensitive=False),
+            self.exists('identity.tenantId'),
+            self.exists('identity.principalId'),
+            self.check('identity.userAssignedIdentities', None)
         ])
 
         self.cmd('spring app identity remove -n {app} -g {rg} -s {serviceName} --system-assigned',
                  checks=[self.check('identity', None)])
 
         app = self.cmd('spring app identity assign -n {app} -g {rg} -s {serviceName} --system-assigned --user-assigned {ua1} {ua2}', checks=[
-           self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED, case_sensitive=False),
-           self.exists('identity.tenantId'),
-           self.exists('identity.principalId'),
-           self.exists('identity.userAssignedIdentities')
+            self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED, case_sensitive=False),
+            self.exists('identity.tenantId'),
+            self.exists('identity.principalId'),
+            self.exists('identity.userAssignedIdentities')
         ]).json_value
         user_identity_dict = self._to_lower(app['identity']['userAssignedIdentities'])
         self.assertTrue(type(user_identity_dict) == dict)

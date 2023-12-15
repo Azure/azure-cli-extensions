@@ -56,14 +56,18 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
         ])
 
         self.cmd('spring application-configuration-service git repo add -g {rg} -s {serviceName} '
-                 '-n {repo} --label {label} --patterns {patterns} --uri {uri}', checks=[
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+                 '-n {repo} --label {label} --patterns {patterns} --uri {uri}',
+                 checks=[
+                     self.check('properties.provisioningState', "Succeeded")
+                 ]
+        )
 
         self.cmd('spring application-configuration-service git repo update -g {rg} -s {serviceName} '
-                 '-n {repo} --label {label}', checks=[
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+                 '-n {repo} --label {label}',
+                 checks=[
+                     self.check('properties.provisioningState', "Succeeded")
+                 ]
+        )
 
         result = self.cmd('spring application-configuration-service git repo list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)

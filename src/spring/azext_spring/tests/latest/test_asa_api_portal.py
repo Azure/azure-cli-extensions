@@ -66,16 +66,18 @@ class ApiPortalTest(ScenarioTest):
 
         self.cmd('spring api-portal update -g {rg} -s {serviceName} '
                  '--assign-endpoint true --https-only true --instance-count 1 '
-                 '--client-id {clientId} --client-secret {secret} --issuer-uri https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0 --scope "openid,profile,email"', checks=[
-            self.check('properties.public', True),
-            self.check('properties.httpsOnly', True),
-            self.check('sku.capacity', 1),
-            self.check('properties.ssoProperties.clientId', "*"),
-            self.check('properties.ssoProperties.clientSecret', "*"),
-            self.check('properties.ssoProperties.issuerUri', "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"),
-            self.check('properties.ssoProperties.scope', ["openid", "profile", "email"]),
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+                 '--client-id {clientId} --client-secret {secret} --issuer-uri https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0 --scope "openid,profile,email"',
+                 checks=[
+                     self.check('properties.public', True),
+                     self.check('properties.httpsOnly', True),
+                     self.check('sku.capacity', 1),
+                     self.check('properties.ssoProperties.clientId', "*"),
+                     self.check('properties.ssoProperties.clientSecret', "*"),
+                     self.check('properties.ssoProperties.issuerUri', "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"),
+                     self.check('properties.ssoProperties.scope', ["openid", "profile", "email"]),
+                     self.check('properties.provisioningState', "Succeeded")
+                 ]
+        )
 
         self.cmd('spring api-portal show -g {rg} -s {serviceName}', checks=[
             self.check('properties.public', True),

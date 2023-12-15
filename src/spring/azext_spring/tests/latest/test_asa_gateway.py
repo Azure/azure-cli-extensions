@@ -39,44 +39,48 @@ class GatewayTest(ScenarioTest):
                  '--apm-types NewRelic ElasticAPM --properties a=b c=d --secrets e=f g=h '
                  '--allowed-origins "*" --allowed-origin-patterns "example*" --allowed-methods "GET,PUT,DELETE" --allowed-headers "X-TEST,X-STAGING" --max-age 10 --allow-credentials true --exposed-headers "Access-Control-Request-Method,Access-Control-Request-Headers" '
                  '--client-id * --client-secret * --issuer-uri https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0 --scope "openid,profile,email" '
-                 '--addon-configs-file {addonConfigsFile}', checks=[
-            self.check('properties.public', True),
-            self.check('properties.httpsOnly', True),
-            self.check('properties.resourceRequests.cpu', "1"),
-            self.check('properties.resourceRequests.memory', "2Gi"),
-            self.check('sku.capacity', 3),
-            self.check('properties.operatorProperties.resourceRequests.cpu', "1"),
-            self.check('properties.operatorProperties.resourceRequests.memory', "2Gi"),
-            self.check('properties.operatorProperties.resourceRequests.instanceCount', 1),
-            self.check('properties.apiMetadataProperties.title', "Pet clinic"),
-            self.check('properties.apiMetadataProperties.description', "Demo for pet clinic"),
-            self.check('properties.apiMetadataProperties.documentation', "doc"),
-            self.check('properties.apiMetadataProperties.serverUrl', "https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"),
-            self.check('properties.apiMetadataProperties.version', "v1"),
-            self.check('properties.corsProperties.allowCredentials', True),
-            self.check('properties.corsProperties.allowedHeaders', ["X-TEST", "X-STAGING"]),
-            self.check('properties.corsProperties.allowedOrigins', ["*"]),
-            self.check('properties.corsProperties.allowedOriginPatterns', ["example*"]),
-            self.check('properties.corsProperties.allowedMethods', ["GET", "PUT", "DELETE"]),
-            self.check('properties.corsProperties.exposedHeaders', ["Access-Control-Request-Method", "Access-Control-Request-Headers"]),
-            self.check('properties.ssoProperties.clientId', "*"),
-            self.check('properties.ssoProperties.clientSecret', "*"),
-            self.check('properties.ssoProperties.issuerUri', "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"),
-            self.check('properties.ssoProperties.scope', ["openid", "profile", "email"]),
-            self.check('properties.clientAuth.certificates', ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/certificates/abc"]),
-            self.check('properties.clientAuth.certificateVerification', "Enabled"),
-            self.check('properties.apmTypes', ["NewRelic", "ElasticAPM"]),
-            self.check('properties.environmentVariables.properties', {'a': 'b', 'c': 'd'}),
-            self.check('properties.environmentVariables.secrets', None),
-            self.check('properties.addonConfigs', {'javaOpts':'-Djava.awt.headless=true','sso':{'rolesAttributeName':'role','inactiveSessionExpirationInMinutes':1},'envs':[{'name':'xxx','value':'yyy'},{'name':'xxx1','value':'yyy'}]}),
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+                 '--addon-configs-file {addonConfigsFile}',
+                 checks=[
+                     self.check('properties.public', True),
+                     self.check('properties.httpsOnly', True),
+                     self.check('properties.resourceRequests.cpu', "1"),
+                     self.check('properties.resourceRequests.memory', "2Gi"),
+                     self.check('sku.capacity', 3),
+                     self.check('properties.operatorProperties.resourceRequests.cpu', "1"),
+                     self.check('properties.operatorProperties.resourceRequests.memory', "2Gi"),
+                     self.check('properties.operatorProperties.resourceRequests.instanceCount', 1),
+                     self.check('properties.apiMetadataProperties.title', "Pet clinic"),
+                     self.check('properties.apiMetadataProperties.description', "Demo for pet clinic"),
+                     self.check('properties.apiMetadataProperties.documentation', "doc"),
+                     self.check('properties.apiMetadataProperties.serverUrl', "https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"),
+                     self.check('properties.apiMetadataProperties.version', "v1"),
+                     self.check('properties.corsProperties.allowCredentials', True),
+                     self.check('properties.corsProperties.allowedHeaders', ["X-TEST", "X-STAGING"]),
+                     self.check('properties.corsProperties.allowedOrigins', ["*"]),
+                     self.check('properties.corsProperties.allowedOriginPatterns', ["example*"]),
+                     self.check('properties.corsProperties.allowedMethods', ["GET", "PUT", "DELETE"]),
+                     self.check('properties.corsProperties.exposedHeaders', ["Access-Control-Request-Method", "Access-Control-Request-Headers"]),
+                     self.check('properties.ssoProperties.clientId', "*"),
+                     self.check('properties.ssoProperties.clientSecret', "*"),
+                     self.check('properties.ssoProperties.issuerUri', "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"),
+                     self.check('properties.ssoProperties.scope', ["openid", "profile", "email"]),
+                     self.check('properties.clientAuth.certificates', ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/certificates/abc"]),
+                     self.check('properties.clientAuth.certificateVerification', "Enabled"),
+                     self.check('properties.apmTypes', ["NewRelic", "ElasticAPM"]),
+                     self.check('properties.environmentVariables.properties', {'a': 'b', 'c': 'd'}),
+                     self.check('properties.environmentVariables.secrets', None),
+                     self.check('properties.addonConfigs', {'javaOpts':'-Djava.awt.headless=true','sso':{'rolesAttributeName':'role','inactiveSessionExpirationInMinutes':1},'envs':[{'name':'xxx','value':'yyy'},{'name':'xxx1','value':'yyy'}]}),
+                     self.check('properties.provisioningState', "Succeeded")
+                 ]
+        )
 
         self.cmd('spring gateway update -g {rg} -s {serviceName} '
-                 '--apm-types '' --apms test-ai', checks=[
-            self.check('properties.apms', [{'resourceId': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apms/test-ai'}]),
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+                 '--apm-types '' --apms test-ai',
+                 checks=[
+                     self.check('properties.apms', [{'resourceId': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apms/test-ai'}]),
+                     self.check('properties.provisioningState', "Succeeded")
+                 ]
+        )
 
         self.cmd('spring gateway show -g {rg} -s {serviceName}', checks=[
             self.check('properties.public', True),
