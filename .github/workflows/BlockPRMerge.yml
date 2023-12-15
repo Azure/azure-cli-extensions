@@ -9,22 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check "do-not-merge" label
-        if: github.event_name == 'pull_request' && github.event.action == 'labeled'
         uses: actions/github-script@v5
         with:
-          github-token: ${{ secrets.CLI_BOT }}
           script: |
             const labels = context.payload.pull_request.labels.map(label => label.name);
             if (labels.includes("do-not-merge")) {
               console.log("PR contains 'do-not-merge' label. Blocking merge.");
-              const octokit = require('@octokit/rest')();
-              octokit.pulls.createReview({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.payload.pull_request.number,
-                event: 'REQUEST_CHANGES',
-                body: 'This PR contains "do-not-merge" label. Please remove the label before merging.'
-              });
               process.exit(1); // Exit with a non-zero status code to block merge
             } else {
               console.log("PR does not contain 'do-not-merge' label. Allow merge.");
