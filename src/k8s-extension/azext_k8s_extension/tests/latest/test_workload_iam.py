@@ -271,13 +271,20 @@ class TestWorkloadIAM(unittest.TestCase):
         mock_local_authority_name = 'any_local_authority_name'
         mock_join_token = 'any_join_token'
 
-        class MockResult():
+        class MockCLI():
             def __init__(self):
-                self.returncode = 0
-                self.stdout = ('\"' + mock_join_token + '\"').encode('utf-8')
+                pass
 
-        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.subprocess.run',
-                   return_value=MockResult()):
+            def invoke(self, cmd, out_file):
+                class MockResult():
+                    def __init__(self):
+                        self.result = mock_join_token
+                        self.error = None
+
+                self.result = MockResult()
+
+        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.get_default_cli',
+                   return_value=MockCLI()):
             # Test & assert
             workload_iam = WorkloadIAM()
             join_token = workload_iam.get_join_token(mock_trust_domain_name, mock_local_authority_name)
@@ -294,7 +301,6 @@ class TestWorkloadIAM(unittest.TestCase):
         mock_trust_domain_name = 'any_trust_domain_name.com'
         mock_local_authority_name = 'any_local_authority_name'
         mock_join_token = 'any_join_token'
-        mock_exit_code = 1
 
         cmd = [
             "az", "workload-iam", "local-authority", "attestation-method", "create",
@@ -305,15 +311,23 @@ class TestWorkloadIAM(unittest.TestCase):
             "--dn", "myJoinToken",
         ]
 
-        class MockResult():
+        class MockCLI():
             def __init__(self):
-                self.returncode = mock_exit_code
+                pass
 
-        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.subprocess.run',
-                   return_value=MockResult()):
+            def invoke(self, cmd, out_file):
+                class MockResult():
+                    def __init__(self):
+                        self.result = None
+                        self.error = True
+
+                self.result = MockResult()
+
+        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.get_default_cli',
+                   return_value=MockCLI()):
             # Test & assert
             workload_iam = WorkloadIAM()
             cmd_str = " ".join(cmd)
             self.assertRaisesRegex(CLIError,
-                f"Failed to generate a join token \(exit code {mock_exit_code}\): {cmd_str}",
+                f"Error while generating a join token. Command: {cmd_str}",
                 workload_iam.get_join_token, mock_trust_domain_name, mock_local_authority_name)

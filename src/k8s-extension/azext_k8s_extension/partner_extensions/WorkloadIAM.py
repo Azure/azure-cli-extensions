@@ -3,11 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import subprocess
+import os
 
 from knack.log import get_logger
 from knack.util import CLIError
 
+from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from ..vendored_sdks.models import (Extension, Scope, ScopeCluster)
@@ -117,36 +118,24 @@ class WorkloadIAM(DefaultExtension):
         Invoke the az command to obtain a join token.
         """
 
-        logger.info("Getting a join token from the control plane")
+        logger.debug("Getting a join token from the control plane")
 
         # Invoke az workload-iam command to obtain the join token
         cmd = [
-            "az", "workload-iam", "local-authority", "attestation-method", "create",
+            "workload-iam", "local-authority", "attestation-method", "create",
             "--td", trust_domain,
             "--la", local_authority,
             "--type", "joinTokenAttestationMethod",
             "--query", "singleUseToken",
             "--dn", "myJoinToken",
         ]
-        cmd_str = " ".join(cmd)
 
-        try:
-            # Note: We can't use get_default_cli() here because its invoke() method
-            # always prints the console output, which we want to avoid.
-            result = subprocess.run(cmd, capture_output=True, shell=True)
-        except Exception as e:
-            logger.error(f"Error while generating a join token: {cmd_str}")
-            raise e
-
-        if result.returncode != 0:
-            raise CLIError(f"Failed to generate a join token (exit code {result.returncode}): {cmd_str}")
-
-        try:
-            # Strip double quotes from the output
-            command_output = result.stdout.decode("utf-8")
-            token = command_output.strip("\r\n").strip("\"")
-        except Exception as e:
-            logger.error(f"Failed to parse output of join token command: {cmd_str}")
-            raise e
+        cli = get_default_cli()
+        cli.invoke(cmd, out_file=open(os.devnull, 'w'))  # Don't print output
+        if cli.result.result:
+            token = cli.result.result
+        elif cli.result.error:
+            cmd_str = "az " + " ".join(cmd)
+            raise CLIError(f"Error while generating a join token. Command: {cmd_str}")
 
         return token
