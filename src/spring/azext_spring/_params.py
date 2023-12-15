@@ -284,7 +284,7 @@ def load_arguments(self, _):
             TestKeyType), help='Type of test-endpoint key')
 
     with self.argument_context('spring list-support-server-versions') as c:
-            c.argument('service', service_name_type, validator=not_support_enterprise)
+        c.argument('service', service_name_type, validator=not_support_enterprise)
 
     with self.argument_context('spring app') as c:
         c.argument('service', service_name_type)
