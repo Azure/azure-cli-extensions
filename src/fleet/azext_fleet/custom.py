@@ -157,7 +157,7 @@ def update_fleet(cmd,
             resource_type=CUSTOM_MGMT_FLEET,
             operation_group="fleets")
         managed_service_identity.user_assigned_identities = {mi_user_assigned: user_assigned_identity_model()}
-    else:
+    elif mi_system_assigned is False:
         managed_service_identity = fleet_managed_service_identity_model(type="None")
 
     fleet_patch = fleet_patch_model(

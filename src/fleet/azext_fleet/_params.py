@@ -30,21 +30,18 @@ def load_arguments(self, _):
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True, help='The subnet to be used when apiserver vnet integration is enabled. It is required when creating a new Fleet with BYO vnet.')
         c.argument('agent_subnet_id', validator=validate_agent_subnet_id, is_preview=True, help='The ID of the subnet which the Fleet hub node will join on startup. If this is not specified, a vnet and subnet will be generated and used.')
         c.argument('mi_system_assigned', action='store_true', help='Enable system assigned managed identity (MSI) on the Fleet resource.')
-        c.argument('mi_user_assigned', validator=validate_identity_id, help='The resource ID of an existing user assigned identity.')
+        c.argument('mi_user_assigned', validator=validate_identity_id, help='Enable user managed identity (MSI) on the Fleet resource by providing a resource ID for an existing user assigned identity.')
         c.argument('enable_hub', action='store_true', is_preview=True, help='If set, the Fleet will be created with a hub cluster.')
         c.argument('vm_size', is_preview=True, validator=validate_vm_size, help='The virtual machine size of the Fleet hub.')
 
     with self.argument_context('fleet update') as c:
         c.argument('tags', tags_type)
         c.argument('mi_system_assigned', arg_type=get_three_state_flag(), help='Enable system assigned managed identity (MSI) on the Fleet resource.')
-        c.argument('mi_user_assigned', validator=validate_identity_id, help='The resource ID of an existing user assigned identity.')
+        c.argument('mi_user_assigned', validator=validate_identity_id, help='TEnable user managed identity (MSI) on the Fleet resource by providing a resource ID for an existing user assigned identity.')
 
     with self.argument_context('fleet get-credentials') as c:
         c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(), default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
-
-    with self.argument_context('fleet identity') as c:
-        c.argument('name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
 
     with self.argument_context('fleet identity assign') as c:
         c.argument('system_assigned', action='store_true', help='Enable system assigned managed identity (MSI) on the Fleet resource.')

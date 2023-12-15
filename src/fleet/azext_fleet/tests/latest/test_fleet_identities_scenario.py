@@ -71,26 +71,26 @@ class FleetIdentitiesScenarioTest(ScenarioTest):
         })
 
         # add a user-assigned identity
-        self.cmd('fleet identity assign -g {rg} -f {fleet_name} --user-assigned {identityID}')
+        self.cmd('fleet identity assign -g {rg} -n {fleet_name} --user-assigned {identityID}')
         self.cmd('fleet show -g {rg} -n {fleet_name}', checks=[
             self.check('identity.type', 'UserAssigned'),
             self.check('identity.userAssignedIdentities."{identityID}".principalId', '{identityPrincipalID}')
         ])
 
         # remove the user-assigned identity
-        self.cmd('fleet identity remove -g {rg} -f {fleet_name} --user-assigned --yes')
+        self.cmd('fleet identity remove -g {rg} -n {fleet_name} --user-assigned --yes')
         self.cmd('fleet show -g {rg} -n {fleet_name}', checks=[
             self.check('identity.type', 'None')
         ])
 
         # add a system-assigned identity
-        self.cmd('fleet identity assign -g {rg} -f {fleet_name} --system-assigned')
+        self.cmd('fleet identity assign -g {rg} -n {fleet_name} --system-assigned')
         self.cmd('fleet show -g {rg} -n {fleet_name}', checks=[
             self.check('identity.type', 'SystemAssigned')
         ])
 
         # remove the system-assigned identity
-        self.cmd('fleet identity remove -g {rg} -f {fleet_name} --system-assigned --yes')
+        self.cmd('fleet identity remove -g {rg} -n {fleet_name} --system-assigned --yes')
         self.cmd('fleet show -g {rg} -n {fleet_name}', checks=[
             self.check('identity.type', 'None')
         ])

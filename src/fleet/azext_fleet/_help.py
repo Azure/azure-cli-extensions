@@ -27,7 +27,7 @@ helps['fleet create'] = """
           text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --enable-hub --tags "TagKey=TagValue"
         - name: Create a fleet with a system assigned managed service identity.
           text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --mi-system-assigned
-        - name: Create a fleet with a user provided managed service identity.
+        - name: Create a fleet with a user assigned managed service identity.
           text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --mi-user-assigned "/subscription/00000000-0000-0000-0000-000000000000/resourcegroup/MyFleetResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity"
 """
 
@@ -316,7 +316,7 @@ helps['fleet updatestrategy wait'] = """
 
 helps['fleet identity'] = """
     type: group
-    short-summary: Commands to the fleet identity.
+    short-summary: Commands to manage the fleet identity.
 """
 
 helps['fleet identity assign'] = """
@@ -331,9 +331,9 @@ helps['fleet identity assign'] = """
           short-summary: The resource ID of an existing user assigned identity.
     examples:
         - name: Assign a system assigned identity to the fleet.
-          text: az fleet identity assign -g MyFleetResourceGroup -f MyFleetName --system-assigned
+          text: az fleet identity assign -g MyFleetResourceGroup -n MyFleetName --system-assigned
         - name: Assign a user assigned identity to the fleet.
-          text: az fleet identity assign -g MyFleetResourceGroup -f MyFleetName --user-assigned "/subscription/00000000-0000-0000-0000-000000000000/resourcegroup/MyFleetResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity"
+          text: az fleet identity assign -g MyFleetResourceGroup -n MyFleetName --user-assigned "/subscription/00000000-0000-0000-0000-000000000000/resourcegroup/MyFleetResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity"
 """
 
 helps['fleet identity remove'] = """
@@ -348,9 +348,9 @@ helps['fleet identity remove'] = """
           short-summary: Removes the user assigned identity, resulting in changing the fleet's identity to "none".
     examples:
         - name: Remove a system assigned identity from the fleet.
-          text: az fleet identity remove -g MyFleetResourceGroup -f MyFleetName --system-assigned
+          text: az fleet identity remove -g MyFleetResourceGroup -n MyFleetName --system-assigned
         - name: Remove a user assigned identity from the fleet.
-          text: az fleet identity remove -g MyFleetResourceGroup -f MyFleetName --user-assigned
+          text: az fleet identity remove -g MyFleetResourceGroup -n MyFleetName --user-assigned
 """
 
 helps['fleet identity show'] = """
@@ -358,7 +358,7 @@ helps['fleet identity show'] = """
     short-summary: Shows the identity of the fleet.
     examples:
         - name: Show the identity of the fleet.
-          text: az fleet identity show -g MyFleetResourceGroup -f MyFleetName
+          text: az fleet identity show -g MyFleetResourceGroup -n MyFleetName
 """
 
 helps['fleet identity wait'] = """
