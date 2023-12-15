@@ -340,6 +340,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                     disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, release_namespace, helm_client_location)
                 return cc_response
             else:
+                # If cluster is of kind provisioned cluster, there are several properties that cannot be updated
+                validate_existing_provisioned_cluster_for_reput(preview_cluster_resource, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, location)    
+
                 telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
                                         summary='Kubernetes cluster already onboarded')
                 raise ArgumentUsageError("The kubernetes cluster you are trying to onboard " +
@@ -443,7 +446,7 @@ def validate_existing_provisioned_cluster_for_reput(cluster_resource, kubernetes
         ]
 
         for value in validation_values:
-            if value is not None:
+            if not value is None:
                 raise InvalidArgumentValueError("Updating the following properties of a Provisioned Cluster are not supported from the Connected Cluster CLI: kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, location, public_key.\n\nPlease use the 'az aksarc update' CLI command. https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update")
 
 
