@@ -99,9 +99,10 @@ def create_fleet(cmd,
     managed_service_identity = fleet_managed_service_identity_model(type="None")
     if mi_system_assigned is True and mi_user_assigned is not None:
         raise CLIError("A fleet can either have a system or user assigned identity but not both.")
+    
     if mi_system_assigned is True and mi_user_assigned is None:
         managed_service_identity.type = "SystemAssigned"
-    if mi_user_assigned is not None:
+    elif mi_user_assigned is not None:
         user_assigned_identity_model = cmd.get_models(
             "UserAssignedIdentity",
             resource_type=CUSTOM_MGMT_FLEET,
