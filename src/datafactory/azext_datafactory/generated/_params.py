@@ -309,7 +309,7 @@ def load_arguments(self, _):
         ),
         c.argument(
             "enableselfcontainedia",
-            options_list=['--enable-self-contained-interactive-authoring', '--scia-enabled'],
+            options_list=['--enable-self-contained-interactive-authoring', '--enable-scia'],
             type=str,
             help="An alternative option to ensure interactive authoring function when your self-hosted integration runtime is unable to establish a connection with Azure Relay.",
         ),
