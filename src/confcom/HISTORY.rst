@@ -2,6 +2,17 @@
 
 Release History
 ===============
+0.3.1
+++++++
+* removing unneeded print statement
+
+0.3.0
+++++++
+* adding katapolicygen as a subcommand
+
+0.2.18
+++++++
+* adding warning if printing to stdout
 
 0.2.17
 ++++++
@@ -48,7 +59,7 @@ Release History
 * changing startup checks to errors rather than warnings
 * can specify image name in arm template by its SHA256 hash
 * disabling stdio in pause container
-* adding another README.md with omre descriptive information
+* adding another README.md with more descriptive information
 
 0.2.9
 ++++++
@@ -82,7 +93,6 @@ Release History
 * added ability to use tarball as input for layer hashes and container manifests
 * added initContainers as container source in ARM Template
 * update dealing with liveness and readiness probes
-* update
 
 0.2.2
 ++++++

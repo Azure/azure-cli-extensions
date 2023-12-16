@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.5.3
+++++++++++++++++++
+* Add WorkloadIAM extension support and tests.
+
 1.5.2
 ++++++++++++++++++
 * Update help text on configuration-settings and configuration-protected-settings properties.

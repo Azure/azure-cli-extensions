@@ -3,7 +3,7 @@
 Release History
 ===============
 
-Upcoming
+1.0.0
 ++++++
 * First Stable version release.
 * Vendor new SDK and bump API version to stable/2023-10-07.

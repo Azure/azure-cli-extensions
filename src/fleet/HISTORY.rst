@@ -60,3 +60,8 @@ Release History
 ++++++
 * Promoted extension to GA.
 * Added `az fleet create` preview parameter `vm-size` for Hubful fleets.
+
+1.0.1
+++++++
+* Updated help examples.
+* Fixed serialization bug.

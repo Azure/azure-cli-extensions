@@ -12,7 +12,6 @@ import subprocess
 from dataclasses import dataclass
 from typing import Any, Optional, Union
 
-from azure.storage.blob import BlobClient, BlobType
 from knack.log import get_logger
 from knack.util import CLIError
 from oras.client import OrasClient
@@ -23,6 +22,8 @@ from azext_aosm._configuration import (
     HelmPackageConfig,
     VhdArtifactConfig,
 )
+from azext_aosm.vendored_sdks.azure_storagev2.blob.v2022_11_02 import (
+    BlobClient, BlobType)
 
 logger = get_logger(__name__)
 
