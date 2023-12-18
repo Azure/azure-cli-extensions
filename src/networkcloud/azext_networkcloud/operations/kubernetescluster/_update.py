@@ -13,6 +13,7 @@ from azext_networkcloud.aaz.latest.networkcloud.kubernetescluster import (
     Update as _Update,
 )
 from azure.cli.core.aaz import AAZListArg, AAZStrArg, register_callback
+from azure.cli.core.aaz._base import has_value
 from knack.log import get_logger
 
 from ..common_ssh import CustomSshOptions
@@ -34,13 +35,13 @@ class Update(_Update, CustomSshOptions):
 
         # Build Kubernetescluster Authentication args
         args_schema = CustomSshOptions.build_ssh_arg_schema(
-            args_schema, "AdministratorConfiguration"
+            args_schema, True, "AdministratorConfiguration"
         )
 
         # Build control_plane_node_configuration ssh-key-values
         args_schema.control_plane_node_configuration.ssh_key_values = AAZListArg(
             options=["ssh-key-values"],
-            help="The array of comma-separated SSH public keys.",
+            help="The array of comma-separated SSH public keys. If empty array is provided, the top level cluster ssh keys will be used.",
         )
         args_schema.control_plane_node_configuration.ssh_key_values.Element = (
             AAZStrArg()
@@ -54,30 +55,44 @@ class Update(_Update, CustomSshOptions):
     @register_callback
     def pre_operations(self):
         args = self.ctx.args
-        ssh_keys = []
-        ssh_keys = CustomSshOptions.add_ssh_config(args)
-        if len(ssh_keys) == 0:
-            logger.warning(
-                "No keys are selected for insertion into the Kubernetes cluster node. "
-                "The image will need to have keys or credentials "
-                "setup in order to access."
-            )
-        if len(ssh_keys) > 0:
+
+        # only send ssh keys if they are provided
+        # special case: if the user has provided an empty array, we need to send an empty array to the backend
+        # to clear the existing keys
+        has_ssh_config = CustomSshOptions.has_ssh_config(args)
+
+        if has_ssh_config:
+            ssh_keys = []
+            ssh_keys = CustomSshOptions.add_ssh_config(args)
+            if len(ssh_keys) == 0:
+                logger.warning(
+                    "Empty SSH key value is provided for the cluster administrator configuration. All existing keys will be removed from the Kubernetes cluster nodes."
+                )
             args.ssh_public_keys = ssh_keys
+        else:
+            # no changes will be expected for this update
+            args.ssh_public_keys = None
 
-        # control plane node configuration
-        ssh_keys_control_plane = []
-        ssh_keys_control_plane += CustomSshOptions.add_ssh_key_action(
-            list(args.control_plane_node_configuration.ssh_key_values)
+        # only send control plane node ssh keys if they are provided
+        has_cp_ssh_config = has_value(
+            args.control_plane_node_configuration.ssh_key_values
         )
-
-        # When control_plane_node_configuration contains no ssh keys in the input, empty 'sshPublicKey' array is not sent to the backend
-        # as it will erase the existing keys in that level. When control_plane_node_configuration sshPublicKey is not sent,
-        # the top level cluster ssh keys will be used
-        # Check if added here to avoid sending empty sshPublicKeys
-        if len(ssh_keys_control_plane) > 0:
+        if has_cp_ssh_config:
+            ssh_keys_control_plane = []
+            ssh_keys_control_plane += CustomSshOptions.add_ssh_key_action(
+                list(args.control_plane_node_configuration.ssh_key_values)
+            )
+            if len(ssh_keys_control_plane) == 0:
+                logger.warning(
+                    "Empty SSH keys array is provided for the control plane. All existing keys will be removed and the top level cluster SSH keys will be used."
+                )
             args.control_plane_node_configuration.ssh_public_keys = (
                 ssh_keys_control_plane
             )
+        else:
+            # When control_plane_node_configuration is not provided, empty 'sshPublicKey' array is not sent to the backend
+            # as it will erase the existing keys in that level. When control_plane_node_configuration sshPublicKey is not sent,
+            # the top level cluster ssh keys will be used
+            ssh_keys_control_plane = None
 
         return args
