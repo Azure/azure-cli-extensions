@@ -12,13 +12,16 @@ NF tests scenarios
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
+
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
     pass
 
+
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
+
 
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
@@ -30,13 +33,15 @@ def call_scenario1(test):
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
+
 def step_create(test, checks=None):
     '''nf create operation'''
     if checks is None:
         checks = []
     test.cmd('az networkfabric fabric create --resource-group {rg} --location {location} --resource-name {name} --nf-sku {nf_sku} --nfc-id {nfc_id}'
-			 ' --fabric-asn {fabric_asn} --ipv4-prefix {ipv4_prefix} --ipv6-prefix {ipv6_prefix} --rack-count {rack_count} --server-count-per-rack {server_count_per_rack}'
-			 ' --ts-config {terminalServerConf} --managed-network-config {managedNetworkConf}', checks=checks)
+             ' --fabric-asn {fabric_asn} --ipv4-prefix {ipv4_prefix} --ipv6-prefix {ipv6_prefix} --rack-count {rack_count} --server-count-per-rack {server_count_per_rack}'
+             ' --ts-config {terminalServerConf} --managed-network-config {managedNetworkConf}', checks=checks)
+
 
 def step_show(test, checks=None):
     '''nf show operation'''
@@ -45,11 +50,13 @@ def step_show(test, checks=None):
     test.cmd(
         'az networkfabric fabric show --resource-name {name} --resource-group {rg}')
 
+
 def step_list_resource_group(test, checks=None):
     '''nf list by resource group operation'''
     if checks is None:
         checks = []
     test.cmd('az networkfabric fabric list --resource-group {rg}')
+
 
 def step_list_subscription(test, checks=None):
     '''nf list by subscription'''
@@ -57,12 +64,14 @@ def step_list_subscription(test, checks=None):
         checks = []
     test.cmd('az networkfabric fabric list')
 
+
 def step_delete(test, checks=None):
     '''nf delete operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric fabric delete --resource-name {deleteNFName} --resource-group {deleteNFRGName}')
+
 
 class GA_NFScenarioTest1(ScenarioTest):
     ''' NFScenario test'''

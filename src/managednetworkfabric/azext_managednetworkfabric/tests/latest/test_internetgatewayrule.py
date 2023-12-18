@@ -12,13 +12,16 @@ Internet Gateway Rule tests scenarios
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
+
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
     pass
 
+
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
+
 
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
@@ -30,12 +33,14 @@ def call_scenario1(test):
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
+
 def step_create(test, checks=None):
     '''Internet Gateway Rule create operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric internetgatewayrule create --resource-group {rg} --location {location} --resource-name {name} --rule-properties {ruleProperties}', checks=checks)
+
 
 def step_show(test, checks=None):
     '''Internet Gateway Rule show operation'''
@@ -44,12 +49,14 @@ def step_show(test, checks=None):
     test.cmd(
         'az networkfabric internetgatewayrule show --resource-name {name} --resource-group {rg}')
 
+
 def step_list_resource_group(test, checks=None):
     '''Internet Gateway Rule list by resource group operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric internetgatewayrule list --resource-group {rg}')
+
 
 def step_list_subscription(test, checks=None):
     '''Internet Gateway Rule list by subscription operation'''
@@ -58,12 +65,14 @@ def step_list_subscription(test, checks=None):
     test.cmd(
         'az networkfabric internetgatewayrule list')
 
+
 def step_delete(test, checks=None):
     '''Internet Gateway Rule delete operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric internetgatewayrule delete --resource-name {name} --resource-group {rg}')
+
 
 class GA_InternetGatewayRuleScenarioTest1(ScenarioTest):
     ''' Internet Gateway Rule Scenario test'''

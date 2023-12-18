@@ -12,13 +12,16 @@ NF tests scenarios
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
+
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
     pass
 
+
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
+
 
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
@@ -26,12 +29,14 @@ def call_scenario1(test):
     step_validateconfiguration(test)
     cleanup_scenario1(test)
 
+
 def step_validateconfiguration(test, checks=None):
     '''nf validate configuration operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric fabric validate-configuration --resource-name {validateNFName} --resource-group {validateNFRGName} --validate-action {validateAction}')
+
 
 class GA_NFValidateScenarioTest1(ScenarioTest):
     ''' NFScenario test'''

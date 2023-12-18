@@ -12,13 +12,16 @@ NF tests scenarios
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
+
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
     pass
 
+
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
+
 
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
@@ -26,12 +29,14 @@ def call_scenario1(test):
     step_commit(test)
     cleanup_scenario1(test)
 
+
 def step_commit(test, checks=None):
     '''nf commit configuration operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric fabric commit-configuration --resource-name {commitNFName} --resource-group {commitNFRGName}')
+
 
 class GA_NFCommitScenarioTest1(ScenarioTest):
     ''' NFScenario test'''

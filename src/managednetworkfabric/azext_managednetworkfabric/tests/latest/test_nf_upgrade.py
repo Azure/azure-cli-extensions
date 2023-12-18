@@ -12,13 +12,16 @@ NF tests scenarios
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
+
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
     pass
 
+
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
+
 
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
@@ -26,12 +29,14 @@ def call_scenario1(test):
     step_upgrade(test)
     cleanup_scenario1(test)
 
+
 def step_upgrade(test, checks=None):
     '''nf upgrade operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric fabric upgrade  --resource-name {upgradeNFName} --resource-group {upgradeNFRGName} --action {upgradeAction} --version {upgradeVersion}')
+
 
 class GA_NFUpgradeScenarioTest1(ScenarioTest):
     ''' NFScenario test'''
@@ -41,8 +46,8 @@ class GA_NFUpgradeScenarioTest1(ScenarioTest):
         self.kwargs.update({
             'upgradeNFRGName': CONFIG.get('NETWORK_FABRIC', 'upgrade_nf_resource_group'),
             'upgradeNFName': CONFIG.get('NETWORK_FABRIC', 'upgrade_nf_name'),
-            'upgradeAction':CONFIG.get('NETWORK_FABRIC', 'upgrade_action'),
-            'upgradeVersion':CONFIG.get('NETWORK_FABRIC', 'upgrade_version')
+            'upgradeAction': CONFIG.get('NETWORK_FABRIC', 'upgrade_action'),
+            'upgradeVersion': CONFIG.get('NETWORK_FABRIC', 'upgrade_version')
         })
 
     def test_GA_nf_upgrade_scenario1(self):

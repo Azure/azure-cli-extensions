@@ -14,13 +14,16 @@ Device tests scenarios
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
+
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
     pass
 
+
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
+
 
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
@@ -28,11 +31,14 @@ def call_scenario1(test):
     step_upgrade(test, checks=[])
     cleanup_scenario1(test)
 
+
 def step_upgrade(test, checks=None):
     '''Device upgrade operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric device upgrade --resource-group {upgradeDeviceRGName} --resource-name {upgradeDeviceName} --version {upgradeVersion}', checks=checks)
+    test.cmd(
+        'az networkfabric device upgrade --resource-group {upgradeDeviceRGName} --resource-name {upgradeDeviceName} --version {upgradeVersion}', checks=checks)
+
 
 class GA_DeviceUpgradeScenarioTest1(ScenarioTest):
     ''' DeviceScenario test'''
@@ -42,7 +48,7 @@ class GA_DeviceUpgradeScenarioTest1(ScenarioTest):
         self.kwargs.update({
             'upgradeDeviceRGName': CONFIG.get('NETWORK_DEVICE', 'upgrade_resource_group'),
             'upgradeDeviceName': CONFIG.get('NETWORK_DEVICE', 'upgrade_device_name'),
-            'upgradeVersion':CONFIG.get('NETWORK_DEVICE', 'upgrade_version')
+            'upgradeVersion': CONFIG.get('NETWORK_DEVICE', 'upgrade_version')
         })
 
     @AllowLargeResponse()
