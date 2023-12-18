@@ -207,7 +207,7 @@ def get_azure_files_info(file_sas_url):
 
 
 def _get_azure_storage_client_info(account_type, sas_url):
-    regex = compile("http(s)?://(?P<account_name>.*?)\.{0}\.(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/(?P<relative_path>.*?)\?(?P<sas_token>.*)".format(account_type))
+    regex = compile(r"http(s)?://(?P<account_name>.*?)\.{0}\.(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/(?P<relative_path>.*?)\?(?P<sas_token>.*)".format(account_type))
     matchObj = search(regex, sas_url)
     account_name = matchObj.group('account_name')
     endpoint_suffix = matchObj.group('endpoint_suffix')
