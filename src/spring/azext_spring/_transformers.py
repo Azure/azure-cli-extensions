@@ -36,8 +36,7 @@ def transform_app_table_output(result):
             _apply_deployment_table(item, item['properties']['activeDeployment'])
 
         persistentStorage = item['properties']['persistentDisk']
-        item['Persistent Storage'] = "{}/{} Gb".format(
-            persistentStorage['usedInGb'], persistentStorage['sizeInGb']) if persistentStorage['sizeInGb'] else "-"
+        item['Persistent Storage'] = f"{persistentStorage['usedInGb']}/{persistentStorage['sizeInGb']} Gb" if persistentStorage['sizeInGb'] else "-"
 
         if 'addonConfigs' in item['properties']:
             addon = item['properties']['addonConfigs']
@@ -116,7 +115,7 @@ def _get_registration_state(deployment):
         return 'N/A'
     up_number = len(
         [x for x in instances if x['discoveryStatus'].upper() == 'UP' or x['discoveryStatus'].upper() == 'OUT_OF_SERVICE'])
-    return "{}/{}".format(up_number, deployment['sku']['capacity'])
+    return f"{up_number}/{deployment['sku']['capacity']}"
 
 
 def _apply_deployment_table(item, deployment):
@@ -128,7 +127,7 @@ def _apply_deployment_table(item, deployment):
     item['Provisioning State'] = deployment['properties']['provisioningState']
     item['CPU'] = deployment['properties']['deploymentSettings']['resourceRequests']['cpu']
     item['Memory'] = deployment['properties']['deploymentSettings']['resourceRequests']['memory']
-    item['Running Instance'] = "{}/{}".format(running_number, instance_count) if isStarted else "Stopped"
+    item['Running Instance'] = f"{running_number}/{instance_count}" if isStarted else "Stopped"
     item['Registered Instance'] = _get_registration_state(deployment)
 
 
@@ -152,7 +151,7 @@ def _transform_acs_service_registry_output(result):
         running_number = len(
             [x for x in instances if x['status'].upper() == "RUNNING"])
         item['Provisioning State'] = item['properties']['provisioningState']
-        item['Running Instance'] = "{}/{}".format(running_number, instance_count)
+        item['Running Instance'] = f"{running_number}/{instance_count}"
         item['CPU'] = item['properties']['resourceRequests']['cpu']
         item['Memory'] = item['properties']['resourceRequests']['memory']
 
@@ -169,7 +168,7 @@ def transform_dev_tool_portal_output(result):
         item['Provisioning State'] = item['properties']['provisioningState']
         item['cpu'] = item['properties']['resourceRequests']['cpu']
         item['memory'] = item['properties']['resourceRequests']['memory']
-        item['instance'] = '{}/{}'.format(len(item['properties'].get('instances', [])), item['properties']['resourceRequests']['instanceCount'])
+        item['instance'] = f"{len(item['properties'].get('instances', []))}/{item['properties']['resourceRequests']['instanceCount']}"
         item['url'] = item['properties'].get('url', '---')
     return result if is_list else result[0]
 
@@ -185,7 +184,7 @@ def transform_live_view_output(result):
         for component in item['properties']['components']:
             item[component['name'] + 'cpu'] = component['resourceRequests']['cpu']
             item[component['name'] + 'memory'] = component['resourceRequests']['memory']
-            item[component['name'] + 'instance'] = '{}/{}'.format(len(component.get('instances', [])), component['resourceRequests']['instanceCount'])
+            item[component['name'] + 'instance'] = f"{len(component.get('instances', []))}/{component['resourceRequests']['instanceCount']}"
 
     return result if is_list else result[0]
 
@@ -203,7 +202,7 @@ def transform_spring_cloud_gateway_output(result):
         running_number = len(
             [x for x in instances if x['status'].upper() == "RUNNING"])
         item['Provisioning State'] = item['properties']['provisioningState']
-        item['Running Instance'] = "{}/{}".format(running_number, instance_count)
+        item['Running Instance'] = f"{running_number}/{instance_count}"
         item['CPU'] = item['properties']['resourceRequests']['cpu']
         item['Memory'] = item['properties']['resourceRequests']['memory']
         operator = item['properties']['operatorProperties']
@@ -211,7 +210,7 @@ def transform_spring_cloud_gateway_output(result):
         operator_instances = item['properties']['instances'] or []
         operator_running_number = len(
             [x for x in operator_instances if x['status'].upper() == "RUNNING"])
-        item['Operator Running Instance'] = "{}/{}".format(operator_running_number, operator_instance_count)
+        item['Operator Running Instance'] = f"{operator_running_number}/{operator_instance_count}"
         item['Operator CPU'] = operator['resourceRequests']['cpu']
         item['Operator Memory'] = operator['resourceRequests']['memory']
 
@@ -231,7 +230,7 @@ def transform_api_portal_output(result):
         running_number = len(
             [x for x in instances if x['status'].upper() == "RUNNING"])
         item['Provisioning State'] = item['properties']['provisioningState']
-        item['Running Instance'] = "{}/{}".format(running_number, instance_count)
+        item['Running Instance'] = f"{running_number}/{instance_count}"
         item['CPU'] = item['properties']['resourceRequests']['cpu']
         item['Memory'] = item['properties']['resourceRequests']['memory']
 
@@ -257,7 +256,7 @@ def transform_application_accelerator_output(result):
             instances = component['instances'] or []
             running_number = len(
                 [x for x in instances if x['status'].upper() == "RUNNING"])
-            new_entry['Running Instance'] = "{}/{}".format(running_number, instance_count)
+            new_entry['Running Instance'] = f"{running_number}/{instance_count}"
             new_entry['CPU'] = component['resourceRequests']['cpu']
             new_entry['Memory'] = component['resourceRequests']['memory']
             new_result.append(new_entry)
@@ -307,7 +306,7 @@ def transform_build_output(result):
     for item in result:
         item['Name'] = item['name']
         item['Provisioning State'] = item['properties']['provisioningState']
-        item['Resource Quota'] = "{}, {}".format(item['properties']['resourceRequests']['cpu'], item['properties']['resourceRequests']['memory'])
+        item['Resource Quota'] = f"{item['properties']['resourceRequests']['cpu']}, {item['properties']['resourceRequests']['memory']}"
         item['Builder'] = item['properties']['builder']
 
     return result if is_list else result[0]

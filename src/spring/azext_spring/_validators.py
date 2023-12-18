@@ -84,31 +84,29 @@ def _validate_terms(cmd, namespace):
                       offer_id=MARKETPLACE_OFFER_ID,
                       plan_id=plan_id)
     if not term.accepted:
-        raise InvalidArgumentValueError('Terms for Azure Spring Apps Enterprise is not accepted.\n'
-                                        'Run "az term accept --publisher {} '
-                                        '--product {} '
-                                        '--plan {}" to accept the term.'.format(MARKETPLACE_PUBLISHER_ID,
-                                                                                MARKETPLACE_OFFER_ID,
-                                                                                plan_id))
+        raise InvalidArgumentValueError(f'Terms for Azure Spring Apps Enterprise is not accepted.\n'
+                                        f'Run "az term accept --publisher {MARKETPLACE_PUBLISHER_ID} '
+                                        f'--product {MARKETPLACE_OFFER_ID} '
+                                        f'--plan {plan_id}" to accept the term.')
 
 
 def _check_tanzu_components_not_enable(cmd, namespace):
     suffix = ('can only be used for Azure Spring Apps Enterprise. '
               'Please add --sku="Enterprise" to create Enterprise instance.')
     if namespace.enable_application_configuration_service:
-        raise ArgumentUsageError('--enable-application-configuration-service {}'.format(suffix))
+        raise ArgumentUsageError(f'--enable-application-configuration-service {suffix}')
     if namespace.enable_service_registry:
-        raise ArgumentUsageError('--enable-service-registry {}'.format(suffix))
+        raise ArgumentUsageError(f'--enable-service-registry {suffix}')
     if namespace.enable_gateway:
-        raise ArgumentUsageError('--enable-gateway {}'.format(suffix))
+        raise ArgumentUsageError(f'--enable-gateway {suffix}')
     if namespace.enable_api_portal:
-        raise ArgumentUsageError('--enable-api-portal {}'.format(suffix))
+        raise ArgumentUsageError(f'--enable-api-portal {suffix}')
     if namespace.enable_application_live_view:
-        raise ArgumentUsageError('--enable-application-live-view {}'.format(suffix))
+        raise ArgumentUsageError(f'--enable-application-live-view {suffix}')
     if namespace.enable_application_accelerator:
-        raise ArgumentUsageError('--enable-application-accelerator {}'.format(suffix))
+        raise ArgumentUsageError(f'--enable-application-accelerator {suffix}')
     if namespace.application_configuration_service_generation:
-        raise ArgumentUsageError('--application-configuration-service-generation {}'.format(suffix))
+        raise ArgumentUsageError(f'--application-configuration-service-generation {suffix}')
 
 
 def validate_instance_count(namespace):
@@ -121,7 +119,7 @@ def validate_instance_not_existed(client, name, location):
     availability_parameters = models.NameAvailabilityParameters(type="Microsoft.AppPlatform/Spring", name=name)
     name_availability = client.services.check_name_availability(location, availability_parameters)
     if not name_availability.name_available and name_availability.reason == "AlreadyExists":
-        raise InvalidArgumentValueError("The service name '{}' is already taken.".format(name))
+        raise InvalidArgumentValueError(f"The service name '{name}' is already taken.")
 
 
 def validate_name(namespace):
@@ -156,7 +154,7 @@ def validate_deployment_name(namespace):
 
 def validate_resource_id(namespace):
     if not is_valid_resource_id(namespace.resource_id):
-        raise InvalidArgumentValueError("Invalid resource id {}".format(namespace.resource_id))
+        raise InvalidArgumentValueError(f"Invalid resource id {namespace.resource_id}")
 
 
 def validate_cosmos_type(namespace):
@@ -166,17 +164,17 @@ def validate_cosmos_type(namespace):
     if type in (ApiType.mongo, ApiType.sql, ApiType.gremlin):
         if namespace.database_name is None:
             raise InvalidArgumentValueError(
-                "Cosmosdb with type {} should specify database name".format(type))
+                f"Cosmosdb with type {type} should specify database name")
 
     if type == ApiType.cassandra:
         if namespace.key_space is None:
             raise InvalidArgumentValueError(
-                "Cosmosdb with type {} should specify key space".format(type))
+                f"Cosmosdb with type {type} should specify key space")
 
     if type == ApiType.gremlin:
         if namespace.key_space is None:
             raise InvalidArgumentValueError(
-                "Cosmosdb with type {} should specify collection name".format(type))
+                f"Cosmosdb with type {type} should specify collection name")
 
 
 def validate_log_limit(namespace):
@@ -340,7 +338,7 @@ def validate_vnet(cmd, namespace):
         # format the app_subnet and service_runtime_subnet
         if not is_valid_resource_id(vnet_id):
             if vnet_id.count('/') > 0:
-                raise InvalidArgumentValueError('--vnet {0} is not a valid name or resource ID'.format(vnet_id))
+                raise InvalidArgumentValueError(f'--vnet {vnet_id} is not a valid name or resource ID')
             vnet_id = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=namespace.resource_group,
@@ -351,7 +349,7 @@ def validate_vnet(cmd, namespace):
         else:
             vnet = parse_resource_id(vnet_id)
             if vnet['namespace'].lower() != 'microsoft.network' or vnet['type'].lower() != 'virtualnetworks':
-                raise InvalidArgumentValueError('--vnet {0} is not a valid VirtualNetwork resource ID'.format(vnet_id))
+                raise InvalidArgumentValueError(f'--vnet {vnet_id} is not a valid VirtualNetwork resource ID')
         namespace.app_subnet = _construct_subnet_id(vnet_id, namespace.app_subnet)
         namespace.service_runtime_subnet = _construct_subnet_id(vnet_id, namespace.service_runtime_subnet)
     else:
@@ -398,7 +396,7 @@ def _validate_subnet(namespace, subnet):
     else:
         return
     if subnet.get("ipConfigurations", None):
-        raise InvalidArgumentValueError('--{} should not have connected device.'.format(name))
+        raise InvalidArgumentValueError(f'--{name} should not have connected device.')
     address = ip_network(subnet["addressPrefix"], strict=False)
     if address.prefixlen > limit:
         error_msg_template = '--{0} should contain at least /{1} address, got /{2}'
@@ -463,7 +461,7 @@ def _set_default_cidr_range(address_prefixes):
     # the last one requires x.x.x.1/16 from API side, it is not a strict address
     last = candidates[-1]
     result = [str(x) for x in candidates]
-    result[-1] = '{0}/16'.format(str(last[1]))
+    result[-1] = f'{str(last[1])}/16'
     return ','.join(result)
 
 
@@ -477,7 +475,7 @@ def _next_range(ip, prefix):
             address = address + 65536
         while address.is_multicast:
             address = address + 268435456
-        return ip_network('{0}/{1}'.format(address, prefix), strict=False)
+        return ip_network(f'{address}/{prefix}', strict=False)
     except ValueError:
         raise InvalidArgumentValueError('Cannot set "reserved-cidr-range" automatically.'
                                         'Please specify "--reserved-cidr-range" with 3 unused CIDR ranges in your '
@@ -486,12 +484,12 @@ def _next_range(ip, prefix):
 
 def _parse_vnet_id_from_subnet(subnet_id):
     if not is_valid_resource_id(subnet_id):
-        raise InvalidArgumentValueError('{0} is not a valid subnet resource ID'.format(subnet_id))
+        raise InvalidArgumentValueError(f'{subnet_id} is not a valid subnet resource ID')
     subnet = parse_resource_id(subnet_id)
     if subnet['namespace'].lower() != 'microsoft.network' or \
        subnet['type'].lower() != 'virtualnetworks' or \
        'resource_type' not in subnet or subnet['resource_type'].lower() != 'subnets':
-        raise InvalidArgumentValueError('{0} is not a valid subnet resource ID'.format(subnet_id))
+        raise InvalidArgumentValueError(f'{subnet_id} is not a valid subnet resource ID')
     return resource_id(
         subscription=subnet['subscription'],
         resource_group=subnet['resource_group'],
@@ -504,11 +502,11 @@ def _parse_vnet_id_from_subnet(subnet_id):
 def _construct_subnet_id(vnet_id, subnet):
     if not is_valid_resource_id(subnet):
         if subnet.count('/'):
-            raise InvalidArgumentValueError('subnet {0} is not a valid name or resource ID'.format(subnet))
+            raise InvalidArgumentValueError(f'subnet {subnet} is not a valid name or resource ID')
         # subnet name is given
         return vnet_id + '/subnets/' + subnet
     if not subnet.lower().startswith(vnet_id.lower()):
-        raise InvalidArgumentValueError('subnet {0} is not under virtual network {1}'.format(subnet, vnet_id))
+        raise InvalidArgumentValueError(f'subnet {subnet} is not under virtual network {vnet_id}')
     return subnet
 
 
@@ -529,8 +527,8 @@ def _validate_cidr_range(namespace):
         for j in range(i + 1, len(ipv4)):
             if item.overlaps(ipv4[j]):
                 raise InvalidArgumentValueError(
-                    '--reserved-cidr-range should not overlap each other, but {0} and {1} overlapping.'
-                    .format(ranges[i], ranges[j]))
+                    f'--reserved-cidr-range should not overlap each other, '
+                    f'but {ranges[i]} and {ranges[j]} overlapping.')
     namespace.reserved_cidr_range = ','.join(ranges)
 
 
@@ -539,14 +537,14 @@ def _validate_ip(ip, prefix):
         # Host bits set can be non-zero? Here treat it as valid.
         ip_address = ip_network(ip, strict=False)
         if ip_address.version != 4:
-            raise InvalidArgumentValueError('{0} is not a valid IPv4 CIDR.'.format(ip))
+            raise InvalidArgumentValueError(f'{ip} is not a valid IPv4 CIDR.')
         if ip_address.prefixlen > prefix:
             raise InvalidArgumentValueError(
-                '{0} doesn\'t has valid CIDR prefix. '
-                ' --reserved-cidr-range should be 3 unused /16 IP ranges.'.format(ip))
+                f'{ip} doesn\'t has valid CIDR prefix. '
+                f' --reserved-cidr-range should be 3 unused /16 IP ranges.')
         return ip_address
     except ValueError:
-        raise InvalidArgumentValueError('{0} is not a valid CIDR'.format(ip))
+        raise InvalidArgumentValueError(f'{ip} is not a valid CIDR')
 
 
 def validate_vnet_required_parameters(namespace):
@@ -638,20 +636,20 @@ def validate_jar(namespace):
         raise InvalidArgumentValueError("Thin jar detected, please check if your artifact is a valid fat jar" + tips)
     version_number = int(runtime_version[len("Java_"):])
     if values["jdk_version"] not in _java_runtime_in_number():
-        raise InvalidArgumentValueError("Your java application is compiled with {}, currently the supported "
-                                        "java version is Java_8, Java_11, Java_17, you can configure the java runtime "
-                                        "with --runtime-version".format("Java_" + str(values["jdk_version"])) + tips)
+        raise InvalidArgumentValueError(f"Your java application is compiled with {'Java_' + str(values['jdk_version'])}, "
+                                        f"currently the supported java version is Java_8, Java_11, Java_17, you can "
+                                        f"configure the java runtime with --runtime-version{tips}")
     if values["jdk_version"] > version_number:
         telemetry.set_user_fault("invalid_java_runtime")
-        raise InvalidArgumentValueError("Invalid java runtime, the runtime you configured is {}, the jar you use is "
-                                        "compiled with {}, you can configure the java runtime with --runtime-version".
-                                        format(runtime_version, "Java_" + str(values["jdk_version"])) + tips)
+        raise InvalidArgumentValueError(f"Invalid java runtime, the runtime you configured is {runtime_version}, "
+                                        f"the jar you use is compiled with {'Java_' + str(values['jdk_version'])}, "
+                                        f"you can configure the java runtime with --runtime-version{tips}")
     # validate spring boot version
     if values["spring_boot_version"] and values["spring_boot_version"].startswith('1'):
         telemetry.set_user_fault("old_spring_boot_version")
         raise InvalidArgumentValueError(
-            "The spring boot {} you are using is not supported. To get the latest supported "
-            "versions please refer to: https://aka.ms/ascspringversion".format(values["spring_boot_version"]) + tips)
+            f"The spring boot {values['spring_boot_version']} you are using is not supported. "
+            f"To get the latest supported versions please refer to: https://aka.ms/ascspringversion{tips}")
 
     # old spring cloud version, need to import ms sdk <= 2.2.1
     if values["spring_cloud_version"]:
@@ -665,11 +663,11 @@ def validate_jar(namespace):
             if values["ms_sdk_version"] and values["ms_sdk_version"] <= "2.2.1":
                 telemetry.set_user_fault("old_ms_sdk_version")
                 raise InvalidArgumentValueError(
-                    "The spring-cloud-starter-azure-spring-cloud-client version {} is no longer "
-                    "supported, please remove it or upgrade to a higher version, to get the latest "
-                    "supported versions please refer to: "
-                    "https://mvnrepository.com/artifact/com.microsoft.azure/spring-cloud-starter-azure"
-                    "-spring-cloud-client".format(values["ms_sdk_version"]) + tips)
+                    f"The spring-cloud-starter-azure-spring-cloud-client version {values['ms_sdk_version']} is no longer "
+                    f"supported, please remove it or upgrade to a higher version, to get the latest "
+                    f"supported versions please refer to: "
+                    f"https://mvnrepository.com/artifact/com.microsoft.azure/spring-cloud-starter-azure"
+                    f"-spring-cloud-client{tips}")
 
     if not values["has_actuator"]:
         telemetry.set_user_fault("no_spring_actuator")
@@ -764,8 +762,8 @@ def validate_managed_environment(namespace):
         managed_environment = parse_resource_id(managed_environment_id)
         if (managed_environment['namespace'].lower() != 'microsoft.app'
                 or managed_environment['type'].lower() != 'managedenvironments'):
-            raise InvalidArgumentValueError('--managed-environment {0} is not a valid Container App '
-                                            'Environment resource ID'.format(managed_environment_id))
+            raise InvalidArgumentValueError(f'--managed-environment {managed_environment_id} is not a valid '
+                                            f'Container App Environment resource ID')
 
 
 def validate_server_version(cmd, namespace):

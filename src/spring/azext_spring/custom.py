@@ -215,7 +215,7 @@ def spring_start(cmd, client, resource_group, name, no_wait=False):
     state = resource.properties.provisioning_state
     power_state = resource.properties.power_state
     if state != "Succeeded" or power_state != "Stopped":
-        raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), starting cannot be performed.".format(state, power_state))
+        raise ClientRequestError(f"Service is in Provisioning State({state}) and Power State({power_state}), starting cannot be performed.")
     return sdk_no_wait(no_wait, client.services.begin_start, resource_group_name=resource_group, service_name=name)
 
 
@@ -224,7 +224,7 @@ def spring_stop(cmd, client, resource_group, name, no_wait=False):
     state = resource.properties.provisioning_state
     power_state = resource.properties.power_state
     if state != "Succeeded" or power_state != "Running":
-        raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), stopping cannot be performed.".format(state, power_state))
+        raise ClientRequestError(f"Service is in Provisioning State({state}) and Power State({power_state}), stopping cannot be performed.")
     return sdk_no_wait(no_wait, client.services.begin_stop, resource_group_name=resource_group, service_name=name)
 
 
@@ -233,7 +233,7 @@ def spring_flush_vnet_dns_setting(cmd, client, resource_group, name, no_wait=Fal
     state = resource.properties.provisioning_state
     power_state = resource.properties.power_state
     if state != "Succeeded" or power_state != "Running":
-        raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), flush vnet dns setting cannot be performed.".format(state, power_state))
+        raise ClientRequestError(f"Service is in Provisioning State({state}) and Power State({power_state}), flush vnet dns setting cannot be performed.")
     return sdk_no_wait(no_wait, client.services.begin_flush_vnet_dns_setting, resource_group_name=resource_group, service_name=name)
 
 
@@ -263,8 +263,8 @@ def list_keys(cmd, client, resource_group, name, app=None, deployment=None):
         deployment_resource = deployment_get(cmd, client, resource_group, name, app, deployment) \
             if deployment else app_get(cmd, client, resource_group, name, app).properties.active_deployment
         if deployment_resource:
-            keys.primary_test_endpoint = "{}/{}/{}/".format(keys.primary_test_endpoint, app, deployment_resource.name)
-            keys.secondary_test_endpoint = "{}/{}/{}/".format(keys.secondary_test_endpoint, app, deployment_resource.name)
+            keys.primary_test_endpoint = f"{keys.primary_test_endpoint}/{app}/{deployment_resource.name}/"
+            keys.secondary_test_endpoint = f"{keys.secondary_test_endpoint}/{app}/{deployment_resource.name}/"
     return keys
 
 
@@ -312,7 +312,7 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
 
     app.properties.custom_persistent_disks = custom_persistent_disks
     app.properties.secrets = None
-    logger.warning("[1/1] updating app '{}'".format(name))
+    logger.warning(f"[1/1] updating app '{name}'")
 
     poller = client.apps.begin_update(
         resource_group, service, name, app)
@@ -337,7 +337,7 @@ def app_start(cmd, client,
               name,
               deployment=None,
               no_wait=False):
-    logger.warning("Successfully triggered the action 'start' for the app '{}'".format(name))
+    logger.warning(f"Successfully triggered the action 'start' for the app '{name}'")
     return sdk_no_wait(no_wait, client.deployments.begin_start,
                        resource_group, service, name, deployment.name)
 
@@ -348,20 +348,20 @@ def app_stop(cmd, client,
              name,
              deployment=None,
              no_wait=False):
-    logger.warning("Successfully triggered the action 'stop' for the app '{}'".format(name))
+    logger.warning(f"Successfully triggered the action 'stop' for the app '{name}'")
     return sdk_no_wait(no_wait, client.deployments.begin_stop,
                        resource_group, service, name, deployment.name)
 
 
 def deployment_enable_remote_debugging(cmd, client, resource_group, service, name, remote_debugging_port=None, deployment=None, no_wait=False):
-    logger.warning("Enable remote debugging for the app '{}', deployment '{}'".format(name, deployment.name))
+    logger.warning(f"Enable remote debugging for the app '{name}', deployment '{deployment.name}'")
     remote_debugging_payload = models.RemoteDebuggingPayload(port=remote_debugging_port)
     return sdk_no_wait(no_wait, client.deployments.begin_enable_remote_debugging,
                        resource_group, service, name, deployment.name, remote_debugging_payload)
 
 
 def deployment_disable_remote_debugging(cmd, client, resource_group, service, name, deployment=None, no_wait=False):
-    logger.warning("Disable remote debugging for the app '{}', deployment '{}'".format(name, deployment.name))
+    logger.warning(f"Disable remote debugging for the app '{name}', deployment '{deployment.name}'")
     return sdk_no_wait(no_wait, client.deployments.begin_disable_remote_debugging,
                        resource_group, service, name, deployment.name)
 
@@ -376,7 +376,7 @@ def app_restart(cmd, client,
                 name,
                 deployment=None,
                 no_wait=False):
-    logger.warning("Successfully triggered the action 'restart' for the app '{}'".format(name))
+    logger.warning(f"Successfully triggered the action 'restart' for the app '{name}'")
     return sdk_no_wait(no_wait, client.deployments.begin_restart,
                        resource_group, service, name, deployment.name)
 
@@ -474,8 +474,7 @@ def parse_metadata_flags(metadata_list, metadata_def):
         if len(key_val) != 2:
             raise InvalidArgumentValueError("Metadata must be in format \"<key>=<value> <key>=<value> ...\".")
         if key_val[0] in metadata_def:
-            raise InvalidArgumentValueError("Duplicate metadata \"{metadata}\" found, metadata keys must be unique.".format(
-                metadata=key_val[0]))
+            raise InvalidArgumentValueError(f"Duplicate metadata \"{key_val[0]}\" found, metadata keys must be unique.")
         metadata_def[key_val[0]] = key_val[1]
 
     return metadata_def
@@ -493,8 +492,7 @@ def parse_auth_flags(auth_list):
                 "Auth parameters must be in format \"<triggerParameter>=<secretRef> <triggerParameter>=<secretRef> ...\".")
         if key_val[0] in auth_pairs:
             raise InvalidArgumentValueError(
-                "Duplicate trigger parameter \"{param}\" found, trigger paramaters must be unique.".format(
-                    param=key_val[0]))
+                f"Duplicate trigger parameter \"{key_val[0]}\" found, trigger paramaters must be unique.")
         auth_pairs[key_val[0]] = key_val[1]
 
     for key, value in auth_pairs.items():
@@ -507,7 +505,7 @@ def parse_auth_flags(auth_list):
 
 def app_get_build_log(cmd, client, resource_group, service, name, deployment=None):
     if deployment.properties.source.type != "Source":
-        raise CLIError("{} deployment has no build logs.".format(deployment.properties.source.type))
+        raise CLIError(f"{deployment.properties.source.type} deployment has no build logs.")
     return stream_logs(client.deployments, resource_group, service, name, deployment.name)
 
 
@@ -522,13 +520,12 @@ def app_tail_log_internal(cmd, client, resource_group, service, name,
                           format_json=None, timeout=None, get_app_log=None):
     if not instance:
         if not deployment.properties.instances:
-            raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
-                deployment.name, name))
+            raise CLIError(f"No instances found for deployment '{deployment.name}' in app '{name}'")
         instances = deployment.properties.instances
         if len(instances) > 1:
             logger.warning("Multiple app instances found:")
             for temp_instance in instances:
-                logger.warning("{}".format(temp_instance.name))
+                logger.warning(temp_instance.name)
             logger.warning("Please use '-i/--instance' parameter to specify the instance name")
             return None
         instance = instances[0].name
@@ -540,8 +537,7 @@ def app_tail_log_internal(cmd, client, resource_group, service, name,
         token = creds[1]
         subscriptionId = get_subscription_id(cmd.cli_ctx)
         hostname = get_proxy_api_endpoint(cmd.cli_ctx, resource)
-        streaming_url = "https://{}/proxy/logstream/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/apps/{}/deployments/{}/instances/{}".format(
-            hostname, subscriptionId, resource_group, service, name, deployment.name, instance)
+        streaming_url = f"https://{hostname}/proxy/logstream/subscriptions/{subscriptionId}/resourceGroups/{resource_group}/providers/Microsoft.AppPlatform/Spring/{service}/apps/{name}/deployments/{deployment.name}/instances/{instance}"
         params = {}
         params["tailLines"] = lines
         params["tenantId"] = tenant
@@ -552,9 +548,9 @@ def app_tail_log_internal(cmd, client, resource_group, service, name,
     else:
         log_stream = LogStream(client, resource_group, service)
         if not log_stream:
-            raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
-        streaming_url = "https://{0}/api/logstream/apps/{1}/instances/{2}".format(
-            log_stream.base_url, name, instance)
+            raise CLIError(f"To use the log streaming feature, please enable the test endpoint by "
+                           f"running 'az spring test-endpoint enable -n {service} -g {resource_group}'")
+        streaming_url = f"https://{log_stream.base_url}/api/logstream/apps/{name}/instances/{instance}"
         params = {}
         params["tailLines"] = lines
         params["limitBytes"] = limit
@@ -565,7 +561,7 @@ def app_tail_log_internal(cmd, client, resource_group, service, name,
         auth = HTTPBasicAuth("primary", log_stream.primary_key)
 
     exceptions = []
-    streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
+    streaming_url += f"?{parse.urlencode(params)}" if params else ""
     t = Thread(target=get_app_log, args=(
         streaming_url, auth, format_json, exceptions))
     t.daemon = True
@@ -616,7 +612,7 @@ def app_append_loaded_public_certificate(cmd, client, resource_group, service, n
 
     app_resource.properties.loaded_certificates = loaded_certificates
     app_resource.properties.secrets = None
-    logger.warning("[1/1] updating app '{}'".format(name))
+    logger.warning(f"[1/1] updating app '{name}'")
 
     poller = client.apps.begin_update(
         resource_group, service, name, app_resource)
@@ -633,15 +629,15 @@ def _validate_instance_count(sku, instance_count=None):
         if sku == "ENTERPRISE":
             if instance_count > 1000:
                 raise InvalidArgumentValueError(
-                    "Enterprise SKU can have at most 1000 app instances in total, but got '{}'".format(instance_count))
+                    f"Enterprise SKU can have at most 1000 app instances in total, but got '{instance_count}'")
         if sku == "STANDARD":
             if instance_count > 500:
                 raise CLIError(
-                    "Standard SKU can have at most 500 app instances in total, but got '{}'".format(instance_count))
+                    f"Standard SKU can have at most 500 app instances in total, but got '{instance_count}'")
         if sku == "BASIC":
             if instance_count > 25:
                 raise CLIError(
-                    "Basic SKU can have at most 25 app instances in total, but got '{}'".format(instance_count))
+                    f"Basic SKU can have at most 25 app instances in total, but got '{instance_count}'")
 
 
 def deployment_list(cmd, client, resource_group, service, app):
@@ -697,7 +693,7 @@ def validate_config_server_settings(client, resource_group, name, config_server_
     try:
         result = sdk_no_wait(False, client.begin_validate, resource_group, name, config_server_settings).result()
     except Exception as err:  # pylint: disable=broad-except
-        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+        raise CLIError(f"{err}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues")
 
     if not result.is_valid:
         for item in result.details or []:
@@ -874,7 +870,7 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
     if git_property.repositories:
         repos = [repo for repo in git_property.repositories if repo.name == repo_name]
         if repos:
-            raise CLIError("Repo '{}' already exists.".format(repo_name))
+            raise CLIError(f"Repo '{repo_name}' already exists.")
     else:
         git_property.repositories = []
 
@@ -908,12 +904,12 @@ def config_repo_delete(cmd, client, resource_group, name, repo_name):
     config_server_resource = client.get(resource_group, name)
     config_server = config_server_resource.properties.config_server
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:
-        raise CLIError("Repo '{}' not found.".format(repo_name))
+        raise CLIError(f"Repo '{repo_name}' not found.")
 
     git_property = config_server.git_property
     repository = [repo for repo in git_property.repositories if repo.name == repo_name]
     if not repository:
-        raise CLIError("Repo '{}' not found.".format(repo_name))
+        raise CLIError(f"Repo '{repo_name}' not found.")
 
     git_property.repositories.remove(repository[0])
 
@@ -943,11 +939,11 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
     config_server_resource = client.get(resource_group, name)
     config_server = config_server_resource.properties.config_server
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:
-        raise CLIError("Repo '{}' not found.".format(repo_name))
+        raise CLIError(f"Repo '{repo_name}' not found.")
     git_property = config_server.git_property
     repository = [repo for repo in git_property.repositories if repo.name == repo_name]
     if not repository:
-        raise CLIError("Repo '{}' not found.".format(repo_name))
+        raise CLIError(f"Repo '{repo_name}' not found.")
 
     if search_paths:
         search_paths = search_paths.split(",")
@@ -1025,8 +1021,7 @@ def binding_cosmos_add(cmd, client, resource_group, service, app, name,
     try:
         primary_key = _get_cosmosdb_primary_key(cmd.cli_ctx, resource_id)
     except:
-        raise CLIError(
-            "Couldn't get cosmosdb {}'s primary key".format(resource_name))
+        raise CLIError(f"Couldn't get cosmosdb {resource_name}'s primary key")
 
     properties = models.BindingResourceProperties(
         resource_name=resource_name,
@@ -1054,8 +1049,7 @@ def binding_cosmos_update(cmd, client, resource_group, service, app, name,
     try:
         primary_key = _get_cosmosdb_primary_key(cmd.cli_ctx, resource_id)
     except:
-        raise CLIError(
-            "Couldn't get cosmosdb {}'s primary key".format(resource_name))
+        raise CLIError(f"Couldn't get cosmosdb {resource_name}'s primary key")
 
     properties = models.BindingResourceProperties(
         key=primary_key,

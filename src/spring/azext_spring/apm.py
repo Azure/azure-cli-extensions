@@ -140,7 +140,7 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
     # Raise exception when connection string not found in this scenario.
     if not connection_string:
         raise InvalidArgumentValueError(
-            "Cannot find Connection string from application insights:{}".format(app_insights))
+            f"Cannot find Connection string from application insights:{app_insights}")
 
     return connection_string
 
@@ -151,7 +151,7 @@ def _get_app_insights_connection_string(cli_ctx, resource_group, name):
 
     if not appinsights or not appinsights.connection_string:
         raise ResourceNotFoundError(
-            "Application Insights {} under resource group {} was not found.".format(name, resource_group))
+            f"Application Insights {name} under resource group {resource_group} was not found.")
 
     return appinsights.connection_string
 

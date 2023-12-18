@@ -26,8 +26,7 @@ class JarSource(BaseSource):
             invalid_input_str = convert_argument_to_parameter_list(invalid_input.keys())
             runtime_version = (kwargs.get('runtime_version')
                                or kwargs.get('deployment_resource').properties.source.runtime_version)
-            raise ArgumentUsageError('{} cannot be set when --runtime-version is {}.'
-                                     .format(invalid_input_str, runtime_version))
+            raise ArgumentUsageError(f'{invalid_input_str} cannot be set when --runtime-version is {runtime_version}.')
 
     def format_source(self, deployable_path=None, runtime_version=None, version=None, jvm_options=None, **_):
         if all(x is None for x in [deployable_path, runtime_version, version, jvm_options]):
@@ -59,8 +58,7 @@ class WarSource(BaseSource):
             invalid_input_str = convert_argument_to_parameter_list(invalid_input.keys())
             runtime_version = (kwargs.get('runtime_version')
                                or kwargs.get('deployment_resource').properties.source.runtime_version)
-            raise ArgumentUsageError('{} cannot be set when --runtime-version is {}.'
-                                     .format(invalid_input_str, runtime_version))
+            raise ArgumentUsageError(f'{invalid_input_str} cannot be set when --runtime-version is {runtime_version}.')
 
     def format_source(self, deployable_path=None, runtime_version=None,
                       server_version=None, version=None, jvm_options=None, **_):
@@ -95,8 +93,7 @@ class NetCoreZipSource(BaseSource):
             invalid_input_str = convert_argument_to_parameter_list(invalid_input.keys())
             runtime_version = (kwargs.get('runtime_version')
                                or kwargs.get('deployment_resource').properties.source.runtime_version)
-            raise ArgumentUsageError('{} cannot be set when --runtime-version is {}.'
-                                     .format(invalid_input_str, runtime_version))
+            raise ArgumentUsageError(f'{invalid_input_str} cannot be set when --runtime-version is {runtime_version}.')
 
     def format_source(self, deployable_path=None, main_entry=None, version=None, runtime_version=None, **_):
         if all(x is None for x in [deployable_path, main_entry, version]):
@@ -126,8 +123,7 @@ class CustomContainerSource(BaseSource):
         invalid_input = {k: v for k, v in kwargs.items() if k in ['jvm_options', 'main_entry', 'target_module'] and v is not None}  # pylint: disable=line-too-long
         if any(invalid_input):
             invalid_input_str = convert_argument_to_parameter_list(invalid_input.keys())
-            raise ArgumentUsageError('{} cannot be set when --container-image is set.'
-                                     .format(invalid_input_str))
+            raise ArgumentUsageError(f'{invalid_input_str} cannot be set when --container-image is set.')
 
     def format_source(self, version=None, **kwargs):
         container = self._format_container(**kwargs)
@@ -178,8 +174,7 @@ class SourceBuild(BaseSource):
         invalid_input = {k: v for k, v in kwargs.items() if k in ['jvm_options', 'main_entry'] and v is not None}
         if any(invalid_input):
             invalid_input_str = convert_argument_to_parameter_list(invalid_input.keys())
-            raise ArgumentUsageError('{} cannot be set when built from source.'
-                                     .format(invalid_input_str))
+            raise ArgumentUsageError(f'{invalid_input_str} cannot be set when built from source.')
 
     def format_source(self, deployable_path=None, target_module=None, runtime_version=None, version=None, **_):
         if all(x is None for x in [deployable_path, target_module, runtime_version, version]):

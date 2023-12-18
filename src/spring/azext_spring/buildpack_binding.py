@@ -29,9 +29,9 @@ def create_or_update_buildpack_binding(cmd, client, resource_group, service,
                    'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder.')
     if not builder_name:
         builder_name = DEFAULT_BUILDER_NAME
-        logger.warning('Option --builder-name is not provided, will use default builder name "{}".'.format(builder_name))
+        logger.warning(f'Option --builder-name is not provided, will use default builder name "{builder_name}".')
 
-    logger.warning('[1/1] Creating or updating to buildpack binding for builder "{}", (this operation can take a while to complete).'.format(builder_name))
+    logger.warning(f'[1/1] Creating or updating to buildpack binding for builder "{builder_name}", (this operation can take a while to complete).')
 
     binding_resource = _build_buildpack_binding_resource(type, properties, secrets)
     return sdk_no_wait(False, client.buildpack_binding.begin_create_or_update, resource_group,
@@ -41,7 +41,7 @@ def create_or_update_buildpack_binding(cmd, client, resource_group, service,
 def buildpack_binding_show(cmd, client, resource_group, service, name, builder_name=None):
     if not builder_name:
         builder_name = DEFAULT_BUILDER_NAME
-        logger.warning('Option --builder-name is not provided, will use default builder name "{}".'.format(builder_name))
+        logger.warning(f'Option --builder-name is not provided, will use default builder name "{builder_name}".')
 
     return client.buildpack_binding.get(resource_group, service, DEFAULT_BUILD_SERVICE_NAME,
                                         builder_name, name)
@@ -50,7 +50,7 @@ def buildpack_binding_show(cmd, client, resource_group, service, name, builder_n
 def buildpack_binding_list(cmd, client, resource_group, service, builder_name=None):
     if not builder_name:
         builder_name = DEFAULT_BUILDER_NAME
-        logger.warning('Option --builder-name is not provided, will use default builder name "{}".'.format(builder_name))
+        logger.warning(f'Option --builder-name is not provided, will use default builder name "{builder_name}".')
 
     return client.buildpack_binding.list(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, builder_name)
 
@@ -61,9 +61,9 @@ def buildpack_binding_delete(cmd, client, resource_group, service, name, builder
                    'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder.')
     if not builder_name:
         builder_name = DEFAULT_BUILDER_NAME
-        logger.warning('Option --builder-name is not provided, will use default builder name "{}".'.format(builder_name))
+        logger.warning(f'Option --builder-name is not provided, will use default builder name "{builder_name}".')
 
-    logger.warning('[1/1] Deleting buildpack binding for builder "{}", (this operation can take a while to complete).'.format(builder_name))
+    logger.warning(f'[1/1] Deleting buildpack binding for builder "{builder_name}", (this operation can take a while to complete).')
 
     return sdk_no_wait(False, client.buildpack_binding.begin_delete, resource_group,
                        service, DEFAULT_BUILD_SERVICE_NAME, builder_name, name)
@@ -143,7 +143,7 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
     # Raise exception when connection string not found in this scenario.
     if not connection_string:
         raise InvalidArgumentValueError(
-            "Cannot find Connection string from application insights:{}".format(app_insights))
+            f"Cannot find Connection string from application insights:{app_insights}")
 
     return connection_string
 
@@ -153,7 +153,7 @@ def _get_app_insights_connection_string(cli_ctx, resource_group, name):
     appinsights = appinsights_client.components.get(resource_group, name)
 
     if not appinsights or not appinsights.connection_string:
-        raise ResourceNotFoundError("App Insights {} under resource group {} was not found.".format(name, resource_group))
+        raise ResourceNotFoundError(f"App Insights {name} under resource group {resource_group} was not found.")
 
     return appinsights.connection_string
 

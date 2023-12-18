@@ -24,7 +24,7 @@ class WebSocketConnection:
         self._url = url
         self._socket = websocket.WebSocket(enable_multithread=True)
         logger.info("Attempting to connect to %s", self._url)
-        self._socket.connect(self._url, header=["Authorization: Bearer %s" % self._token])
+        self._socket.connect(self._url, header=[f"Authorization: Bearer {self._token}"])
         self.is_connected = True
 
     def disconnect(self):
@@ -54,7 +54,7 @@ def recv_remote(connection: WebSocketConnection):
                 pass    # Do nothing for this control byte
             else:
                 connection.disconnect()
-                raise CLIInternalError("Unexpected message received: %d" % control_byte)
+                raise CLIInternalError(f"Unexpected message received: {control_byte}")
 
 
 def send_stdin(connection: WebSocketConnection):

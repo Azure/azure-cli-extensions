@@ -30,7 +30,7 @@ def application_configuration_service_create(cmd, client, service, resource_grou
 
     properties = models.ConfigurationServiceProperties(generation=generation)
     acs_resource = models.ConfigurationServiceResource(properties=properties)
-    logger.warning("Create with generation {}".format(acs_resource.properties.generation))
+    logger.warning(f"Create with generation {acs_resource.properties.generation}")
     return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
 
 
@@ -39,7 +39,7 @@ def application_configuration_service_update(cmd, client, service, resource_grou
     acs_resource = client.configuration_services.get(resource_group, service, DEFAULT_NAME)
     if generation is not None:
         acs_resource.properties.generation = generation
-        logger.warning("Updating with generation {}".format(generation))
+        logger.warning(f"Updating with generation {generation}")
     else:
         acs_resource.properties.generation = ConfigurationServiceGeneration.GEN1
         logger.warning("Default generation will be Gen1")
@@ -79,7 +79,7 @@ def application_configuration_service_git_add(cmd, client, service, resource_gro
     acs_resource = _get_or_default_acs_resource(client, resource_group, service)
     repos = acs_resource.properties.settings.git_property.repositories
     if next((r for r in repos if r.name == name), None) is not None:
-        raise ValidationError("Repo '{}' already exists.".format(name))
+        raise ValidationError(f"Repo '{name}' already exists.")
     repos.append(repo)
     acs_resource.properties.settings.git_property.repositories = repos
 
@@ -144,7 +144,7 @@ def _acs_bind_or_unbind_app(cmd, client, service, resource_group, app_name, enab
     app.properties.addon_configs = _get_app_addon_configs_with_acs(app.properties.addon_configs)
 
     if (app.properties.addon_configs[APPLICATION_CONFIGURATION_SERVICE_NAME][RESOURCE_ID] != "") == enabled:
-        logger.warning('App "{}" has been {}binded'.format(app_name, '' if enabled else 'un'))
+        logger.warning(f'App "{app_name}" has been {"" if enabled else "un"}binded')
         return app
 
     acs_id = resource_id(
@@ -177,11 +177,13 @@ def _get_cert_resource_id_by_name(cmd, resource_group, service, ca_cert_name):
     ca_cert_resource_id = None
     if ca_cert_name:
         subscription = get_subscription_id(cmd.cli_ctx)
-        ca_cert_resource_id = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/certificates/{}".format(subscription, resource_group, service, ca_cert_name)
+        ca_cert_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.AppPlatform/Spring/{service}/certificates/{ca_cert_name}"
     return ca_cert_resource_id
 
 
-def _replace_repo_with_input(repo, patterns, uri, label, search_paths, username, password, host_key, host_key_algorithm, private_key, strict_host_key_checking, ca_cert_resource_id):
+def _replace_repo_with_input(repo, patterns, uri, label, search_paths, username, password,
+                             host_key, host_key_algorithm, private_key,
+                             strict_host_key_checking, ca_cert_resource_id):
     if patterns:
         patterns = patterns.split(",")
     if search_paths:
@@ -206,7 +208,7 @@ def _replace_repo_with_input(repo, patterns, uri, label, search_paths, username,
 def _get_existing_repo(repos, name):
     repo = next((r for r in repos if r.name == name), None)
     if not repo:
-        raise ClientRequestError("Repo '{}' not found.".format(name))
+        raise ClientRequestError(f"Repo '{name}' not found.")
     return repo
 
 
@@ -254,11 +256,13 @@ def _validate_acs_settings(client, resource_group, service, acs_settings):
     try:
         result = sdk_no_wait(False, client.configuration_services.begin_validate, resource_group, service, DEFAULT_NAME, acs_settings).result()
     except Exception as err:  # pylint: disable=broad-except
-        raise ClientRequestError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+        raise ClientRequestError(f"{err}. You may raise a support ticket if needed by the following "
+                                 f"link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues")
 
     if result is not None and result.git_property_validation_result is not None:
         git_result = result.git_property_validation_result
         if not git_result.is_valid:
             validation_result = git_result.git_repos_validation_result
             filter_result = [{'name': x.name, 'messages': x.messages} for x in validation_result if len(x.messages) > 0]
-            raise ClientRequestError("Application Configuration Service settings contain errors.\n{}".format(json.dumps(filter_result, indent=2)))
+            result = json.dumps(filter_result, indent=2)
+            raise ClientRequestError(f"Application Configuration Service settings contain errors.\n{result}")

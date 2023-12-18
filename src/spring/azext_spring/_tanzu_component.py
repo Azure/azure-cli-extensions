@@ -45,7 +45,7 @@ def create_application_configuration_service(cmd, client, resource_group, servic
         acs_resource.properties = models.ConfigurationServiceProperties()
         if application_configuration_service_generation:
             acs_resource.properties.generation = application_configuration_service_generation
-            logger.warning("Create with generation {}".format(application_configuration_service_generation))
+            logger.warning(f"Create with generation {application_configuration_service_generation}")
         else:
             acs_resource.properties.generation = ConfigurationServiceGeneration.GEN1
             logger.warning("Default generation will be Gen1")
