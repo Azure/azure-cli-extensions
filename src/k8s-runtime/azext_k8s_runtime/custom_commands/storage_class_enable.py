@@ -79,14 +79,14 @@ def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
 
     resource_id = ConnectedClusterResourceId.parse(resource_uri)
 
-    print("Register Kubernetes Runtime RP in subscription %s...", resource_id.subscription_id)
+    print(f"Register Kubernetes Runtime RP in subscription {resource_id.subscription_id}...")
     resource_management_client: ResourceManagementClient = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient, subscription_id=resource_id.subscription_id)
 
     resource_management_client.providers.register(
         resource_provider_namespace=KUBERNETES_RUNTIME_RP
     )
 
-    print("Installing Storage class Arc Extension in cluster %s...", resource_id.cluster_name)
+    print(f"Installing Storage class Arc Extension in cluster {resource_id.cluster_name}...")
     source_control_configuration_client: SourceControlConfigurationClient = get_mgmt_service_client(cmd.cli_ctx, SourceControlConfigurationClient)
 
     lro = source_control_configuration_client.extensions.begin_create(
