@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp up': Fix bug where command errors and stops when resource group doesn't exist
 
 0.3.46
 ++++++
