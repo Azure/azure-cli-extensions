@@ -27,6 +27,7 @@ logger = get_logger(__name__)
 
 # https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#kubernetes-extension-contributor
 KUBERNETES_EXTENSION_CONTRIBUTOR_ROLE_ID = "/providers/Microsoft.Authorization/roleDefinitions/85cb6faf-e071-4c9b-8136-154b5a04f717"
+STORAGE_CLASS_RP_FPA="087fca6e-4606-4d41-b3f6-5ebdf75b8b4c"
 STORAGE_CLASS_CONTRIBUTOR_ROLE_ID = "/providers/Microsoft.Authorization/roleDefinitions/0cd9749a-3aaf-4ae5-8803-bd217705bf3b"
 STORAGE_CLASS_EXTENSION_NAME = "arc-k8s-storage-class"
 STORAGE_CLASS_EXTENSION_TYPE = "Microsoft.ManagedStorageClass"
@@ -124,15 +125,15 @@ def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
         ),
     )
 
-    print("Assign the extension with Kubernetes Extension Contributor role under the cluster scope")
+    print("Assign Storage Class RP with Kubernetes Extension Contributor role under the cluster scope")
     k8s_extension_contributor_role_assignment = authorization_management_client.role_assignments.create(
         scope=resource_id.resource_uri,
         role_assignment_name=str(uuid4()),
         # pylint: disable=missing-kwoa
         parameters=RoleAssignmentCreateParameters(
             role_definition_id=KUBERNETES_EXTENSION_CONTRIBUTOR_ROLE_ID,
-            principal_id=extension.identity.principal_id,
-            principal_type=PrincipalType.SERVICE_PRINCIPAL
+            principal_id=STORAGE_CLASS_RP_FPA,
+            principal_type=PrincipalType.SERVICE_PRINCIPAL,
         ),
     )
 
