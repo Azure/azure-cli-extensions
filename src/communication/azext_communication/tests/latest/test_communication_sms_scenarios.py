@@ -43,7 +43,7 @@ class CommunicationSmsScenarios(ScenarioTest):
             'sender': sender,
             'recipient': recipient})
 
-        self.cmd('az communication sms send-sms --sender \"{sender}\" \
+        self.cmd('az communication sms send --sender \"{sender}\" \
         --recipient \"{recipient}\" --message "Hello there!!"', checks=[
             self.check("[0].errorMessage", None),
             self.check("[0].httpStatusCode", "202"),
@@ -74,7 +74,7 @@ class CommunicationSmsScenarios(ScenarioTest):
             'recipient1': recipient1,
             'recipient2': recipient2})
 
-        self.cmd('az communication sms send-sms --sender \"{sender}\" \
+        self.cmd('az communication sms send --sender \"{sender}\" \
         --recipient \"{recipient1}\" \"{recipient2}\" --message "Hello there!!"', checks=[
             self.check("[0].errorMessage", None),
             self.check("[0].httpStatusCode", "202"),
