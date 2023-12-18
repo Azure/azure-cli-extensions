@@ -8,113 +8,12 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from uuid import uuid4
-from dataclasses import dataclass
-from knack.log import get_logger
-
 from azure.cli.core.commands import AzCliCommand
-from azure.mgmt.authorization import AuthorizationManagementClient
-from azure.mgmt.authorization.models import RoleAssignmentCreateParameters, RoleAssignment, PrincipalType
-from azure.mgmt.kubernetesconfiguration import SourceControlConfigurationClient
-from azure.mgmt.resource import ResourceManagementClient
-from azure.mgmt.kubernetesconfiguration.models import Extension, Identity
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
+
+from .custom_commands.storage_class_enable import enable_storage_class
 
 
-logger = get_logger(__name__)
-
-# pylint: disable=line-too-long
-STORAGE_CLASS_CONTRIBUTOR_ROLE_ID = "/providers/Microsoft.Authorization/roleDefinitions/0cd9749a-3aaf-4ae5-8803-bd217705bf3b"
-STORAGE_CLASS_EXTENSION_NAME = "arc-k8s-storage-class"
-STORAGE_CLASS_EXTENSION_TYPE = "Microsoft.ManagedStorageClass"
-KUBERNETES_RUNTIME_RP = "Microsoft.KubernetesRuntime"
-
-
-class InvalidResourceUriException(Exception):
-    def __init__(self):
-        super().__init__("Resource uri must reference a Microsoft.Kubernetes/connectedClusters resource.")
-
-
-def _compare_caseless(a: str, b: str) -> bool:
-    return a.casefold() == b.casefold()
-
-
-@dataclass
-class ConnectedClusterResourceId:
-    subscription_id: str
-    resource_group: str
-    cluster_name: str
-
-    @staticmethod
-    def parse(resource_uri: str) -> "ConnectedClusterResourceId":
-        parts = resource_uri.split("/")
-
-        if len(parts) != 9:
-            raise InvalidResourceUriException()
-
-        if not (_compare_caseless(parts[1], "subscriptions") and _compare_caseless(parts[3], "resourceGroups") and _compare_caseless(parts[5], "providers") and _compare_caseless(parts[6], "Microsoft.Kubernetes") and _compare_caseless(parts[7], "connectedClusters")):
-            raise InvalidResourceUriException()
-
-        return ConnectedClusterResourceId(
-            subscription_id=parts[2],
-            resource_group=parts[4],
-            cluster_name=parts[8]
-        )
-
-    @property
-    def resource_uri(self) -> str:
-        return f"/subscriptions/{self.subscription_id}/resourceGroups/{self.resource_group}/providers/Microsoft.Kubernetes/connectedClusters/{self.cluster_name}"
-
-
-def _register_provider(cmd: AzCliCommand, resource_id: ConnectedClusterResourceId):
-
-    sdk: ResourceManagementClient = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient, subscription_id=resource_id.subscription_id)
-
-    sdk.providers.register(
-        resource_provider_namespace=KUBERNETES_RUNTIME_RP
-    )
-
-
-def _install_extension(cmd: AzCliCommand, resource_id: ConnectedClusterResourceId) -> Extension:
-    sdk: SourceControlConfigurationClient = get_mgmt_service_client(cmd.cli_ctx, SourceControlConfigurationClient)
-
-    lro = sdk.extensions.begin_create(
-        resource_group_name=resource_id.resource_group,
-        cluster_rp="Microsoft.Kubernetes",
-        cluster_resource_name="connectedClusters",
-        cluster_name=resource_id.cluster_name,
-        extension_name=STORAGE_CLASS_EXTENSION_NAME,
-        extension=Extension(
-            identity=Identity(
-                type="SystemAssigned"
-            ),
-            extension_type=STORAGE_CLASS_EXTENSION_TYPE,
-            release_train="dev"
-        )
-    )
-
-    # Prevent blocking KeyboardInterrupt
-    while lro.done() is False:
-        lro.wait(1)
-
-    return lro.result()
-
-
-def _assign_role(cmd: AzCliCommand, resource_id: ConnectedClusterResourceId, principalId: str) -> RoleAssignment:
-    sdk: AuthorizationManagementClient = get_mgmt_service_client(cmd.cli_ctx, AuthorizationManagementClient)
-    return sdk.role_assignments.create(
-        scope=resource_id.resource_uri,
-        role_assignment_name=str(uuid4()),
-        # pylint: disable=missing-kwoa
-        parameters=RoleAssignmentCreateParameters(
-            role_definition_id=STORAGE_CLASS_CONTRIBUTOR_ROLE_ID,
-            principal_id=principalId,
-            principal_type=PrincipalType.SERVICE_PRINCIPAL
-        ),
-    )
-
-
-def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
+def enable_storage_class_cmd(cmd: AzCliCommand, resource_uri: str):
     """
     Enable storage class service in a connected cluster
 
@@ -122,21 +21,4 @@ def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
     :param resource_uri: The resource uri of the connected cluster
     """
 
-    resource_id = ConnectedClusterResourceId.parse(resource_uri)
-
-    print("Register Kubernetes Runtime RP in subscription %s...", resource_id.subscription_id)
-
-    _register_provider(cmd, resource_id)
-
-    print("Installing Storage class Arc Extension in cluster %s...", resource_id.cluster_name)
-
-    extension = _install_extension(cmd, resource_id)
-
-    print("Assign the extension with Storage Class Contributor role under the cluster scope")
-
-    role_assignment = _assign_role(cmd, resource_id, extension.identity.principal_id)
-
-    return {
-        "extension": extension,
-        "storage_class_contributor_role_assignment": role_assignment
-    }
+    enable_storage_class(cmd, resource_uri)
