@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.11.0
+1.0.0
 +++++
 * Support --enable-self-contained-interactive-authoring in integration-runtime self-hosted create
 
