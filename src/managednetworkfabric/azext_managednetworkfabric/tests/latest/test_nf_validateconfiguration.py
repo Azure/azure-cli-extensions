@@ -6,7 +6,7 @@
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
 """
-NF post tests scenarios
+NF tests scenarios
 """
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
@@ -23,26 +23,27 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
     setup_scenario1(test)
-    step_provision(test)
+    step_validateconfiguration(test)
     cleanup_scenario1(test)
 
-def step_provision(test, checks=None):
-    '''nf provision operation'''
+def step_validateconfiguration(test, checks=None):
+    '''nf validate configuration operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric fabric provision --resource-name {provisionNFName} --resource-group {provisionNFRGName}')
+        'az networkfabric fabric validate-configuration --resource-name {validateNFName} --resource-group {validateNFRGName} --validate-action {validateAction}')
 
-class GA_NFProvisionScenarioTest1(ScenarioTest):
+class GA_NFValidateScenarioTest1(ScenarioTest):
     ''' NFScenario test'''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.kwargs.update({
-            'provisionNFRGName': CONFIG.get('NETWORK_FABRIC_PROVISION', 'provision_nf_resource_group'),
-            'provisionNFName': CONFIG.get('NETWORK_FABRIC_PROVISION', 'provision_nf_name')
+            'validateNFRGName': CONFIG.get('NETWORK_FABRIC', 'validate_nf_resource_group'),
+            'validateNFName': CONFIG.get('NETWORK_FABRIC', 'validate_nf_name'),
+            'validateAction': CONFIG.get('NETWORK_FABRIC', 'validate_action')
         })
 
-    def test_GA_nf_provision_scenario1(self):
-        ''' test scenario for NF provision operations'''
+    def test_GA_nf_validate_scenario1(self):
+        ''' test scenario for NF validate operations'''
         call_scenario1(self)

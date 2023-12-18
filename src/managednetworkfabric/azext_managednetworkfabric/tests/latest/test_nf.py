@@ -27,7 +27,6 @@ def call_scenario1(test):
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
-    step_commit(test)
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
@@ -58,13 +57,6 @@ def step_list_subscription(test, checks=None):
         checks = []
     test.cmd('az networkfabric fabric list')
 
-def step_commit(test, checks=None):
-    '''nf commit configuration operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric fabric commit-configuration --subscription {commitNFSubscription} --resource-name {commitNFName} --resource-group {commitNFRGName}')
-
 def step_delete(test, checks=None):
     '''nf delete operation'''
     if checks is None:
@@ -91,10 +83,7 @@ class GA_NFScenarioTest1(ScenarioTest):
             'terminalServerConf': CONFIG.get('NETWORK_FABRIC', 'terminalServerConf'),
             'deleteNFRGName': CONFIG.get('NETWORK_FABRIC', 'delete_nf_resource_group'),
             'deleteNFName': CONFIG.get('NETWORK_FABRIC', 'delete_nf_name'),
-            'managedNetworkConf': CONFIG.get('NETWORK_FABRIC', 'managedNetworkConf'),
-            'commitNFSubscription': CONFIG.get('NETWORK_FABRIC', 'commit_nf_subscription'),
-            'commitNFRGName': CONFIG.get('NETWORK_FABRIC', 'commit_nf_resource_group'),
-            'commitNFName': CONFIG.get('NETWORK_FABRIC', 'commit_nf_name')
+            'managedNetworkConf': CONFIG.get('NETWORK_FABRIC', 'managedNetworkConf')
         })
 
     def test_GA_nf_scenario1(self):

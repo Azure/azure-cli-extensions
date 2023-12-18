@@ -26,6 +26,7 @@ def call_scenario1(test):
     step_create(test, checks=[])
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
+    step_update(test, checks=[])
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
@@ -52,6 +53,13 @@ def step_list_resource_group(test, checks=None):
         checks = []
     test.cmd('az networkfabric nni list --resource-group {rg} --fabric {fabric}')
 
+def step_update(test, checks=None):
+    '''nni delete operation'''
+    if checks is None:
+        checks = []
+    test.cmd(
+        'az networkfabric nni update --resource-name {name} --resource-group {rg} --fabric {fabric} --option-b-layer3-configuration {updatedOptionBLayer3Configuration}')
+
 def step_delete(test, checks=None):
     '''nni delete operation'''
     if checks is None:
@@ -73,6 +81,7 @@ class GA_NNIScenarioTest1(ScenarioTest):
             'useOptionB': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'use_option_b'),
             'layer2Configuration': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'layer2_Configuration'),
             'optionBLayer3Configuration': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'option_b_layer3_configuration'),
+            'updatedOptionBLayer3Configuration': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'updated_option_b_layer3_configuration'),
             'importRoutePolicy': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'import_route_policy'),
             'exportRoutePolicy': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'export_route_policy')
         })

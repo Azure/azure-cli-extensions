@@ -6,7 +6,7 @@
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
 """
-NF post tests scenarios
+NF tests scenarios
 """
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
@@ -23,26 +23,28 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
     setup_scenario1(test)
-    step_provision(test)
+    step_upgrade(test)
     cleanup_scenario1(test)
 
-def step_provision(test, checks=None):
-    '''nf provision operation'''
+def step_upgrade(test, checks=None):
+    '''nf upgrade operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric fabric provision --resource-name {provisionNFName} --resource-group {provisionNFRGName}')
+        'az networkfabric fabric upgrade  --resource-name {upgradeNFName} --resource-group {upgradeNFRGName} --action {upgradeAction} --version {upgradeVersion}')
 
-class GA_NFProvisionScenarioTest1(ScenarioTest):
+class GA_NFUpgradeScenarioTest1(ScenarioTest):
     ''' NFScenario test'''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.kwargs.update({
-            'provisionNFRGName': CONFIG.get('NETWORK_FABRIC_PROVISION', 'provision_nf_resource_group'),
-            'provisionNFName': CONFIG.get('NETWORK_FABRIC_PROVISION', 'provision_nf_name')
+            'upgradeNFRGName': CONFIG.get('NETWORK_FABRIC', 'upgrade_nf_resource_group'),
+            'upgradeNFName': CONFIG.get('NETWORK_FABRIC', 'upgrade_nf_name'),
+            'upgradeAction':CONFIG.get('NETWORK_FABRIC', 'upgrade_action'),
+            'upgradeVersion':CONFIG.get('NETWORK_FABRIC', 'upgrade_version')
         })
 
-    def test_GA_nf_provision_scenario1(self):
-        ''' test scenario for NF provision operations'''
+    def test_GA_nf_upgrade_scenario1(self):
+        ''' test scenario for NF commit operations'''
         call_scenario1(self)

@@ -51,7 +51,7 @@ def step_list_subscription(test, checks=None):
     test.cmd('az networkfabric device list')
 
 def step_update(test, checks=None):
-    '''Device create operation'''
+    '''Device update operation'''
     if checks is None:
         checks = []
     test.cmd('az networkfabric device update --resource-group {rg} --resource-name {name} '
