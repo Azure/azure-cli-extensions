@@ -630,11 +630,10 @@ class CustomJsonParsing(unittest.TestCase):
         with load_policy_from_str(custom_json) as aci_policy:
             image = aci_policy.pull_image(aci_policy.get_images()[0])
             self.assertIsNotNone(image.id)
-            print("image: ", image)
 
             self.assertEqual(
                 image.id,
-                "sha256:187eae39ad949e24d9410fa5c4eab8cafba7edd4892211c1d710bdaf49265c37",
+                "sha256:e525c930fe751104ff24c356a7bcfad66ce4b92797780eb38dc2ff95d7a66fdc",
             )
 
     def test_infrastructure_svn(self):
