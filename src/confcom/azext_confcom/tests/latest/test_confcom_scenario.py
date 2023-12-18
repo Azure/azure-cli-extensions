@@ -477,9 +477,7 @@ class SidecarValidation(unittest.TestCase):
                 self.aci_policy.get_serialized_output(
                     output_type=OutputType.RAW, rego_boilerplate=False
                 )
-            )[0][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS
-            ]
+            )[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS]
         )
 
     def test_incorrect_sidecar(self):
@@ -732,14 +730,12 @@ class CustomJsonParsing(unittest.TestCase):
         with load_policy_from_str(custom_json) as aci_policy:
             aci_policy.populate_policy_content_for_all_images()
             self.assertTrue(
-            json.loads(
-                aci_policy.get_serialized_output(
-                    output_type=OutputType.RAW, rego_boilerplate=False
+                json.loads(
+                    aci_policy.get_serialized_output(
+                        output_type=OutputType.RAW, rego_boilerplate=False
                     )
-            )[0][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS
-            ]
-        )
+                )[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS]
+            )
 
     def test_stdio_access_updated(self):
         custom_json = """
@@ -759,14 +755,12 @@ class CustomJsonParsing(unittest.TestCase):
             aci_policy.populate_policy_content_for_all_images()
 
             self.assertFalse(
-            json.loads(
-                aci_policy.get_serialized_output(
-                    output_type=OutputType.RAW, rego_boilerplate=False
-                )
-            )[0][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS
-            ]
-        )
+                json.loads(
+                    aci_policy.get_serialized_output(
+                        output_type=OutputType.RAW, rego_boilerplate=False
+                    )
+                )[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS]
+            )
 
 
 class CustomJsonParsingIncorrect(unittest.TestCase):

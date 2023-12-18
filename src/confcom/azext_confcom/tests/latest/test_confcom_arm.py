@@ -3392,15 +3392,17 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         )
 
         self.assertEqual(
-            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
-                ][1][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY],
-            "re2"
+            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][1][
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY
+            ],
+            "re2",
         )
 
         self.assertEqual(
-            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
-                ][1][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE],
-            "TEST_WILDCARD_ENV=.*"
+            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][1][
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE
+            ],
+            "TEST_WILDCARD_ENV=.*",
         )
 
         normalized_aci_arm_policy2 = json.loads(
@@ -3414,9 +3416,10 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         )
 
         self.assertEqual(
-            normalized_aci_arm_policy2[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
-                ][1][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE],
-            "TEST_WILDCARD_ENV=.*"
+            normalized_aci_arm_policy2[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][1][
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE
+            ],
+            "TEST_WILDCARD_ENV=.*",
         )
 
     def test_wildcard_env_var_invalid(self):
@@ -4756,7 +4759,6 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
     }
     """
 
-
     @classmethod
     def setUpClass(cls):
         cls.aci_arm_policy = load_policy_from_arm_template_str(cls.custom_arm_json, "")[
@@ -5280,6 +5282,7 @@ class PolicyGeneratingSecurityContextSeccompProfileEdgeCases(unittest.TestCase):
         )
 
         self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_SECCOMP_PROFILE_SHA256], expected_seccomp_profile_sha256)
+
 
 class PolicyStopSignal(unittest.TestCase):
     custom_arm_json = """

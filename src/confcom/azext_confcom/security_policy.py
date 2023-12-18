@@ -438,7 +438,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                     if signals:
                         image.set_signals(signals)
 
-                    if (deepdiff.DeepDiff(image.get_user(), config.DEFAULT_USER, ignore_order=True) == {}
+                    if not deepdiff.DeepDiff(image.get_user(), config.DEFAULT_USER, ignore_order=True
                             and image_info.get("User") != ""):
                         # valid values are in the form "user", "user:group", "uid", "uid:gid", "user:gid", "uid:group"
                         # where each entry is either a string or an unsigned integer
