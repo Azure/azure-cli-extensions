@@ -68,7 +68,8 @@ def api_portal_update(cmd, client, resource_group, service,
                 issuer_uri=issuer_uri,
             )
 
-    target_api_try_out_state = _get_api_try_out_state(enable_api_try_out, api_portal.properties.api_try_out_enabled_state)
+    target_api_try_out_state = _get_api_try_out_state(enable_api_try_out,
+                                                      api_portal.properties.api_try_out_enabled_state)
 
     properties = models.ApiPortalProperties(
         public=assign_endpoint if assign_endpoint is not None else api_portal.properties.public,

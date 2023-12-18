@@ -38,7 +38,8 @@ class FileUpload:
         if os.path.splitext(artifact_path)[-1] in artifact_type_list:
             self._upload(artifact_path)
         else:
-            raise InvalidArgumentValueError('Unexpected artifact file type, must be one of .zip, .tar.gz, .tar, .jar, .war.')
+            raise InvalidArgumentValueError('Unexpected artifact file type, must be one of '
+                                            '.zip, .tar.gz, .tar, .jar, .war.')
 
     def _upload(self, artifact_path):
         FileService = get_sdk(self.cli_ctx, ResourceType.DATA_STORAGE, 'file#FileService')

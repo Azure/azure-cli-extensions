@@ -12,9 +12,14 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
-OBSOLETE_APP_IDENTITY_REMOVE = "Remove managed identities without \"system-assigned\" or \"user-assigned\" parameters is obsolete, will only remove system-assigned managed identity, and will not be supported in a future release."
-WARNING_NO_USER_IDENTITY_RESOURCE_ID = "No resource ID of user-assigned managed identity is given for parameter \"user-assigned\", will remove ALL user-assigned managed identities."
-OBSOLETE_APP_IDENTITY_ASSIGN = "Assign managed identities without \"system-assigned\" or \"user-assigned\" parameters is obsolete, will only enable system-assigned managed identity, and will not be supported in a future release."
+OBSOLETE_APP_IDENTITY_REMOVE = ("Remove managed identities without \"system-assigned\" or \"user-assigned\" "
+                                "parameters is obsolete, will only remove system-assigned managed identity, "
+                                "and will not be supported in a future release.")
+WARNING_NO_USER_IDENTITY_RESOURCE_ID = ("No resource ID of user-assigned managed identity is given for parameter "
+                                        "\"user-assigned\", will remove ALL user-assigned managed identities.")
+OBSOLETE_APP_IDENTITY_ASSIGN = ("Assign managed identities without \"system-assigned\" or \"user-assigned\" "
+                                "parameters is obsolete, will only enable system-assigned managed identity, "
+                                "and will not be supported in a future release.")
 ENABLE_LOWER = "enable"
 DISABLE_LOWER = "disable"
 
@@ -24,14 +29,16 @@ def validate_app_identity_remove_or_warning(namespace):
         logger.warning(OBSOLETE_APP_IDENTITY_REMOVE)
     if namespace.user_assigned is not None:
         if not isinstance(namespace.user_assigned, list):
-            raise InvalidArgumentValueError("Parameter value for \"user-assigned\" should be empty or a list of space-separated managed identity resource ID.")
+            raise InvalidArgumentValueError("Parameter value for \"user-assigned\" should be empty "
+                                            "or a list of space-separated managed identity resource ID.")
         if len(namespace.user_assigned) == 0:
             logger.warning(WARNING_NO_USER_IDENTITY_RESOURCE_ID)
         namespace.user_assigned = _normalized_user_identitiy_resource_id_list(namespace.user_assigned)
         for resource_id in namespace.user_assigned:
             is_valid = _is_valid_user_assigned_managed_identity_resource_id(resource_id)
             if not is_valid:
-                raise InvalidArgumentValueError("Invalid user-assigned managed identity resource ID \"{}\".".format(resource_id))
+                error_msg_template = "Invalid user-assigned managed identity resource ID \"{}\"."
+                raise InvalidArgumentValueError(error_msg_template.format(resource_id))
 
 
 def _normalized_user_identitiy_resource_id_list(user_identity_resource_id_list):
@@ -71,7 +78,8 @@ def _validate_role_and_scope_should_use_together(namespace):
 
 def _validate_role_and_scope_should_not_use_with_user_identity(namespace):
     if _has_role_and_scope(namespace) and _only_has_user_assigned(namespace):
-        raise InvalidArgumentValueError("Invalid to use parameter \"role\" and \"scope\" with \"user-assigned\" parameter.")
+        raise InvalidArgumentValueError("Invalid to use parameter \"role\" and \"scope\" "
+                                        "with \"user-assigned\" parameter.")
 
 
 def _has_role_and_scope(namespace):
@@ -90,7 +98,8 @@ def _validate_user_identity_resource_id(namespace):
     if namespace.user_assigned:
         for resource_id in namespace.user_assigned:
             if not _is_valid_user_assigned_managed_identity_resource_id(resource_id):
-                raise InvalidArgumentValueError("Invalid user-assigned managed identity resource ID \"{}\".".format(resource_id))
+                error_msg_template = "Invalid user-assigned managed identity resource ID \"{}\"."
+                raise InvalidArgumentValueError(error_msg_template.format(resource_id))
 
 
 def _normalize_user_identity_resource_id(namespace):
@@ -118,7 +127,8 @@ def validate_app_force_set_system_identity_or_warning(namespace):
         raise InvalidArgumentValueError('Parameter "system-assigned" expected at least one argument.')
     namespace.system_assigned = namespace.system_assigned.strip().lower()
     if namespace.system_assigned.strip().lower() not in (ENABLE_LOWER, DISABLE_LOWER):
-        raise InvalidArgumentValueError('Allowed values for "system-assigned" are: {}, {}.'.format(ENABLE_LOWER, DISABLE_LOWER))
+        error_msg_template = 'Allowed values for "system-assigned" are: {}, {}.'
+        raise InvalidArgumentValueError(error_msg_template.format(ENABLE_LOWER, DISABLE_LOWER))
 
 
 def validate_app_force_set_user_identity_or_warning(namespace):
@@ -127,7 +137,9 @@ def validate_app_force_set_user_identity_or_warning(namespace):
     if len(namespace.user_assigned) == 1:
         single_element = namespace.user_assigned[0].strip().lower()
         if single_element != DISABLE_LOWER and not _is_valid_user_assigned_managed_identity_resource_id(single_element):
-            raise InvalidArgumentValueError('Allowed values for "user-assigned" are: {}, space-separated user-assigned managed identity resource IDs.'.format(DISABLE_LOWER))
+            error_msg_template = ('Allowed values for "user-assigned" are: {}, '
+                                  'space-separated user-assigned managed identity resource IDs.')
+            raise InvalidArgumentValueError(error_msg_template.format(DISABLE_LOWER))
         elif single_element == DISABLE_LOWER:
             namespace.user_assigned = [DISABLE_LOWER]
         else:

@@ -21,7 +21,9 @@ from azure.cli.core.profiles import ResourceType
 from knack.util import CLIError, todict
 from knack.log import get_logger
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
-from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
+from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import (
+    SupportedRuntimeValue
+)
 from ._client_factory import cf_resource_groups
 
 
@@ -207,7 +209,8 @@ def get_azure_files_info(file_sas_url):
 
 
 def _get_azure_storage_client_info(account_type, sas_url):
-    regex = compile(r"http(s)?://(?P<account_name>.*?)\.{0}\.(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/(?P<relative_path>.*?)\?(?P<sas_token>.*)".format(account_type))
+    pattern = r"http(s)?://(?P<account_name>.*?)\.{0}\.(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/(?P<relative_path>.*?)\?(?P<sas_token>.*)"  # pylint: disable=line-too-long
+    regex = compile(pattern.format(account_type))
     matchObj = search(regex, sas_url)
     account_name = matchObj.group('account_name')
     endpoint_suffix = matchObj.group('endpoint_suffix')
@@ -330,7 +333,8 @@ def _is_resource_provider_registered(cmd, resource_provider, subscription_id=Non
     if not subscription_id:
         subscription_id = get_subscription_id(cmd.cli_ctx)
     try:
-        providers_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).providers
+        providers_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
+                                                   subscription_id=subscription_id).providers
         registration_state = getattr(providers_client.get(resource_provider), 'registration_state', "NotRegistered")
 
         registered = (registration_state and registration_state.lower() == 'registered')
@@ -343,7 +347,8 @@ def _register_resource_provider(cmd, resource_provider):
     from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
 
     logger.warning(f"Registering resource provider {resource_provider} ...")
-    properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(consent_to_authorization=True))
+    properties = ProviderRegistrationRequest(
+        third_party_provider_consent=ProviderConsentDefinition(consent_to_authorization=True))
 
     client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES).providers
     try:
@@ -356,7 +361,8 @@ def _register_resource_provider(cmd, resource_provider):
             registration = _is_resource_provider_registered(cmd, resource_provider)
             sleep(3)
             if (datetime.utcnow() - start).seconds >= timeout_secs:
-                raise CLIInternalError(f"Timed out while waiting for the {resource_provider} resource provider to be registered.")
+                raise CLIInternalError(f"Timed out while waiting for the {resource_provider} "
+                                       f"resource provider to be registered.")
 
     except Exception as e:
         msg = ("This operation requires registering the resource provider {0}. "

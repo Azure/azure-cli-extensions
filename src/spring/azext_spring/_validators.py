@@ -93,7 +93,8 @@ def _validate_terms(cmd, namespace):
 
 
 def _check_tanzu_components_not_enable(cmd, namespace):
-    suffix = 'can only be used for Azure Spring Apps Enterprise. Please add --sku="Enterprise" to create Enterprise instance.'
+    suffix = ('can only be used for Azure Spring Apps Enterprise. '
+              'Please add --sku="Enterprise" to create Enterprise instance.')
     if namespace.enable_application_configuration_service:
         raise ArgumentUsageError('--enable-application-configuration-service {}'.format(suffix))
     if namespace.enable_service_registry:
@@ -264,7 +265,8 @@ def validate_tracing_parameters_asc_create(namespace):
 
 
 def validate_dataplane_public_endpoint(namespace):
-    if namespace.enable_log_stream_public_endpoint is not None and namespace.enable_dataplane_public_endpoint is not None:
+    if (namespace.enable_log_stream_public_endpoint is not None
+            and namespace.enable_dataplane_public_endpoint is not None):
         if namespace.enable_log_stream_public_endpoint != namespace.enable_dataplane_public_endpoint:
             raise InvalidArgumentValueError("The value of enable_log_stream_public_endpoint and "
                                             "enable_dataplane_public_endpoint should be the same, "
@@ -321,8 +323,9 @@ def _validate_app_insights_parameters(namespace):
 
 def validate_app_insights_command_not_supported_tier(cmd, namespace):
     if is_enterprise_tier(cmd, namespace.resource_group, namespace.name):
-        raise NotSupportedPricingTierError("Enterprise tier service instance {} in group {} is not supported in this command, ".format(namespace.name, namespace.resource_group) +
-                                           "please refer to 'az spring build-service builder buildpack-binding' command group.")
+        error_msg_template = ("Enterprise tier service instance {} in group {} is not supported in this command, "
+                              "please refer to 'az spring build-service builder buildpack-binding' command group.")
+        raise NotSupportedPricingTierError(error_msg_template.format(namespace.name, namespace.resource_group))
 
 
 def validate_vnet(cmd, namespace):
@@ -355,7 +358,8 @@ def validate_vnet(cmd, namespace):
         app_vnet_id = _parse_vnet_id_from_subnet(namespace.app_subnet)
         service_runtime_vnet_id = _parse_vnet_id_from_subnet(namespace.service_runtime_subnet)
         if app_vnet_id.lower() != service_runtime_vnet_id.lower():
-            raise InvalidArgumentValueError('--app-subnet and --service-runtime-subnet should be in the same Virtual Networks.')
+            raise InvalidArgumentValueError('--app-subnet and --service-runtime-subnet should be '
+                                            'in the same Virtual Networks.')
         vnet_id = app_vnet_id
     if namespace.app_subnet.lower() == namespace.service_runtime_subnet.lower():
         raise InvalidArgumentValueError('--app-subnet and --service-runtime-subnet should not be the same.')
@@ -397,7 +401,8 @@ def _validate_subnet(namespace, subnet):
         raise InvalidArgumentValueError('--{} should not have connected device.'.format(name))
     address = ip_network(subnet["addressPrefix"], strict=False)
     if address.prefixlen > limit:
-        raise InvalidArgumentValueError('--{0} should contain at least /{1} address, got /{2}'.format(name, limit, address.prefixlen))
+        error_msg_template = '--{0} should contain at least /{1} address, got /{2}'
+        raise InvalidArgumentValueError(error_msg_template.format(name, limit, address.prefixlen))
 
 
 def _get_vnet(cmd, vnet_id):
@@ -581,7 +586,8 @@ def _validate_resource_group_name(name, message_name):
         return
     matchObj = match(r'^[-\w\._\(\)]+$', name)
     if matchObj is None:
-        raise InvalidArgumentValueError('--{0} must conform to the following pattern: \'^[-\\w\\._\\(\\)]+$\'.'.format(message_name))
+        error_msg_template = '--{0} must conform to the following pattern: \'^[-\\w\\._\\(\\)]+$\'.'
+        raise InvalidArgumentValueError(error_msg_template.format(message_name))
 
 
 def _validate_route_table(namespace, vnet_obj):
@@ -595,7 +601,8 @@ def _validate_route_table(namespace, vnet_obj):
 
     if app_route_table_id and runtime_route_table_id:
         if app_route_table_id == runtime_route_table_id:
-            raise InvalidArgumentValueError('--service-runtime-subnet and --app-subnet should associate with different route tables.')
+            raise InvalidArgumentValueError('--service-runtime-subnet and --app-subnet should '
+                                            'associate with different route tables.')
     if (app_route_table_id and not runtime_route_table_id) \
             or (not app_route_table_id and runtime_route_table_id):
         raise InvalidArgumentValueError(
@@ -651,9 +658,9 @@ def validate_jar(namespace):
         if values["spring_cloud_version"] < "2.2.5":
             if not values["ms_sdk_version"] or values["ms_sdk_version"] > "2.2.1":
                 telemetry.set_user_fault("old_spring_cloud_version")
-                raise InvalidArgumentValueError(
-                    "The spring cloud {} you are using is not supported. To get the latest supported "
-                    "versions please refer to: https://aka.ms/ascspringversion".format(values["spring_cloud_version"]) + tips)
+                error_msg_template = ('The spring cloud {} you are using is not supported. To get the latest '
+                                      'supported versions please refer to: https://aka.ms/ascspringversion')
+                raise InvalidArgumentValueError(error_msg_template.format(values["spring_cloud_version"]) + tips)
         else:
             if values["ms_sdk_version"] and values["ms_sdk_version"] <= "2.2.1":
                 telemetry.set_user_fault("old_ms_sdk_version")
@@ -744,17 +751,21 @@ def validate_config_server_ssh_or_warn(namespace):
     strict_host_key_checking = namespace.strict_host_key_checking
     if private_key or host_key or host_key_algorithm or strict_host_key_checking:
         logger.warning("SSH authentication only supports SHA-1 signature under Config Server restriction. "
-                       "Please refer to https://aka.ms/asa-configserver-ssh to understand how to use SSH under this restriction.")
+                       "Please refer to https://aka.ms/asa-configserver-ssh to understand how to use "
+                       "SSH under this restriction.")
 
 
 def validate_managed_environment(namespace):
     managed_environment_id = namespace.managed_environment
     if managed_environment_id:
         if not is_valid_resource_id(managed_environment_id):
-            raise InvalidArgumentValueError('--managed-environment {0} is not a valid Container App Environment resource ID'.format(managed_environment_id))
+            error_msg_template = '--managed-environment {0} is not a valid Container App Environment resource ID'
+            raise InvalidArgumentValueError(error_msg_template.format(managed_environment_id))
         managed_environment = parse_resource_id(managed_environment_id)
-        if managed_environment['namespace'].lower() != 'microsoft.app' or managed_environment['type'].lower() != 'managedenvironments':
-            raise InvalidArgumentValueError('--managed-environment {0} is not a valid Container App Environment resource ID'.format(managed_environment_id))
+        if (managed_environment['namespace'].lower() != 'microsoft.app'
+                or managed_environment['type'].lower() != 'managedenvironments'):
+            raise InvalidArgumentValueError('--managed-environment {0} is not a valid Container App '
+                                            'Environment resource ID'.format(managed_environment_id))
 
 
 def validate_server_version(cmd, namespace):
@@ -765,10 +776,12 @@ def validate_server_version(cmd, namespace):
 def validate_planned_maintenance(namespace):
     if namespace.enable_planned_maintenance is True \
             and (namespace.planned_maintenance_day is None or namespace.planned_maintenance_start_hour is None):
-        raise InvalidArgumentValueError("Invalid value: --planned-maintenance-day and --planned-maintenance-start-hour must be set when --enable-planned-maintenance is set.")
+        raise InvalidArgumentValueError("Invalid value: --planned-maintenance-day and --planned-maintenance-start-hour "
+                                        "must be set when --enable-planned-maintenance is set.")
     if namespace.enable_planned_maintenance is False \
             and (namespace.planned_maintenance_day is not None or namespace.planned_maintenance_start_hour is not None):
-        raise InvalidArgumentValueError("Invalid value: --planned-maintenance-day and --planned-maintenance-start-hour can only be set when --enable-planned-maintenance is set.")
+        raise InvalidArgumentValueError("Invalid value: --planned-maintenance-day and --planned-maintenance-start-hour "
+                                        "can only be set when --enable-planned-maintenance is set.")
     if namespace.planned_maintenance_start_hour is not None \
             and (namespace.planned_maintenance_start_hour < 0 or namespace.planned_maintenance_start_hour > 23):
         raise InvalidArgumentValueError("Invalid value: planned maintenance start hour must be in the range [0,23].")

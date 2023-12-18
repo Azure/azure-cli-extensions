@@ -12,7 +12,9 @@ from .dev_tool_portal import (is_updatable as is_dev_tool_portal_updatable,
                               create_or_update as create_or_update_dev_tool_portal,
                               _get_desired_state as get_dev_tool_portal_desired_state)
 from ._utils import (wait_till_end)
-from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType)
+from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import (
+    CustomizedAcceleratorType
+)
 
 DEFAULT_NAME = "default"
 logger = get_logger(__name__)
@@ -26,7 +28,10 @@ def application_accelerator_create(cmd, client, resource_group, service, no_wait
     properties = models.ApplicationAcceleratorProperties(
     )
     application_accelerator_resource = models.ApplicationAcceleratorResource(properties=properties)
-    poller = client.application_accelerators.begin_create_or_update(resource_group, service, DEFAULT_NAME, application_accelerator_resource)
+    poller = client.application_accelerators.begin_create_or_update(resource_group,
+                                                                    service,
+                                                                    DEFAULT_NAME,
+                                                                    application_accelerator_resource)
     dev_tool_portal_poller = _get_enable_dev_tool_portal_poller(cmd, client, service, resource_group)
     pollers = [x for x in [poller, dev_tool_portal_poller] if x is not None]
     if not no_wait:
@@ -84,7 +89,8 @@ def customized_accelerator_show(cmd, client, resource_group, service, name):
 
 def customized_accelerator_sync_cert(cmd, client, resource_group, service, name, no_wait=False):
     customized_accelerator_resource = client.customized_accelerators.get(resource_group, service, DEFAULT_NAME, name)
-    return sdk_no_wait(no_wait, client.customized_accelerators.begin_create_or_update, resource_group, service, DEFAULT_NAME, name, customized_accelerator_resource)
+    return sdk_no_wait(no_wait, client.customized_accelerators.begin_create_or_update,
+                       resource_group, service, DEFAULT_NAME, name, customized_accelerator_resource)
 
 
 def customized_accelerator_upsert(cmd, client, resource_group, service, name,
@@ -114,7 +120,8 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
     caCertResourceId = None
     if ca_cert_name:
         subscription = get_subscription_id(cmd.cli_ctx)
-        caCertResourceId = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/certificates/{}".format(subscription, resource_group, service, ca_cert_name)
+        resource_id = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/certificates/{}"
+        caCertResourceId = resource_id.format(subscription, resource_group, service, ca_cert_name)
 
     if username and password:
         auth_setting = models.AcceleratorBasicAuthSetting(
@@ -150,11 +157,13 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
         git_repository=git_repository
     )
     customized_accelerator_resource = models.CustomizedAcceleratorResource(properties=properties)
-    return sdk_no_wait(no_wait, client.customized_accelerators.begin_create_or_update, resource_group, service, DEFAULT_NAME, name, customized_accelerator_resource)
+    return sdk_no_wait(no_wait, client.customized_accelerators.begin_create_or_update,
+                       resource_group, service, DEFAULT_NAME, name, customized_accelerator_resource)
 
 
 def customized_accelerator_delete(cmd, client, resource_group, service, name, no_wait=False):
-    return sdk_no_wait(no_wait, client.customized_accelerators.begin_delete, resource_group, service, DEFAULT_NAME, name)
+    return sdk_no_wait(no_wait, client.customized_accelerators.begin_delete,
+                       resource_group, service, DEFAULT_NAME, name)
 
 
 def predefined_accelerator_list(cmd, client, resource_group, service):
@@ -166,8 +175,10 @@ def predefined_accelerator_show(cmd, client, resource_group, service, name):
 
 
 def predefined_accelerator_disable(cmd, client, resource_group, service, name, no_wait=False):
-    return sdk_no_wait(no_wait, client.predefined_accelerators.begin_disable, resource_group, service, DEFAULT_NAME, name)
+    return sdk_no_wait(no_wait, client.predefined_accelerators.begin_disable,
+                       resource_group, service, DEFAULT_NAME, name)
 
 
 def predefined_accelerator_enable(cmd, client, resource_group, service, name, no_wait=False):
-    return sdk_no_wait(no_wait, client.predefined_accelerators.begin_enable, resource_group, service, DEFAULT_NAME, name)
+    return sdk_no_wait(no_wait, client.predefined_accelerators.begin_enable,
+                       resource_group, service, DEFAULT_NAME, name)

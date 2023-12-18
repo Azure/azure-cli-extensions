@@ -10,7 +10,9 @@ from knack.log import get_logger
 from msrestazure.tools import resource_id
 from .application_live_view import create as application_live_view_create
 from .dev_tool_portal import create_or_update as dev_tool_portal_create
-from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import ConfigurationServiceGeneration
+from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import (
+    ConfigurationServiceGeneration
+)
 from .vendored_sdks.appplatform.v2023_11_01_preview import models
 
 GATEWAY_RESOURCE_TYPE = "gateways"
@@ -18,7 +20,8 @@ DEFAULT_NAME = "default"
 logger = get_logger(__name__)
 
 
-def create_dev_tool_portal(cmd, client, resource_group, service, enable_application_live_view, enable_application_accelerator, **_):
+def create_dev_tool_portal(cmd, client, resource_group, service,
+                           enable_application_live_view, enable_application_accelerator, **_):
     if any([enable_application_live_view, enable_application_accelerator]):
         logger.warning('- Creating Dev Tool Portal ..')
         return dev_tool_portal_create(cmd, client, service, resource_group,
@@ -32,7 +35,10 @@ def create_application_live_view(cmd, client, resource_group, service, enable_ap
         return application_live_view_create(cmd, client, service, resource_group)
 
 
-def create_application_configuration_service(cmd, client, resource_group, service, enable_application_configuration_service, application_configuration_service_generation, **_):
+def create_application_configuration_service(cmd, client, resource_group, service,
+                                             enable_application_configuration_service,
+                                             application_configuration_service_generation,
+                                             **_):
     if enable_application_configuration_service:
         logger.warning(" - Creating Application Configuration Service ..")
         acs_resource = models.ConfigurationServiceResource()
@@ -63,7 +69,8 @@ def create_gateway(cmd, client, resource_group, service, enable_gateway, gateway
         return client.gateways.begin_create_or_update(resource_group, service, DEFAULT_NAME, gateway_resource)
 
 
-def create_api_portal(cmd, client, resource_group, service, enable_api_portal, api_portal_instance_count=None, sku=None, **_):
+def create_api_portal(cmd, client, resource_group, service, enable_api_portal,
+                      api_portal_instance_count=None, sku=None, **_):
     if enable_api_portal:
         logger.warning(" - Creating API portal ..")
         gateway_id = resource_id(
@@ -94,4 +101,5 @@ def create_application_accelerator(cmd, client, resource_group, service, enable_
             properties=models.ApplicationAcceleratorProperties(
             )
         )
-        return client.application_accelerators.begin_create_or_update(resource_group, service, DEFAULT_NAME, application_accelerator_resource)
+        return client.application_accelerators.begin_create_or_update(resource_group, service,
+                                                                      DEFAULT_NAME, application_accelerator_resource)

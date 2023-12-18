@@ -17,7 +17,8 @@ def _spring_list_marketplace_plan(cmd, client):
     from .vendored_sdks.marketplace.v2018_08_01_beta import MarketplaceRPService
     from .vendored_sdks.marketplace.v2018_08_01_beta.models import Offer
 
-    logger.warning('To view the Azure Spring Apps Enterprise tier offering and read a detailed description, see https://aka.ms/ascmpoffer')
+    logger.warning('To view the Azure Spring Apps Enterprise tier offering and read a detailed description, '
+                   'see https://aka.ms/ascmpoffer')
     client = get_mgmt_service_client(cmd.cli_ctx, MarketplaceRPService)
     offer = client.offer.get('{}.{}'.format(MARKETPLACE_PUBLISHER_ID, MARKETPLACE_OFFER_ID))
     offer.plans = [x for x in offer.plans if _is_valid_plan(x)]

@@ -114,13 +114,14 @@ class DefaultApp:
                 storage_resource = client.storages.get(resource_group, service, item['storageName'])
                 storage_id = storage_resource.id
 
+            custom_props = item['customPersistentDiskProperties']
             custom_persistent_disk_properties = models.AzureFileVolume(
-                type=item['customPersistentDiskProperties']['type'],
-                share_name=item['customPersistentDiskProperties']['shareName'] if 'shareName' in item['customPersistentDiskProperties'] else None,
-                mount_path=item['customPersistentDiskProperties']['mountPath'],
-                mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
-                read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None,
-                enable_sub_path=item['customPersistentDiskProperties']['enableSubPath'] if 'enableSubPath' in item['customPersistentDiskProperties'] else None)
+                type=custom_props['type'],
+                share_name=custom_props['shareName'] if 'shareName' in custom_props else None,
+                mount_path=custom_props['mountPath'],
+                mount_options=custom_props['mountOptions'] if 'mountOptions' in custom_props else None,
+                read_only=custom_props['readOnly'] if 'readOnly' in custom_props else None,
+                enable_sub_path=custom_props['enableSubPath'] if 'enableSubPath' in custom_props else None)
 
             custom_persistent_disks.append(
                 models.CustomPersistentDiskResource(
@@ -136,7 +137,8 @@ class DefaultApp:
         else:
             return None
 
-    def _load_ingress_settings(self, ingress_read_timeout=None, ingress_send_timeout=None, session_affinity=None, session_max_age=None, backend_protocol=None, client_auth_certs=None, **_):
+    def _load_ingress_settings(self, ingress_read_timeout=None, ingress_send_timeout=None, session_affinity=None,
+                               session_max_age=None, backend_protocol=None, client_auth_certs=None, **_):
         if (ingress_read_timeout is not None) or (ingress_send_timeout is not None) or \
                 (session_affinity is not None) or (session_max_age is not None) or (backend_protocol is not None) or \
                 (client_auth_certs is not None):
@@ -197,7 +199,8 @@ class BasicTierApp(DefaultApp):
 class EnterpriseTierApp(DefaultApp):
     def _get_persistent_disk_size(self, enable_persistent_storage, **_):
         if enable_persistent_storage:
-            raise InvalidArgumentValueError('Enterprise tier Spring instance does not support --enable-persistent-storage')
+            raise InvalidArgumentValueError('Enterprise tier Spring instance does not support '
+                                            '--enable-persistent-storage')
 
 
 def app_selector(sku, **_):

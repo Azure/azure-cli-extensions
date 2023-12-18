@@ -84,13 +84,16 @@ def gateway_update(cmd, client, resource_group, service,
             )
 
     api_metadata_properties = _update_api_metadata(
-        gateway.properties.api_metadata_properties, api_title, api_description, api_doc_location, api_version, server_url)
+        gateway.properties.api_metadata_properties, api_title,
+        api_description, api_doc_location, api_version, server_url)
 
     cors_properties = _update_cors(
-        gateway.properties.cors_properties, allowed_origins, allowed_origin_patterns, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers)
+        gateway.properties.cors_properties, allowed_origins, allowed_origin_patterns,
+        allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers)
 
     client_auth = _update_client_auth(client, resource_group, service,
-                                      gateway.properties.client_auth, enable_certificate_verification, certificate_names)
+                                      gateway.properties.client_auth,
+                                      enable_certificate_verification, certificate_names)
 
     resource_requests = models.GatewayResourceRequests(
         cpu=cpu or gateway.properties.resource_requests.cpu,
@@ -223,7 +226,8 @@ def gateway_route_config_remove(cmd, client, resource_group, service, name):
 
 
 def _update_api_metadata(existing, api_title, api_description, api_documentation_location, version, server_url):
-    if api_title is None and api_description is None and api_documentation_location is None and version is None and server_url is None:
+    if (api_title is None and api_description is None
+            and api_documentation_location is None and version is None and server_url is None):
         return existing
     api_metadata = models.GatewayApiMetadataProperties() if existing is None else existing
     if api_title is not None:
@@ -239,8 +243,11 @@ def _update_api_metadata(existing, api_title, api_description, api_documentation
     return api_metadata
 
 
-def _update_cors(existing, allowed_origins, allowed_origin_patterns, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers):
-    if allowed_origins is None and allowed_origin_patterns is None and allowed_methods is None and allowed_headers is None and max_age is None and allow_credentials is None and exposed_headers is None:
+def _update_cors(existing, allowed_origins, allowed_origin_patterns, allowed_methods,
+                 allowed_headers, max_age, allow_credentials, exposed_headers):
+    if (allowed_origins is None and allowed_origin_patterns is None
+            and allowed_methods is None and allowed_headers is None
+            and max_age is None and allow_credentials is None and exposed_headers is None):
         return existing
     cors = existing if existing is not None else models.GatewayCorsProperties()
     if allowed_origins is not None:
@@ -276,7 +283,7 @@ def _update_client_auth(client, resource_group, service, existing, enable_certif
         return existing
     client_auth = existing if existing is not None else models.GatewayPropertiesClientAuth()
     if enable_certificate_verification is not None:
-        client_auth.certificate_verification = models.GatewayCertificateVerification.ENABLED if enable_certificate_verification else models.GatewayCertificateVerification.DISABLED
+        client_auth.certificate_verification = models.GatewayCertificateVerification.ENABLED if enable_certificate_verification else models.GatewayCertificateVerification.DISABLED  # pylint: disable=line-too-long
     if certificate_names is not None:
         client_auth.certificates = []
         if certificate_names == "":
@@ -337,7 +344,8 @@ def _create_or_update_gateway_route_configs(client, resource_group, service, nam
         route_properties.app_resource_id = app_resource_id
     route_config_resource = models.GatewayRouteConfigResource(
         properties=route_properties)
-    return client.gateway_route_configs.begin_create_or_update(resource_group, service, DEFAULT_NAME, name, route_config_resource)
+    return client.gateway_route_configs.begin_create_or_update(resource_group, service,
+                                                               DEFAULT_NAME, name, route_config_resource)
 
 
 def _get_app_resource_id_by_name(client, resource_group, service, app_name):

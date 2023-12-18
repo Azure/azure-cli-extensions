@@ -51,24 +51,30 @@ def create_build_service(cmd, client, resource_group, service, disable_build_ser
         LongRunningOperation(cmd.cli_ctx)(poller)
 
         subscription = get_subscription_id(cmd.cli_ctx)
-        service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, resource_group, service)
+        service_resource_id_template = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'
+        resource_id = service_resource_id_template.format(subscription, resource_group, service)
         build_service_properties = models.BuildServiceProperties(
-            container_registry='{}/containerregistries/{}'.format(service_resource_id, DEFAULT_CONTAINER_REGISTRY_NAME))
+            container_registry='{}/containerregistries/{}'.format(resource_id, DEFAULT_CONTAINER_REGISTRY_NAME))
         build_service_resource = models.BuildService(
             properties=build_service_properties)
-        return client.build_service.begin_create_or_update(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
+        return client.build_service.begin_create_or_update(resource_group, service,
+                                                           DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
     else:
         build_service_properties = models.BuildServiceProperties(
             container_registry=None)
         build_service_resource = models.BuildService(
             properties=build_service_properties)
-        return client.build_service.begin_create_or_update(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
+        return client.build_service.begin_create_or_update(resource_group, service,
+                                                           DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
 
 
-def create_or_update_builder(cmd, client, resource_group, service, name, builder_json=None, builder_file=None, no_wait=False):
-    logger.warning('Editing builder will regenerate images for all app deployments using this builder. These new images will ' +
-                   'be used after app restart either manually by yourself or automatically by Azure Spring Apps in regular maintenance tasks. ' +
-                   'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder.')
+def create_or_update_builder(cmd, client, resource_group, service, name,
+                             builder_json=None, builder_file=None, no_wait=False):
+    logger.warning('Editing builder will regenerate images for all app deployments using this builder. '
+                   'These new images will be used after app restart either manually by yourself or '
+                   'automatically by Azure Spring Apps in regular maintenance tasks. Use CLI '
+                   'command --"az spring build-service builder show-deployments" to view the app '
+                   'deployment list of the builder.')
     builder = _update_builder(builder_file, builder_json)
     builder_resource = models.BuilderResource(
         properties=builder
@@ -86,10 +92,12 @@ def builder_show_deployments(cmd, client, resource_group, service, name):
 
 
 def builder_delete(cmd, client, resource_group, service, name, no_wait=False):
-    return sdk_no_wait(no_wait, client.build_service_builder.begin_delete, resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name)
+    return sdk_no_wait(no_wait, client.build_service_builder.begin_delete,
+                       resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name)
 
 
-def create_or_update_container_registry(cmd, client, resource_group, service, name=None, server=None, username=None, password=None):
+def create_or_update_container_registry(cmd, client, resource_group, service, name=None,
+                                        server=None, username=None, password=None):
     container_registry_properties = models.ContainerRegistryProperties(
         credentials=models.ContainerRegistryBasicCredentials(
             server=server,
@@ -141,7 +149,8 @@ def build_list(cmd, client, resource_group, service):
 
 
 def build_delete(cmd, client, resource_group, service, name, no_wait=False):
-    return sdk_no_wait(no_wait, client.build_service.begin_delete_build, resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name)
+    return sdk_no_wait(no_wait, client.build_service.begin_delete_build,
+                       resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name)
 
 
 def build_result_show(cmd, client, resource_group, service, build_name=None, name=None):
@@ -155,11 +164,12 @@ def build_result_list(cmd, client, resource_group, service, build_name=None):
 def update_build_service(cmd, client, resource_group, service, registry_name=None, no_wait=False):
     subscription = get_subscription_id(cmd.cli_ctx)
     service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, resource_group, service)
-    build_service_properties = models.BuildServiceProperties(
-        container_registry='{}/containerregistries/{}'.format(service_resource_id, registry_name) if registry_name else None)
+    registry = '{}/containerregistries/{}'.format(service_resource_id, registry_name) if registry_name else None
+    build_service_properties = models.BuildServiceProperties(container_registry=registry)
     build_service_resource = models.BuildService(
         properties=build_service_properties)
-    return sdk_no_wait(no_wait, client.build_service.begin_create_or_update, resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
+    return sdk_no_wait(no_wait, client.build_service.begin_create_or_update,
+                       resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
 
 
 def build_service_show(cmd, client, resource_group, service):

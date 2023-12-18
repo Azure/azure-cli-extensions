@@ -147,7 +147,7 @@ class CustomContainerSource(BaseSource):
             container_args = shlex.split(container_args)
         credential = models.ImageRegistryCredential(
             username=registry_username,
-            password=registry_password      # [SuppressMessage("Microsoft.Security", "CS001:SecretInline", Justification="false positive")]
+            password=registry_password      # [SuppressMessage("Microsoft.Security", "CS001:SecretInline", Justification="false positive")]  # pylint: disable=line-too-long
         ) if registry_username or registry_password else None
         return models.CustomContainer(
             server=container_registry,

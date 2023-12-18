@@ -79,7 +79,8 @@ def app_identity_remove(cmd,
     """
     app = client.apps.get(resource_group, service, name)
     if _app_not_updatable(app):
-        raise ConflictRequestError("Failed to remove managed identities since app is in {} state.".format(app.properties.provisioning_state))
+        error_msg_template = "Failed to remove managed identities since app is in {} state."
+        raise ConflictRequestError(error_msg_template.format(app.properties.provisioning_state))
 
     if not app.identity:
         logger.warning("Skip remove managed identity since no identities assigned to app.")
@@ -287,7 +288,8 @@ def _create_role_assignment(cmd, client, resource_group, service, name, role, sc
 def _get_new_user_identities_for_remove(exist_user_identity_dict, user_identity_list_to_remove):
     """
     :param exist_user_identity_dict: A dict from user-assigned managed identity resource id to identity objecct.
-    :param user_identity_list_to_remove: None, an empty list or a list of string of user-assigned managed identity resource id to remove.
+    :param user_identity_list_to_remove: None, an empty list or a list of string of user-assigned managed
+        identity resource id to remove.
     :return A list of string of user-assigned managed identity resource ID.
     """
     if not exist_user_identity_dict:
@@ -345,7 +347,8 @@ def _get_new_identity_type_for_remove(exist_identity_type, is_remove_system_iden
 def _get_user_identity_payload_for_remove(new_identity_type, user_identity_list_to_remove):
     """
     :param new_identity_type: ManagedIdentityType
-    :param user_identity_list_to_remove: None, an empty list or a list of string of user-assigned managed identity resource id to remove.
+    :param user_identity_list_to_remove: None, an empty list or a list of string of user-assigned managed
+        identity resource id to remove.
     :return None object or a non-empty dict from user-assigned managed identity resource id to None object
     """
     user_identity_payload = {}

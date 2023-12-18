@@ -131,8 +131,10 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
     def after_create(self, no_wait=None, **kwargs):
         # should create build service before creating build agent pool and app insights
         if not no_wait and not kwargs['disable_build_service']:
-            poller = create_build_service(self.cmd, self.client, self.resource_group, self.name, kwargs['disable_build_service'],
-                                          kwargs['registry_server'], kwargs['registry_username'], kwargs['registry_password'])
+            poller = create_build_service(self.cmd, self.client, self.resource_group,
+                                          self.name, kwargs['disable_build_service'],
+                                          kwargs['registry_server'], kwargs['registry_username'],
+                                          kwargs['registry_password'])
             LongRunningOperation(self.cmd.cli_ctx)(poller)
         pollers = [
             # create sub components like Service registry, ACS, build service, etc.
