@@ -19,6 +19,7 @@ from azext_confcom.errors import (
 import azext_confcom.config as config
 from azext_confcom.template_util import DockerClient
 
+
 def create_tar_file(image_path: str) -> None:
     if not os.path.isfile(image_path):
         with DockerClient() as client:
@@ -28,16 +29,17 @@ def create_tar_file(image_path: str) -> None:
                 f.write(chunk)
             f.close()
 
+
 def remove_tar_file(image_path: str) -> None:
     if os.path.isfile(image_path):
         os.remove(image_path)
+
 
 class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         path = os.path.dirname(__file__)
         cls.path = path
-
 
     def test_arm_template_with_parameter_file_clean_room_tar(self):
         custom_arm_json_default_value = """
@@ -173,7 +175,6 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
         clean_room_image = load_policy_from_arm_template_str(
             custom_arm_json_default_value, ""
         )[0]
-
 
         try:
             filename = os.path.join(self.path, "./nginx.tar")
@@ -381,12 +382,11 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             custom_arm_json_default_value, ""
         )[0]
 
-
         filename = os.path.join(self.path, "./nginx2.tar")
         create_tar_file(filename)
         clean_room_image.populate_policy_content_for_all_images(
             tar_mapping=filename
-            )
+        )
         remove_tar_file(filename)
         regular_image_json = json.loads(
             regular_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
@@ -406,7 +406,6 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             deepdiff.DeepDiff(regular_image_json, clean_room_json, ignore_order=True),
             {},
         )
-
 
     def test_arm_template_with_parameter_file_clean_room_tar_invalid(self):
         custom_arm_json_default_value = """
