@@ -16,7 +16,9 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from .vendored_sdks.appplatform.v2023_11_01_preview.models import (ApmReference, CertificateReference)
-from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
+from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import (
+    ApmType, ConfigurationServiceGeneration
+)
 
 from ._gateway_constant import (GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE,
                                 GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE, GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE)
@@ -33,17 +35,20 @@ logger = get_logger(__name__)
 
 
 def only_support_enterprise(cmd, namespace):
-    if namespace.resource_group and namespace.service and not is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+    if (namespace.resource_group and namespace.service
+            and not is_enterprise_tier(cmd, namespace.resource_group, namespace.service)):
         raise ClientRequestError("'{}' only supports for Enterprise tier Spring instance.".format(namespace.command))
 
 
 def not_support_enterprise(cmd, namespace):
-    if namespace.resource_group and namespace.service and is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+    if (namespace.resource_group and namespace.service
+            and is_enterprise_tier(cmd, namespace.resource_group, namespace.service)):
         raise ClientRequestError("'{}' doesn't support for Enterprise tier Spring instance.".format(namespace.command))
 
 
 def validate_build_env(cmd, namespace):
-    if namespace.build_env is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+    if (namespace.build_env is not None and namespace.resource_group and namespace.service
+            and not is_enterprise_tier(cmd, namespace.resource_group, namespace.service)):
         raise ArgumentUsageError("'--build-env' only supports for Enterprise tier Spring instance.")
     else:
         if isinstance(namespace.build_env, list):
@@ -59,17 +64,22 @@ def validate_build_env(cmd, namespace):
                             result = {comps[0]: comps[1]}
                             env_dict.update(result)
                         else:
-                            raise ArgumentUsageError("The env name {} is not allowed. The valid env name should follow the pattern '[-._a-zA-Z][-._a-zA-Z0-9]*'(For example, BP_JVM_VERSION).".format(comps[0]))
+                            error_msg_template = ("The env name {} is not allowed. The valid env name should "
+                                                  "follow the pattern '[-._a-zA-Z][-._a-zA-Z0-9]*'"
+                                                  "(For example, BP_JVM_VERSION).")
+                            raise ArgumentUsageError(error_msg_template.format(comps[0]))
             namespace.build_env = env_dict
 
 
 def validate_target_module(cmd, namespace):
-    if namespace.target_module is not None and namespace.resource_group and namespace.service and is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+    if (namespace.target_module is not None and namespace.resource_group and namespace.service
+            and is_enterprise_tier(cmd, namespace.resource_group, namespace.service)):
         raise ArgumentUsageError("'--target-module' doesn't support for Enterprise tier Spring instance.")
 
 
 def validate_runtime_version(cmd, namespace):
-    if namespace.runtime_version is not None and namespace.resource_group and namespace.service and is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+    if (namespace.runtime_version is not None and namespace.resource_group and namespace.service
+            and is_enterprise_tier(cmd, namespace.resource_group, namespace.service)):
         raise ArgumentUsageError("'--runtime-version' doesn't support for Enterprise tier Spring instance.")
 
 
@@ -109,7 +119,8 @@ def validate_build_pool_size(namespace):
         if namespace.build_pool_size is None and not namespace.disable_build_service:
             namespace.build_pool_size = 'S1'
         elif namespace.build_pool_size is not None and namespace.disable_build_service:
-            raise InvalidArgumentValueError("Conflict detected: '--build-pool-size' can not be set with '--disable-build-service'.")
+            raise InvalidArgumentValueError("Conflict detected: '--build-pool-size' can "
+                                            "not be set with '--disable-build-service'.")
     else:
         if namespace.build_pool_size is not None:
             raise ClientRequestError("You can only specify --build-pool-size with enterprise tier.")
@@ -118,7 +129,9 @@ def validate_build_pool_size(namespace):
 def validate_build_service(namespace):
     if _parse_sku_name(namespace.sku) == 'enterprise':
         if (namespace.registry_server or namespace.registry_username or namespace.registry_password is not None) \
-                and ((namespace.registry_server is None) or (namespace.registry_username is None) or (namespace.registry_password is None)):
+                and ((namespace.registry_server is None)
+                     or (namespace.registry_username is None)
+                     or (namespace.registry_password is None)):
             raise InvalidArgumentValueError(
                 "The'--registry-server', '--registry-username' and '--registry-password' should be specified together.")
         if (namespace.registry_server or namespace.registry_username or namespace.registry_password is not None) \
@@ -127,7 +140,8 @@ def validate_build_service(namespace):
                 "Conflict detected: '--registry-server', '--registry-username' and '--registry-password' "
                 "can not be set with '--disable-build-service'.")
     else:
-        if namespace.disable_build_service or namespace.registry_server or namespace.registry_username or namespace.registry_password is not None:
+        if (namespace.disable_build_service or namespace.registry_server
+                or namespace.registry_username or namespace.registry_password is not None):
             raise InvalidArgumentValueError("The build service is only supported with enterprise tier.")
 
 
@@ -195,7 +209,8 @@ def validate_artifact_path(namespace):
     if values is None:
         # ignore jar_file check
         return
-    file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version, jdk_version = values
+    (file_size, spring_boot_version, spring_cloud_version, has_actuator,
+        has_manifest, has_jar, has_class, ms_sdk_version, jdk_version) = values
 
     tips = ", if you choose to ignore these errors, turn validation off with --disable-validation"
     if not has_jar and not has_class:
@@ -255,7 +270,8 @@ def validate_container_registry_create(cmd, namespace):
     validate_container_registry(namespace)
     client = get_client(cmd)
     try:
-        container_registry = client.container_registries.get(namespace.resource_group, namespace.service, namespace.name)
+        container_registry = client.container_registries.get(namespace.resource_group,
+                                                             namespace.service, namespace.name)
         if container_registry is not None:
             raise ClientRequestError('Container Registry {} already exists.'.format(namespace.name))
     except ResourceNotFoundError:
@@ -292,7 +308,8 @@ def validate_acc_git_url(namespace):
 def validate_acc_git_refs(namespace):
     args = [namespace.git_branch, namespace.git_commit, namespace.git_tag]
     if all(x is None for x in args):
-        raise ArgumentUsageError("Git Repository configurations at least one of '--git-branch --git-commit --git-tag' should be all provided.")
+        raise ArgumentUsageError("Git Repository configurations at least one of '--git-branch "
+                                 "--git-commit --git-tag' should be all provided.")
 
 
 def validate_git_interval(namespace):
@@ -308,7 +325,8 @@ def validate_acs_ssh_or_warn(namespace):
     host_key_check = namespace.host_key_check
     if private_key or host_key or host_key_algorithm or host_key_check:
         logger.warning("SSH authentication only supports SHA-1 signature under ACS restriction. "
-                       "Please refer to https://aka.ms/asa-acs-ssh to understand how to use SSH under this restriction.")
+                       "Please refer to https://aka.ms/asa-acs-ssh to understand how to use SSH "
+                       "under this restriction.")
 
 
 def validate_config_file_patterns(namespace):
@@ -326,7 +344,8 @@ def _validate_patterns(patterns):
     invalid_list = [p for p in pattern_list if not _is_valid_pattern(p)]
     if len(invalid_list) > 0:
         logger.warning("Patterns '%s' are invalid.", ','.join(invalid_list))
-        raise InvalidArgumentValueError("Patterns should be the collection of patterns separated by comma, each pattern in the format of 'application' or 'application/profile'")
+        raise InvalidArgumentValueError("Patterns should be the collection of patterns separated by comma, "
+                                        "each pattern in the format of 'application' or 'application/profile'")
 
 
 def _is_valid_pattern(pattern):
@@ -349,7 +368,8 @@ def _is_valid_app_and_profile_name(pattern):
 def validate_acs_create(namespace):
     if namespace.application_configuration_service_generation is not None:
         if namespace.enable_application_configuration_service is False:
-            raise ArgumentUsageError("--application-configuration-service-generation can only be set when enable application configuration service.")
+            raise ArgumentUsageError("--application-configuration-service-generation can only be "
+                                     "set when enable application configuration service.")
 
 
 def validate_gateway_update(cmd, namespace):
@@ -372,16 +392,20 @@ def validate_api_portal_update(namespace):
 def validate_dev_tool_portal(namespace):
     args = [namespace.scopes, namespace.client_id, namespace.client_secret, namespace.metadata_url]
     if not all(args) and not all(x is None for x in args):
-        raise ArgumentUsageError("Single Sign On configurations '--scopes --client-id --client-secret --metadata-url' should be all provided or none provided.")
+        raise ArgumentUsageError("Single Sign On configurations '--scopes --client-id --client-secret "
+                                 "--metadata-url' should be all provided or none provided.")
     if namespace.scopes is not None:
         namespace.scopes = namespace.scopes.split(",") if namespace.scopes else []
 
 
 def _validate_sso(namespace):
-    all_provided = namespace.scope is not None and namespace.client_id is not None and namespace.client_secret is not None and namespace.issuer_uri is not None
-    none_provided = namespace.scope is None and namespace.client_id is None and namespace.client_secret is None and namespace.issuer_uri is None
+    all_provided = (namespace.scope is not None and namespace.client_id is not None
+                    and namespace.client_secret is not None and namespace.issuer_uri is not None)
+    none_provided = (namespace.scope is None and namespace.client_id is None
+                     and namespace.client_secret is None and namespace.issuer_uri is None)
     if not all_provided and not none_provided:
-        raise ArgumentUsageError("Single Sign On configurations '--scope --client-id --client-secret --issuer-uri' should be all provided or none provided.")
+        raise ArgumentUsageError("Single Sign On configurations '--scope --client-id --client-secret "
+                                 "--issuer-uri' should be all provided or none provided.")
     if namespace.scope is not None:
         namespace.scope = namespace.scope.split(",") if namespace.scope else []
 
@@ -425,7 +449,8 @@ def _validate_gateway_response_cache_exclusive(namespace):
              or namespace.response_cache_size is not None
              or namespace.response_cache_ttl is not None):
         raise InvalidArgumentValueError(
-            "Conflict detected: Parameters in ['--response-cache-scope', '--response-cache-scope', '--response-cache-ttl'] "
+            "Conflict detected: Parameters in ['--response-cache-scope', "
+            "'--response-cache-scope', '--response-cache-ttl'] "
             "cannot be set together with '--enable-response-cache false'.")
 
 
@@ -529,7 +554,8 @@ def validate_buildpack_binding_not_exist(cmd, namespace):
         if binding_resource is not None:
             raise ClientRequestError('buildpack Binding {} in builder {} already exists '
                                      'in resource group {}, service {}. You can edit it by set command.'
-                                     .format(namespace.name, namespace.resource_group, namespace.service, namespace.builder_name))
+                                     .format(namespace.name, namespace.resource_group,
+                                             namespace.service, namespace.builder_name))
     except ResourceNotFoundError:
         # Excepted case
         pass

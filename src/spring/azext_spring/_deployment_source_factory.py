@@ -24,7 +24,8 @@ class JarSource(BaseSource):
         invalid_input = {k: v for k, v in kwargs.items() if k in ['main_entry', 'target_module'] and v is not None}
         if any(invalid_input):
             invalid_input_str = convert_argument_to_parameter_list(invalid_input.keys())
-            runtime_version = kwargs.get('runtime_version') or kwargs.get('deployment_resource').properties.source.runtime_version
+            runtime_version = (kwargs.get('runtime_version')
+                               or kwargs.get('deployment_resource').properties.source.runtime_version)
             raise ArgumentUsageError('{} cannot be set when --runtime-version is {}.'
                                      .format(invalid_input_str, runtime_version))
 
@@ -56,11 +57,13 @@ class WarSource(BaseSource):
         invalid_input = {k: v for k, v in kwargs.items() if k in ['main_entry', 'target_module'] and v is not None}
         if any(invalid_input):
             invalid_input_str = convert_argument_to_parameter_list(invalid_input.keys())
-            runtime_version = kwargs.get('runtime_version') or kwargs.get('deployment_resource').properties.source.runtime_version
+            runtime_version = (kwargs.get('runtime_version')
+                               or kwargs.get('deployment_resource').properties.source.runtime_version)
             raise ArgumentUsageError('{} cannot be set when --runtime-version is {}.'
                                      .format(invalid_input_str, runtime_version))
 
-    def format_source(self, deployable_path=None, runtime_version=None, server_version=None, version=None, jvm_options=None, **_):
+    def format_source(self, deployable_path=None, runtime_version=None,
+                      server_version=None, version=None, jvm_options=None, **_):
         if all(x is None for x in [deployable_path, runtime_version, server_version, version, jvm_options]):
             return
         return models.WarUploadedUserSourceInfo(
@@ -90,7 +93,8 @@ class NetCoreZipSource(BaseSource):
         invalid_input = {k: v for k, v in kwargs.items() if k in ['jvm_options'] and v is not None}
         if any(invalid_input):
             invalid_input_str = convert_argument_to_parameter_list(invalid_input.keys())
-            runtime_version = kwargs.get('runtime_version') or kwargs.get('deployment_resource').properties.source.runtime_version
+            runtime_version = (kwargs.get('runtime_version')
+                               or kwargs.get('deployment_resource').properties.source.runtime_version)
             raise ArgumentUsageError('{} cannot be set when --runtime-version is {}.'
                                      .format(invalid_input_str, runtime_version))
 
@@ -119,7 +123,7 @@ class NetCoreZipSource(BaseSource):
 
 class CustomContainerSource(BaseSource):
     def validate_source(self, **kwargs):
-        invalid_input = {k: v for k, v in kwargs.items() if k in ['jvm_options', 'main_entry', 'target_module'] and v is not None}
+        invalid_input = {k: v for k, v in kwargs.items() if k in ['jvm_options', 'main_entry', 'target_module'] and v is not None}  # pylint: disable=line-too-long
         if any(invalid_input):
             invalid_input_str = convert_argument_to_parameter_list(invalid_input.keys())
             raise ArgumentUsageError('{} cannot be set when --container-image is set.'

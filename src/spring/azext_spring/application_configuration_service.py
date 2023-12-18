@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
+# pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines, line-too-long
 import json
 
 from azure.cli.core.azclierror import ClientRequestError, ValidationError

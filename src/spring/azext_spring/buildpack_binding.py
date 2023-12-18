@@ -3,8 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=wrong-import-order
-# pylint: disable=line-too-long
+# pylint: disable=wrong-import-order, line-too-long
 
 from .vendored_sdks.appplatform.v2023_11_01_preview import models
 from azure.cli.core.util import sdk_no_wait

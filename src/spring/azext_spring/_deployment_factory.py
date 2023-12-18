@@ -179,14 +179,15 @@ class DefaultDeployment:
             )
         else:
             raise InvalidArgumentValueError("ProbeAction.Type is invalid")
+        probe = data['probe']
         probe_settings = models.Probe(
             probe_action=probe_action,
             disable_probe=False,
-            initial_delay_seconds=data['probe']['initialDelaySeconds'] if 'initialDelaySeconds' in data['probe'] else None,
-            period_seconds=data['probe']['periodSeconds'] if 'periodSeconds' in data['probe'] else None,
-            timeout_seconds=data['probe']['timeoutSeconds'] if 'timeoutSeconds' in data['probe'] else None,
-            failure_threshold=data['probe']['failureThreshold'] if 'failureThreshold' in data['probe'] else None,
-            success_threshold=data['probe']['successThreshold'] if 'successThreshold' in data['probe'] else None
+            initial_delay_seconds=probe['initialDelaySeconds'] if 'initialDelaySeconds' in probe else None,
+            period_seconds=probe['periodSeconds'] if 'periodSeconds' in probe else None,
+            timeout_seconds=probe['timeoutSeconds'] if 'timeoutSeconds' in probe else None,
+            failure_threshold=probe['failureThreshold'] if 'failureThreshold' in probe else None,
+            success_threshold=probe['successThreshold'] if 'successThreshold' in probe else None
         )
 
         return probe_settings

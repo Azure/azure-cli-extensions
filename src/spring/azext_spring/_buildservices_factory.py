@@ -38,14 +38,17 @@ class BuildService:
         logger.warning("[1/{}] Requesting for upload URL.".format(total_steps))
         upload_info = self._get_upload_info()
         logger.warning("[2/{}] Uploading package to blob.".format(total_steps))
-        uploader_selector(cli_ctx=self.cmd.cli_ctx, upload_url=upload_info.upload_url, **kwargs).upload_and_build(**kwargs)
+        uploader_selector(cli_ctx=self.cmd.cli_ctx,
+                          upload_url=upload_info.upload_url,
+                          **kwargs).upload_and_build(**kwargs)
         if 'app' in kwargs:
             build_name = kwargs['app']
         else:
             build_name = kwargs['build_name']
         logger.warning("[3/{}] Creating or Updating build '{}'.".format(total_steps, build_name))
         build_result_id = self._queue_build(upload_info.relative_path, **kwargs)
-        logger.warning("[4/{}] Waiting for building container image to finish. This may take a few minutes.".format(total_steps))
+        logger.warning("[4/{}] Waiting for building container image to finish. "
+                       "This may take a few minutes.".format(total_steps))
         self._wait_build_finished(build_result_id)
         return build_result_id
 
@@ -60,10 +63,12 @@ class BuildService:
         except AttributeError as e:
             raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e))
 
-    def _queue_build(self, relative_path=None, builder=None, build_env=None, build_cpu=None, build_memory=None, app=None, deployment=None, build_name=None,
+    def _queue_build(self, relative_path=None, builder=None, build_env=None, build_cpu=None,
+                     build_memory=None, app=None, deployment=None, build_name=None,
                      apms=None, certificates=None, build_certificates=None, **_):
         subscription = get_subscription_id(self.cmd.cli_ctx)
-        service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, self.resource_group, self.service)
+        service_resource_id_template = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'
+        service_resource_id = service_resource_id_template.format(subscription, self.resource_group, self.service)
         build_resource_requests = models.BuildResourceRequests(
             cpu=build_cpu,
             memory=build_memory)
@@ -114,7 +119,9 @@ class BuildService:
             log_url = self._try_get_build_log_url(build_result_id)
             if hasattr(result.properties, "error") and result.properties.error:
                 build_error = result.properties.error
-                error_msg = "Failed to build container image, error code: {}, message: {}, check the build logs {} for more details and retry.".format(build_error.code, build_error.message, log_url)
+                error_msg_template = ("Failed to build container image, error code: {}, message: {}, "
+                                      "check the build logs {} for more details and retry.")
+                error_msg = error_msg_template.format(build_error.code, build_error.message, log_url)
             else:
                 error_msg = "Failed to build container image, please check the build logs {} and retry.".format(log_url)
             raise DeploymentError(error_msg)
@@ -126,7 +133,8 @@ class BuildService:
         build_service = resource_id['child_name_1']
         build = resource_id['child_name_2']
         build_result_name = resource_id['resource_name']
-        response = self.client.build_service.get_build_result(resource_group, service, build_service, build, build_result_name)
+        response = self.client.build_service.get_build_result(resource_group, service,
+                                                              build_service, build, build_result_name)
         self.progress_bar.add(message=response.properties.provisioning_state)
         return response
 
@@ -173,7 +181,8 @@ class BuildService:
             # refresh the build result
             result = self._get_build_result(result.id)
         if result.properties.provisioning_state in self.terminated_state:
-            logger.info('The build result is already terminated, cannot stream the log out for stage {}.'.format(stage_name))
+            logger.info('The build result is already terminated, '
+                        'cannot stream the log out for stage {}.'.format(stage_name))
             return
         stage = next(iter(x for x in result.properties.build_stages if x.name == stage_name), None)
         if not stage:

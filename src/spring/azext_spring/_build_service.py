@@ -163,7 +163,8 @@ def build_result_list(cmd, client, resource_group, service, build_name=None):
 
 def update_build_service(cmd, client, resource_group, service, registry_name=None, no_wait=False):
     subscription = get_subscription_id(cmd.cli_ctx)
-    service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, resource_group, service)
+    service_resource_id_template = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'
+    service_resource_id = service_resource_id_template.format(subscription, resource_group, service)
     registry = '{}/containerregistries/{}'.format(service_resource_id, registry_name) if registry_name else None
     build_service_properties = models.BuildServiceProperties(container_registry=registry)
     build_service_resource = models.BuildService(
