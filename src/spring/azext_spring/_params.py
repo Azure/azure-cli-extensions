@@ -86,6 +86,12 @@ def load_arguments(self, _):
         c.argument('outbound_type', arg_group='VNet Injection',
                    help='The outbound type of Azure Spring Apps VNet instance.',
                    validator=validate_vnet, default="loadBalancer")
+        c.argument('app_aks_id', 
+                  options_list=['--app-aks-id'],
+                  help='The aks id to deploy your user applications.')
+        c.argument('service_runtime_aks_id', 
+                  options_list=['--service-runtime-aks-id'],
+                  help='The aks id to deploy servcie runtime components.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
                    validator=validate_dataplane_public_endpoint,
