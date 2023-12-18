@@ -11,7 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`. 
+* Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`.
+* Fix for `az aks approuting update` command failing on granting keyvault permissions to managed identity.
 
 0.5.173
 +++++++
