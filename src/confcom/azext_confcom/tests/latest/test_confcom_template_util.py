@@ -77,7 +77,7 @@ class TemplateUtil(unittest.TestCase):
                                 "strategy": "string",
                         },
                         {
-                                "pattern": "((?i)FABRIC)_.+=.+",
+                                "pattern": "(?i)(FABRIC)_.+=.+",
                                 "required": false,
                                 "strategy": "re2",
                         },

@@ -197,7 +197,7 @@ class PolicyGenerating(unittest.TestCase):
                     "strategy": "string"
                 },
                 {
-                    "name": "((?i)FABRIC)_.+",
+                    "name": "(?i)(FABRIC)_.+",
                     "value": ".+",
                     "strategy": "re2"
                 },
@@ -302,7 +302,7 @@ class PolicyGenerating(unittest.TestCase):
                 "value": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
             },
             {
-                "name": "((?i)FABRIC)_.+",
+                "name": "(?i)(FABRIC)_.+",
                 "value": ".+",
             },
             {
