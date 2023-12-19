@@ -7,6 +7,7 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=line-too-long
 
 from uuid import uuid4
 from dataclasses import dataclass
@@ -19,11 +20,12 @@ from azure.mgmt.kubernetesconfiguration import SourceControlConfigurationClient
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.kubernetesconfiguration.models import Extension, Identity
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.mgmt.resourcegraph import ResourceGraphClient
+from azure.mgmt.resourcegraph.models import QueryRequest
 
 
 logger = get_logger(__name__)
 
-# pylint: disable=line-too-long
 
 # https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#kubernetes-extension-contributor
 KUBERNETES_EXTENSION_CONTRIBUTOR_ROLE_ID = "/providers/Microsoft.Authorization/roleDefinitions/85cb6faf-e071-4c9b-8136-154b5a04f717"
@@ -136,6 +138,82 @@ def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
             principal_type=PrincipalType.SERVICE_PRINCIPAL,
         ),
     )
+
+    return {
+        "extension": extension,
+        "storage_class_contributor_role_assignment": sc_contributor_role_assignment,
+        "kubernetes_extension_contributor_role_assignment": k8s_extension_contributor_role_assignment,
+    }
+
+
+def disable_storage_class(cmd: AzCliCommand, resource_uri: str):
+    resource_id = ConnectedClusterResourceId.parse(resource_uri)
+
+    print(f"Uninstall Storage class Arc Extension in cluster {resource_id.cluster_name}...")
+    source_control_configuration_client: SourceControlConfigurationClient = get_mgmt_service_client(cmd.cli_ctx, SourceControlConfigurationClient)
+
+    extension = source_control_configuration_client.extensions.get(
+        resource_group_name=resource_id.resource_group,
+        cluster_rp="Microsoft.Kubernetes",
+        cluster_resource_name="connectedClusters",
+        cluster_name=resource_id.cluster_name,
+        extension_name=STORAGE_CLASS_EXTENSION_NAME,
+    )
+
+    delete_lro = source_control_configuration_client.extensions.begin_delete(
+        resource_group_name=resource_id.resource_group,
+        cluster_rp="Microsoft.Kubernetes",
+        cluster_resource_name="connectedClusters",
+        cluster_name=resource_id.cluster_name,
+        extension_name=STORAGE_CLASS_EXTENSION_NAME,
+    )
+
+    # Prevent blocking KeyboardInterrupt
+    while not delete_lro.done():
+        delete_lro.wait(1)
+
+    print("Delete role assignment of the extension identity with Storage Class Contributor role under the cluster scope..")
+
+    authorization_management_client: AuthorizationManagementClient = get_mgmt_service_client(cmd.cli_ctx, AuthorizationManagementClient)
+    resource_graph_client: ResourceGraphClient = get_mgmt_service_client(cmd.cli_ctx, ResourceGraphClient, subscription_bound=False)
+
+    # print(extension.identity.principal_id, resource_uri)
+
+    sc_contributor_query_response = resource_graph_client.resources(QueryRequest(
+        subscriptions=[resource_id.subscription_id],
+        query=f"""
+    authorizationresources
+    | where properties.principalId =~ "{extension.identity.principal_id}" and properties.roleDefinitionId =~ "{STORAGE_CLASS_CONTRIBUTOR_ROLE_ID}" and properties.scope =~ "{resource_uri}"
+    | limit 1
+        """
+    ))
+
+    sc_contributor_role_assignment = None
+    if sc_contributor_query_response.total_records == 1:
+        sc_contributor_role_assignment = authorization_management_client.role_assignments.delete_by_id(
+            role_assignment_id=sc_contributor_query_response.data[0]["id"],
+        )
+    else:
+        print("No role assignment found for the extension identity with Storage Class Contributor role under the cluster scope.")
+
+    print("Delete role assignment of the extension identity with Storage Class Contributor role under the cluster scope...")
+
+    k8s_extension_contributor_query_response = resource_graph_client.resources(QueryRequest(
+        subscriptions=[resource_id.subscription_id],
+        query=f"""
+    authorizationresources
+    | where properties.principalId =~ "{STORAGE_CLASS_RP_FPA}" and properties.roleDefinitionId =~ "{KUBERNETES_EXTENSION_CONTRIBUTOR_ROLE_ID}" and properties.scope =~ "{resource_uri}"
+    | limit 1
+        """
+    ))
+
+    k8s_extension_contributor_role_assignment = None
+    if k8s_extension_contributor_query_response.total_records == 1:
+        k8s_extension_contributor_role_assignment = authorization_management_client.role_assignments.delete_by_id(
+            role_assignment_id=k8s_extension_contributor_query_response.data[0]["id"],
+        )
+    else:
+        print("No role assignment found for storage class RP with Kubernetes Extension Contributor role under the cluster scope.")
 
     return {
         "extension": extension,

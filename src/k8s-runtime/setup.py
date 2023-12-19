@@ -28,6 +28,7 @@ CLASSIFIERS = [
 
 DEPENDENCIES = [
     "azure-mgmt-kubernetesconfiguration>=3.1.0",
+    "azure-mgmt-resourcegraph>=8.0.0",
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:

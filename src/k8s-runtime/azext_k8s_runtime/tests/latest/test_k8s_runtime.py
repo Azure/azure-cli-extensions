@@ -14,3 +14,11 @@ class K8sRuntimeScenario(ScenarioTest):
         self.kwargs["resource_uri"] = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Kubernetes/managedClusters/cluster"
 
         self.cmd("az k8s-runtime storage-class enable --resource-uri {resource_uri}", expect_failure=True)
+
+
+    def test_storage_class_disable(self):
+
+        self.kwargs["resource_uri"] = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Kubernetes/managedClusters/cluster"
+
+        self.cmd("az k8s-runtime storage-class disable --resource-uri {resource_uri}", expect_failure=True)
+

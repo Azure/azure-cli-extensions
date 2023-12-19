@@ -10,7 +10,7 @@
 
 from azure.cli.core.commands import AzCliCommand
 
-from .custom_commands.storage_class_enable import enable_storage_class
+from .custom_commands.storage_class import enable_storage_class, disable_storage_class
 
 
 def enable_storage_class_cmd(cmd: AzCliCommand, resource_uri: str):
@@ -22,3 +22,14 @@ def enable_storage_class_cmd(cmd: AzCliCommand, resource_uri: str):
     """
 
     enable_storage_class(cmd, resource_uri)
+
+
+def disable_storage_class_cmd(cmd: AzCliCommand, resource_uri: str):
+    """
+    Disable storage class service in a connected cluster
+
+
+    :param resource_uri: The resource uri of the connected cluster
+    """
+
+    disable_storage_class(cmd, resource_uri)
