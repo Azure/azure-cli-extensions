@@ -12,8 +12,7 @@ please update the target branch/commit to find diff in function find_modified_fi
 import json
 import logging
 import os
-import subprocess
-from subprocess import check_call, check_output
+from subprocess import check_call, check_output, CalledProcessError
 
 import service_name
 from pkg_resources import parse_version
@@ -204,7 +203,7 @@ def azdev_on_internal_extension(modified_files, azdev_type):
         if azdev_type in ['all', 'style']:
             try:
                 azdev_extension.style()
-            except subprocess.CalledProcessError as e:
+            except CalledProcessError as e:
                 statement_msg = """
                 ------------------- Please note -------------------
                 This task does not block the PR merge.
