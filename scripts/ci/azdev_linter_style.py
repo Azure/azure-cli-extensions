@@ -12,6 +12,7 @@ please update the target branch/commit to find diff in function find_modified_fi
 import json
 import logging
 import os
+import subprocess
 from subprocess import check_call, check_output
 
 import service_name
@@ -201,7 +202,18 @@ def azdev_on_internal_extension(modified_files, azdev_type):
         if azdev_type in ['all', 'linter']:
             azdev_extension.linter()
         if azdev_type in ['all', 'style']:
-            azdev_extension.style()
+            try:
+                azdev_extension.style()
+            except subprocess.CalledProcessError as e:
+                statement_msg = """
+                ------------------- Please note -------------------
+                This task does not block the PR merge.
+                And it is recommended if you want to create a separate PR to fix these style issues.
+                CLI will modify it to force block PR merge on 2025.
+                ---------------------- Thanks ----------------------
+                """
+                logger.error(statement_msg)
+                exit(1)
 
         logger.info('Checking service name for internal extensions')
         service_name.check()
@@ -248,12 +260,4 @@ if __name__ == '__main__':
         main()
     except ModifiedFilesNotAllowedError as e:
         logger.error(e)
-        statement_msg = """
-        ------------------- Please note -------------------
-        This task does not block the PR merge.
-        And it is recommended if you want to create a separate PR to fix these style issues.
-        CLI will modify it to force block PR merge on 2025.
-        ---------------------- Thanks ----------------------
-        """
-        logger.error(statement_msg)
         exit(1)
