@@ -84,10 +84,8 @@ class BuildService:
                                                                     self.name,
                                                                     build_name,
                                                                     build).properties.triggered_build_result.id
-        except CloudError as e:
+        except (AttributeError, CloudError) as e:
             raise DeploymentError("Failed to create or update a build. Error: {}".format(e.message))
-        except AttributeError as e:
-            raise DeploymentError("Failed to create or update a build. Error: {}".format(e))
 
     def _wait_build_finished(self, build_result_id):
         '''
