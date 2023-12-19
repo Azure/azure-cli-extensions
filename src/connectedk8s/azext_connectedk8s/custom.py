@@ -431,7 +431,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     return put_cc_response
 
 def validate_existing_provisioned_cluster_for_reput(cluster_resource, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, location):
-    print("cluster kind is: " + str(cluster_resource.kind))
     if cluster_resource.kind == "ProvisionedCluster":
         if azure_hybrid_benefit is not None:
             raise InvalidArgumentValueError("Updating the 'azure hybrid benefit' property of a Provisioned Cluster is not supported from the Connected Cluster CLI. Please use the 'az aksarc update' CLI command.\nhttps://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update")
