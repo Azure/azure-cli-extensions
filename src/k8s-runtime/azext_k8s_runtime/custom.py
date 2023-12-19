@@ -21,7 +21,7 @@ def enable_storage_class_cmd(cmd: AzCliCommand, resource_uri: str):
     :param resource_uri: The resource uri of the connected cluster
     """
 
-    enable_storage_class(cmd, resource_uri)
+    return enable_storage_class(cmd, resource_uri)
 
 
 def disable_storage_class_cmd(cmd: AzCliCommand, resource_uri: str):
@@ -32,4 +32,4 @@ def disable_storage_class_cmd(cmd: AzCliCommand, resource_uri: str):
     :param resource_uri: The resource uri of the connected cluster
     """
 
-    disable_storage_class(cmd, resource_uri)
+    return disable_storage_class(cmd, resource_uri)
