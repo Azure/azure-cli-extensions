@@ -115,7 +115,7 @@ def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
 
     authorization_management_client: AuthorizationManagementClient = get_mgmt_service_client(cmd.cli_ctx, AuthorizationManagementClient)
 
-    print("Assign the extension with Storage Class Contributor role under the cluster scope")
+    print("Assign the extension with Storage Class Contributor role under the cluster scope...")
     sc_contributor_role_assignment = authorization_management_client.role_assignments.create(
         scope=resource_id.resource_uri,
         role_assignment_name=str(uuid4()),
@@ -127,7 +127,7 @@ def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
         ),
     )
 
-    print("Assign Storage Class RP with Kubernetes Extension Contributor role under the cluster scope")
+    print("Assign Storage Class RP with Kubernetes Extension Contributor role under the cluster scope...")
     k8s_extension_contributor_role_assignment = authorization_management_client.role_assignments.create(
         scope=resource_id.resource_uri,
         role_assignment_name=str(uuid4()),
@@ -147,6 +147,13 @@ def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
 
 
 def disable_storage_class(cmd: AzCliCommand, resource_uri: str):
+    """
+    Disable storage class service in a connected cluster
+
+
+    :param resource_uri: The resource uri of the connected cluster
+    """
+
     resource_id = ConnectedClusterResourceId.parse(resource_uri)
 
     print(f"Uninstall Storage class Arc Extension in cluster {resource_id.cluster_name}...")
@@ -177,8 +184,6 @@ def disable_storage_class(cmd: AzCliCommand, resource_uri: str):
     authorization_management_client: AuthorizationManagementClient = get_mgmt_service_client(cmd.cli_ctx, AuthorizationManagementClient)
     resource_graph_client: ResourceGraphClient = get_mgmt_service_client(cmd.cli_ctx, ResourceGraphClient, subscription_bound=False)
 
-    # print(extension.identity.principal_id, resource_uri)
-
     sc_contributor_query_response = resource_graph_client.resources(QueryRequest(
         subscriptions=[resource_id.subscription_id],
         query=f"""
@@ -196,7 +201,7 @@ def disable_storage_class(cmd: AzCliCommand, resource_uri: str):
     else:
         print("No role assignment found for the extension identity with Storage Class Contributor role under the cluster scope.")
 
-    print("Delete role assignment of the extension identity with Storage Class Contributor role under the cluster scope...")
+    print("Delete role assignment for storage class RP with Kubernetes Extension Contributor role under the cluster scope...")
 
     k8s_extension_contributor_query_response = resource_graph_client.resources(QueryRequest(
         subscriptions=[resource_id.subscription_id],
