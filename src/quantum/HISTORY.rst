@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.20.0
+++++++
+* [2023-12-13] Version intended to work with QDK version 0.29.2
+* Adding an ability to get a job output (for certain targets) even if the job is in `Failed` state.
+
 0.19.0
 ++++++
 * [2023-02-27] Version intended to work with QDK version 0.27.253010

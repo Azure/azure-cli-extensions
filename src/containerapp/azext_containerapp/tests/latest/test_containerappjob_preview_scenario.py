@@ -21,7 +21,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerappJobPreviewScenarioTest(ScenarioTest):
     @serial_test()
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location=TEST_LOCATION, random_name_length=15)
+    @ResourceGroupPreparer(location="eastus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerappjob_preview_environment_type(self, resource_group, infra_cluster, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
