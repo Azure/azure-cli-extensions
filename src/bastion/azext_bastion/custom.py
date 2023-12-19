@@ -290,8 +290,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             launch_and_wait(command)
             tunnel_server.cleanup()
         else:
-            profile = Profile(cli_ctx=cmd.cli_ctx)
-            access_token = profile.get_raw_token()[0][2].get("accessToken")
+            access_token = Profile(cli_ctx=cmd.cli_ctx).get_raw_token()[0][2].get("accessToken")
             logger.debug("Response %s", access_token)
             web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&format=rdp" \
                           f"&rdpport={resource_port}&enablerdsaad={enable_mfa}"
@@ -305,16 +304,9 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             }
             response = requests.get(web_address, headers=headers)
             if not response.ok:
-                try:
-                    errorMessage = json.loads(response.content).get('message', None)
-                    if errorMessage:
-                        raise ClientRequestError("Request failed with error: " + errorMessage)
-                    raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
-                except json.JSONDecodeError:
-                    raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
+                handle_error_response(response)
 
-            tempdir = os.path.realpath(tempfile.gettempdir())
-            rdpfilepath = os.path.join(tempdir, 'conn_{}.rdp'.format(uuid.uuid4().hex))
+            rdpfilepath = os.path.join(os.path.realpath(tempfile.gettempdir()), 'conn_{}.rdp'.format(uuid.uuid4().hex))
             _write_to_file(response, rdpfilepath)
 
             logger.warning("Saving RDP file to: %s", rdpfilepath)
@@ -333,6 +325,16 @@ def _is_ipconnect_request(bastion, target_ip_address):
         return True
 
     return False
+
+
+def handle_error_response(response):
+    try:
+        errorMessage = json.loads(response.content).get('message', None)
+        if errorMessage:
+            raise ClientRequestError("Request failed with error: " + errorMessage)
+        raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
+    except json.JSONDecodeError:
+        raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
 
 
 def _validate_resourceid(target_resource_id):
