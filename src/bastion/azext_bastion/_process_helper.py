@@ -13,7 +13,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
-def _errcheck(is_error_result=(lambda result: not result)):
+def _errcheck(is_error_result=lambda result: not result):
     def impl(result, func, args):
         # pylint: disable=unused-argument
         if is_error_result(result):
