@@ -7,6 +7,8 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-statements
 
+from knack.arguments import CLIArgumentType
+
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
@@ -44,12 +46,14 @@ from azext_dataprotection.manual.enums import (
     get_conflict_policy_values
 )
 
+vault_name_type = CLIArgumentType(help='Name of the backup vault.', options_list=['--vault-name', '-v'], type=str)
+
 
 def load_arguments(self, _):
 
     with self.argument_context('dataprotection backup-instance validate-for-backup') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
+        c.argument('vault_name', vault_name_type, id_part='name')
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
                    'json-string/@json-file.')
 
@@ -93,7 +97,7 @@ def load_arguments(self, _):
     with self.argument_context('dataprotection backup-instance update-policy') as c:
         c.argument('backup_instance_name', type=str, help="Backup instance name.")
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help="Name of the vault.")
+        c.argument('vault_name', vault_name_type)
         c.argument('policy_id', type=str, help="specify the ID of the new policy with which backup instance will be associated with.")
 
     with self.argument_context('dataprotection backup-policy get-default-policy-template') as c:
@@ -111,7 +115,7 @@ def load_arguments(self, _):
     with self.argument_context('dataprotection backup-instance update-msi-permissions') as c:
         c.argument('operation', arg_type=get_enum_type(get_backup_operation_values()), help="List of possible operations")
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
-        c.argument('vault_name', type=str, help="Name of the vault.")
+        c.argument('vault_name', vault_name_type)
         c.argument('permissions_scope', arg_type=get_enum_type(get_permission_scope_values()), help="Scope for assigning permissions to the backup vault")
         c.argument('keyvault_id', type=str, help='ARM id of the key vault. Required when --datasource-type is AzureDatabaseForPostgreSQL')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
