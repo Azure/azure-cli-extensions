@@ -248,4 +248,12 @@ if __name__ == '__main__':
         main()
     except ModifiedFilesNotAllowedError as e:
         logger.error(e)
+        statement_msg = """
+        ------------------- Please note -------------------
+        This task does not block the PR merge.
+        And it is recommended if you want to create a separate PR to fix these style issues.
+        CLI will modify it to force block PR merge on 2025.
+        ---------------------- Thanks ----------------------
+        """
+        logger.error(statement_msg)
         exit(1)
