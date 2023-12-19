@@ -30,7 +30,7 @@ from azure.cli.command_modules.serviceconnector._validators import (
     get_source_resource_name,
     get_target_resource_name,
 )
-from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow
+from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow, confirm_admin_set
 logger = get_logger(__name__)
 
 AUTHTYPES = {
@@ -42,7 +42,7 @@ AUTHTYPES = {
 
 
 # pylint: disable=line-too-long, consider-using-f-string, too-many-statements
-# For db(mysqlFlex/psql/psqlFlex/sql) linker with auth type=systemAssignedIdentity, enable AAD auth and create db user on data plane
+# For db(mysqlFlex/psql/psqlFlex/sql) linker with auth type=systemAssignedIdentity, enable Microsoft Entra auth and create db user on data plane
 # For other linker, ignore the steps
 def get_enable_mi_for_db_linker_func(yes=False):
     def enable_mi_for_db_linker(cmd, source_id, target_id, auth_info, client_type, connection_name):
@@ -99,7 +99,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
             except CLIInternalError as e:
                 if 'AADSTS530003' in e.error_msg:
                     logger.warning(
-                        'Please ask your IT department for help to join this device to Azure Active Directory.')
+                        'Please ask your IT department for help to join this device to Microsoft Entra ID.')
                 raise e
         elif auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserIdentity]:
             mi_client_id = auth_info.get('client_id')
@@ -132,15 +132,15 @@ def get_enable_mi_for_db_linker_func(yes=False):
             except CLIInternalError as e:
                 if 'AADSTS530003' in e.error_msg:
                     logger.warning(
-                        'Please ask your IT department for help to join this device to Azure Active Directory.')
+                        'Please ask your IT department for help to join this device to Microsoft Entra ID.')
                 raise e
 
-        # enable target aad authentication and set login user as db aad admin
+        # enable target Microsoft Entra authentication and set login user as db Microsoft Entra admin
         target_handler.enable_target_aad_auth()
         target_handler.set_user_admin(
             user_object_id, mysql_identity_id=auth_info.get('mysql-identity-id'))
 
-        # create an aad user in db
+        # create an Microsoft Entra user in db
         target_handler.create_aad_user()
         return target_handler.get_auth_config(user_object_id)
 
@@ -274,23 +274,23 @@ class MysqlFlexibleHandler(TargetHandler):
         if not user_object_id:
             if not admins:
                 e = ValidationError(
-                    'No AAD admin found. Please set current user as AAD admin and try again.')
+                    'No Microsoft Entra admin found. Please set current user as Microsoft Entra admin and try again.')
                 telemetry.set_exception(e, "Missing-Aad-Admin")
                 raise e
             else:
                 logger.warning(
-                    'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
+                    'Unable to check if current user is Microsoft Entra admin. Please confirm current user as Microsoft Entra admin manually.')
                 return
         admin_info = next((ad for ad in admins if ad.get('sid') == user_object_id), None)
         if admin_info:
             self.admin_username = admin_info.get('login')
             return
 
-        logger.warning('Set current user as DB Server AAD Administrators.')
-        # set user as AAD admin
+        logger.warning('Set current user as DB Server Microsoft Entra Administrators.')
+        # set user as Microsoft Entra admin
         if mysql_identity_id is None:
             e = ValidationError(
-                "Provide '{} mysql-identity-id=<user-assigned managed identity ID>' to update AAD authentication.".format(
+                "Provide '{} mysql-identity-id=<user-assigned managed identity ID>' to update Microsoft Entra authentication.".format(
                     self.get_auth_flag()))
             telemetry.set_exception(e, "Missing-Mysql-Umi")
             raise e
@@ -388,7 +388,7 @@ class MysqlFlexibleHandler(TargetHandler):
         try:
             connection = pymysql.connect(**connection_kwargs)
             logger.warning(
-                "Adding new AAD user %s to database...", self.aad_username)
+                "Adding new Microsoft Entra user %s to database...", self.aad_username)
             cursor = connection.cursor()
             for q in query_list:
                 if q:
@@ -452,7 +452,7 @@ class SqlHandler(TargetHandler):
     def check_db_existence(self):
         try:
             db_info = run_cli_cmd(
-                'az sql db show --ids {}'.format(self.target_id))
+                'az sql db show --ids "{}"'.format(self.target_id))
             if db_info is None:
                 e = ResourceNotFoundError(
                     "No database found with name {}".format(self.dbname))
@@ -465,24 +465,28 @@ class SqlHandler(TargetHandler):
     def set_user_admin(self, user_object_id, **kwargs):
         # pylint: disable=not-an-iterable
         admins = run_cli_cmd(
-            'az sql server ad-admin list --ids {}'.format(self.target_id))
+            'az sql server ad-admin list --ids "{}"'.format(self.target_id))
         if not user_object_id:
             if not admins:
                 e = ValidationError(
-                    'No AAD admin found. Please set current user as AAD admin and try again.')
+                    'No Microsoft Entra admin found. Please set current user as Microsoft Entra admin and try again.')
                 telemetry.set_exception(e, "Missing-Aad-Admin")
                 raise e
             else:
                 logger.warning(
-                    'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
+                    'Unable to check if current user is Microsoft Entra admin. Please confirm current user as Microsoft Entra admin manually.')
                 return
         admin_info = next((ad for ad in admins if ad.get('sid') == user_object_id), None)
         if not admin_info:
-            logger.warning('Setting current user as database server AAD admin:'
-                           ' user=%s object id=%s', self.login_username, user_object_id)
-            admin_info = run_cli_cmd('az sql server ad-admin create -g {} --server-name {} --display-name {} --object-id {} --subscription {}'.format(
-                self.resource_group, self.server, self.login_username, user_object_id, self.subscription))
-        self.admin_username = admin_info.get('login', self.login_username)
+            set_admin = True
+            if not self.skip_prompt:
+                set_admin = confirm_admin_set()
+            if set_admin:
+                logger.warning('Setting current user as database server Microsoft Entra admin:'
+                               ' user=%s object id=%s', self.login_username, user_object_id)
+                admin_info = run_cli_cmd('az sql server ad-admin create -g {} --server-name {} --display-name "{}" --object-id {} --subscription {}'.format(
+                    self.resource_group, self.server, self.login_username, user_object_id, self.subscription))
+        self.admin_username = admin_info.get('login', self.login_username) if admin_info else self.login_username
 
     def create_aad_user(self):
 
@@ -530,7 +534,7 @@ class SqlHandler(TargetHandler):
     def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
         if is_add:
             target = run_cli_cmd(
-                'az sql server show --ids {}'.format(self.target_id))
+                'az sql server show --ids "{}"'.format(self.target_id))
             # logger.warning("Update database server firewall rule to connect...")
             if target.get('publicNetworkAccess') == "Disabled":
                 ex = AzureConnectionError(
@@ -581,7 +585,7 @@ class SqlHandler(TargetHandler):
             with pyodbc.connect(connection_args.get("connection_string").format(driver=drivers[0]), attrs_before=connection_args.get("attrs_before")) as conn:
                 with conn.cursor() as cursor:
                     logger.warning(
-                        "Adding new AAD user %s to database...", self.aad_username)
+                        "Adding new Microsoft Entra user %s to database...", self.aad_username)
                     for execution_query in query_list:
                         try:
                             logger.debug(execution_query)
@@ -664,16 +668,16 @@ class PostgresFlexHandler(TargetHandler):
         if not user_object_id:
             if not admins:
                 e = ValidationError(
-                    'No AAD admin found. Please set current user as AAD admin and try again.')
+                    'No Microsoft Entra admin found. Please set current user as Microsoft Entra admin and try again.')
                 telemetry.set_exception(e, "Missing-Aad-Admin")
                 raise e
             else:
                 logger.warning(
-                    'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
+                    'Unable to check if current user is Microsoft Entra admin. Please confirm current user as Microsoft Entra admin manually.')
                 return
         admin_info = next((ad for ad in admins if ad.get('objectId', "") == user_object_id), None)
         if not admin_info:
-            logger.warning('Set current user as DB Server AAD Administrators.')
+            logger.warning('Set current user as DB Server Microsoft Entra Administrators.')
             admin_info = run_cli_cmd('az postgres flexible-server ad-admin create -u {} -i {} -g {} -s {} --subscription {} -t {}'.format(
                 self.login_username, user_object_id, self.resource_group, self.db_server, self.subscription, self.login_usertype))
         self.admin_username = admin_info.get('principalName', self.login_username)
@@ -688,6 +692,8 @@ class PostgresFlexHandler(TargetHandler):
             self.create_aad_user_in_pg(connection_string, query_list)
         except AzureConnectionError as e:
             logger.warning(e)
+            if 'password authentication failed' in str(e):
+                raise ValidationError('Please confirm current user as Microsoft Entra admin and try again.')
             # allow local access
             ip_address = self.ip or get_local_ip()
             if not ip_address:
@@ -774,7 +780,7 @@ class PostgresFlexHandler(TargetHandler):
 
         conn.autocommit = True
         cursor = conn.cursor()
-        logger.warning("Adding new AAD user %s to database...",
+        logger.warning("Adding new Microsoft Entra user %s to database...",
                        self.aad_username)
         for execution_query in query_list:
             if execution_query:
@@ -846,16 +852,16 @@ class PostgresSingleHandler(PostgresFlexHandler):
         if not user_object_id:
             if not admins:
                 e = ValidationError(
-                    'No AAD admin found. Please set current user as AAD admin and try again.')
+                    'No Microsoft Entra admin found. Please set current user as Microsoft Entra admin and try again.')
                 telemetry.set_exception(e, "Missing-Aad-Admin")
                 raise e
             else:
                 logger.warning(
-                    'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
+                    'Unable to check if current user is Microsoft Entra admin. Please confirm current user as Microsoft Entra admin manually.')
                 return
         admin_info = next((ad for ad in admins if ad.get('sid') == user_object_id), None)
         if not admin_info:
-            logger.warning('Setting current user as database server AAD admin:'
+            logger.warning('Setting current user as database server Microsoft Entra admin:'
                            ' user=%s object id=%s', self.login_username, user_object_id)
             admin_info = run_cli_cmd('az postgres server ad-admin create -g {} --server-name {} --display-name {} --object-id {}'
                                      ' --subscription {}'.format(rg, server, self.login_username, user_object_id, sub))

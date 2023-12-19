@@ -13,13 +13,7 @@
 # pylint: disable=line-too-long
 
 from azure.cli.core.commands import CliCommandType
-from azext_quota.generated._client_factory import cf_usage, cf_quota, cf_quotarequeststatus, cf_quotaoperation
-
-
-quota_quota = CliCommandType(
-    operations_tmpl='azext_quota.vendored_sdks.quota.operations._quota_operations#quotaOperations.{}',
-    client_factory=cf_quota,
-)
+from azext_quota.generated._client_factory import cf_quotarequeststatus, cf_quotaoperation
 
 
 quota_quotaoperation = CliCommandType(
@@ -36,20 +30,7 @@ quota_quotarequeststatus = CliCommandType(
 )
 
 
-quota_usage = CliCommandType(
-    operations_tmpl='azext_quota.vendored_sdks.quota.operations._usages_operations#usagesOperations.{}',
-    client_factory=cf_usage,
-)
-
-
 def load_command_table(self, _):
-
-    with self.command_group('quota', quota_quota, client_factory=cf_quota, is_experimental=True) as g:
-        g.custom_command('list', 'quota_list')
-        g.custom_show_command('show', 'quota_show')
-        g.custom_command('create', 'quota_create', supports_no_wait=True)
-        g.custom_command('update', 'quota_update', supports_no_wait=True)
-        g.custom_wait_command('wait', 'quota_show')
 
     with self.command_group('quota operation', quota_quotaoperation, client_factory=cf_quotaoperation) as g:
         g.custom_command('list', 'quota_operation_list')
@@ -59,7 +40,3 @@ def load_command_table(self, _):
     ) as g:
         g.custom_command('list', 'quota_request_status_list')
         g.custom_show_command('show', 'quota_request_status_show')
-
-    with self.command_group('quota usage', quota_usage, client_factory=cf_usage) as g:
-        g.custom_command('list', 'quota_usage_list')
-        g.custom_show_command('show', 'quota_usage_show')

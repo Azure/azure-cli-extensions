@@ -65,6 +65,8 @@ helps['spring update'] = """
       text: az spring update -n MyService --sku Standard -g MyResourceGroup
     - name: Update the tags of the existing Azure Spring Apps.
       text: az spring update -n MyService -g MyResourceGroup --tags key1=value1 key2=value2
+    - name: Configure planned maintenance
+      text: az spring update -n MyService -g MyResourceGroup --enable-planned-maintenance --planned-maintenance-day Friday --planned-maintenance-start-hour 10
 """
 
 helps['spring delete'] = """
@@ -1093,6 +1095,12 @@ helps['spring gateway update'] = """
     examples:
         - name: Update gateway property.
           text: az spring gateway update -s MyService -g MyResourceGroup --assign-endpoint true --https-only true
+        - name: Enable and configure response cache at Route level and set ttl to 5 minutes.
+          text: az spring gateway update -s MyService -g MyResourceGroup --enable-response-cache --response-cache-scope Route --response-cache-ttl 5m
+        - name: When response cache is enabled, update ttl to 3 minutes.
+          text: az spring gateway update -s MyService -g MyResourceGroup --response-cache-ttl 3m
+        - name: Disable response cache.
+          text: az spring gateway update -s MyService -g MyResourceGroup --enable-response-cache false
 """
 
 helps['spring gateway restart'] = """

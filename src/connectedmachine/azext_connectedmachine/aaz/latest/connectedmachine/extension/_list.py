@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine extension list",
 )
 class List(AAZCommand):
-    """Get all extensions of a Non-Azure machine.
+    """The operation to get all extensions of a Non-Azure machine.
 
     :example: Sample command for extension list
         az connectedmachine extension list --machine-name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2023-10-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions", "2023-10-03-preview"],
         ]
     }
 
@@ -131,7 +131,7 @@ class List(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2023-10-03-preview",
                     required=True,
                 ),
             }

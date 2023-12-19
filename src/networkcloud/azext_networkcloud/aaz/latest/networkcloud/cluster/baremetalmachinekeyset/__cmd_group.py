@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "networkcloud cluster baremetalmachinekeyset",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage cluster's bare metal machine key set
