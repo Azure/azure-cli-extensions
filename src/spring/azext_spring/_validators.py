@@ -733,7 +733,7 @@ def _parse_jar_file(artifact_path):
                     has_manifest=has_manifest, has_jar=has_jar, has_class=has_class,
                     ms_sdk_version=ms_sdk_version, jdk_version=jdk_version)
     except Exception as err:  # pylint: disable=broad-except
-        telemetry.set_exception("parse user jar file failed, " + str(err))
+        telemetry.set_exception(exception="parse user jar file failed, " + str(err), fault_type='parse-jar-file-error')
         return None
 
 
