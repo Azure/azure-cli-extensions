@@ -186,19 +186,19 @@ class BuildService:
             return
         stage = next(iter(x for x in result.properties.build_stages if x.name == stage_name), None)
         if not stage:
-            logger.debug('Not found the stage {} in latest response'.format(stage_name))
-            raise 'Not found the stage {} in latest response'.format(stage_name)
+            logger.debug(f'Not found the stage {stage_name} in latest response')
+            raise f'Not found the stage {stage_name} in latest response'
         self._print_build_stage_log(pod, stage)
 
     def _print_build_stage_log(self, pod, stage):
         if stage.status == 'NotStarted':
-            logger.debug('Build stage {} not started yet.'.format(stage.name))
-            raise InvalidArgumentValueError('Build stage {} not started yet.'.format(stage.name))
+            logger.debug(f'Build stage {stage.name} not started yet.')
+            raise InvalidArgumentValueError(f'Build stage {stage.name} not started yet.')
         log_stream = self._get_log_stream()
-        url = 'https://{}/api/logstream/buildpods/{}/stages/{}?follow=true'.format(log_stream.base_url, pod, stage.name)
+        url = f'https://{log_stream.base_url}/api/logstream/buildpods/{pod}/stages/{stage.name}?follow=true'
         with requests.get(url, stream=True, auth=HTTPBasicAuth("primary", log_stream.primary_key)) as response:
             if response.status_code == 200:
-                logger.debug('start to stream log for stage {}'.format(stage.name))
+                logger.debug(f'start to stream log for stage {stage.name}')
                 self.progress_bar and self.progress_bar.end()
                 std_encoding = sys.stdout.encoding
                 for content in response.iter_content():
@@ -206,16 +206,15 @@ class BuildService:
                         sys.stdout.write(content.decode(encoding='utf-8', errors='replace')
                                          .encode(std_encoding, errors='replace')
                                          .decode(std_encoding, errors='replace'))
-                logger.debug('End to stream log for stage {}'.format(stage.name))
+                logger.debug(f'End to stream log for stage {stage.name}')
             elif response.status_code == 400:
-                logger.debug('Failed to stream build log with response {}'.format(response.content))
+                logger.debug(f'Failed to stream build log with response {response.content}')
                 raise InvalidArgumentValueError(response.content)
             else:
                 status_code = response.status_code if response else 'Unknown'
                 content = response.content if response else 'Unknown'
-                logger.debug('Failed to stream build log with response {}: {}'.format(status_code, content))
-                raise "Failed to get build logs with status code '{}' and reason '{}'".format(
-                      status_code, content)
+                logger.debug(f'Failed to stream build log with response {status_code}: {content}')
+                raise f"Failed to get build logs with status code '{status_code}' and reason '{content}'"
 
     def _get_log_stream(self):
         if not self.log_stream:

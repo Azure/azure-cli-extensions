@@ -171,11 +171,11 @@ def app_create(cmd, client, resource_group, service, name,
     banner_deployment_name = deployment_name or DEFAULT_DEPLOYMENT_NAME
     deployment_resource = deployment_factory.format_resource(**create_deployment_kwargs, **basic_kwargs)
 
-    logger.warning('[1/2] Creating app {}'.format(name))
+    logger.warning(f'[1/2] Creating app {name}')
     app_poller = client.apps.begin_create_or_update(resource_group, service, name, app_resource)
     wait_till_end(cmd, app_poller)
 
-    logger.warning('[2/2] Creating default deployment with name "{}"'.format(banner_deployment_name))
+    logger.warning(f'[2/2] Creating default deployment with name "{banner_deployment_name}"')
     poller = client.deployments.begin_create_or_update(resource_group,
                                                        service,
                                                        name,
@@ -275,8 +275,7 @@ def app_update(cmd, client, resource_group, service, name,
     if deployment is None:
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
         if updated_deployment_kwargs:
-            raise ArgumentUsageError('{} cannot be set when there is no active deployment.'
-                                     .format(convert_argument_to_parameter_list(updated_deployment_kwargs.keys())))
+            raise ArgumentUsageError(f'{convert_argument_to_parameter_list(updated_deployment_kwargs.keys())} cannot be set when there is no active deployment.')
 
     deployment_factory = deployment_selector(**deployment_kwargs, **basic_kwargs)
     app_factory = app_selector(**basic_kwargs)
@@ -408,10 +407,8 @@ def app_deploy(cmd, client, resource_group, service, name,
     deployment_factory = deployment_selector(**kwargs)
     kwargs.update(deployment_factory.get_fulfill_options(**kwargs))
     deployment_resource = deployment_factory.format_resource(**kwargs)
-    logger.warning('[{}/{}] Updating deployment in app "{}" (this operation can take a '
-                   'while to complete)'.format(kwargs['total_steps'],
-                                               kwargs['total_steps'],
-                                               name))
+    logger.warning(f'[{kwargs["total_steps"]}/{kwargs["total_steps"]}] Updating deployment in app "{name}" (this operation can take a '
+                   f'while to complete)')
     poller = sdk_no_wait(no_wait, deployment_factory.get_deploy_method(**kwargs),
                          resource_group, service, name, deployment.name,
                          deployment_resource)
@@ -472,8 +469,8 @@ def _print_deploy_process(client, poller, resource_group, service, app_name, dep
             else:
                 instance_desc = str(instance_count) + " instance"
                 rounds_desc = str(rounds) + " round"
-            logger.warning('Azure Spring Apps will use rolling upgrade to update your deployment, you have {}, '
-                           'Azure Spring Apps will update the deployment in {}.'.format(instance_desc, rounds_desc))
+            logger.warning(f'Azure Spring Apps will use rolling upgrade to update your deployment, you have {instance_desc}, '
+                           f'Azure Spring Apps will update the deployment in {rounds_desc}.')
             last_round = 0
 
             deployment_time = deployment_resource.system_data.last_modified_at.strftime("%Y-%m-%dT%H:%M:%S%z")
@@ -490,16 +487,16 @@ def _print_deploy_process(client, poller, resource_group, service, app_name, dep
                     current_round = new_instance_count // instance_round + (0 if new_instance_count % instance_round == 0 else 1)
                     if current_round != last_round:
                         if int(current_round) > 1:
-                            old_desc = "{} old instances are".format(int(new_instance_count))
+                            old_desc = f"{int(new_instance_count)} old instances are"
                         else:
-                            old_desc = "{} old instance is".format(int(new_instance_count))
+                            old_desc = f"{int(new_instance_count)} old instance is"
                         if int(new_instance_count) > 1:
-                            new_desc = "{} new instances are".format(int(new_instance_count))
+                            new_desc = f"{int(new_instance_count)} new instances are"
                         else:
-                            new_desc = "{} new instance is".format(int(new_instance_count))
+                            new_desc = f"{int(new_instance_count)} new instance is"
                         logger.warning(
-                            'The deployment is in round {}, {} deleted/deleting and {} '
-                            'started/starting'.format(int(current_round), old_desc, new_desc))
+                            f'The deployment is in round {int(current_round)}, {old_desc} deleted/deleting and {new_desc} '
+                            f'started/starting')
                         last_round = current_round
                 sleep(5)
             logger.warning("Your application is successfully deployed.")
@@ -638,10 +635,8 @@ def deployment_create(cmd, client, resource_group, service, app, name,
     kwargs['deployable_path'] = deploy.build_deployable_path(**kwargs)
     deployment_factory = deployment_selector(**kwargs)
     deployment_resource = deployment_factory.format_resource(**kwargs)
-    logger.warning('[{}/{}] Creating deployment in app "{}" (this operation can take a '
-                   'while to complete)'.format(kwargs['total_steps'],
-                                               kwargs['total_steps'],
-                                               app))
+    logger.warning(f'[{kwargs["total_steps"]}/{kwargs["total_steps"]}] Creating deployment in app "{app}" (this operation can take a '
+                   f'while to complete)')
     poller = sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
                          resource_group, service, app, name,
                          deployment_resource)
@@ -660,7 +655,7 @@ def _ensure_app_not_exist(client, resource_group, service, name):
         # ignore
         return
     if app:
-        raise ValidationError('App {} already exist.'.format(app.id))
+        raise ValidationError(f'App {app.id} already exist.')
 
 
 def _fulfill_deployment_creation_options(skip_clone_settings, client, resource_group, service, app, **kwargs):

@@ -167,7 +167,7 @@ class DefaultApp:
                 raise InvalidArgumentValueError("Secrets must be in format \"<key>=<value> <key>=<value> ...\".")
             if key_val[0] in secret_pairs:
                 raise InvalidArgumentValueError(
-                    "Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
+                    f"Duplicate secret \"{key_val[0]}\" found, secret names must be unique.")
             secret_pairs[key_val[0]] = key_val[1]
 
         secret_var_def = []

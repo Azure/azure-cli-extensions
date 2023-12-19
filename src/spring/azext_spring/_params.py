@@ -510,7 +510,7 @@ def load_arguments(self, _):
                 '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
 
     for scope in ['update', 'deployment create', 'deploy']:
-        with self.argument_context('spring app {}'.format(scope)) as c:
+        with self.argument_context(f'spring app {scope}') as c:
             c.argument('config_file_patterns',
                        help="(Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
                             "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
@@ -776,7 +776,7 @@ def load_arguments(self, _):
         c.argument('password', help="The container registry password.", validator=validate_container_registry_update)
 
     for scope in ['show', 'delete']:
-        with self.argument_context('spring container-registry {}'.format(scope)) as c:
+        with self.argument_context(f'spring container-registry {scope}') as c:
             c.argument('name', help="The container registry name.")
 
     with self.argument_context('spring build-service') as c:
@@ -789,7 +789,7 @@ def load_arguments(self, _):
         c.argument('service', service_name_type, validator=validate_central_build_instance)
 
     for scope in ['create', 'update']:
-        with self.argument_context('spring build-service build {}'.format(scope)) as c:
+        with self.argument_context(f'spring build-service build {scope}') as c:
             c.argument('build_env', build_env_type)
             c.argument('source_path', arg_type=source_path_type, validator=validate_source_path)
             c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_artifact_path)
@@ -826,7 +826,7 @@ def load_arguments(self, _):
         c.argument('service', service_name_type, validator=only_support_enterprise)
 
     for scope in ['create', 'update']:
-        with self.argument_context('spring build-service builder {}'.format(scope)) as c:
+        with self.argument_context(f'spring build-service builder {scope}') as c:
             c.argument('builder_json', help="The JSON array of builder.", validator=validate_builder_resource)
             c.argument('builder_file', help="The file path of JSON array of builder.", validator=validate_builder_resource)
 
@@ -837,16 +837,16 @@ def load_arguments(self, _):
         c.argument('name', help="The builder name.", validator=validate_builder_update)
 
     for scope in ['show', 'delete']:
-        with self.argument_context('spring build-service builder {}'.format(scope)) as c:
+        with self.argument_context(f'spring build-service builder {scope}') as c:
             c.argument('name', help="The builder name.")
 
     for scope in ['application-configuration-service', 'service-registry',
                   'gateway', 'api-portal', 'application-live-view', 'dev-tool', 'application-accelerator']:
-        with self.argument_context('spring {}'.format(scope)) as c:
+        with self.argument_context(f'spring {scope}') as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
 
     for scope in ['dev-tool create', 'dev-tool update']:
-        with self.argument_context('spring {}'.format(scope)) as c:
+        with self.argument_context(f'spring {scope}') as c:
             c.argument('assign_endpoint', arg_type=get_three_state_flag(), help='If true, assign endpoint URL for direct access.')
             c.argument('scopes', arg_group='Single Sign On (SSO)', help="Comma-separated list of the specific actions applications can be allowed to do on a user's behalf.")
             c.argument('client_id', arg_group='Single Sign On (SSO)', help="The public identifier for the application.")
@@ -854,19 +854,19 @@ def load_arguments(self, _):
             c.argument('metadata_url', arg_group='Single Sign On (SSO)', help="The URI of Issuer Identifier.")
 
     for scope in ['bind', 'unbind']:
-        with self.argument_context('spring service-registry {}'.format(scope)) as c:
+        with self.argument_context(f'spring service-registry {scope}') as c:
             c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
 
     for scope in ['bind', 'unbind']:
-        with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
+        with self.argument_context(f'spring application-configuration-service {scope}') as c:
             c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
 
     for scope in ['create', 'update']:
-        with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
+        with self.argument_context(f'spring application-configuration-service {scope}') as c:
             c.argument('generation', arg_type=get_enum_type(ConfigurationServiceGeneration), help='Generation of Application Configuration Service.')
 
     for scope in ['add', 'update']:
-        with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
+        with self.argument_context(f'spring application-configuration-service git repo {scope}') as c:
             c.argument('patterns',
                        help='Required patterns used to search in Git repositories. '
                             'For each pattern, use format like {application} or {application}/{profile} '
@@ -884,15 +884,15 @@ def load_arguments(self, _):
             c.argument('ca_cert_name', help='CA certificate name.')
 
     for scope in ['add', 'update', 'remove']:
-        with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
+        with self.argument_context(f'spring application-configuration-service git repo {scope}') as c:
             c.argument('name', help="Required unique name to label each item of git configs.")
 
     for scope in ['gateway create', 'api-portal create']:
-        with self.argument_context('spring {}'.format(scope)) as c:
+        with self.argument_context(f'spring {scope}') as c:
             c.argument('instance_count', type=int, help='Number of instance.')
 
     for scope in ['gateway update', 'api-portal update']:
-        with self.argument_context('spring {}'.format(scope)) as c:
+        with self.argument_context(f'spring {scope}') as c:
             c.argument('instance_count', type=int, help='Number of instance.')
             c.argument('assign_endpoint', arg_type=get_three_state_flag(), help='If true, assign endpoint URL for direct access.')
             c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access endpoint via https')
@@ -965,14 +965,14 @@ def load_arguments(self, _):
                   'gateway custom-domain update',
                   'api-portal custom-domain bind',
                   'api-portal custom-domain update']:
-        with self.argument_context('spring {}'.format(scope)) as c:
+        with self.argument_context(f'spring {scope}') as c:
             c.argument('certificate', type=str, help='Certificate name in Azure Spring Apps.')
 
     with self.argument_context('spring gateway route-config') as c:
         c.argument('name', help='Name of route config.')
 
     for scope in ['create', 'update']:
-        with self.argument_context('spring gateway route-config {}'.format(scope)) as c:
+        with self.argument_context(f'spring gateway route-config {scope}') as c:
             c.argument('app_name', type=str, help="The Azure Spring Apps app name to configure the route.")
             c.argument('routes_json', type=str, help="The JSON array of API routes.", validator=validate_routes)
             c.argument('routes_file', type=str, help="The file path of JSON array of API routes.", validator=validate_routes)

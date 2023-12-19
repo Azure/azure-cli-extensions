@@ -31,7 +31,7 @@ def stream_logs(client,
                 raise_error_on_failure=True,
                 logger_level_func=logger.warning):
     log_file_sas = None
-    error_msg = "Could not get logs for Service: {}".format(service)
+    error_msg = f"Could not get logs for Service: {service}"
 
     try:
         log_file_sas = client.get_log_file_url(
@@ -207,7 +207,7 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
         logger_level_func(curr_bytes.decode('utf-8', errors='ignore'))
 
     build_status = _get_run_status(metadata).lower()
-    logger_level_func("Log status was: {}".format(build_status))
+    logger_level_func(f"Log status was: {build_status}")
 
     if raise_error_on_failure:
         if build_status in ('internalerror', 'failed'):

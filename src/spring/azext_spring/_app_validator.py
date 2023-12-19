@@ -75,14 +75,14 @@ def ensure_not_active_deployment(cmd, namespace):
     client = cf_spring(cmd.cli_ctx)
     deployment = _ensure_deployment_exist(client, namespace.resource_group, namespace.service, namespace.name, namespace.deployment)
     if deployment.properties.active:
-        raise InvalidArgumentValueError('Deployment {} is already the production deployment'.format(deployment.name))
+        raise InvalidArgumentValueError(f'Deployment {deployment.name} is already the production deployment')
 
 
 def _ensure_deployment_exist(client, resource_group, service, app, deployment):
     try:
         return client.deployments.get(resource_group, service, app, deployment)
     except CloudError:
-        raise InvalidArgumentValueError('Deployment {} not found under app {}'.format(deployment, app))
+        raise InvalidArgumentValueError(f'Deployment {deployment} not found under app {app}')
 
 
 def _ensure_active_deployment_exist_and_get(client, resource_group, service, name):
@@ -97,7 +97,7 @@ def _get_active_deployment(client, resource_group, service, name):
         deployments = client.deployments.list(resource_group, service, name)
         return next(iter(x for x in deployments if x.properties.active), None)
     except ResourceNotFoundError:
-        raise InvalidArgumentValueError('App {} not found'.format(name))
+        raise InvalidArgumentValueError(f'App {name} not found')
 
 
 def validate_deloy_path(cmd, namespace):

@@ -62,13 +62,13 @@ class UploadDeployableBuilder(EmptyDeployableBuilder):
         return 3
 
     def build_deployable_path(self, **kwargs):
-        logger.warning('[1/{}] Requesting for upload URL.'.format(kwargs['total_steps']))
+        logger.warning(f'[1/{kwargs["total_steps"]}] Requesting for upload URL.')
         upload_info = self.client.apps.get_resource_upload_url(self.resource_group,
                                                                self.service,
                                                                self.app)
         if not upload_info.upload_url:
             raise InvalidArgumentValueError('Failed to get a SAS URL to upload context.')
-        logger.warning('[2/{}] Uploading package to blob.'.format(kwargs['total_steps']))
+        logger.warning(f'[2/{kwargs["total_steps"]}] Uploading package to blob.')
         self._get_uploader(upload_url=upload_info.upload_url).upload_and_build(**kwargs)
         return upload_info.relative_path
 

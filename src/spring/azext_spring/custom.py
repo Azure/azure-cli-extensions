@@ -1112,7 +1112,7 @@ def binding_redis_add(cmd, client, resource_group, service, app, name,
         primary_key = _get_redis_primary_key(cmd.cli_ctx, resource_id)
     except:
         raise CLIError(
-            "Couldn't get redis {}'s primary key".format(resource_name))
+            f"Couldn't get redis {resource_name}'s primary key")
 
     properties = models.BindingResourceProperties(
         resource_name=resource_name,
@@ -1138,7 +1138,7 @@ def binding_redis_update(cmd, client, resource_group, service, app, name,
         primary_key = _get_redis_primary_key(cmd.cli_ctx, resource_id)
     except:
         raise CLIError(
-            "Couldn't get redis {}'s primary key".format(resource_name))
+            f"Couldn't get redis {resource_name}'s primary key")
 
     properties = models.BindingResourceProperties(
         key=primary_key,
@@ -1227,7 +1227,7 @@ def _get_app_log(url, auth, format_json, exceptions, chunk_size=None, stderr=Fal
             except:
                 if first_exception:
                     # enable this format error logging only with --verbose
-                    logger.info("Failed to format log line '{}'".format(line), exc_info=sys.exc_info())
+                    logger.info(f"Failed to format log line '{line}'", exc_info=sys.exc_info())
                     first_exception = False
                 return line
 
@@ -1272,11 +1272,10 @@ def _get_app_log(url, auth, format_json, exceptions, chunk_size=None, stderr=Fal
                 failure_reason = response.reason
                 if response.content:
                     if isinstance(response.content, bytes):
-                        failure_reason = "{}:{}".format(failure_reason, response.content.decode('utf-8'))
+                        failure_reason = f"{failure_reason}:{response.content.decode('utf-8')}"
                     else:
-                        failure_reason = "{}:{}".format(failure_reason, response.content)
-                raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
-                    response.status_code, failure_reason))
+                        failure_reason = f"{failure_reason}:{response.content}"
+                raise CLIError(f"Failed to connect to the server with status code '{response.status_code}' and reason '{failure_reason}'")
             std_encoding = sys.stdout.encoding
 
             formatter = build_formatter()
@@ -1384,9 +1383,9 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
                     logger.debug("attempting to read file %s as binary", public_certificate_file)
                     content = base64.b64encode(input_file.read()).decode("utf-8")
             except Exception:
-                raise FileOperationError('Failed to decode file {} - unknown decoding'.format(public_certificate_file))
+                raise FileOperationError(f'Failed to decode file {public_certificate_file} - unknown decoding')
         else:
-            raise FileOperationError("public_certificate_file {} could not be found".format(public_certificate_file))
+            raise FileOperationError(f"public_certificate_file {public_certificate_file} could not be found")
         properties = models.ContentCertificateProperties(
             type="ContentCertificate",
             content=content
@@ -1477,7 +1476,7 @@ def _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_ingres
     app_resource.properties = properties
     app_resource.location = location
 
-    logger.warning("Set ingress to app tls for app '{}'".format(app))
+    logger.warning(f"Set ingress to app tls for app '{app}'")
     poller = client.apps.begin_update(
         resource_group, service, app, app_resource)
     return poller.result()
@@ -1519,8 +1518,7 @@ def get_app_insights_connection_string(cli_ctx, resource_group, name):
     appinsights_client = get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
     appinsights = appinsights_client.components.get(resource_group, name)
     if appinsights is None or appinsights.connection_string is None:
-        raise ResourceNotFoundError("App Insights {} under resource group {} was not found."
-                                    .format(name, resource_group))
+        raise ResourceNotFoundError(f"App Insights {name} under resource group {resource_group} was not found.")
     return appinsights.connection_string
 
 
@@ -1580,7 +1578,7 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
         connection_string = get_app_insights_connection_string(cmd.cli_ctx, resource_group, app_insights)
     if not connection_string:
         raise InvalidArgumentValueError(
-            "Cannot find Connection string from application insights:{}".format(app_insights))
+            f"Cannot find Connection string from application insights:{app_insights}")
     return connection_string
 
 
@@ -1677,13 +1675,12 @@ def app_connect(cmd, client, resource_group, service, name,
     resource = client.services.get(resource_group, service)
     if not instance:
         if not deployment.properties.instances:
-            raise ResourceNotFoundError("No instances found for deployment '{0}' in app '{1}'".format(
-                deployment.name, name))
+            raise ResourceNotFoundError(f"No instances found for deployment '{deployment.name}' in app '{name}'")
         instances = deployment.properties.instances
         if len(instances) > 1:
             logger.warning("Multiple app instances found:")
             for temp_instance in instances:
-                logger.warning("{}".format(temp_instance.name))
+                logger.warning(f"{temp_instance.name}")
             logger.warning("Please use '-i/--instance' parameter to specify the instance name")
             return None
         instance = instances[0].name
@@ -1691,13 +1688,12 @@ def app_connect(cmd, client, resource_group, service, name,
     if resource.sku.tier.upper() == 'STANDARDGEN2':
         subscriptionId = get_subscription_id(cmd.cli_ctx)
         hostname = get_proxy_api_endpoint(cmd.cli_ctx, resource)
-        connect_url = "wss://{}/proxy/appconnect/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/apps/{}/deployments/{}/instances/{}?tenantId={}&command={}".format(
-            hostname, subscriptionId, resource_group, resource.name, name, deployment.name, instance, tenant, shell_cmd)
+        connect_url = f"wss://{hostname}/proxy/appconnect/subscriptions/{subscriptionId}/resourceGroups/{resource_group}/providers/Microsoft.AppPlatform/Spring/{resource.name}/apps/{name}/deployments/{deployment.name}/instances/{instance}?tenantId={tenant}&command={shell_cmd}"
         logger.warning("Connecting to %s...", connect_url)
     else:
         hostname = resource.properties.fqdn
-        connect_url = "wss://{0}/api/appconnect/apps/{1}/deployments/{2}/instances/{3}/connect?command={4}".format(hostname, name, deployment.name, instance, shell_cmd)
-        logger.warning("Connecting to the app instance Microsoft.AppPlatform/Spring/%s/apps/%s/deployments/%s/instances/%s..." % (service, name, deployment.name, instance))
+        connect_url = f"wss://{hostname}/api/appconnect/apps/{name}/deployments/{deployment.name}/instances/{instance}/connect?command={shell_cmd}"
+        logger.warning(f"Connecting to the app instance Microsoft.AppPlatform/Spring/{service}/apps/{name}/deployments/{deployment.name}/instances/{instance}...")
 
     conn = WebSocketConnection(connect_url, token)
 

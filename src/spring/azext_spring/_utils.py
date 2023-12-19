@@ -38,7 +38,7 @@ def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None
         file_type = "NetCoreZip" if runtime_version == SupportedRuntimeValue.NET_CORE31 else "Jar"
     elif source_path is not None:
         file_path = os.path.join(tempfile.gettempdir(
-        ), 'build_archive_{}.tar.gz'.format(uuid.uuid4().hex))
+        ), f'build_archive_{uuid.uuid4().hex}.tar.gz')
         _pack_source_code(os.path.abspath(source_path), file_path)
         file_type = "Source"
     elif container_image is not None:
@@ -178,7 +178,7 @@ def _archive_file_recursively(tar, name, arcname, parent_ignored, parent_matchin
     tarinfo = tar.gettarinfo(name, arcname)
 
     if tarinfo is None:
-        raise CLIError("tarfile: unsupported type {}".format(name))
+        raise CLIError(f"tarfile: unsupported type {name}")
 
     # check if the file/dir is ignored
     ignored, matching_rule_index = ignore_check(
@@ -220,7 +220,7 @@ def _get_azure_storage_client_info(account_type, sas_url):
 
     if not account_name or not container_name or not relative_path or not sas_token:
         raise CLIError(
-            "Failed to parse the SAS URL: '{!s}'.".format(sas_url))
+            f"Failed to parse the SAS URL: '{sas_url}'.")
 
     return account_name, endpoint_suffix, container_name, relative_path, sas_token
 
@@ -297,7 +297,7 @@ def convert_argument_to_parameter_list(args):
 
 
 def convert_argument_to_parameter(arg):
-    return '--{}'.format(arg.replace('_', '-'))
+    return f"--{arg.replace('_', '-')}"
 
 
 def wait_till_end(cmd, *pollers):

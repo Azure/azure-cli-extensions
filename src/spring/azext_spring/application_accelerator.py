@@ -51,10 +51,9 @@ def application_accelerator_delete(cmd, client, resource_group, service, no_wait
 def _get_enable_dev_tool_portal_poller(cmd, client, service, resource_group):
     dev_tool_portal = get_dev_tool_portal(cmd, client, service, resource_group)
     if not dev_tool_portal:
-        logger.warning('- View Application Accelerator through Dev Tool portal. '
-                       'Create Dev Tool Portal by running '
-                       '"az spring dev-tool create --service {} --resource-group {} --assign-endpoint"'
-                       .format(service, resource_group))
+        logger.warning(f'- View Application Accelerator through Dev Tool portal. '
+                       f'Create Dev Tool Portal by running '
+                       f'"az spring dev-tool create --service {service} --resource-group {resource_group} --assign-endpoint"')
         return None
     if not is_dev_tool_portal_updatable(dev_tool_portal):
         return None

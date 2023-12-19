@@ -42,7 +42,7 @@ def _service_registry_bind_or_unbind_app(cmd, client, service, resource_group, a
     app.properties.addon_configs = _get_app_addon_configs_with_service_registry(app.properties.addon_configs)
 
     if (app.properties.addon_configs[SERVICE_REGISTRY_NAME][RESOURCE_ID] != "") == enabled:
-        logger.warning('App "{}" has been {}binded'.format(app_name, '' if enabled else 'un'))
+        logger.warning(f'App "{app_name}" has been {"" if enabled else "un"}binded')
         return app
 
     service_registry_id = resource_id(
