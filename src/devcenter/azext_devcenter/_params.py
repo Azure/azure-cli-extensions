@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
 # pylint: disable=too-many-statements
+# pylint: disable=too-many-lines
 
 from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
