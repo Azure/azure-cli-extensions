@@ -306,7 +306,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             if not response.ok:
                 handle_error_response(response)
 
-            rdpfilepath = os.path.join(os.path.realpath(tempfile.gettempdir()), 'conn_{}.rdp'.format(uuid.uuid4().hex))
+            rdpfilepath = os.path.join(os.path.realpath(tempfile.gettempdir()), f'conn_{uuid.uuid4().hex}.rdp')
             _write_to_file(response, rdpfilepath)
 
             logger.warning("Saving RDP file to: %s", rdpfilepath)
