@@ -63,6 +63,7 @@ def create_and_verify_containerapp_up(
             env_name = None,
             source_path = None,
             artifact_path = None,
+            build_env_vars = None,
             image = None,
             location = None,
             ingress = None,
@@ -84,6 +85,8 @@ def create_and_verify_containerapp_up(
             up_cmd += f" --source \"{source_path}\""
         if artifact_path:
             up_cmd += f" --artifact \"{artifact_path}\""
+        if build_env_vars:
+            up_cmd += f" --build-env-vars {build_env_vars}"
         if image:
             up_cmd += f" --image {image}"
         if ingress:

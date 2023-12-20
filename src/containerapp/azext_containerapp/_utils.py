@@ -695,6 +695,9 @@ def remove_ansi_characters(text):
 
 
 def parse_build_env_vars(env_list):
+    if not env_list:
+        return None
+
     env_pairs = {}
 
     for pair in env_list:

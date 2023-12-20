@@ -26,7 +26,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2023-08-01-preview"
+PREVIEW_API_VERSION = "2023-11-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -778,7 +778,7 @@ class BuildClient():
     api_version = PREVIEW_API_VERSION
 
     @classmethod
-    def create(cls, cmd, builder_name, build_name, resource_group_name, location, no_wait=False):
+    def create(cls, cmd, builder_name, build_name, resource_group_name, location, build_env_vars, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/builders/{}/builds/{}?api-version={}"
@@ -791,7 +791,11 @@ class BuildClient():
             cls.api_version)
         body_data = {
             "location": location,
-            "properties": {}
+            "properties": {
+                "configuration": {
+                    "environmentVariables": build_env_vars
+                }
+            }
         }
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(body_data))
