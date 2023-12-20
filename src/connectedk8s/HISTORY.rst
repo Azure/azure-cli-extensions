@@ -2,15 +2,16 @@
 
 Release History
 ===============
+
+1.6.1
+++++++
+* Added support for reading ARM metadata 2023-11-01.
+* Enable connectedk8s CLI extension to be used for new cluster kind of provisioned clusters.
+
 1.6.0
 ++++++
 
 * Updated Helm from 3.6.3 to 3.12.2
-
-1.6.0
-++++++
-* Added support for reading ARM metadata 2023-11-01.
-* Enable connectedk8s CLI extension to be used for new cluster kind of provisioned clusters.
 
 1.5.6
 ++++++
