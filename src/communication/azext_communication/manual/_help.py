@@ -575,3 +575,165 @@ helps['communication email send'] = """
         text: |-
                az communication email send --sender "NoReply@contoso.com" --subject "Contoso Update" --to "user1@user1-domain.com" "user2@user2-domain.com" --text "Hello valued client. There is an update."
 """
+
+helps['communication email create'] = """
+    type: command
+    short-summary: "Creates a new Email Communication Service or update an existing one."
+    examples:
+      - name: Create or update email communication resource
+        text: |-
+               az communication email create --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --location "Global" --data-location "UnitedStates"
+"""
+
+helps['communication email update'] = """
+    type: command
+    short-summary: "Updates an existing email communication service."
+    examples:
+      - name: Update resource
+        text: |-
+               az communication email update --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --tags newTag="newVal"
+"""
+
+helps['communication email delete'] = """
+    type: command
+    short-summary: "Deletes an existing email communication service."
+    examples:
+      - name: Delete resource
+        text: |-
+               az communication email delete --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup"
+"""
+
+helps['communication email list'] = """
+    type: command
+    short-summary: "Handles requests to list all resources in a resource group or a subscription."
+    examples:
+      - name: List by resource group
+        text: |-
+               az communication email list --resource-group "MyResourceGroup"
+      - name: List by subscription
+        text: |-
+               az communication email list
+"""
+
+helps['communication email show'] = """
+    type: command
+    short-summary: "Gets the email communication service and its properties."
+    examples:
+      - name: Get resource
+        text: |-
+               az communication email show --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup"
+"""
+
+helps['communication email wait'] = """
+    type: command
+    short-summary: Places the CLI in a waiting state until a condition of the communication is met.
+    examples:
+      - name: Pause executing next line of CLI script until the email communication is successfully created.
+        text: |-
+               az communication email wait -n ResourceName -g ResourceGroup --created --interval 10
+      - name: Pause executing next line of CLI script until the email communication is successfully deleted.
+        text: |-
+               az communication email wait --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --deleted --interval 10
+"""
+
+helps['communication email domain create'] = """
+    type: command
+    short-summary: "Creates a new Domain or update an existing one."
+    examples:
+      - name: Create or update domain
+        text: |-
+               az communication email domain create --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "AzureManagedDomain/MyCustomDomainName.net" --location "Global" --domain-management "AzureManaged/CustomerManaged" --tags newTag="newVal" --user-engmnt-tracking 1/0
+"""
+
+helps['communication email domain update'] = """
+    type: command
+    short-summary: "Updates an existing domain."
+    examples:
+      - name: Update domain
+        text: |-
+              az communication email domain update --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --domain-management "AzureManaged/CustomerManaged" --tags newTag="newVal" --user-engmnt-tracking 1/0
+"""
+
+helps['communication email domain delete'] = """
+    type: command
+    short-summary: "Deletes an existing domain."
+    examples:
+      - name: Delete Domain
+        text: |-
+               az communication email domain delete --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName"
+"""
+
+helps['communication email domain list'] = """
+    type: command
+    short-summary: "Handles requests to list all domains in a email communication resource."
+    examples:
+      - name: List Domains
+        text: |-
+               az communication email domain list --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup"
+"""
+
+helps['communication email domain show'] = """
+    type: command
+    short-summary: "Gets the domain and its properties."
+    examples:
+      - name: Get domain
+        text: |-
+               az communication email domain show --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "DomainName"
+"""
+
+helps['communication email domain wait'] = """
+    type: command
+    short-summary: Places the CLI in a waiting state until a condition of the domain is met.
+    examples:
+      - name: Pause executing next line of CLI script until the domain is successfully created.
+        text: |-
+               az communication email domain wait --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --created
+      - name: Pause executing next line of CLI script until the domain is successfully deleted.
+        text: |-
+               az communication email domain wait --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --deleted
+"""
+
+helps['communication email senderusername create'] = """
+    type: command
+    short-summary: "Creates a new sender username or update an existing one."
+    examples:
+      - name: Create or update sender username
+        text: |-
+               az communication email senderusername create --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername" --user-name "MyUsername" --display-name "MyDisplayName"
+"""
+
+helps['communication email senderusername update'] = """
+    type: command
+    short-summary: "Update an existing sender username."
+    examples:
+      - name: update sender username
+        text: |-
+               az communication email senderusername update --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername" --user-name "MyUsername" --display-name "MyDisplayName"
+"""
+
+helps['communication email senderusername delete'] = """
+    type: command
+    short-summary: "Deletes an existing sender username."
+    examples:
+      - name: Delete sender username
+        text: |-
+               az communication email senderusername delete --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername"
+"""
+
+helps['communication email senderusername list'] = """
+    type: command
+    short-summary: "Handles requests to list all sender usernames in a domain."
+    examples:
+      - name: List by Domain Name
+        text: |-
+               az communication email senderusername list --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName"
+"""
+
+helps['communication email senderusername show'] = """
+    type: command
+    short-summary: "Gets the sender username and its properties."
+    examples:
+      - name: Get sender username
+        text: |-
+               az communication email senderusername show --name "MyEmailCommunicationResource" --resource-group "MyResourceGroup" --domain-name "MyDomainName" --sender-username "MySenderUsername"
+"""
