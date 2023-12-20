@@ -167,7 +167,7 @@ class NspScenario(ScenarioTest):
         self.cmd('network perimeter create --name {nsp1_name} -l eastus2euap --resource-group {rg}')
         self.cmd('network perimeter create --name {nsp2_name} -l eastus2euap --resource-group {rg}')
         
-        # create link
+        # create nsp link
         self.cmd('az network perimeter link create --name {link1_name} --perimeter-name {nsp1_name} --resource-group {rg} --auto-remote-nsp-id "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/{nsp2_name}" --local-inbound-profile "[\'*\']" --remote-inbound-profile "[\'*\']" ')
 
         # show link
