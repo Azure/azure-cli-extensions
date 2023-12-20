@@ -9,26 +9,52 @@
 
 import subprocess, logging
 from functools import total_ordering
+from typing import List, Union, Tuple
 
+# https://github.com/Azure/iotedgedev/blob/4e51ecdcddd4bdd565312dc72401701a202b4e3f/iotedgedev/azurecli.py#L48
+class AzCli:
+    def __init__(self, logfile: Union[str, None]=None) -> None:
+        self.logfile = logfile
+        self.logger = new_logger(logfile=self.logfile)
+
+    def run(self, *args, capture_output = True) -> Tuple[str, int]:
+        stdout_data = b''
+        f = None
+        return_code = 1
+        try:
+            cmd = ['az'] + list(args)
+            self.logger.debug("Running az command: %s", list(args))
+            if not capture_output:
+                process = subprocess.Popen(
+                    cmd,
+                )
+                return_code = process.wait()
+            else:
+                process = subprocess.Popen(
+                    cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+                for line in process.stderr:
+                    if self.logfile is not None:
+                        with open(self.logfile, 'ab') as f:
+                            f.write(line)
+                for line in process.stdout:
+                    if self.logfile is not None:
+                        with open(self.logfile, 'ab') as f:
+                            f.write(line)
+                    stdout_data += line
+                return_code = process.wait()
+        except Exception as e:
+            if self.logfile is not None:
+                with open(self.logfile, 'ab') as f:
+                    f.write(bytes_to_string(str(e)))
+            return "", return_code
+        res = bytes_to_string(stdout_data)
+        return res, return_code
 
 def bytes_to_string(b: bytes) -> str:
     return b.decode('UTF-8', errors='strict')
-
-def az_cli (*args):
-    res = None
-    try:
-        cmd = 'az ' + ' '.join(args)
-        # logging.debug(f'Executing command {cmd}')
-        try:
-            res = subprocess.check_output(cmd, shell=True)
-        except subprocess.CalledProcessError as e:
-            logging.error(bytes_to_string(e.output))
-            return res, 1
-        res = bytes_to_string(res)
-    except Exception as e:
-        logging.exception(e)
-        return res, 1
-    return res, 0
 
 
 @total_ordering
@@ -49,3 +75,27 @@ class SemanticVersion:
         if not isinstance(other, SemanticVersion):
             return NotImplemented
         return self.version < other.version
+
+
+def new_logger(
+        name: Union[str, None]=None,
+        logfile: Union[str, None]=None,
+        handlers: Union[List[logging.Handler], None] = None
+    ) -> logging.Logger:
+    name = name or __name__
+    logger = logging.getLogger(name)
+    formatter = logging.Formatter(
+        fmt='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        datefmt='%Y-%m-%dT%H:%M:%S',
+    )
+    if not handlers:
+        if logfile is not None:
+            handler = logging.FileHandler(logfile)
+        else:
+            handler = logging.StreamHandler()
+        handler.setFormatter(formatter)
+        handlers = [handler]
+    for handler in handlers:
+        logger.addHandler(handler)
+    logger.setLevel(logging.DEBUG)
+    return logger

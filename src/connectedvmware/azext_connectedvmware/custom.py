@@ -2074,7 +2074,7 @@ def onboard_vcenter(
     custom_location_rg: Union[str, None]=None,
     vcenter_rg: Union[str, None]=None,
     dir_path: Union[str, None]=None,
-    logfile_name: str="arcvmware-onboard.log",
+    logfile_name: str="arcvmware-output.log",
     force: bool=False,
 ):
     custom_location_subscription_id = custom_location_subscription_id or appliance_subscription_id

@@ -13,8 +13,9 @@ from azure.cli.core.azclierror import (
 )
 
 from ._util import (
-    az_cli,
+    AzCli,
     SemanticVersion,
+    new_logger,
 )
 from ..pwinput import pwinput
 
@@ -63,7 +64,7 @@ class Onboard:
         self.custom_location_rg = custom_location_rg
         self.vcenter_rg = vcenter_rg
         self.dir_path = dir_path
-        self.logfile_name = logfile_name
+        self.logfile = os.path.join(dir_path, logfile_name)
         self.force = force
         self._appliance_id = None
         self._custom_location_id = None
@@ -72,6 +73,21 @@ class Onboard:
         self.vc_address = None
         self.vc_fqdn = None
         self.vc_port = None
+        fh = logging.FileHandler(self.logfile)
+        fh.setFormatter(
+            logging.Formatter(
+                fmt='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                datefmt='%Y-%m-%dT%H:%M:%S',
+        ))
+        sh = logging.StreamHandler()
+        sh.setFormatter(
+            logging.Formatter(
+                fmt='%(asctime)s %(levelname)-8s %(message)s',
+                datefmt='%Y-%m-%dT%H:%M:%S',
+        ))
+        handlers = [fh, sh]
+        self.logger = new_logger(handlers=handlers)
+        self.az = AzCli(self.logfile).run
 
 
     def run(self):
@@ -84,9 +100,10 @@ class Onboard:
 
 
     def _validate_az(self):
-        verStr, err = az_cli('version')
+        self.logger.info('Validating az version...')
+        verStr, err = self.az('version')
         if err:
-            raise CLIInternalError('az version command failed')
+            raise CLIInternalError(f'az version command failed: {err}')
 
         azVersion = json.loads(verStr)
         extensions = azVersion['extensions']
@@ -128,12 +145,12 @@ class Onboard:
                     continue
                 if ':' in creds['address']:
                     _, port_str = creds['address'].rsplit(':', 1)
-                try:
-                    _ = int(port_str)
-                except ValueError:
-                    print(f'"{port_str}" is not a valid port number, please try again')
-                    creds['address'] = None
-                    continue
+                    try:
+                        _ = int(port_str)
+                    except ValueError:
+                        print(f'"{port_str}" is not a valid port number, please try again')
+                        creds['address'] = None
+                        continue
             while not creds['username']:
                 print('Please provide vcenter username: ', end='')
                 creds['username'] = input()
@@ -178,7 +195,7 @@ class Onboard:
         if not missingFiles:
             # If all the config files are present and the appliance is not in running state,
             # we always run with --force flag.
-            logging.info('Using --force flag as all the required config files are present.')
+            self.logger.info('Using --force flag as all the required config files are present.')
             return True
 
         if len(missingFiles) == 3:
@@ -186,27 +203,27 @@ class Onboard:
                 # If no config files are found, it might indicate that the script hasn't been
                 # executed in the current directory to create the Azure resources before.
                 # We let 'az arcappliance run' command handle the force flag.
-                logging.info('Warning: None of the required config files are present.')
+                self.logger.info('Warning: None of the required config files are present.')
             return self.force
 
         if self.force:
             # Handle missing config files occuring due to createconfig failure.
             missingMsg = '\n'.join(missingFiles)
-            logging.info('Ignoring --force flag as one or more of the required config files are missing.')
+            self.logger.info('Ignoring --force flag as one or more of the required config files are missing.')
             msg = f'Missing configuration files:\n{missingMsg}\n'
-            logging.info(msg)
+            self.logger.info(msg)
         return False
 
 
     def _create_appliance(self):
-        applStr, err = az_cli(
+        self.logger.info('Creating Arc appliance')
+        applStr, err = self.az(
             'arcappliance',
             'show',
             '--debug',
             '--subscription', self.appliance_subscription_id,
             '--resource-group', self.appliance_rg,
             '--name', self.appliance_name,
-            '2>>', self.logfile_name,
         )
 
         applObj, applStatus = None, None
@@ -229,20 +246,19 @@ class Onboard:
                     deleteAppl = confirmation_prompt(f'An existing Arc resource bridge is already present in Azure (status: {applStatus}). Do you want to delete it?')
                 if deleteAppl:
                     print('Deleting the existing Arc Appliance resource from azure...')
-                    az_cli(
+                    self.az(
                         'resource',
                         'delete',
                         '--debug',
                         '--ids', applObj['id'],
                         '--yes',
-                        '2>>', self.logfile_name,
                     )
         if invokeApplianceRun:
             self._fetch_vcenter_credentials()
             forceParam = []
             if self.force:
                 forceParam = ['--force']
-            az_cli(
+            _, err = self.az(
                 'arcappliance',
                 'run',
                 'vmware',
@@ -254,11 +270,12 @@ class Onboard:
                 '--address', self.vc_address,
                 '--username', self.vc_username,
                 '--password', self.vc_password,
+                capture_output=False
             )
         else:
             print('The Arc resource bridge is already running. Skipping the creation of resource bridge.')
 
-        applStr, _ = az_cli(
+        applStr, _ = self.az(
             'arcappliance',
             'show',
             '--subscription', self.appliance_subscription_id,
@@ -278,14 +295,13 @@ class Onboard:
         for i in range(5):
             print("Sleeping for 60 seconds...")
             time.sleep(60)
-            applStatus, _ = az_cli(
+            applStatus, _ = self.az(
                 'resource',
                 'show',
                 '--debug',
                 '--ids', self._appliance_id,
                 '--query', 'properties.status',
                 '-o', 'tsv',
-                '2>>', self.logfile_name,
             )
             if applStatus == 'Running':
                 break
@@ -298,7 +314,7 @@ class Onboard:
 
 
     def _create_cluster_extension(self):
-        resourceStr, err = az_cli(
+        resourceStr, err = self.az(
             'k8s-extension',
             'create',
             '--debug',
@@ -310,31 +326,29 @@ class Onboard:
             '--cluster-type', 'appliances',
             '--cluster-name', self.appliance_name,
             '--config', 'Microsoft.CustomLocation.ServiceAccount=azure-vmwareoperator',
-            '2>>', self.logfile_name,
         )
         if err:
-            raise CLIInternalError(f'az k8s-extension create command failed, please check the log file for more details: {self.logfile_name}')
+            raise CLIInternalError(f'az k8s-extension create command failed, please check the log file for more details: {self.logfile}')
 
         resource = json.loads(resourceStr)
         self._cluster_extension_id = resource['id']
         if not self._cluster_extension_id:
             raise ClientError(f'Cluster extension creation failed. {SUPPORT_MSG}')
 
-        provState, _ = az_cli(
+        provState, _ = self.az(
             'resource',
             'show',
             '--debug',
             '--ids', self._cluster_extension_id,
             '--query', 'properties.provisioningState',
             '-o', 'tsv',
-            '2>>', self.logfile_name,
         )
         if provState != 'Succeeded':
             raise ClientError(f'Provisioning State of cluster extension is not succeeded. Current state: {provState}. {SUPPORT_MSG}')
 
 
     def _create_custom_location(self):
-        resourceStr, err = az_cli(
+        resourceStr, err = self.az(
             'customlocation',
             'create',
             '--debug',
@@ -345,24 +359,22 @@ class Onboard:
             '--namespace', self.custom_location_name.lower().replace('[^a-z0-9-]', ''),
             '--host-resource-id', self._appliance_id,
             '--cluster-extension-ids', self._cluster_extension_id,
-            '2>>', self.logfile_name,
         )
         if err:
-            raise CLIInternalError(f'az customlocation create command failed, please check the log file for more details: {self.logfile_name}')
+            raise CLIInternalError(f'az customlocation create command failed, please check the log file for more details: {self.logfile}')
 
         resourceObj = json.loads(resourceStr)
         self._custom_location_id = resourceObj['id']
         if not self._custom_location_id:
             raise ClientError(f'Custom location creation failed. {SUPPORT_MSG}')
 
-        provState, _ = az_cli(
+        provState, _ = self.az(
             'resource',
             'show',
             '--debug',
             '--ids', self._custom_location_id,
             '--query', 'properties.provisioningState',
             '-o', 'tsv',
-            '2>>', self.logfile_name,
         )
         if provState != 'Succeeded':
             raise ClientError(f'Provisioning State of custom location is not succeeded. Current state: {provState}. {SUPPORT_MSG}')
@@ -371,7 +383,7 @@ class Onboard:
     def _connect_vcenter(self):
         self._fetch_vcenter_credentials()
 
-        az_cli(
+        self.az(
             'connectedvmware',
             'vcenter',
             'connect',
@@ -385,7 +397,7 @@ class Onboard:
             '--username', self.vc_username,
             '--password', self.vc_password,
         )
-        vcenterStr, err = az_cli(
+        vcenterStr, err = self.az(
             'connectedvmware',
             'vcenter',
             'show',
@@ -394,21 +406,20 @@ class Onboard:
             '--name', self.vcenter_name,
         )
         if err:
-            raise CLIInternalError(f'az connectedvmware vcenter show command failed, please check the log file for more details: {self.logfile_name}')
+            raise CLIInternalError(f'az connectedvmware vcenter show command failed, please check the log file for more details: {self.logfile}')
 
         vcenterObj = json.loads(vcenterStr)
         self._vcenter_id = vcenterObj['id']
         if not self._vcenter_id:
             raise ClientError(f'Connect vCenter failed. {SUPPORT_MSG}')
 
-        provState, _ = az_cli(
+        provState, _ = self.az(
             'resource',
             'show',
             '--debug',
             '--ids', self._vcenter_id,
             '--query', 'properties.provisioningState',
             '-o', 'tsv',
-            '2>>', self.logfile_name,
         )
         if provState != 'Succeeded':
             raise ClientError(f'Provisioning State of vCenter is not succeeded. Current state: {provState}. {SUPPORT_MSG}')
