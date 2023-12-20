@@ -166,15 +166,15 @@ class NspScenario(ScenarioTest):
 
         self.cmd('network perimeter create --name {nsp1_name} -l eastus2euap --resource-group {rg}')
         self.cmd('network perimeter create --name {nsp2_name} -l eastus2euap --resource-group {rg}')
-        
+
         # create nsp link
         self.cmd('az network perimeter link create --name {link1_name} --perimeter-name {nsp1_name} --resource-group {rg} --auto-remote-nsp-id "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/{nsp2_name}" --local-inbound-profile "[\'*\']" --remote-inbound-profile "[\'*\']" ')
 
         # show link
-        link1_obj = self.cmd('az network perimeter link show --name {link1_name} --perimeter-name {nsp1_name} --resource-group {rg}').get_output_in_json()
-        
+        self.cmd('az network perimeter link show --name {link1_name} --perimeter-name {nsp1_name} --resource-group {rg}').get_output_in_json()
+
         # get list of links
-        link1_obj = self.cmd('az network perimeter link list --perimeter-name {nsp1_name} --resource-group {rg}').get_output_in_json()
+        self.cmd('az network perimeter link list --perimeter-name {nsp1_name} --resource-group {rg}').get_output_in_json()
 
         # update link
         self.cmd('az network perimeter link update --name {link1_name} --perimeter-name {nsp1_name} --resource-group {rg} --local-inbound-profile "[\'*\']"')
@@ -184,7 +184,7 @@ class NspScenario(ScenarioTest):
 
         # list link reference
         link_ref2_list = self.cmd('az network perimeter link-reference list --perimeter-name {nsp2_name} --resource-group {rg}').get_output_in_json()
-        
+
         self.kwargs.update({'ref2_name': link_ref2_list[0]['name']})
 
         # show link reference
