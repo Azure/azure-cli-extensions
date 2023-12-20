@@ -25,7 +25,6 @@ class MonitorClientCommandsLoader(AzCommandsLoader):
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=monitor_control_service_custom)
 
     def load_command_table(self, args):
-        from azext_amcs.generated.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -37,20 +36,11 @@ class MonitorClientCommandsLoader(AzCommandsLoader):
                 aaz_pkg_name=aaz.__name__,
                 args=args
             )
+        from azext_amcs.commands import load_command_table
         load_command_table(self, args)
-        try:
-            from azext_amcs.manual.commands import load_command_table as load_command_table_manual
-            load_command_table_manual(self, args)
-        except ImportError as e:
-            if e.name.endswith('manual.commands'):
-                pass
-            else:
-                raise e
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_amcs.generated._params import load_arguments
-        load_arguments(self, command)
         try:
             from azext_amcs.manual._params import load_arguments as load_arguments_manual
             load_arguments_manual(self, command)
@@ -59,6 +49,8 @@ class MonitorClientCommandsLoader(AzCommandsLoader):
                 pass
             else:
                 raise e
+        from azext_amcs._params import load_arguments
+        load_arguments(self, command)
 
 
 COMMAND_LOADER_CLS = MonitorClientCommandsLoader

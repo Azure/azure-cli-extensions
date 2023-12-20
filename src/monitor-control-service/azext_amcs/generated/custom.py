@@ -31,34 +31,18 @@ def monitor_data_collection_endpoint_delete(client,
                          data_collection_endpoint_name=data_collection_endpoint_name)
 
 
-# def monitor_data_collection_rule_association_list(client,
-#                                                   resource_group_name=None,
-#                                                   data_collection_rule_name=None,
-#                                                   data_collection_endpoint_name=None,
-#                                                   resource_uri=None):
-#     if resource_group_name and data_collection_rule_name is not None:
-#         return client.list_by_rule(resource_group_name=resource_group_name,
-#                                    data_collection_rule_name=data_collection_rule_name)
-#     elif resource_group_name and data_collection_endpoint_name is not None:
-#         return client.list_by_data_collection_endpoint(resource_group_name=resource_group_name,
-#                                                        data_collection_endpoint_name=data_collection_endpoint_name)
-#     return client.list_by_resource(resource_uri=resource_uri)
-def monitor_data_collection_rule_association_list(cmd, resource_group_name=None, data_collection_rule_name=None,
-                                                  data_collection_endpoint_name=None, resource_uri=None):
+def monitor_data_collection_rule_association_list(client,
+                                                  resource_group_name=None,
+                                                  data_collection_rule_name=None,
+                                                  data_collection_endpoint_name=None,
+                                                  resource_uri=None):
     if resource_group_name and data_collection_rule_name is not None:
-        from ..aaz.latest.monitor.data_collection.rule.association import List as ListByRule
-        return ListByRule(cli_ctx=cmd.cli_ctx)(command_args={
-            "data_collection_rule_name": data_collection_rule_name,
-            "resource_group": resource_group_name,
-        })
+        return client.list_by_rule(resource_group_name=resource_group_name,
+                                   data_collection_rule_name=data_collection_rule_name)
     elif resource_group_name and data_collection_endpoint_name is not None:
-        from ..aaz.latest.monitor.data_collection.endpoint.association import List as ListByEndpoint
-        return ListByEndpoint(cli_ctx=cmd.cli_ctx)(command_args={
-            "data_collection_endpoint_name": data_collection_rule_name,
-            "resource_group": resource_group_name,
-        })
-    from ..aaz.latest.monitor.data_collection.rule.association import ListByResource
-    return ListByResource(cli_ctx=cmd.cli_ctx)(command_args={"resource_uri": resource_uri})
+        return client.list_by_data_collection_endpoint(resource_group_name=resource_group_name,
+                                                       data_collection_endpoint_name=data_collection_endpoint_name)
+    return client.list_by_resource(resource_uri=resource_uri)
 
 
 def monitor_data_collection_rule_association_show(client,
