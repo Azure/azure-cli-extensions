@@ -443,7 +443,7 @@ def validate_existing_provisioned_cluster_for_reput(cluster_resource, kubernetes
         ]
 
         for value in validation_values:
-            if not value is None:
+            if value is not None:
                 raise InvalidArgumentValueError("Updating the following properties of a Provisioned Cluster are not supported from the Connected Cluster CLI: kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, location, public_key.\n\nPlease use the 'az aksarc update' CLI command. https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update")
 
 
