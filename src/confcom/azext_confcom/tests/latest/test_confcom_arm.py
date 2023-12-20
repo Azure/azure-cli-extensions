@@ -22,7 +22,6 @@ from azext_confcom.template_util import case_insensitive_dict_get, extract_confi
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
 
-
 class PolicyGeneratingArm(unittest.TestCase):
     custom_json = """
         {
@@ -1988,7 +1987,7 @@ class MultiplePolicyTemplate(unittest.TestCase):
         is_valid, diff = self.aci_policy.validate_cce_policy()
         self.assertFalse(is_valid)
         # just check to make sure the containers in both policies are different
-        expected_diff = {"alpine:3.16":"alpine:3.16 not found in policy"}
+        expected_diff = {"alpine:3.16": "alpine:3.16 not found in policy"}
         self.assertEqual(diff, expected_diff)
 
 
@@ -2472,9 +2471,7 @@ class PolicyGeneratingAllowElevated(unittest.TestCase):
         self.assertFalse(allow_elevated)
 
 
-
 class PrintExistingPolicy(unittest.TestCase):
-
     def test_printing_existing_policy(self):
         template = """
         {
@@ -3372,7 +3369,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
 
         normalized_aci_arm_policy = json.loads(
             self.aci_arm_policy.get_serialized_output(
-                output_type=OutputType.RAW,rego_boilerplate=False
+                output_type=OutputType.RAW, rego_boilerplate=False
             )
         )
 
@@ -3395,15 +3392,17 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         )
 
         self.assertEqual(
-            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
-                ][1][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY],
-            "re2"
+            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][1][
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY
+            ],
+            "re2",
         )
 
         self.assertEqual(
-            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
-                ][1][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE],
-            "TEST_WILDCARD_ENV=.*"
+            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][1][
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE
+            ],
+            "TEST_WILDCARD_ENV=.*",
         )
 
         normalized_aci_arm_policy2 = json.loads(
@@ -3417,9 +3416,10 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         )
 
         self.assertEqual(
-            normalized_aci_arm_policy2[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
-                ][1][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE],
-            "TEST_WILDCARD_ENV=.*"
+            normalized_aci_arm_policy2[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][1][
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE
+            ],
+            "TEST_WILDCARD_ENV=.*",
         )
 
     def test_wildcard_env_var_invalid(self):
@@ -3875,7 +3875,6 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
     }
     """
 
-
     custom_arm_json3 = """
     {
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -4195,7 +4194,6 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
             0
         ]
         cls.aci_arm_policy4.populate_policy_content_for_all_images()
-
 
     def test_arm_template_security_context_defaults(self):
         expected_user_json = json.loads("""{
@@ -4761,7 +4759,6 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
     }
     """
 
-
     @classmethod
     def setUpClass(cls):
         cls.aci_arm_policy = load_policy_from_arm_template_str(cls.custom_arm_json, "")[
@@ -5285,7 +5282,6 @@ class PolicyGeneratingSecurityContextSeccompProfileEdgeCases(unittest.TestCase):
         )
 
         self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_SECCOMP_PROFILE_SHA256], expected_seccomp_profile_sha256)
-
 
 
 class PolicyStopSignal(unittest.TestCase):

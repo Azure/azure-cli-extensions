@@ -10,7 +10,7 @@ TEST_WORKSPACE_DEFAULT_LOCATION = "westus2"
 TEST_WORKSPACE_DEFAULT_STORAGE = "e2etests"
 TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "e2etestsgrs"
 TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "microsoft-qc/learn-and-develop"
-TEST_CAPABILITIES_DEFAULT = "new.microsoft;submit.microsoft"
+TEST_CAPABILITIES_DEFAULT = "new.microsoft-qc;submit.microsoft-qc"
 
 TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "microsoft-qc/learn-and-develop"
 TEST_TARGET_DEFAULT_PROVIDER = "microsoft-qc"

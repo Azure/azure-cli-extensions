@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id,
-                          validate_custom_location_name_or_id)
+                          validate_custom_location_name_or_id, validate_env_name_or_id_for_up)
 from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH
 
 
@@ -146,8 +146,11 @@ def load_arguments(self, _):
         c.argument('pubsub', help="The pubsub component and dev service to create.")
 
     with self.argument_context('containerapp up') as c:
+        c.argument('environment', validator=validate_env_name_or_id_for_up, options_list=['--environment'], help="Name or resource ID of the container app's managed environment or connected environment.")
         c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)
         c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format. Empty string to clear existing values.", is_preview=True)
+        c.argument('custom_location_id', options_list=['--custom-location'], help="Resource ID of custom location. List using 'az customlocation list'.", is_preview=True)
+        c.argument('connected_cluster_id', help="Resource ID of connected cluster. List using 'az connectedk8s list'.", configured_default='connected_cluster_id', is_preview=True)
 
     with self.argument_context('containerapp up', arg_group='Github Repo') as c:
         c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/<owner>/<repository-name> or <owner>/<repository-name>')

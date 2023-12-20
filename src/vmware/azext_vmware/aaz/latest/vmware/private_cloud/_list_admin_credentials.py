@@ -155,7 +155,7 @@ class ListAdminCredentials(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.nsxt_password = AAZStrType(
                 serialized_name="nsxtPassword",
-                flags={"secret": True, "read_only": True},
+                flags={"read_only": True},
             )
             _schema_on_200.nsxt_username = AAZStrType(
                 serialized_name="nsxtUsername",
@@ -163,7 +163,7 @@ class ListAdminCredentials(AAZCommand):
             )
             _schema_on_200.vcenter_password = AAZStrType(
                 serialized_name="vcenterPassword",
-                flags={"secret": True, "read_only": True},
+                flags={"read_only": True},
             )
             _schema_on_200.vcenter_username = AAZStrType(
                 serialized_name="vcenterUsername",

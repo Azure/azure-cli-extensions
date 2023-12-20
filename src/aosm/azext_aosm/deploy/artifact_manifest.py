@@ -7,7 +7,6 @@ from functools import cached_property, lru_cache
 from typing import Any, List, Union
 
 from azure.cli.core.azclierror import AzCLIError
-from azure.storage.blob import BlobClient
 from knack.log import get_logger
 from oras.client import OrasClient
 
@@ -20,6 +19,7 @@ from azext_aosm.vendored_sdks.models import (
     CredentialType,
     ManifestArtifactFormat,
 )
+from azext_aosm.vendored_sdks.azure_storagev2.blob.v2022_11_02 import BlobClient
 
 logger = get_logger(__name__)
 

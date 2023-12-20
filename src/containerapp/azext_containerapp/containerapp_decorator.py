@@ -172,7 +172,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                         e["value"] = ""
 
         update_map = {}
-        update_map['scale'] = self.get_argument_min_replicas() or self.get_argument_max_replicas() or self.get_argument_scale_rule_name()
+        update_map['scale'] = self.get_argument_min_replicas() is not None or self.get_argument_max_replicas() is not None or self.get_argument_scale_rule_name()
         update_map['container'] = self._need_update_container()
         update_map['ingress'] = self.get_argument_ingress() or self.get_argument_target_port()
         update_map['registry'] = self.get_argument_registry_server() or self.get_argument_registry_user() or self.get_argument_registry_pass()

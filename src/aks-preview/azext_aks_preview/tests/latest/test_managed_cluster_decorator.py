@@ -899,7 +899,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         # fail on get_enable_network_observability mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_4.get_enable_network_observability()
-        
+
         # Flag set to False.
         ctx_5 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -4385,7 +4385,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         mc_1 = self.models.ManagedCluster(location="test_location")
         dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.set_up_app_routing_profile(mc_1)
+        dec_mc_1 = dec_1.set_up_ingress_web_app_routing(mc_1)
         ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
             web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                 enabled=True,
@@ -5104,6 +5104,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 network_plugin="azure",
                 network_plugin_mode="overlay",
                 network_dataplane="cilium",
+                network_policy="",
                 pod_cidr="100.64.0.0/16",
                 service_cidr="192.168.0.0/16"
             ),
@@ -5121,6 +5122,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 network_plugin="azure",
                 network_plugin_mode="overlay",
                 network_dataplane="cilium",
+                network_policy="cilium",
                 pod_cidr="100.64.0.0/16",
                 service_cidr="192.168.0.0/16",
             ),
@@ -7205,7 +7207,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 name="Base",
                 tier="Premium")
         premiumCluster = self.models.ManagedCluster(
-            location="test_location", 
+            location="test_location",
             support_plan=None,
             sku=premiumSKU,
         )
@@ -7253,7 +7255,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 name="Base",
                 tier="Premium")
         ltsCluster = self.models.ManagedCluster(
-            location="test_location", 
+            location="test_location",
             sku=premiumSKU,
             support_plan="AKSLongTermSupport",
         )
@@ -7284,7 +7286,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(nonLTSClusterCalculated, expectedNonLTSCluster)
 
         normalCluster = self.models.ManagedCluster(
-            location="test_location", 
+            location="test_location",
             sku=self.models.ManagedClusterSKU(
                 name="Base",
                 tier="Standard"),

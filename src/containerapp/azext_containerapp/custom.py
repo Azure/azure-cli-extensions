@@ -1006,7 +1006,7 @@ def get_replica(cmd, resource_group_name, name, replica, revision=None):
 def containerapp_up(cmd,
                     name,
                     resource_group_name=None,
-                    managed_env=None,
+                    environment=None,
                     location=None,
                     registry_server=None,
                     image=None,
@@ -1028,9 +1028,11 @@ def containerapp_up(cmd,
                     workload_profile_name=None,
                     service_principal_client_id=None,
                     service_principal_client_secret=None,
-                    service_principal_tenant_id=None):
-    from ._up_utils import (_validate_up_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
-                            ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
+                    service_principal_tenant_id=None,
+                    custom_location_id=None,
+                    connected_cluster_id=None):
+    from ._up_utils import (_validate_up_args, _validate_custom_location_connected_cluster_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
+                            ResourceGroup, Extension, CustomLocation, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
                             _get_registry_details, _create_github_action, _set_up_defaults, up_output,
                             check_env_name_on_rg, get_token, _has_dockerfile)
     from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
@@ -1039,12 +1041,18 @@ def containerapp_up(cmd,
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, registry_server)
+    _validate_custom_location_connected_cluster_args(cmd,
+                                                     env=environment,
+                                                     resource_group_name=resource_group_name,
+                                                     location=location,
+                                                     custom_location_id=custom_location_id,
+                                                     connected_cluster_id=connected_cluster_id)
     if artifact:
         # Artifact is mostly a convenience argument provided to use --source specifically with a single artifact file.
         # At this point we know for sure that source isn't set (else _validate_up_args would have failed), so we can build with this value.
         source = artifact
     validate_container_app_name(name, AppType.ContainerApp.name)
-    check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
+    check_env_name_on_rg(cmd, environment, resource_group_name, location, custom_location_id, connected_cluster_id)
 
     image = _reformat_image(source, repo, image)
     token = get_token(cmd, repo, token)
@@ -1065,16 +1073,20 @@ def containerapp_up(cmd,
         ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
 
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
-    env = ContainerAppEnvironment(cmd, managed_env, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id)
+    custom_location = CustomLocation(cmd, name=custom_location_id, resource_group_name=resource_group_name, connected_cluster_id=connected_cluster_id)
+    extension = Extension(cmd, logs_rg=resource_group_name, logs_location=location, logs_share_key=logs_key, logs_customer_id=logs_customer_id, connected_cluster_id=connected_cluster_id)
+    env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
     app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress)
 
-    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app)
+    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app, custom_location, extension)
 
     if app.check_exists():
         if app.get()["properties"]["provisioningState"] == "InProgress":
             raise ValidationError("Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
 
     resource_group.create_if_needed()
+    extension.create_if_needed()
+    custom_location.create_if_needed()
     env.create_if_needed(name)
 
     if source or repo:
@@ -1101,7 +1113,7 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass):
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -1111,7 +1123,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
     if containerapp_def:
         return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port,
                                          registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name)
-    return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name)
+    return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type)
 
 
 def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None):
