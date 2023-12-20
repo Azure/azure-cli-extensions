@@ -42,23 +42,23 @@ monitor_control_service_data_collection_rule_association = CliCommandType(
 
 def load_command_table(self, _):
 
-    with self.command_group(
-        'monitor data-collection endpoint',
-        monitor_control_service_data_collection_endpoint,
-        client_factory=cf_data_collection_endpoint,
-    ) as g:
-        g.custom_command('list', 'monitor_data_collection_endpoint_list')
-        g.custom_show_command('show', 'monitor_data_collection_endpoint_show')
-        g.custom_command('delete', 'monitor_data_collection_endpoint_delete', confirmation=True)
+    # with self.command_group(
+    #     'monitor data-collection endpoint',
+    #     monitor_control_service_data_collection_endpoint,
+    #     client_factory=cf_data_collection_endpoint,
+    # ) as g:
+        # g.custom_command('list', 'monitor_data_collection_endpoint_list')
+        # g.custom_show_command('show', 'monitor_data_collection_endpoint_show')
+        # g.custom_command('delete', 'monitor_data_collection_endpoint_delete', confirmation=True)
 
-    with self.command_group(
-        'monitor data-collection rule',
-        monitor_control_service_data_collection_rule,
-        client_factory=cf_data_collection_rule,
-    ) as g:
-        g.custom_command('list', 'monitor_data_collection_rule_list')
-        g.custom_show_command('show', 'monitor_data_collection_rule_show')
-        g.custom_command('delete', 'monitor_data_collection_rule_delete', confirmation=True)
+    # with self.command_group(
+    #     'monitor data-collection rule',
+    #     monitor_control_service_data_collection_rule,
+    #     client_factory=cf_data_collection_rule,
+    # ) as g:
+        # g.custom_command('list', 'monitor_data_collection_rule_list')
+        # g.custom_show_command('show', 'monitor_data_collection_rule_show')
+        # g.custom_command('delete', 'monitor_data_collection_rule_delete', confirmation=True)
 
     with self.command_group(
         'monitor data-collection rule association',
@@ -66,5 +66,5 @@ def load_command_table(self, _):
         client_factory=cf_data_collection_rule_association,
     ) as g:
         g.custom_command('list', 'monitor_data_collection_rule_association_list')
-        g.custom_show_command('show', 'monitor_data_collection_rule_association_show')
-        g.custom_command('delete', 'monitor_data_collection_rule_association_delete', confirmation=True)
+        # g.custom_show_command('show', 'monitor_data_collection_rule_association_show')
+        # g.custom_command('delete', 'monitor_data_collection_rule_association_delete', confirmation=True)

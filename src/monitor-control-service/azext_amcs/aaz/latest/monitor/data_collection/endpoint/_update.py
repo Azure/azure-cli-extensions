@@ -112,14 +112,6 @@ class Update(AAZCommand):
         )
 
         # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.immutable_id = AAZStrArg(
-            options=["--immutable-id"],
-            arg_group="Properties",
-            help="The immutable ID of this data collection endpoint resource. This property is READ-ONLY.",
-            nullable=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -358,7 +350,6 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("immutableId", AAZStrType, ".immutable_id")
                 properties.set_prop("networkAcls", AAZObjectType)
 
             network_acls = _builder.get(".properties.networkAcls")

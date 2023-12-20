@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an association.
+
+    :example: Delete association
+        az monitor data-collection rule association delete --name "myAssociation" --resource "subscr iptions/703362b3-f278-4e4b-9179- c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm "
     """
 
     _aaz_info = {

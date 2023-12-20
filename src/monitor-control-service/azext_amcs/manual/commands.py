@@ -25,14 +25,14 @@ def load_command_table(self, _):
         client_factory=cf_data_collection_endpoint,
     )
 
-    with self.command_group('monitor data-collection'):
-        pass
+    # with self.command_group('monitor data-collection'):
+    #     pass
 
-    with self.command_group('monitor data-collection endpoint',
-                            monitor_control_service_data_collection_endpoint,
-                            client_factory=cf_data_collection_endpoint) as g:
-        g.custom_command('create', 'data_collection_endpoint_create')
-        g.custom_command('update', 'data_collection_endpoint_update')
+    # with self.command_group('monitor data-collection endpoint',
+    #                         monitor_control_service_data_collection_endpoint,
+    #                         client_factory=cf_data_collection_endpoint) as g:
+    #     g.custom_command('create', 'data_collection_endpoint_create')
+    #     g.custom_command('update', 'data_collection_endpoint_update')
 
     with self.command_group('monitor data-collection rule association',
                             monitor_control_service_data_collection_rule_association,
