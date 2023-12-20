@@ -48,6 +48,15 @@ class ContainerAppUpImageTest(ScenarioTest):
         create_and_verify_containerapp_up(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port)
 
 
+
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_up_artifact_with_bullseye_buildpack_e2e(self, resource_group):
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_bullseye_buildpack_java"))
+        ingress = 'external'
+        target_port = '8080'
+        create_and_verify_containerapp_up(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port)
+
+
     @live_only()
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_up_source_with_dockerfile_e2e(self, resource_group):

@@ -473,7 +473,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         except Exception as ex:
             raise CLIError(f"Unable to run 'docker push' command to push image to the container registry: {ex}") from ex
 
-    def build_container_from_source_with_cloud_build_service(self, source, location):
+    def build_container_from_source_with_cloud_build_service(self, source, build_env_vars, location):
         logger.warning("Using the Cloud Build Service to build container image...")
 
         run_full_id = uuid.uuid4().hex
@@ -482,12 +482,12 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         try:
             resource_group_name = self.resource_group.name
-            return run_cloud_build(self.cmd, source, location, resource_group_name, self.env.name, run_full_id, logs_file, logs_file_path)
+            return run_cloud_build(self.cmd, source, build_env_vars, location, resource_group_name, self.env.name, run_full_id, logs_file, logs_file_path)
         except Exception as exception:
             logs_file.close()
             raise exception
 
-    def build_container_from_source_with_buildpack(self, image_name, source, cache_image_name):  # pylint: disable=too-many-statements
+    def build_container_from_source_with_buildpack(self, image_name, source, cache_image_name, build_env_vars):  # pylint: disable=too-many-statements
         # Ensure that Docker is running
         if not is_docker_running():
             raise ValidationError("Docker is not running. Please start Docker to use buildpacks.")
@@ -527,6 +527,13 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             # Run 'pack build' to produce a runnable application image for the Container App
             # Specify the image as the 'build-cache' image to ensure that the local cache is used for build layers
             command = [pack_exec_path, 'build', cache_image_name, '--builder', builder_image, '--path', source, '--tag', image_name]
+
+            # If the user specifies environment variables, pass it to the buildpack
+            if build_env_vars:
+                for env_var in build_env_vars:
+                    name = env_var.get("name")
+                    value = env_var.get("value")
+                    command.extend(['--env', f"{name}={value}"])
 
             logger.debug(f"Calling '{' '.join(command)}'")
             try:
@@ -625,7 +632,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         for k, v in old_command_kwargs.items():
             self.cmd.command_kwargs[k] = v
 
-    def run_source_to_cloud_flow(self, source, dockerfile, can_create_acr_if_needed, registry_server):
+    def run_source_to_cloud_flow(self, source, dockerfile, build_env_vars, can_create_acr_if_needed, registry_server):
         image_name = self.image if self.image is not None else self.name
         from datetime import datetime
 
@@ -662,7 +669,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             location = self.env.location
         if self.should_create_acr:
             # No container registry provided. Let's use the default container registry through Cloud Build.
-            self.image = self.build_container_from_source_with_cloud_build_service(source, location)
+            self.image = self.build_container_from_source_with_cloud_build_service(source, build_env_vars, location)
             return True
 
         if can_create_acr_if_needed:
@@ -679,7 +686,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             # Build the app with a constant 'build-cache' tag to leverage the local cache containing build layers
             # NOTE: this 'build-cache' tag will not be pushed to the user's registry, only maintained locally
             build_image_name_with_cache_tag = f"{image_name}:build-cache"
-            self.build_container_from_source_with_buildpack(image_name_with_tag, source, build_image_name_with_cache_tag)
+            self.build_container_from_source_with_buildpack(image_name_with_tag, source, build_image_name_with_cache_tag, build_env_vars)
             self.image = self.registry_server + "/" + image_name_with_tag
             return False
 
@@ -800,7 +807,7 @@ def _get_ingress_and_target_port(ingress, target_port, dockerfile_content: "list
     return ingress, target_port
 
 
-def _validate_up_args(cmd, source, artifact, image, repo, registry_server):
+def _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, registry_server):
     disallowed_params = ["--only-show-errors", "--output", "-o"]
     command_args = cmd.cli_ctx.data.get("safe_params", [])
     for a in disallowed_params:
@@ -815,6 +822,10 @@ def _validate_up_args(cmd, source, artifact, image, repo, registry_server):
         raise MutuallyExclusiveArgumentError(
             "Cannot use --source and --repo together. "
             "Can either deploy from a local directory or a Github repo"
+        )
+    if build_env_vars and not source and not artifact and not repo:
+        raise RequiredArgumentMissingError(
+            "--build_env_vars must be used with --source, --artifact, or --repo together"
         )
     _validate_source_artifact_args(source, artifact)
     if repo and registry_server and "azurecr.io" in registry_server:
@@ -1093,6 +1104,7 @@ def _create_github_action(
     token,
     repo,
     context_path,
+    build_env_vars,
 ):
 
     sp = _get_or_create_sp(
@@ -1126,6 +1138,7 @@ def _create_github_action(
         service_principal_tenant_id=service_principal_tenant_id,
         image=app.image,
         context_path=context_path,
+        build_env_vars=build_env_vars,
         trigger_existing_workflow=True,
     )
 

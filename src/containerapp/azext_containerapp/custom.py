@@ -87,7 +87,7 @@ from ._models import (
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     AzureFileProperties as AzureFilePropertiesModel)
 
-from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running
+from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running, parse_build_env_vars
 
 from ._constants import (CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
@@ -408,6 +408,7 @@ def create_containerapp(cmd,
                         environment_type="managed",
                         source=None,
                         artifact=None,
+                        build_env_vars=None,
                         repo=None,
                         token=None,
                         branch=None,
@@ -470,7 +471,8 @@ def update_containerapp_logic(cmd,
                               registry_pass=None,
                               secret_volume_mount=None,
                               source=None,
-                              artifact=None):
+                              artifact=None,
+                              build_env_vars=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -519,7 +521,8 @@ def update_containerapp(cmd,
                         no_wait=False,
                         secret_volume_mount=None,
                         source=None,
-                        artifact=None):
+                        artifact=None,
+                        build_env_vars=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -553,7 +556,8 @@ def update_containerapp(cmd,
                                      no_wait=no_wait,
                                      secret_volume_mount=secret_volume_mount,
                                      source=source,
-                                     artifact=artifact)
+                                     artifact=artifact,
+                                     build_env_vars=build_env_vars)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -843,6 +847,7 @@ def create_or_update_github_action(cmd,
                                    login_with_github=False,
                                    image=None,
                                    context_path=None,
+                                   build_env_vars=None,
                                    service_principal_client_id=None,
                                    service_principal_client_secret=None,
                                    service_principal_tenant_id=None,
@@ -918,6 +923,7 @@ def create_or_update_github_action(cmd,
     github_action_configuration["registryInfo"] = registry_info
     github_action_configuration["azureCredentials"] = azure_credentials
     github_action_configuration["contextPath"] = context_path
+    github_action_configuration["buildEnvironmentVariables"] = build_env_vars
     github_action_configuration["image"] = image
 
     source_control_info["properties"]["githubActionConfiguration"] = github_action_configuration
@@ -1006,6 +1012,7 @@ def containerapp_up(cmd,
                     image=None,
                     source=None,
                     artifact=None,
+                    build_env_vars=None,
                     ingress=None,
                     target_port=None,
                     registry_user=None,
@@ -1031,7 +1038,7 @@ def containerapp_up(cmd,
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
-    _validate_up_args(cmd, source, artifact, image, repo, registry_server)
+    _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, registry_server)
     if artifact:
         # Artifact is mostly a convenience argument provided to use --source specifically with a single artifact file.
         # At this point we know for sure that source isn't set (else _validate_up_args would have failed), so we can build with this value.
@@ -1076,15 +1083,16 @@ def containerapp_up(cmd,
         _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
     used_default_container_registry = False
+    build_env_vars = parse_build_env_vars(build_env_vars)
     if source:
-        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=True, registry_server=registry_server)
+        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=True, registry_server=registry_server)
     else:
         app.create_acr_if_needed()
 
     app.create(no_registry=bool(repo or used_default_container_registry))
     if repo:
         _create_github_action(app, env, service_principal_client_id, service_principal_client_secret,
-                              service_principal_tenant_id, branch, token, repo, context_path)
+                              service_principal_tenant_id, branch, token, repo, context_path, build_env_vars)
         cache_github_token(cmd, token, repo)
 
     if browse:

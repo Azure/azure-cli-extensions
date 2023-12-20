@@ -29,7 +29,7 @@ class CloudBuildError(Exception):
     pass
 
 
-def run_cloud_build(cmd, source, location, resource_group_name, environment_name, run_full_id, logs_file, logs_file_path):
+def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, environment_name, run_full_id, logs_file, logs_file_path):
     generated_build_name = f"build{run_full_id}"[:12]
     log_in_file(f"Starting the Cloud Build for build of id '{generated_build_name}'\n", logs_file, no_print=True)
 
@@ -110,7 +110,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         # Build creation
         done_spinner = False
         thread = display_spinner("Starting the Container Apps Cloud Build agent")
-        build_create_json_content = BuildClient.create(cmd, builder_name, generated_build_name, resource_group_name, location, True)
+        build_create_json_content = BuildClient.create(cmd, builder_name, generated_build_name, resource_group_name, location, build_env_vars, True)
         build_name = build_create_json_content["name"]
         upload_endpoint = build_create_json_content["properties"]["uploadEndpoint"]
         log_streaming_endpoint = build_create_json_content["properties"]["logStreamEndpoint"]
