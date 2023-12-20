@@ -236,3 +236,4 @@ HELM_STORAGE_URL = "https://k8connecthelm.azureedge.net"
 HELM_VERSION = 'v3.12.2'
 Download_And_Install_Kubectl_Fault_Type = "Failed to download and install kubectl"
 Azure_Access_Token_Variable = 'AZURE_ACCESS_TOKEN'
+Provisioned_Cluster_Kind = 'provisionedcluster'
