@@ -136,7 +136,7 @@ def perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_gr
 
             if not result:
                 break
-        except Exception as ex:
+        except Exception:
             break
     else:
         return True
@@ -156,7 +156,7 @@ def get_k8s_extension_module(module_name):
         from importlib import import_module
         azext_custom = import_module(module_name)
         return azext_custom
-    except ImportError as ie:
+    except ImportError:
         raise UnknownError(
             "Please add CLI extension `k8s-extension` for performing Azure Container Storage operations.\n"
             "Run command `az extension add --name k8s-extension`"
