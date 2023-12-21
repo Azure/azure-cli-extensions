@@ -7,6 +7,7 @@ import json
 import logging
 import os
 import time
+from typing import Union
 from azure.cli.core.azclierror import (
     ClientError,
     CLIInternalError,
@@ -15,7 +16,7 @@ from azure.cli.core.azclierror import (
 from ._util import (
     AzCli,
     SemanticVersion,
-    new_logger,
+    ColoredFormatter,
 )
 from ..pwinput import pwinput
 
@@ -73,21 +74,23 @@ class Onboard:
         self.vc_address = None
         self.vc_fqdn = None
         self.vc_port = None
+        logger = logging.getLogger(__name__)
         fh = logging.FileHandler(self.logfile)
         fh.setFormatter(
             logging.Formatter(
                 fmt='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                 datefmt='%Y-%m-%dT%H:%M:%S',
         ))
+        fh.setLevel(logging.DEBUG)
+        logger.addHandler(fh)
         sh = logging.StreamHandler()
         sh.setFormatter(
-            logging.Formatter(
-                fmt='%(asctime)s %(levelname)-8s %(message)s',
-                datefmt='%Y-%m-%dT%H:%M:%S',
-        ))
-        handlers = [fh, sh]
-        self.logger = new_logger(handlers=handlers)
-        self.az = AzCli(self.logfile).run
+            ColoredFormatter('%(asctime)s %(levelname)-8s %(message)s')
+        )
+        sh.setLevel(logging.INFO)
+        logger.addHandler(sh)
+        self.logger = logger
+        self.az = AzCli(self.logger, self.logfile).run
 
 
     def run(self):
@@ -129,7 +132,7 @@ class Onboard:
                 "  * For example, if your vCenter URL is https://vcenter.contoso.com/ then enter vcenter.contoso.com in 'FQDN or IP Address' field.\n"
                 "  * If your vCenter URL is http://10.11.12.13:9090 then enter 10.11.12.13:9090 in 'FQDN or IP Address' field.\n"
             )
-            creds = {
+            creds: dict[str, Union[str, None]] = {
                 'address': self.vc_address,
                 'username': self.vc_username,
                 'password': self.vc_password,
@@ -203,13 +206,13 @@ class Onboard:
                 # If no config files are found, it might indicate that the script hasn't been
                 # executed in the current directory to create the Azure resources before.
                 # We let 'az arcappliance run' command handle the force flag.
-                self.logger.info('Warning: None of the required config files are present.')
+                self.logger.error(f'Warning: None of the required config files are present. If this is the first attempt, please run the script without --force flag. Else, please check the working directory: {self.dir_path}')
             return self.force
 
         if self.force:
             # Handle missing config files occuring due to createconfig failure.
             missingMsg = '\n'.join(missingFiles)
-            self.logger.info('Ignoring --force flag as one or more of the required config files are missing.')
+            self.logger.warning('Ignoring --force flag as one or more of the required config files are missing.')
             msg = f'Missing configuration files:\n{missingMsg}\n'
             self.logger.info(msg)
         return False
@@ -245,6 +248,7 @@ class Onboard:
                 elif applStatus:
                     deleteAppl = confirmation_prompt(f'An existing Arc resource bridge is already present in Azure (status: {applStatus}). Do you want to delete it?')
                 if deleteAppl:
+                    assert applObj is not None
                     print('Deleting the existing Arc Appliance resource from azure...')
                     self.az(
                         'resource',
@@ -289,6 +293,7 @@ class Onboard:
         if not applStatus or applStatus == 'WaitingForHeartbeat':
             raise ClientError(f'Appliance VM creation failed. {SUPPORT_MSG}')
         
+        assert applObj is not None
         self._appliance_id = applObj['id']
         
         print('Waiting for the appliance to be ready...')
@@ -426,7 +431,7 @@ class Onboard:
 
 
     def _log_suceess(self):
-        print(
+        self.logger.info(
             'Your vCenter has been successfully onboarded to Azure Arc!\n'
             'To continue onboarding and to complete Arc enabling your vSphere resources, view your vCenter resource in Azure portal.\n'
             f'https://portal.azure.com/#resource{self._vcenter_id}/overview'
