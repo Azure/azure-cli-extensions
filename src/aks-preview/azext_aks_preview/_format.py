@@ -136,28 +136,6 @@ def aks_upgrades_table_format(result):
     return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
 
 
-def aks_versions_table_format(result):
-    """Format get-versions results as a summary for display with "-o table"."""
-
-    # get preview orchestrator version
-    preview = {}
-
-    def find_preview_versions():
-        for orchestrator in result.get('orchestrators', []):
-            if orchestrator.get('isPreview', False):
-                preview[orchestrator['orchestratorVersion']] = True
-    find_preview_versions()
-
-    parsed = compile_jmes("""orchestrators[].{
-        kubernetesVersion: orchestratorVersion | set_preview(@),
-        upgrades: upgrades[].orchestratorVersion || [`None available`] | sort_versions(@) | set_preview_array(@) | join(`, `, @)
-    }""")
-    # use ordered dicts so headers are predictable
-    results = parsed.search(result, Options(
-        dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
-    return sorted(results, key=lambda x: version_to_tuple(x.get('kubernetesVersion')), reverse=True)
-
-
 def version_to_tuple(version):
     """Removes preview suffix"""
     if version.endswith('(preview)'):
