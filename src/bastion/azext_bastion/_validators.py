@@ -16,7 +16,7 @@ def _validate_ip_address_format(namespace):
     if namespace.target_ip_address is not None:
         input_value = namespace.target_ip_address
         if ' ' in input_value:
-            raise InvalidArgumentValueError("Spaces not allowed: '{}' ".format(input_value))
+            raise InvalidArgumentValueError(f"Spaces not allowed: '{input_value}' ")
         try:
             ipaddress.ip_address(input_value)
         except ValueError as e:

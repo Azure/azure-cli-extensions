@@ -2897,6 +2897,7 @@ def _keyvault_update(
             raise InvalidArgumentValueError("Please provide a valid keyvault ID")
 
         if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
+            cmd.command_kwargs['operation_group'] = 'vaults'
             keyvault_params = parse_resource_id(keyvault_id)
             keyvault_subscription = keyvault_params['subscription']
             keyvault_name = keyvault_params['name']

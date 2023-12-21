@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.0b2
+++++++++
+* Examples updated to include new property user-principal-name for baremetalmachinekeyset and bmckeyset create and update commands.
+
 2.0.0b1
 ++++++++
 * This beta version supports NetworkCloud 2023-10-01-preview APIs.
