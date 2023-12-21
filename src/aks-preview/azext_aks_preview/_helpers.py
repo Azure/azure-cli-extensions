@@ -9,7 +9,7 @@ import re
 import stat
 import tempfile
 import yaml
-from typing import Any, List, TypeVar
+from typing import TypeVar
 from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
 from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError, FileOperationError
 from azure.core.exceptions import AzureError
@@ -19,9 +19,7 @@ from knack.util import CLIError
 
 from azext_aks_preview._client_factory import get_nodepool_snapshots_client, get_mc_snapshots_client
 
-from azure.cli.command_modules.acs._validators import (
-    extract_comma_separated_string,
-)
+from azure.cli.command_modules.acs._validators import extract_comma_separated_string
 
 logger = get_logger(__name__)
 
