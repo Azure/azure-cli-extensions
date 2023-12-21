@@ -32,7 +32,6 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
-    CONST_OS_SKU_UBUNTU,
 )
 from azext_aks_preview._params import node_os_skus_update
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
@@ -98,7 +97,9 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         elif vm_set_type.lower() == CONST_VIRTUAL_MACHINES.lower():
             vm_set_type = CONST_VIRTUAL_MACHINES
         else:
-            raise InvalidArgumentValueError("--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview)")
+            raise InvalidArgumentValueError(
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview)"
+            )
         # this parameter does not need validation
         return vm_set_type
 
