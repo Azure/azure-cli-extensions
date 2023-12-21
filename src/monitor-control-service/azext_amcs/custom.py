@@ -12,12 +12,10 @@
 # pylint: disable=protected-access, line-too-long
 
 from collections import defaultdict
-from azure.cli.core.aaz import has_value, AAZListArg, AAZStrArg, AAZIntArg, AAZBoolArg, register_command
+from azure.cli.core.aaz import has_value, AAZListArg, AAZStrArg, AAZIntArg, register_command
 from azure.cli.core.azclierror import ValidationError
-from azure.cli.core.commands.validators import (
-    get_default_location_from_resource_group,
-    validate_file_or_dict
-)
+from azure.cli.core.commands.validators import validate_file_or_dict
+
 from .aaz.latest.monitor.data_collection.rule import Create as _RuleCreate, Update as _RuleUpdate, Show as RuleShow
 
 try:
@@ -388,7 +386,14 @@ def data_collection_rules_data_flows_list(cmd, resource_group_name, data_collect
     return rule_instance["data_flows"]
 
 
+@register_command("monitor data-collection rule data-flow add")
 class RuleDataFlowsAdd(_RuleUpdate):
+    """Add a data flow.
+
+    :example: Add a data flow
+    az monitor data-collection rule data-flow add --rule-name "myCollectionRule"
+    --resource-group "myResourceGroup" --destinations XX3 XX4 --streams "Microsoft-Perf" "Microsoft-WindowsEvent"
+    """
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -437,7 +442,14 @@ def data_collection_rules_log_analytics_show(cmd, resource_group_name, data_coll
     return {}
 
 
+@register_command("monitor data-collection rule log-analytics add")
 class RuleDestinationsLogAnalyticsAdd(_RuleUpdate):
+    """Add Log Analytics destinations of a data collection rule.
+
+    :example: Add Log Analytics destinations of a data collection rule
+    az monitor data-collection rule log-analytics add --rule-name "myCollectionRule"
+    --resource-group "myResourceGroup" --name "workspace2" --resource-id "/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/workspace2"
+    """
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -469,7 +481,14 @@ class RuleDestinationsLogAnalyticsAdd(_RuleUpdate):
         instance.properties.destinations.log_analytics.append(log_analytic)
 
 
+@register_command("monitor data-collection rule log-analytics delete")
 class RuleDestinationsLogAnalyticsDelete(_RuleUpdate):
+    """Delete a Log Analytics destinations of a data collection rule.
+
+    :example: Delete a Log Analytics destinations of a data collection rule
+    az monitor data-collection rule log-analytics delete --rule-name "myCollectionRule"
+    --resource-group "myResourceGroup" --name "workspace2"
+    """
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -493,7 +512,15 @@ class RuleDestinationsLogAnalyticsDelete(_RuleUpdate):
         instance.properties.destinations.log_analytics = remain_list
 
 
+@register_command("monitor data-collection rule log-analytics update")
 class RuleDestinationsLogAnalyticsUpdate(_RuleUpdate):
+    """Update a Log Analytics destination of a data collection rule.
+
+    :example: Update a Log Analytics destination of a data collection rule
+    az monitor data-collection rule log-analytics update --rule-name "myCollectionRule"
+    --resource-group "myResourceGroup" --name "workspace2"
+    --resource-id "/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/anotherWorkspace"
+    """
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
