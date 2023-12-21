@@ -11,8 +11,7 @@ import re
 from ipaddress import ip_network
 from math import isclose, isnan
 
-import azure.cli.core.keys as keys
-from azure.mgmt.containerservice.models import KubernetesSupportPlan
+from azure.cli.core import keys
 from azext_aks_preview._consts import (
     ADDONS,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
@@ -208,7 +207,11 @@ def validate_sku_tier(namespace):
     if namespace.tier is not None:
         if namespace.tier == '':
             return
-        if namespace.tier.lower() not in (CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD, CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM):
+        if namespace.tier.lower() not in (
+            CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
+            CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+            CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
+        ):
             raise InvalidArgumentValueError("--tier can only be free, standard, or premium")
 
 
@@ -319,10 +322,14 @@ def _validate_subnet_id(subnet_id, name):
 def validate_load_balancer_backend_pool_type(namespace):
     """validate load balancer backend pool type"""
     if namespace.load_balancer_backend_pool_type is not None:
-        if namespace.load_balancer_backend_pool_type not in [CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
-                                                             CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION]:
+        if namespace.load_balancer_backend_pool_type not in [
+            CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+            CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+        ]:
             raise InvalidArgumentValueError(
-                f"Invalid Load Balancer Backend Pool Type {namespace.load_balancer_backend_pool_type}, supported values are nodeIP and nodeIPConfiguration")
+                f"Invalid Load Balancer Backend Pool Type {namespace.load_balancer_backend_pool_type}, "
+                "supported values are nodeIP and nodeIPConfiguration"
+            )
 
 
 def validate_nodepool_tags(ns):
@@ -621,8 +628,10 @@ def validate_crg_id(namespace):
 def validate_azure_keyvault_kms_key_id(namespace):
     key_id = namespace.azure_keyvault_kms_key_id
     if key_id:
-        err_msg = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
-                  'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
+        err_msg = (
+            "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
+        )
 
         https_prefix = "https://"
         if not key_id.startswith(https_prefix):
@@ -678,7 +687,9 @@ def validate_defender_disable_and_enable_parameters(namespace):
 
 def validate_force_upgrade_disable_and_enable_parameters(namespace):
     if namespace.disable_force_upgrade and namespace.enable_force_upgrade:
-        raise MutuallyExclusiveArgumentError('Providing both --disable-force-upgrade and --enable-force-upgrade flags is invalid')
+        raise MutuallyExclusiveArgumentError(
+            'Providing both --disable-force-upgrade and --enable-force-upgrade flags is invalid'
+        )
 
 
 def sanitize_resource_id(resource_id):
@@ -695,8 +706,18 @@ def validate_azuremonitorworkspaceresourceid(namespace):
     if resource_id is None:
         return
     resource_id = sanitize_resource_id(resource_id)
-    if (bool(re.match(r'/subscriptions/.*/resourcegroups/.*/providers/microsoft.monitor/accounts/.*', resource_id))) is False:
-        raise ArgumentUsageError("--azure-monitor-workspace-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.monitor/accounts/<resourceName>`")
+    if (
+        bool(
+            re.match(
+                r"/subscriptions/.*/resourcegroups/.*/providers/microsoft.monitor/accounts/.*",
+                resource_id,
+            )
+        )
+    ) is False:
+        raise ArgumentUsageError(
+            "--azure-monitor-workspace-resource-id not in the correct format. It should match "
+            "`/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.monitor/accounts/<resourceName>`"  # pylint: disable=line-too-long
+        )
 
 
 def validate_grafanaresourceid(namespace):
@@ -704,8 +725,18 @@ def validate_grafanaresourceid(namespace):
     if resource_id is None:
         return
     resource_id = sanitize_resource_id(resource_id)
-    if (bool(re.match(r'/subscriptions/.*/resourcegroups/.*/providers/microsoft.dashboard/grafana/.*', resource_id))) is False:
-        raise ArgumentUsageError("--grafana-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`")
+    if (
+        bool(
+            re.match(
+                r"/subscriptions/.*/resourcegroups/.*/providers/microsoft.dashboard/grafana/.*",
+                resource_id,
+            )
+        )
+    ) is False:
+        raise ArgumentUsageError(
+            "--grafana-resource-id not in the correct format. It should match "
+            "`/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`"  # pylint: disable=line-too-long
+        )
 
 
 def validate_allowed_host_ports(namespace):
@@ -722,7 +753,8 @@ def validate_allowed_host_ports(namespace):
         if found:
             continue
         raise InvalidArgumentValueError(
-            "--allowed-host-ports must be a comma-separated list of port ranges in the format of <port-range>/<protocol>"
+            "--allowed-host-ports must be a comma-separated list of port ranges "
+            "in the format of <port-range>/<protocol>"
         )
 
 
@@ -747,7 +779,9 @@ def validate_utc_offset(namespace):
     utc_offset_regex = re.compile(r'^[+-]\d{2}:\d{2}$')
     found = utc_offset_regex.findall(namespace.utc_offset)
     if not found:
-        raise InvalidArgumentValueError('--utc-offset must be in format: "+/-HH:mm". For example, "+05:30" and "-12:00".')
+        raise InvalidArgumentValueError(
+            '--utc-offset must be in format: "+/-HH:mm". For example, "+05:30" and "-12:00".'
+        )
 
 
 def validate_start_date(namespace):
