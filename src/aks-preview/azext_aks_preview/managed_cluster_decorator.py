@@ -4168,10 +4168,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc.ingress_profile = mc.ingress_profile or self.models.ManagedClusterIngressProfile()
         mc.ingress_profile.web_app_routing = mc.ingress_profile.web_app_routing or self.models.ManagedClusterIngressProfileWebAppRouting()
         if enable_app_routing is not None:
-                if mc.ingress_profile.web_app_routing.enabled == enable_app_routing:
-                    error_message = 'App Routing is already enabled.\n' if enable_app_routing else 'App Routing is already disabled.\n'
-                    raise CLIError(error_message)
-                mc.ingress_profile.web_app_routing.enabled = enable_app_routing
+            if mc.ingress_profile.web_app_routing.enabled == enable_app_routing:
+                error_message = 'App Routing is already enabled.\n' if enable_app_routing else 'App Routing is already disabled.\n'
+                raise CLIError(error_message)
+            mc.ingress_profile.web_app_routing.enabled = enable_app_routing
         # update ManagedCluster object with keyvault-secret-provider settings
         if enable_keyvault_secret_provider:
             mc.addon_profiles = mc.addon_profiles or {}

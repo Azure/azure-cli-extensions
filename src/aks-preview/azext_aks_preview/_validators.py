@@ -12,6 +12,14 @@ from ipaddress import ip_network
 from math import isclose, isnan
 
 from azure.cli.core import keys
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError,
+    RequiredArgumentMissingError,
+)
+from azure.cli.core.commands.validators import validate_tag
+from azure.cli.core.util import CLIError
 from azext_aks_preview._consts import (
     ADDONS,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
@@ -24,14 +32,6 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_MARINER,
 )
 from azext_aks_preview._helpers import _fuzzy_match
-from azure.cli.core.azclierror import (
-    ArgumentUsageError,
-    InvalidArgumentValueError,
-    MutuallyExclusiveArgumentError,
-    RequiredArgumentMissingError,
-)
-from azure.cli.core.commands.validators import validate_tag
-from azure.cli.core.util import CLIError
 from knack.log import get_logger
 
 logger = get_logger(__name__)

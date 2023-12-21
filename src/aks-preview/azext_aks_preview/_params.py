@@ -9,12 +9,6 @@ import os.path
 import platform
 
 from argcomplete.completers import FilesCompleter
-from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview._completers import (
-    get_k8s_upgrades_completion_list,
-    get_k8s_versions_completion_list,
-    get_vm_size_completion_list,
-)
 from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
@@ -29,6 +23,22 @@ from azure.cli.command_modules.acs._validators import (
     validate_load_balancer_outbound_ports,
     validate_nat_gateway_idle_timeout,
     validate_nat_gateway_managed_outbound_ip_count,
+)
+from azure.cli.core.commands.parameters import (
+    edge_zone_type,
+    file_type,
+    get_enum_type,
+    get_resource_name_completion_list,
+    get_three_state_flag,
+    name_type,
+    tags_type,
+    zones_type,
+)
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
+from azext_aks_preview._completers import (
+    get_k8s_upgrades_completion_list,
+    get_k8s_versions_completion_list,
+    get_vm_size_completion_list,
 )
 from azext_aks_preview._consts import (
     CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
@@ -55,10 +65,6 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_PLUGIN_KUBENET,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_NETWORK_PLUGIN_NONE,
-    CONST_NETWORK_POLICY_AZURE,
-    CONST_NETWORK_POLICY_CALICO,
-    CONST_NETWORK_POLICY_CILIUM,
-    CONST_NETWORK_POLICY_NONE,
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NODE_OS_CHANNEL_NODE_IMAGE,
     CONST_NODE_OS_CHANNEL_NONE,
@@ -167,16 +173,6 @@ from azext_aks_preview._validators import (
     validate_azure_service_mesh_revision,
     validate_artifact_streaming
 )
-from azure.cli.core.commands.parameters import (
-    edge_zone_type,
-    file_type,
-    get_enum_type,
-    get_resource_name_completion_list,
-    get_three_state_flag,
-    name_type,
-    tags_type,
-    zones_type,
-)
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
@@ -190,7 +186,6 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_SKU_STANDARDSSD_ZRS,
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_SSD,
-    CONST_STORAGE_POOL_DEFAULT_SIZE,
 )
 from knack.arguments import CLIArgumentType
 
