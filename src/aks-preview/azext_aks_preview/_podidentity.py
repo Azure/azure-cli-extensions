@@ -140,7 +140,7 @@ def _ensure_managed_identity_operator_permission(cmd, instance, scope):
             continue
 
         # already assigned
-        logger.debug('Managed Identity Opereator role has been assigned to {}'.format(i.scope))
+        logger.debug('Managed Identity Opereator role has been assigned to %s', i.scope)
         return
 
     if not add_role_assignment(cmd, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
