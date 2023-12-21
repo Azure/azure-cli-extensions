@@ -1,17 +1,31 @@
-target/*
-bin/*
-build/*
-.gradle/*
-.settings/*
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+
+### STS ###
+.apt_generated
 .classpath
-.project
 .factorypath
-.attach_pid*
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
 .idea
+*.iws
 *.iml
-/target
-.sts4-cache/
-.vscode
-_site/
-*.css
-!petclinic.css
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/

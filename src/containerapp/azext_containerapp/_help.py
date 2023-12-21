@@ -650,6 +650,14 @@ helps['containerapp github-action add'] = """
           --service-principal-tenant-id 00000000-0000-0000-0000-00000000
           --service-principal-client-secret ClientSecret
           --token MyAccessToken
+    - name: Add GitHub Actions, using Azure Container Registry and personal access token, configure image build via build environment variables.
+      text: az containerapp github-action add -g MyResourceGroup -n my-containerapp --repo-url https://github.com/userid/repo --branch main
+          --registry-url myregistryurl.azurecr.io
+          --service-principal-client-id 00000000-0000-0000-0000-00000000
+          --service-principal-tenant-id 00000000-0000-0000-0000-00000000
+          --service-principal-client-secret ClientSecret
+          --token MyAccessToken
+          --build-env-vars BP_JVM_VERSION=21 BP_MAVEN_VERSION=4
     - name: Add GitHub Actions, using Azure Container Registry and log in to GitHub flow to retrieve personal access token.
       text: az containerapp github-action add -g MyResourceGroup -n my-containerapp --repo-url https://github.com/userid/repo --branch main
           --registry-url myregistryurl.azurecr.io

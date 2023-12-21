@@ -47,6 +47,14 @@ class ContainerAppCreateTest(ScenarioTest):
        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
        create_and_verify_containerapp_create_and_update(self, resource_group=resource_group, image=image, source_path=source_path)
 
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_create_source_java_and_image_e2e(self, resource_group):
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_bullseye_buildpack_java"))
+        ingress = 'external'
+        target_port = '8080'
+        build_env_vars = 'BP_JVM_VERSION=21 BP_MAVEN_VERSION=4'
+        create_and_verify_containerapp_create_and_update(self, resource_group=resource_group, source_path=source_path, build_env_vars=build_env_vars, ingress=ingress, target_port=target_port)
+
     @live_only()
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_source_with_acr_task_e2e(self, resource_group):

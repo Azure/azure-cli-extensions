@@ -285,6 +285,7 @@ def create_and_verify_containerapp_create_and_update(
             env_name = None,
             source_path = None,
             artifact_path = None,
+            build_env_vars = None,
             image = None,
             ingress = None,
             target_port = None,
@@ -330,6 +331,8 @@ def create_and_verify_containerapp_create_and_update(
             create_cmd += f" --source \"{source_path}\""
         if artifact_path:
             create_cmd += f" --artifact \"{artifact_path}\""
+        if build_env_vars:
+            create_cmd += f" --build-env-vars {build_env_vars}"
         if image:
             create_cmd += f" --image {image}"
             image_name = registry_server + "/" + _reformat_image(image)
