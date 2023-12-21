@@ -559,3 +559,50 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
                 self.check("@[0].webTestName", "{name}")
             ]
         )
+
+    @ResourceGroupPreparer(name_prefix="cli_test_appinsights_component_favorite_")
+    def test_appinsights_component_favorite(self, resource_group):
+        self.kwargs.update({
+            'app_name': self.create_random_name('app', 10),
+            'favorite_name': self.create_random_name('favorite', 15)
+        })
+        self.cmd('monitor app-insights component create --app {app_name} --kind web -g {rg} --application-type web --retention-time 120 -l eastus')
+        self.cmd('monitor app-insights component favorite create -g {rg} -n {favorite_name} --resource-name {app_name} --config myconfig --version ME --favorite-id {favorite_name} --favorite-type shared' , checks=[
+            self.check('Config', 'myconfig'),
+            self.check('FavoriteId', '{favorite_name}'),
+            self.check('FavoriteType', 'shared'),
+            self.check('Name', '{favorite_name}'),
+            self.check('Version', 'ME')
+        ])
+        self.cmd('monitor app-insights component favorite update -g {rg} -n {favorite_name} --resource-name {app_name} --config myconfig --version ME --favorite-id {favorite_name} --favorite-type shared --tags [tag,test]', checks=[
+            self.check('Config', 'myconfig'),
+            self.check('FavoriteId', '{favorite_name}'),
+            self.check('FavoriteType', 'shared'),
+            self.check('Name', '{favorite_name}'),
+            self.check('Version', 'ME'),
+            self.check('Tags', ['tag','test'])
+        ])
+        self.cmd('monitor app-insights component favorite show -g {rg} -n {favorite_name} --resource-name {app_name}', checks=[
+            self.check('Config', 'myconfig'),
+            self.check('FavoriteId', '{favorite_name}'),
+            self.check('FavoriteType', 'shared'),
+            self.check('Name', '{favorite_name}'),
+            self.check('Version', 'ME'),
+            self.check('Tags', ['tag', 'test'])
+        ])
+        self.cmd('monitor app-insights component favorite list -g {rg} --resource-name {app_name} --favorite-type shared --tags [tag]', checks=[
+             self.check('[0].Config', 'myconfig'),
+             self.check('[0].FavoriteId', '{favorite_name}'),
+             self.check('[0].FavoriteType', 'shared'),
+             self.check('[0].Name', '{favorite_name}'),
+             self.check('[0].Version', 'ME'),
+             self.check('[0].Tags', ['tag', 'test'])
+         ])
+        self.cmd('monitor app-insights component favorite delete -g {rg} -n {favorite_name} --resource-name {app_name} -y')
+
+    @ResourceGroupPreparer(name_prefix="cli_test_appinsights_my_workbook")
+    def test_appinsights_my_workbook(self, resource_group):
+        from azure.core.exceptions import ResourceNotFoundError
+        message = "Resource type 'myWorkbooks' of provider namespace 'Microsoft.Insights' was not found in global location for api version '2021-03-08'."
+        with self.assertRaisesRegex(ResourceNotFoundError, message):
+            self.cmd('monitor app-insights my-workbook list -g {rg} --category performance')
