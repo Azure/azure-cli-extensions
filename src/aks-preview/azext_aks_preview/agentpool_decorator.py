@@ -33,7 +33,6 @@ from azext_aks_preview._consts import (
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
 )
-from azext_aks_preview._params import node_os_skus_update
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
 
 logger = get_logger(__name__)
