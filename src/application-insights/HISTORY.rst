@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.1.0
+++++++++++++++++++
+* `az monitor app-insights component`: Add new commands group `favorite` to support managing favorite.
+* `az monitor app-insights component`: Add new commands group `quotastatus` to support managing quotastatus.
+* `az monitor app-insights`: Add new commands group `my-workbook` to support managing my-workbook.
+* `az monitor app-insights`: Add new commands group `workbook revision` to support managing workbook revision.
+
 1.0.0
 ++++++++++++++++++
 * Migrate manual code to automatic code by aaz tool.
