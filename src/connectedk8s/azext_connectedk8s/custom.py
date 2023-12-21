@@ -871,12 +871,6 @@ def get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name):
     return client.get(resource_group_name, cluster_name)
 
 
-def get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name):
-    # Override preview client to show private link properties and cluster kind to customers
-    client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
-    return client.get(resource_group_name, cluster_name)
-
-
 def list_connectedk8s(cmd, client, resource_group_name=None):
     # Override preview client to show private link properties and cluster kind to customers
     client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)

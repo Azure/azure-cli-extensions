@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6.2
+++++++
+* Additional bugfixes.
+
 1.6.1
 ++++++
 * Added support for reading ARM metadata 2023-11-01.
