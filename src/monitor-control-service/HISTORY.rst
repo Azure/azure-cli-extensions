@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0
+++++++
+* Enable all of the facilities of `data-collection` in stable version `2022-06-01`
+
 0.4.1
 ++++++
 * `az monitor data-collection rule association create/update`: Add parameter --endpoint-id.

@@ -41,14 +41,6 @@ class MonitorClientCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        try:
-            from azext_amcs.manual._params import load_arguments as load_arguments_manual
-            load_arguments_manual(self, command)
-        except ImportError as e:
-            if e.name.endswith('manual._params'):
-                pass
-            else:
-                raise e
         from azext_amcs._params import load_arguments
         load_arguments(self, command)
 

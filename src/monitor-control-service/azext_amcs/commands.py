@@ -12,26 +12,8 @@
 # pylint: disable=bad-continuation
 # pylint: disable=line-too-long
 
-from azure.cli.core.commands import CliCommandType
-
 
 def load_command_table(self, _):
-
-    from azext_amcs.generated._client_factory import cf_data_collection_rule_association, cf_data_collection_rule, \
-        cf_data_collection_endpoint
-    monitor_control_service_data_collection_rule_association = CliCommandType(
-        operations_tmpl='azext_amcs.vendored_sdks.amcs.operations._data_collection_rule_associations_operations#DataCol'
-                        'lectionRuleAssociationsOperations.{}',
-        client_factory=cf_data_collection_rule_association)
-    monitor_control_service_data_collection_rule = CliCommandType(
-        operations_tmpl='azext_amcs.vendored_sdks.amcs.operations._data_collection_rules_operations#DataCollectionRules'
-                        'Operations.{}',
-        client_factory=cf_data_collection_rule)
-    monitor_control_service_data_collection_endpoint = CliCommandType(
-        operations_tmpl='azext_amcs.vendored_sdks.amcs.operations._data_collection_endpoints_operations#DataCollectionE'
-                        'ndpointsOperations.{}',
-        client_factory=cf_data_collection_endpoint,
-    )
 
     with self.command_group('monitor data-collection rule association') as g:
         g.custom_command('list', 'monitor_data_collection_rule_association_list')
@@ -45,18 +27,13 @@ def load_command_table(self, _):
     #     g.custom_command('create', 'data_collection_endpoint_create')
     #     g.custom_command('update', 'data_collection_endpoint_update')
 
-    with self.command_group('monitor data-collection rule association',
-                            monitor_control_service_data_collection_rule_association,
-                            client_factory=cf_data_collection_rule_association) as g:
-        g.custom_command('create', 'data_collection_rule_associations_create')
-        g.custom_command('update', 'data_collection_rule_associations_update')
+    # with self.command_group('monitor data-collection rule association',
+    #                         monitor_control_service_data_collection_rule_association,
+    #                         client_factory=cf_data_collection_rule_association) as g:
+    #     g.custom_command('create', 'data_collection_rule_associations_create')
+    #     g.custom_command('update', 'data_collection_rule_associations_update')
 
     with self.command_group('monitor data-collection rule') as g:
-        g.custom_command('create', 'data_collection_rules_create')
-        g.custom_command('update', 'data_collection_rules_update')
-
-    with self.command_group('monitor data-collection rule', monitor_control_service_data_collection_rule,
-                            client_factory=cf_data_collection_rule) as g:
         # g.custom_command('list', 'data_collection_rules_list')
         # g.custom_command('create', 'data_collection_rules_create')
         # g.custom_command('update', 'data_collection_rules_update')
@@ -64,64 +41,52 @@ def load_command_table(self, _):
         self.command_table['monitor data-collection rule create'] = RuleCreate(loader=self)
         self.command_table['monitor data-collection rule update'] = RuleUpdate(loader=self)
 
-    with self.command_group('monitor data-collection rule data-flow', monitor_control_service_data_collection_rule,
-                            client_factory=cf_data_collection_rule) as g:
-        g.custom_show_command(
-            'list', 'data_collection_rules_data_flows_list')
-        g.custom_command(
-            'add', 'data_collection_rules_data_flows_add')
+    with self.command_group('monitor data-collection rule data-flow') as g:
+        g.custom_show_command('list', 'data_collection_rules_data_flows_list')
+        # g.custom_command('add', 'data_collection_rules_data_flows_add')
+        from .custom import RuleDataFlowsAdd
+        self.command_table['monitor data-collection rule data-flow add'] = RuleDataFlowsAdd(loader=self)
 
-    with self.command_group('monitor data-collection rule log-analytics', monitor_control_service_data_collection_rule,
-                            client_factory=cf_data_collection_rule) as g:
-        g.custom_show_command(
-            'list', 'data_collection_rules_log_analytics_list')
-        g.custom_show_command(
-            'show', 'data_collection_rules_log_analytics_show')
-        g.custom_command(
-            'add', 'data_collection_rules_log_analytics_add')
-        g.custom_command(
-            'delete', 'data_collection_rules_log_analytics_delete')
-        g.custom_command(
-            'update', 'data_collection_rules_log_analytics_update')
+    with self.command_group('monitor data-collection rule log-analytics') as g:
+        g.custom_show_command('list', 'data_collection_rules_log_analytics_list')
+        g.custom_show_command('show', 'data_collection_rules_log_analytics_show')
+        # g.custom_command('add', 'data_collection_rules_log_analytics_add')
+        # g.custom_command('delete', 'data_collection_rules_log_analytics_delete')
+        # g.custom_command('update', 'data_collection_rules_log_analytics_update')
+        from .custom import RuleDestinationsLogAnalyticsAdd, RuleDestinationsLogAnalyticsDelete, RuleDestinationsLogAnalyticsUpdate
+        self.command_table['monitor data-collection rule log-analytics add'] = RuleDestinationsLogAnalyticsAdd(loader=self)
+        self.command_table['monitor data-collection rule log-analytics delete'] = RuleDestinationsLogAnalyticsDelete(loader=self)
+        self.command_table['monitor data-collection rule log-analytics update'] = RuleDestinationsLogAnalyticsUpdate(loader=self)
 
-    with self.command_group('monitor data-collection rule performance-counter',
-                            monitor_control_service_data_collection_rule,
-                            client_factory=cf_data_collection_rule) as g:
-        g.custom_show_command(
-            'list', 'data_collection_rules_performance_counters_list')
-        g.custom_show_command(
-            'show', 'data_collection_rules_performance_counters_show')
-        g.custom_command(
-            'add', 'data_collection_rules_performance_counters_add')
-        g.custom_command(
-            'delete', 'data_collection_rules_performance_counters_delete')
-        g.custom_command(
-            'update', 'data_collection_rules_performance_counters_update')
+    with self.command_group('monitor data-collection rule performance-counter') as g:
+        g.custom_show_command('list', 'data_collection_rules_performance_counters_list')
+        g.custom_show_command('show', 'data_collection_rules_performance_counters_show')
+        # g.custom_command('add', 'data_collection_rules_performance_counters_add')
+        # g.custom_command('delete', 'data_collection_rules_performance_counters_delete')
+        # g.custom_command('update', 'data_collection_rules_performance_counters_update')
+        from .custom import RuleDataSourcesPerformanceCountersAdd, RuleDataSourcesPerformanceCountersDelete, RuleDataSourcesPerformanceCountersUpdate
+        self.command_table['monitor data-collection rule performance-counter add'] = RuleDataSourcesPerformanceCountersAdd(loader=self)
+        self.command_table['monitor data-collection rule performance-counter delete'] = RuleDataSourcesPerformanceCountersDelete(loader=self)
+        self.command_table['monitor data-collection rule performance-counter update'] = RuleDataSourcesPerformanceCountersUpdate(loader=self)
 
-    with self.command_group('monitor data-collection rule windows-event-log',
-                            monitor_control_service_data_collection_rule,
-                            client_factory=cf_data_collection_rule) as g:
-        g.custom_show_command(
-            'list', 'data_collection_rules_windows_event_logs_list')
-        g.custom_show_command(
-            'show', 'data_collection_rules_windows_event_logs_show')
-        g.custom_command(
-            'add', 'data_collection_rules_windows_event_logs_add')
-        g.custom_command(
-            'delete', 'data_collection_rules_windows_event_logs_delete')
-        g.custom_command(
-            'update', 'data_collection_rules_windows_event_logs_update')
+    with self.command_group('monitor data-collection rule windows-event-log') as g:
+        g.custom_show_command('list', 'data_collection_rules_windows_event_logs_list')
+        g.custom_show_command('show', 'data_collection_rules_windows_event_logs_show')
+        # g.custom_command('add', 'data_collection_rules_windows_event_logs_add')
+        # g.custom_command('delete', 'data_collection_rules_windows_event_logs_delete')
+        # g.custom_command('update', 'data_collection_rules_windows_event_logs_update')
+        from .custom import RuleDataSourcesWindowsEventLogsAdd, RuleDataSourcesWindowsEventLogsDelete, RuleDataSourcesWindowsEventLogsUpdate
+        self.command_table['monitor data-collection rule windows-event-log add'] = RuleDataSourcesWindowsEventLogsAdd(loader=self)
+        self.command_table['monitor data-collection rule windows-event-log delete'] = RuleDataSourcesWindowsEventLogsDelete(loader=self)
+        self.command_table['monitor data-collection rule windows-event-log update'] = RuleDataSourcesWindowsEventLogsUpdate(loader=self)
 
-    with self.command_group('monitor data-collection rule syslog', monitor_control_service_data_collection_rule,
-                            client_factory=cf_data_collection_rule) as g:
-        g.custom_show_command(
-            'list', 'data_collection_rules_syslog_list')
-        g.custom_show_command(
-            'show', 'data_collection_rules_syslog_show')
-        g.custom_command(
-            'add', 'data_collection_rules_syslog_add')
-        g.custom_command(
-            'delete', 'data_collection_rules_syslog_delete')
-        g.custom_command(
-            'update', 'data_collection_rules_syslog_update')
-
+    with self.command_group('monitor data-collection rule syslog') as g:
+        g.custom_show_command('list', 'data_collection_rules_syslog_list')
+        g.custom_show_command('show', 'data_collection_rules_syslog_show')
+        # g.custom_command('add', 'data_collection_rules_syslog_add')
+        # g.custom_command('delete', 'data_collection_rules_syslog_delete')
+        # g.custom_command('update', 'data_collection_rules_syslog_update')
+        from .custom import RuleDataSourcesSyslogAdd, RuleDataSourcesSyslogDelete, RuleDataSourcesSyslogUpdate
+        self.command_table['monitor data-collection rule syslog add'] = RuleDataSourcesSyslogAdd(loader=self)
+        self.command_table['monitor data-collection rule syslog delete'] = RuleDataSourcesSyslogDelete(loader=self)
+        self.command_table['monitor data-collection rule syslog update'] = RuleDataSourcesSyslogUpdate(loader=self)
