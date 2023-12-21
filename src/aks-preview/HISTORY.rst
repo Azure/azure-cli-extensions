@@ -11,7 +11,23 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Remove --enable-artifact-streaming from `az aks nodepool update` command, as it is currently not supported in all regions.
+* [Breaking Change] Remove --enable-artifact-streaming from `az aks nodepool update` command, as it is currently not supported in all regions.
+
++++++++
+* Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`.
+* Fix for `az aks approuting update` command failing on granting keyvault permissions to managed identity.
+
+0.5.173
++++++++
+* Add warning when stopping a private link cluster.
+
+0.5.172
++++++++
+* Fix for regression issue with `az aks create --enable-addon` command for enabling App Routing
+* Vendor new SDK and bump API version to 2023-10-02-preview.
+* Update the enum for `--os-sku` in command `az aks nodepool update` to only accept the expected Ubuntu and AzureLinux OSSKUs.
+* Update description `az aks update` and remove description about outbound ip limit.
+>>>>>>> a44482d3c9c50b2e028e6e514555444ba0682f36
 
 0.5.171
 +++++++

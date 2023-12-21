@@ -80,8 +80,8 @@ def load_arguments(self, _):
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
         c.argument('features', features_types, options_list=['--features'], help='Space-separated list of features you want to enable.')
-        c.argument('azrbac_client_id', options_list=['--app-id'], arg_group='Azure RBAC', help='Application ID for enabling Azure RBAC. Specify when enabling azure-rbac.')
-        c.argument('azrbac_client_secret', options_list=['--app-secret'], arg_group='Azure RBAC', help='Application secret for enabling Azure RBAC. Specify when enabling azure-rbac.')
+        c.argument('azrbac_client_id', options_list=['--app-id'], arg_group='Azure RBAC', help='Application ID for enabling Azure RBAC.', deprecate_info=c.deprecate(hide=True))
+        c.argument('azrbac_client_secret', options_list=['--app-secret'], arg_group='Azure RBAC', help='Application secret for enabling Azure RBAC.', deprecate_info=c.deprecate(hide=True))
         c.argument('azrbac_skip_authz_check', options_list=['--skip-azure-rbac-list'], arg_group='Azure RBAC', help='Comma separated list of names of usernames/email/oid. Azure RBAC will be skipped for these users. Specify when enabling azure-rbac.')
         c.argument('cl_oid', options_list=['--custom-locations-oid'], help="OID of 'custom-locations' app")
 

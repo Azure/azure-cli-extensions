@@ -346,6 +346,16 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck("properties.template.containers[0].resources.memory", "1Gi")
         ])
 
+        self.cmd("az containerapp env workload-profile set -g {} -n {} --workload-profile-name my-d8-set --workload-profile-type D8 --min-nodes 2 --max-nodes 3".format(
+                resource_group, env), expect_failure=False)
+        self.cmd("az containerapp env workload-profile show -g {} -n {} --workload-profile-name my-d8-set ".format(
+            resource_group, env), checks=[
+            JMESPathCheck("properties.name", "my-d8-set"),
+            JMESPathCheck("properties.maximumCount", 3),
+            JMESPathCheck("properties.minimumCount", 2),
+            JMESPathCheck("properties.workloadProfileType", "D8"),
+        ])
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_env_enable_workload_profiles_infer_env_type(self, resource_group):

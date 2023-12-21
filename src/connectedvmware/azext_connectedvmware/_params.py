@@ -173,8 +173,8 @@ def load_arguments(self, _):
             action=VmDiskAddAction,
             nargs='+',
             help="Disk overrides for the vm. "
-            "Usage: --disk name=<> disk_size=<> disk_mode=<> controller_key=<> "
-            "device-key=<> unit_number=<>.",
+            "Usage: --disk name=<> disk-size=<> disk-mode=<> controller-key=<> "
+            "device-key=<> unit-number=<>.",
         )
 
     with self.argument_context('connectedvmware vm update') as c:
