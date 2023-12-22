@@ -65,7 +65,7 @@ from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from ._client_factory import handle_raw_exception
 from ._clients import (
-    GitHubActionClient,
+    GitHubActionPreviewClient,
     ContainerAppPreviewClient,
     AuthPreviewClient,
     SubscriptionPreviewClient,
@@ -871,7 +871,7 @@ def create_or_update_github_action(cmd,
     source_control_info = None
 
     try:
-        source_control_info = GitHubActionClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        source_control_info = GitHubActionPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
 
     except Exception as ex:
         if not service_principal_client_id or not service_principal_client_secret or not service_principal_tenant_id:
@@ -880,7 +880,7 @@ def create_or_update_github_action(cmd,
 
     # Need to trigger the workflow manually if it already exists (performing an update)
     try:
-        workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+        workflow_name = GitHubActionPreviewClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
         if workflow_name is not None:
             if trigger_existing_workflow:
                 trigger_workflow(token, repo, workflow_name, branch)
@@ -923,7 +923,7 @@ def create_or_update_github_action(cmd,
     github_action_configuration["registryInfo"] = registry_info
     github_action_configuration["azureCredentials"] = azure_credentials
     github_action_configuration["contextPath"] = context_path
-    github_action_configuration["buildEnvironmentVariables"] = build_env_vars
+    github_action_configuration["buildEnvironmentVariables"] = parse_build_env_vars(build_env_vars)
     github_action_configuration["image"] = image
 
     source_control_info["properties"]["githubActionConfiguration"] = github_action_configuration
@@ -932,7 +932,7 @@ def create_or_update_github_action(cmd,
 
     try:
         logger.warning("Creating Github action...")
-        r = GitHubActionClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
+        r = GitHubActionPreviewClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
         if not no_wait:
             WORKFLOW_POLL_RETRY = 6
             WORKFLOW_POLL_SLEEP = 10
@@ -940,7 +940,7 @@ def create_or_update_github_action(cmd,
             # Poll for the workflow file just created (may take up to 30s)
             for _ in range(0, WORKFLOW_POLL_RETRY):
                 time.sleep(WORKFLOW_POLL_SLEEP)
-                workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+                workflow_name = GitHubActionPreviewClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
                 if workflow_name is not None:
                     await_github_action(token, repo, workflow_name)
                     return r
@@ -1095,7 +1095,6 @@ def containerapp_up(cmd,
         _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
     used_default_container_registry = False
-    build_env_vars = parse_build_env_vars(build_env_vars)
     if source:
         used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=True, registry_server=registry_server)
     else:

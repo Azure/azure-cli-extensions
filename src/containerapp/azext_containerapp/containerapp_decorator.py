@@ -692,7 +692,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         # Get GitHub access token
         token = get_token(self.cmd, self.get_argument_repo(), self.get_argument_token())
         _create_github_action(app, env, self.get_argument_service_principal_client_id(), self.get_argument_service_principal_client_secret(),
-                              self.get_argument_service_principal_tenant_id(), self.get_argument_branch(), token, self.get_argument_repo(), self.get_argument_context_path(), parse_build_env_vars(self.get_argument_build_env_vars()))
+                              self.get_argument_service_principal_tenant_id(), self.get_argument_branch(), token, self.get_argument_repo(), self.get_argument_context_path(), self.get_argument_build_env_vars())
         cache_github_token(self.cmd, token, self.get_argument_repo())
         return self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
 
