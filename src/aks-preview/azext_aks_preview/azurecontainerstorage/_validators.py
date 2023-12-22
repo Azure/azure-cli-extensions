@@ -7,7 +7,6 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_OPTION_SSD,
     CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
     CONST_STORAGE_POOL_SKU_PREMIUM_ZRS,
-    CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
 )
@@ -142,9 +141,13 @@ def _validate_enable_azure_container_storage_params(
 
     if storage_pool_sku is not None:
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-            raise ArgumentUsageError('Cannot set --storage-pool-sku when --enable-azure-container-storage is ephemeralDisk.')
-        elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and \
-                storage_pool_sku not in elastic_san_supported_skus:
+            raise ArgumentUsageError(
+                'Cannot set --storage-pool-sku when --enable-azure-container-storage is ephemeralDisk.'
+            )
+        if (
+            storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and
+            storage_pool_sku not in elastic_san_supported_skus
+        ):
             supported_skus_str = ", ".join(elastic_san_supported_skus)
             raise ArgumentUsageError(
                 'Invalid --storage-pool-sku value. '
@@ -155,7 +158,9 @@ def _validate_enable_azure_container_storage_params(
 
     if storage_pool_type != CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
        storage_pool_option is not None:
-        raise ArgumentUsageError('Cannot set --storage-pool-option when --enable-azure-container-storage is not ephemeralDisk.')
+        raise ArgumentUsageError(
+            'Cannot set --storage-pool-option when --enable-azure-container-storage is not ephemeralDisk.'
+        )
 
     if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
        storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
@@ -171,25 +176,23 @@ def _validate_enable_azure_container_storage_params(
                 'Value for --storage-pool-size should be defined '
                 'with size followed by Gi or Ti e.g. 512Gi or 2Ti.'
             )
+        if storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
+            pool_size_qty = float(storage_pool_size[:-2])
+            pool_size_unit = storage_pool_size[-2:]
 
-        else:
-            if storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
-                pool_size_qty = float(storage_pool_size[:-2])
-                pool_size_unit = storage_pool_size[-2:]
+            if (
+                (pool_size_unit == "Gi" and pool_size_qty < 1024) or
+                (pool_size_unit == "Ti" and pool_size_qty < 1)
+            ):
+                raise ArgumentUsageError(
+                    'Value for --storage-pool-size must be at least 1Ti when '
+                    '--enable-azure-container-storage is elasticSan.')
 
-                if (
-                    (pool_size_unit == "Gi" and pool_size_qty < 1024) or
-                    (pool_size_unit == "Ti" and pool_size_qty < 1)
-                ):
-                    raise ArgumentUsageError(
-                        'Value for --storage-pool-size must be at least 1Ti when '
-                        '--enable-azure-container-storage is elasticSan.')
-
-            elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-                logger.warning(
-                    'Storage pools using Ephemeral disk use all capacity available on the local device. '
-                    ' --storage-pool-size will be ignored.'
-                )
+        elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
+            logger.warning(
+                'Storage pools using Ephemeral disk use all capacity available on the local device. '
+                ' --storage-pool-size will be ignored.'
+            )
 
 
 def _validate_nodepool_names(nodepool_names, agentpool_details):
@@ -217,12 +220,11 @@ def _validate_nodepool_names(nodepool_names, agentpool_details):
                     '\nAborting installation of Azure Container Storage.'
                     .format(nodepool, ', '.join(agentpool_details))
                 )
-            else:
-                raise InvalidArgumentValueError(
-                    'Nodepool: {0} not found. '
-                    'Please provide a comma separated string of existing nodepool names '
-                    'in --azure-container-storage-nodepools.'
-                    '\nNodepool available in the cluster is: {1}.'
-                    '\nAborting installation of Azure Container Storage.'
-                    .format(nodepool, agentpool_details[0])
-                )
+            raise InvalidArgumentValueError(
+                'Nodepool: {0} not found. '
+                'Please provide a comma separated string of existing nodepool names '
+                'in --azure-container-storage-nodepools.'
+                '\nNodepool available in the cluster is: {1}.'
+                '\nAborting installation of Azure Container Storage.'
+                .format(nodepool, agentpool_details[0])
+            )
