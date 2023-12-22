@@ -12,21 +12,26 @@ External Network tests scenarios
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
+
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
     pass
+
 
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
 
+
 def setup_scenario2(test):
     ''' Env setup_scenario1 '''
     pass
 
+
 def cleanup_scenario2(test):
     '''Env cleanup_scenario1 '''
     pass
+
 
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
@@ -36,6 +41,7 @@ def call_scenario1(test):
     common_methods(test)
     cleanup_scenario1(test)
 
+
 def call_scenario2(test):
     ''' # Testcase: scenario2'''
     setup_scenario2(test)
@@ -44,22 +50,28 @@ def call_scenario2(test):
     common_methods(test)
     cleanup_scenario2(test)
 
+
 def common_methods(test):
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
 
+
 def step_create_s1(test, checks=None):
     '''externalnetwork create operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric externalnetwork create --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s1_peering_option} --option-b-properties {optionBProperties} --import-route-policy {importRoutePolicy} --export-route-policy {exportRoutePolicy}', checks=checks)
+    test.cmd(
+        'az networkfabric externalnetwork create --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s1_peering_option} --option-b-properties {optionBProperties} --import-route-policy {importRoutePolicy} --export-route-policy {exportRoutePolicy}', checks=checks)
+
 
 def step_create_s2(test, checks=None):
     '''externalnetwork create operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric externalnetwork create --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {optionAProperties} --import-route-policy {importRoutePolicy} --export-route-policy {exportRoutePolicy}', checks=checks)
+    test.cmd(
+        'az networkfabric externalnetwork create --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {optionAProperties} --import-route-policy {importRoutePolicy} --export-route-policy {exportRoutePolicy}', checks=checks)
+
 
 def step_show(test, checks=None):
     '''externalnetwork show operation'''
@@ -68,23 +80,30 @@ def step_show(test, checks=None):
     test.cmd(
         'az networkfabric externalnetwork show --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
 
+
 def step_update_s1(test, checks=None):
     '''externalnetwork update operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s1_peering_option} --option-b-properties {updatedOptionBProperties}', checks=checks)
+    test.cmd(
+        'az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s1_peering_option} --option-b-properties {updatedOptionBProperties}', checks=checks)
+
 
 def step_update_s2(test, checks=None):
     '''externalnetwork update operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {updatedOptionAProperties}', checks=checks)
+    test.cmd(
+        'az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {updatedOptionAProperties}', checks=checks)
+
 
 def step_list_resource_group(test, checks=None):
     '''externalnetwork list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric externalnetwork list --resource-group {rg} --l3domain {l3domain}')
+    test.cmd(
+        'az networkfabric externalnetwork list --resource-group {rg} --l3domain {l3domain}')
+
 
 def step_delete(test, checks=None):
     '''externalnetwork delete operation'''
@@ -92,6 +111,7 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric externalnetwork delete --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
+
 
 class GA_ExternalNetworkScenarioTest1(ScenarioTest):
     ''' External Network Scenario test'''
@@ -110,7 +130,7 @@ class GA_ExternalNetworkScenarioTest1(ScenarioTest):
             'updatedOptionBProperties': CONFIG.get('EXTERNAL_NETWORK', 'updated_option_b_properties'),
             'optionAProperties': CONFIG.get('EXTERNAL_NETWORK', 'option_a_properties'),
             'updatedOptionAProperties': CONFIG.get('EXTERNAL_NETWORK', 'updated_option_a_properties')
-            
+
         })
 
     def test_GA_externalnetwork_scenario1(self):
