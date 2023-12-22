@@ -7347,58 +7347,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
-    # the availability of features is controlled by a toggle and cannot be fully tested yet,
-    # however, existing test results show that the client side works as expected, so exclude it at this moment
-    @live_only()
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
-    def test_aks_nodepool_update_with_artifact_streaming(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name('cliakstest', 16)
-        nodepool_name = self.create_random_name('n', 6)
-
-        self.kwargs.update({
-            'resource_group': resource_group,
-            'name': aks_name,
-            'location': resource_group_location,
-            'ssh_key_value': self.generate_ssh_keys(),
-            'node_pool_name': nodepool_name,
-            'node_vm_size': 'standard_d2s_v3',
-        })
-
-        self.cmd(
-            'aks create '
-            '--resource-group={resource_group} '
-            '--name={name} '
-            '--location={location} '
-            '--ssh-key-value={ssh_key_value} '
-            '--nodepool-name={node_pool_name} '
-            '--node-count=1 '
-            '--node-vm-size={node_vm_size} '
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ArtifactStreamingPreview',
-            checks=[
-                self.check('provisioningState', 'Succeeded'),
-            ],
-        )
-
-        self.cmd(
-            'aks nodepool update '
-            '--resource-group={resource_group} '
-            '--cluster-name={name} '
-            '--name={node_pool_name} '
-            '--enable-artifact-streaming '
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ArtifactStreamingPreview',
-            checks=[
-                self.check('provisioningState', 'Succeeded'),
-                self.check('agentPoolProfiles[1].ArtifactStreamingProfile.enabled', True),
-            ],
-        )
-
-        # delete
-        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
-        self.cmd(cmd, checks=[
-            self.is_empty(),
-        ])
-
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_ssh_public_key(self, resource_group, resource_group_location):

@@ -1191,7 +1191,6 @@ def aks_agentpool_update(
     disable_custom_ca_trust=False,
     allowed_host_ports=None,
     asg_ids=None,
-    enable_artifact_streaming=False,
     os_sku=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary

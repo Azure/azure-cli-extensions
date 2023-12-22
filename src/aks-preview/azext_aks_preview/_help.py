@@ -1802,9 +1802,6 @@ helps['aks nodepool update'] = """
         - name: --asg-ids
           type: string
           short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs. Must use VMSS agent pool type.
-        - name: --enable-artifact-streaming
-          type: bool
-          short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool.

@@ -11,6 +11,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* [Breaking Change] Remove --enable-artifact-streaming from `az aks nodepool update` command, as it is currently not supported in all regions.
+
++++++++
 * Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`.
 * Fix for `az aks approuting update` command failing on granting keyvault permissions to managed identity.
 
