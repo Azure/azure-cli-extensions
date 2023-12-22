@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import json
+from azext_aks_preview.azuremonitormetrics.constants import DC_API
 from azext_aks_preview.azuremonitormetrics.dc.defaults import get_default_dcra_name
 from knack.util import CLIError
 
@@ -35,7 +36,7 @@ def create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_grou
     armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
     association_url = (
         f"{armendpoint}{cluster_resource_id}/providers/Microsoft.Insights/"
-        "dataCollectionRuleAssociations/{dcra_name}?api-version={DC_API}"
+        f"dataCollectionRuleAssociations/{dcra_name}?api-version={DC_API}"
     )
     try:
         headers = ['User-Agent=azuremonitormetrics.create_dcra']

@@ -3470,7 +3470,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        network_plugin = self.context.get_network_plugin()
+        # TODO: replace protected access with public access
+        network_plugin = self.context._get_network_plugin()  # pylint: disable=protected-access
         if network_plugin:
             mc.network_profile.network_plugin = network_plugin
 
