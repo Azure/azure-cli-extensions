@@ -731,6 +731,7 @@ def load_arguments(self, _):
         c.argument('enable_artifact_streaming', action='store_true', validator=validate_artifact_streaming, is_preview=True)
         c.argument('node_public_ip_tags', arg_type=tags_type, validator=validate_node_public_ip_tags,
                    help='space-separated tags: key[=value] [key[=value] ...].')
+        c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
 
     with self.argument_context('aks nodepool update') as c:
         c.argument('enable_cluster_autoscaler', options_list=[
