@@ -2,6 +2,10 @@
 Release History
 ===============
 
+0.5.10
+++++++
+Fix bug in win-run-driver.ps1 default values for invoking run command through az vm repair run.
+
 0.5.9
 ++++++
 Adding default values in win-run-driver.ps1 script for repo_fork and branch_name.
