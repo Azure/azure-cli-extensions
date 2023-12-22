@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network firewall policy rule-collection-group update",
+    "network firewall policy rule-collection-group collection update",
 )
 class Update(AAZCommand):
-    """Update an Azure firewall policy rule collection group.
+    """None
     """
 
     _aaz_info = {
         "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}/rulecollectiongroups/{}", "2022-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}/rulecollectiongroups/{}", "2022-11-01", "properties.ruleCollections[]"],
         ]
     }
 
@@ -31,6 +31,7 @@ class Update(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
+        self.SubresourceSelector(ctx=self.ctx, name="subresource")
         return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
@@ -48,59 +49,40 @@ class Update(AAZCommand):
             options=["--policy-name"],
             help="The name of the Firewall Policy.",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
+        _args_schema.rule_collection_group_name = AAZStrArg(
+            options=["--rcg-name", "--rule-collection-group-name"],
             help="The name of the Firewall Policy Rule Collection Group.",
             required=True,
-            id_part="child_name_1",
+        )
+        _args_schema.rule_collection_index = AAZIntArg(
+            options=["--rule-collection-index"],
+            required=True,
         )
 
-        # define Arg Group "Parameters"
-
-        # define Arg Group "Properties"
+        # define Arg Group "Parameters.properties.ruleCollections[]"
 
         _args_schema = cls._args_schema
-        _args_schema.priority = AAZIntArg(
-            options=["--priority"],
-            arg_group="Properties",
-            help="Priority of the Firewall Policy Rule Collection Group",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                maximum=65000,
-                minimum=100,
-            ),
+        _args_schema.firewall_policy_filter_rule_collection = AAZObjectArg(
+            options=["--firewall-policy-filter-rule-collection"],
+            arg_group="Parameters.properties.ruleCollections[]",
         )
-        _args_schema.rule_collections = AAZListArg(
-            options=["--rule-collections"],
-            arg_group="Properties",
-            help="Group of Firewall Policy rule collections.",
-            nullable=True,
+        _args_schema.firewall_policy_nat_rule_collection = AAZObjectArg(
+            options=["--firewall-policy-nat-rule-collection"],
+            arg_group="Parameters.properties.ruleCollections[]",
         )
-
-        rule_collections = cls._args_schema.rule_collections
-        rule_collections.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.rule_collections.Element
-        _element.firewall_policy_filter_rule_collection = AAZObjectArg(
-            options=["firewall-policy-filter-rule-collection"],
-        )
-        _element.firewall_policy_nat_rule_collection = AAZObjectArg(
-            options=["firewall-policy-nat-rule-collection"],
-        )
-        _element.collection_name = AAZStrArg(
-            options=["collection-name"],
+        _args_schema.collection_name = AAZStrArg(
+            options=["--collection-name"],
+            arg_group="Parameters.properties.ruleCollections[]",
             help="The name of the rule collection.",
             nullable=True,
         )
-        _element.priority = AAZIntArg(
-            options=["priority"],
+        _args_schema.priority = AAZIntArg(
+            options=["--priority"],
+            arg_group="Parameters.properties.ruleCollections[]",
             help="Priority of the Firewall Policy Rule Collection resource.",
             nullable=True,
             fmt=AAZIntArgFormat(
@@ -109,7 +91,7 @@ class Update(AAZCommand):
             ),
         )
 
-        firewall_policy_filter_rule_collection = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection
+        firewall_policy_filter_rule_collection = cls._args_schema.firewall_policy_filter_rule_collection
         firewall_policy_filter_rule_collection.action = AAZObjectArg(
             options=["action"],
             help="The action type of a Filter rule collection.",
@@ -121,7 +103,7 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        action = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.action
+        action = cls._args_schema.firewall_policy_filter_rule_collection.action
         action.type = AAZStrArg(
             options=["type"],
             help="The type of action.",
@@ -129,13 +111,13 @@ class Update(AAZCommand):
             enum={"Allow": "Allow", "Deny": "Deny"},
         )
 
-        rules = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules
+        rules = cls._args_schema.firewall_policy_filter_rule_collection.rules
         rules.Element = AAZObjectArg(
             nullable=True,
         )
         cls._build_args_firewall_policy_rule_update(rules.Element)
 
-        firewall_policy_nat_rule_collection = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection
+        firewall_policy_nat_rule_collection = cls._args_schema.firewall_policy_nat_rule_collection
         firewall_policy_nat_rule_collection.action = AAZObjectArg(
             options=["action"],
             help="The action type of a Nat rule collection.",
@@ -147,7 +129,7 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        action = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.action
+        action = cls._args_schema.firewall_policy_nat_rule_collection.action
         action.type = AAZStrArg(
             options=["type"],
             help="The type of action.",
@@ -155,7 +137,7 @@ class Update(AAZCommand):
             enum={"DNAT": "DNAT"},
         )
 
-        rules = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules
+        rules = cls._args_schema.firewall_policy_nat_rule_collection.rules
         rules.Element = AAZObjectArg(
             nullable=True,
         )
@@ -475,10 +457,10 @@ class Update(AAZCommand):
     def _execute_operations(self):
         self.pre_operations()
         self.FirewallPolicyRuleCollectionGroupsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
+        self.pre_instance_update(self.ctx.selectors.subresource.required())
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
+        self.post_instance_update(self.ctx.selectors.subresource.required())
         yield self.FirewallPolicyRuleCollectionGroupsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
@@ -499,8 +481,34 @@ class Update(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
         return result
+
+    class SubresourceSelector(AAZJsonSelector):
+
+        def _get(self):
+            result = self.ctx.vars.instance
+            result = result.properties.ruleCollections
+            filters = enumerate(result)
+            filters = filter(
+                lambda e: e[0] == self.ctx.args.rule_collection_index,
+                filters
+            )
+            idx = next(filters)[0]
+            return result[idx]
+
+        def _set(self, value):
+            result = self.ctx.vars.instance
+            result = result.properties.ruleCollections
+            filters = enumerate(result)
+            filters = filter(
+                lambda e: e[0] == self.ctx.args.rule_collection_index,
+                filters
+            )
+            idx = next(filters, [len(result)])[0]
+            self.ctx.args.rule_collection_index = idx
+            result[idx] = value
+            return
 
     class FirewallPolicyRuleCollectionGroupsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -540,7 +548,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "ruleCollectionGroupName", self.ctx.args.name,
+                    "ruleCollectionGroupName", self.ctx.args.rule_collection_group_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -643,7 +651,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "ruleCollectionGroupName", self.ctx.args.name,
+                    "ruleCollectionGroupName", self.ctx.args.rule_collection_group_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -707,7 +715,7 @@ class Update(AAZCommand):
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
         def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
+            self._update_instance(self.ctx.selectors.subresource.required())
 
         def _update_instance(self, instance):
             _instance_value, _builder = self.new_content_builder(
@@ -715,50 +723,36 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("name", AAZStrType, ".name")
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("name", AAZStrType, ".collection_name")
+            _builder.set_prop("priority", AAZIntType, ".priority")
+            _builder.set_const("ruleCollectionType", "FirewallPolicyFilterRuleCollection", AAZStrType, ".firewall_policy_filter_rule_collection", typ_kwargs={"flags": {"required": True}})
+            _builder.set_const("ruleCollectionType", "FirewallPolicyNatRuleCollection", AAZStrType, ".firewall_policy_nat_rule_collection", typ_kwargs={"flags": {"required": True}})
+            _builder.discriminate_by("ruleCollectionType", "FirewallPolicyFilterRuleCollection")
+            _builder.discriminate_by("ruleCollectionType", "FirewallPolicyNatRuleCollection")
 
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("priority", AAZIntType, ".priority")
-                properties.set_prop("ruleCollections", AAZListType, ".rule_collections")
-
-            rule_collections = _builder.get(".properties.ruleCollections")
-            if rule_collections is not None:
-                rule_collections.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.ruleCollections[]")
-            if _elements is not None:
-                _elements.set_prop("name", AAZStrType, ".collection_name")
-                _elements.set_prop("priority", AAZIntType, ".priority")
-                _elements.set_const("ruleCollectionType", "FirewallPolicyFilterRuleCollection", AAZStrType, ".firewall_policy_filter_rule_collection", typ_kwargs={"flags": {"required": True}})
-                _elements.set_const("ruleCollectionType", "FirewallPolicyNatRuleCollection", AAZStrType, ".firewall_policy_nat_rule_collection", typ_kwargs={"flags": {"required": True}})
-                _elements.discriminate_by("ruleCollectionType", "FirewallPolicyFilterRuleCollection")
-                _elements.discriminate_by("ruleCollectionType", "FirewallPolicyNatRuleCollection")
-
-            disc_firewall_policy_filter_rule_collection = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}")
+            disc_firewall_policy_filter_rule_collection = _builder.get("{ruleCollectionType:FirewallPolicyFilterRuleCollection}")
             if disc_firewall_policy_filter_rule_collection is not None:
                 disc_firewall_policy_filter_rule_collection.set_prop("action", AAZObjectType, ".firewall_policy_filter_rule_collection.action")
                 disc_firewall_policy_filter_rule_collection.set_prop("rules", AAZListType, ".firewall_policy_filter_rule_collection.rules")
 
-            action = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.action")
+            action = _builder.get("{ruleCollectionType:FirewallPolicyFilterRuleCollection}.action")
             if action is not None:
                 action.set_prop("type", AAZStrType, ".type")
 
-            rules = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules")
+            rules = _builder.get("{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules")
             if rules is not None:
                 _UpdateHelper._build_schema_firewall_policy_rule_update(rules.set_elements(AAZObjectType, "."))
 
-            disc_firewall_policy_nat_rule_collection = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}")
+            disc_firewall_policy_nat_rule_collection = _builder.get("{ruleCollectionType:FirewallPolicyNatRuleCollection}")
             if disc_firewall_policy_nat_rule_collection is not None:
                 disc_firewall_policy_nat_rule_collection.set_prop("action", AAZObjectType, ".firewall_policy_nat_rule_collection.action")
                 disc_firewall_policy_nat_rule_collection.set_prop("rules", AAZListType, ".firewall_policy_nat_rule_collection.rules")
 
-            action = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.action")
+            action = _builder.get("{ruleCollectionType:FirewallPolicyNatRuleCollection}.action")
             if action is not None:
                 action.set_prop("type", AAZStrType, ".type")
 
-            rules = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules")
+            rules = _builder.get("{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules")
             if rules is not None:
                 _UpdateHelper._build_schema_firewall_policy_rule_update(rules.set_elements(AAZObjectType, "."))
 
@@ -768,7 +762,7 @@ class Update(AAZCommand):
 
         def __call__(self, *args, **kwargs):
             self._update_instance_by_generic(
-                self.ctx.vars.instance,
+                self.ctx.selectors.subresource.required(),
                 self.ctx.generic_update_args
             )
 
