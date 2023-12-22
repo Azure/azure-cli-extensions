@@ -2711,7 +2711,7 @@ def aks_trustedaccess_role_binding_create(cmd, client, resource_group_name, clus
         pass
 
     if existedBinding:
-        raise Exception(
+        raise Exception(  # pylint: disable=broad-exception-raised
             "TrustedAccess RoleBinding " +
             role_binding_name +
             " already existed, please use 'az aks trustedaccess rolebinding update' command to update!"
@@ -2754,16 +2754,16 @@ def aks_mesh_enable(
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
     if (
-        key_vault_id is not None
-        and ca_cert_object_name is not None
-        and ca_key_object_name is not None
-        and root_cert_object_name is not None
-        and cert_chain_object_name is not None
+        key_vault_id is not None and
+        ca_cert_object_name is not None and
+        ca_key_object_name is not None and
+        root_cert_object_name is not None and
+        cert_chain_object_name is not None
     ):
         if (
-            not addon_profiles
-            or not addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME]
-            or not addon_profiles[
+            not addon_profiles or
+            not addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] or
+            not addon_profiles[
                 CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
             ].enabled
         ):
