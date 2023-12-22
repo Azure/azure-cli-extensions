@@ -7,10 +7,9 @@ from azext_aks_preview.azuremonitormetrics.constants import RULES_API
 
 def delete_rule(cmd, cluster_subscription, cluster_resource_group_name, default_rule_group_name):
     from azure.cli.core.util import send_raw_request
-    default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
-        cluster_subscription,
-        cluster_resource_group_name,
-        default_rule_group_name
+    default_rule_group_id = (
+        f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+        f"Microsoft.AlertsManagement/prometheusRuleGroups/{default_rule_group_name}"
     )
     headers = ['User-Agent=azuremonitormetrics.delete_rule.' + default_rule_group_name]
     url = "{0}{1}?api-version={2}".format(
