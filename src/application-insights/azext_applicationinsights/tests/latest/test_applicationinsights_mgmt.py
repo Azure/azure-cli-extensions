@@ -554,7 +554,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'favorite_name': self.create_random_name('favorite', 15)
         })
         self.cmd('monitor app-insights component create --app {app_name} --kind web -g {rg} --application-type web --retention-time 120 -l eastus')
-        self.cmd('monitor app-insights component favorite create -g {rg} -n {favorite_name} --resource-name {app_name} --config myconfig --version ME --favorite-id {favorite_name} --favorite-type shared' , checks=[
+        self.cmd('monitor app-insights component favorite create -g {rg} -n {favorite_name} --resource-name {app_name} --config myconfig --version ME --favorite-id {favorite_name} --favorite-type shared', checks=[
             self.check('Config', 'myconfig'),
             self.check('FavoriteId', '{favorite_name}'),
             self.check('FavoriteType', 'shared'),
@@ -567,7 +567,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check('FavoriteType', 'shared'),
             self.check('Name', '{favorite_name}'),
             self.check('Version', 'ME'),
-            self.check('Tags', ['tag','test'])
+            self.check('Tags', ['tag', 'test'])
         ])
         self.cmd('monitor app-insights component favorite show -g {rg} -n {favorite_name} --resource-name {app_name}', checks=[
             self.check('Config', 'myconfig'),
@@ -578,13 +578,13 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check('Tags', ['tag', 'test'])
         ])
         self.cmd('monitor app-insights component favorite list -g {rg} --resource-name {app_name} --favorite-type shared --tags [tag]', checks=[
-             self.check('[0].Config', 'myconfig'),
-             self.check('[0].FavoriteId', '{favorite_name}'),
-             self.check('[0].FavoriteType', 'shared'),
-             self.check('[0].Name', '{favorite_name}'),
-             self.check('[0].Version', 'ME'),
-             self.check('[0].Tags', ['tag', 'test'])
-         ])
+            self.check('[0].Config', 'myconfig'),
+            self.check('[0].FavoriteId', '{favorite_name}'),
+            self.check('[0].FavoriteType', 'shared'),
+            self.check('[0].Name', '{favorite_name}'),
+            self.check('[0].Version', 'ME'),
+            self.check('[0].Tags', ['tag', 'test'])
+        ])
         self.cmd('monitor app-insights component favorite delete -g {rg} -n {favorite_name} --resource-name {app_name} -y')
 
     @ResourceGroupPreparer(name_prefix="cli_test_appinsights_my_workbook")
