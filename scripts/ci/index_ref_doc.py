@@ -71,7 +71,7 @@ class TestIndexRefDocsMeta(type):
         return type.__new__(mcs, name, bases, _dict)
 
 
-class IndexRefDocs(with_metaclass(TestIndexRefDocsMeta, unittest.TestCase)):
+class IndexRefDocs(TestIndexRefDocsMeta, unittest.TestCase):
 
     def setUp(self):
         self.whl_dir = tempfile.mkdtemp()
