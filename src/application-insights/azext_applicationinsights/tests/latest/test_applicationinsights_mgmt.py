@@ -144,9 +144,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
                 self.check('provisioningState', 'Succeeded')
             ])
 
-        app_insights_instrumentation_key = \
-        self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()[
-            'instrumentationKey']
+        app_insights_instrumentation_key = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()['instrumentationKey']
 
         # Create web app.
         webapp_name = self.create_random_name('clitestwebapp', 24)
