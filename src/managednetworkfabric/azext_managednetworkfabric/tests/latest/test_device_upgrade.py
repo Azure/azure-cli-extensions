@@ -5,8 +5,10 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+
 """
-NF post tests scenarios
+Device tests scenarios
 """
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
@@ -26,28 +28,30 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
     setup_scenario1(test)
-    step_provision(test)
+    step_upgrade(test, checks=[])
     cleanup_scenario1(test)
 
 
-def step_provision(test, checks=None):
-    '''nf provision operation'''
+def step_upgrade(test, checks=None):
+    '''Device upgrade operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric fabric provision --resource-name {provisionNFName} --resource-group {provisionNFRGName}')
+        'az networkfabric device upgrade --resource-group {upgradeDeviceRGName} --resource-name {upgradeDeviceName} --version {upgradeVersion}', checks=checks)
 
 
-class GA_NFProvisionScenarioTest1(ScenarioTest):
-    ''' NFScenario test'''
+class GA_DeviceUpgradeScenarioTest1(ScenarioTest):
+    ''' DeviceScenario test'''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.kwargs.update({
-            'provisionNFRGName': CONFIG.get('NETWORK_FABRIC_PROVISION', 'provision_nf_resource_group'),
-            'provisionNFName': CONFIG.get('NETWORK_FABRIC_PROVISION', 'provision_nf_name')
+            'upgradeDeviceRGName': CONFIG.get('NETWORK_DEVICE', 'upgrade_resource_group'),
+            'upgradeDeviceName': CONFIG.get('NETWORK_DEVICE', 'upgrade_device_name'),
+            'upgradeVersion': CONFIG.get('NETWORK_DEVICE', 'upgrade_version')
         })
 
-    def test_GA_nf_provision_scenario1(self):
-        ''' test scenario for NF provision operations'''
+    @AllowLargeResponse()
+    def test_GA_Device_upgrade_scenario1(self):
+        ''' test scenario for Device upgrade operation'''
         call_scenario1(self)
