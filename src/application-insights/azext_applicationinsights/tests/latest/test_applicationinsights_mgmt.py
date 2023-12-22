@@ -111,11 +111,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         ])
 
         # Connect AI to web app and update settings for web app.
-        self.cmd('az monitor app-insights component connect-webapp -g {resource_group} --app {ai_name} --web-app {webapp_name} --enable-profiler --enable-snapshot-debugger', checks=[
-            self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
-            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0'),
-            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
-        ])
+        self.cmd('az monitor app-insights component connect-webapp -g {resource_group} --app {ai_name} --web-app {webapp_name} --enable-profiler --enable-snapshot-debugger')
 
         # Check if the settings are updated correctly.
         self.cmd('az webapp config appsettings list -g {resource_group} -n {webapp_name}', checks=[
@@ -168,12 +164,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
 
         # Connect AI to web app and update settings for web app.
         self.cmd(
-            'az monitor app-insights component connect-webapp -g {resource_group} --app {ai_name} --web-app {webapp_id} --enable-profiler --enable-snapshot-debugger',
-            checks=[
-                self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
-                self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0'),
-                self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
-            ])
+            'az monitor app-insights component connect-webapp -g {resource_group} --app {ai_name} --web-app {webapp_id} --enable-profiler --enable-snapshot-debugger')
 
         # Check if the settings are updated correctly.
         self.cmd('az webapp config appsettings list -g {resource_group2} -n {webapp_name}', checks=[
@@ -221,9 +212,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         ])
 
         # Connect AI to function and update settings for function.
-        self.cmd('az monitor app-insights component connect-function -g {resource_group} --app {ai_name} --function {function_name}', checks=[
-            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
-        ])
+        self.cmd('az monitor app-insights component connect-function -g {resource_group} --app {ai_name} --function {function_name}')
 
         # Check if the settings are updated correctly.
         self.cmd('az webapp config appsettings list -g {resource_group} -n {function_name}', checks=[
@@ -271,9 +260,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         ]).get_output_in_json()['id']
 
         # Connect AI to function and update settings for function.
-        self.cmd('az monitor app-insights component connect-function -g {resource_group} --app {ai_name} --function {functionapp_id}', checks=[
-            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
-        ])
+        self.cmd('az monitor app-insights component connect-function -g {resource_group} --app {ai_name} --function {functionapp_id}')
 
         # Check if the settings are updated correctly.
         self.cmd('az webapp config appsettings list -g {resource_group2} -n {function_name}', checks=[
