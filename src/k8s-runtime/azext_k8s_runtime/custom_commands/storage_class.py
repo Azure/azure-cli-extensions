@@ -23,17 +23,17 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.mgmt.resourcegraph import ResourceGraphClient
 from azure.mgmt.resourcegraph.models import QueryRequest
 
+from .oid import KUBERNETES_RUNTIME_FPA_APP_ID, KUBERNETES_RUNTIME_RP, query_rp_oid
+
 
 logger = get_logger(__name__)
 
 
 # https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#kubernetes-extension-contributor
 KUBERNETES_EXTENSION_CONTRIBUTOR_ROLE_ID = "/providers/Microsoft.Authorization/roleDefinitions/85cb6faf-e071-4c9b-8136-154b5a04f717"
-STORAGE_CLASS_RP_FPA = "087fca6e-4606-4d41-b3f6-5ebdf75b8b4c"
 STORAGE_CLASS_CONTRIBUTOR_ROLE_ID = "/providers/Microsoft.Authorization/roleDefinitions/0cd9749a-3aaf-4ae5-8803-bd217705bf3b"
 STORAGE_CLASS_EXTENSION_NAME = "arc-k8s-storage-class"
 STORAGE_CLASS_EXTENSION_TYPE = "Microsoft.ManagedStorageClass"
-KUBERNETES_RUNTIME_RP = "Microsoft.KubernetesRuntime"
 
 
 class InvalidResourceUriException(Exception):
@@ -90,6 +90,10 @@ def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
     )
 
     print(f"Installing Storage class Arc Extension in cluster {resource_id.cluster_name}...")
+
+    object_id = query_rp_oid(cmd)
+    logger.info("Found Kubernetes Runtime RP SP in tenant with object id %s", object_id)
+
     source_control_configuration_client: SourceControlConfigurationClient = get_mgmt_service_client(cmd.cli_ctx, SourceControlConfigurationClient)
 
     lro = source_control_configuration_client.extensions.begin_create(
@@ -103,7 +107,10 @@ def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
                 type="SystemAssigned"
             ),
             extension_type=STORAGE_CLASS_EXTENSION_TYPE,
-            release_train="dev"
+            release_train="dev",
+            configuration_settings={
+                "k8sRuntimeFpaObjectId": object_id,
+            },
         )
     )
 
@@ -134,7 +141,7 @@ def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
         # pylint: disable=missing-kwoa
         parameters=RoleAssignmentCreateParameters(
             role_definition_id=KUBERNETES_EXTENSION_CONTRIBUTOR_ROLE_ID,
-            principal_id=STORAGE_CLASS_RP_FPA,
+            principal_id=KUBERNETES_RUNTIME_FPA_APP_ID,
             principal_type=PrincipalType.SERVICE_PRINCIPAL,
         ),
     )
@@ -207,7 +214,7 @@ def disable_storage_class(cmd: AzCliCommand, resource_uri: str):
         subscriptions=[resource_id.subscription_id],
         query=f"""
     authorizationresources
-    | where properties.principalId =~ "{STORAGE_CLASS_RP_FPA}" and properties.roleDefinitionId =~ "{KUBERNETES_EXTENSION_CONTRIBUTOR_ROLE_ID}" and properties.scope =~ "{resource_uri}"
+    | where properties.principalId =~ "{KUBERNETES_RUNTIME_FPA_APP_ID}" and properties.roleDefinitionId =~ "{KUBERNETES_EXTENSION_CONTRIBUTOR_ROLE_ID}" and properties.scope =~ "{resource_uri}"
     | limit 1
         """
     ))
