@@ -374,7 +374,7 @@ def _is_windows_hpc_supported(agent_pools):
     # The full (major.minor.patch) version *may* be stored in currentOrchestratorVersion.
     # If not, it'll be in orchestratorVersion.
     windows_k8s_versions = [p.current_orchestrator_version or p.orchestrator_version for p in agent_pools if p.os_type.casefold() == "Windows".casefold()]
-    return all([version.parse(v) >= version.parse("1.23.0") for v in windows_k8s_versions])
+    return all((version.parse(v) >= version.parse("1.23.0") for v in windows_k8s_versions))
 
 
 def _display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-many-statements
