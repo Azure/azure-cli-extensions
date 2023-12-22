@@ -13,9 +13,7 @@ from knack.util import CLIError
 
 
 def get_default_dcr_name(cmd, mac_region, cluster_name):
-    region = get_default_region(cmd)
-    if mac_region in MapToClosestMACRegion:
-        region = MapToClosestMACRegion[mac_region]
+    region = MapToClosestMACRegion.get(mac_region, get_default_region(cmd))
     default_dcr_name = "MSProm-" + region + "-" + cluster_name
     return sanitize_name(default_dcr_name, DC_TYPE.DCR, 64)
 
