@@ -15,7 +15,7 @@ def addon_put(cmd, cluster_subscription, cluster_resource_group_name, cluster_na
     armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
     feature_check_url = (
         f"{armendpoint}/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
-        "Microsoft.ContainerService/managedClusters/{cluster_name}?api-version={AKS_CLUSTER_API}"
+        f"Microsoft.ContainerService/managedClusters/{cluster_name}?api-version={AKS_CLUSTER_API}"
     )
     try:
         headers = ['User-Agent=azuremonitormetrics.addon_get']
