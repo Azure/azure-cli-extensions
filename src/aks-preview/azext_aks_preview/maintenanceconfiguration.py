@@ -250,7 +250,15 @@ def constructWeeklySchedule(cmd, interval_days, interval_weeks, interval_months,
     return weeklySchedule
 
 
-def constructAbsoluteMonthlySchedule(cmd, interval_days, interval_weeks, interval_months, day_of_week, day_of_month, week_index):
+def constructAbsoluteMonthlySchedule(
+    cmd,
+    interval_days,
+    interval_weeks,
+    interval_months,
+    day_of_week,
+    day_of_month,
+    week_index
+):
     if interval_months is None or day_of_month is None:
         raise RequiredArgumentMissingError(
             "Please specify --interval-months and --day-of-month when using absolute monthly schedule."
