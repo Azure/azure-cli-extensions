@@ -179,7 +179,7 @@ def enable_addons(
     return result
 
 
-# pylint: disable=too-many-locals, too-many-branches
+# pylint: disable=too-many-locals, too-many-branches, too-many-statements
 def update_addons(
     cmd,
     instance,
@@ -261,7 +261,7 @@ def update_addons(
             continue
 
         if addon_arg not in ADDONS:
-            raise CLIError("Invalid addon name: {}.".format(addon_arg))
+            raise CLIError(f"Invalid addon name: {addon_arg}.")
         addon = ADDONS[addon_arg]
         if addon == CONST_VIRTUAL_NODE_ADDON_NAME:
             # only linux is supported for now, in the future this will be a user flag
@@ -381,7 +381,8 @@ def update_addons(
                         enabled=False)
                 else:
                     raise CLIError(
-                        "The addon {} is not installed.".format(addon))
+                        f"The addon {addon} is not installed."
+                    )
             addon_profiles[addon].config = None
         addon_profiles[addon].enabled = enable
 
