@@ -1970,10 +1970,10 @@ def _get_default_install_location(exe_name):
         if not home_dir:
             return None
         install_location = os.path.join(
-            home_dir, r".azure-{0}\{0}.exe".format(exe_name)
+            home_dir, f".azure-{exe_name}\\{exe_name}.exe"
         )
     elif system in ("Linux", "Darwin"):
-        install_location = "/usr/local/bin/{}".format(exe_name)
+        install_location = f"/usr/local/bin/{exe_name}"
     else:
         install_location = None
     return install_location
