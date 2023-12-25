@@ -145,8 +145,12 @@ class AKSPreviewManagedClusterModels(AKSManagedClusterModels):
         """
         if self.__pod_identity_models is None:
             pod_identity_models = {}
-            pod_identity_models["ManagedClusterPodIdentityProfile"] = self.ManagedClusterPodIdentityProfile
-            pod_identity_models["ManagedClusterPodIdentityException"] = self.ManagedClusterPodIdentityException
+            pod_identity_models["ManagedClusterPodIdentityProfile"] = (
+                self.ManagedClusterPodIdentityProfile  # pylint: disable=no-member
+            )
+            pod_identity_models["ManagedClusterPodIdentityException"] = (
+                self.ManagedClusterPodIdentityException  # pylint: disable=no-member
+            )
             self.__pod_identity_models = SimpleNamespace(**pod_identity_models)
         return self.__pod_identity_models
 
@@ -627,6 +631,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return enable_network_observability
         if disable_network_observability is not None:
             return not disable_network_observability
+        return None
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of load_balancer_managed_outbound_ip_count.
@@ -711,17 +716,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if kube_proxy_config_file_path:
             if not os.path.isfile(kube_proxy_config_file_path):
                 raise InvalidArgumentValueError(
-                    "{} is not valid file, or not accessible.".format(
-                        kube_proxy_config_file_path
-                    )
+                    f"{kube_proxy_config_file_path} is not valid file, or not accessible."
                 )
             kube_proxy_config = get_file_json(kube_proxy_config_file_path)
             if not isinstance(kube_proxy_config, dict):
                 raise InvalidArgumentValueError(
-                    "Error reading kube-proxy config from {}. "
-                    "Please see https://aka.ms/KubeProxyConfig for correct format.".format(
-                        kube_proxy_config_file_path
-                    )
+                    f"Error reading kube-proxy config from {kube_proxy_config_file_path}. "
+                    "Please see https://aka.ms/KubeProxyConfig for correct format."
                 )
 
         # try to read the property value corresponding to the parameter from the `mc` object
@@ -1827,9 +1828,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return None
         if not os.path.isfile(custom_ca_certs_file_path):
             raise InvalidArgumentValueError(
-                "{} is not valid file, or not accessible.".format(
-                    custom_ca_certs_file_path
-                )
+                f"{custom_ca_certs_file_path} is not valid file, or not accessible."
             )
         # CAs are supposed to be separated with a new line, we filter out empty strings (e.g. some stray new line).
         # We only allow up to 10 CAs
@@ -1837,9 +1836,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         certs = [str.encode(x) for x in file_content if len(x) > 1]
         if len(certs) > 10:
             raise InvalidArgumentValueError(
-                "Only up to 10 new-line separated CAs can be passed, got {} instead.".format(
-                    len(certs)
-                )
+                f"Only up to 10 new-line separated CAs can be passed, got {len(certs)} instead."
             )
         return certs
 
@@ -2064,7 +2061,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return None
 
-    # pylint: disable=too-many-branches,too-many-locals
+    # pylint: disable=too-many-branches,too-many-locals,too-many-statements
     def update_azure_service_mesh_profile(self) -> ServiceMeshProfile:
         """ Update azure service mesh profile.
 
@@ -2283,9 +2280,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     "for more details on enabling Azure Service Mesh."
                 )
             requested_revision = self.raw_param.get("revision", None)
-            if (
-                mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE or
-                mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK
+            if mesh_upgrade_command in (
+                CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+                CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
             ):
                 if len(new_profile.istio.revisions) < 2:
                     raise ArgumentUsageError('Azure Service Mesh upgrade is not in progress.')
@@ -2658,7 +2655,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         network_observability = self.context.get_enable_network_observability()
         if network_observability is not None:
-            network_profile.monitoring = self.models.NetworkMonitoring(
+            network_profile.monitoring = self.models.NetworkMonitoring(  # pylint: disable=no-member
                 enabled=network_observability
             )
 
@@ -3480,13 +3477,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             return
 
         option_names = sorted([
-            '"{}"'.format(format_parameter_name_to_option_name(x))
+            f'"{format_parameter_name_to_option_name(x)}"'
             for x in self.context.raw_param.keys()
             if x not in excluded_keys
         ])
-        error_msg = "Please specify one or more of {}.".format(
-            " or ".join(option_names)
-        )
+        error_msg = f"Please specify one or more of {' or '.join(option_names)}."
         raise RequiredArgumentMissingError(error_msg)
 
     def update_network_plugin_settings(self, mc: ManagedCluster) -> ManagedCluster:
@@ -4210,10 +4205,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if override_until is not None:
                 try:
                     mc.upgrade_settings.override_settings.until = parse(override_until)
-                except Exception:  # pylint: disable=broad-except
+                except Exception as exc:  # pylint: disable=broad-except
                     raise InvalidArgumentValueError(
                         f"{override_until} is not a valid datatime format."
-                    )
+                    ) from exc
             elif force_upgrade:
                 default_extended_until = datetime.datetime.utcnow() + datetime.timedelta(days=3)
                 if existing_until is None or existing_until.timestamp() < default_extended_until.timestamp():
@@ -4359,7 +4354,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                                         'Could not create a role assignment for App Routing. '
                                         'Are you an Owner on this subscription?')
                         except Exception as ex:
-                            raise CLIError(f'Error in granting dns zone permisions to managed identity: {ex}\n')
+                            raise CLIError('Error in granting dns zone permisions to managed identity.\n') from ex
                 elif delete_dns_zone:
                     if mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
                         dns_zone_resource_ids = [
@@ -4386,7 +4381,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                                         'Could not create a role assignment for App Routing. '
                                         'Are you an Owner on this subscription?')
                         except Exception as ex:
-                            raise CLIError(f'Error in granting dns zone permisions to managed identity: {ex}\n')
+                            raise CLIError('Error in granting dns zone permisions to managed identity.\n') from ex
             else:
                 raise CLIError('App Routing must be enabled to modify DNS zone resource IDs.\n')
 
