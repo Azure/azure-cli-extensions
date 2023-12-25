@@ -128,10 +128,10 @@ def wait_then_open(url):
     """
     for _ in range(1, 10):
         try:
-            urlopen(url, context=_ssl_context())
+            with urlopen(url, context=_ssl_context()):
+                break
         except URLError:
             time.sleep(1)
-        break
     webbrowser.open_new_tab(url)
 
 
@@ -139,7 +139,7 @@ def wait_then_open_async(url):
     """
     Spawns a thread that waits for a bit then opens a URL.
     """
-    t = threading.Thread(target=wait_then_open, args=({url}))
+    t = threading.Thread(target=wait_then_open, args=url)
     t.daemon = True
     t.start()
 
@@ -214,8 +214,10 @@ def create_application(client, display_name, homepage, identifier_uris,
     except GraphErrorException as ex:
         if 'insufficient privileges' in str(ex).lower():
             link = 'https://docs.microsoft.com/azure/azure-resource-manager/resource-group-create-service-principal-portal'  # pylint: disable=line-too-long
-            raise CLIError("Directory permission is needed for the current user to register the application. "
-                           "For how to configure, please refer '{}'. Original error: {}".format(link, ex))
+            raise CLIError(
+                "Directory permission is needed for the current user to register the application. "
+                f"For how to configure, please refer '{link}'."
+            ) from ex
         raise
 
 
@@ -258,10 +260,10 @@ def create_service_principal(cli_ctx, identifier, resolve_app=True, rbac_client=
         try:
             uuid.UUID(identifier)
             result = list(rbac_client.applications.list(
-                filter="appId eq '{}'".format(identifier)))
+                filter=f"appId eq '{identifier}'"))
         except ValueError:
             result = list(rbac_client.applications.list(
-                filter="identifierUris/any(s:s eq '{}')".format(identifier)))
+                filter=f"identifierUris/any(s:s eq '{identifier}')"))
 
         if not result:  # assume we get an object id
             result = [rbac_client.applications.get(identifier)]
@@ -290,11 +292,10 @@ def _get_user_assigned_identity(cli_ctx, resource_id):
                                                                resource_name=identity_name)
         except CloudError as ex:
             if 'was not found' in ex.message:
-                raise CLIError("Identity {} not found.".format(resource_id))
-            raise CLIError(ex.message)
+                raise CLIError(f"Identity {resource_id} not found.") from ex
+            raise ex
         return identity
-    raise CLIError(
-        "Cannot parse identity name from provided resource id {}.".format(resource_id))
+    raise CLIError(f"Cannot parse identity name from provided resource id {resource_id}.")
 
 
 def aks_browse(
@@ -379,10 +380,8 @@ def aks_maintenanceconfiguration_add(
     for config in configs:
         if config.name == config_name:
             raise CLIError(
-                "Maintenance configuration '{}' already exists, please try a different name, "
-                "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(
-                    config_name
-                )
+                f"Maintenance configuration '{config_name}' already exists, please try a different name, "
+                "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations"
             )
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -418,10 +417,8 @@ def aks_maintenanceconfiguration_update(
             break
     if not found:
         raise CLIError(
-            "Maintenance configuration '{}' doesn't exist."
-            "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(
-                config_name
-            )
+            f"Maintenance configuration '{config_name}' doesn't exist."
+            "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations"
         )
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -932,8 +929,8 @@ def aks_get_credentials(
             encoding='UTF-8')
         print_or_merge_credentials(
             path, kubeconfig, overwrite_existing, context_name)
-    except (IndexError, ValueError):
-        raise CLIError("Fail to find kubeconfig file.")
+    except (IndexError, ValueError) as exc:
+        raise CLIError("Fail to find kubeconfig file.") from exc
 
 
 def aks_scale(cmd,  # pylint: disable=unused-argument
@@ -971,7 +968,7 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
                 instance,
                 headers=headers,
             )
-    raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
+    raise CLIError(f'The nodepool "{nodepool_name}" was not found.')
 
 
 # pylint: disable=too-many-return-statements, too-many-branches
@@ -1048,21 +1045,27 @@ def aks_upgrade(cmd,
     # for legacy clusters, we always upgrade node pools with CCP.
     if instance.max_agent_pools < 8 or vmas_cluster:
         if control_plane_only:
-            msg = ("Legacy clusters do not support control plane only upgrade. All node pools will be "
-                   "upgraded to {} as well. Continue?").format(instance.kubernetes_version)
+            msg = (
+                "Legacy clusters do not support control plane only upgrade. All node pools will be "
+                f"upgraded to {instance.kubernetes_version} as well. Continue?"
+            )
             if not yes and not prompt_y_n(msg, default="n"):
                 return None
         upgrade_all = True
     else:
         if not control_plane_only:
-            msg = ("Since control-plane-only argument is not specified, this will upgrade the control plane "
-                   "AND all nodepools to version {}. Continue?").format(instance.kubernetes_version)
+            msg = (
+                "Since control-plane-only argument is not specified, this will upgrade the control plane "
+                f"AND all nodepools to version {instance.kubernetes_version}. Continue?"
+            )
             if not yes and not prompt_y_n(msg, default="n"):
                 return None
             upgrade_all = True
         else:
-            msg = ("Since control-plane-only argument is specified, this will upgrade only the control plane to {}. "
-                   "Node pool will not change. Continue?").format(instance.kubernetes_version)
+            msg = (
+                "Since control-plane-only argument is specified, this will upgrade only the control plane to "
+                f"{instance.kubernetes_version}. Node pool will not change. Continue?"
+            )
             if not yes and not prompt_y_n(msg, default="n"):
                 return None
 
@@ -1340,14 +1343,14 @@ def aks_agentpool_upgrade(cmd,
         msg = "The new kubernetes version is the same as the current kubernetes version."
         if instance.provisioning_state == "Succeeded":
             msg = (
-                "The cluster is already on version {} and is not in a failed state. "
+                f"The cluster is already on version {instance.orchestrator_version} and is not in a failed state. "
                 "No operations will occur when upgrading to the same version if the cluster "
-                "is not in a failed state.".format(instance.orchestrator_version)
+                "is not in a failed state."
             )
         elif instance.provisioning_state == "Failed":
             msg = (
-                "Cluster currently in failed state. Proceeding with upgrade to existing version {} "
-                "to attempt resolution of failed cluster state.".format(instance.orchestrator_version)
+                "Cluster currently in failed state. Proceeding with upgrade to existing version "
+                f"{instance.orchestrator_version} to attempt resolution of failed cluster state."
             )
         if not yes and not prompt_y_n(msg):
             return None
@@ -1415,7 +1418,8 @@ def aks_agentpool_stop(cmd,   # pylint: disable=unused-argument
 
     if not agentpool_exists:
         raise InvalidArgumentValueError(
-            "Node pool {} doesnt exist, use 'aks nodepool list' to get current node pool list".format(nodepool_name))
+            f"Node pool {nodepool_name} doesnt exist, use 'aks nodepool list' to get current node pool list"
+        )
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     power_state = PowerState(code="Stopped")
@@ -1453,7 +1457,8 @@ def aks_agentpool_start(cmd,   # pylint: disable=unused-argument
             break
     if not agentpool_exists:
         raise InvalidArgumentValueError(
-            "Node pool {} doesnt exist, use 'aks nodepool list' to get current node pool list".format(nodepool_name))
+            f"Node pool {nodepool_name} doesnt exist, use 'aks nodepool list' to get current node pool list"
+        )
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     power_state = PowerState(code="Running")
     instance.power_state = power_state
@@ -1484,8 +1489,10 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
             break
 
     if not agentpool_exists:
-        raise CLIError("Node pool {} doesnt exist, "
-                       "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
+        raise CLIError(
+            f"Node pool {nodepool_name} doesnt exist, "
+            "use 'aks nodepool list' to get current node pool list"
+        )
 
     return sdk_no_wait(
         no_wait,
@@ -1518,7 +1525,7 @@ def aks_agentpool_operation_abort(cmd,   # pylint: disable=unused-argument
             break
     if not agentpool_exists:
         raise InvalidArgumentValueError(
-            "Node pool {} doesnt exist, use 'aks nodepool list' to get current node pool list".format(nodepool_name))
+            f"Node pool {nodepool_name} doesnt exist, use 'aks nodepool list' to get current node pool list")
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     power_state = PowerState(code="Running")
     instance.power_state = power_state
@@ -1549,7 +1556,7 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
     power_state = PowerState(code="Running")
     if instance is None:
         raise InvalidArgumentValueError(
-            "Cluster {} doesnt exist, use 'aks list' to get current cluster list".format(name)
+            f"Cluster {name} doesnt exist, use 'aks list' to get current cluster list"
         )
     instance.power_state = power_state
     headers = get_aks_custom_headers(aks_custom_headers)
@@ -2035,7 +2042,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
             continue
 
         if addon_arg not in ADDONS:
-            raise CLIError("Invalid addon name: {}.".format(addon_arg))
+            raise CLIError(f"Invalid addon name: {addon_arg}.")
         addon = ADDONS[addon_arg]
         if addon == CONST_VIRTUAL_NODE_ADDON_NAME:
             # only linux is supported for now, in the future this will be a user flag
@@ -2157,8 +2164,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                     addon_profiles[addon] = ManagedClusterAddonProfile(
                         enabled=False)
                 else:
-                    raise CLIError(
-                        "The addon {} is not installed.".format(addon))
+                    raise CLIError(f"The addon {addon} is not installed.")
             addon_profiles[addon].config = None
         addon_profiles[addon].enabled = enable
 
@@ -2503,8 +2509,7 @@ def aks_pod_identity_exception_update(
                 pod_identity_exceptions.append(exc)
 
     if not found_target:
-        raise CLIError(
-            'pod identity exception {}/{} not found'.format(exc_namespace, exc_name))
+        raise CLIError(f"pod identity exception {exc_namespace}/{exc_name} not found")
 
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterModels
     # store all the models used by pod identity
@@ -2589,8 +2594,9 @@ def aks_snapshot_delete(cmd,    # pylint: disable=unused-argument
                         name,
                         no_wait=False,
                         yes=False):
-    msg = 'This will delete the cluster snapshot "{}" in resource group "{}", Are you sure?'.format(
-        name, resource_group_name
+    msg = (
+        f'This will delete the cluster snapshot "{name}" in resource group "{resource_group_name}".\n'
+        "Are you sure?"
     )
     if not yes and not prompt_y_n(msg, default="n"):
         return None
@@ -2669,8 +2675,9 @@ def aks_nodepool_snapshot_delete(cmd,    # pylint: disable=unused-argument
                                  snapshot_name,
                                  no_wait=False,
                                  yes=False):
-    msg = 'This will delete the nodepool snapshot "{}" in resource group "{}", Are you sure?'.format(
-        snapshot_name, resource_group_name
+    msg = (
+        f'This will delete the nodepool snapshot "{snapshot_name}" in resource group "{resource_group_name}".\n'
+        "Are you sure?"
     )
     if not yes and not prompt_y_n(msg, default="n"):
         return None
@@ -3206,7 +3213,7 @@ def _keyvault_update(
                         certificate_permissions=["Get"],
                     )
             except Exception as ex:
-                raise CLIError(f'Error in granting keyvault permissions to managed identity: {ex}\n')
+                raise CLIError('Error in granting keyvault permissions to managed identity.\n') from ex
         else:
             raise CLIError('App Routing is not enabled.\n')
 
