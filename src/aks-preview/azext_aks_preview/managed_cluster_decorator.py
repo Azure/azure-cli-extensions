@@ -7,11 +7,78 @@
 import copy
 import datetime
 import os
-import semver
-from dateutil.parser import parse
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
+import semver
+from azext_aks_preview._consts import (
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+    CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+    CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_LOAD_BALANCER_SKU_BASIC,
+    CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
+    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_NETWORK_DATAPLANE_CILIUM,
+    CONST_NETWORK_PLUGIN_AZURE,
+    CONST_NETWORK_PLUGIN_MODE_OVERLAY,
+    CONST_NETWORK_POLICY_CILIUM,
+    CONST_PRIVATE_DNS_ZONE_NONE,
+    CONST_PRIVATE_DNS_ZONE_SYSTEM,
+    CONST_ROTATION_POLL_INTERVAL,
+    CONST_SECRET_ROTATION_ENABLED,
+)
+from azext_aks_preview._helpers import (
+    check_is_apiserver_vnet_integration_cluster,
+    check_is_private_cluster,
+    get_cluster_snapshot_by_snapshot_id,
+    setup_common_guardrails_profile,
+)
+from azext_aks_preview._loadbalancer import create_load_balancer_profile
+from azext_aks_preview._loadbalancer import (
+    update_load_balancer_profile as _update_load_balancer_profile,
+)
+from azext_aks_preview._podidentity import (
+    _fill_defaults_for_pod_identity_profile,
+    _is_pod_identity_addon_enabled,
+    _update_addon_pod_identity,
+)
+from azext_aks_preview._roleassignments import add_role_assignment
+from azext_aks_preview.agentpool_decorator import (
+    AKSPreviewAgentPoolAddDecorator,
+    AKSPreviewAgentPoolUpdateDecorator,
+)
+from azext_aks_preview.azurecontainerstorage.acstor_ops import (
+    perform_disable_azure_container_storage,
+    perform_enable_azure_container_storage,
+)
+from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
+    ensure_azure_monitor_profile_prerequisites,
+)
+from azure.cli.command_modules.acs._consts import (
+    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    DecoratorEarlyExitException,
+    DecoratorMode,
+)
+from azure.cli.command_modules.acs._helpers import (
+    check_is_msi_cluster,
+    format_parameter_name_to_option_name,
+    safe_lower,
+)
+from azure.cli.command_modules.acs._validators import extract_comma_separated_string
+from azure.cli.command_modules.acs.managed_cluster_decorator import (
+    AKSManagedClusterContext,
+    AKSManagedClusterCreateDecorator,
+    AKSManagedClusterModels,
+    AKSManagedClusterParamDict,
+    AKSManagedClusterUpdateDecorator,
+)
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
@@ -22,84 +89,13 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.util import get_file_json
-from azure.cli.core.util import read_file_content
-from azure.cli.command_modules.acs._consts import (
-    DecoratorEarlyExitException,
-    DecoratorMode,
-    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
-    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
-)
-from azure.cli.command_modules.acs._helpers import (
-    check_is_msi_cluster,
-    format_parameter_name_to_option_name,
-    safe_lower,
-)
-from azure.cli.command_modules.acs._validators import (
-    extract_comma_separated_string,
-)
-from azure.cli.command_modules.acs.managed_cluster_decorator import (
-    AKSManagedClusterContext,
-    AKSManagedClusterCreateDecorator,
-    AKSManagedClusterModels,
-    AKSManagedClusterParamDict,
-    AKSManagedClusterUpdateDecorator,
-)
+from azure.cli.core.util import get_file_json, read_file_content
 from azure.mgmt.containerservice.models import KubernetesSupportPlan
-from azext_aks_preview._consts import (
-    CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-    CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
-    CONST_LOAD_BALANCER_SKU_BASIC,
-    CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
-    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
-    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
-    CONST_NETWORK_PLUGIN_AZURE,
-    CONST_NETWORK_PLUGIN_MODE_OVERLAY,
-    CONST_NETWORK_DATAPLANE_CILIUM,
-    CONST_NETWORK_POLICY_CILIUM,
-    CONST_PRIVATE_DNS_ZONE_NONE,
-    CONST_PRIVATE_DNS_ZONE_SYSTEM,
-    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
-    CONST_SECRET_ROTATION_ENABLED,
-    CONST_ROTATION_POLL_INTERVAL,
-    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
-    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
-    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
-)
-from azext_aks_preview._helpers import (
-    check_is_private_cluster,
-    check_is_apiserver_vnet_integration_cluster,
-    get_cluster_snapshot_by_snapshot_id,
-    setup_common_guardrails_profile
-)
-from azext_aks_preview._loadbalancer import (
-    create_load_balancer_profile,
-    update_load_balancer_profile as _update_load_balancer_profile,
-)
-from azext_aks_preview._podidentity import (
-    _fill_defaults_for_pod_identity_profile,
-    _is_pod_identity_addon_enabled,
-    _update_addon_pod_identity,
-)
-from azext_aks_preview._roleassignments import add_role_assignment
-from azext_aks_preview.azurecontainerstorage.acstor_ops import (
-    perform_enable_azure_container_storage,
-    perform_disable_azure_container_storage,
-)
-from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
-    ensure_azure_monitor_profile_prerequisites
-)
-
-from azext_aks_preview.agentpool_decorator import (
-    AKSPreviewAgentPoolAddDecorator,
-    AKSPreviewAgentPoolUpdateDecorator,
-)
-from msrestazure.tools import is_valid_resource_id
+from dateutil.parser import parse
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
+from msrestazure.tools import is_valid_resource_id
 
 
 logger = get_logger(__name__)
