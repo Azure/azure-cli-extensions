@@ -190,6 +190,8 @@ helps['spring app create'] = """
       text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup
     - name: Create an public accessible app with 3 instances and 2 cpu cores and 3 GB of memory per instance.
       text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --assign-endpoint true --cpu 2 --memory 3 --instance-count 3
+    - name: Create an app binding to the default Service Registry and Application Configuration Service.
+      text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --bind-service-registry --bind-application-configuration-service
 """
 
 helps['spring app append-persistent-storage'] = """
