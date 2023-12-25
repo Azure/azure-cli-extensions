@@ -22,7 +22,7 @@ def addon_put(cmd, cluster_subscription, cluster_resource_group_name, cluster_na
         r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url,
                              body={}, headers=headers)
     except CLIError as e:
-        raise UnknownError(e)
+        raise UnknownError(e) from e
     json_response = json.loads(r.text)
     if "azureMonitorProfile" in json_response["properties"]:
         if "metrics" in json_response["properties"]["azureMonitorProfile"]:
@@ -35,4 +35,4 @@ def addon_put(cmd, cluster_subscription, cluster_resource_group_name, cluster_na
         r = send_raw_request(cmd.cli_ctx, "PUT", feature_check_url,
                              body=body, headers=headers)
     except CLIError as e:
-        raise UnknownError(e)
+        raise UnknownError(e) from e

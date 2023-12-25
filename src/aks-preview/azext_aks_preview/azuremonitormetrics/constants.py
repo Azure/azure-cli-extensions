@@ -2,8 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.core import CaseInsensitiveEnumMeta
 from enum import Enum
+
+from azure.core import CaseInsensitiveEnumMeta
 
 AKS_CLUSTER_API = "2023-01-01"
 MAC_API = "2023-04-03"

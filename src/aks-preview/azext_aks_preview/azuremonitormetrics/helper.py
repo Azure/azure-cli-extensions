@@ -25,16 +25,13 @@ def sanitize_resource_id(resource_id):
 def post_request(cmd, subscription_id, rp_name, headers):
     from azure.cli.core.util import send_raw_request
     armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
-    customUrl = "{0}/subscriptions/{1}/providers/{2}/register?api-version={3}".format(
-        armendpoint,
-        subscription_id,
-        rp_name,
-        RP_API,
+    customUrl = (
+        f"{armendpoint}/subscriptions/{subscription_id}/providers/{rp_name}/register?api-version={RP_API}"
     )
     try:
         send_raw_request(cmd.cli_ctx, "POST", customUrl, headers=headers)
     except CLIError as e:
-        raise CLIError(e)
+        raise CLIError(e)  # pylint: disable=raise-missing-from
 
 
 def rp_registrations(cmd, subscription_id):
@@ -43,14 +40,13 @@ def rp_registrations(cmd, subscription_id):
     try:
         headers = ['User-Agent=azuremonitormetrics.get_mac_sub_list']
         armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
-        customUrl = "{0}/subscriptions/{1}/providers?api-version={2}&$select=namespace,registrationstate".format(
-            armendpoint,
-            subscription_id,
-            RP_API
+        customUrl = (
+            f"{armendpoint}/subscriptions/{subscription_id}/providers?"
+            f"api-version={RP_API}&$select=namespace,registrationstate"
         )
         r = send_raw_request(cmd.cli_ctx, "GET", customUrl, headers=headers)
     except CLIError as e:
-        raise CLIError(e)
+        raise CLIError(e)  # pylint: disable=raise-missing-from
     isInsightsRpRegistered = False
     isAlertsManagementRpRegistered = False
     isMoniotrRpRegistered = False
@@ -104,7 +100,7 @@ def check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resourc
         r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url,
                              body={}, headers=headers)
     except CLIError as e:
-        raise UnknownError(e)
+        raise UnknownError(e) from e
     json_response = json.loads(r.text)
     values_array = json_response["properties"]
     if "azureMonitorProfile" in values_array:
