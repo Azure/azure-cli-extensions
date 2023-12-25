@@ -78,6 +78,7 @@ def transform_mc_objects_with_custom_cas(result):
     return result[0] if singular else result
 
 
+# pylint: disable=too-many-statements
 def load_command_table(self, _):
     managed_clusters_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
