@@ -428,8 +428,8 @@ def _display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-m
                 apds_created = True
                 print()
         else:
-            for node_name in ready_nodes.keys():
-                if ready_nodes[node_name]:
+            for node_name, node_ready in ready_nodes.items():
+                if node_ready:
                     continue
                 apdName = "aks-periscope-diagnostic-" + node_name
                 try:
