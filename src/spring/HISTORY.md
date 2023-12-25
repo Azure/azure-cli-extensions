@@ -5,6 +5,11 @@ Release History
 ---
 * Create workspace-based Application Insights instead, since classic Application Insights will be retired on 29 February 2024.
 
+1.18.0
+---
+* Add arguments `--bind-service-registry` in `spring app create`.
+* Add arguments `--bind-application-configuration-service` in `spring app create`.
+
 1.17.0
 ---
 * Add arguments `--enable-api-try-out` in `spring api-portal update`
