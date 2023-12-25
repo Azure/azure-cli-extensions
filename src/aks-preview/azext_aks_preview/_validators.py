@@ -45,7 +45,7 @@ def validate_ssh_key(namespace):
     content = string_or_file
     if os.path.exists(string_or_file):
         logger.info('Use existing SSH public key file: %s', string_or_file)
-        with open(string_or_file, 'r') as f:
+        with open(string_or_file, 'r', encoding="utf-8") as f:
             content = f.read()
     elif not keys.is_valid_ssh_rsa_public_key(content):
         if namespace.generate_ssh_keys:
@@ -76,7 +76,7 @@ def validate_ssh_key_for_update(namespace):
     content = string_or_file
     if os.path.exists(string_or_file):
         logger.info('Use existing SSH public key file: %s', string_or_file)
-        with open(string_or_file, 'r') as f:
+        with open(string_or_file, 'r', encoding="utf-8") as f:
             content = f.read()
     elif not keys.is_valid_ssh_rsa_public_key(content):
         raise InvalidArgumentValueError('An RSA key file or key value must be supplied to SSH Key Value')
@@ -158,8 +158,10 @@ def validate_ip_ranges(namespace):
                 raise CLIError(
                     "--api-server-authorized-ip-ranges cannot be IPv6 addresses")
         except ValueError:
+            # pylint: disable=raise-missing-from
             raise CLIError(
-                "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs")
+                "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs"
+            )
 
 
 def _validate_nodepool_name(nodepool_name):
@@ -239,7 +241,7 @@ def validate_taint(taint):
         return
     found = regex.findall(taint)
     if not found:
-        raise ArgumentUsageError('Invalid node taint: %s' % taint)
+        raise ArgumentUsageError(f'Invalid node taint: {taint}')
 
 
 def validate_priority(namespace):
@@ -247,8 +249,7 @@ def validate_priority(namespace):
     if namespace.priority is not None:
         if namespace.priority == '':
             return
-        if namespace.priority != "Spot" and \
-                namespace.priority != "Regular":
+        if namespace.priority not in ("Spot", "Regular"):
             raise CLIError("--priority can only be Spot or Regular")
 
 
@@ -257,10 +258,8 @@ def validate_eviction_policy(namespace):
     if namespace.eviction_policy is not None:
         if namespace.eviction_policy == '':
             return
-        if namespace.eviction_policy != "Delete" and \
-                namespace.eviction_policy != "Deallocate":
-            raise CLIError(
-                "--eviction-policy can only be Delete or Deallocate")
+        if namespace.eviction_policy not in ("Delete", "Deallocate"):
+            raise CLIError("--eviction-policy can only be Delete or Deallocate")
 
 
 def validate_spot_max_price(namespace):
@@ -411,7 +410,8 @@ def validate_label(label):
     kv = label.split('=')
     if len(kv) != 2:
         raise CLIError(
-            "Invalid label: %s. Label definition must be of format name=value." % label)
+            f"Invalid label: {label}. Label definition must be of format name=value."
+        )
     name_parts = kv[0].split('/')
     if len(name_parts) == 1:
         name = name_parts[0]
@@ -419,34 +419,45 @@ def validate_label(label):
         prefix = name_parts[0]
         if not prefix or len(prefix) > 253:
             raise CLIError(
-                "Invalid label: %s. Label prefix can't be empty or more than 253 chars." % label)
+                f"Invalid label: {label}. Label prefix can't be empty or more than 253 chars."
+            )
         if not prefix_regex.match(prefix):
-            raise CLIError("Invalid label: %s. Prefix part a DNS-1123 label must consist of lower case alphanumeric "
-                           "characters or '-', and must start and end with an alphanumeric character" % label)
+            raise CLIError(
+                f"Invalid label: {label}. Prefix part a DNS-1123 label must consist of lower case alphanumeric "
+                "characters or '-', and must start and end with an alphanumeric character"
+            )
         name = name_parts[1]
     else:
-        raise CLIError("Invalid label: %s. A qualified name must consist of alphanumeric characters, '-', '_' "
-                       "or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or "
-                       "'my.name',  or '123-abc') with an optional DNS subdomain prefix and '/' "
-                       "(e.g. 'example.com/MyName')" % label)
+        raise CLIError(
+            f"Invalid label: {label}. A qualified name must consist of alphanumeric characters, '-', '_' "
+            "or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or "
+            "'my.name',  or '123-abc') with an optional DNS subdomain prefix and '/' "
+            "(e.g. 'example.com/MyName')"
+        )
 
     # validate label name
     if not name or len(name) > 63:
         raise CLIError(
-            "Invalid label: %s. Label name can't be empty or more than 63 chars." % label)
+            f"Invalid label: {label}. Label name can't be empty or more than 63 chars."
+        )
     if not name_regex.match(name):
-        raise CLIError("Invalid label: %s. A qualified name must consist of alphanumeric characters, '-', '_' "
-                       "or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or "
-                       "'my.name',  or '123-abc') with an optional DNS subdomain prefix and '/' (e.g. "
-                       "'example.com/MyName')" % label)
+        raise CLIError(
+            f"Invalid label: {label}. A qualified name must consist of alphanumeric characters, '-', '_' "
+            "or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or "
+            "'my.name',  or '123-abc') with an optional DNS subdomain prefix and '/' (e.g. "
+            "'example.com/MyName')"
+        )
 
     # validate label value
     if len(kv[1]) > 63:
         raise CLIError(
-            "Invalid label: %s. Label must be more than 63 chars." % label)
+            f"Invalid label: {label}. Label must be more than 63 chars."
+        )
     if not value_regex.match(kv[1]):
-        raise CLIError("Invalid label: %s. A valid label must be an empty string or consist of alphanumeric "
-                       "characters, '-', '_' or '.', and must start and end with an alphanumeric character" % label)
+        raise CLIError(
+            f"Invalid label: {label}. A valid label must be an empty string or consist of alphanumeric "
+            "characters, '-', '_' or '.', and must start and end with an alphanumeric character"
+        )
 
     return {kv[0]: kv[1]}
 
@@ -463,6 +474,7 @@ def validate_max_surge(namespace):
         if int(int_or_percent) < 0:
             raise CLIError("--max-surge must be positive")
     except ValueError:
+        # pylint: disable=raise-missing-from
         raise CLIError("--max-surge should be an int or percentage")
 
 
