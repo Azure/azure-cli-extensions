@@ -189,7 +189,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     def get_guardrails_version(self) -> Union[str, None]:
         return self.raw_param.get("guardrails_version")
 
-    # pylint: disable=no-self-use
     def __validate_pod_identity_with_kubenet(self, mc, enable_pod_identity, enable_pod_identity_with_kubenet):
         """Helper function to check the validity of serveral pod identity related parameters.
 
@@ -2869,10 +2868,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if self.context.get_enable_node_restriction():
             if mc.security_profile is None:
                 mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
-            mc.security_profile.node_restriction = (
-                self.models.ManagedClusterSecurityProfileNodeRestriction(  # pylint: disable=no-member
-                   enabled=True,
-                )
+            # pylint: disable=no-member
+            mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction(
+                enabled=True,
             )
 
         return mc
