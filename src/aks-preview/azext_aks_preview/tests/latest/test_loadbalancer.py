@@ -117,7 +117,6 @@ class TestLoadBalancer(unittest.TestCase):
                 public_ip_prefixes="public_ip_prefixes"
             )
         )
-        err = "outbound ip/ipprefix and managed ip should be mutual exclusive."
         p = loadbalancer.configure_load_balancer_profile(
             managed_outbound_ip_count,
             managed_outbound_ipv6_count,

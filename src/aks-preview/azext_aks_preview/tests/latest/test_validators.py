@@ -342,7 +342,7 @@ class TestValidateAddons(unittest.TestCase):
             midlen = int(len(first_addon) / 2)
 
             namespace = ValidateAddonsNamespace(
-                first_addon[:midlen] + first_addon[midlen + 1 :]
+                first_addon[:midlen] + first_addon[midlen + 1:]
             )
             self.assertRaises(CLIError, validators.validate_addons, namespace)
 
@@ -989,7 +989,6 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_name = "valid-name"
         storage_pool_size = "5Ti"
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
-        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
         err = (
             "Invalid --azure-container-storage-nodepools value. "
             "Accepted value is a comma separated string of valid nodepool "
@@ -1015,7 +1014,6 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_name = "valid-name"
         storage_pool_size = "5Ti"
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
-        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
         nodepool_list = "pool1"
         agentpools = ["nodepool1"]
         err = (
@@ -1043,7 +1041,6 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_name = "valid-name"
         storage_pool_size = "5Ti"
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
-        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
         nodepool_list = "pool1,pool2"
         agentpools = ["nodepool1", "nodepool2"]
         err = (

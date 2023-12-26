@@ -926,7 +926,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_enable_cilium_dataplane(), False)
+        self.assertEqual(ctx_3.get_enable_cilium_dataplane(), False)
 
     def test_mc_get_enable_network_observability(self):
         # Default, not set.
@@ -4477,7 +4477,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         with self.assertRaisesRegex(
             CLIInternalError,
-            "^Unexpected mc object with type '<class 'NoneType'>'\.$",
+            r"^Unexpected mc object with type '<class 'NoneType'>'\.$",
         ):
             dec_1.set_up_workload_auto_scaler_profile(None)
 
@@ -6305,7 +6305,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
         )
         with self.assertRaisesRegex(
-            CLIInternalError, "^Unexpected mc object with type '<class 'NoneType'>'\.$"
+            CLIInternalError, r"^Unexpected mc object with type '<class 'NoneType'>'\.$"
         ):
             dec_1.update_workload_auto_scaler_profile(None)
 
@@ -6315,7 +6315,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         with self.assertRaisesRegex(
             CLIInternalError,
-            "^Inconsistent state detected\. The incoming `mc` is not the same as the `mc` in the context\.$",
+            r"^Inconsistent state detected\. The incoming `mc` is not the same as the `mc` in the context\.$",
         ):
             mc_in = self.models.ManagedCluster(location="test_location")
             dec_2.update_workload_auto_scaler_profile(mc_in)
