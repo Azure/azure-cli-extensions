@@ -88,4 +88,5 @@ def _get_location_from_resource_group(cli_ctx, resource_group_name):
         # Print a warning if the user hit [TAB] but the `--resource-group` argument was incorrect.
         # For example: "Warning: Resource group 'bogus' could not be found."
         from argcomplete import warn
-        warn('Warning: {}'.format(err.message))
+        warn(f'Warning: {err.message}')
+        return None
