@@ -100,7 +100,7 @@ def check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resourc
         r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url,
                              body={}, headers=headers)
     except CLIError as e:
-        raise UnknownError(e) from e
+        raise UnknownError(e)  # pylint: disable=raise-missing-from
     json_response = json.loads(r.text)
     values_array = json_response["properties"]
     if "azureMonitorProfile" in values_array:
