@@ -5567,10 +5567,10 @@ configuration:
           action: Opened
       - or:
         - titleContains:
-            pattern: az account
+            pattern: '\b(az account)\b'
             isRegex: True
         - bodyContains:
-            pattern: az account
+            pattern: '\b(az account)\b'
             isRegex: True
       then:
       - requestReview:
@@ -5589,10 +5589,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az account
+            pattern: '\b(az account)\b'
             isRegex: True
         - bodyContains:
-            pattern: az account
+            pattern: '\b(az account)\b'
             isRegex: True
       - or:
         - isAction:
