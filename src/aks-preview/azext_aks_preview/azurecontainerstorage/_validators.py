@@ -3,22 +3,22 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import re
+
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_OPTION_SSD,
     CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
     CONST_STORAGE_POOL_SKU_PREMIUM_ZRS,
-    CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
+    CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
 )
-
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
 )
-
 from knack.log import get_logger
-import re
+
 
 elastic_san_supported_skus = [
     CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
@@ -151,9 +151,8 @@ def _validate_enable_azure_container_storage_params(
             supported_skus_str = ", ".join(elastic_san_supported_skus)
             raise ArgumentUsageError(
                 'Invalid --storage-pool-sku value. '
-                'Supported value for --storage-pool-sku are {0} '
+                f'Supported value for --storage-pool-sku are {supported_skus_str} '
                 'when --enable-azure-container-storage is set to elasticSan.'
-                .format(supported_skus_str)
             )
 
     if storage_pool_type != CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
@@ -213,18 +212,16 @@ def _validate_nodepool_names(nodepool_names, agentpool_details):
         if nodepool not in agentpool_details:
             if len(agentpool_details) > 1:
                 raise InvalidArgumentValueError(
-                    'Nodepool: {0} not found. '
+                    f'Nodepool: {nodepool} not found. '
                     'Please provide a comma separated string of existing nodepool names '
                     'in --azure-container-storage-nodepools.'
-                    '\nNodepools available in the cluster are: {1}.'
+                    f"\nNodepools available in the cluster are: {', '.join(agentpool_details)}."
                     '\nAborting installation of Azure Container Storage.'
-                    .format(nodepool, ', '.join(agentpool_details))
                 )
             raise InvalidArgumentValueError(
-                'Nodepool: {0} not found. '
+                f'Nodepool: {nodepool} not found. '
                 'Please provide a comma separated string of existing nodepool names '
                 'in --azure-container-storage-nodepools.'
-                '\nNodepool available in the cluster is: {1}.'
+                f'\nNodepool available in the cluster is: {agentpool_details[0]}.'
                 '\nAborting installation of Azure Container Storage.'
-                .format(nodepool, agentpool_details[0])
             )

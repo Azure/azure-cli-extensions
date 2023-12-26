@@ -139,14 +139,14 @@ def perform_enable_azure_container_storage(
             logger.warning("Azure Container Storage successfully installed.")
     except Exception as ex:  # pylint: disable=broad-except
         if is_cluster_create:
-            logger.error("Azure Container Storage failed to install.\nError: %s", ex.message)
+            logger.error(f"Azure Container Storage failed to install.\nError: {ex}")
             logger.warning(
                 "AKS cluster is created. "
                 "Please run `az aks update` along with `--enable-azure-container-storage` "
                 "to enable Azure Container Storage."
             )
         else:
-            logger.error("AKS update to enable Azure Container Storage failed.\nError: %s", ex.message)
+            logger.error(f"AKS update to enable Azure Container Storage failed.\nError: {ex}")
 
 
 def perform_disable_azure_container_storage(
@@ -206,16 +206,16 @@ def perform_disable_azure_container_storage(
                 no_wait=True,
             )
 
-            if ex.message.__contains__("pre-upgrade hooks failed"):
+            if "pre-upgrade hooks failed" in str(ex):
                 raise UnknownError(
                     "Validation failed. "
                     "Please ensure that storagepools are not being used. "
                     "Unable to disable Azure Container Storage. "
                     "Reseting cluster state."
-                )
+                ) from ex
             raise UnknownError(
                 "Validation failed. Unable to disable Azure Container Storage. Reseting cluster state."
-            )
+            ) from ex
 
     # Step 2: If the extension is installed and validation succeeded or skipped, call delete_k8s_extension
     try:
@@ -234,8 +234,8 @@ def perform_disable_azure_container_storage(
             LongRunningOperation(cmd.cli_ctx)(delete_op_result)
     except Exception as delete_ex:
         raise UnknownError(
-            "Failure observed while disabling Azure Container Storage.\nError: {0}".format(delete_ex.message)
-        )
+            "Failure observed while disabling Azure Container Storage."
+        ) from delete_ex
 
     logger.warning("Azure Container Storage has been disabled.")
 

@@ -3,12 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.azclierror import UnknownError
-from azure.cli.command_modules.acs._roleassignments import (
-    add_role_assignment,
-    build_role_scope,
-    delete_role_assignments,
-)
+import time
+from datetime import datetime
+
 from azext_aks_preview._client_factory import get_providers_client_factory
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_K8S_EXTENSION_NAME,
@@ -21,17 +18,21 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     RP_REGISTRATION_POLLING_INTERVAL_IN_SEC,
 )
-
-from datetime import datetime
+from azure.cli.command_modules.acs._roleassignments import (
+    add_role_assignment,
+    build_role_scope,
+    delete_role_assignments,
+)
+from azure.cli.core.azclierror import UnknownError
 from knack.log import get_logger
-import time
 
 logger = get_logger(__name__)
 
 
 def register_dependent_rps(cmd, subscription_id) -> bool:
     required_rp = 'Microsoft.KubernetesConfiguration'
-    from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
+    from azure.mgmt.resource.resources.models import (
+        ProviderConsentDefinition, ProviderRegistrationRequest)
 
     properties = ProviderRegistrationRequest(
         third_party_provider_consent=ProviderConsentDefinition(
@@ -60,10 +61,11 @@ def register_dependent_rps(cmd, subscription_id) -> bool:
 
     except Exception as e:  # pylint: disable=broad-except
         logger.error(
-            "Installation of Azure Container Storage requires registering to the following resource provider: %s."
-            "We were unable to perform the registration on your behalf due to the following error: %s\n"
+            "Installation of Azure Container Storage requires registering to the following "
+            f"resource provider: {required_rp}. We were unable to perform the registration on your behalf "
+            f"due to the following error: {e}\n"
             "Please check with your admin on permissions, or try running registration manually with: "
-            "`az provider register --namespace %s` command.", required_rp, e.msg, required_rp
+            f"`az provider register --namespace {required_rp}` command."
         )
 
     return is_registered
@@ -173,7 +175,7 @@ def get_k8s_extension_module(module_name):
         azext_custom = import_module(module_name)
         return azext_custom
     except ImportError:
-        raise UnknownError(
+        raise UnknownError(  # pylint: disable=raise-missing-from
             "Please add CLI extension `k8s-extension` for performing Azure Container Storage operations.\n"
             "Run command `az extension add --name k8s-extension`"
         )

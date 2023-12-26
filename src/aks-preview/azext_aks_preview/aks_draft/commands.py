@@ -6,16 +6,14 @@
 
 import logging
 import os
-import requests
 import platform
 import subprocess
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+import requests
+from azext_aks_preview._consts import CONST_DRAFT_CLI_VERSION
 from knack.prompting import prompt_y_n
-from azext_aks_preview._consts import (
-    CONST_DRAFT_CLI_VERSION
-)
 
 
 # `az aks draft create` function
@@ -148,8 +146,8 @@ def _run(binary_path: str, command: str, arguments: List[str]) -> bool:
 
     logging.info("Running `az aks draft %s`", command)
     cmd = [binary_path, command] + arguments
-    process = subprocess.Popen(cmd)
-    exit_code = process.wait()
+    with subprocess.Popen(cmd) as process:
+        exit_code = process.wait()
     return exit_code == 0
 
 
@@ -199,12 +197,12 @@ def _binary_pre_check(download_path: str) -> Optional[str]:
 # Returns True if the local binary is the latest version, False otherwise
 def _is_latest_version(binary_path: str) -> bool:
     latest_version = CONST_DRAFT_CLI_VERSION
-    process = subprocess.Popen([binary_path, 'version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
+    with subprocess.Popen([binary_path, 'version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+        stdout, stderr = process.communicate()
     if stderr.decode():
         return False
     # return string of result is "version: v0.0.x"
-    current_version = stdout.decode().split('\n')[0].strip().split()[-1]
+    current_version = stdout.decode().split('\n', maxsplit=1)[0].strip().split()[-1]
     return latest_version == current_version
 
 
