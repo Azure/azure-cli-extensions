@@ -8,5 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._migrate_to_new_pricing_model import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "monitor app-insights workbook revision",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage workbook revision
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
