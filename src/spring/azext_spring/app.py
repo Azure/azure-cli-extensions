@@ -8,7 +8,7 @@ from datetime import datetime
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (ValidationError, ArgumentUsageError)
-from .custom import app_get, _get_app_log
+from .custom import app_get
 from ._utils import (get_spring_sku, wait_till_end, convert_argument_to_parameter_list)
 from ._deployment_factory import (deployment_selector,
                                   deployment_settings_options_from_resource,
@@ -20,6 +20,7 @@ from ._app_validator import _get_active_deployment
 from .custom import app_tail_log_internal
 import datetime
 from time import sleep
+from .log_stream.log_stream_operations import log_stream_from_url
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -516,7 +517,7 @@ def _get_deployment_ignore_exception(client, resource_group, service, app_name, 
 
 def _get_app_log_deploy_phase(url, auth, format_json, exceptions):
     try:
-        _get_app_log(url, auth, format_json, exceptions, chunk_size=10 * 1024, stderr=True)
+        log_stream_from_url(url, auth, format_json, exceptions, chunk_size=10 * 1024, stderr=True)
     except Exception:
         pass
 
