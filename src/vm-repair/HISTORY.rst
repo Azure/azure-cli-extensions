@@ -2,7 +2,7 @@
 Release History
 ===============
 
-0.5.10
+1.0.0b1
 ++++++
 Fix bug in win-run-driver.ps1 default values for invoking run command through az vm repair run.
 
