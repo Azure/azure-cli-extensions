@@ -57,7 +57,8 @@ def put_rules(
         except CLIError as e:
             error = e
     else:
-        raise error
+        # TODO: where is error defined?
+        raise error  # pylint: disable=used-before-assignment
 
 
 def create_rules(
@@ -70,18 +71,12 @@ def create_rules(
     raw_parameters,
 ):
     default_rules_template = get_recording_rules_template(cmd, azure_monitor_workspace_resource_id)
-    default_rule_group_name = "NodeRecordingRulesRuleGroup-{0}".format(cluster_name)
+    default_rule_group_name = f"NodeRecordingRulesRuleGroup-{cluster_name}"
     default_rule_group_id = (
-        "/subscriptions/{0}/resourceGroups/{1}/providers/"
-        "Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
-            cluster_subscription, cluster_resource_group_name, default_rule_group_name
-        )
+        f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+        f"Microsoft.AlertsManagement/prometheusRuleGroups/{default_rule_group_name}"
     )
-    url = "{0}{1}?api-version={2}".format(
-        cmd.cli_ctx.cloud.endpoints.resource_manager,
-        default_rule_group_id,
-        RULES_API
-    )
+    url = f"{cmd.cli_ctx.cloud.endpoints.resource_manager}{default_rule_group_id}?api-version={RULES_API}"
     put_rules(
         cmd,
         default_rule_group_id,
@@ -95,18 +90,12 @@ def create_rules(
         0,
     )
 
-    default_rule_group_name = "KubernetesRecordingRulesRuleGroup-{0}".format(cluster_name)
+    default_rule_group_name = f"KubernetesRecordingRulesRuleGroup-{cluster_name}"
     default_rule_group_id = (
-        "/subscriptions/{0}/resourceGroups/{1}/providers/"
-        "Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
-            cluster_subscription, cluster_resource_group_name, default_rule_group_name
-        )
+        f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+        f"Microsoft.AlertsManagement/prometheusRuleGroups/{default_rule_group_name}"
     )
-    url = "{0}{1}?api-version={2}".format(
-        cmd.cli_ctx.cloud.endpoints.resource_manager,
-        default_rule_group_id,
-        RULES_API
-    )
+    url = f"{cmd.cli_ctx.cloud.endpoints.resource_manager}{default_rule_group_id}?api-version={RULES_API}"
     put_rules(
         cmd,
         default_rule_group_id,
@@ -125,18 +114,12 @@ def create_rules(
     if enable_windows_recording_rules is not True:
         enable_windows_recording_rules = False
 
-    default_rule_group_name = "NodeRecordingRulesRuleGroup-Win-{0}".format(cluster_name)
+    default_rule_group_name = f"NodeRecordingRulesRuleGroup-Win-{cluster_name}"
     default_rule_group_id = (
-        "/subscriptions/{0}/resourceGroups/{1}/providers/"
-        "Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
-            cluster_subscription, cluster_resource_group_name, default_rule_group_name
-        )
+        f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+        f"Microsoft.AlertsManagement/prometheusRuleGroups/{default_rule_group_name}"
     )
-    url = "{0}{1}?api-version={2}".format(
-        cmd.cli_ctx.cloud.endpoints.resource_manager,
-        default_rule_group_id,
-        RULES_API
-    )
+    url = f"{cmd.cli_ctx.cloud.endpoints.resource_manager}{default_rule_group_id}?api-version={RULES_API}"
     put_rules(
         cmd,
         default_rule_group_id,
@@ -150,18 +133,12 @@ def create_rules(
         2,
     )
 
-    default_rule_group_name = "NodeAndKubernetesRecordingRulesRuleGroup-Win-{0}".format(cluster_name)
+    default_rule_group_name = f"NodeAndKubernetesRecordingRulesRuleGroup-Win-{cluster_name}"
     default_rule_group_id = (
-        "/subscriptions/{0}/resourceGroups/{1}/providers/"
-        "Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
-            cluster_subscription, cluster_resource_group_name, default_rule_group_name
-        )
+        f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+        f"Microsoft.AlertsManagement/prometheusRuleGroups/{default_rule_group_name}"
     )
-    url = "{0}{1}?api-version={2}".format(
-        cmd.cli_ctx.cloud.endpoints.resource_manager,
-        default_rule_group_id,
-        RULES_API
-    )
+    url = f"{cmd.cli_ctx.cloud.endpoints.resource_manager}{default_rule_group_id}?api-version={RULES_API}"
     put_rules(
         cmd,
         default_rule_group_id,

@@ -12,11 +12,7 @@ def delete_rule(cmd, cluster_subscription, cluster_resource_group_name, default_
         f"Microsoft.AlertsManagement/prometheusRuleGroups/{default_rule_group_name}"
     )
     headers = ['User-Agent=azuremonitormetrics.delete_rule.' + default_rule_group_name]
-    url = "{0}{1}?api-version={2}".format(
-        cmd.cli_ctx.cloud.endpoints.resource_manager,
-        default_rule_group_id,
-        RULES_API
-    )
+    url = f"{cmd.cli_ctx.cloud.endpoints.resource_manager}{default_rule_group_id}?api-version={RULES_API}"
     send_raw_request(cmd.cli_ctx, "DELETE", url, headers=headers)
 
 
@@ -25,23 +21,23 @@ def delete_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster
         cmd,
         cluster_subscription,
         cluster_resource_group_name,
-        "NodeRecordingRulesRuleGroup-{0}".format(cluster_name),
+        f"NodeRecordingRulesRuleGroup-{cluster_name}",
     )
     delete_rule(
         cmd,
         cluster_subscription,
         cluster_resource_group_name,
-        "KubernetesRecordingRulesRuleGroup-{0}".format(cluster_name),
+        f"KubernetesRecordingRulesRuleGroup-{cluster_name}",
     )
     delete_rule(
         cmd,
         cluster_subscription,
         cluster_resource_group_name,
-        "NodeRecordingRulesRuleGroup-Win-{0}".format(cluster_name),
+        f"NodeRecordingRulesRuleGroup-Win-{cluster_name}",
     )
     delete_rule(
         cmd,
         cluster_subscription,
         cluster_resource_group_name,
-        "NodeAndKubernetesRecordingRulesRuleGroup-Win-{0}".format(cluster_name),
+        f"NodeAndKubernetesRecordingRulesRuleGroup-Win-{cluster_name}",
     )

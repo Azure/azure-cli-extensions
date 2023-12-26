@@ -22,12 +22,10 @@ def get_dce_from_dcr(cmd, dcrId):
 def get_dc_objects_list(cmd, cluster_subscription, cluster_resource_group_name, cluster_name):
     try:
         from azure.cli.core.util import send_raw_request
-        cluster_resource_id = \
-            "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService/managedClusters/{2}".format(
-                cluster_subscription,
-                cluster_resource_group_name,
-                cluster_name
-            )
+        cluster_resource_id = (
+            f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+            f"Microsoft.ContainerService/managedClusters/{cluster_name}"
+        )
         armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
         association_url = (
             f"{armendpoint}{cluster_resource_id}/providers/"
@@ -51,7 +49,7 @@ def get_dc_objects_list(cmd, cluster_subscription, cluster_resource_group_name, 
                 )
         return dc_object_array
     except CLIError as e:
-        raise CLIError(e)
+        raise CLIError(e)  # pylint: disable=raise-missing-from
 
 
 def delete_dc_objects_if_prometheus_enabled(
@@ -63,10 +61,8 @@ def delete_dc_objects_if_prometheus_enabled(
 ):
     from azure.cli.core.util import send_raw_request
     cluster_resource_id = (
-        "/subscriptions/{0}/resourceGroups/{1}/providers/"
-        "Microsoft.ContainerService/managedClusters/{2}".format(
-            cluster_subscription, cluster_resource_group_name, cluster_name
-        )
+        f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+        f"Microsoft.ContainerService/managedClusters/{cluster_name}"
     )
     for item in dc_objects_list:
         armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -97,4 +93,4 @@ def delete_dc_objects_if_prometheus_enabled(
                 send_raw_request(cmd.cli_ctx, "DELETE", url, headers=headers)
         except CLIError as e:
             error = e
-            raise CLIError(error)
+            raise CLIError(error)  # pylint: disable=raise-missing-from

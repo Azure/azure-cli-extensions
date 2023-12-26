@@ -15,7 +15,7 @@ from knack.util import CLIError
 def create_default_mac(cmd, cluster_subscription, cluster_region):
     from azure.cli.core.util import send_raw_request
     default_mac_name, default_mac_region = get_default_mac_name_and_region(cmd, cluster_region)
-    default_resource_group_name = "DefaultResourceGroup-{0}".format(default_mac_region)
+    default_resource_group_name = f"DefaultResourceGroup-{default_mac_region}"
     azure_monitor_workspace_resource_id = (
         f"/subscriptions/{cluster_subscription}/resourceGroups/{default_resource_group_name}/providers/"
         f"microsoft.monitor/accounts/{default_mac_name}"

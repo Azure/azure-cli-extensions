@@ -11,17 +11,13 @@ from knack.util import CLIError
 def create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, dcr_resource_id):
     from azure.cli.core.util import send_raw_request
     cluster_resource_id = (
-        "/subscriptions/{0}/resourceGroups/{1}/providers/"
-        "Microsoft.ContainerService/managedClusters/{2}".format(
-            cluster_subscription, cluster_resource_group_name, cluster_name
-        )
+        f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+        f"Microsoft.ContainerService/managedClusters/{cluster_name}"
     )
     dcra_name = get_default_dcra_name(cmd, cluster_region, cluster_name)
     dcra_resource_id = (
-        "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Insights/"
-        "dataCollectionRuleAssociations/{2}".format(
-            cluster_subscription, cluster_resource_group_name, dcra_name
-        )
+        f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+        f"Microsoft.Insights/dataCollectionRuleAssociations/{dcra_name}"
     )
     # only create or delete the association between the DCR and cluster
     association_body = json.dumps(

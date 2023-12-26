@@ -31,10 +31,8 @@ def create_dcr(
     from azure.cli.core.util import send_raw_request
     dcr_name = get_default_dcr_name(cmd, mac_region, cluster_name)
     dcr_resource_id = (
-        "/subscriptions/{0}/resourceGroups/{1}/providers/"
-        "Microsoft.Insights/dataCollectionRules/{2}".format(
-            cluster_subscription, cluster_resource_group_name, dcr_name
-        )
+        f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+        f"Microsoft.Insights/dataCollectionRules/{dcr_name}"
     )
     dcr_creation_body = json.dumps(
         {
