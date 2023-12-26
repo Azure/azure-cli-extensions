@@ -4,8 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 
-import json
-
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.log import get_logger
 from ..managed_components.managed_component import supported_components

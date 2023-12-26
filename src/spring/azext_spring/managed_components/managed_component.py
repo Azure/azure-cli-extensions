@@ -7,7 +7,6 @@ from knack.util import CLIError
 from azure.core.exceptions import ResourceNotFoundError
 from ..application_configuration_service import DEFAULT_NAME as ACS_DEFAULT_NAME
 from ..gateway import DEFAULT_NAME as SCG_DEFAULT_NAME
-from ..vendored_sdks.appplatform.v2023_11_01_preview import models
 
 
 logger = get_logger(__name__)

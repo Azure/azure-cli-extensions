@@ -7,7 +7,6 @@ import unittest
 from azure.cli.testsdk import (ScenarioTest, record_only, live_only)
 from azure.cli.testsdk.base import ExecutionResult
 from requests import Response
-from requests.structures import CaseInsensitiveDict
 from ....managed_components.managed_component import get_component
 from ...._utils import BearerAuth
 
@@ -180,7 +179,6 @@ class ManagedComponentTest(ScenarioTest):
 
         response = Response()
         response.status_code = 200
-        response.headers = self._get_mocked_response_header()
         requests_mock.get.return_value = response
 
         lines = []
@@ -226,7 +224,6 @@ class ManagedComponentTest(ScenarioTest):
 
         response = Response()
         response.status_code = 200
-        response.headers = self._get_mocked_response_header()
         requests_mock.get.return_value = response
 
         lines = []
@@ -272,7 +269,6 @@ class ManagedComponentTest(ScenarioTest):
 
         response = Response()
         response.status_code = 200
-        response.headers = self._get_mocked_response_header()
         requests_mock.get.return_value = response
 
         lines = []
@@ -318,7 +314,6 @@ class ManagedComponentTest(ScenarioTest):
 
         response = Response()
         response.status_code = 200
-        response.headers = self._get_mocked_response_header()
         requests_mock.get.return_value = response
 
         lines = []
@@ -371,7 +366,6 @@ class ManagedComponentTest(ScenarioTest):
 
             response = Response()
             response.status_code = 200
-            response.headers = self._get_mocked_response_header()
             requests_mock.get.return_value = response
 
             lines = []
@@ -419,17 +413,3 @@ class ManagedComponentTest(ScenarioTest):
         operator_1.name = "scg-operator-74947fdcb-8hj85"
         operator_2.name = "scg-operator-74947fdcb-askdj"
         return resource
-
-    def _get_mocked_response_header(self):
-        return CaseInsensitiveDict[str](data={
-            'access-control-allow-credentials': 'true',
-            'access-control-allow-headers': 'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization',
-            'access-control-allow-methods': 'GET, OPTIONS',
-            'access-control-allow-origin': '*',
-            'access-control-max-age': '1728000',
-            'connection': 'keep-alive',
-            'content-type': 'text/plain',
-            'date': 'Thu, 23 Nov 2023 08:27:07 GMT',
-            'strict-transport-security': 'max-age=15724800; includeSubDomains',
-            'transfer-encoding': 'chunked'
-        })
