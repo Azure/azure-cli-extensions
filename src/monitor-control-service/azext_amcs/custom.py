@@ -12,10 +12,12 @@
 # pylint: disable=protected-access, line-too-long
 
 from collections import defaultdict
-from azure.cli.core.aaz import has_value, AAZListArg, AAZStrArg, AAZIntArg, register_command
+from azure.cli.core.aaz import has_value, AAZStrArg
 from azure.cli.core.azclierror import ValidationError
 from azure.cli.core.commands.validators import validate_file_or_dict
+from azure.cli.command_modules.monitor.actions import AAZCustomListArg
 
+from .aaz.latest.monitor.data_collection.endpoint import Create as _EndpointCreate
 from .aaz.latest.monitor.data_collection.rule import Create as _RuleCreate, Update as _RuleUpdate, Show as RuleShow
 
 try:
@@ -25,6 +27,29 @@ except ImportError as e:
         pass
     else:
         raise e
+
+
+class EndpointCreate(_EndpointCreate):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.public_network_access._required = True
+        return args_schema
+
+
+def monitor_data_collection_rule_show(client,
+                                      resource_group_name,
+                                      data_collection_rule_name):
+    return client.get(resource_group_name=resource_group_name,
+                      data_collection_rule_name=data_collection_rule_name)
+
+
+def monitor_data_collection_endpoint_show(client,
+                                          resource_group_name,
+                                          data_collection_endpoint_name):
+    return client.get(resource_group_name=resource_group_name,
+                      data_collection_endpoint_name=data_collection_endpoint_name)
 
 
 def monitor_data_collection_rule_association_list(cmd, resource_group_name=None, data_collection_rule_name=None,
@@ -50,7 +75,7 @@ class RuleCreate(_RuleCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.min_count = AAZStrArg(
+        args_schema.rule_file = AAZStrArg(
             options=["--rule-file"],
             required=False,
             help='The json file for rule parameters. If provided, corresponding parameter will be overwrited by value from rule file' + '''
@@ -188,7 +213,7 @@ def process_data_source_performance_counters(args):
 
 
 def process_data_source_syslog(args):
-    if has_value(args.syslog):
+    if not has_value(args.syslog):
         return
     properties = defaultdict(list)
     for x in args.syslog:
@@ -214,7 +239,7 @@ def process_data_source_syslog(args):
 
 
 def process_data_source_windows_event_logs(args):
-    if has_value(args.windows_event_logs):
+    if not has_value(args.windows_event_logs):
         return
     properties = defaultdict(list)
     for x in args.windows_event_logs:
@@ -284,7 +309,7 @@ class RuleUpdate(_RuleUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.data_flows_remain = AAZListArg(
+        args_schema.data_flows_remain = AAZCustomListArg(
             options=["--data-flows", "--data-flows-remain"],
             arg_group="Data Flow",
             help="The specification of data flows." + '''
@@ -303,7 +328,7 @@ class RuleUpdate(_RuleUpdate):
             help="The list of Azure VM extension data source configurations. Expected value: json-string/@json-file.",
         )
 
-        args_schema.performance_counters = AAZListArg(
+        args_schema.performance_counters = AAZCustomListArg(
             options=["--performance-counters"],
             arg_group="Data Sources",
             help="The list of performance counter data source configurations." + '''
@@ -317,7 +342,7 @@ class RuleUpdate(_RuleUpdate):
         )
         args_schema.performance_counters.Element = AAZStrArg()
 
-        args_schema.syslog = AAZListArg(
+        args_schema.syslog = AAZCustomListArg(
             options=["--syslog"],
             arg_group="Data Sources",
             help="The list of Syslog data source configurations." + '''
@@ -331,7 +356,7 @@ class RuleUpdate(_RuleUpdate):
         )
         args_schema.syslog.Element = AAZStrArg()
 
-        args_schema.windows_event_logs = AAZListArg(
+        args_schema.windows_event_logs = AAZCustomListArg(
             options=["--windows-event-logs"],
             arg_group="Data Sources",
             help="The list of Windows Event Log data source configurations." + '''
@@ -344,7 +369,7 @@ class RuleUpdate(_RuleUpdate):
         )
         args_schema.windows_event_logs.Element = AAZStrArg()
 
-        args_schema.log_analytics = AAZListArg(
+        args_schema.log_analytics = AAZCustomListArg(
             options=["--log-analytics"],
             arg_group="Destinations",
             help="List of Log Analytics destinations." + '''
@@ -356,7 +381,7 @@ class RuleUpdate(_RuleUpdate):
         )
         args_schema.log_analytics.Element = AAZStrArg()
 
-        args_schema.monitor_metrics = AAZListArg(
+        args_schema.monitor_metrics = AAZCustomListArg(
             options=["--monitor-metrics"],
             arg_group="Destinations",
             help="Azure Monitor Metrics destination." + '''
@@ -368,7 +393,7 @@ class RuleUpdate(_RuleUpdate):
 
         return args_schema
 
-    def pre_operations(self):
+    def pre_instance_update(self, instance):
         args = self.ctx.args
         process_data_flows_remain(args)
         process_data_source_extension(args)
@@ -383,43 +408,7 @@ def data_collection_rules_data_flows_list(cmd, resource_group_name, data_collect
     rule_instance = RuleShow(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "data_collection_rule_name": data_collection_rule_name})
-    return rule_instance["data_flows"]
-
-
-@register_command("monitor data-collection rule data-flow add")
-class RuleDataFlowsAdd(_RuleUpdate):
-    """Add a data flow.
-
-    :example: Add a data flow
-    az monitor data-collection rule data-flow add --rule-name "myCollectionRule"
-    --resource-group "myResourceGroup" --destinations XX3 XX4 --streams "Microsoft-Perf" "Microsoft-WindowsEvent"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.data_flows_destinations = AAZListArg(
-            options=["--destinations"],
-            required=True,
-            help="List of destinations for this data flow.",
-        )
-        args_schema.data_flows_destinations.Element = AAZStrArg()
-        args_schema.data_flows_streams = AAZListArg(
-            options=["--streams"],
-            required=True,
-            help="List of streams for this data flow. Values can be: Microsoft-Event, Microsoft-InsightsMetrics, Microsoft-Perf, Microsoft-Syslog, Microsoft-WindowsEvent, etc",
-        )
-        args_schema.data_flows_streams.Element = AAZStrArg()
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        data_flow = {}
-        if has_value(args.data_flows_streams):
-            data_flow["streams"] = args.data_flows_streams.to_serialized_data()
-        if has_value(args.data_flows_destinations):
-            data_flow["destinations"] = args.data_flows_destinations.to_serialized_data()
-        instance.properties.data_flows.append(data_flow)
+    return rule_instance["dataFlows"]
 
 
 def data_collection_rules_log_analytics_list(cmd, resource_group_name, data_collection_rule_name):
@@ -427,7 +416,7 @@ def data_collection_rules_log_analytics_list(cmd, resource_group_name, data_coll
         "resource_group": resource_group_name,
         "data_collection_rule_name": data_collection_rule_name
     })
-    return rule_instance["destinations"]["log_analytics"]
+    return rule_instance["destinations"].get("logAnalytics", [])
 
 
 def data_collection_rules_log_analytics_show(cmd, resource_group_name, data_collection_rule_name, name):
@@ -435,117 +424,11 @@ def data_collection_rules_log_analytics_show(cmd, resource_group_name, data_coll
         "resource_group": resource_group_name,
         "data_collection_rule_name": data_collection_rule_name
     })
-    item_list = rule_instance["destinations"]["log_analytics"]
+    item_list = rule_instance["destinations"].get("logAnalytics", [])
     for item in item_list:
         if item["name"] == name:
             return item
     return {}
-
-
-@register_command("monitor data-collection rule log-analytics add")
-class RuleDestinationsLogAnalyticsAdd(_RuleUpdate):
-    """Add Log Analytics destinations of a data collection rule.
-
-    :example: Add Log Analytics destinations of a data collection rule
-    az monitor data-collection rule log-analytics add --rule-name "myCollectionRule"
-    --resource-group "myResourceGroup" --name "workspace2" --resource-id "/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/workspace2"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.destination_log_analytics_name = AAZStrArg(
-            options=["--name", "-n"],
-            required=True,
-            help="A friendly name for the destination. This name should be unique across all destinations (regardless of type) within the data collection rule.",
-        )
-        args_schema.destination_log_analytics_resource_id = AAZStrArg(
-            options=["--resource-id"],
-            required=True,
-            help="The resource ID of the Log Analytics workspace.",
-        )
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        item_list = instance.properties.destinations.log_analytics
-        name = args.destination_log_analytics_name.to_serialized_data()
-        for item in item_list:
-            if item.name == name:
-                from azure.cli.core.azclierror import InvalidArgumentValueError
-                raise InvalidArgumentValueError("Name {} exists.".format(name))
-        log_analytic = {
-            'name': name,
-            'workspace_resource_id': args.destination_log_analytics_resource_id.to_serialized_data()
-        }
-        instance.properties.destinations.log_analytics.append(log_analytic)
-
-
-@register_command("monitor data-collection rule log-analytics delete")
-class RuleDestinationsLogAnalyticsDelete(_RuleUpdate):
-    """Delete a Log Analytics destinations of a data collection rule.
-
-    :example: Delete a Log Analytics destinations of a data collection rule
-    az monitor data-collection rule log-analytics delete --rule-name "myCollectionRule"
-    --resource-group "myResourceGroup" --name "workspace2"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.destination_log_analytics_name = AAZStrArg(
-            options=["--name", "-n"],
-            required=True,
-            help="A friendly name for the destination. This name should be unique across all destinations (regardless of type) within the data collection rule.",
-        )
-
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        item_list = instance.properties.destinations.log_analytics
-        name = args.destination_log_analytics_name.to_serialized_data()
-        remain_list = []
-        for item in item_list:
-            if item.name != name:
-                remain_list.append(item)
-        instance.properties.destinations.log_analytics = remain_list
-
-
-@register_command("monitor data-collection rule log-analytics update")
-class RuleDestinationsLogAnalyticsUpdate(_RuleUpdate):
-    """Update a Log Analytics destination of a data collection rule.
-
-    :example: Update a Log Analytics destination of a data collection rule
-    az monitor data-collection rule log-analytics update --rule-name "myCollectionRule"
-    --resource-group "myResourceGroup" --name "workspace2"
-    --resource-id "/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/anotherWorkspace"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.destination_log_analytics_name = AAZStrArg(
-            options=["--name", "-n"],
-            required=True,
-            help="A friendly name for the destination. This name should be unique across all destinations (regardless of type) within the data collection rule.",
-        )
-        args_schema.destination_log_analytics_resource_id = AAZStrArg(
-            options=["--resource-id"],
-            help="The resource ID of the Log Analytics workspace.",
-        )
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        if not has_value(args.destination_log_analytics_resource_id):
-            return
-        item_list = instance.properties.destinations.log_analytics
-        name = args.destination_log_analytics_name.to_serialized_data()
-        for item in item_list:
-            if item.name == name:
-                item.workspace_resource_id = args.destination_log_analytics_resource_id.to_serialized_data()
-                break
 
 
 def data_collection_rules_performance_counters_list(cmd, resource_group_name, data_collection_rule_name):
@@ -553,7 +436,7 @@ def data_collection_rules_performance_counters_list(cmd, resource_group_name, da
         "resource_group": resource_group_name,
         "data_collection_rule_name": data_collection_rule_name
     })
-    return rule_instance["data_sources"]["performance_counters"]
+    return rule_instance["dataSources"].get("performanceCounters", [])
 
 
 def data_collection_rules_performance_counters_show(cmd, resource_group_name, data_collection_rule_name, name):
@@ -561,166 +444,11 @@ def data_collection_rules_performance_counters_show(cmd, resource_group_name, da
         "resource_group": resource_group_name,
         "data_collection_rule_name": data_collection_rule_name
     })
-    item_list = rule_instance["data_sources"]["performance_counters"]
+    item_list = rule_instance["dataSources"].get("performanceCounters", [])
     for item in item_list:
         if item['name'] == name:
             return item
     return {}
-
-
-@register_command("monitor data-collection rule performance-counter add")
-class RuleDataSourcesPerformanceCountersAdd(_RuleUpdate):
-    """Add a Log performance counter data source.
-
-    :example: Add a Log performance counter data source
-    az monitor data-collection rule performance-counter add --rule-name "myCollectionRule"
-    --resource-group "myResourceGroup" --name "team2ExtraCounters" --streams "Microsoft-Perf"
-    --counter-specifiers "\\Process(_Total)\\Thread Count" "\\LogicalDisk(_Total)\\Free
-    Megabytes" --sampling-frequency 30
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.performance_counters_name = AAZStrArg(
-            options=["--name", "-n"],
-            required=True,
-            help="A friendly name for the data source. "
-                 "This name should be unique across all data sources (regardless of type) within the data collection rule.",
-        )
-        args_schema.performance_counters_streams = AAZListArg(
-            options=["--streams"],
-            required=True,
-            help="List of streams that this data source will be sent to. "
-                 "A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to. "
-                 "Values example: Microsoft-InsightsMetrics, Microsoft-Perf.",
-        )
-        args_schema.performance_counters_streams.Element = AAZStrArg()
-
-        args_schema.performance_counters_sampling_frequency_in_seconds = AAZIntArg(
-            options=["--sampling-frequency"],
-            required=True,
-            help="The number of seconds between consecutive counter measurements (samples).",
-        )
-
-        args_schema.performance_counters_counter_specifiers = AAZListArg(
-            options=["--counter-specifiers"],
-            required=True,
-            help="A list of specifier names of the performance counters you want to collect. "
-                 "Use a wildcard (*) to collect a counter for all instances. "
-                 "To get a list of performance counters on Windows, run the command 'typeperf'.",
-        )
-        args_schema.performance_counters_counter_specifiers.Element = AAZStrArg()
-
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        item_list = instance.properties.data_sources.performance_counters
-        name = args.performance_counters_name.to_serialized_data()
-        for item in item_list:
-            if item.name == name:
-                from azure.cli.core.azclierror import InvalidArgumentValueError
-                raise InvalidArgumentValueError("Name {} exists.".format(name))
-
-        performance_counter = {
-            'name': name,
-            'streams': args.performance_counters_streams.to_serialized_data(),
-            'sampling_frequency_in_seconds': args.performance_counters_sampling_frequency_in_seconds.to_serialized_data(),
-            'counter_specifiers': args.performance_counters_counter_specifiers.to_serialized_data()
-        }
-        instance.properties.data_sources.performance_counters.append(performance_counter)
-
-
-@register_command("monitor data-collection rule performance-counter delete")
-class RuleDataSourcesPerformanceCountersDelete(_RuleUpdate):
-    """Delete a Log performance counter data source.
-
-    :example: Delete a Log performance counter data source
-    az monitor data-collection rule performance-counter delete --rule-name "myCollectionRule"
-    --resource-group "myResourceGroup" --name "team2ExtraCounters"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.performance_counters_name = AAZStrArg(
-            options=["--name", "-n"],
-            required=True,
-            help="A friendly name for the data source. "
-                 "This name should be unique across all data sources (regardless of type) within the data collection rule.",
-        )
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        item_list = instance.properties.data_sources.performance_counters
-        name = args.performance_counters_name.to_serialized_data()
-        remained_items = []
-        for item in item_list:
-            if item.name != name:
-                remained_items.append(item)
-
-        instance.properties.data_sources.performance_counters = remained_items
-
-
-@register_command("monitor data-collection rule performance-counter update")
-class RuleDataSourcesPerformanceCountersUpdate(_RuleUpdate):
-    """Update a Log performance counter data source.
-
-        :example: Update a Log performance counter data source
-            az monitor data-collection rule performance-counter update --rule-name "myCollectionRule"
-            --resource-group "myResourceGroup" --name "team2ExtraCounters"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.performance_counters_name = AAZStrArg(
-            options=["--name", "-n"],
-            required=True,
-            help="A friendly name for the data source. "
-                 "This name should be unique across all data sources (regardless of type) within the data collection rule.",
-        )
-        args_schema.performance_counters_streams = AAZListArg(
-            options=["--streams"],
-            required=True,
-            help="List of streams that this data source will be sent to. "
-                 "A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to. "
-                 "Values example: Microsoft-InsightsMetrics, Microsoft-Perf.",
-        )
-        args_schema.performance_counters_streams.Element = AAZStrArg()
-
-        args_schema.performance_counters_sampling_frequency_in_seconds = AAZIntArg(
-            options=["--sampling-frequency"],
-            required=True,
-            help="The number of seconds between consecutive counter measurements (samples).",
-        )
-
-        args_schema.performance_counters_counter_specifiers = AAZListArg(
-            options=["--counter-specifiers"],
-            required=True,
-            help="A list of specifier names of the performance counters you want to collect. "
-                 "Use a wildcard (*) to collect a counter for all instances. "
-                 "To get a list of performance counters on Windows, run the command 'typeperf'.",
-        )
-        args_schema.performance_counters_counter_specifiers.Element = AAZStrArg()
-
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        item_list = instance.properties.data_sources.performance_counters
-        name = args.performance_counters_name.to_serialized_data()
-        for item in item_list:
-            if item.name == name:
-                if has_value(args.performance_counters_streams):
-                    item.streams = args.performance_counters_streams.to_serialized_data()
-                if has_value(args.performance_counters_sampling_frequency_in_seconds):
-                    item.sampling_frequency_in_seconds = args.performance_counters_sampling_frequency_in_seconds.to_serialized_data()
-                if has_value(args.performance_counters_counter_specifiers):
-                    item.counter_specifiers = args.performance_counters_counter_specifiers.to_serialized_data()
-                break
 
 
 def data_collection_rules_windows_event_logs_list(cmd, resource_group_name, data_collection_rule_name):
@@ -728,7 +456,7 @@ def data_collection_rules_windows_event_logs_list(cmd, resource_group_name, data
         "resource_group": resource_group_name,
         "data_collection_rule_name": data_collection_rule_name
     })
-    return rule_instance["data_sources"]["windows_event_logs"]
+    return rule_instance["dataSources"].get("windowsEventLogs", [])
 
 
 def data_collection_rules_windows_event_logs_show(cmd, resource_group_name, data_collection_rule_name, name):
@@ -736,145 +464,11 @@ def data_collection_rules_windows_event_logs_show(cmd, resource_group_name, data
         "resource_group": resource_group_name,
         "data_collection_rule_name": data_collection_rule_name
     })
-    item_list = rule_instance["data_sources"]["windows_event_logs"]
+    item_list = rule_instance["dataSources"].get("windowsEventLogs", [])
     for item in item_list:
         if item['name'] == name:
             return item
     return {}
-
-
-@register_command("monitor data-collection rule windows-event-log add")
-class RuleDataSourcesWindowsEventLogsAdd(_RuleUpdate):
-    """Add a Windows Event Log data source.
-
-    :example: Add a Windows Event Log data source
-    az monitor data-collection rule windows-event-log add --rule-name "myCollectionRule"
-    --resource-group "myResourceGroup" --name "appTeam1AppEvents" --streams "Microsoft-WindowsEvent"
-    --x-path-queries "Application!*[System[(Level = 1 or Level = 2 or Level =3)]]" "System![System[(Level = 1 or Level = 2 or Level = 3)]]"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.windows_event_logs_name = AAZStrArg(
-            options=["--name", "-n"],
-            required=True,
-            help="A friendly name for the data source. "
-                 "This name should be unique across all data sources (regardless of type) within the data collection rule.",
-        )
-        args_schema.windows_event_logs_streams = AAZListArg(
-            options=["--streams"],
-            required=True,
-            help="List of streams that this data source will be sent to. "
-                 "A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to.  "
-                 "Example values: Microsoft-Event, Microsoft-WindowsEvent.",
-        )
-        args_schema.windows_event_logs_streams.Element = AAZStrArg()
-
-        args_schema.windows_event_logs_x_path_queries = AAZListArg(
-            options=["--x-path-queries"],
-            required=True,
-            help="A list of Windows Event Log queries in XPATH format.",
-        )
-        args_schema.windows_event_logs_x_path_queries.Element = AAZStrArg()
-
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        item_list = instance.properties.data_sources.windows_event_logs
-        name = args.windows_event_logs_name.to_serialized_data()
-        for item in item_list:
-            if item.name == name:
-                from azure.cli.core.azclierror import InvalidArgumentValueError
-                raise InvalidArgumentValueError("Name {} exists.".format(name))
-
-        windows_event_log = {
-            'name': name,
-            'streams': args.windows_event_logs_streams.to_serialized_data(),
-            'x_path_queries': args.windows_event_logs_x_path_queries.to_serialized_data()
-        }
-        instance.properties.data_sources.windows_event_logs.append(windows_event_log)
-
-
-@register_command("monitor data-collection rule windows-event-log delete")
-class RuleDataSourcesWindowsEventLogsDelete(_RuleUpdate):
-    """Delete a Windows Event Log data source.
-
-    :example: Delete a Windows Event Log data source
-    az monitor data-collection rule windows-event-log delete --rule-name "myCollectionRule"
-    --resource-group "myResourceGroup" --name "appTeam1AppEvents"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.windows_event_logs_name = AAZStrArg(
-            options=["--name", "-n"],
-            required=True,
-            help="A friendly name for the data source. "
-                 "This name should be unique across all data sources (regardless of type) within the data collection rule.",
-        )
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        item_list = instance.properties.data_sources.windows_event_logs
-        name = args.windows_event_logs_name.to_serialized_data()
-        remained_list = []
-        for item in item_list:
-            if item.name != name:
-                remained_list.append(item)
-
-        instance.properties.data_sources.windows_event_logs = remained_list
-
-
-@register_command("monitor data-collection rule windows-event-log update")
-class RuleDataSourcesWindowsEventLogsUpdate(_RuleUpdate):
-    """Update a Windows Event Log data source.
-
-    :example: Update a Windows Event Log data source
-    az monitor data-collection rule windows-event-log update --rule-name "myCollectionRule"
-    --resource-group "myResourceGroup" --name "appTeam1AppEvents"
-    --x-path-queries "Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.windows_event_logs_name = AAZStrArg(
-            options=["--name", "-n"],
-            required=True,
-            help="A friendly name for the data source. "
-                 "This name should be unique across all data sources (regardless of type) within the data collection rule.",
-        )
-        args_schema.windows_event_logs_streams = AAZListArg(
-            options=["--streams"],
-            help="List of streams that this data source will be sent to. "
-                 "A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to.  "
-                 "Example values: Microsoft-Event, Microsoft-WindowsEvent.",
-        )
-        args_schema.windows_event_logs_streams.Element = AAZStrArg()
-
-        args_schema.windows_event_logs_x_path_queries = AAZListArg(
-            options=["--x-path-queries"],
-            help="A list of Windows Event Log queries in XPATH format.",
-        )
-        args_schema.windows_event_logs_x_path_queries.Element = AAZStrArg()
-
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        item_list = instance.properties.data_sources.windows_event_logs
-        name = args.windows_event_logs_name.to_serialized_data()
-        for item in item_list:
-            if item.name == name:
-                if has_value(args.windows_event_logs_streams):
-                    item.streams = args.windows_event_logs_streams.to_serialized_data()
-                if has_value(args.windows_event_logs_x_path_queries):
-                    item.x_path_queries = args.windows_event_logs_x_path_queries.to_serialized_data()
-                break
 
 
 def data_collection_rules_syslog_list(cmd, resource_group_name, data_collection_rule_name):
@@ -882,7 +476,7 @@ def data_collection_rules_syslog_list(cmd, resource_group_name, data_collection_
         "resource_group": resource_group_name,
         "data_collection_rule_name": data_collection_rule_name
     })
-    return rule_instance["data_sources"]["syslog"]
+    return rule_instance["dataSources"].get("syslog", [])
 
 
 def data_collection_rules_syslog_show(cmd, resource_group_name, data_collection_rule_name, name):
@@ -890,160 +484,8 @@ def data_collection_rules_syslog_show(cmd, resource_group_name, data_collection_
         "resource_group": resource_group_name,
         "data_collection_rule_name": data_collection_rule_name
     })
-    item_list = rule_instance["data_sources"]["syslog"]
+    item_list = rule_instance["dataSources"].get("syslog", [])
     for item in item_list:
         if item['name'] == name:
             return item
     return {}
-
-
-@register_command("monitor data-collection rule syslog add")
-class RuleDataSourcesSyslogAdd(_RuleUpdate):
-    """Add a Syslog data source.
-
-    :example: Add a Syslog data source
-    az monitor data-collection rule syslog add --rule-name "myCollectionRule" --resource-group
-    "myResourceGroup" --name "syslogBase" --facility-names "syslog" --log-levels "Alert" "Critical"
-    --streams "Microsoft-Syslog"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.syslog_name = AAZStrArg(
-            options=["--name", "-n"],
-            required=True,
-            help="A friendly name for the data source. "
-                 "This name should be unique across all data sources (regardless of type) within the data collection rule.",
-        )
-        args_schema.syslog_streams = AAZListArg(
-            options=["--streams"],
-            required=True,
-            help="List of streams that this data source will be sent to. "
-                 "A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to.  "
-                 "Example values: Microsoft-Syslog.",
-        )
-        args_schema.syslog_streams.Element = AAZStrArg()
-
-        args_schema.syslog_facility_names = AAZListArg(
-            options=["--facility-names"],
-            required=True,
-            help="The list of facility names.  "
-                 "Example values: *, auth, authpriv, cron, daemon, kern, local0, local1, local2, local3, local4, local5, local6, local7, "
-                 "lpr, mail, mark, news, syslog, user, uucp.",
-        )
-        args_schema.syslog_facility_names.Element = AAZStrArg()
-
-        args_schema.syslog_log_levels = AAZListArg(
-            options=["--log-levels"],
-            help="The log levels to collect.  Allowed values: *, Alert, Critical, Debug, Emergency, Error, Info, Notice, Warning.",
-        )
-        args_schema.syslog_log_levels.Element = AAZStrArg()
-
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        item_list = instance.properties.data_sources.syslog
-        name = args.syslog_name.to_serialized_data()
-        for item in item_list:
-            if item.name == name:
-                from azure.cli.core.azclierror import InvalidArgumentValueError
-                raise InvalidArgumentValueError("Name {} exists.".format(name))
-
-        syslog = {
-            'name': name,
-            'streams': args.syslog_streams.to_serialized_data(),
-            'facility_names': args.syslog_facility_names.to_serialized_data()
-        }
-        if has_value(args.syslog_log_levels):
-            syslog["log_levels"] = args.syslog_log_levels.to_serialized_data()
-        instance.properties.data_sources.syslog.append(syslog)
-
-
-@register_command("monitor data-collection rule syslog delete")
-class RuleDataSourcesSyslogDelete(_RuleUpdate):
-    """Delete a Syslog data source.
-
-    :example: Delete a Syslog data source
-    az monitor data-collection rule syslog delete --rule-name "myCollectionRule"
-    --resource-group "myResourceGroup" --name "syslogBase"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.syslog_name = AAZStrArg(
-            options=["--name", "-n"],
-            required=True,
-            help="A friendly name for the data source. "
-                 "This name should be unique across all data sources (regardless of type) within the data collection rule.",
-        )
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        item_list = instance.properties.data_sources.syslog
-        name = args.syslog_name.to_serialized_data()
-        remained_list = []
-        for item in item_list:
-            if item.name != name:
-                remained_list.append(item)
-        instance.properties.data_sources.syslog = remained_list
-
-
-@register_command("monitor data-collection rule syslog update")
-class RuleDataSourcesSyslogUpdate(_RuleUpdate):
-    """Update a Syslog data source.
-
-    :example: Update a Syslog data source
-    az monitor data-collection rule syslog update --rule-name "myCollectionRule"
-    --resource-group "myResourceGroup" --name "syslogBase" --facility-names "syslog" --log-levels "Emergency" "Critical"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.syslog_name = AAZStrArg(
-            options=["--name", "-n"],
-            required=True,
-            help="A friendly name for the data source. "
-                 "This name should be unique across all data sources (regardless of type) within the data collection rule.",
-        )
-        args_schema.syslog_streams = AAZListArg(
-            options=["--streams"],
-            help="List of streams that this data source will be sent to. "
-                 "A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to.  "
-                 "Example values: Microsoft-Syslog.",
-        )
-        args_schema.syslog_streams.Element = AAZStrArg()
-
-        args_schema.syslog_facility_names = AAZListArg(
-            options=["--facility-names"],
-            help="The list of facility names.  "
-                 "Example values: *, auth, authpriv, cron, daemon, kern, local0, local1, local2, local3, local4, local5, local6, local7, "
-                 "lpr, mail, mark, news, syslog, user, uucp.",
-        )
-        args_schema.syslog_facility_names.Element = AAZStrArg()
-
-        args_schema.syslog_log_levels = AAZListArg(
-            options=["--log-levels"],
-            help="The log levels to collect.  Allowed values: *, Alert, Critical, Debug, Emergency, Error, Info, Notice, Warning.",
-        )
-        args_schema.syslog_log_levels.Element = AAZStrArg()
-
-        return args_schema
-
-    def pre_instance_update(self, instance):
-        args = self.ctx.args
-        item_list = instance.properties.data_sources.syslog
-        name = args.syslog_name.to_serialized_data()
-        for item in item_list:
-            if item.name == name:
-                if has_value(args.syslog_streams):
-                    item.streams = args.syslog_streams.to_serialized_data()
-                if has_value(args.syslog_facility_names):
-                    item.facility_names = args.syslog_facility_names.to_serialized_data()
-                if has_value(args.syslog_log_levels):
-                    item.log_levels = args.syslog_log_levels.to_serialized_data()
-                break

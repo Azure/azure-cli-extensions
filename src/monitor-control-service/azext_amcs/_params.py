@@ -26,7 +26,7 @@ from azext_amcs.action import (
     AddDataSourcesWindowsEventLogs,
     AddDataSourcesSyslog
 )
-from azext_amcs.manual._validators import validate_association_name_with_endpoint
+from azext_amcs._validators import validate_association_name_with_endpoint
 
 from azext_amcs.vendored_sdks.amcs.models import KnownDataFlowStreams, KnownPerfCounterDataSourceStreams, \
     KnownWindowsEventLogDataSourceStreams, KnownSyslogDataSourceStreams, \
@@ -37,12 +37,40 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
 
     with self.argument_context('monitor data-collection rule association list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('data_collection_rule_name', options_list=['--rule-name'], type=str, help='The name of the data '
-                                                                                             'collection rule. The name is case insensitive.')
+        c.argument('data_collection_rule_name', options_list=['--rule-name'], type=str,
+                   help='The name of the data collection rule. The name is case insensitive.')
         c.argument('data_collection_endpoint_name', options_list=['--endpoint-name'], type=str,
                    help='The name of the data collection endpoint. The name '
                         'is case insensitive.')
         c.argument('resource_uri', options_list=['--resource'], type=str, help='The identifier of the resource.')
+
+    with self.argument_context('monitor data-collection rule association') as c:
+        c.argument('resource_uri', options_list=['--resource'], help='The identifier of the resource.')
+        c.argument('association_name', options_list=['--name', '-n'], help='The name of the association.')
+        c.argument('description', help='Description of the association.')
+        c.argument('rule_id', help='The resource ID of the data collection rule that is to be associated.')
+        c.argument('endpoint_id', help='The resource ID of the data collection endpoint that is to be associated.',
+                   validator=validate_association_name_with_endpoint)
+        c.argument('data_collection_rule_name', options_list=['--rule-name'])
+
+    with self.argument_context('monitor data-collection rule association list') as c:
+        c.argument('data_collection_rule_name', options_list=['--rule-name'], id_part=None)
+
+    with self.argument_context('monitor data-collection rule') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('data_collection_rule_name', options_list=['--name', '-n'], help='The name of the data '
+                   'collection rule. The name is case insensitive.', id_part='name')
+        c.argument('tags', tags_type)
+        c.argument('description', help='Description of the data collection rule.')
+
+    with self.argument_context('monitor data-collection rule list') as c:
+        c.argument('data_collection_rule_name', id_part=None)
+
+    with self.argument_context('monitor data-collection rule create') as c:
+        c.argument('data_collection_rule_name', id_part=None)
+        c.argument('rule_file', type=str, help='The json file for rule parameters.', required=True)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
 
     with self.argument_context('monitor data-collection endpoint') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -61,7 +89,8 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('monitor data-collection endpoint create') as c:
         c.argument('data_collection_endpoint_name', id_part=None)
 
-    with self.argument_context('monitor data-collection rule association') as c:
+    with self.argument_context('monitor data-collection rule association list') as c:
+        c.argument('data_collection_rule_name', options_list=['--rule-name'], id_part=None)
         c.argument('resource_uri', options_list=['--resource'], help='The identifier of the resource.')
         c.argument('association_name', options_list=['--name', '-n'], help='The name of the association.')
         c.argument('description', help='Description of the association.')
@@ -69,9 +98,6 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('endpoint_id', help='The resource ID of the data collection endpoint that is to be associated.',
                    validator=validate_association_name_with_endpoint)
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
-
-    with self.argument_context('monitor data-collection rule association list') as c:
-        c.argument('data_collection_rule_name', options_list=['--rule-name'], id_part=None)
 
     with self.argument_context('monitor data-collection rule') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -100,15 +126,6 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
                    type=validate_file_or_dict, help='The list of Azure VM extension data source configurations. '
                    'Expected value: json-string/@json-file.')
 
-    with self.argument_context('monitor data-collection rule list') as c:
-        c.argument('data_collection_rule_name', id_part=None)
-
-    with self.argument_context('monitor data-collection rule create') as c:
-        c.argument('data_collection_rule_name', id_part=None)
-        c.argument('rule_file', type=str, help='The json file for rule parameters.', required=True)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
-                   validator=get_default_location_from_resource_group)
-
     with self.argument_context('monitor data-collection rule data-flow') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
         c.argument('streams', options_list=['--streams'], arg_type=get_enum_type(KnownDataFlowStreams),
@@ -120,7 +137,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('data_collection_rule_name', id_part=None)
 
     with self.argument_context('monitor data-collection rule log-analytics') as c:
-        c.argument('data_collection_rule_name', options_list=['--rule-name'])
+        c.argument('data_collection_rule_name', options_list=['--rule-name'], id_part=None)
         c.argument('name', options_list=['--name', '-n'],
                    help='A friendly name for the destination. This name should be unique across all destinations '
                    '(regardless of type) within the data collection rule.')
@@ -181,5 +198,4 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
 
     with self.argument_context('monitor data-collection rule syslog list') as c:
         c.argument('data_collection_rule_name', id_part=None)
-
 

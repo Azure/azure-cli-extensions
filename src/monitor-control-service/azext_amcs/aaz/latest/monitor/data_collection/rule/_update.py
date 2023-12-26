@@ -44,7 +44,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.data_collection_rule_name = AAZStrArg(
-            options=["-n", "--name", "--data-collection-rule-name"],
+            options=["-n", "--name", "--rule-name", "--data-collection-rule-name"],
             help="The name of the data collection rule. The name is case insensitive.",
             required=True,
             id_part="name",
