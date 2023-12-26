@@ -9,4 +9,4 @@
 # flake8: noqa
 
 from .__cmd_group import *
-from ._migrate_to_new_pricing_model import *
+from ._show import *
