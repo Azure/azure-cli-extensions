@@ -139,14 +139,14 @@ def perform_enable_azure_container_storage(
             logger.warning("Azure Container Storage successfully installed.")
     except Exception as ex:  # pylint: disable=broad-except
         if is_cluster_create:
-            logger.error(f"Azure Container Storage failed to install.\nError: {ex}")
+            logger.error("Azure Container Storage failed to install.\nError: %s", ex)
             logger.warning(
                 "AKS cluster is created. "
                 "Please run `az aks update` along with `--enable-azure-container-storage` "
                 "to enable Azure Container Storage."
             )
         else:
-            logger.error(f"AKS update to enable Azure Container Storage failed.\nError: {ex}")
+            logger.error("AKS update to enable Azure Container Storage failed.\nError: %s", ex)
 
 
 def perform_disable_azure_container_storage(

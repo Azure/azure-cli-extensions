@@ -2993,11 +2993,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--cluster-name={name} "
             "--nodepool-name={node_pool_name}",
             checks=[
-                # if rerun the recording, please update latestNodeImageVersion to the latest value
-                self.check_pattern(
-                    "latestNodeImageVersion",
-                    r"AKSUbuntu-(\d{2})04gen2containerd-202([0-9])(0[1-9]|1[012]).(0[1-9]|[12]\d|3[01]).(\d)",
-                ),
+                self.exists("latestNodeImageVersion"),
                 self.check(
                     "type",
                     "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles",

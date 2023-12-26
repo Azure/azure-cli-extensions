@@ -61,11 +61,10 @@ def register_dependent_rps(cmd, subscription_id) -> bool:
 
     except Exception as e:  # pylint: disable=broad-except
         logger.error(
-            "Installation of Azure Container Storage requires registering to the following "
-            f"resource provider: {required_rp}. We were unable to perform the registration on your behalf "
-            f"due to the following error: {e}\n"
+            "Installation of Azure Container Storage requires registering to the following resource provider: %s. "
+            "We were unable to perform the registration on your behalf due to the following error: %s\n"
             "Please check with your admin on permissions, or try running registration manually with: "
-            f"`az provider register --namespace {required_rp}` command."
+            "`az provider register --namespace %s` command.", required_rp, e, required_rp
         )
 
     return is_registered
