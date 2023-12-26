@@ -87,7 +87,7 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
         try:
             parsed_storage_account = parse_resource_id(storage_account_id)
         except CloudError as ex:
-            raise CLIError(ex.message)  # pylint: disable=raise-missing-from
+            raise CLIError(ex.message) from ex
     else:
         raise CLIError(f"Invalid storage account id {storage_account_id}")
 
@@ -193,7 +193,7 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
             subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-k",
                                      kustomize_folder, "-n", CONST_PERISCOPE_NAMESPACE], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
-            raise CLIError(err.output)  # pylint: disable=raise-missing-from
+            raise CLIError(err.output) from err
     finally:
         os.remove(kustomize_file_path)
         os.rmdir(kustomize_folder)
@@ -463,7 +463,7 @@ def _display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-m
                         network_status_object)
                     ready_nodes[node_name] = True
                 except subprocess.CalledProcessError as err:
-                    raise CLIError(err.output)  # pylint: disable=raise-missing-from
+                    raise CLIError(err.output) from err
 
     print()
     if network_config_array:
