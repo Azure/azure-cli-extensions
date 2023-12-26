@@ -3439,11 +3439,11 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: '\b(az login)\b''\b(
-            isR)\b'egex: True
+            pattern: '\b(az login)\b'
+            isRegex: True
         - bodyContains:
-            pattern: '\b(az login)\b''\b(
-            isR)\b'egex: True
+            pattern: '\b(az login)\b'
+            isRegex: True
       - or:
         - isAction:
             action: Opened
