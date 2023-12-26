@@ -10,7 +10,6 @@
 # pylint: disable=line-too-long
 
 from uuid import uuid4
-from dataclasses import dataclass
 from knack.log import get_logger
 
 from azure.cli.core.commands import AzCliCommand
@@ -23,7 +22,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.mgmt.resourcegraph import ResourceGraphClient
 from azure.mgmt.resourcegraph.models import QueryRequest
 
-from .oid import KUBERNETES_RUNTIME_FPA_APP_ID, KUBERNETES_RUNTIME_RP, query_rp_oid
+from .common import KUBERNETES_RUNTIME_FPA_APP_ID, KUBERNETES_RUNTIME_RP, ConnectedClusterResourceId, query_rp_oid
 
 
 logger = get_logger(__name__)
@@ -34,42 +33,6 @@ KUBERNETES_EXTENSION_CONTRIBUTOR_ROLE_ID = "/providers/Microsoft.Authorization/r
 STORAGE_CLASS_CONTRIBUTOR_ROLE_ID = "/providers/Microsoft.Authorization/roleDefinitions/0cd9749a-3aaf-4ae5-8803-bd217705bf3b"
 STORAGE_CLASS_EXTENSION_NAME = "arc-k8s-storage-class"
 STORAGE_CLASS_EXTENSION_TYPE = "Microsoft.ManagedStorageClass"
-
-
-class InvalidResourceUriException(Exception):
-    def __init__(self):
-        super().__init__("Resource uri must reference a Microsoft.Kubernetes/connectedClusters resource.")
-
-
-def _compare_caseless(a: str, b: str) -> bool:
-    return a.casefold() == b.casefold()
-
-
-@dataclass
-class ConnectedClusterResourceId:
-    subscription_id: str
-    resource_group: str
-    cluster_name: str
-
-    @staticmethod
-    def parse(resource_uri: str) -> "ConnectedClusterResourceId":
-        parts = resource_uri.split("/")
-
-        if len(parts) != 9:
-            raise InvalidResourceUriException()
-
-        if not (_compare_caseless(parts[1], "subscriptions") and _compare_caseless(parts[3], "resourceGroups") and _compare_caseless(parts[5], "providers") and _compare_caseless(parts[6], "Microsoft.Kubernetes") and _compare_caseless(parts[7], "connectedClusters")):
-            raise InvalidResourceUriException()
-
-        return ConnectedClusterResourceId(
-            subscription_id=parts[2],
-            resource_group=parts[4],
-            cluster_name=parts[8]
-        )
-
-    @property
-    def resource_uri(self) -> str:
-        return f"/subscriptions/{self.subscription_id}/resourceGroups/{self.resource_group}/providers/Microsoft.Kubernetes/connectedClusters/{self.cluster_name}"
 
 
 def enable_storage_class(cmd: AzCliCommand, resource_uri: str):

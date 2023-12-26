@@ -9,7 +9,6 @@
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
 
-from dataclasses import dataclass
 from knack.log import get_logger
 
 from azure.cli.core.commands import AzCliCommand
@@ -18,7 +17,7 @@ from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.kubernetesconfiguration.models import Extension, Identity
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
-from .oid import KUBERNETES_RUNTIME_RP, query_rp_oid
+from .common import KUBERNETES_RUNTIME_RP, ConnectedClusterResourceId, query_rp_oid
 
 
 logger = get_logger(__name__)
@@ -27,42 +26,6 @@ logger = get_logger(__name__)
 # https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#kubernetes-extension-contributor
 LOAD_BALANCER_EXTENSION_NAME = "arcnetworking"
 LOAD_BALANCER_EXTENSION_TYPE = "microsoft.arcnetworking"
-
-
-class InvalidResourceUriException(Exception):
-    def __init__(self):
-        super().__init__("Resource uri must reference a Microsoft.Kubernetes/connectedClusters resource.")
-
-
-def _compare_caseless(a: str, b: str) -> bool:
-    return a.casefold() == b.casefold()
-
-
-@dataclass
-class ConnectedClusterResourceId:
-    subscription_id: str
-    resource_group: str
-    cluster_name: str
-
-    @staticmethod
-    def parse(resource_uri: str) -> "ConnectedClusterResourceId":
-        parts = resource_uri.split("/")
-
-        if len(parts) != 9:
-            raise InvalidResourceUriException()
-
-        if not (_compare_caseless(parts[1], "subscriptions") and _compare_caseless(parts[3], "resourceGroups") and _compare_caseless(parts[5], "providers") and _compare_caseless(parts[6], "Microsoft.Kubernetes") and _compare_caseless(parts[7], "connectedClusters")):
-            raise InvalidResourceUriException()
-
-        return ConnectedClusterResourceId(
-            subscription_id=parts[2],
-            resource_group=parts[4],
-            cluster_name=parts[8]
-        )
-
-    @property
-    def resource_uri(self) -> str:
-        return f"/subscriptions/{self.subscription_id}/resourceGroups/{self.resource_group}/providers/Microsoft.Kubernetes/connectedClusters/{self.cluster_name}"
 
 
 def enable_load_balancer(cmd: AzCliCommand, resource_uri: str):
