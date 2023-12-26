@@ -2996,7 +2996,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 # if rerun the recording, please update latestNodeImageVersion to the latest value
                 self.check_pattern(
                     "latestNodeImageVersion",
-                    "AKSUbuntu-(\d{{2}})04gen2containerd-202([0-9])(0[1-9]|1[012]).(0[1-9]|[12]\d|3[01]).(\d)",
+                    r"AKSUbuntu-(\d{2})04gen2containerd-202([0-9])(0[1-9]|1[012]).(0[1-9]|[12]\d|3[01]).(\d)",
                 ),
                 self.check(
                     "type",
@@ -4319,7 +4319,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd += (
             f"--assign-identity {identity_id} " if user_assigned_identity else ""
         )
-        create_cmd += f"--enable-syslog " if syslog_enabled else ""
+        create_cmd += "--enable-syslog " if syslog_enabled else ""
         create_cmd += (
             f"--data-collection-settings {data_collection_settings} "
             if data_collection_settings
@@ -4339,8 +4339,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         workspace_resource_id = response["addonProfiles"]["omsagent"]["config"][
             "logAnalyticsWorkspaceResourceID"
         ]
-        workspace_name = workspace_resource_id.split("/")[-1]
-        workspace_resource_group = workspace_resource_id.split("/")[4]
 
         # check that the DCR was created
         location = resource_group_location
@@ -4364,7 +4362,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 checks=[
                     self.check(
                         "properties.dataSources.syslog[0].streams[0]",
-                        f"Microsoft-Syslog",
+                        "Microsoft-Syslog",
                     )
                 ],
             )
@@ -4375,27 +4373,27 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 checks=[
                     self.check(
                         "properties.dataSources.extensions[0].name",
-                        f"ContainerInsightsExtension",
+                        "ContainerInsightsExtension",
                     ),
                     self.check(
                         "properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.interval",
-                        f"1m",
+                        "1m",
                     ),
                     self.check(
                         "properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.namespaceFilteringMode",
-                        f"Include",
+                        "Include",
                     ),
                     self.check(
                         "properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.namespaces[0]",
-                        f"kube-system",
+                        "kube-system",
                     ),
                     self.check(
                         "properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.streams[0]",
-                        f"Microsoft-ContainerLogV2",
+                        "Microsoft-ContainerLogV2",
                     ),
                     self.check(
                         "properties.dataFlows[0].streams[0]",
-                        f"Microsoft-ContainerLogV2",
+                        "Microsoft-ContainerLogV2",
                     ),
                     self.check(
                         "properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.enableContainerLogV2",
@@ -4569,7 +4567,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             enable_monitoring_cmd = "aks enable-addons -a monitoring "
         enable_monitoring_cmd += f"--resource-group={resource_group} --name={aks_name} "
         if syslog_enabled:
-            enable_monitoring_cmd += f"--enable-syslog "
+            enable_monitoring_cmd += "--enable-syslog "
 
         response = self.cmd(
             enable_monitoring_cmd,
@@ -4584,8 +4582,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         workspace_resource_id = response["addonProfiles"]["omsagent"]["config"][
             "logAnalyticsWorkspaceResourceID"
         ]
-        workspace_name = workspace_resource_id.split("/")[-1]
-        workspace_resource_group = workspace_resource_id.split("/")[4]
 
         # check that the DCR was created
         location = resource_group_location
@@ -4609,7 +4605,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 checks=[
                     self.check(
                         "properties.dataSources.syslog[0].streams[0]",
-                        f"Microsoft-Syslog",
+                        "Microsoft-Syslog",
                     )
                 ],
             )
@@ -4676,7 +4672,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         workspace_resource_id = response["addonProfiles"]["omsagent"]["config"][
             "logAnalyticsWorkspaceResourceID"
         ]
-        workspace_resource_group = workspace_resource_id.split("/")[4]
 
         try:
             # check that the DCR was created
@@ -4696,7 +4691,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             )
 
             assert False
-        except Exception as err:
+        except Exception:
             pass  # this is expected
 
         # make sure monitoring can be smoothly disabled
@@ -7802,21 +7797,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AzurePolicyExternalData",
             ]
         )
-        response = self.cmd(
+        self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
             ],
-        ).get_output_in_json()
-
-        cluster_resource_id = response["id"]
-        subscription = cluster_resource_id.split("/")[2]
-
-        from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-        from azure.cli.core.profiles._shared import AZURE_API_PROFILES
-
-        sdk_profile = AZURE_API_PROFILES["latest"][CUSTOM_MGMT_AKS_PREVIEW]
-        api_version = sdk_profile.default_api_version
+        )
 
         enable_cmd = " ".join(
             [
@@ -7998,10 +7984,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_keyvault = (
             "keyvault create --resource-group={resource_group} --name={kv_name} -o json"
         )
-        kv = self.cmd(
+        self.cmd(
             create_keyvault,
             checks=[self.check("properties.provisioningState", "Succeeded")],
-        ).get_output_in_json()
+        )
 
         create_key = "keyvault key create -n kms --vault-name {kv_name} -o json"
         key = self.cmd(
@@ -8020,9 +8006,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "keyvault set-policy --resource-group={resource_group} --name={kv_name} "
             "--object-id {identity_object_id} --key-permissions encrypt decrypt -o json"
         )
-        policy = self.cmd(
+        self.cmd(
             set_policy, checks=[self.check("properties.provisioningState", "Succeeded")]
-        ).get_output_in_json()
+        )
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
@@ -8121,10 +8107,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_keyvault = (
             "keyvault create --resource-group={resource_group} --name={kv_name} -o json"
         )
-        kv = self.cmd(
+        self.cmd(
             create_keyvault,
             checks=[self.check("properties.provisioningState", "Succeeded")],
-        ).get_output_in_json()
+        )
 
         create_key = "keyvault key create -n kms --vault-name {kv_name} -o json"
         key = self.cmd(
@@ -8143,9 +8129,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "keyvault set-policy --resource-group={resource_group} --name={kv_name} "
             "--object-id {identity_object_id} --key-permissions encrypt decrypt -o json"
         )
-        policy = self.cmd(
+        self.cmd(
             set_policy, checks=[self.check("properties.provisioningState", "Succeeded")]
-        ).get_output_in_json()
+        )
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
@@ -8259,9 +8245,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "keyvault set-policy --resource-group={resource_group} --name={kv_name} "
             "--object-id {identity_object_id} --key-permissions encrypt decrypt -o json"
         )
-        policy = self.cmd(
+        self.cmd(
             set_policy, checks=[self.check("properties.provisioningState", "Succeeded")]
-        ).get_output_in_json()
+        )
 
         # allow the identity approve private endpoint connection (Microsoft.KeyVault/vaults/privateEndpointConnectionsApproval/action)
         create_role_assignment = (
@@ -8269,7 +8255,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--assignee-object-id {identity_object_id} --assignee-principal-type "ServicePrincipal" '
             "--scope {kv_resource_id}"
         )
-        role_assignment = self.cmd(create_role_assignment).get_output_in_json()
+        self.cmd(create_role_assignment)
 
         # disable public network access
         disable_public_network_access = 'keyvault update --resource-group={resource_group} --name={kv_name} --public-network-access "Disabled" -o json'
@@ -8431,9 +8417,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "keyvault set-policy --resource-group={resource_group} --name={kv_name} "
             "--object-id {identity_object_id} --key-permissions encrypt decrypt -o json"
         )
-        policy = self.cmd(
+        self.cmd(
             set_policy, checks=[self.check("properties.provisioningState", "Succeeded")]
-        ).get_output_in_json()
+        )
 
         # allow the identity approve private endpoint connection (Microsoft.KeyVault/vaults/privateEndpointConnectionsApproval/action)
         create_role_assignment = (
@@ -8441,7 +8427,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--assignee-object-id {identity_object_id} --assignee-principal-type "ServicePrincipal" '
             "--scope {kv_resource_id}"
         )
-        role_assignment = self.cmd(create_role_assignment).get_output_in_json()
+        self.cmd(create_role_assignment)
 
         # disable public network access
         disable_public_network_access = 'keyvault update --resource-group={resource_group} --name={kv_name} --public-network-access "Disabled" -o json'
@@ -8567,9 +8553,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "keyvault set-policy --resource-group={resource_group} --name={kv_name} "
             "--object-id {identity_object_id} --key-permissions encrypt decrypt -o json"
         )
-        policy = self.cmd(
+        self.cmd(
             set_policy, checks=[self.check("properties.provisioningState", "Succeeded")]
-        ).get_output_in_json()
+        )
 
         # allow the identity approve private endpoint connection (Microsoft.KeyVault/vaults/privateEndpointConnectionsApproval/action)
         create_role_assignment = (
@@ -8577,7 +8563,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--assignee-object-id {identity_object_id} --assignee-principal-type "ServicePrincipal" '
             "--scope {kv_resource_id}"
         )
-        role_assignment = self.cmd(create_role_assignment).get_output_in_json()
+        self.cmd(create_role_assignment)
 
         # disable public network access
         disable_public_network_access = 'keyvault update --resource-group={resource_group} --name={kv_name} --public-network-access "Disabled" -o json'
@@ -8708,10 +8694,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_keyvault = (
             "keyvault create --resource-group={resource_group} --name={kv_name} -o json"
         )
-        kv = self.cmd(
+        self.cmd(
             create_keyvault,
             checks=[self.check("properties.provisioningState", "Succeeded")],
-        ).get_output_in_json()
+        )
 
         create_key = "keyvault key create -n kms --vault-name {kv_name} -o json"
         key = self.cmd(
@@ -8730,9 +8716,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "keyvault set-policy --resource-group={resource_group} --name={kv_name} "
             "--object-id {identity_object_id} --key-permissions encrypt decrypt -o json"
         )
-        policy = self.cmd(
+        self.cmd(
             set_policy, checks=[self.check("properties.provisioningState", "Succeeded")]
-        ).get_output_in_json()
+        )
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
@@ -9829,7 +9815,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             f"Your logs are being uploaded to storage account {stg_acct_name}",
             f"You can run 'az aks kanalyze -g {resource_group} -n {aks_name}' anytime to check the analysis results",
         ]:
-            if not pattern in kollect_output:
+            if pattern not in kollect_output:
                 raise CliTestError(
                     f"Output from kollect did not contain '{pattern}'. Output:\n{kollect_output}"
                 )
@@ -9854,7 +9840,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "daemonset.apps/aks-periscope",
             "daemonset.apps/aks-periscope-win",
         ]:
-            if not pattern in k_get_daemonset_output:
+            if pattern not in k_get_daemonset_output:
                 raise CliTestError(
                     f"Output from 'kubectl get daemonset' did not contain '{pattern}'. Output:\n{k_get_daemonset_output}"
                 )
@@ -10407,7 +10393,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     )
     def test_aks_create_with_nsg_control(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
-        nodepool_name = self.create_random_name("n", 6)
 
         self.kwargs.update(
             {
