@@ -129,23 +129,9 @@ class RuleCreate(_RuleCreate):
                 data = json_data
         for key in data:
             if key == 'dataSources':
-                # args.data_sources = {}
-                for key_ds in data['dataSources']:
-                    if key_ds == 'performanceCounters':
-                        args.data_sources.performance_counters = data['dataSources']['performanceCounters']
-                    if key_ds == 'windowsEventLogs':
-                        args.data_sources.windows_event_logs = data['dataSources']['windowsEventLogs']
-                    if key_ds == 'syslog':
-                        args.data_sources.syslog = data['dataSources']['syslog']
-                    if key_ds == 'extensions':
-                        args.data_sources.extensions = data['dataSources']['extensions']
+                args.data_sources = data['dataSources']
             if key == 'destinations':
-                # args.destinations = {}
-                for key_de in data['destinations']:
-                    if key_de == 'logAnalytics':
-                        args.destinations.log_analytics = data['destinations']['logAnalytics']
-                    if key_de == 'azureMonitorMetrics':
-                        args.destinations.azure_monitor_metrics = data['destinations']['azureMonitorMetrics']
+                args.destinations = data['destinations']
             if key == 'dataFlows':
                 args.data_flows = data['dataFlows']
             if key == "streamDeclarations":
