@@ -3,7 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=raise-missing-from, consider-using-f-string
 
 def _data_collection_rules_create(client,
                                   resource_group_name,
