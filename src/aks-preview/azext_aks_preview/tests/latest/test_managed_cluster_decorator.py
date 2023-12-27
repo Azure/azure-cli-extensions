@@ -5924,7 +5924,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec.context.attach_mc(mc)
         updated_mc = dec.update_workload_identity_profile(mc)
-        self.assertIsNone(updated_mc.security_profile.workload_identity)
+        self.assertIsNotNone(updated_mc.security_profile.workload_identity)
 
     def test_update_workload_identity_profile__enabled(self):
         dec = AKSPreviewManagedClusterUpdateDecorator(
