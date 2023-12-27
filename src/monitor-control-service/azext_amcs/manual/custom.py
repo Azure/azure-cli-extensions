@@ -14,13 +14,8 @@ def _data_collection_rules_create(client,
                          body=body)
 
 
-def data_collection_rules_create_man(client,
-                                 resource_group_name,
-                                 data_collection_rule_name,
-                                 rule_file,
-                                 location=None,
-                                 tags=None,
-                                 description=None):
+def data_collection_rules_create_man(client, resource_group_name, data_collection_rule_name, rule_file,
+                                     location=None, tags=None, description=None):
     from azure.cli.core.util import get_file_json
     from azure.cli.core.azclierror import FileOperationError, UnclassifiedUserFault
     body = {}

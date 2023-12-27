@@ -5,6 +5,7 @@ Release History
 1.0.0
 ++++++
 * Enable all of the facilities of `data-collection` in stable version `2022-06-01`
+* Remove `id_part` of subcommands `data-flow`, `log-analytics`, `performance-counter`, `windows-event-log` and `syslog` for `az monitor data-collection rule`
 
 0.4.1
 ++++++

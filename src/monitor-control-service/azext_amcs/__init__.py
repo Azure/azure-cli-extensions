@@ -21,8 +21,7 @@ class MonitorClientCommandsLoader(AzCommandsLoader):
         monitor_control_service_custom = CliCommandType(
             operations_tmpl='azext_amcs.custom#{}',
             client_factory=cf_monitor_control_service_cl)
-        parent = super(MonitorClientCommandsLoader, self)
-        parent.__init__(cli_ctx=cli_ctx, custom_command_type=monitor_control_service_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=monitor_control_service_custom)
 
     def load_command_table(self, args):
         from azure.cli.core.aaz import load_aaz_command_table

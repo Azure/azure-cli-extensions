@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-# pylint: disable=protected-access, line-too-long
+# pylint: disable=protected-access, line-too-long, too-many-branches
 
 from collections import defaultdict
 from azure.cli.core.aaz import has_value, AAZStrArg
@@ -60,7 +60,7 @@ def monitor_data_collection_rule_association_list(cmd, resource_group_name=None,
             "data_collection_rule_name": data_collection_rule_name,
             "resource_group": resource_group_name,
         })
-    elif resource_group_name and data_collection_endpoint_name is not None:
+    if resource_group_name and data_collection_endpoint_name is not None:
         from .aaz.latest.monitor.data_collection.endpoint.association import List as ListByEndpoint
         return ListByEndpoint(cli_ctx=cmd.cli_ctx)(command_args={
             "data_collection_endpoint_name": data_collection_rule_name,
@@ -120,8 +120,8 @@ class RuleCreate(_RuleCreate):
             raise FileOperationError("Is a directory: " + str(rule_file))
         except PermissionError:
             raise FileOperationError("Permission denied: " + str(rule_file))
-        except OSError as e:
-            raise UnclassifiedUserFault(e)
+        except OSError as err:
+            raise UnclassifiedUserFault(err)
         for key_prop in json_data:
             if key_prop == 'properties':
                 data = json_data['properties']
@@ -316,7 +316,6 @@ class RuleUpdate(_RuleUpdate):
         Usage: --data-flows streams=XX1 streams=XX2 destinations=XX1 destinations=XX2
         streams: Required. List of streams for this data flow.
         destinations: Required. List of destinations for this data flow.
-        
         Multiple actions can be specified by using more than one --data-flows argument.
         '''
         )
