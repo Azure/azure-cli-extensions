@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-# pylint: disable=protected-access, line-too-long, too-many-branches
+# pylint: disable=protected-access, line-too-long, too-many-branches, raise-missing-from, consider-using-f-string
 
 from collections import defaultdict
 from azure.cli.core.aaz import has_value, AAZStrArg
