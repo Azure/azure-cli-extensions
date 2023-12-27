@@ -304,7 +304,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
                 errorMessage = json.loads(response.content).get('message', None)
                 if errorMessage:
                     raise ClientRequestError("Request failed with error: " + errorMessage)
-                raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
+                raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed here.")
 
             tempdir = os.path.realpath(tempfile.gettempdir())
             rdpfilepath = os.path.join(tempdir, 'conn_{}.rdp'.format(uuid.uuid4().hex))
