@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import json
+import re
 from datetime import datetime
 from enum import Enum
 import os
@@ -207,7 +208,7 @@ def get_azure_files_info(file_sas_url):
 
 
 def _get_azure_storage_client_info(account_type, sas_url):
-    regex = compile("http(s)?://(?P<account_name>.*?)\.{0}\.(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/(?P<relative_path>.*?)\?(?P<sas_token>.*)".format(account_type))
+    regex = compile(f'http(s)?://(?P<account_name>.*?){re.escape(".")}{account_type}{re.escape(".")}(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/(?P<relative_path>.*?){re.escape("?")}(?P<sas_token>.*)')
     matchObj = search(regex, sas_url)
     account_name = matchObj.group('account_name')
     endpoint_suffix = matchObj.group('endpoint_suffix')
