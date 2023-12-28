@@ -78,7 +78,7 @@ class Onboard:
         fh = logging.FileHandler(self.logfile)
         fh.setFormatter(
             logging.Formatter(
-                fmt='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                fmt='%(asctime)s %(levelname)-8s %(name)-12s.%(lineno)-5d %(message)s',
                 datefmt='%Y-%m-%dT%H:%M:%S',
         ))
         fh.setLevel(logging.DEBUG)
@@ -238,7 +238,11 @@ class Onboard:
         if applStatus == 'Running':
             invokeApplianceRun = False
             if self.force:
-                invokeApplianceRun = confirmation_prompt('The resource bridge is already running. Running with --force flag will delete the existing resource bridge and create a new one. Do you want to continue?')
+                invokeApplianceRun = confirmation_prompt(
+                    'The resource bridge is already running. '
+                    'Running with --force flag will delete the existing resource bridge and create a new one. '
+                    'Do you want to continue?'
+                )
         else:
             self.force = self._evaluate_force_flag()
             if not self.force:
@@ -246,7 +250,10 @@ class Onboard:
                 if applStatus == 'WaitingForHeartbeat':
                     deleteAppl = True
                 elif applStatus:
-                    deleteAppl = confirmation_prompt(f'An existing Arc resource bridge is already present in Azure (status: {applStatus}). Do you want to delete it?')
+                    deleteAppl = confirmation_prompt(
+                        f'An existing Arc resource bridge is already present in Azure (status: {applStatus}). '
+                        'Do you want to delete it?'
+                    )
                 if deleteAppl:
                     assert applObj is not None
                     print('Deleting the existing Arc Appliance resource from azure...')
