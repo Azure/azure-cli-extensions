@@ -175,7 +175,9 @@ def load_arguments(self: AzCommandsLoader, _):
     with self.argument_context('scvmm vm stop') as c:
         c.argument(
             'skip_shutdown',
-            arg_type=get_three_state_flag(),
+            arg_type=get_three_state_flag(
+                positive_label='true', negative_label='false', return_label=True
+            ),
             help="Skip shutdown and power-off immediately.",
         )
 
@@ -317,6 +319,16 @@ def load_arguments(self: AzCommandsLoader, _):
             'avset_name',
             options_list=['--avset-name', '-a'],
             help="Name of the Availabilty Set.",
+        )
+        c.argument(
+            'availability_set_name',
+            help="Name of the AvailabilitySet."
+        )
+
+    with self.argument_context('scvmm cloud') as c:
+        c.argument(
+            'cloud_name',
+            help="Name of the Cloud."
         )
 
     with self.argument_context('scvmm vm guest-agent enable') as c:

@@ -8,6 +8,8 @@ import platform
 from unittest import mock
 import time
 import unittest
+
+from azure.cli.command_modules.containerapp._utils import format_location
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
@@ -17,6 +19,7 @@ from knack.util import CLIError
 
 from azext_containerapp.tests.latest.common import TEST_LOCATION
 
+from .common import STAGE_LOCATION
 from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -79,42 +82,15 @@ class ContainerappScenarioTest(ScenarioTest):
 
     # TODO rename
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="eastus2")
-    def test_container_acr(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
-
-        containerapp_name = self.create_random_name(prefix='containerapp-e2e', length=24)
-        registry_name = self.create_random_name(prefix='containerapp', length=24)
-
-        # Create ACR
-        acr = self.cmd('acr create -g {} -n {} --sku Basic --admin-enabled'.format(resource_group, registry_name)).get_output_in_json()
-        registry_server = acr["loginServer"]
-
-        acr_credentials = self.cmd('acr credential show -g {} -n {}'.format(resource_group, registry_name)).get_output_in_json()
-        registry_username = acr_credentials["username"]
-        registry_password = acr_credentials["passwords"][0]["value"]
-
-        # Create Container App with ACR
-        containerapp_name = self.create_random_name(prefix='containerapp-e2e', length=24)
-        create_string = 'containerapp create -g {} -n {} --environment {} --registry-username {} --registry-server {} --registry-password {}'.format(
-            resource_group, containerapp_name, env_id, registry_username, registry_server, registry_password)
-        self.cmd(create_string, checks=[
-            JMESPathCheck('name', containerapp_name),
-            JMESPathCheck('properties.configuration.registries[0].server', registry_server),
-            JMESPathCheck('properties.configuration.registries[0].username', registry_username),
-            JMESPathCheck('length(properties.configuration.secrets)', 1),
-        ])
-
-
-    # TODO rename
-    @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_update(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        #  identity is unavailable for location 'North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
-        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location)
 
         # Create basic Container App with default image
         containerapp_name = self.create_random_name(prefix='containerapp-update', length=24)
@@ -165,7 +141,6 @@ class ContainerappScenarioTest(ScenarioTest):
         ])
 
 
-    # TODO rename
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_container_acr(self, resource_group):
@@ -176,7 +151,10 @@ class ContainerappScenarioTest(ScenarioTest):
         registry_name = self.create_random_name(prefix='containerapp', length=24)
 
         # Create ACR
-        acr = self.cmd('acr create -g {} -n {} --sku Basic --admin-enabled'.format(resource_group, registry_name)).get_output_in_json()
+        acr_location = TEST_LOCATION
+        if format_location(acr_location) == format_location(STAGE_LOCATION):
+            acr_location = "eastus"
+        acr = self.cmd('acr create -g {} -n {} --sku Basic --admin-enabled --location {}'.format(resource_group, registry_name, acr_location)).get_output_in_json()
         registry_server = acr["loginServer"]
 
         acr_credentials = self.cmd('acr credential show -g {} -n {}'.format(resource_group, registry_name)).get_output_in_json()
@@ -307,12 +285,16 @@ class ContainerappScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_registry_msi(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        #  resource type 'Microsoft.ContainerRegistry/registries' is not available in North Central US(Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         app = self.create_random_name(prefix='app', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
 
-        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location)
 
         self.cmd(f'containerapp create -g {resource_group} -n {app} --environment {env_id} --min-replicas 1 --ingress external --target-port 80')
         self.cmd(f'acr create -g {resource_group} -n {acr} --sku basic --admin-enabled')

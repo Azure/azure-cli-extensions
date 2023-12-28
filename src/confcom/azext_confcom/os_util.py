@@ -5,6 +5,7 @@
 
 import base64
 import binascii
+import shutil
 import json
 import os
 from tarfile import TarFile
@@ -43,6 +44,13 @@ def load_json_from_str(data: str) -> dict:
 def load_json_from_file(path: str) -> dict:
     raw_data = load_str_from_file(path)
     return load_json_from_str(raw_data)
+
+
+def copy_file(src: str, dest: str) -> None:
+    try:
+        shutil.copy(src, dest)
+    except (FileNotFoundError, IsADirectoryError, PermissionError, OSError):
+        eprint(f"File not found at path: {src}")
 
 
 def load_str_from_file(path: str) -> str:

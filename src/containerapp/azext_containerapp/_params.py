@@ -10,9 +10,10 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
                                                 file_type,
                                                 get_three_state_flag, get_enum_type, tags_type)
 
+from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id,
-                          validate_custom_location_name_or_id)
-from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH
+                          validate_custom_location_name_or_id, validate_env_name_or_id_for_up)
+from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH
 
 
 def load_arguments(self, _):
@@ -20,11 +21,13 @@ def load_arguments(self, _):
     name_type = CLIArgumentType(options_list=['--name', '-n'])
 
     with self.argument_context('containerapp create') as c:
-        c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.", is_preview=True)
+        c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://aka.ms/SourceToCloudSupportedVersions.", is_preview=True)
+        c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)
 
     # Springboard
-    with self.argument_context('containerapp create', arg_group='Service Binding') as c:
+    with self.argument_context('containerapp create', arg_group='Service Binding', is_preview=True) as c:
         c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('customized_keys', action=AddCustomizedKeys, nargs='*', help='The customized keys used to change default configuration names. Key is the original name, value is the customized name.')
         c.argument('service_type', help="The service information for dev services.")
         c.ignore('service_type')
 
@@ -37,25 +40,72 @@ def load_arguments(self, _):
         c.argument('service_principal_client_secret', help='The service principal client secret. Used by GitHub Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
         c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by GitHub Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
 
-    # Source
+    # Source and Artifact
     with self.argument_context('containerapp update') as c:
-        c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.", is_preview=True)
+        c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://aka.ms/SourceToCloudSupportedVersions.", is_preview=True)
+        c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)
 
     # Springboard
-    with self.argument_context('containerapp update', arg_group='Service Binding') as c:
+    with self.argument_context('containerapp update', arg_group='Service Binding', is_preview=True) as c:
         c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('customized_keys', action=AddCustomizedKeys, nargs='*', help='The customized keys used to change default configuration names. Key is the original name, value is the customized name.')
         c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services(bindings) to be removed from this app. e.g. BIND_NAME1...")
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
         c.argument('infrastructure_resource_group', options_list=['--infrastructure-resource-group', '-i'], help='Name for resource group that will contain infrastructure resources. If not provided, a resource group name will be generated.', is_preview=True)
+
+    with self.argument_context('containerapp env', arg_group='Monitoring') as c:
+        c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
+                   help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
+
+    # App Resiliency
+    with self.argument_context('containerapp resiliency') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('container_app_name', options_list=['--container-app-name'], help=f"The name of the existing Container App.")
+        c.argument('name', name_type, help=f"The name of the Container App Resiliency Policy. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_APP_RESILIENCY_NAME_LENGTH} characters.")
+        c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a container app resiliency policy. All other parameters will be ignored.')
+        c.argument('default', options_list=['--recommended'], help='Set recommended values of resiliency policies for a container app.')
+
+    with self.argument_context('containerapp resiliency', arg_group='Timeout Policy') as c:
+        c.argument('timeout_response_in_seconds', type=int, options_list=['--timeout'], help='Specify the timeout in seconds. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries. Default: 60.')
+        c.argument('timeout_connection_in_seconds', type=int, options_list=['--timeout-connect'], help='The timeout in seconds for new network connections to the container app. Default: 5.')
+
+    with self.argument_context('containerapp resiliency', arg_group='HTTP Retry Policy') as c:
+        c.argument('http_retry_max', type=int, options_list=['--http-retries'], help='Specify the max number of retries. Default: 3.')
+        c.argument('http_retry_delay_in_milliseconds', type=int, options_list=['--http-delay'], help='Specify the base interval in milliseconds between retries. Default: 1000.')
+        c.argument('http_retry_interval_in_milliseconds', type=int, options_list=['--http-interval'], help='Specify the maximum interval in milliseconds between retries. Default: 10000.')
+        c.argument('http_retry_status_codes', nargs='*', options_list=['--http-codes'], help='A retry will be attempted if the response status code matches any status code in this list.')
+        c.argument('http_retry_errors', nargs='+', options_list=['--http-errors'], help='A retry will be attempted if the response error message matches any error in this list. Default: 5xx')
+
+    with self.argument_context('containerapp resiliency', arg_group='TCP Retry Policy') as c:
+        c.argument('tcp_retry_max_connect_attempts', type=int, options_list=['--tcp-retries'], help='The maximum number of unsuccessful connection attempts that will be made before giving up.')
+
+    with self.argument_context('containerapp resiliency', arg_group='TCP Connection Pool Policy') as c:
+        c.argument('tcp_connection_pool_max_connections', type=int, options_list=['--tcp-connections'], help='The maximum number of connections that will be made to the container app.')
+
+    with self.argument_context('containerapp resiliency', arg_group='HTTP Connection Pool Policy') as c:
+        c.argument('http_connection_pool_http1_max_pending_req', type=int, options_list=['--http1-pending'], help='The maximum number of pending requests that will be allowed to the container app. Default: 1024.')
+        c.argument('http_connection_pool_http2_max_req', type=int, options_list=['--http2-parallel'], help='The maximum number of parallel requests that will be made to the container app. Default: 1024.')
+
+    with self.argument_context('containerapp resiliency', arg_group='Circuit Breaker Policy') as c:
+        c.argument('circuit_breaker_consecutive_errors', type=int, options_list=['--cb-sequential-errors'], help='The number of consecutive server-side error responses (for HTTP traffic, 5xx responses; for TCP traffic, failure to respond PONG; etc.) before a consecutive 5xx ejection occurs. Default: 5.')
+        c.argument('circuit_breaker_interval', type=int, options_list=['--cb-interval'], help='The time interval in seconds between ejection analysis sweeps. This can result in both new ejections as well as hosts being returned to service. Default: 10.')
+        c.argument('circuit_breaker_max_ejection', type=int, options_list=['--cb-max-ejection'], help='The maximum % of container app replicas that can be ejected. It will eject at least one host regardless of the value. Default: 100.')
 
     with self.argument_context('containerapp service') as c:
         c.argument('service_name', options_list=['--name', '-n'], help="The service name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
 
+    with self.argument_context('containerapp add-on') as c:
+        c.argument('service_name', options_list=['--name', '-n'], help="The service name.")
+        c.argument('environment_name', options_list=['--environment'], help="The environment name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
     with self.argument_context('containerapp env create') as c:
         c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
+        c.argument('enable_dedicated_gpu', arg_type=get_three_state_flag(), options_list=["--enable-dedicated-gpu"],
+                   help="Boolean indicating if the environment is enabled to have dedicated gpu", is_preview=True)
 
     with self.argument_context('containerapp env certificate create') as c:
         c.argument('hostname', options_list=['--hostname'], help='The custom domain name.')
@@ -65,6 +115,39 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env certificate list') as c:
         c.argument('managed_certificates_only', options_list=['--managed-certificates-only', '-m'], help='List managed certificates only.')
         c.argument('private_key_certificates_only', options_list=['--private-key-certificates-only', '-p'], help='List private-key certificates only.')
+
+    with self.argument_context('containerapp env dapr-component resiliency') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('dapr_component_name', help="The name of the existing Dapr Component.")
+        c.argument('environment', options_list=['--environment'], help="The environment name.")
+        c.argument('name', options_list=['--name', '-n'], help=f"The name of the Dapr Component Resiliency Policy. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH} characters.")
+        c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a dapr component resiliency policy. All other parameters will be ignored.')
+
+    with self.argument_context('containerapp env dapr-component resiliency', arg_group='Inbound HTTP Retry Policy') as c:
+        c.argument('in_http_retry_max', type=int, options_list=['--in-http-retries'], help='Specify the max number of retries for the inbound policy. Default: 3.')
+        c.argument('in_http_retry_delay_in_milliseconds', type=int, options_list=['--in-http-delay'], help='Specify the base interval in milliseconds between retries for the inbound policy. Default: 1000.')
+        c.argument('in_http_retry_interval_in_milliseconds', type=int, options_list=['--in-http-interval'], help='Specify the maximum interval in milliseconds between retries for the inbound policy. Default: 10000.')
+
+    with self.argument_context('containerapp env dapr-component resiliency', arg_group='Inbound Timeout Policy') as c:
+        c.argument('in_timeout_response_in_seconds', type=int, options_list=['--in-timeout'], help='Specify the response timeout in seconds for the inbound policy. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries.')
+
+    with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound HTTP Retry Policy') as c:
+        c.argument('out_http_retry_max', type=int, options_list=['--out-http-retries'], help='Specify the max number of retries for the outbound policy. Default: 3.')
+        c.argument('out_http_retry_delay_in_milliseconds', type=int, options_list=['--out-http-delay'], help='Specify the base interval in milliseconds between retries for the outbound policy. Default: 1000.')
+        c.argument('out_http_retry_interval_in_milliseconds', type=int, options_list=['--out-http-interval'], help='Specify the maximum interval in milliseconds between retries for the outbound policy. Default: 10000.')
+
+    with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound Timeout Policy') as c:
+        c.argument('out_timeout_response_in_seconds', type=int, options_list=['--out-timeout'], help='Specify the response timeout in seconds for the outbound policy. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries.')
+
+    with self.argument_context('containerapp env dapr-component init') as c:
+        c.argument('statestore', help="The state store component and dev service to create.")
+        c.argument('pubsub', help="The pubsub component and dev service to create.")
+
+    with self.argument_context('containerapp up') as c:
+        c.argument('environment', validator=validate_env_name_or_id_for_up, options_list=['--environment'], help="Name or resource ID of the container app's managed environment or connected environment.")
+        c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)
+        c.argument('custom_location_id', options_list=['--custom-location'], help="Resource ID of custom location. List using 'az customlocation list'.", is_preview=True)
+        c.argument('connected_cluster_id', help="Resource ID of connected cluster. List using 'az connectedk8s list'.", configured_default='connected_cluster_id', is_preview=True)
 
     with self.argument_context('containerapp up', arg_group='Github Repo') as c:
         c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/<owner>/<repository-name> or <owner>/<repository-name>')
@@ -80,6 +163,11 @@ def load_arguments(self, _):
         c.argument('token_store', arg_type=get_three_state_flag(), help='Boolean indicating if token store is enabled for the app.', is_preview=True)
         c.argument('sas_url_secret', help='The blob storage SAS URL to be used for token store.', is_preview=True)
         c.argument('sas_url_secret_name', help='The secret name that contains blob storage SAS URL to be used for token store.', is_preview=True)
+
+    with self.argument_context('containerapp env workload-profile set') as c:
+        c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
+        c.argument('min_nodes', help="The minimum node count for the workload profile")
+        c.argument('max_nodes', help="The maximum node count for the workload profile")
 
     # Patch
     with self.argument_context('containerapp patch') as c:

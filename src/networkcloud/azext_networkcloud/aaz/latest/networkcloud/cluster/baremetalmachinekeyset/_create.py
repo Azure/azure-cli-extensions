@@ -13,18 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster baremetalmachinekeyset create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new bare metal machine key set or update the existing one for the provided cluster.
 
     :example: Create or update bare metal machine key set of cluster
-        az networkcloud cluster baremetalmachinekeyset create --name "bareMetalMachineKeySetName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --azure-group-id "f110271b-XXXX-4163-9b99-214d91660f0e" --expiration "2022-12-31T23:59:59.008Z" --jump-hosts-allowed "192.0.2.1" "192.0.2.5" --os-group-name "standardAccessGroup" --privilege-level "Standard" --user-list "[{description:'User description',azureUserName:userABC,sshPublicKey:{keyData:'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWtG2RiEGfXs+RK19UmovAJiIVUbT6YaYc/t5SjWU=admin@vm'}}]" --tags key1="myvalue1" key2="myvalue2" --cluster-name "clusterName" --resource-group "resourceGroupName
+        az networkcloud cluster baremetalmachinekeyset create --name "bareMetalMachineKeySetName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --azure-group-id "f110271b-XXXX-4163-9b99-214d91660f0e" --expiration "2022-12-31T23:59:59.008Z" --jump-hosts-allowed "192.0.2.1" "192.0.2.5" --os-group-name "standardAccessGroup" --privilege-level "Standard" --user-list "[{description:'User description',azureUserName:userABC,userPrincipalName:'userABC@myorg.com',sshPublicKey:{keyData:'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWtG2RiEGfXs+RK19UmovAJiIVUbT6YaYc/t5SjWU=admin@vm'}}]" --tags key1="myvalue1" key2="myvalue2" --cluster-name "clusterName" --resource-group "resourceGroupName
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/baremetalmachinekeysets/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/baremetalmachinekeysets/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -171,6 +172,10 @@ class Create(AAZCommand):
             help="The SSH public key for this user.",
             required=True,
         )
+        _element.user_principal_name = AAZStrArg(
+            options=["user-principal-name"],
+            help="The user principal name (email format) used to validate this user's group membership.",
+        )
 
         ssh_public_key = cls._args_schema.user_list.Element.ssh_public_key
         ssh_public_key.key_data = AAZStrArg(
@@ -268,7 +273,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -325,6 +330,7 @@ class Create(AAZCommand):
                 _elements.set_prop("azureUserName", AAZStrType, ".azure_user_name", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("description", AAZStrType, ".description")
                 _elements.set_prop("sshPublicKey", AAZObjectType, ".ssh_public_key", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("userPrincipalName", AAZStrType, ".user_principal_name")
 
             ssh_public_key = _builder.get(".properties.userList[].sshPublicKey")
             if ssh_public_key is not None:
@@ -446,6 +452,9 @@ class Create(AAZCommand):
             _element.ssh_public_key = AAZObjectType(
                 serialized_name="sshPublicKey",
                 flags={"required": True},
+            )
+            _element.user_principal_name = AAZStrType(
+                serialized_name="userPrincipalName",
             )
 
             ssh_public_key = cls._schema_on_200_201.properties.user_list.Element.ssh_public_key

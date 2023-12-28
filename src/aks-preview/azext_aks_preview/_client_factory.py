@@ -155,3 +155,7 @@ def get_msi_client(cli_ctx, subscription_id=None):
 
 def get_providers_client_factory(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).providers
+
+
+def get_keyvault_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_KEYVAULT, subscription_id=subscription_id).vaults

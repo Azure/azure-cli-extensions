@@ -55,13 +55,13 @@ def load_arguments(self, _):
                    options_list=['--configuration-settings', '--config', c.deprecate(target='--config-settings', redirect='--configuration-settings')],
                    action=AddConfigurationSettings,
                    nargs='+',
-                   help='Configuration Settings as key=value pair.  Repeat parameter for each setting')
+                   help='Configuration Settings as key=value pair.  Repeat parameter for each setting. Do not use this for secrets, as this value is returned in response.')
         c.argument('configuration_protected_settings',
                    arg_group="Configuration",
                    options_list=['--config-protected-settings', '--config-protected', c.deprecate(target='--configuration-protected-settings', redirect='--config-protected-settings')],
                    action=AddConfigurationProtectedSettings,
                    nargs='+',
-                   help='Configuration Protected Settings as key=value pair.  Repeat parameter for each setting')
+                   help='Configuration Protected Settings as key=value pair.  Repeat parameter for each setting.  Only the key is returned in response, the value is not.')
         c.argument('configuration_settings_file',
                    arg_group="Configuration",
                    options_list=['--config-settings-file', '--config-file', c.deprecate(target='--configuration-settings-file', redirect='--config-settings-file')],

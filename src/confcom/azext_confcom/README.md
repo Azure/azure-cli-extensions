@@ -1,7 +1,7 @@
 # Microsoft Azure CLI 'confcom' Extension Examples and Security Policy Rules Documentation
 
-- [Microsoft Azure CLI 'confcom' Extension Examples and Security Policy Rules Documentation](#microsoft-azure-cli-confcom-extension-examples-and-security-policy-rules-documentation)
-  - [Microsoft Azure CLI 'confcom' Extension Examples](#microsoft-azure-cli-confcom-extension-examples)
+- [Microsoft Azure CLI 'confcom acipolicygen' Extension Examples and Security Policy Rules Documentation](#microsoft-azure-cli-confcom-acipolicygen-extension-examples-and-security-policy-rules-documentation)
+  - [Microsoft Azure CLI 'confcom acipolicygen' Extension Examples](#microsoft-azure-cli-confcom-extension-examples)
   - [dmverity Layer Hashing](#dmverity-layer-hashing)
   - [Security Policy Information Sources](#security-policy-information-sources)
   - [Security Policy Rules Documentation](#security-policy-rules-documentation)
@@ -28,12 +28,12 @@
     - [allow_environment_variable_dropping](#allow_environment_variable_dropping)
     - [allow_unencrypted_scratch](#allow_unencrypted_scratch)
     - [allow_capabilities_dropping](#allow_capabilities_dropping)
+- [Microsoft Azure CLI 'confcom katapolicygen' Extension Examples](#microsoft-azure-cli-confcom-katapolicygen-extension-examples)
+  - [Microsoft Azure CLI 'confcom katapolicygen' Extension Examples]
 
-## Microsoft Azure CLI 'confcom' Extension Examples
+## Microsoft Azure CLI 'confcom acipolicygen' Extension Examples
 
 Run `az confcom acipolicygen --help` to see a list of supported arguments along with explanations. The following commands demonstrate the usage of different arguments to generate confidential computing security policies.
-
-**Note:** The Azure Confidential Computing CLI extension is in public preview and is subject to change. Some arguments may be added or removed and the way `confcom acipolicygen` command is called to achieve specific functionality may change as well. This documentation will be updated as changes to the tooling are published.
 
 **Prerequisites:**
 Install the Azure CLI and Confidential Computing extension.
@@ -643,3 +643,55 @@ This rule determines whether unencrypted writable storage from the UVM to the co
 ## allow_capabilities_dropping
 
 Whether to allow capabilities to be dropped in the same manner as allow_environment_variable_dropping.
+
+## Microsoft Azure CLI 'confcom katapolicygen' Extension Examples
+
+Run `az confcom katapolicygen --help` to see a list of supported arguments along with explanations. The following commands demonstrate the usage of different arguments to generate confidential computing security policies.
+
+**Prerequisites:**
+Install the Azure CLI and Confidential Computing extension.
+
+See the most recently released version of `confcom` extension.
+
+```bash
+az extension list-available -o table | grep confcom
+```
+
+To add the most recent confcom extension, run:
+
+```bash
+az extension add --name confcom
+```
+
+Use the `--version` argument to specify a version to add.
+
+Run this to update to the latest version if an older version is already installed:
+
+```bash
+az extension update --name confcom
+```
+
+The `katapolicygen` command generates confidential computing security policies using a kubernetes pod spec. You can control the format of the generated policies using arguments. Note: It is recommended to use images with specific tags instead of the `latest` tag, as the `latest` tag can change at any time and images with different configurations may also have the latest tag.
+
+**Examples:**
+
+Example 1: The following command creates a security policy and outputs it to the command line:
+
+```bash
+az confcom katapolicygen -y ./pod.yaml --print-policy
+```
+
+This command combines the information of images from the pod spec with other information such as mount, environment variables and commands from the pod spec to create a security policy.
+The `--print-policy` argument is included to display the policy on the command line in addition to injecting it into the input pod spec.
+
+Example 2: This command injects a security policy into the pod spec based on input from a config map so that there is no need to change the pod spec to pass variables into the security policy:
+
+```bash
+az confcom katapolicygen -y .\\pod.yaml -c .\\config-map.yaml
+```
+
+Example 3: This command caches the layer hashes and stores them locally on your computer to make future computations faster if the same images are used:
+
+```bash
+az confcom katapolicygen -y .\\pod.yaml -u
+```

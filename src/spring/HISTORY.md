@@ -1,5 +1,22 @@
 Release History
 ===============
+1.19.0
+---
+* Add new commands for managed component log streaming `az spring component list`, `az spring component instance list` and `az spring component logs`.
+
+1.18.0
+---
+* Add arguments `--bind-service-registry` in `spring app create`.
+* Add arguments `--bind-application-configuration-service` in `spring app create`.
+
+1.17.0
+---
+* Add arguments `--enable-api-try-out` in `spring api-portal update`
+
+1.16.0
+---
+* Add arguments `--enable-planned-maintenance`, `--planned-maintenance-day` and `--planned-maintenance-start-hour` in `az spring update` to support configuring Planned Maintenance.
+
 1.15.1
 ---
 * Add arguments `--apms` for Spring Cloud Gateway.
