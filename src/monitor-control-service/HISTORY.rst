@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.1
+++++++
+* Normalization module name in setup
+
 1.0.0
 ++++++
 * Enable all of the facilities of `data-collection` in stable version `2022-06-01`
