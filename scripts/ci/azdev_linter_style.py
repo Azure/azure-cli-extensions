@@ -105,6 +105,9 @@ class AzdevExtensionHelper:
                 break
         metadata = get_ext_metadata(dist_dir, ext_file, self.extension_name)
         shutil.rmtree(dist_dir)
+        if '_' in self.extension_name:
+            raise ValueError(f"Underscores `_` are not allowed in the extension root directory, "
+                             f"please change it to a hyphen `-`.")
         if metadata['name'] != self.extension_name:
             raise ValueError(f"The name {metadata['name']} in setup.py "
                              f"is not the same as the extension name {self.extension_name}! \n"
