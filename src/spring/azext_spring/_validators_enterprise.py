@@ -452,7 +452,7 @@ def _validate_gateway_response_cache_scope(namespace):
 def _validate_gateway_response_cache_size(namespace):
     if namespace.response_cache_size is not None:
         size = namespace.response_cache_size
-        if type(size) != str:
+        if not isinstance(size, str):
             raise InvalidArgumentValueError('--response-cache-size should be a string')
         if GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE.lower() == size.lower():
             # Normalize the input
@@ -467,7 +467,7 @@ def _validate_gateway_response_cache_size(namespace):
 def _validate_gateway_response_cache_ttl(namespace):
     if namespace.response_cache_ttl is not None:
         ttl = namespace.response_cache_ttl
-        if type(ttl) != str:
+        if not isinstance(ttl, str):
             raise InvalidArgumentValueError('--response-cache-ttl should be a string')
         if GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE.lower() == ttl.lower():
             # Normalize the input
