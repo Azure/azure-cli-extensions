@@ -37,6 +37,7 @@ import base64
 from collections import defaultdict
 from ._log_stream import LogStream
 from ._build_service import _update_default_build_agent_pool
+from .log_stream.log_stream_operations import log_stream_from_url
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -512,7 +513,7 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
 def app_tail_log(cmd, client, resource_group, service, name,
                  deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048, format_json=None):
     app_tail_log_internal(cmd, client, resource_group, service, name, deployment, instance, follow, lines, since, limit,
-                          format_json, get_app_log=_get_app_log)
+                          format_json, get_app_log=log_stream_from_url)
 
 
 def app_tail_log_internal(cmd, client, resource_group, service, name,
@@ -1165,136 +1166,6 @@ def _get_redis_primary_key(cli_ctx, resource_id):
     redis_client = get_mgmt_service_client(cli_ctx, RedisManagementClient)
     keys = redis_client.redis.list_keys(resource_id_dict['resource_group'], resource_id_dict['resource_name'])
     return keys.primary_key
-
-
-# pylint: disable=bare-except, too-many-statements
-def _get_app_log(url, auth, format_json, exceptions, chunk_size=None, stderr=False):
-    logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
-
-    def build_log_shortener(length):
-        if length <= 0:
-            raise InvalidArgumentValueError('Logger length in `logger{length}` should be positive')
-
-        def shortener(record):
-            '''
-            Try shorten the logger property to the specified length before feeding it to the formatter.
-            '''
-            logger_name = record.get('logger', None)
-            if logger_name is None:
-                return record
-
-            # first, try to shorten the package name to one letter, e.g.,
-            #     org.springframework.cloud.netflix.eureka.config.DiscoveryClientOptionalArgsConfiguration
-            # to: o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration
-            while len(logger_name) > length:
-                logger_name, count = logger_seg_regex.subn(r'\1.', logger_name, 1)
-                if count < 1:
-                    break
-
-            # then, cut off the leading packages if necessary
-            logger_name = logger_name[-length:]
-            record['logger'] = logger_name
-            return record
-
-        return shortener
-
-    def build_formatter():
-        '''
-        Build the log line formatter based on the format_json argument.
-        '''
-        nonlocal format_json
-
-        def identity(o):
-            return o
-
-        if format_json is None or len(format_json) == 0:
-            return identity
-
-        logger_regex = re.compile(r'\blogger\{(\d+)\}')
-        match = logger_regex.search(format_json)
-        pre_processor = identity
-        if match:
-            length = int(match[1])
-            pre_processor = build_log_shortener(length)
-            format_json = logger_regex.sub('logger', format_json, 1)
-
-        first_exception = True
-
-        def format_line(line):
-            nonlocal first_exception
-            try:
-                log_record = json.loads(line)
-                # Add n=\n so that in Windows CMD it's easy to specify customized format with line ending
-                # e.g., "{timestamp} {message}{n}"
-                # (Windows CMD does not escape \n in string literal.)
-                return format_json.format_map(pre_processor(defaultdict(str, n="\n", **log_record)))
-            except:
-                if first_exception:
-                    # enable this format error logging only with --verbose
-                    logger.info("Failed to format log line '{}'".format(line), exc_info=sys.exc_info())
-                    first_exception = False
-                return line
-
-        return format_line
-
-    def iter_lines(response, limit=2 ** 20, chunk_size=None):
-        '''
-        Returns a line iterator from the response content. If no line ending was found and the buffered content size is
-        larger than the limit, the buffer will be yielded directly.
-        '''
-        buffer = []
-        total = 0
-        for content in response.iter_content(chunk_size=chunk_size):
-            if not content:
-                if len(buffer) > 0:
-                    yield b''.join(buffer)
-                break
-
-            start = 0
-            while start < len(content):
-                line_end = content.find(b'\n', start)
-                should_print = False
-                if line_end < 0:
-                    next = (content if start == 0 else content[start:])
-                    buffer.append(next)
-                    total += len(next)
-                    start = len(content)
-                    should_print = total >= limit
-                else:
-                    buffer.append(content[start:line_end + 1])
-                    start = line_end + 1
-                    should_print = True
-
-                if should_print:
-                    yield b''.join(buffer)
-                    buffer.clear()
-                    total = 0
-
-    with requests.get(url, stream=True, auth=auth) as response:
-        try:
-            if response.status_code != 200:
-                failure_reason = response.reason
-                if response.content:
-                    if isinstance(response.content, bytes):
-                        failure_reason = "{}:{}".format(failure_reason, response.content.decode('utf-8'))
-                    else:
-                        failure_reason = "{}:{}".format(failure_reason, response.content)
-                raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
-                    response.status_code, failure_reason))
-            std_encoding = sys.stdout.encoding
-
-            formatter = build_formatter()
-
-            for line in iter_lines(response, chunk_size=chunk_size):
-                decoded = (line.decode(encoding='utf-8', errors='replace')
-                           .encode(std_encoding, errors='replace')
-                           .decode(std_encoding, errors='replace'))
-                if stderr:
-                    print(formatter(decoded), end='', file=sys.stderr)
-                else:
-                    print(formatter(decoded), end='')
-        except CLIError as e:
-            exceptions.append(e)
 
 
 def storage_callback(pipeline_response, deserialized, headers):

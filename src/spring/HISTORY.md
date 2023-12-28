@@ -1,5 +1,14 @@
 Release History
 ===============
+1.19.0
+---
+* Add new commands for managed component log streaming `az spring component list`, `az spring component instance list` and `az spring component logs`.
+
+1.18.0
+---
+* Add arguments `--bind-service-registry` in `spring app create`.
+* Add arguments `--bind-application-configuration-service` in `spring app create`.
+
 1.17.0
 ---
 * Add arguments `--enable-api-try-out` in `spring api-portal update`

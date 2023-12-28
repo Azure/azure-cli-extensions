@@ -18,6 +18,7 @@ import azext_confcom.config as config
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
+
 class PolicyGeneratingImage(unittest.TestCase):
     custom_json = """
         {
@@ -36,6 +37,7 @@ class PolicyGeneratingImage(unittest.TestCase):
             ]
         }
         """
+
     @classmethod
     def setUpClass(cls):
         with load_policy_from_image_name("python:3.6.14-slim-buster") as aci_policy:
@@ -48,6 +50,7 @@ class PolicyGeneratingImage(unittest.TestCase):
     def test_image_policy(self):
         # deep diff the output policies from the regular policy.json and the single image
         self.assertEqual(self.aci_policy.get_serialized_output(), self.custom_policy.get_serialized_output())
+
 
 class PolicyGeneratingImageSidecar(unittest.TestCase):
     custom_json = """
@@ -82,6 +85,7 @@ class PolicyGeneratingImageSidecar(unittest.TestCase):
     def test_sidecar_image_policy(self):
         self.assertEqual(self.aci_policy.get_serialized_output(), self.custom_policy.get_serialized_output())
 
+
 class PolicyGeneratingImageInvalid(unittest.TestCase):
     def test_invalid_image_policy(self):
 
@@ -91,6 +95,7 @@ class PolicyGeneratingImageInvalid(unittest.TestCase):
         with self.assertRaises(SystemExit) as exc_info:
             policy.populate_policy_content_for_all_images(individual_image=True)
         self.assertEqual(exc_info.exception.code, 1)
+
 
 class PolicyGeneratingImageCleanRoom(unittest.TestCase):
     def test_clean_room_policy(self):
