@@ -96,14 +96,14 @@ class AzdevExtensionHelper:
         original_cwd = os.getcwd()
         dist_dir = os.path.join(original_cwd, 'dist')
         files = os.listdir(dist_dir)
-        logger.info(dist_dir)
-        logger.info(files)
-        logger.info(self.extension_name)
+        logger.info(f"wheel files in the dist directory: {files}")
+        logger.info(f"extension name is: {self.extension_name}")
         for f in files:
             if f.endswith('.whl'):
                 ext_file = os.path.join(dist_dir, f)
                 break
         metadata = get_ext_metadata(dist_dir, ext_file, self.extension_name)
+        logger.info(f"metadata name in setup.py is: {metadata['name']}")
         shutil.rmtree(dist_dir)
         if '_' in self.extension_name:
             raise ValueError(f"Underscores `_` are not allowed in the extension root directory, "
