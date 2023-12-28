@@ -94,6 +94,9 @@ class AzdevExtensionHelper:
         original_cwd = os.getcwd()
         dist_dir = os.path.join(original_cwd, 'dist')
         files = os.listdir(dist_dir)
+        logger.info(dist_dir)
+        logger.info(files)
+        logger.info(self.extension_name)
         for f in files:
             if f.endswith('.whl') and self.extension_name in f:
                 ext_file = f
