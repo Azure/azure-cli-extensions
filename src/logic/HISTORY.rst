@@ -5,7 +5,7 @@ Release History
 
 1.0.1
 ++++++
-* Fix `parameters` in `--definition` not working
+* `az logic workflow`: Fix the issue with `parameters` in `--definition` not working
 
 1.0.0
 ++++++
