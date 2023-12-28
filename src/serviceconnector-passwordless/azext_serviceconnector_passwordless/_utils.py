@@ -21,6 +21,7 @@ logger = get_logger(__name__)
 
 IP_ADDRESS_CHECKER = 'https://api.ipify.org'
 OPEN_ALL_IP_MESSAGE = 'Do you want to enable access for all IPs to allow local environment connecting to database?'
+SET_ADMIN_MESSAGE = 'Do you want to set current user as Entra admin?'
 
 
 def should_load_source(source):
@@ -80,3 +81,13 @@ def confirm_all_ip_allow():
         telemetry.set_exception(e, "No-TTY")
         raise CLIInternalError(
             'Unable to prompt for confirmation as no tty available. Use --yes.') from e
+
+
+def confirm_admin_set():
+    try:
+        return prompt_y_n(SET_ADMIN_MESSAGE)
+    except NoTTYException as e:
+        telemetry.set_exception(e, "No-TTY")
+        logger.warning(
+            'Unable to prompt for confirmation as no tty available. Use --yes to enable the operation.')
+        return False

@@ -3187,7 +3187,7 @@ configuration:
       - requestReview:
           reviewer: zhoxing-ms
       - requestReview:
-          reviewer: wangzelin007
+          reviewer: yanzhudd
       - requestReview:
           reviewer: yonzhan
       - assignTo:
@@ -5729,6 +5729,8 @@ configuration:
           reviewer: zhoxing-ms
       - requestReview:
           reviewer: yanzhudd
+      - requestReview:
+          reviewer: qwuae1
       - addLabel:
           label: Auto-Assign
       - assignTo:
@@ -5905,5 +5907,25 @@ configuration:
           users:
           - kairu-ms
       description: '[Connected Vmware] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: az datafactory
+            isRegex: True
+        - bodyContains:
+            pattern: az datafactory
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Data Factory
+      - addLabel:
+          label: Service Attention
+      description: '[Data Factory] auto assign labels and users based on issue description.'
 onFailure: 
 onSuccess: 

@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.2
+++++++
+* updating genpolicy version to allow for topologySpreadConstraints, version genpolicy-0.6.2-2
+
 0.3.1
 ++++++
 * removing unneeded print statement

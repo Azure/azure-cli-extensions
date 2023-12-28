@@ -1,5 +1,5 @@
 {
-    "version": "0.3.1",
+    "version": "0.3.2",
     "hcsshim_config": {
         "maxVersion": "1.0.0",
         "minVersion": "0.0.1"
@@ -18,7 +18,7 @@
     "fabric": {
         "environmentVariables": [
             {
-                "name": "((?i)FABRIC)_.+",
+                "name": "(?i)(FABRIC)_.+",
                 "value": ".+",
                 "strategy": "re2",
                 "required": false

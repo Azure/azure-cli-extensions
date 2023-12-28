@@ -16,7 +16,8 @@ except ImportError:
 
 # Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = "1.0.0b2"
+VERSION = "1.0.0b4"
+
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -31,7 +32,7 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = ["oras~=0.1.19", "azure-storage-blob>=12.15.0", "jinja2>=3.1.2"]
+DEPENDENCIES = ["oras~=0.1.19", "jinja2>=3.1.2"]
 
 with open("README.md", "r", encoding="utf-8") as f:
     README = f.read()

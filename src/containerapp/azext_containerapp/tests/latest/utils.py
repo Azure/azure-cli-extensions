@@ -5,24 +5,29 @@
 
 import time
 import requests
-from azext_containerapp.tests.latest.common import TEST_LOCATION
+from azure.cli.command_modules.containerapp._utils import format_location
+
+from .common import TEST_LOCATION, STAGE_LOCATION
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, RequiredArgumentMissingError, InvalidArgumentValueError
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk import (JMESPathCheck)
 
 
-def prepare_containerapp_env_for_app_e2e_tests(test_cls):
+def prepare_containerapp_env_for_app_e2e_tests(test_cls, location=TEST_LOCATION):
     from azure.cli.core.azclierror import CLIInternalError
-    from .common import TEST_LOCATION
-    rg_name = f'client.env_rg_{TEST_LOCATION}'.lower().replace(" ", "").replace("(", "").replace(")", "")
-    env_name = f'env-{TEST_LOCATION}'.lower().replace(" ", "").replace("(", "").replace(")", "")
+    rg_name = f'client.env_rg_{location}'.lower().replace(" ", "").replace("(", "").replace(")", "")
+    env_name = f'env-{location}'.lower().replace(" ", "").replace("(", "").replace(")", "")
     managed_env = None
     try:
         managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
     except CLIInternalError as e:
         if e.error_msg.__contains__('ResourceGroupNotFound') or e.error_msg.__contains__('ResourceNotFound'):
-            test_cls.cmd(f'group create -n {rg_name}')
+            # resource group is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+            rg_location = location
+            if format_location(rg_location) == format_location(STAGE_LOCATION):
+                rg_location = "eastus"
+            test_cls.cmd(f'group create -n {rg_name} -l {location}')
             test_cls.cmd(f'containerapp env create -g {rg_name} -n {env_name} --logs-destination none')
             managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
 
@@ -34,7 +39,10 @@ def prepare_containerapp_env_for_app_e2e_tests(test_cls):
 
 def create_containerapp_env(test_cls, env_name, resource_group, location=None):
     logs_workspace_name = test_cls.create_random_name(prefix='containerapp-env', length=24)
-    logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l {}'.format(resource_group, logs_workspace_name, TEST_LOCATION)).get_output_in_json()["customerId"]
+    logs_workspace_location = location
+    if format_location(logs_workspace_location) == format_location(STAGE_LOCATION):
+        logs_workspace_location = "eastus"
+    logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l {}'.format(resource_group, logs_workspace_name, logs_workspace_location)).get_output_in_json()["customerId"]
     logs_workspace_key = test_cls.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
     if location:
@@ -109,6 +117,64 @@ def create_and_verify_containerapp_up(
             test_cls.cmd(up_cmd)
 
 
+def create_and_verify_containerapp_up_with_multiple_environments(
+            test_cls,
+            resource_group,
+            source_path = None,
+            location = None,
+            ingress = None,
+            image = None,
+            target_port = None,
+            app_name = None):
+
+        if app_name is None:
+            # Generate a name for the Container App
+            app_name = test_cls.create_random_name(prefix='containerapp', length=24)
+        if image is None:
+            image = "mcr.microsoft.com/k8se/quickstart:latest"
+        if location is None:
+            location = TEST_LOCATION
+
+        # Create multiple environments
+        first_env_name = test_cls.create_random_name(prefix='env', length=24)
+        test_cls.cmd(f'containerapp env create -g {resource_group} -n {first_env_name} -l {location}')
+
+        second_env_name = test_cls.create_random_name(prefix='env', length=24)
+        test_cls.cmd(f'containerapp env create -g {resource_group} -n {second_env_name} -l {location}')
+
+        # Construct the 'az containerapp up' command
+        up_cmd = f"containerapp up -g {resource_group} -n {app_name} --environment {second_env_name} --image {image} --location {location}"
+
+        # Execute the 'az containerapp up' command to create the Container App
+        test_cls.cmd(up_cmd)
+
+        up_cmd = f"containerapp up -g {resource_group} -n {app_name}"
+        if source_path:
+            up_cmd += f" --source \"{source_path}\""
+        if ingress:
+            up_cmd += f" --ingress {ingress}"
+        if target_port:
+            up_cmd += f" --target-port {target_port}"
+        if location:
+            up_cmd += f" -l {location}"
+
+        # Execute the 'az containerapp up' command with `--source` parameter to trigger cloud build
+        test_cls.cmd(up_cmd)
+
+        # Verify that the Container App is running
+        app = test_cls.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
+        url = app["properties"]["configuration"]["ingress"]["fqdn"]
+        containerapp_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(resource_group, second_env_name)).get_output_in_json()
+        test_cls.assertEqual(app["properties"]["environmentId"], containerapp_env["id"])
+        url = url if url.startswith("http") else f"http://{url}"
+        resp = requests.get(url)
+        test_cls.assertTrue(resp.ok)
+
+        # Delete the Container App and the environments other than the one used for builder creation. (Cannot delete the environment used for builder creation without deleting the builder)
+        test_cls.cmd('containerapp delete -g {} -n {} --yes --no-wait'.format(resource_group, app_name))
+        test_cls.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, first_env_name))
+
+
 def create_extension_and_custom_location(test_cls, resource_group, connected_cluster_name, custom_location_name):
     try:
         connected_cluster = test_cls.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
@@ -117,6 +183,9 @@ def create_extension_and_custom_location(test_cls, resource_group, connected_clu
             connected_cluster = test_cls.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
 
         connected_cluster_id = connected_cluster.get('id')
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus2euap"
         extension = test_cls.cmd(f'az k8s-extension create'
                                  f' --resource-group {resource_group}'
                                  f' --name containerapp-ext'
@@ -131,7 +200,7 @@ def create_extension_and_custom_location(test_cls, resource_group, connected_clu
                                  f' --configuration-settings "appsNamespace=appplat-ns"'
                                  f' --configuration-settings "clusterName={connected_cluster_name}"'
                                  f' --configuration-settings "envoy.annotations.service.beta.kubernetes.io/azure-load-balancer-resource-group={resource_group}"').get_output_in_json()
-        test_cls.cmd(f'az customlocation create -g {resource_group} -n {custom_location_name} -l {TEST_LOCATION} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}')
+        test_cls.cmd(f'az customlocation create -g {resource_group} -n {custom_location_name} -l {location} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}')
     except:
         pass
 
@@ -221,7 +290,11 @@ def create_and_verify_containerapp_create_and_update(
             registry_user = None,
             registry_pass = None):
         # Configure the default location
-        test_cls.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # 'Microsoft.ContainerRegistry/registries' is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        test_cls.cmd('configure --defaults location={}'.format(location))
 
         # Ensure that the Container App environment is created
         env_id = None

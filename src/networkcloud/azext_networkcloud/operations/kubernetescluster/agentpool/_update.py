@@ -35,7 +35,7 @@ class Update(_Update, CustomSshOptions):
 
         # Build agentpool Authentication args
         args_schema = CustomSshOptions.build_ssh_arg_schema(
-            args_schema, "AdministratorConfiguration"
+            args_schema, True, "AdministratorConfiguration"
         )
         # deregister the cli arguments which users should not interact with
         args_schema.ssh_public_keys._registered = False
@@ -45,14 +45,25 @@ class Update(_Update, CustomSshOptions):
     def pre_operations(self):
         args = self.ctx.args
 
-        ssh_keys = []
-        ssh_keys = CustomSshOptions.add_ssh_config(args)
-        if len(ssh_keys) == 0:
+        # only send ssh keys if they are provided
+        # special case: if the user has provided an empty array, we need to send an empty array to the backend
+        # to clear the existing keys
+        has_ssh_config = CustomSshOptions.has_ssh_config(args)
+
+        if has_ssh_config:
+            ssh_keys = []
+            ssh_keys = CustomSshOptions.add_ssh_config(args)
+            if len(ssh_keys) == 0:
+                logger.warning(
+                    "Empty SSH key value is provided. All existing keys will be removed from the agent pool nodes."
+                )
+            args.ssh_public_keys = ssh_keys
+        else:
             logger.warning(
-                "No keys are selected for insertion into the agent pool nodes. "
+                "No SSH keys are provided for insertion into the agent pool nodes. "
                 "The image will need to have keys or credentials "
                 "setup in order to access."
             )
-        if len(ssh_keys) > 0:
-            args.ssh_public_keys = ssh_keys
+            args.ssh_public_keys = None
+
         return args

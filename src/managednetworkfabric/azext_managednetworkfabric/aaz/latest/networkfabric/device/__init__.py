@@ -12,4 +12,5 @@ from .__cmd_group import *
 from ._list import *
 from ._show import *
 from ._update import *
+from ._upgrade import *
 from ._wait import *
