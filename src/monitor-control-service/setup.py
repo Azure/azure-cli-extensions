@@ -34,7 +34,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='monitor_control_service',
+    name='monitor-control-service',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools MonitorClient Extension',
     author='Microsoft Corporation',
