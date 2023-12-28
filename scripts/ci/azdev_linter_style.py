@@ -101,7 +101,7 @@ class AzdevExtensionHelper:
         logger.info(self.extension_name)
         for f in files:
             if f.endswith('.whl'):
-                ext_file = f
+                ext_file = os.path.join(dist_dir, f)
                 break
         metadata = get_ext_metadata(dist_dir, ext_file, self.extension_name)
         shutil.rmtree(dist_dir)
