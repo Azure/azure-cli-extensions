@@ -16,6 +16,7 @@ from subprocess import check_call, check_output, CalledProcessError
 
 import service_name
 from pkg_resources import parse_version
+from util import get_ext_metadata
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -87,7 +88,21 @@ class AzdevExtensionHelper:
         self._cmd('azdev style {}'.format(self.extension_name))
 
     def build(self):
-        pass
+        self._cmd('azdev extension build {}'.format(self.extension_name))
+
+    def check_extension_name(self):
+        original_cwd = os.getcwd()
+        dist_dir = os.path.join(original_cwd, 'dist')
+        files = os.listdir(dist_dir)
+        for f in files:
+            if f.endswith('.whl') and self.extension_name in f:
+                ext_file = f
+                break
+        metadata = get_ext_metadata(dist_dir, ext_file, self.extension_name)
+        if metadata['name'] != self.extension_name:
+            raise ValueError(f"The name {metadata['name']} in setup.py "
+                             f"is not the same as the extension name {self.extension_name}! \n"
+                             f"Please fix the name in setup.py!")
 
 
 def find_modified_files_against_master_branch():
@@ -200,6 +215,8 @@ def azdev_on_internal_extension(modified_files, azdev_type):
         azdev_extension.add_from_code()
         if azdev_type in ['all', 'linter']:
             azdev_extension.linter()
+            azdev_extension.build()
+            azdev_extension.check_extension_name()
         if azdev_type in ['all', 'style']:
             try:
                 azdev_extension.style()
