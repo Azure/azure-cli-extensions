@@ -25,6 +25,11 @@ class TestUtils(unittest.TestCase):
         with self.assertRaises(AttributeError):
             get_blob_info(url)
 
+    def test_invaid_blob_sas_url_parse_2(self):
+        url = r"https://fake-account-name.file.core.windows.net/fake-container-name/resources/fake-relative-path?fake-token"
+        with self.assertRaises(AttributeError):
+            get_blob_info(url)
+
     def test_file_sas_url_parse(self):
         url = r"https://fake-account-name.file.core.windows.net/fake-container-name/resources/fake-relative-path?fake-token"
         account_name, endpoint_suffix, container_name, relative_path, sas_token = get_azure_files_info(url)
