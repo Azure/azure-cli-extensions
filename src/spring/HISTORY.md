@@ -1,5 +1,10 @@
 Release History
 ===============
+
+1.16.1
+---
+* Create workspace-based Application Insights instead, since classic Application Insights will be retired on 29 February 2024.
+
 1.16.0
 ---
 * Add arguments `--enable-planned-maintenance`, `--planned-maintenance-day` and `--planned-maintenance-start-hour` in `az spring update` to support configuring Planned Maintenance.
