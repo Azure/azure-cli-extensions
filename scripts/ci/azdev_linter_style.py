@@ -12,10 +12,12 @@ please update the target branch/commit to find diff in function find_modified_fi
 import json
 import logging
 import os
+import shutil
 from subprocess import check_call, check_output, CalledProcessError
 
-import service_name
 from pkg_resources import parse_version
+
+import service_name
 from util import get_ext_metadata
 
 logger = logging.getLogger(__name__)
@@ -98,10 +100,11 @@ class AzdevExtensionHelper:
         logger.info(files)
         logger.info(self.extension_name)
         for f in files:
-            if f.endswith('.whl') and self.extension_name in f:
+            if f.endswith('.whl'):
                 ext_file = f
                 break
         metadata = get_ext_metadata(dist_dir, ext_file, self.extension_name)
+        shutil.rmtree(dist_dir)
         if metadata['name'] != self.extension_name:
             raise ValueError(f"The name {metadata['name']} in setup.py "
                              f"is not the same as the extension name {self.extension_name}! \n"
