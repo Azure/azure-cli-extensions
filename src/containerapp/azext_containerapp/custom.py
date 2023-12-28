@@ -1858,3 +1858,39 @@ def init_dapr_components(cmd, resource_group_name, environment_name, statestore=
             "daprComponents": [statestore_component_id, pubsub_component_id]
         }
     }
+
+
+def list_java_components(cmd, environment_name, resource_group_name):
+    return "list_java_components"
+
+
+def create_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
+    return "create_spring_cloud_config"
+
+
+def update_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
+    return "update_spring_cloud_config"
+
+
+def show_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name):
+    return "show_spring_cloud_config"
+
+
+def delete_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    return "delete_spring_cloud_config"
+
+
+def create_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
+    return "create_spring_cloud_eureka"
+
+
+def update_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
+    return "update_spring_cloud_eureka"
+
+
+def show_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name):
+    return "show_spring_cloud_eureka"
+
+
+def delete_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    return "delete_spring_cloud_eureka"

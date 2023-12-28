@@ -1165,3 +1165,64 @@ helps['containerapp job create'] = """
               --image imageName \\
               --workload-profile-name my-wlp
 """
+
+# Java Components Commands
+helps['containerapp env java-component'] = """
+    type: group
+    short-summary: Commands to manage Java components within the environment.
+"""
+
+helps['containerapp env java-component list'] = """
+    type: command
+    short-summary: List all Java components within the environment.
+"""
+
+helps['containerapp env java-component spring-cloud-config'] = """
+    type: group
+    short-summary: Commands to manage the Spring Cloud Config for the Container Apps environment.
+"""
+
+helps['containerapp env java-component spring-cloud-config create'] = """
+    type: command
+    short-summary: Command to create the Spring Cloud Config.
+"""
+
+helps['containerapp env java-component spring-cloud-config delete'] = """
+    type: command
+    short-summary: Command to delete the Spring Cloud Config.
+"""
+
+helps['containerapp env java-component spring-cloud-config show'] = """
+    type: command
+    short-summary: Command to show the Spring Cloud Config.
+"""
+
+helps['containerapp env java-component spring-cloud-config update'] = """
+    type: command
+    short-summary: Command to update the Spring Cloud Config.
+"""
+
+helps['containerapp env java-component spring-cloud-eureka'] = """
+    type: group
+    short-summary: Commands to manage the Spring Cloud Eureka for the Container Apps environment.
+"""
+
+helps['containerapp env java-component spring-cloud-eureka create'] = """
+    type: command
+    short-summary: Command to create the Spring Cloud Eureka.
+"""
+
+helps['containerapp env java-component spring-cloud-eureka delete'] = """
+    type: command
+    short-summary: Command to delete the Spring Cloud Eureka.
+"""
+
+helps['containerapp env java-component spring-cloud-eureka show'] = """
+    type: command
+    short-summary: Command to show the Spring Cloud Eureka.
+"""
+
+helps['containerapp env java-component spring-cloud-eureka update'] = """
+    type: command
+    short-summary: Command to update the Spring Cloud Eureka.
+"""

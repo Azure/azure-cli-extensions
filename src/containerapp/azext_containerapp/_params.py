@@ -26,7 +26,7 @@ def load_arguments(self, _):
 
     # Springboard
     with self.argument_context('containerapp create', arg_group='Service Binding', is_preview=True) as c:
-        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services, bindings or Java components to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
         c.argument('customized_keys', action=AddCustomizedKeys, nargs='*', help='The customized keys used to change default configuration names. Key is the original name, value is the customized name.')
         c.argument('service_type', help="The service information for dev services.")
         c.ignore('service_type')
@@ -47,9 +47,9 @@ def load_arguments(self, _):
 
     # Springboard
     with self.argument_context('containerapp update', arg_group='Service Binding', is_preview=True) as c:
-        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services, bindings or Java components to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
         c.argument('customized_keys', action=AddCustomizedKeys, nargs='*', help='The customized keys used to change default configuration names. Key is the original name, value is the customized name.')
-        c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services(bindings) to be removed from this app. e.g. BIND_NAME1...")
+        c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services, bindings or Java components to be removed from this app. e.g. BIND_NAME1...")
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
         c.argument('infrastructure_resource_group', options_list=['--infrastructure-resource-group', '-i'], help='Name for resource group that will contain infrastructure resources. If not provided, a resource group name will be generated.', is_preview=True)
@@ -247,3 +247,9 @@ def load_arguments(self, _):
         c.argument('dapr_component_name', help="The Dapr component name.")
         c.argument('environment_name', options_list=['--name', '-n'], help="The environment name.")
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a Dapr component. All other parameters will be ignored. For an example, see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema')
+
+    with self.argument_context('containerapp env java-component') as c:
+        c.argument('java_component_name', options_list=['--name', '-n'], help="The Java component name.")
+        c.argument('environment_name', options_list=['--environment'], help="The environment name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of the Java component.')
