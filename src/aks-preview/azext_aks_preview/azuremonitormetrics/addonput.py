@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 import json
 from azext_aks_preview.azuremonitormetrics.constants import AKS_CLUSTER_API
-from azure.cli.core.profiles import ResourceType
 from azure.cli.core.azclierror import (
     UnknownError,
     CLIError
@@ -14,13 +13,16 @@ from azure.cli.core.azclierror import (
 def addon_put(cmd, cluster_subscription, cluster_resource_group_name, cluster_name):
     from azure.cli.core.util import send_raw_request
     armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
-    feature_check_url = f"{armendpoint}/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}?api-version={AKS_CLUSTER_API}"
+    feature_check_url = (
+        f"{armendpoint}/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+        f"Microsoft.ContainerService/managedClusters/{cluster_name}?api-version={AKS_CLUSTER_API}"
+    )
     try:
         headers = ['User-Agent=azuremonitormetrics.addon_get']
         r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url,
                              body={}, headers=headers)
     except CLIError as e:
-        raise UnknownError(e)
+        raise UnknownError(e)  # pylint: disable=raise-missing-from
     json_response = json.loads(r.text)
     if "azureMonitorProfile" in json_response["properties"]:
         if "metrics" in json_response["properties"]["azureMonitorProfile"]:
@@ -33,4 +35,4 @@ def addon_put(cmd, cluster_subscription, cluster_resource_group_name, cluster_na
         r = send_raw_request(cmd.cli_ctx, "PUT", feature_check_url,
                              body=body, headers=headers)
     except CLIError as e:
-        raise UnknownError(e)
+        raise UnknownError(e)  # pylint: disable=raise-missing-from

@@ -22,14 +22,15 @@ def get_dce_from_dcr(cmd, dcrId):
 def get_dc_objects_list(cmd, cluster_subscription, cluster_resource_group_name, cluster_name):
     try:
         from azure.cli.core.util import send_raw_request
-        cluster_resource_id = \
-            "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService/managedClusters/{2}".format(
-                cluster_subscription,
-                cluster_resource_group_name,
-                cluster_name
-            )
+        cluster_resource_id = (
+            f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+            f"Microsoft.ContainerService/managedClusters/{cluster_name}"
+        )
         armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
-        association_url = f"{armendpoint}{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations?api-version={DC_API}"
+        association_url = (
+            f"{armendpoint}{cluster_resource_id}/providers/"
+            f"Microsoft.Insights/dataCollectionRuleAssociations?api-version={DC_API}"
+        )
         headers = ['User-Agent=azuremonitormetrics.get_dcra']
         r = send_raw_request(cmd.cli_ctx, "GET", association_url, headers=headers)
         data = json.loads(r.text)
@@ -37,18 +38,31 @@ def get_dc_objects_list(cmd, cluster_subscription, cluster_resource_group_name, 
         for item in data['value']:
             if 'properties' in item and 'dataCollectionRuleId' in item['properties']:
                 dce_id = get_dce_from_dcr(cmd, item['properties']['dataCollectionRuleId'])
-                dc_object_array.append({'name': item['name'], 'dataCollectionRuleId': item['properties']['dataCollectionRuleId'], 'dceId': dce_id})
+                dc_object_array.append(
+                    {
+                        "name": item["name"],
+                        "dataCollectionRuleId": item["properties"][
+                            "dataCollectionRuleId"
+                        ],
+                        "dceId": dce_id,
+                    }
+                )
         return dc_object_array
     except CLIError as e:
-        raise CLIError(e)
+        raise CLIError(e)  # pylint: disable=raise-missing-from
 
 
-def delete_dc_objects_if_prometheus_enabled(cmd, dc_objects_list, cluster_subscription, cluster_resource_group_name, cluster_name):
+def delete_dc_objects_if_prometheus_enabled(
+    cmd,
+    dc_objects_list,
+    cluster_subscription,
+    cluster_resource_group_name,
+    cluster_name
+):
     from azure.cli.core.util import send_raw_request
-    cluster_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService/managedClusters/{2}".format(
-        cluster_subscription,
-        cluster_resource_group_name,
-        cluster_name
+    cluster_resource_id = (
+        f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+        f"Microsoft.ContainerService/managedClusters/{cluster_name}"
     )
     for item in dc_objects_list:
         armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -57,10 +71,16 @@ def delete_dc_objects_if_prometheus_enabled(cmd, dc_objects_list, cluster_subscr
             headers = ['User-Agent=azuremonitormetrics.get_dcr_if_prometheus_enabled']
             r = send_raw_request(cmd.cli_ctx, "GET", association_url, headers=headers)
             data = json.loads(r.text)
-            if 'microsoft-prometheusmetrics' in [stream.lower() for stream in data['properties']['dataFlows'][0]['streams']]:
+            if "microsoft-prometheusmetrics" in [
+                stream.lower()
+                for stream in data["properties"]["dataFlows"][0]["streams"]
+            ]:
                 # delete DCRA
                 armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
-                url = f"{armendpoint}{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{item['name']}?api-version={DC_API}"
+                url = (
+                    f"{armendpoint}{cluster_resource_id}/providers/"
+                    f"Microsoft.Insights/dataCollectionRuleAssociations/{item['name']}?api-version={DC_API}"
+                )
                 headers = ['User-Agent=azuremonitormetrics.delete_dcra']
                 send_raw_request(cmd.cli_ctx, "DELETE", url, headers=headers)
                 # delete DCR
@@ -73,4 +93,4 @@ def delete_dc_objects_if_prometheus_enabled(cmd, dc_objects_list, cluster_subscr
                 send_raw_request(cmd.cli_ctx, "DELETE", url, headers=headers)
         except CLIError as e:
             error = e
-            raise CLIError(error)
+            raise CLIError(error)  # pylint: disable=raise-missing-from
