@@ -4,19 +4,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import json
-from posixpath import dirname
-from typing import Dict, List, Optional, Tuple
-import subprocess
-import requests
+import logging
 import os
 import platform
+import subprocess
 from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+import requests
+from azext_aks_preview._consts import CONST_DRAFT_CLI_VERSION
 from knack.prompting import prompt_y_n
-import logging
-from azext_aks_preview._consts import (
-    CONST_DRAFT_CLI_VERSION
-)
 
 
 # `az aks draft create` function
@@ -147,10 +144,10 @@ def _run(binary_path: str, command: str, arguments: List[str]) -> bool:
     if binary_path is None:
         raise ValueError('The given Binary path was null or empty')
 
-    logging.info(f'Running `az aks draft {command}`')
+    logging.info("Running `az aks draft %s`", command)
     cmd = [binary_path, command] + arguments
-    process = subprocess.Popen(cmd)
-    exit_code = process.wait()
+    with subprocess.Popen(cmd) as process:
+        exit_code = process.wait()
     return exit_code == 0
 
 
@@ -189,25 +186,23 @@ def _binary_pre_check(download_path: str) -> Optional[str]:
             if response:
                 return _download_binary()
         return draft_binary_path
-    else:  # prompt the user to download binary
-        # If users says no, we error out and tell them that this requires the binary
-        msg = 'The required binary was not found. Would you like us to download the required binary for you?'
-
-        if not prompt_y_n(msg, default='n'):
-            raise ValueError('`az aks draft` requires the missing dependency')
-
-        return _download_binary()
+    # prompt the user to download binary
+    # If users says no, we error out and tell them that this requires the binary
+    msg = 'The required binary was not found. Would you like us to download the required binary for you?'
+    if not prompt_y_n(msg, default='n'):
+        raise ValueError('`az aks draft` requires the missing dependency')
+    return _download_binary()
 
 
 # Returns True if the local binary is the latest version, False otherwise
 def _is_latest_version(binary_path: str) -> bool:
     latest_version = CONST_DRAFT_CLI_VERSION
-    process = subprocess.Popen([binary_path, 'version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
+    with subprocess.Popen([binary_path, 'version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+        stdout, stderr = process.communicate()
     if stderr.decode():
         return False
     # return string of result is "version: v0.0.x"
-    current_version = stdout.decode().split('\n')[0].strip().split()[-1]
+    current_version = stdout.decode().split('\n', maxsplit=1)[0].strip().split()[-1]
     return latest_version == current_version
 
 
@@ -220,7 +215,9 @@ def _get_filename() -> Optional[str]:
     if architecture == 'x86_64':
         architecture = 'amd64'
     if architecture not in ['arm64', 'amd64']:
-        logging.error('Cannot find a suitable download for the current system architecture. Draft only supports AMD64 and ARM64.')
+        logging.error(
+            "Cannot find a suitable download for the current system architecture. Draft only supports AMD64 and ARM64."
+        )
         return None
 
     file_suffix = ".exe" if operating_system == "windows" else ""
@@ -243,7 +240,7 @@ def _get_existing_path() -> Optional[str]:
     for path in paths:
         binary_file_path = path + '/' + filename
         if os.path.exists(binary_file_path):
-            logging.info('Existing binary found at: ' + binary_file_path)
+            logging.info("Existing binary found at: %s", binary_file_path)
             return binary_file_path
     return None
 
@@ -277,15 +274,15 @@ def _download_binary(download_path: str = '~/.aksdraft') -> Optional[str]:
         # Directory
         if os.path.exists(download_path) is False:
             Path(download_path).mkdir(parents=True, exist_ok=True)
-            logging.info(f'Directory {download_path} was created inside of your HOME directory')
+            logging.info("Directory %s was created inside of your HOME directory", download_path)
         full_path = f'{download_path}/{filename}'
 
         # Writing the file to the local file system
         with open(full_path, 'wb') as output_file:
             output_file.write(response.content)
-        logging.info(f'Download of Draft binary was successful with a status code: {response.status_code}')
+        logging.info("Download of Draft binary was successful with a status code: %s", response.status_code)
         os.chmod(full_path, 0o755)
         return full_path
 
-    logging.error(f'Download of Draft binary was unsuccessful with a status code: {response.status_code}')
+    logging.error("Download of Draft binary was unsuccessful with a status code: %s", response.status_code)
     return None
