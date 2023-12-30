@@ -174,9 +174,9 @@ class TargetHandler:
         self.auth_type = auth_info['auth_type']
         self.auth_info = auth_info
         self.login_username = run_cli_cmd(
-            'az account show').get("user").get("name")
+            'az account show -o json').get("user").get("name")
         self.login_usertype = run_cli_cmd(
-            'az account show').get("user").get("type")  # servicePrincipal, user
+            'az account show -o json').get("user").get("type")  # servicePrincipal, user
         if (self.login_usertype not in ['servicePrincipal', 'user']):
             e = CLIInternalError(
                 f'{self.login_usertype} is not supported. Please login as user or servicePrincipal')
@@ -654,7 +654,7 @@ class PostgresFlexHandler(TargetHandler):
 
     def enable_target_aad_auth(self):
         target = run_cli_cmd(
-            'az postgres flexible-server show -g {} -n {} --subscription {}'.format(
+            'az postgres flexible-server show -g {} -n {} --subscription {} -o json'.format(
                 self.resource_group, self.db_server, self.subscription))
         if target.get('authConfig').get('activeDirectoryAuth') == "Enabled":
             return
@@ -662,7 +662,7 @@ class PostgresFlexHandler(TargetHandler):
             self.target_id))
 
     def set_user_admin(self, user_object_id, **kwargs):
-        admins = run_cli_cmd('az postgres flexible-server ad-admin list -g {} -s {} --subscription {}'.format(
+        admins = run_cli_cmd('az postgres flexible-server ad-admin list -g {} -s {} --subscription {} -o json'.format(
             self.resource_group, self.db_server, self.subscription))
 
         if not user_object_id:
@@ -797,7 +797,7 @@ class PostgresFlexHandler(TargetHandler):
 
     def get_connection_string(self):
         password = run_cli_cmd(
-            'az account get-access-token --resource-type oss-rdbms').get('accessToken')
+            'az account get-access-token --resource-type oss-rdbmsi -o json').get('accessToken')
 
         # extension functions require the extension to be available, which is the case for postgres (default) database.
         conn_string = "host={} user={} dbname=postgres password={} sslmode=require".format(
@@ -1046,14 +1046,14 @@ class ContainerappHandler(SourceHandler):
     def get_identity_pid(self):
         logger.warning('Checking if Container App enables System Identity...')
         identity = run_cli_cmd(
-            'az containerapp identity show --ids {}'.format(self.source_id))
+            'az containerapp identity show --ids {} -o json'.format(self.source_id))
         if (identity is None or "SystemAssigned" not in identity.get('type')):
             # assign system identity for spring-cloud
             logger.warning('Enabling Container App System Identity...')
             run_cli_cmd(
                 'az containerapp identity assign --ids {} --system-assigned'.format(self.source_id))
             identity = run_cli_cmd(
-                'az containerapp identity show --ids {}'.format(self.source_id), 15, 5, output_is_none)
+                'az containerapp identity show --ids {} -o json'.format(self.source_id), 15, 5, output_is_none)
 
         if identity is None:
             ex = CLIInternalError(
