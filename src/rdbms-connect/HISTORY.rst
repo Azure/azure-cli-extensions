@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.5
+++++++
++ Use compatible release for `setproctitle` to support Python 3.11
+
 1.0.4
 ++++++
 + Update mycli and pgcli versions
