@@ -118,6 +118,7 @@ def pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context,
     chart_version = registry_path.split(':')[1]
 
     if new_path:
+        # Version check for stable release train (chart_version will be in X.Y.Z format as opposed to X.Y.Z-NONSTABLE)
         if '-' not in chart_version and (version.parse(chart_version) < version.parse("1.14.0")):
             error_summary = "This CLI version does not support upgrading to Agents versions older than v1.14"
             telemetry.set_exception(exception='Operation not supported on older Agents', fault_type=consts.Operation_Not_Supported_Fault_Type, summary=error_summary)

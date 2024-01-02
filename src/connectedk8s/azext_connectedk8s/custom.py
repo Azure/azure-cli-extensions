@@ -2538,6 +2538,7 @@ def crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
 
 def check_operation_support(operation_name, agent_version):
     error_summary = 'This CLI version does not support {} for Agents older than v1.14'.format(operation_name)
+    # Version check for stable release train (agent_version will be in X.Y.Z format as opposed to X.Y.Z-NONSTABLE)
     if '-' not in agent_version and (version.parse(agent_version) < version.parse("1.14.0")):
         telemetry.set_exception(exception='Operation not supported on older Agents', fault_type=consts.Operation_Not_Supported_Fault_Type, summary=error_summary)
         raise ClientRequestError(error_summary, recommendation="Please upgrade to the latest version of the Agents using 'az connectedk8s upgrade -g <rg_name> -n <cluster_name>'.")
