@@ -518,6 +518,7 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
 
+
 class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
     def _remove_defaults_in_agentpool(self, agentpool):
         self.defaults_in_agentpool = {}
