@@ -24,6 +24,7 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                           spring=None, app=None, deployment='default',           # Resource.SpringCloud
                           # Resource.*Postgres, Resource.*Sql*
                           server=None, database=None,
+                          opt_out_list=None, app_config_id=None,
                           **kwargs,
                           ):
     from azure.cli.command_modules.serviceconnector.custom import connection_create_func
@@ -46,6 +47,7 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                                   server, database,
                                   enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes),
                                   customized_keys=customized_keys,
+                                  opt_out_list=opt_out_list, app_config_id=app_config_id,
                                   **kwargs)
 
 

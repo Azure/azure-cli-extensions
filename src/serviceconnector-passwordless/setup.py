@@ -40,7 +40,7 @@ DEPENDENCIES = [
     'PyMySQL==1.0.2',
     'pyodbc==4.0.35',
     'psycopg2-binary==2.9.5',
-    'azure-mgmt-servicelinker==1.2.0b1'
+    'azure-mgmt-servicelinker==1.0.0b1'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
