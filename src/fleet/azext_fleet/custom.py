@@ -33,7 +33,6 @@ def create_fleet(cmd,
                  enable_managed_identity=False,
                  assign_identity=None,
                  no_wait=False):
-
     fleet_model = cmd.get_models(
         "Fleet",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -208,8 +207,8 @@ def get_credentials(cmd,  # pylint: disable=unused-argument
             encoding='UTF-8')
         print_or_merge_credentials(
             path, kubeconfig, overwrite_existing, context_name)
-    except (IndexError, ValueError):
-        raise CLIError("Fail to find kubeconfig file.")
+    except (IndexError, ValueError) as exc:
+        raise CLIError("Fail to find kubeconfig file.") from exc
 
 
 def create_fleet_member(cmd,
@@ -385,7 +384,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
         return None
 
-    with open(stages, 'r') as fp:
+    with open(stages, 'r', encoding='utf-8') as fp:
         data = json.load(fp)
         fp.close()
 

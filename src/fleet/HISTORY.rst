@@ -65,3 +65,7 @@ Release History
 ++++++
 * Updated help examples.
 * Fixed serialization bug.
+
+1.0.2
+++++++
+* Minor style & linting updates to codebase.

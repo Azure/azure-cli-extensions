@@ -53,6 +53,7 @@ class SpringSubResourceWrapper(NoTrafficRecordingPreparer):
         except Exception:
             pass
 
+
 class SpringSingleValueReplacer(RegexSingleValueReplacer):
     def __init__(self, dev_setting_name, moniker):
         super(SpringSingleValueReplacer, self).__init__(re.compile(f'(?<![a-zA-Z0-9-]){dev_setting_name}(?![a-zA-Z0-9-])', re.IGNORECASE),
@@ -62,7 +63,7 @@ class SpringSingleValueReplacer(RegexSingleValueReplacer):
 class SpringResourceGroupPreparer(ResourceGroupPreparer):
     def __init__(self, location='uksouth', **kwargs):
         super(SpringResourceGroupPreparer, self).__init__(location=location, **kwargs)
-    
+
     def create_resource(self, name, **kwargs):
         response = super().create_resource(name, **kwargs)
         is_live = self.live_test or self.test_class_instance.in_recording
