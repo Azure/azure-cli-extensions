@@ -92,7 +92,7 @@ def validate_custom_token(cmd, resource_group_name, location):
     return False, location
 
 
-def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc-k8sagents', new_path=True, release_train='stable'):
+def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc-k8sagents', new_path=True):
     # Exporting Helm chart
     chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', chart_folder_name)
     try:
@@ -101,7 +101,7 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     except:
         logger.warning("Unable to cleanup the {} already present on the machine. In case of failure, please cleanup the directory '{}' and try again.".format(chart_folder_name, chart_export_path))
 
-    pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, new_path, release_train, chart_name)
+    pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, new_path, chart_name)
 
     # Returning helm chart path
     helm_chart_path = os.path.join(chart_export_path, chart_name)
@@ -113,12 +113,12 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     return chart_path
 
 
-def pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, new_path, release_train, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
+def pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, new_path, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
     chart_url = registry_path.split(':')[0]
     chart_version = registry_path.split(':')[1]
 
     if new_path:
-        if release_train == 'stable' and (version.parse(chart_version) < version.parse("1.14.0")):
+        if '-' not in chart_version and (version.parse(chart_version) < version.parse("1.14.0")):
             error_summary = "This CLI version does not support upgrading to Agents versions older than v1.14"
             telemetry.set_exception(exception='Operation not supported on older Agents', fault_type=consts.Operation_Not_Supported_Fault_Type, summary=error_summary)
             raise ClientRequestError(error_summary, recommendation="Please select an agent-version >= v1.14 to upgrade to using 'az connectedk8s upgrade -g <rg_name> -n <cluster_name> --agent-version <at-least-1.14>'.")
