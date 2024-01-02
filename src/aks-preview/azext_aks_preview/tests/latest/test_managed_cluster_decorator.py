@@ -4826,7 +4826,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        self.assertIsNone(dec_3.check_raw_parameters())
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
+            return_value=True,
+        ):
+            self.assertIsNone(dec_3.check_raw_parameters())
 
     def test_update_load_balancer_profile(self):
         # default value in `aks_update`
