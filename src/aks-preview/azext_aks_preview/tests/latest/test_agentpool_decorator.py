@@ -37,16 +37,6 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
 )
-from azure.cli.command_modules.acs.tests.latest.mocks import (
-    MockCLI,
-    MockClient,
-    MockCmd,
-)
-from azure.cli.core.azclierror import (
-    CLIInternalError,
-    InvalidArgumentValueError,
-    MutuallyExclusiveArgumentError,
-)
 
 
 class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
