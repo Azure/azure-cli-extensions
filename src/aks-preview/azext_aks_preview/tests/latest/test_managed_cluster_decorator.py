@@ -511,7 +511,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"ip_families": ""}),
+            AKSManagedClusterParamDict({"ip_families": []}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -519,7 +519,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         ctx_3 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"ip_families": "IPv4,IPv6"}),
+            AKSManagedClusterParamDict({"ip_families": ["IPv4", "IPv6"]}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -3847,7 +3847,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "network_policy": None,
                 "nat_gateway_managed_outbound_ip_count": None,
                 "nat_gateway_idle_timeout": None,
-                "ip_families": "IPv4,IPv6",
+                "ip_families": ["IPv4", "IPv6"],
                 "pod_cidrs": "10.246.0.0/16,2001:abcd::/64",
                 "service_cidrs": "10.0.0.0/16,2001:ffff::/108",
                 "load_balancer_managed_outbound_ipv6_count": 3,
@@ -5538,6 +5538,75 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
+
+        # test update ip families
+        dec_8 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "ip_families": ["ipv4", "ipv6"]
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                ip_families=["ipv4"]
+            ),
+        )
+
+        dec_8.context.attach_mc(mc_8)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_8.update_network_profile(None)
+        dec_mc_8 = dec_8.update_network_profile(mc_8)
+
+        ground_truth_mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                ip_families=["ipv4", "ipv6"]
+            ),
+        )
+
+        self.assertEqual(dec_mc_8, ground_truth_mc_8)
+
+        # test ip_families aren't updated when updating other fields
+        dec_9 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "network_plugin_mode": "overlay"
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                ip_families=["ipv6", "ipv4"]
+            ),
+        )
+
+        dec_9.context.attach_mc(mc_9)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_9.update_network_profile(None)
+        dec_mc_9 = dec_9.update_network_profile(mc_9)
+
+        ground_truth_mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                ip_families=["ipv6", "ipv4"]
+            ),
+        )
+
+        self.assertEqual(dec_mc_9, ground_truth_mc_9)
 
     def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(

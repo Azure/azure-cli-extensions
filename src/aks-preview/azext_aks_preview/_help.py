@@ -870,6 +870,10 @@ helps['aks update'] = """
         - name: --enable-disk-driver
           type: bool
           short-summary: Enable AzureDisk CSI Driver.
+        - name: --ip-families
+          type: string
+          short-summary: A comma separated list of IP versions to use for cluster networking.
+          long-summary: Each IP version should be in the format IPvN. For example, IPv4.
         - name: --pod-cidr
           type: string
           short-summary: A CIDR notation IP range from which to assign pod IPs when kubenet is used.
