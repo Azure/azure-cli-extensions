@@ -2158,7 +2158,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         machine_list = self.cmd(list_cmd).get_output_in_json()
         assert len(machine_list) == 2
-        aks_machine_list_table_format(machine_list)
+        print(aks_machine_list_table_format(machine_list))
 
         machine_name = machine_list[0]["name"]
         self.kwargs.update(
@@ -2177,6 +2177,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         machine_show = self.cmd(show_cmd).get_output_in_json()
         assert machine_show["name"] == machine_name
+        print(machine_show)
+
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
