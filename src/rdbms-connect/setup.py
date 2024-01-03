@@ -37,7 +37,7 @@ DEPENDENCIES = [
     'psycopg2==2.9.3',
     'mycli==1.27.0',
     'pgcli==4.0.1',
-    'cryptography~=38.0.0'
+    'cryptography~=36.0.2'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
