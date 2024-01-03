@@ -725,7 +725,7 @@ class ResetNICWindowsVM(LiveScenarioTest):
 
 @pytest.mark.repairandrestore
 class RepairAndRestoreLinuxVM(LiveScenarioTest):
-    
+
     @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_RepairAndRestoreLinuxVM(self, resource_group):
         self.kwargs.update({
