@@ -16,7 +16,7 @@ def cf_connection_cl(cli_ctx, *_):
     user_agent_policy.add_user_agent(
         "CliExtension/{}({})".format(NAME, VERSION))
     return get_mgmt_service_client(cli_ctx, ServiceLinkerManagementClient,
-                                   subscription_bound=False, api_version="2022-11-01-preview",
+                                   subscription_bound=False, api_version="2023-04-01-preview",
                                    user_agent_policy=user_agent_policy)
 
 
