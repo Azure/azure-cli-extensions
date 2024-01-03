@@ -35,8 +35,8 @@ CLASSIFIERS = [
 DEPENDENCIES = [
     'setproctitle~=1.3.3',
     'psycopg2==2.9.3',
-    'mycli==1.26.1',
-    'pgcli==3.4.1',
+    'mycli==1.27.0',
+    'pgcli==4.0.1',
     'cryptography~=38.0.0'
 ]
 
