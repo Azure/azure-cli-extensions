@@ -29,4 +29,14 @@ def load_arguments(self, _):
                        help='The login password of the administrator.')
             c.argument('database_name', arg_type=database_name_arg_type, options_list=['--database-name', '-d'], help='The name of a database.')
             c.argument('interactive_mode', options_list=['--interactive'], action='store_true', help='Pass this parameter to connect to database in interactive mode.')
+            c.argument('querytext', options_list=['--querytext', '-q'], deprecate_info=c.deprecate(redirect='execute'), help='A query to run against the flexible server.')
+
+        with self.argument_context('{} flexible-server execute'.format(command_group)) as c:
+            c.argument('server_name', id_part=None, options_list=['--name', '-n'], arg_type=server_name_arg_type)
+            c.argument('administrator_login', arg_group='Authentication', arg_type=administrator_login_arg_type, options_list=['--admin-user', '-u'],
+                       help='The login username of the administrator.')
+            c.argument('administrator_login_password', arg_group='Authentication', options_list=['--admin-password', '-p'],
+                       help='The login password of the administrator.')
+            c.argument('database_name', arg_type=database_name_arg_type, options_list=['--database-name', '-d'], help='The name of a database.')
             c.argument('querytext', options_list=['--querytext', '-q'], help='A query to run against the flexible server.')
+            c.argument('file_path', options_list=['--file-path', '-f'], help='The path of the sql file to execute.')

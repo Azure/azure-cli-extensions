@@ -61,7 +61,7 @@ class TestIndexRefDocsMeta(type):
                 try:
                     check_call(script_args)
                 except CalledProcessError as e:
-                    traceback.print_exc(e)
+                    traceback.print_exc()
                     raise e
             return test
 

@@ -1,0 +1,157 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks trustedaccess role list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -o
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-containerservice/20.7.0b Python/3.8.10
+        (Linux-5.15.0-1023-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus/trustedAccessRoles?api-version=2023-10-02-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n   {\n    \"sourceResourceType\": \"Microsoft.Compute/virtualMachineScaleSets\",\n
+        \   \"name\": \"test-node-reader\",\n    \"rules\": [\n     {\n      \"verbs\":
+        [\n       \"list\"\n      ],\n      \"apiGroups\": [\n       \"\"\n      ],\n
+        \     \"resources\": [\n       \"nodes\"\n      ]\n     }\n    ]\n   },\n
+        \  {\n    \"sourceResourceType\": \"Microsoft.Compute/virtualMachineScaleSets\",\n
+        \   \"name\": \"test-pod-reader\",\n    \"rules\": [\n     {\n      \"verbs\":
+        [\n       \"list\"\n      ],\n      \"apiGroups\": [\n       \"\"\n      ],\n
+        \     \"resources\": [\n       \"pods\"\n      ]\n     }\n    ]\n   },\n   {\n
+        \   \"sourceResourceType\": \"Microsoft.Compute/virtualMachineScaleSets\",\n
+        \   \"name\": \"test-admin\",\n    \"rules\": [\n     {\n      \"verbs\":
+        [\n       \"*\"\n      ],\n      \"apiGroups\": [\n       \"\"\n      ],\n
+        \     \"resources\": [\n       \"*\"\n      ]\n     }\n    ]\n   },\n   {\n
+        \   \"sourceResourceType\": \"Microsoft.DataProtection/BackupVaults\",\n    \"name\":
+        \"pvbackup\",\n    \"rules\": [\n     {\n      \"verbs\": [\n       \"list\"\n
+        \     ],\n      \"apiGroups\": [\n       \"\"\n      ],\n      \"resources\":
+        [\n       \"events\"\n      ]\n     },\n     {\n      \"verbs\": [\n       \"get\",\n
+        \      \"list\"\n      ],\n      \"apiGroups\": [\n       \"\"\n      ],\n
+        \     \"resources\": [\n       \"namespaces\"\n      ]\n     },\n     {\n
+        \     \"verbs\": [\n       \"get\",\n       \"list\"\n      ],\n      \"apiGroups\":
+        [\n       \"apps\"\n      ],\n      \"resources\": [\n       \"deployments\",\n
+        \      \"statefulsets\",\n       \"replicasets\",\n       \"daemonsets\"\n
+        \     ]\n     },\n     {\n      \"verbs\": [\n       \"create\",\n       \"get\",\n
+        \      \"list\",\n       \"patch\",\n       \"update\",\n       \"delete\"\n
+        \     ],\n      \"apiGroups\": [\n       \"\"\n      ],\n      \"resources\":
+        [\n       \"persistentvolumes\",\n       \"persistentvolumeclaims\"\n      ]\n
+        \    },\n     {\n      \"verbs\": [\n       \"get\",\n       \"list\"\n      ],\n
+        \     \"apiGroups\": [\n       \"storage.k8s.io\"\n      ],\n      \"resources\":
+        [\n       \"csidrivers\"\n      ]\n     },\n     {\n      \"verbs\": [\n       \"create\",\n
+        \      \"get\",\n       \"list\",\n       \"patch\",\n       \"update\"\n
+        \     ],\n      \"apiGroups\": [\n       \"storage.k8s.io\"\n      ],\n      \"resources\":
+        [\n       \"storageclasses\",\n       \"volumeattachments\"\n      ]\n     },\n
+        \    {\n      \"verbs\": [\n       \"create\",\n       \"get\",\n       \"list\",\n
+        \      \"patch\",\n       \"update\",\n       \"delete\"\n      ],\n      \"apiGroups\":
+        [\n       \"snapshot.storage.k8s.io\"\n      ],\n      \"resources\": [\n
+        \      \"volumesnapshots\",\n       \"volumesnapshotcontents\",\n       \"volumesnapshotclasses\"\n
+        \     ]\n     }\n    ]\n   },\n   {\n    \"sourceResourceType\": \"Microsoft.DataProtection/backupVaults\",\n
+        \   \"name\": \"backup-operator\",\n    \"rules\": [\n     {\n      \"verbs\":
+        [\n       \"get\",\n       \"list\",\n       \"watch\",\n       \"create\",\n
+        \      \"update\",\n       \"patch\",\n       \"delete\"\n      ],\n      \"apiGroups\":
+        [\n       \"clusterbackup.dataprotection.microsoft.com\"\n      ],\n      \"resources\":
+        [\n       \"backups\",\n       \"validateforbackups\",\n       \"restores\",\n
+        \      \"validateforrestores\",\n       \"deletebackups\"\n      ]\n     },\n
+        \    {\n      \"verbs\": [\n       \"get\",\n       \"list\"\n      ],\n      \"apiGroups\":
+        [\n       \"\"\n      ],\n      \"resources\": [\n       \"configmaps\"\n
+        \     ]\n     }\n    ]\n   },\n   {\n    \"sourceResourceType\": \"Microsoft.MachineLearningServices/workspaces\",\n
+        \   \"name\": \"training\",\n    \"rules\": [\n     {\n      \"verbs\": [\n
+        \      \"create\",\n       \"get\",\n       \"list\",\n       \"patch\",\n
+        \      \"update\",\n       \"delete\"\n      ],\n      \"apiGroups\": [\n
+        \      \"\"\n      ],\n      \"resources\": [\n       \"services\",\n       \"services/proxy\"\n
+        \     ]\n     }\n    ]\n   },\n   {\n    \"sourceResourceType\": \"Microsoft.MachineLearningServices/workspaces\",\n
+        \   \"name\": \"inferenceV2\",\n    \"rules\": [\n     {\n      \"verbs\":
+        [\n       \"create\",\n       \"get\",\n       \"list\",\n       \"patch\",\n
+        \      \"update\",\n       \"delete\"\n      ],\n      \"apiGroups\": [\n
+        \      \"\"\n      ],\n      \"resources\": [\n       \"services\",\n       \"services/proxy\"\n
+        \     ]\n     }\n    ]\n   },\n   {\n    \"sourceResourceType\": \"Microsoft.MachineLearningServices/workspaces\",\n
+        \   \"name\": \"inferenceV1\",\n    \"rules\": [\n     {\n      \"verbs\":
+        [\n       \"get\",\n       \"list\",\n       \"watch\",\n       \"create\",\n
+        \      \"update\",\n       \"patch\",\n       \"delete\"\n      ],\n      \"apiGroups\":
+        [\n       \"\"\n      ],\n      \"resources\": [\n       \"persistentvolumes\",\n
+        \      \"persistentvolumeclaims\"\n      ]\n     },\n     {\n      \"verbs\":
+        [\n       \"update\",\n       \"patch\"\n      ],\n      \"apiGroups\": [\n
+        \      \"\"\n      ],\n      \"resources\": [\n       \"persistentvolumeclaims/status\"\n
+        \     ]\n     },\n     {\n      \"verbs\": [\n       \"get\",\n       \"list\",\n
+        \      \"watch\",\n       \"create\",\n       \"update\",\n       \"patch\"\n
+        \     ],\n      \"apiGroups\": [\n       \"\"\n      ],\n      \"resources\":
+        [\n       \"events\"\n      ]\n     },\n     {\n      \"verbs\": [\n       \"get\",\n
+        \      \"list\",\n       \"watch\"\n      ],\n      \"apiGroups\": [\n       \"\"\n
+        \     ],\n      \"resources\": [\n       \"nodes\",\n       \"endpoints\"\n
+        \     ]\n     },\n     {\n      \"verbs\": [\n       \"get\",\n       \"list\",\n
+        \      \"watch\"\n      ],\n      \"apiGroups\": [\n       \"storage.k8s.io\"\n
+        \     ],\n      \"resources\": [\n       \"storageclasses\"\n      ]\n     },\n
+        \    {\n      \"verbs\": [\n       \"get\",\n       \"list\",\n       \"watch\"\n
+        \     ],\n      \"apiGroups\": [\n       \"storage.k8s.io\"\n      ],\n      \"resources\":
+        [\n       \"csinodes\"\n      ]\n     },\n     {\n      \"verbs\": [\n       \"create\",\n
+        \      \"get\",\n       \"list\",\n       \"patch\",\n       \"update\",\n
+        \      \"delete\"\n      ],\n      \"apiGroups\": [\n       \"storage.k8s.io\"\n
+        \     ],\n      \"resources\": [\n       \"csidrivers\"\n      ]\n     },\n
+        \    {\n      \"verbs\": [\n       \"get\",\n       \"list\",\n       \"watch\",\n
+        \      \"create\",\n       \"update\",\n       \"patch\"\n      ],\n      \"apiGroups\":
+        [\n       \"coordination.k8s.io\"\n      ],\n      \"resources\": [\n       \"leases\"\n
+        \     ]\n     },\n     {\n      \"verbs\": [\n       \"create\",\n       \"get\",\n
+        \      \"list\",\n       \"patch\",\n       \"update\",\n       \"delete\"\n
+        \     ],\n      \"apiGroups\": [\n       \"\"\n      ],\n      \"resources\":
+        [\n       \"namespaces\",\n       \"pods\",\n       \"pods/log\",\n       \"configmaps\",\n
+        \      \"secrets\",\n       \"services\",\n       \"services/proxy\",\n       \"serviceaccounts\"\n
+        \     ]\n     },\n     {\n      \"verbs\": [\n       \"create\",\n       \"get\",\n
+        \      \"list\",\n       \"patch\",\n       \"update\",\n       \"delete\"\n
+        \     ],\n      \"apiGroups\": [\n       \"apps\"\n      ],\n      \"resources\":
+        [\n       \"deployments\",\n       \"replicasets\",\n       \"daemonsets\",\n
+        \      \"deployments/scale\",\n       \"deployments/status\"\n      ]\n     },\n
+        \    {\n      \"verbs\": [\n       \"create\",\n       \"get\",\n       \"list\"\n
+        \     ],\n      \"apiGroups\": [\n       \"batch\"\n      ],\n      \"resources\":
+        [\n       \"jobs\"\n      ]\n     },\n     {\n      \"verbs\": [\n       \"create\",\n
+        \      \"get\",\n       \"list\",\n       \"update\",\n       \"patch\"\n
+        \     ],\n      \"apiGroups\": [\n       \"rbac.authorization.k8s.io\"\n      ],\n
+        \     \"resources\": [\n       \"clusterroles\",\n       \"clusterrolebindings\"\n
+        \     ]\n     },\n     {\n      \"verbs\": [\n       \"watch\"\n      ],\n
+        \     \"apiGroups\": [\n       \"\"\n      ],\n      \"resources\": [\n       \"pods\",\n
+        \      \"configmaps\",\n       \"services\"\n      ]\n     },\n     {\n      \"verbs\":
+        [\n       \"watch\"\n      ],\n      \"apiGroups\": [\n       \"apps\"\n      ],\n
+        \     \"resources\": [\n       \"deployments\",\n       \"deployments/scale\"\n
+        \     ]\n     },\n     {\n      \"verbs\": [\n       \"get\",\n       \"list\",\n
+        \      \"patch\",\n       \"update\",\n       \"watch\"\n      ],\n      \"apiGroups\":
+        [\n       \"\"\n      ],\n      \"resources\": [\n       \"deployments\",\n
+        \      \"deployments/scale\"\n      ]\n     },\n     {\n      \"verbs\": [\n
+        \      \"get\",\n       \"list\",\n       \"watch\"\n      ],\n      \"apiGroups\":
+        [\n       \"apps\"\n      ],\n      \"resources\": [\n       \"pods\",\n       \"configmaps\",\n
+        \      \"endpoints\",\n       \"nodes\",\n       \"services\"\n      ]\n     }\n
+        \   ]\n   }\n  ]\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '7745'
+      content-type:
+      - application/json
+      date:
+      - Thu, 24 Nov 2022 15:17:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

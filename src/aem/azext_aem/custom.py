@@ -2,63 +2,285 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from datetime import datetime
+import time
+import uuid
+import os
+
+from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.profiles import ResourceType, get_sdk
+from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_data_service_client
+from azure.mgmt.compute.models import ResourceIdentityType
+from msrestazure.tools import parse_resource_id
+from msrestazure.azure_exceptions import CloudError
+
 from knack.util import CLIError
 from knack.log import get_logger
 
-from azure.cli.core.profiles import ResourceType, get_sdk
-from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_data_service_client
-
 logger = get_logger(__name__)
 
+LINUX = "linux"
+WINDOWS = "windows"
+EXTENSION_V2_ROLE = "acdd72a7-3385-48ef-bd42-f606fba81ae7"
+MAX_WAIT_TIME_FOR_SP_SECONDS = 300
+PRINCIPAL_NOT_FOUND_ERROR = "principalnotfound"
+AUTH_PROV_ROLE_DEF = "providers/Microsoft.Authorization/roleDefinitions"
 aem_extension_info = {
-    'Linux': {
+    LINUX: {
         'publisher': 'Microsoft.OSTCExtensions',
         'name': 'AzureEnhancedMonitorForLinux',
         'version': '3.0'
     },
-    'Windows': {
+    WINDOWS: {
         'publisher': 'Microsoft.AzureCAT.AzureEnhancedMonitoring',
         'name': 'AzureCATExtensionHandler',
         'version': '2.2'
     }
 }
 
+aem_extension_info_v2 = {
+    LINUX: {
+        'publisher': 'Microsoft.AzureCAT.AzureEnhancedMonitoring',
+        'name': 'MonitorX64Linux',
+        'version': '1.0'
+    },
+    WINDOWS: {
+        'publisher': 'Microsoft.AzureCAT.AzureEnhancedMonitoring',
+        'name': 'MonitorX64Windows',
+        'version': '1.0'
+    }
+}
 
-def set_aem(cmd, resource_group_name, vm_name, skip_storage_analytics=False):
+
+def set_aem(cmd, resource_group_name, vm_name, skip_storage_analytics=False,
+            install_new_extension=False, set_access_to_individual_resources=False,
+            proxy_uri=None, debug_extension=False):
     aem = EnhancedMonitoring(cmd, resource_group_name, vm_name,
                              vm_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_COMPUTE),
                              storage_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE),
-                             skip_storage_analytics=skip_storage_analytics)
-    aem.enable()
+                             roles_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION),
+                             skip_storage_analytics=skip_storage_analytics,
+                             install_new_extension=install_new_extension,
+                             set_access_to_individual_resources=set_access_to_individual_resources,
+                             proxy_uri=proxy_uri,
+                             debug_extension=debug_extension)
+    return aem.enable()
 
 
 def delete_aem(cmd, resource_group_name, vm_name):
     aem = EnhancedMonitoring(cmd, resource_group_name, vm_name,
                              vm_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_COMPUTE),
                              storage_client=None)
-    aem.delete()
+    return aem.delete()
 
 
 def verify_aem(cmd, resource_group_name, vm_name, wait_time_in_minutes=15, skip_storage_check=False):
     aem = EnhancedMonitoring(cmd, resource_group_name, vm_name,
                              vm_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_COMPUTE),
-                             storage_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE))
+                             storage_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE),
+                             roles_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION))
     aem.verify(skip_storage_check, wait_time_in_minutes)
 
 
 class EnhancedMonitoring(object):
     def __init__(self, cmd, resource_group, vm_name, vm_client,
-                 storage_client, skip_storage_analytics=None):
+                 storage_client, roles_client=None, skip_storage_analytics=None,
+                 install_new_extension=None,
+                 set_access_to_individual_resources=None,
+                 no_wait=False,
+                 proxy_uri=None,
+                 debug_extension=False):
         self._vm_client = vm_client
         self._storage_client = storage_client
+        self._roles_client = roles_client
         self._resource_group = resource_group
         self._cmd = cmd
         self._vm = vm_client.virtual_machines.get(resource_group, vm_name, expand='instanceView')
-        os_type = self._vm.storage_profile.os_disk.os_type.value.lower()
-        self._extension = aem_extension_info['Linux'] if (os_type == 'linux') else aem_extension_info['Windows']
+        self._os_type = self._vm.storage_profile.os_disk.os_type.lower()
+        if self._os_type != WINDOWS and self._os_type != LINUX:
+            raise CLIError(
+                f'Operating system {self._os_type} not supported by '
+                f'the VM Extension for SAP.Supported operating systems are {LINUX} and {WINDOWS}')
+
+        if install_new_extension:
+            self._extension = aem_extension_info_v2[self._os_type]
+        else:
+            self._extension = aem_extension_info[self._os_type]
+
         self._skip_storage_analytics = skip_storage_analytics
+        self._install_new_extension = install_new_extension
+        self._set_access_to_individual_resources = set_access_to_individual_resources
+        self._no_wait = no_wait
+        self._proxy_uri = proxy_uri
+        self._debug_extension = debug_extension
 
     def enable(self):
+        # * no extension + new extension switch => install new extension
+        # * new extension + new extension switch => install new extension
+        # * new extension + no extension switch => install new extension
+        # * no extension + no new extension switch => install old extension
+        # * old extension + no new extension switch => install old extension
+        # * old extension + new extension switch => error
+        extension = self._get_aem_extension()
+
+        if (extension is None and self._install_new_extension) or self._is_new_extension(extension):
+            logger.info("Installing new extension...")
+            return self._enable_new()
+        if ((extension is None and not self._install_new_extension) or
+                (self._is_old_extension(extension) and
+                 not self._install_new_extension)):
+            logger.info("Installing old extension...")
+            return self._enable_old()
+
+        raise CLIError("Migration from the old extension to the new one is not supported. "
+                       "Please remove the old extension first.")
+
+    def _enable_new(self):
+        self._extension = aem_extension_info_v2[self._os_type]
+
+        new_identity = None
+        if self._vm.identity is None:
+            logger.info("VM has no identity, enabling system assigned")
+            new_identity = ResourceIdentityType.system_assigned
+
+        elif self._vm.identity is not None and self._vm.identity.type == ResourceIdentityType.user_assigned:
+            logger.info("VM has user assigned identity, enabling user and system assigned")
+            new_identity = ResourceIdentityType.system_assigned_user_assigned
+
+        if new_identity is not None:
+            params_identity = {}
+            params_identity['type'] = new_identity
+            VirtualMachineUpdate = self._cmd.get_models('VirtualMachineUpdate',
+                                                        resource_type=ResourceType.MGMT_COMPUTE,
+                                                        operation_group='virtual_machines')
+            vm_patch = VirtualMachineUpdate()
+            vm_patch.identity = params_identity
+            poller = (self._vm_client.virtual_machines.
+                      begin_update(self._resource_group, self._vm.name, vm_patch))
+            self._vm = poller.result()
+
+        scopes = set()
+        end_index = 5  # Scope is set to resource group
+        if self._set_access_to_individual_resources:
+            logger.info("Setting access to individual resources")
+            end_index = 9  # Scope is set to resource
+
+        # Add VM Scope or Resource Group scope
+        scopes.add("/".join(self._vm.id.split('/')[0:end_index]))
+
+        # TODO: do we want to support unmanaged disks?
+        scopes.add("/".join(self._vm.storage_profile.os_disk.managed_disk.id.split('/')[0:end_index]))
+        for data_disk in self._vm.storage_profile.data_disks:
+            logger.info("Adding access to data disk %s", data_disk.managed_disk.id)
+            scopes.add("/".join(data_disk.managed_disk.id.split('/')[0:end_index]))
+
+        for nic in self._vm.network_profile.network_interfaces:
+            logger.info("Adding access to network interface %s", nic.id)
+            scopes.add("/".join(nic.id.split('/')[0:end_index]))
+
+        self._create_role_assignments_for_scopes(scopes)
+
+        pub_cfg = {}
+        if self._proxy_uri is not None:
+            pub_cfg.update({
+                'proxy': self._proxy_uri
+            })
+
+        if self._debug_extension is True:
+            pub_cfg.update({
+                'debug': '1'
+            })
+
+        VirtualMachineExtension = self._cmd.get_models('VirtualMachineExtension',
+                                                       resource_type=ResourceType.MGMT_COMPUTE,
+                                                       operation_group='virtual_machine_extensions')
+        existing_ext = self._get_aem_extension()
+        extension_instance_name = existing_ext.name if existing_ext else self._extension['name']
+        existing_ext = VirtualMachineExtension(location=self._vm.location,
+                                               publisher=self._extension['publisher'],
+                                               type_properties_type=self._extension['name'],
+                                               type_handler_version=self._extension['version'],
+                                               settings={
+                                                   'system': 'SAP',
+                                                   'cfg': [{'key': k, 'value': pub_cfg[k]} for k in pub_cfg]
+                                               },
+                                               auto_upgrade_minor_version=True)
+
+        return sdk_no_wait(self._no_wait,
+                           self._vm_client.virtual_machine_extensions.begin_create_or_update,
+                           resource_group_name=self._resource_group,
+                           vm_name=self._vm.name,
+                           vm_extension_name=extension_instance_name,
+                           extension_parameters=existing_ext)
+
+    def _create_role_assignments_for_scopes(self, scopes):
+        vm_subscription = self._vm.id.split('/')[2]
+        start_time = datetime.now()
+        scopeIndex = 0
+
+        for scope in scopes:
+            # Scope index is used to create the same UUID during test recording and playback
+            scopeIndex = scopeIndex + 1
+
+            # In some cases, the role assignment cannot be created
+            # because the VM identity is not yet available for usage.
+            created = False
+
+            logger.info("Granting access to scope %s", scope)
+            while not created:
+
+                scope_role_id = f'{scope}/{AUTH_PROV_ROLE_DEF}/{EXTENSION_V2_ROLE}'
+                role_definition_id = f'/subscriptions/{vm_subscription}/{AUTH_PROV_ROLE_DEF}/{EXTENSION_V2_ROLE}'
+
+                existing_role_assignments = list(self._roles_client.role_assignments.list_for_scope(scope))
+                existing_role_assignment = next((x for x in existing_role_assignments
+                                                 if x.principal_id.lower() == self._vm.identity.principal_id.lower() and
+                                                 x.role_definition_id.lower() == role_definition_id.lower() and
+                                                 x.scope.lower() == scope.lower()), None)
+
+                if existing_role_assignment is not None:
+                    logger.info("Granting access to scope %s - already exists", scope)
+                    created = True
+                    break
+
+                # TODO: do we want to support user assigned identity?
+                params_role_assignment = {
+                    'role_definition_id': scope_role_id,
+                    'principal_id': self._vm.identity.principal_id
+                }
+                try:
+                    assignment_name = uuid.uuid4()
+                    if "AZURE_CLI_AEM_TEST" in os.environ:
+                        # AZURE_CLI_AEM_TEST is used to create the same UUID during test recording and playback
+                        scopeSplit = scope.split('/')
+                        suffix = scopeSplit[len(scopeSplit) - 1]
+                        if len(scopeSplit) == 5:
+                            # Resource Group name might change between
+                            # recording and playback - let's use a fixed value
+                            suffix = "resourcegroup"
+
+                        uuidText = f'{os.environ["AZURE_CLI_AEM_TEST"]}-{suffix}'
+                        logger.info("Using UUID Text %s to create role assignment", uuidText)
+                        assignment_name = uuid.uuid3(uuid.NAMESPACE_DNS, uuidText)
+
+                    self._roles_client.role_assignments.create(scope, assignment_name, params_role_assignment)
+                    created = True
+                except CloudError as cex:
+                    logger.info("Error during role assignment %s", cex)
+                    if ((not cex.error) or (not cex.error.error) or
+                            (PRINCIPAL_NOT_FOUND_ERROR != cex.error.error.lower())):
+                        raise
+
+                if (not created) and ((datetime.now() - start_time).total_seconds() < MAX_WAIT_TIME_FOR_SP_SECONDS):
+                    logger.info("Error during role assignment - waiting 5 seconds before next attempt")
+                    time.sleep(5)
+                elif not created:
+                    raise CLIError(f'Waited {MAX_WAIT_TIME_FOR_SP_SECONDS} seconds for VM identity '
+                                   'to become available - giving up. Please try again later.')
+
+    def _enable_old(self):
+        self._extension = aem_extension_info[self._os_type]
+
         pub_cfg, pri_cfg = self._build_extension_cfgs(self._get_disk_info())
         VirtualMachineExtension = self._cmd.get_models('VirtualMachineExtension',
                                                        resource_type=ResourceType.MGMT_COMPUTE,
@@ -67,7 +289,7 @@ class EnhancedMonitoring(object):
         extension_instance_name = existing_ext.name if existing_ext else self._extension['name']
         existing_ext = VirtualMachineExtension(location=self._vm.location,
                                                publisher=self._extension['publisher'],
-                                               virtual_machine_extension_type=self._extension['name'],
+                                               type_properties_type=self._extension['name'],
                                                protected_settings={
                                                    'cfg': [{'key': k, 'value': pri_cfg[k]} for k in pri_cfg]
                                                },
@@ -76,27 +298,156 @@ class EnhancedMonitoring(object):
                                                    'cfg': [{'key': k, 'value': pub_cfg[k]} for k in pub_cfg]
                                                },
                                                auto_upgrade_minor_version=True)
-        return self._vm_client.virtual_machine_extensions.create_or_update(self._resource_group, self._vm.name,
-                                                                           extension_instance_name,
-                                                                           existing_ext)
+
+        return sdk_no_wait(self._no_wait,
+                           self._vm_client.virtual_machine_extensions.begin_create_or_update,
+                           resource_group_name=self._resource_group,
+                           vm_name=self._vm.name,
+                           vm_extension_name=extension_instance_name,
+                           extension_parameters=existing_ext)
 
     def delete(self):
         existing_ext = self._get_aem_extension()
         if not existing_ext:
-            raise CLIError("'{}' is not installed".format(self._extension['name']))
-        return self._vm_client.virtual_machine_extensions.delete(self._resource_group, self._vm.name,
-                                                                 existing_ext.name)
+            raise CLIError("VM Extension for SAP is not installed")
+        return sdk_no_wait(self._no_wait, self._vm_client.virtual_machine_extensions.begin_delete,
+                           resource_group_name=self._resource_group,
+                           vm_name=self._vm.name,
+                           vm_extension_name=existing_ext.name)
 
     def verify(self, skip_storage_check, wait_time_in_minutes):
-        import datetime
-        success = True
         aem_ext = self._get_aem_extension()
+        if aem_ext is None:
+            raise CLIError('VM Extension for SAP was not installed')
+
+        if self._is_new_extension(aem_ext):
+            return self._verify_new(aem_ext)
+
+        return self._verify_old(skip_storage_check, wait_time_in_minutes, aem_ext)
+
+    def _verify_new(self, aem_ext):
+        success = True
+        succ_word, fail_word = 'OK', 'Not OK'
+        if aem_ext:
+            logger.warning('VM Extension for SAP Installation check: %s', succ_word)
+        else:
+            raise CLIError('VM Extension for SAP was not installed')
+
+        if ((not self._vm.identity) or
+                (self._vm.identity is None) or
+                (self._vm.identity.type == ResourceIdentityType.user_assigned)):
+            success = False
+            logger.warning('VM Identity Check: %s', fail_word)
+        else:
+            logger.warning('VM Identity Check: %s', succ_word)
+
+        end_index_short = 5  # Scope is set to resource group
+        end_index_long = 9  # Scope is set to resource
+        vm_subscription = self._vm.id.split('/')[2]
+
+        resource_ids = set()
+        resource_ids.add(self._vm.id)
+        resource_ids.add(self._vm.storage_profile.os_disk.managed_disk.id)
+        for disk in self._vm.storage_profile.data_disks:
+            resource_ids.add(disk.managed_disk.id)
+        for nic in self._vm.network_profile.network_interfaces:
+            resource_ids.add(nic.id)
+
+        tested_scopes_ok = set()
+        tested_scopes_nok = set()
+
+        for resource_id in resource_ids:
+            scope_resource_group = "/".join(resource_id.split('/')[0:end_index_short])
+            scope_resource = "/".join(resource_id.split('/')[0:end_index_long])
+            role_definition_id = f'/subscriptions/{vm_subscription}/{AUTH_PROV_ROLE_DEF}/{EXTENSION_V2_ROLE}'
+
+            check_ok = False
+            group_ok = None
+            resource_ok = None
+            if scope_resource_group in tested_scopes_ok:
+                group_ok = True
+            if scope_resource_group in tested_scopes_nok:
+                group_ok = False
+            if scope_resource in tested_scopes_ok:
+                resource_ok = True
+            if scope_resource in tested_scopes_nok:
+                resource_ok = False
+
+            check_ok = EnhancedMonitoring._check_scope_permissions(group_ok, resource_ok, scope_resource_group,
+                                                                   scope_resource, role_definition_id,
+                                                                   tested_scopes_ok, tested_scopes_nok,
+                                                                   self._scope_check)
+
+            if check_ok:
+                logger.warning('\tPermission Check for Resource %s: %s', resource_id, succ_word)
+            else:
+                success = False
+                logger.warning('\tPermission Check for Resource %s: %s', resource_id, fail_word)
+
+        if success:
+            logger.warning('Configuration OK')
+        else:
+            raise CLIError('Configuration Not OK.')
+
+    @staticmethod
+    def _check_scope_permissions(group_ok, resource_ok, scope_resource_group,
+                                 scope_resource, role_definition_id, tested_scopes_ok,
+                                 tested_scopes_nok, test_scope_func):
+        check_ok = False
+
+        # | Permissions for RG | Permission for Resource | Result                   | Checked with |
+        # |         Y          |           Y             |   Y                      | 1
+        # |         Y          |           N             |   Y                      | 1
+        # |         Y          |           ?             |   Y                      | 1
+        # |         N          |           Y             |   Y                      | 1
+        # |         N          |           N             |   N                      | 2
+        # |         N          |           ?             | check resource           | 4
+        # |         ?          |           Y             |   Y                      | 1
+        # |         ?          |           N             | check resource group     | 3
+        # |         ?          |           ?             | check resource group,
+        #                                                  if no, check resource    | 3 and 4
+
+        if (group_ok is True) or (resource_ok is True):  # 1
+            check_ok = True
+        elif (group_ok is False) and (resource_ok is False):  # 2
+            check_ok = False
+
+        if (not check_ok) and (group_ok is None):  # 3
+            result = test_scope_func(scope_resource_group, role_definition_id)
+            if result:
+                check_ok = True
+                tested_scopes_ok.add(scope_resource_group)
+            else:
+                tested_scopes_nok.add(scope_resource_group)
+
+        if (not check_ok) and (resource_ok is None):  # 4
+            result = test_scope_func(scope_resource, role_definition_id)
+            if result:
+                check_ok = True
+                tested_scopes_ok.add(scope_resource)
+            else:
+                tested_scopes_nok.add(scope_resource)
+
+        return check_ok
+
+    def _scope_check(self, scope, role_definition_id):
+        existing_role_assignments = list(self._roles_client.role_assignments.list_for_scope(scope))
+        existing_role_assignment = next((x for x in existing_role_assignments
+                                         if x.principal_id.lower() == self._vm.identity.principal_id.lower() and
+                                         x.role_definition_id.lower() == role_definition_id.lower() and
+                                         x.scope.lower() == scope.lower()), None)
+
+        return existing_role_assignment is not None
+
+    def _verify_old(self, skip_storage_check, wait_time_in_minutes, aem_ext):
+        success = True
         result = {}
         succ_word, fail_word = 'OK', 'Not OK'
         if aem_ext:
-            logger.warning('Azure Enhanced Monitoring Extension for SAP Installation check: %s', succ_word)
+            logger.warning('VM Extension for SAP Installation check: %s', succ_word)
         else:
-            raise CLIError('Azure Enhanced Monitoring Extension for SAP was not installed')
+            raise CLIError('VM Extension for SAP was not installed')
+
         disk_info = self._get_disk_info()
         managed_disk = disk_info['managed_disk']
         # os disk
@@ -133,7 +484,7 @@ class EnhancedMonitoring(object):
                             success = False
                             logger.error("\t\tStorage Metrics data check '%s': %s", storage_account_name, fail_word)
 
-        logger.warning('Azure Enhanced Monitoring Extension for SAP public configuration check...')
+        logger.warning('VM Extension for SAP public configuration check...')
         expected, _ = self._build_extension_cfgs(disk_info)
         expected.pop('wad.isenabled')
         public_cfg = {x['key']: x['value'] for x in self._vm.resources[0].settings['cfg']}
@@ -273,15 +624,41 @@ class EnhancedMonitoring(object):
         return pub_cfg, pri_cfg
 
     def _get_aem_extension(self):
-        existing_ext = None
+        existing_ext_v2 = None
+        existing_ext_v1 = None
+
         if self._vm.resources:
-            existing_ext = next((x for x in self._vm.resources
-                                 if x.virtual_machine_extension_type.lower() == self._extension['name'].lower() and
-                                 x.publisher.lower() == self._extension['publisher'].lower()), None)
-        return existing_ext
+            name_v2 = aem_extension_info_v2[self._os_type]['name'].lower()
+            pub_v2 = aem_extension_info_v2[self._os_type]['publisher'].lower()
+            name_v1 = aem_extension_info[self._os_type]['name'].lower()
+            pub_v1 = aem_extension_info[self._os_type]['publisher'].lower()
+            existing_ext_v2 = next((x for x in self._vm.resources
+                                    if x.type_properties_type.lower() == name_v2 and
+                                    x.publisher.lower() == pub_v2), None)
+            existing_ext_v1 = next((x for x in self._vm.resources
+                                    if x.type_properties_type.lower() == name_v1 and
+                                    x.publisher.lower() == pub_v1), None)
+
+        if existing_ext_v2 is None:
+            return existing_ext_v1
+
+        return existing_ext_v2
+
+    def _is_new_extension(self, extension):
+        if extension is None:
+            return False
+
+        return (extension.type_properties_type.lower() == aem_extension_info_v2[self._os_type]['name'].lower() and
+                extension.publisher.lower() == aem_extension_info_v2[self._os_type]['publisher'].lower())
+
+    def _is_old_extension(self, extension):
+        if extension is None:
+            return False
+
+        return (extension.type_properties_type.lower() == aem_extension_info[self._os_type]['name'].lower() and
+                extension.publisher.lower() == aem_extension_info[self._os_type]['publisher'].lower())
 
     def _get_disk_info(self):
-        from msrestazure.tools import parse_resource_id  # pylint: disable=import-error
         disks_info = {}
         disks_info['managed_disk'] = bool(getattr(self._vm.storage_profile.os_disk, 'managed_disk', None))
         if disks_info['managed_disk']:
@@ -291,7 +668,7 @@ class EnhancedMonitoring(object):
                 'name': disk.name,
                 'size': disk.disk_size_gb,
                 'is_premium': disk.sku.tier.lower() == 'premium',
-                'caching': self._vm.storage_profile.os_disk.caching.value,
+                'caching': self._vm.storage_profile.os_disk.caching,
             }
             disks_info['data_disks'] = []
             for data_disk in self._vm.storage_profile.data_disks:
@@ -302,7 +679,7 @@ class EnhancedMonitoring(object):
                     'size': disk.disk_size_gb,
                     'is_premium': disk.sku.tier.lower() == 'premium',
                     'is_ultra': disk.sku.tier.lower() == 'ultra',
-                    'caching': data_disk.caching.value,
+                    'caching': data_disk.caching,
                     'lun': data_disk.lun,
                     'iops': disk.disk_iops_read_write if disk.sku.tier.lower() == 'ultra' else 0,
                     'tp': disk.disk_mbps_read_write if disk.sku.tier.lower() == 'ultra' else 0
@@ -390,7 +767,6 @@ class EnhancedMonitoring(object):
 
     def _check_table_and_content(self, storage_account_name, key, table_name,
                                  filter_string, timeout_in_minutes):
-        import time
         sleep_period = 15
         TableService = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_COSMOS_TABLE, 'table#TableService')
         table_client = get_data_service_client(

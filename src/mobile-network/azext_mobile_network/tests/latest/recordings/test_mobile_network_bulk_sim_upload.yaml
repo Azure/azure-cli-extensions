@@ -1,0 +1,1091 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --identifier
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_mobile_network000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"westcentralus","tags":{"product":"azurecli","cause":"automation","test":"test_mobile_network_bulk_sim_upload","date":"2023-06-28T17:22:32Z","module":"mobile-network"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:22:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westcentralus", "properties": {"publicLandMobileNetworkIdentifier":
+      {"mcc": "001", "mnc": "01"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '111'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --identifier
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002","name":"mobile_network_000002","type":"microsoft.mobilenetwork/mobilenetworks","location":"westcentralus","systemData":{"createdBy":"rafaelda@microsoft.com","createdByType":"User","createdAt":"2023-06-28T17:22:36.6704Z","lastModifiedBy":"rafaelda@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-28T17:22:36.6704Z"},"properties":{"provisioningState":"Succeeded","publicLandMobileNetworkIdentifier":{"mcc":"001","mnc":"01"},"serviceKey":"865b2b58-20e3-4c34-9e89-ce1625e4dd90"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '672'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:22:38 GMT
+      etag:
+      - '"1300fe93-0000-0600-0000-649c6c5d0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c936b6a7-0dc1-40ab-b24f-60b446c671b4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --mobile-network
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_mobile_network000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"westcentralus","tags":{"product":"azurecli","cause":"automation","test":"test_mobile_network_bulk_sim_upload","date":"2023-06-28T17:22:32Z","module":"mobile-network"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:22:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westcentralus", "properties": {"mobileNetwork": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '241'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --mobile-network
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","name":"simgroup000003","type":"microsoft.mobilenetwork/simgroups","location":"westcentralus","systemData":{"createdBy":"rafaelda@microsoft.com","createdByType":"User","createdAt":"2023-06-28T17:22:42.6097085Z","lastModifiedBy":"rafaelda@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-28T17:22:42.6097085Z"},"properties":{"mobileNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002"},"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '733'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:22:43 GMT
+      etag:
+      - '"01003336-0000-0600-0000-649c6c630000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ad72250d-fea6-4dbb-b466-d952a05d224a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --mobile-network
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Accepted","startTime":"2023-06-28T17:22:43.3526208Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:22:43 GMT
+      etag:
+      - '"08005da1-0000-0600-0000-649c6c630000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --mobile-network
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Accepted","startTime":"2023-06-28T17:22:43.3526208Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:23:14 GMT
+      etag:
+      - '"08005da1-0000-0600-0000-649c6c630000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --mobile-network
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Accepted","startTime":"2023-06-28T17:22:43.3526208Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:23:44 GMT
+      etag:
+      - '"08005da1-0000-0600-0000-649c6c630000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --mobile-network
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"8afe7288-2a7f-4170-9716-2e9346e45381*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Succeeded","startTime":"2023-06-28T17:22:43.3526208Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '551'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:24:15 GMT
+      etag:
+      - '"080092a1-0000-0600-0000-649c6ca50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --mobile-network
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","name":"simgroup000003","type":"microsoft.mobilenetwork/simgroups","location":"westcentralus","systemData":{"createdBy":"rafaelda@microsoft.com","createdByType":"User","createdAt":"2023-06-28T17:22:42.6097085Z","lastModifiedBy":"rafaelda@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-28T17:22:42.6097085Z"},"properties":{"provisioningState":"Succeeded","mobileNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '734'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:24:15 GMT
+      etag:
+      - '"01003536-0000-0600-0000-649c6c690000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sims": [{"name": "bulk-upload-sim-01", "properties": {"authenticationKey":
+      "00000000000000000000000000000000", "internationalMobileSubscriberIdentity":
+      "0000000000", "operatorKeyCode": "00000000000000000000000000000000"}}, {"name":
+      "bulk-upload-sim-02", "properties": {"authenticationKey": "00000000000000000000000000000001",
+      "internationalMobileSubscriberIdentity": "0000000001", "operatorKeyCode": "00000000000000000000000000000001"}}]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group bulk-upload-sims
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '440'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --sim-group-name --sims
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003/uploadSims?api-version=2022-11-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2777b678-ba75-447d-b692-446a6d7195e7*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:24:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2777b678-ba75-447d-b692-446a6d7195e7*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+      mise-correlation-id:
+      - 9e6ff14d-59a4-4c92-81c2-bb88fbfe8a3d
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group bulk-upload-sims
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --sim-group-name --sims
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2777b678-ba75-447d-b692-446a6d7195e7*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2777b678-ba75-447d-b692-446a6d7195e7*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"2777b678-ba75-447d-b692-446a6d7195e7*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Accepted","startTime":"2023-06-28T17:24:17.0656244Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:24:16 GMT
+      etag:
+      - '"0800aaa1-0000-0600-0000-649c6cc10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group bulk-upload-sims
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --sim-group-name --sims
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2777b678-ba75-447d-b692-446a6d7195e7*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2777b678-ba75-447d-b692-446a6d7195e7*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"2777b678-ba75-447d-b692-446a6d7195e7*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Succeeded","startTime":"2023-06-28T17:24:17.0656244Z","endTime":"2023-06-28T17:24:24.2231144Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '592'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:24:47 GMT
+      etag:
+      - '"0800aea1-0000-0600-0000-649c6cc80000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group bulk-upload-sims
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --sim-group-name --sims
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2777b678-ba75-447d-b692-446a6d7195e7*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2777b678-ba75-447d-b692-446a6d7195e7*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"2777b678-ba75-447d-b692-446a6d7195e7*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Succeeded","startTime":"2023-06-28T17:24:17.0656244Z","endTime":"2023-06-28T17:24:24.2231144Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '592'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:24:47 GMT
+      etag:
+      - '"0800aea1-0000-0600-0000-649c6cc80000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sims": ["bulk-upload-sim-01", "bulk-upload-sim-02"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group bulk-delete-sims
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '54'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --sim-group-name --sims
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003/deleteSims?api-version=2022-11-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2af0361e-826f-4925-9635-d5c9ca4fe00c*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:24:48 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2af0361e-826f-4925-9635-d5c9ca4fe00c*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+      mise-correlation-id:
+      - 6b107c45-7549-466a-b20d-9128f24e5bc6
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group bulk-delete-sims
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --sim-group-name --sims
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2af0361e-826f-4925-9635-d5c9ca4fe00c*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2af0361e-826f-4925-9635-d5c9ca4fe00c*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"2af0361e-826f-4925-9635-d5c9ca4fe00c*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Accepted","startTime":"2023-06-28T17:24:49.63464Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '530'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:24:49 GMT
+      etag:
+      - '"0800bca1-0000-0600-0000-649c6ce10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group bulk-delete-sims
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --sim-group-name --sims
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2af0361e-826f-4925-9635-d5c9ca4fe00c*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2af0361e-826f-4925-9635-d5c9ca4fe00c*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"2af0361e-826f-4925-9635-d5c9ca4fe00c*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Succeeded","startTime":"2023-06-28T17:24:49.63464Z","endTime":"2023-06-28T17:24:55.7473507Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:25:19 GMT
+      etag:
+      - '"0800c0a1-0000-0600-0000-649c6ce70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group bulk-delete-sims
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --sim-group-name --sims
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2af0361e-826f-4925-9635-d5c9ca4fe00c*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/2af0361e-826f-4925-9635-d5c9ca4fe00c*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"2af0361e-826f-4925-9635-d5c9ca4fe00c*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Succeeded","startTime":"2023-06-28T17:24:49.63464Z","endTime":"2023-06-28T17:24:55.7473507Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:25:19 GMT
+      etag:
+      - '"0800c0a1-0000-0600-0000-649c6ce70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003?api-version=2022-11-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:25:20 GMT
+      etag:
+      - '"01003636-0000-0600-0000-649c6d010000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+      mise-correlation-id:
+      - a12823a2-ba44-498f-8dee-4195d82f5dad
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Deleting","startTime":"2023-06-28T17:25:21.4775272Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:25:21 GMT
+      etag:
+      - '"0800cca1-0000-0600-0000-649c6d010000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Deleting","startTime":"2023-06-28T17:25:21.4775272Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:25:50 GMT
+      etag:
+      - '"0800cca1-0000-0600-0000-649c6d010000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Deleting","startTime":"2023-06-28T17:25:21.4775272Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:26:21 GMT
+      etag:
+      - '"0800cca1-0000-0600-0000-649c6d010000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Succeeded","startTime":"2023-06-28T17:25:21.4775272Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '551'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:26:51 GMT
+      etag:
+      - '"0800f6a1-0000-0600-0000-649c6d430000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network sim group delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.6 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/WESTCENTRALUS/operationStatuses/53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","name":"53546d38-c859-408a-b9a5-c21bb2ed21c5*26DC1E7885873E47FF4911918EE9A8DC49580147C9C63848AC5043E30DCB3197","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/simGroups/simgroup000003","status":"Succeeded","startTime":"2023-06-28T17:25:21.4775272Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '551'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 17:26:51 GMT
+      etag:
+      - '"0800f6a1-0000-0600-0000-649c6d430000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

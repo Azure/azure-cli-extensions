@@ -3,9 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.commands.client_factory import get_mgmt_service_client, prepare_client_kwargs_track2
 from azure.cli.core.profiles import ResourceType, get_sdk
-from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
 MISSING_CREDENTIALS_ERROR_MESSAGE = """
 Missing credentials to access storage service. The following variations are accepted:
@@ -21,26 +21,6 @@ Missing credentials to access storage service. The following variations are acce
 """
 
 
-def storage_client_factory(cli_ctx, **_):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE)
-
-
-def cf_mgmt_blob_services(cli_ctx, _):
-    return storage_client_factory(cli_ctx).blob_services
-
-
-def cf_mgmt_policy(cli_ctx, _):
-    return storage_client_factory(cli_ctx).management_policies
-
-
-def cf_sa(cli_ctx, _):
-    return storage_client_factory(cli_ctx).storage_accounts
-
-
-def cf_mgmt_policy(cli_ctx, _):
-    return storage_client_factory(cli_ctx).management_policies
-
-
 def get_account_url(cli_ctx, account_name, service):
     from knack.util import CLIError
     if account_name is None:
@@ -49,33 +29,62 @@ def get_account_url(cli_ctx, account_name, service):
     return "https://{}.{}.{}".format(account_name, service, storage_endpoint)
 
 
+def get_credential(kwargs):
+    account_key = kwargs.pop('account_key', None)
+    token_credential = kwargs.pop('token_credential', None)
+    sas_token = kwargs.pop('sas_token', None)
+    credential = account_key or sas_token or token_credential
+    return credential
+
+
+def _config_location_mode(kwargs, client_kwargs):
+    location_mode = kwargs.pop('location_mode', None)
+    if location_mode:
+        client_kwargs['_location_mode'] = location_mode
+    return client_kwargs
+
+
 def cf_blob_service(cli_ctx, kwargs):
-    from knack.util import CLIError
-    client_args = {}
+    client_kwargs = prepare_client_kwargs_track2(cli_ctx)
+    client_kwargs = _config_location_mode(kwargs, client_kwargs)
     t_blob_service = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE_BLOB,
                              '_blob_service_client#BlobServiceClient')
     connection_string = kwargs.pop('connection_string', None)
     account_name = kwargs.pop('account_name', None)
+    account_url = kwargs.pop('account_url', None)
     account_key = kwargs.pop('account_key', None)
     token_credential = kwargs.pop('token_credential', None)
     sas_token = kwargs.pop('sas_token', None)
-    location_mode = kwargs.pop('location_mode', None)
-    if location_mode:
-        client_args['_location_mode'] = location_mode
-
     if connection_string:
-        return t_blob_service.from_connection_string(conn_str=connection_string)
-
-    account_url = get_account_url(cli_ctx, account_name=account_name, service='blob')
+        try:
+            return t_blob_service.from_connection_string(conn_str=connection_string, **client_kwargs)
+        except ValueError as err:
+            from azure.cli.core.azclierror import InvalidArgumentValueError
+            raise InvalidArgumentValueError('Invalid connection string: {}, err detail: {}'
+                                            .format(connection_string, str(err)),
+                                            recommendation='Try `az storage account show-connection-string` '
+                                                           'to get a valid connection string')
+    if not account_url:
+        account_url = get_account_url(cli_ctx, account_name=account_name, service='blob')
     credential = account_key or sas_token or token_credential
 
-    if account_url and credential:
-        return t_blob_service(account_url=account_url, credential=credential, **client_args)
-    raise CLIError("Please provide valid connection string, or account name with account key, "
-                   "sas token or login auth mode.")
+    return t_blob_service(account_url=account_url, credential=credential, **client_kwargs)
 
 
 def cf_blob_client(cli_ctx, kwargs):
+    if kwargs.get('blob_url'):
+        t_blob_client = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE_BLOB, '_blob_client#BlobClient')
+        credential = get_credential(kwargs)
+        # del unused kwargs
+        kwargs.pop('connection_string')
+        kwargs.pop('account_name')
+        kwargs.pop('account_url')
+        kwargs.pop('container_name')
+        kwargs.pop('blob_name')
+        return t_blob_client.from_blob_url(blob_url=kwargs.pop('blob_url'),
+                                           credential=credential,
+                                           snapshot=kwargs.pop('snapshot', None))
+    kwargs.pop('blob_url')
     return cf_blob_service(cli_ctx, kwargs).get_blob_client(container=kwargs.pop('container_name'),
                                                             blob=kwargs.pop('blob_name'),
                                                             snapshot=kwargs.pop('snapshot', None))
@@ -114,12 +123,14 @@ def cf_adls_service(cli_ctx, kwargs):
                              '_data_lake_service_client#DataLakeServiceClient')
     connection_string = kwargs.pop('connection_string', None)
     account_key = kwargs.pop('account_key', None)
+    account_url = kwargs.pop('account_url', None)
     token_credential = kwargs.pop('token_credential', None)
     sas_token = kwargs.pop('sas_token', None)
     if connection_string:
         return t_adls_service.from_connection_string(connection_string=connection_string)
 
-    account_url = get_account_url(cli_ctx, account_name=kwargs.pop('account_name', None), service='dfs')
+    if not account_url:
+        account_url = get_account_url(cli_ctx, account_name=kwargs.pop('account_name', None), service='dfs')
     credential = account_key or sas_token or token_credential
 
     if account_url and credential:

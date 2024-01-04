@@ -1,0 +1,284 @@
+interactions:
+- request:
+    body: '{"properties": {"insights": [{"solutionId": "Demo2InsightV2"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help diagnostic create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '64'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --diagnostic-name --insights --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/diagnostics/cli_test000003?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/diagnostics/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Diagnostics","properties":{"provisioningState":"Running","acceptedAt":"2023-10-13T16:58:44.5034966Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Diagnostics/cli_test000003/operationResults/b4c0bf75-5a8a-4028-8441-8463a7b83945?api-version=2023-09-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '343'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Oct 2023 16:58:43 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Diagnostics/cli_test000003/operationResults/b4c0bf75-5a8a-4028-8441-8463a7b83945?api-version=2023-09-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '74'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help diagnostic create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --diagnostic-name --insights --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Diagnostics/cli_test000003/operationResults/b4c0bf75-5a8a-4028-8441-8463a7b83945?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Diagnostics/cli_test000003/operationResults/b4c0bf75-5a8a-4028-8441-8463a7b83945","name":"b4c0bf75-5a8a-4028-8441-8463a7b83945","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '231'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Oct 2023 16:58:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help diagnostic create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --diagnostic-name --insights --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Diagnostics/cli_test000003/operationResults/b4c0bf75-5a8a-4028-8441-8463a7b83945?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Diagnostics/cli_test000003/operationResults/b4c0bf75-5a8a-4028-8441-8463a7b83945","name":"b4c0bf75-5a8a-4028-8441-8463a7b83945","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '233'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Oct 2023 16:59:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help diagnostic create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --diagnostic-name --insights --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/diagnostics/cli_test000003?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/diagnostics/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Diagnostics","properties":{"provisioningState":"Succeeded","acceptedAt":"2023-10-13T16:58:44.5034966Z","diagnostics":[{"solutionId":"Demo2InsightV2","status":"Succeeded","insights":[{"id":"perfinsights-available-linux","title":"Windows
+        Unable to Boot Test hardcoded string for unknown resource (Demo Insight)","results":"<!--issueDescription-->\n<p>We
+        have detected that PerfInsights is already installed on your VM. You can run
+        PerfInsights on-demand through the Portal and view reports for your analysis.</p>\n<!--/issueDescription-->\n<p>PerfInsights
+        is a diagnostics tool that can help you analyze operating system level metrics
+        such as:</p>\n<ul>\n<li>Best Practices recommendations for Linux</li>\n<li>Top
+        CPU consumers</li>\n<li>Top Memory consumers</li>\n<li>Storage/RAID/LVM layout</li>\n</ul>\n<h2><strong>Recommended
+        Steps</strong></h2>\n<p><a data-blade=\"Microsoft_Azure_Compute.PerformanceDiagnosticsBlade.resourceId.$resourceId\"
+        button-data-blade=\"button-data-blade\">Run PerfInsights</a></p>\n<p>For the
+        machine <!--$vmname-->[vmname]<!--/$vmname-->, you can <a href=\"https://portal.azure.com/#@microsoft.onmicrosoft.com/resource/{$resourceIdDecoded}/performanceDiagnostics\">access
+        PerfInsights here</a> and review results directly in the Azure portal.</p>\n<p>You
+        may also <a href=\"https://docs.microsoft.com/azure/virtual-machines/troubleshooting/performance-diagnostics#install-and-run-performance-diagnostics-on-your-vm\">download
+        PerfInsights</a> and run it on your virtual machine.</p>\n<p>If you open a
+        support case, attach the PerfInsights report for the Support Engineer to analyze.</p>\n<h2><strong>Recommended
+        Documents</strong></h2>\n<ul>\n<li><a href=\"https://docs.microsoft.com/azure/virtual-machines/troubleshooting/how-to-use-perfinsights\">How
+        to use PerfInsights</a></li>\n<li><a href=\"https://docs.microsoft.com/troubleshoot/azure/virtual-machines/troubleshoot-performance-bottlenecks-linux\">Troubleshoot
+        performance and isolate bottlenecks in Linux</a></li>\n</ul>\n","importanceLevel":"Warning"}]}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2286'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Oct 2023 16:59:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '73'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help diagnostic show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --diagnostic-name --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/diagnostics/cli_test000003?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/diagnostics/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Diagnostics","properties":{"provisioningState":"Succeeded","acceptedAt":"2023-10-13T16:58:44.5034966Z","diagnostics":[{"solutionId":"Demo2InsightV2","status":"Succeeded","insights":[{"id":"perfinsights-available-linux","title":"Windows
+        Unable to Boot Test hardcoded string for unknown resource (Demo Insight)","results":"<!--issueDescription-->\n<p>We
+        have detected that PerfInsights is already installed on your VM. You can run
+        PerfInsights on-demand through the Portal and view reports for your analysis.</p>\n<!--/issueDescription-->\n<p>PerfInsights
+        is a diagnostics tool that can help you analyze operating system level metrics
+        such as:</p>\n<ul>\n<li>Best Practices recommendations for Linux</li>\n<li>Top
+        CPU consumers</li>\n<li>Top Memory consumers</li>\n<li>Storage/RAID/LVM layout</li>\n</ul>\n<h2><strong>Recommended
+        Steps</strong></h2>\n<p><a data-blade=\"Microsoft_Azure_Compute.PerformanceDiagnosticsBlade.resourceId.$resourceId\"
+        button-data-blade=\"button-data-blade\">Run PerfInsights</a></p>\n<p>For the
+        machine <!--$vmname-->[vmname]<!--/$vmname-->, you can <a href=\"https://portal.azure.com/#@microsoft.onmicrosoft.com/resource/{$resourceIdDecoded}/performanceDiagnostics\">access
+        PerfInsights here</a> and review results directly in the Azure portal.</p>\n<p>You
+        may also <a href=\"https://docs.microsoft.com/azure/virtual-machines/troubleshooting/performance-diagnostics#install-and-run-performance-diagnostics-on-your-vm\">download
+        PerfInsights</a> and run it on your virtual machine.</p>\n<p>If you open a
+        support case, attach the PerfInsights report for the Support Engineer to analyze.</p>\n<h2><strong>Recommended
+        Documents</strong></h2>\n<ul>\n<li><a href=\"https://docs.microsoft.com/azure/virtual-machines/troubleshooting/how-to-use-perfinsights\">How
+        to use PerfInsights</a></li>\n<li><a href=\"https://docs.microsoft.com/troubleshoot/azure/virtual-machines/troubleshoot-performance-bottlenecks-linux\">Troubleshoot
+        performance and isolate bottlenecks in Linux</a></li>\n</ul>\n","importanceLevel":"Warning"}]}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2286'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Oct 2023 16:59:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '74'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

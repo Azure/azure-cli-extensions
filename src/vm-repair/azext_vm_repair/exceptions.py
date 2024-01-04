@@ -22,3 +22,23 @@ class WindowsOsNotAvailableError(Exception):
 
 class RunScriptNotFoundForIdError(Exception):
     """Raised when the run-id is not found in the repair-script-library"""
+
+
+class SkuDoesNotSupportHyperV(Exception):
+    """Raised when the SKU size does not end with v3"""
+
+
+class ScriptReturnsError(Exception):
+    """Raised when run script returns error"""
+
+
+class SuseNotAvailableError(Exception):
+    """Raised when SUSE image not available"""
+
+
+class SupportingResourceNotFoundError(Exception):
+    """Raised when a supporting resource needed for the command is not found"""
+
+
+class CommandCanceledByUserError(Exception):
+    """Raised when the command is canceled an user input"""

@@ -17,16 +17,48 @@ def cf_healthcareapis_cl(cli_ctx, *_):
 
 
 def cf_service(cli_ctx, *_):
-    return cf_healthcareapis_cl(cli_ctx).service
+    return cf_healthcareapis_cl(cli_ctx).services
 
 
 def cf_operation_result(cli_ctx, *_):
-    return cf_healthcareapis_cl(cli_ctx).operation_result
+    return cf_healthcareapis_cl(cli_ctx).operation_results
 
 
 def cf_private_endpoint_connection(cli_ctx, *_):
-    return cf_healthcareapis_cl(cli_ctx).private_endpoint_connection
+    return cf_healthcareapis_cl(cli_ctx).private_endpoint_connections
 
 
 def cf_private_link_resource(cli_ctx, *_):
-    return cf_healthcareapis_cl(cli_ctx).private_link_resource
+    return cf_healthcareapis_cl(cli_ctx).private_link_resources
+
+
+def cf_workspace(cli_ctx, *_):
+    return cf_healthcareapis_cl(cli_ctx).workspaces
+
+
+def cf_dicom_service(cli_ctx, *_):
+    return cf_healthcareapis_cl(cli_ctx).dicom_services
+
+
+def cf_iot_connector(cli_ctx, *_):
+    return cf_healthcareapis_cl(cli_ctx).iot_connectors
+
+
+def cf_fhir_destination(cli_ctx, *_):
+    return cf_healthcareapis_cl(cli_ctx).fhir_destinations
+
+
+def cf_iot_connector_fhir_destination(cli_ctx, *_):
+    return cf_healthcareapis_cl(cli_ctx).iot_connector_fhir_destination
+
+
+def cf_fhir_service(cli_ctx, *_):
+    return cf_healthcareapis_cl(cli_ctx).fhir_services
+
+
+def cf_workspace_private_endpoint_connection(cli_ctx, *_):
+    return cf_healthcareapis_cl(cli_ctx).workspace_private_endpoint_connections
+
+
+def cf_workspace_private_link_resource(cli_ctx, *_):
+    return cf_healthcareapis_cl(cli_ctx).workspace_private_link_resources

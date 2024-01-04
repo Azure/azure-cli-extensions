@@ -1,7 +1,8 @@
 interactions:
 - request:
-    body: '{"location": "global", "properties": {"policySettings": {"enabledState":
-      "Enabled"}, "customRules": {"rules": []}, "managedRules": {}}}'
+    body: '{"location": "global", "sku": {"name": "Classic_AzureFrontDoor"}, "properties":
+      {"policySettings": {"enabledState": "Enabled"}, "customRules": {"rules": []},
+      "managedRules": {}}}'
     headers:
       Accept:
       - application/json
@@ -12,53 +13,39 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '135'
+      - '178'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
-        Azure-SDK-For-Python AZURECLI/2.8.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ],\"routingRuleLinks\":[\r\n      \r\n    ]\r\n  }\r\n}"
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '845'
+      - '718'
       content-type:
-      - application/json; odata.metadata=minimal
+      - application/json; charset=utf-8
       date:
-      - Wed, 08 Jul 2020 07:11:22 GMT
+      - Mon, 17 Oct 2022 06:28:13 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/8.5
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
+      - '1199'
     status:
       code: 201
       message: Created
@@ -76,55 +63,42 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority --rule-type --action --defer
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
-        Azure-SDK-For-Python AZURECLI/2.8.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ],\"routingRuleLinks\":[\r\n      \r\n    ]\r\n  }\r\n}"
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '845'
+      - '718'
       content-type:
-      - application/json; odata.metadata=minimal
+      - application/json; charset=utf-8
       date:
-      - Wed, 08 Jul 2020 07:11:23 GMT
+      - Mon, 17 Oct 2022 06:28:14 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/8.5
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "Global", "tags": {}, "properties": {"policySettings": {"enabledState":
-      "Enabled", "mode": "Prevention"}, "customRules": {"rules": [{"name": "cli000003",
+    body: '{"location": "Global", "tags": {}, "sku": {"name": "Classic_AzureFrontDoor"},
+      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
+      "requestBodyCheck": "Enabled"}, "customRules": {"rules": [{"name": "cli000003",
       "priority": 6, "enabledState": "Enabled", "ruleType": "MatchRule", "matchConditions":
       [{"matchVariable": "RequestBody", "operator": "RegEx", "matchValue": ["something"]}],
       "action": "Block"}]}, "managedRules": {"managedRuleSets": []}}}'
@@ -138,85 +112,65 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '417'
+      - '476'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -g --policy-name -n --match-variable --operator --values
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
-        Azure-SDK-For-Python AZURECLI/2.8.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        {\r\n          \"name\":\"cli000003\",\"enabledState\":\"Enabled\",\"priority\":6,\"ruleType\":\"MatchRule\",\"rateLimitDurationInMinutes\":null,\"rateLimitThreshold\":null,\"matchConditions\":[\r\n
-        \           {\r\n              \"matchVariable\":\"RequestBody\",\"selector\":null,\"operator\":\"RegEx\",\"negateCondition\":false,\"matchValue\":[\r\n
-        \               \"something\"\r\n              ],\"transforms\":[\r\n                \r\n
-        \             ]\r\n            }\r\n          ],\"action\":\"Block\"\r\n        }\r\n
-        \     ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n        \r\n
-        \     ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ],\"routingRuleLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":6,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestBody","selector":null,"operator":"RegEx","negateCondition":false,"matchValue":["something"],"transforms":[]}],"action":"Block"}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1318'
+      - '1030'
       content-type:
-      - application/json; odata.metadata=minimal
+      - application/json; charset=utf-8
       date:
-      - Wed, 08 Jul 2020 07:11:26 GMT
+      - Mon, 17 Oct 2022 06:28:17 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/8.5
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
+      - '1199'
     status:
       code: 200
       message: OK
 - request:
-    body: 'b''{"location": "global", "properties": {"friendlyName": "cli000004", "routingRules":
-      [{"properties": {"frontendEndpoints": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],
+    body: '{"location": "global", "properties": {"friendlyName": "cli000004", "routingRules":
+      [{"name": "DefaultRoutingRule", "properties": {"frontendEndpoints": [{"id":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],
       "acceptedProtocols": ["Http"], "patternsToMatch": ["/*"], "enabledState": "Enabled",
       "routeConfiguration": {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
-      "forwardingProtocol": "MatchRequest", "backendPool": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},
-      "resourceState": "Enabled"}, "name": "DefaultRoutingRule"}], "loadBalancingSettings":
-      [{"properties": {"sampleSize": 4, "successfulSamplesRequired": 2, "additionalLatencyMilliseconds":
-      0, "resourceState": "Enabled"}, "name": "DefaultLoadBalancingSettings"}], "healthProbeSettings":
-      [{"properties": {"path": "/", "protocol": "Https", "intervalInSeconds": 30,
-      "healthProbeMethod": "HEAD", "resourceState": "Enabled"}, "name": "DefaultProbeSettings"}],
-      "backendPools": [{"properties": {"backends": [{"address": "www.example.com",
-      "httpPort": 80, "httpsPort": 443, "enabledState": "Enabled", "priority": 1,
-      "weight": 50, "backendHostHeader": "www.example.com"}], "loadBalancingSettings":
-      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},
-      "healthProbeSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},
-      "resourceState": "Enabled"}, "name": "DefaultBackendPool"}], "frontendEndpoints":
-      [{"properties": {"hostName": "cli000004.azurefd.net", "sessionAffinityEnabledState":
-      "Disabled", "resourceState": "Enabled"}, "name": "DefaultFrontendEndpoint"}],
-      "backendPoolsSettings": {"enforceCertificateNameCheck": "Enabled"}, "enabledState":
-      "Enabled"}}'''
+      "forwardingProtocol": "MatchRequest", "backendPool": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}}}}],
+      "loadBalancingSettings": [{"name": "DefaultLoadBalancingSettings", "properties":
+      {"sampleSize": 4, "successfulSamplesRequired": 2, "additionalLatencyMilliseconds":
+      0}}], "healthProbeSettings": [{"name": "DefaultProbeSettings", "properties":
+      {"path": "/", "protocol": "Https", "intervalInSeconds": 30, "healthProbeMethod":
+      "HEAD"}}], "backendPools": [{"name": "DefaultBackendPool", "properties": {"backends":
+      [{"address": "www.example.com", "httpPort": 80, "httpsPort": 443, "enabledState":
+      "Enabled", "priority": 1, "weight": 50, "backendHostHeader": "www.example.com"}],
+      "loadBalancingSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},
+      "healthProbeSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],
+      "frontendEndpoints": [{"name": "DefaultFrontendEndpoint", "properties": {"hostName":
+      "cli000004.azurefd.net", "sessionAffinityEnabledState": "Disabled"}}], "backendPoolsSettings":
+      {"enforceCertificateNameCheck": "Enabled"}, "enabledState": "Enabled"}}'
     headers:
       Accept:
       - application/json
@@ -227,73 +181,41 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2485'
+      - '2019'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
-        Azure-SDK-For-Python AZURECLI/2.8.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"provisioningState\":\"Creating\",\"resourceState\":\"Creating\",\"backendPools\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool\",\"name\":\"DefaultBackendPool\",\"type\":\"Microsoft.Network/Frontdoors/BackendPools\",\"properties\":{\r\n
-        \         \"backends\":[\r\n            {\r\n              \"address\":\"www.example.com\",\"httpPort\":80,\"httpsPort\":443,\"priority\":1,\"weight\":50,\"backendHostHeader\":\"www.example.com\",\"enabledState\":\"Enabled\",\"privateLinkAlias\":null,\"privateEndpointStatus\":null,\"privateLinkApprovalMessage\":null,\"privateLinkResourceId\":null,\"privateLinkLocation\":null\r\n
-        \           }\r\n          ],\"healthProbeSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings\"\r\n
-        \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
-        \         },\"resourceState\":\"Creating\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Creating\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
-        \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
-        \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":null,\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Creating\"\r\n
-        \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
-        \         \"additionalLatencyMilliseconds\":0,\"sampleSize\":4,\"successfulSamplesRequired\":2,\"resourceState\":\"Creating\"\r\n
-        \       }\r\n      }\r\n    ],\"rulesEngines\":[\r\n      \r\n    ],\"routingRules\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule\",\"name\":\"DefaultRoutingRule\",\"type\":\"Microsoft.Network/Frontdoors/RoutingRules\",\"properties\":{\r\n
-        \         \"frontendEndpoints\":[\r\n            {\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint\"\r\n
-        \           }\r\n          ],\"acceptedProtocols\":[\r\n            \"Http\"\r\n
-        \         ],\"patternsToMatch\":[\r\n            \"/*\"\r\n          ],\"enabledState\":\"Enabled\",\"resourceState\":\"Creating\",\"routeConfiguration\":{\r\n
-        \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
-        \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
-        \           }\r\n          },\"rulesEngine\":null,\"webApplicationFirewallPolicyLink\":null\r\n
-        \       }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
-        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"frontdoorId\":\"cf8b1e9d-fbb2-4199-b80d-f9ab043adbc5\",\"friendlyName\":\"cli000004\"\r\n
-        \ }\r\n}"
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Creating","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"635436c6-2255-4c2b-aff8-cf8d99d4f766","resourceState":"Creating","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Creating","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Creating","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Creating","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Creating","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Creating"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/30cf110c-37bf-4b81-b9de-e201c42c133a?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/ec4ed2f9-2d2e-4803-993b-9074f3c3d515?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
-      - '5493'
+      - '4097'
       content-type:
-      - application/json; odata.metadata=minimal
+      - application/json; charset=utf-8
       date:
-      - Wed, 08 Jul 2020 07:11:46 GMT
+      - Mon, 17 Oct 2022 06:28:24 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/8.5
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
+      - '1197'
     status:
       code: 201
       message: Created
@@ -301,7 +223,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -311,43 +233,35 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
-        Azure-SDK-For-Python AZURECLI/2.8.0
+      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/30cf110c-37bf-4b81-b9de-e201c42c133a?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/ec4ed2f9-2d2e-4803-993b-9074f3c3d515?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
-        \ }\r\n}"
+      string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '78'
+      - '61'
       content-type:
-      - application/json; odata.metadata=minimal
+      - application/json; charset=utf-8
       date:
-      - Wed, 08 Jul 2020 07:11:57 GMT
+      - Mon, 17 Oct 2022 06:28:35 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/8.5
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -355,7 +269,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -365,119 +279,35 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
-        Azure-SDK-For-Python AZURECLI/2.8.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/30cf110c-37bf-4b81-b9de-e201c42c133a?api-version=2020-05-01
-  response:
-    body:
-      string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
-        \ }\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '77'
-      content-type:
-      - application/json; odata.metadata=minimal
-      date:
-      - Wed, 08 Jul 2020 07:12:27 GMT
-      expires:
-      - '-1'
-      odata-version:
-      - '4.0'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/8.5
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --backend-address --name
-      User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
-        Azure-SDK-For-Python AZURECLI/2.8.0
+      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"provisioningState\":\"Succeeded\",\"resourceState\":\"Enabled\",\"backendPools\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool\",\"name\":\"DefaultBackendPool\",\"type\":\"Microsoft.Network/Frontdoors/BackendPools\",\"properties\":{\r\n
-        \         \"backends\":[\r\n            {\r\n              \"address\":\"www.example.com\",\"httpPort\":80,\"httpsPort\":443,\"priority\":1,\"weight\":50,\"backendHostHeader\":\"www.example.com\",\"enabledState\":\"Enabled\",\"privateLinkAlias\":null,\"privateEndpointStatus\":null,\"privateLinkApprovalMessage\":null,\"privateLinkResourceId\":null,\"privateLinkLocation\":null\r\n
-        \           }\r\n          ],\"healthProbeSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings\"\r\n
-        \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
-        \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
-        \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
-        \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":null,\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Enabled\"\r\n
-        \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
-        \         \"additionalLatencyMilliseconds\":0,\"sampleSize\":4,\"successfulSamplesRequired\":2,\"resourceState\":\"Enabled\"\r\n
-        \       }\r\n      }\r\n    ],\"rulesEngines\":[\r\n      \r\n    ],\"routingRules\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule\",\"name\":\"DefaultRoutingRule\",\"type\":\"Microsoft.Network/Frontdoors/RoutingRules\",\"properties\":{\r\n
-        \         \"frontendEndpoints\":[\r\n            {\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint\"\r\n
-        \           }\r\n          ],\"acceptedProtocols\":[\r\n            \"Http\"\r\n
-        \         ],\"patternsToMatch\":[\r\n            \"/*\"\r\n          ],\"enabledState\":\"Enabled\",\"resourceState\":\"Enabled\",\"routeConfiguration\":{\r\n
-        \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
-        \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
-        \           }\r\n          },\"rulesEngine\":null,\"webApplicationFirewallPolicyLink\":null\r\n
-        \       }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
-        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"frontdoorId\":\"cf8b1e9d-fbb2-4199-b80d-f9ab043adbc5\",\"friendlyName\":\"cli000004\"\r\n
-        \ }\r\n}"
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"635436c6-2255-4c2b-aff8-cf8d99d4f766","resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5488'
+      - '4092'
       content-type:
-      - application/json; odata.metadata=minimal
+      - application/json; charset=utf-8
       date:
-      - Wed, 08 Jul 2020 07:12:27 GMT
+      - Mon, 17 Oct 2022 06:28:35 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/8.5
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -495,97 +325,62 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
-        Azure-SDK-For-Python AZURECLI/2.8.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"provisioningState\":\"Succeeded\",\"resourceState\":\"Enabled\",\"backendPools\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool\",\"name\":\"DefaultBackendPool\",\"type\":\"Microsoft.Network/Frontdoors/BackendPools\",\"properties\":{\r\n
-        \         \"backends\":[\r\n            {\r\n              \"address\":\"www.example.com\",\"httpPort\":80,\"httpsPort\":443,\"priority\":1,\"weight\":50,\"backendHostHeader\":\"www.example.com\",\"enabledState\":\"Enabled\",\"privateLinkAlias\":null,\"privateEndpointStatus\":null,\"privateLinkApprovalMessage\":null,\"privateLinkResourceId\":null,\"privateLinkLocation\":null\r\n
-        \           }\r\n          ],\"healthProbeSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings\"\r\n
-        \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
-        \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
-        \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
-        \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":null,\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Enabled\"\r\n
-        \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
-        \         \"additionalLatencyMilliseconds\":0,\"sampleSize\":4,\"successfulSamplesRequired\":2,\"resourceState\":\"Enabled\"\r\n
-        \       }\r\n      }\r\n    ],\"rulesEngines\":[\r\n      \r\n    ],\"routingRules\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule\",\"name\":\"DefaultRoutingRule\",\"type\":\"Microsoft.Network/Frontdoors/RoutingRules\",\"properties\":{\r\n
-        \         \"frontendEndpoints\":[\r\n            {\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint\"\r\n
-        \           }\r\n          ],\"acceptedProtocols\":[\r\n            \"Http\"\r\n
-        \         ],\"patternsToMatch\":[\r\n            \"/*\"\r\n          ],\"enabledState\":\"Enabled\",\"resourceState\":\"Enabled\",\"routeConfiguration\":{\r\n
-        \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
-        \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
-        \           }\r\n          },\"rulesEngine\":null,\"webApplicationFirewallPolicyLink\":null\r\n
-        \       }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
-        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"frontdoorId\":\"cf8b1e9d-fbb2-4199-b80d-f9ab043adbc5\",\"friendlyName\":\"cli000004\"\r\n
-        \ }\r\n}"
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"635436c6-2255-4c2b-aff8-cf8d99d4f766","resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5488'
+      - '4092'
       content-type:
-      - application/json; odata.metadata=minimal
+      - application/json; charset=utf-8
       date:
-      - Wed, 08 Jul 2020 07:12:30 GMT
+      - Mon, 17 Oct 2022 06:28:38 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/8.5
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: 'b''{"location": "Global", "tags": {}, "properties": {"friendlyName": "cli000004",
+    body: '{"location": "Global", "tags": {}, "properties": {"friendlyName": "cli000004",
       "routingRules": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule",
-      "properties": {"frontendEndpoints": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],
+      "name": "DefaultRoutingRule", "properties": {"frontendEndpoints": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],
       "acceptedProtocols": ["Http"], "patternsToMatch": ["/*"], "enabledState": "Enabled",
       "routeConfiguration": {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
-      "forwardingProtocol": "MatchRequest", "backendPool": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},
-      "resourceState": "Enabled"}, "name": "DefaultRoutingRule"}], "loadBalancingSettings":
-      [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings",
-      "properties": {"sampleSize": 4, "successfulSamplesRequired": 2, "additionalLatencyMilliseconds":
-      0, "resourceState": "Enabled"}, "name": "DefaultLoadBalancingSettings"}], "healthProbeSettings":
-      [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings",
-      "properties": {"path": "/", "protocol": "Https", "intervalInSeconds": 30, "healthProbeMethod":
-      "Head", "enabledState": "Enabled", "resourceState": "Enabled"}, "name": "DefaultProbeSettings"}],
+      "forwardingProtocol": "MatchRequest", "backendPool": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}}}}],
+      "loadBalancingSettings": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings",
+      "name": "DefaultLoadBalancingSettings", "properties": {"sampleSize": 4, "successfulSamplesRequired":
+      2, "additionalLatencyMilliseconds": 0}}], "healthProbeSettings": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings",
+      "name": "DefaultProbeSettings", "properties": {"path": "/", "protocol": "Https",
+      "intervalInSeconds": 30, "healthProbeMethod": "Head", "enabledState": "Enabled"}}],
       "backendPools": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool",
-      "properties": {"backends": [{"address": "www.example.com", "httpPort": 80, "httpsPort":
-      443, "enabledState": "Enabled", "priority": 1, "weight": 50, "backendHostHeader":
-      "www.example.com"}], "loadBalancingSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},
-      "healthProbeSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},
-      "resourceState": "Enabled"}, "name": "DefaultBackendPool"}], "frontendEndpoints":
-      [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint",
-      "properties": {"hostName": "cli000004.azurefd.net", "sessionAffinityEnabledState":
-      "Disabled", "sessionAffinityTtlSeconds": 0, "webApplicationFirewallPolicyLink":
-      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},
-      "resourceState": "Enabled"}, "name": "DefaultFrontendEndpoint"}], "backendPoolsSettings":
-      {"enforceCertificateNameCheck": "Enabled", "sendRecvTimeoutSeconds": 30}, "enabledState":
-      "Enabled", "resourceState": "Enabled"}}'''
+      "name": "DefaultBackendPool", "properties": {"backends": [{"address": "www.example.com",
+      "httpPort": 80, "httpsPort": 443, "enabledState": "Enabled", "priority": 1,
+      "weight": 50, "backendHostHeader": "www.example.com"}], "loadBalancingSettings":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},
+      "healthProbeSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],
+      "frontendEndpoints": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint",
+      "name": "DefaultFrontendEndpoint", "properties": {"hostName": "cli000004.azurefd.net",
+      "sessionAffinityEnabledState": "Disabled", "sessionAffinityTtlSeconds": 0, "webApplicationFirewallPolicyLink":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"}}}],
+      "backendPoolsSettings": {"enforceCertificateNameCheck": "Enabled", "sendRecvTimeoutSeconds":
+      30}, "enabledState": "Enabled"}}'
     headers:
       Accept:
       - application/json
@@ -596,77 +391,43 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '4175'
+      - '3237'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
-        Azure-SDK-For-Python AZURECLI/2.8.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"provisioningState\":\"Succeeded\",\"resourceState\":\"Enabled\",\"backendPools\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool\",\"name\":\"DefaultBackendPool\",\"type\":\"Microsoft.Network/Frontdoors/BackendPools\",\"properties\":{\r\n
-        \         \"backends\":[\r\n            {\r\n              \"address\":\"www.example.com\",\"httpPort\":80,\"httpsPort\":443,\"priority\":1,\"weight\":50,\"backendHostHeader\":\"www.example.com\",\"enabledState\":\"Enabled\",\"privateLinkAlias\":null,\"privateEndpointStatus\":null,\"privateLinkApprovalMessage\":null,\"privateLinkResourceId\":null,\"privateLinkLocation\":null\r\n
-        \           }\r\n          ],\"healthProbeSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings\"\r\n
-        \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
-        \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
-        \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
-        \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":{\r\n
-        \           \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\r\n
-        \         },\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Enabled\"\r\n
-        \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
-        \         \"additionalLatencyMilliseconds\":0,\"sampleSize\":4,\"successfulSamplesRequired\":2,\"resourceState\":\"Enabled\"\r\n
-        \       }\r\n      }\r\n    ],\"rulesEngines\":[\r\n      \r\n    ],\"routingRules\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule\",\"name\":\"DefaultRoutingRule\",\"type\":\"Microsoft.Network/Frontdoors/RoutingRules\",\"properties\":{\r\n
-        \         \"frontendEndpoints\":[\r\n            {\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint\"\r\n
-        \           }\r\n          ],\"acceptedProtocols\":[\r\n            \"Http\"\r\n
-        \         ],\"patternsToMatch\":[\r\n            \"/*\"\r\n          ],\"enabledState\":\"Enabled\",\"resourceState\":\"Enabled\",\"routeConfiguration\":{\r\n
-        \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
-        \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
-        \           }\r\n          },\"rulesEngine\":null,\"webApplicationFirewallPolicyLink\":null\r\n
-        \       }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
-        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"frontdoorId\":\"cf8b1e9d-fbb2-4199-b80d-f9ab043adbc5\",\"friendlyName\":\"cli000004\"\r\n
-        \ }\r\n}"
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"635436c6-2255-4c2b-aff8-cf8d99d4f766","resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Succeeded"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/842e629e-86fe-4b23-ab79-845a5c888cac?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/e50015ab-c8c6-42eb-9f39-bc543c05bbf2?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
-      - '5754'
+      - '4258'
       content-type:
-      - application/json; odata.metadata=minimal
+      - application/json; charset=utf-8
       date:
-      - Wed, 08 Jul 2020 07:12:32 GMT
+      - Mon, 17 Oct 2022 06:28:42 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/842e629e-86fe-4b23-ab79-845a5c888cac/frontdoorresults/cli000004?api-version=2020-05-01
-      odata-version:
-      - '4.0'
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/e50015ab-c8c6-42eb-9f39-bc543c05bbf2/frontdoorresults/cli000004?api-version=2020-05-01
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/8.5
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -674,7 +435,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -684,43 +445,35 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
-        Azure-SDK-For-Python AZURECLI/2.8.0
+      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/842e629e-86fe-4b23-ab79-845a5c888cac?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/e50015ab-c8c6-42eb-9f39-bc543c05bbf2?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
-        \ }\r\n}"
+      string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '78'
+      - '61'
       content-type:
-      - application/json; odata.metadata=minimal
+      - application/json; charset=utf-8
       date:
-      - Wed, 08 Jul 2020 07:12:42 GMT
+      - Mon, 17 Oct 2022 06:28:52 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/8.5
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -728,7 +481,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -738,121 +491,35 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
-        Azure-SDK-For-Python AZURECLI/2.8.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/842e629e-86fe-4b23-ab79-845a5c888cac?api-version=2020-05-01
-  response:
-    body:
-      string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
-        \ }\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '77'
-      content-type:
-      - application/json; odata.metadata=minimal
-      date:
-      - Wed, 08 Jul 2020 07:13:13 GMT
-      expires:
-      - '-1'
-      odata-version:
-      - '4.0'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/8.5
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --resource-group --set
-      User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
-        Azure-SDK-For-Python AZURECLI/2.8.0
+      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"provisioningState\":\"Succeeded\",\"resourceState\":\"Enabled\",\"backendPools\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool\",\"name\":\"DefaultBackendPool\",\"type\":\"Microsoft.Network/Frontdoors/BackendPools\",\"properties\":{\r\n
-        \         \"backends\":[\r\n            {\r\n              \"address\":\"www.example.com\",\"httpPort\":80,\"httpsPort\":443,\"priority\":1,\"weight\":50,\"backendHostHeader\":\"www.example.com\",\"enabledState\":\"Enabled\",\"privateLinkAlias\":null,\"privateEndpointStatus\":null,\"privateLinkApprovalMessage\":null,\"privateLinkResourceId\":null,\"privateLinkLocation\":null\r\n
-        \           }\r\n          ],\"healthProbeSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings\"\r\n
-        \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
-        \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
-        \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
-        \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":{\r\n
-        \           \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\r\n
-        \         },\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Enabled\"\r\n
-        \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
-        \         \"additionalLatencyMilliseconds\":0,\"sampleSize\":4,\"successfulSamplesRequired\":2,\"resourceState\":\"Enabled\"\r\n
-        \       }\r\n      }\r\n    ],\"rulesEngines\":[\r\n      \r\n    ],\"routingRules\":[\r\n
-        \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule\",\"name\":\"DefaultRoutingRule\",\"type\":\"Microsoft.Network/Frontdoors/RoutingRules\",\"properties\":{\r\n
-        \         \"frontendEndpoints\":[\r\n            {\r\n              \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint\"\r\n
-        \           }\r\n          ],\"acceptedProtocols\":[\r\n            \"Http\"\r\n
-        \         ],\"patternsToMatch\":[\r\n            \"/*\"\r\n          ],\"enabledState\":\"Enabled\",\"resourceState\":\"Enabled\",\"routeConfiguration\":{\r\n
-        \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
-        \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
-        \           }\r\n          },\"rulesEngine\":null,\"webApplicationFirewallPolicyLink\":null\r\n
-        \       }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
-        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"frontdoorId\":\"cf8b1e9d-fbb2-4199-b80d-f9ab043adbc5\",\"friendlyName\":\"cli000004\"\r\n
-        \ }\r\n}"
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","name":"cli000004","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"635436c6-2255-4c2b-aff8-cf8d99d4f766","resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"cli000004.azurefd.net","friendlyName":"cli000004","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5754'
+      - '4258'
       content-type:
-      - application/json; odata.metadata=minimal
+      - application/json; charset=utf-8
       date:
-      - Wed, 08 Jul 2020 07:13:14 GMT
+      - Mon, 17 Oct 2022 06:28:53 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/8.5
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -868,7 +535,7 @@ interactions:
       Content-Length:
       - '17'
       User-Agent:
-      - python-requests/2.22.0
+      - python-requests/2.26.0
     method: POST
     uri: http://cli000004.azurefd.net/
   response:
@@ -878,13 +545,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 08 Jul 2020 07:13:14 GMT
+      - Mon, 17 Oct 2022 06:28:53 GMT
       location:
       - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 4FAC6AEAAE3F4E4AA8BAE26F8A655166 Ref B: WSTEDGE0810 Ref C: 2020-07-08T07:13:14Z'
+      - 'Ref A: 13A21200BF3D483C80F7B3A2A2BEFD20 Ref B: SG2EDGE2811 Ref C: 2022-10-17T06:28:54Z'
     status:
       code: 302
       message: Found
@@ -898,25 +563,73 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.22.0
+      - python-requests/2.26.0
     method: GET
     uri: http://cli000004.azurefd.net/pages/404.html
   response:
     body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:5e25198a-701e-00c2-38f7-54a043000000\nTime:2020-07-08T07:13:15.0801988Z</Message></Error>"
+      string: "<!DOCTYPE html>\n<!-- saved from url=(0058)https://df.onecloud.azure-test.net/Error/UE_404?shown=true
+        -->\n<html lang=\"en\" dir=\"ltr\"><!-- Portal Version: 5.0.102.1084 (dogfood#d61d547.160510-1403)
+        --><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n
+        \   <title>Page not found</title>\n    \n\n<meta http-equiv=\"X-UA-Compatible\"
+        content=\"IE=edge\">\n<meta name=\"msapplication-config\" content=\"none\">\n<link
+        rel=\"icon\" type=\"image/x-icon\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\">\n<link
+        rel=\"shortcut icon\" type=\"image/x-icon\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\">\n<meta
+        name=\"robots\" content=\"noindex, nofollow\">\n\n    \n<link rel=\"stylesheet\"
+        property=\"stylesheet\" type=\"text/css\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxErrorCss_8097D4DBB3B4874308CB3816C1762BED98637360.css\">\n\n
+        \   \n    \n<link rel=\"stylesheet\" property=\"stylesheet\" type=\"text/css\"
+        href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxStableCssWesternEuropean_6724ABFCA058F28804A76FD40AD14C9D7A6031D9.css\">\n\n\n
+        \   <script>\n        if (history && (typeof history.pushState === \"function\"))
+        {\n            var shownPart = \"shown=true\",\n                qs = window.location.search
+        || \"\",\n                prefix;\n            if (qs.indexOf(shownPart) <
+        0) {\n                if (!qs) {\n                    prefix = \"?\";\n                }
+        else {\n                    prefix = \"&\";\n                }\n\n                history.pushState({},
+        \"\", window.location.href + prefix + shownPart);\n            }\n        }\n
+        \   </script><style type=\"text/css\"></style>\n</head>\n<body class=\"error-page-wrapper\">\n
+        \   <div class=\"error-page\">\n        <div class=\"error-page-content\">\n
+        \           <h1>Page not found</h1>\n\n\t\t\t<div style=\"padding-top: 35px\">Oops!
+        We weren't able to find your Azure Front Door Service configuration. If it\u2019s
+        a new configuration that you recently created, it might not be ready yet.
+        \ You should check again in a few minutes. If the problem persists, please
+        contact Azure support.</div>\n                <ul>\n                        <li><a
+        class=\"error-page-content-tryagain\" href=\"https://ms.portal.azure.com/#create/Microsoft.Network/Frontdoor\"><span>Try
+        again</span><img src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
+        alt=\"\"></a></li>\n\n                        <li><a class=\"error-page-content-support\"
+        href=\"https://azure.microsoft.com/en-us/support/options/\"><span>Contact
+        support</span><img src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
+        alt=\"\"></a></li>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<li><a class=\"error-page-content-support\"
+        href=\"https://azure.microsoft.com/en-us/documentation/services/frontdoor/\"><span>Documentation</span><img
+        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
+        alt=\"\"></a></li>\n                </ul>\n        </div>\n        <img class=\"error-page-cloud1\"
+        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
+        \       <img class=\"error-page-cloud2\" src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
+        \       <img class=\"error-page-cloud3\" src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
+        \   </div>\n    <div class=\"error-body\">\n        <div>\n            \n\n
+        \       </div>\n    </div>\n\n\n</body></html>"
     headers:
       content-length:
-      - '207'
+      - '3467'
       content-type:
-      - application/xml
+      - text/html
       date:
-      - Wed, 08 Jul 2020 07:13:14 GMT
+      - Mon, 17 Oct 2022 06:28:54 GMT
+      etag:
+      - '0x8D61E6FBA75C854'
+      last-modified:
+      - Wed, 19 Sep 2018 20:37:33 GMT
+      x-cache:
+      - CONFIG_NOCACHE
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-lease-status:
+      - unlocked
+      x-ms-version:
+      - '2009-09-19'
       x-msedge-ref:
-      - 'Ref A: 789A617A54AD419C8FB4630CD6B3D9BD Ref B: WSTEDGE0810 Ref C: 2020-07-08T07:13:14Z'
+      - 'Ref A: 6127CF065B794B68855BBA40592CDBB9 Ref B: SG2EDGE2811 Ref C: 2022-10-17T06:28:54Z'
     status:
-      code: 400
-      message: The request URI is invalid.
+      code: 200
+      message: OK
 - request:
     body: '''key'':''something'''
     headers:
@@ -929,7 +642,7 @@ interactions:
       Content-Length:
       - '17'
       User-Agent:
-      - python-requests/2.22.0
+      - python-requests/2.26.0
     method: POST
     uri: http://cli000004.azurefd.net/
   response:
@@ -939,13 +652,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 08 Jul 2020 07:13:25 GMT
+      - Mon, 17 Oct 2022 06:29:04 GMT
       location:
       - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: DAEBEA9EB27748DB94F5235E8ADE62D2 Ref B: WSTEDGE0816 Ref C: 2020-07-08T07:13:25Z'
+      - 'Ref A: B867DAE165D046A5B7EF7ABCC63D4E9A Ref B: SG2EDGE2710 Ref C: 2022-10-17T06:29:05Z'
     status:
       code: 302
       message: Found
@@ -959,25 +670,73 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.22.0
+      - python-requests/2.26.0
     method: GET
     uri: http://cli000004.azurefd.net/pages/404.html
   response:
     body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:c4bf43ea-901e-0026-66f7-54b349000000\nTime:2020-07-08T07:13:25.3969019Z</Message></Error>"
+      string: "<!DOCTYPE html>\n<!-- saved from url=(0058)https://df.onecloud.azure-test.net/Error/UE_404?shown=true
+        -->\n<html lang=\"en\" dir=\"ltr\"><!-- Portal Version: 5.0.102.1084 (dogfood#d61d547.160510-1403)
+        --><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n
+        \   <title>Page not found</title>\n    \n\n<meta http-equiv=\"X-UA-Compatible\"
+        content=\"IE=edge\">\n<meta name=\"msapplication-config\" content=\"none\">\n<link
+        rel=\"icon\" type=\"image/x-icon\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\">\n<link
+        rel=\"shortcut icon\" type=\"image/x-icon\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\">\n<meta
+        name=\"robots\" content=\"noindex, nofollow\">\n\n    \n<link rel=\"stylesheet\"
+        property=\"stylesheet\" type=\"text/css\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxErrorCss_8097D4DBB3B4874308CB3816C1762BED98637360.css\">\n\n
+        \   \n    \n<link rel=\"stylesheet\" property=\"stylesheet\" type=\"text/css\"
+        href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxStableCssWesternEuropean_6724ABFCA058F28804A76FD40AD14C9D7A6031D9.css\">\n\n\n
+        \   <script>\n        if (history && (typeof history.pushState === \"function\"))
+        {\n            var shownPart = \"shown=true\",\n                qs = window.location.search
+        || \"\",\n                prefix;\n            if (qs.indexOf(shownPart) <
+        0) {\n                if (!qs) {\n                    prefix = \"?\";\n                }
+        else {\n                    prefix = \"&\";\n                }\n\n                history.pushState({},
+        \"\", window.location.href + prefix + shownPart);\n            }\n        }\n
+        \   </script><style type=\"text/css\"></style>\n</head>\n<body class=\"error-page-wrapper\">\n
+        \   <div class=\"error-page\">\n        <div class=\"error-page-content\">\n
+        \           <h1>Page not found</h1>\n\n\t\t\t<div style=\"padding-top: 35px\">Oops!
+        We weren't able to find your Azure Front Door Service configuration. If it\u2019s
+        a new configuration that you recently created, it might not be ready yet.
+        \ You should check again in a few minutes. If the problem persists, please
+        contact Azure support.</div>\n                <ul>\n                        <li><a
+        class=\"error-page-content-tryagain\" href=\"https://ms.portal.azure.com/#create/Microsoft.Network/Frontdoor\"><span>Try
+        again</span><img src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
+        alt=\"\"></a></li>\n\n                        <li><a class=\"error-page-content-support\"
+        href=\"https://azure.microsoft.com/en-us/support/options/\"><span>Contact
+        support</span><img src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
+        alt=\"\"></a></li>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<li><a class=\"error-page-content-support\"
+        href=\"https://azure.microsoft.com/en-us/documentation/services/frontdoor/\"><span>Documentation</span><img
+        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
+        alt=\"\"></a></li>\n                </ul>\n        </div>\n        <img class=\"error-page-cloud1\"
+        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
+        \       <img class=\"error-page-cloud2\" src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
+        \       <img class=\"error-page-cloud3\" src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
+        \   </div>\n    <div class=\"error-body\">\n        <div>\n            \n\n
+        \       </div>\n    </div>\n\n\n</body></html>"
     headers:
       content-length:
-      - '207'
+      - '3467'
       content-type:
-      - application/xml
+      - text/html
       date:
-      - Wed, 08 Jul 2020 07:13:25 GMT
+      - Mon, 17 Oct 2022 06:29:06 GMT
+      etag:
+      - '0x8D61E6FBA75C854'
+      last-modified:
+      - Wed, 19 Sep 2018 20:37:33 GMT
+      x-cache:
+      - CONFIG_NOCACHE
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-lease-status:
+      - unlocked
+      x-ms-version:
+      - '2009-09-19'
       x-msedge-ref:
-      - 'Ref A: 114058902FAD429B93B5CD438E88C18C Ref B: WSTEDGE0816 Ref C: 2020-07-08T07:13:25Z'
+      - 'Ref A: FF039FEE980F440C9CAAEEBBA37AB2BD Ref B: SG2EDGE2710 Ref C: 2022-10-17T06:29:05Z'
     status:
-      code: 400
-      message: The request URI is invalid.
+      code: 200
+      message: OK
 - request:
     body: '''key'':''something'''
     headers:
@@ -990,7 +749,7 @@ interactions:
       Content-Length:
       - '17'
       User-Agent:
-      - python-requests/2.22.0
+      - python-requests/2.26.0
     method: POST
     uri: http://cli000004.azurefd.net/
   response:
@@ -1000,13 +759,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 08 Jul 2020 07:13:34 GMT
+      - Mon, 17 Oct 2022 06:29:15 GMT
       location:
       - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: C786A8CC4341413898B4A1AF9C6CF2B4 Ref B: WSTEDGE0806 Ref C: 2020-07-08T07:13:35Z'
+      - 'Ref A: 678490ABC8F3474283A57942232E4C90 Ref B: SG2EDGE2806 Ref C: 2022-10-17T06:29:16Z'
     status:
       code: 302
       message: Found
@@ -1020,25 +777,73 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.22.0
+      - python-requests/2.26.0
     method: GET
     uri: http://cli000004.azurefd.net/pages/404.html
   response:
     body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:5ed2bac8-701e-00e0-7ff7-54ce75000000\nTime:2020-07-08T07:13:35.6771090Z</Message></Error>"
+      string: "<!DOCTYPE html>\n<!-- saved from url=(0058)https://df.onecloud.azure-test.net/Error/UE_404?shown=true
+        -->\n<html lang=\"en\" dir=\"ltr\"><!-- Portal Version: 5.0.102.1084 (dogfood#d61d547.160510-1403)
+        --><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n
+        \   <title>Page not found</title>\n    \n\n<meta http-equiv=\"X-UA-Compatible\"
+        content=\"IE=edge\">\n<meta name=\"msapplication-config\" content=\"none\">\n<link
+        rel=\"icon\" type=\"image/x-icon\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\">\n<link
+        rel=\"shortcut icon\" type=\"image/x-icon\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/favicon.ico\">\n<meta
+        name=\"robots\" content=\"noindex, nofollow\">\n\n    \n<link rel=\"stylesheet\"
+        property=\"stylesheet\" type=\"text/css\" href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxErrorCss_8097D4DBB3B4874308CB3816C1762BED98637360.css\">\n\n
+        \   \n    \n<link rel=\"stylesheet\" property=\"stylesheet\" type=\"text/css\"
+        href=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/UxFxStableCssWesternEuropean_6724ABFCA058F28804A76FD40AD14C9D7A6031D9.css\">\n\n\n
+        \   <script>\n        if (history && (typeof history.pushState === \"function\"))
+        {\n            var shownPart = \"shown=true\",\n                qs = window.location.search
+        || \"\",\n                prefix;\n            if (qs.indexOf(shownPart) <
+        0) {\n                if (!qs) {\n                    prefix = \"?\";\n                }
+        else {\n                    prefix = \"&\";\n                }\n\n                history.pushState({},
+        \"\", window.location.href + prefix + shownPart);\n            }\n        }\n
+        \   </script><style type=\"text/css\"></style>\n</head>\n<body class=\"error-page-wrapper\">\n
+        \   <div class=\"error-page\">\n        <div class=\"error-page-content\">\n
+        \           <h1>Page not found</h1>\n\n\t\t\t<div style=\"padding-top: 35px\">Oops!
+        We weren't able to find your Azure Front Door Service configuration. If it\u2019s
+        a new configuration that you recently created, it might not be ready yet.
+        \ You should check again in a few minutes. If the problem persists, please
+        contact Azure support.</div>\n                <ul>\n                        <li><a
+        class=\"error-page-content-tryagain\" href=\"https://ms.portal.azure.com/#create/Microsoft.Network/Frontdoor\"><span>Try
+        again</span><img src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
+        alt=\"\"></a></li>\n\n                        <li><a class=\"error-page-content-support\"
+        href=\"https://azure.microsoft.com/en-us/support/options/\"><span>Contact
+        support</span><img src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
+        alt=\"\"></a></li>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<li><a class=\"error-page-content-support\"
+        href=\"https://azure.microsoft.com/en-us/documentation/services/frontdoor/\"><span>Documentation</span><img
+        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/chevron.svg\"
+        alt=\"\"></a></li>\n                </ul>\n        </div>\n        <img class=\"error-page-cloud1\"
+        src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
+        \       <img class=\"error-page-cloud2\" src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
+        \       <img class=\"error-page-cloud3\" src=\"https://azurefrontdoorpages.azureedge.net/pages/PageNotFound_files/cloud_drop.svg\">\n
+        \   </div>\n    <div class=\"error-body\">\n        <div>\n            \n\n
+        \       </div>\n    </div>\n\n\n</body></html>"
     headers:
       content-length:
-      - '207'
+      - '3467'
       content-type:
-      - application/xml
+      - text/html
       date:
-      - Wed, 08 Jul 2020 07:13:34 GMT
+      - Mon, 17 Oct 2022 06:29:16 GMT
+      etag:
+      - '0x8D61E6FBA75C854'
+      last-modified:
+      - Wed, 19 Sep 2018 20:37:33 GMT
+      x-cache:
+      - CONFIG_NOCACHE
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-lease-status:
+      - unlocked
+      x-ms-version:
+      - '2009-09-19'
       x-msedge-ref:
-      - 'Ref A: 9B16AE0BF6384302A4B1C43C15A03B38 Ref B: WSTEDGE0806 Ref C: 2020-07-08T07:13:35Z'
+      - 'Ref A: 97C7A36D1EA54B76BF189B39DADB823D Ref B: SG2EDGE2806 Ref C: 2022-10-17T06:29:16Z'
     status:
-      code: 400
-      message: The request URI is invalid.
+      code: 200
+      message: OK
 - request:
     body: '''key'':''something'''
     headers:
@@ -1051,312 +856,7 @@ interactions:
       Content-Length:
       - '17'
       User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 08 Jul 2020 07:13:45 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: DE704FAB9B874E8584F4669C63FA37E2 Ref B: WSTEDGE0811 Ref C: 2020-07-08T07:13:45Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:689d97c2-e01e-004f-0cf7-54ece5000000\nTime:2020-07-08T07:13:45.9549371Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 08 Jul 2020 07:13:45 GMT
-      x-msedge-ref:
-      - 'Ref A: 4281212F6BAC4902892127FC93652BAA Ref B: WSTEDGE0811 Ref C: 2020-07-08T07:13:45Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 08 Jul 2020 07:13:55 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: D454D2647177426CA2ADB16A070E0CF5 Ref B: WSTEDGE0815 Ref C: 2020-07-08T07:13:56Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:f9b6d42a-001e-006c-2bf7-54832e000000\nTime:2020-07-08T07:13:56.1933921Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 08 Jul 2020 07:13:55 GMT
-      x-msedge-ref:
-      - 'Ref A: B3D18537627844949C10550B6E2E66AE Ref B: WSTEDGE0815 Ref C: 2020-07-08T07:13:56Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 08 Jul 2020 07:14:05 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: 9186F10DE074431589E6C8F96A354189 Ref B: WSTEDGE0817 Ref C: 2020-07-08T07:14:06Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:d9dab879-901e-0122-75f7-54009e000000\nTime:2020-07-08T07:14:06.5221189Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 08 Jul 2020 07:14:05 GMT
-      x-msedge-ref:
-      - 'Ref A: 28B3B67CE80A4C38B1064050CF464968 Ref B: WSTEDGE0817 Ref C: 2020-07-08T07:14:06Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 08 Jul 2020 07:14:15 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: 28198181671D4C87AC0908765795AA80 Ref B: WSTEDGE0819 Ref C: 2020-07-08T07:14:16Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:127ffff7-501e-009a-32f7-54a438000000\nTime:2020-07-08T07:14:16.8202701Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 08 Jul 2020 07:14:16 GMT
-      x-msedge-ref:
-      - 'Ref A: 3654C65F1E774AE792E27C1320C4C0F4 Ref B: WSTEDGE0819 Ref C: 2020-07-08T07:14:16Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 08 Jul 2020 07:14:26 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: E61D49521E8345A8853783B36A51D919 Ref B: WSTEDGE0813 Ref C: 2020-07-08T07:14:26Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:425edd60-001e-012c-57f7-54ec95000000\nTime:2020-07-08T07:14:27.1087807Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 08 Jul 2020 07:14:26 GMT
-      x-msedge-ref:
-      - 'Ref A: D01AAAE0DF7441688992DEF6787D5340 Ref B: WSTEDGE0813 Ref C: 2020-07-08T07:14:27Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
+      - python-requests/2.26.0
     method: POST
     uri: http://cli000004.azurefd.net/
   response:
@@ -1371,7 +871,7 @@ interactions:
         }</style><title>Service unavailable</title></head><body><div id=''content''><div
         id=''message''><h2>Our services aren''t available right now</h2><p>We''re
         working to restore all services as soon as possible. Please check back soon.</p></div><div
-        id=''errorref''><span>0XXIFXwAAAADDmSumAF0FRZBUxSMZLg/IV1NURURHRTA4MjIAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1</span></div></div></body></html>'
+        id=''errorref''><span>0SPZMYwAAAADXxlNZbUwDTZL4Rzu1CI0aU0cyRURHRTI3MDYANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2</span></div></div></body></html>'
     headers:
       cache-control:
       - no-store
@@ -1380,9 +880,9 @@ interactions:
       content-type:
       - text/html
       date:
-      - Wed, 08 Jul 2020 07:14:36 GMT
+      - Mon, 17 Oct 2022 06:29:27 GMT
       x-azure-ref:
-      - 0XXIFXwAAAADDmSumAF0FRZBUxSMZLg/IV1NURURHRTA4MjIAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
+      - 0SPZMYwAAAADXxlNZbUwDTZL4Rzu1CI0aU0cyRURHRTI3MDYANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2
     status:
       code: 503
       message: Service Unavailable
@@ -1398,54 +898,36 @@ interactions:
       Content-Length:
       - '17'
       User-Agent:
-      - python-requests/2.22.0
+      - python-requests/2.26.0
     method: POST
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
+        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
+        http-equiv=''content-type''/><style type=''text/css''>body {font-family:Arial;
+        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
+        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
+        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
+        7px 0px 0px0px}#errorref { font-size: 11px; color: #737373; margin-top: 41px
+        }</style><title>Service unavailable</title></head><body><div id=''content''><div
+        id=''message''><h2>Our services aren''t available right now</h2><p>We''re
+        working to restore all services as soon as possible. Please check back soon.</p></div><div
+        id=''errorref''><span>0UvZMYwAAAAC9jeLAqzLNRJD53UHo3NYQU0cyRURHRTI3MTgANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2</span></div></div></body></html>'
     headers:
-      accept-ranges:
-      - bytes
       cache-control:
-      - max-age=604800
+      - no-store
       content-length:
-      - '1256'
+      - '994'
       content-type:
-      - text/html; charset=UTF-8
+      - text/html
       date:
-      - Wed, 08 Jul 2020 07:14:46 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:14:47 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      - Mon, 17 Oct 2022 06:29:37 GMT
       x-azure-ref:
-      - 0Z3IFXwAAAAD6m9sVwRoMTJkvL8GQw5/dV1NURURHRTA4MTQAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
+      - 0UvZMYwAAAAC9jeLAqzLNRJD53UHo3NYQU0cyRURHRTI3MTgANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2
     status:
-      code: 200
-      message: OK
+      code: 503
+      message: Service Unavailable
 - request:
     body: '''key'':''something'''
     headers:
@@ -1458,907 +940,7 @@ interactions:
       Content-Length:
       - '17'
       User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:14:57 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:14:57 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0cXIFXwAAAADA7hJ6FqQQTYCPMevnzYZ1V1NURURHRTA4MTcAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:15:06 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:15:07 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0e3IFXwAAAACVZ9OnmmodQqeAbmxCXyonV1NURURHRTA4MjIAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:15:16 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:15:17 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0hXIFXwAAAAD9OV0mK+mEQ63FoV6dlEdFV1NURURHRTA4MTMAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:15:27 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:15:27 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0j3IFXwAAAACzC+QXRtsSQZcY0HOZa1azV1NURURHRTA4MDcAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:15:37 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:15:38 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0mnIFXwAAAABOdYPGXv/pQ5EWFnOxLb6DV1NURURHRTA4MjAAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:15:48 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:15:48 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0pHIFXwAAAABrYuvnw7PqRJnRi/MO0dpxV1NURURHRTA4MDgAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:15:57 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:15:58 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0rnIFXwAAAADKCoiUbqjQRrVmVLQoe4q2V1NURURHRTA4MDYAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:16:07 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:16:08 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0uHIFXwAAAABPst9TV/XsQY+wtVshyU9WV1NURURHRTA4MDcAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:16:17 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:16:18 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0wnIFXwAAAAA2Zrstbg9VS5PIaxh9iUi0V1NURURHRTA4MTcAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:16:28 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:16:28 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0zHIFXwAAAACAAJl9Q+XUQogOfIzavsaLV1NURURHRTA4MTAAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:16:37 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:16:38 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 01nIFXwAAAAAdsfb2ef/TS4Y7tw+OUASEV1NURURHRTA4MjEAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:16:48 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:16:48 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 04HIFXwAAAABoFaXwqeNeQIYHqhD3Sv3MV1NURURHRTA4MTgAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:16:58 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:16:59 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 06nIFXwAAAABAAN4s2g1PQbYhMMn6eq/VV1NURURHRTA4MTMAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:17:09 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:17:09 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 09XIFXwAAAACOmtwULs2WRICl2R2dOYNSV1NURURHRTA4MjEAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
-    headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
-      content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
-      date:
-      - Wed, 08 Jul 2020 07:17:19 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 15 Jul 2020 07:17:19 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0/3IFXwAAAADDOb8K8bARQ5N1emeCyOJoV1NURURHRTA4MDcAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
+      - python-requests/2.26.0
     method: POST
     uri: http://cli000004.azurefd.net/
   response:
@@ -2371,14 +953,14 @@ interactions:
         margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
         7px 0px 0px 0px }#errorref { font-size: 11px; color: #737373; margin-top:
         41px }</style><title>Microsoft</title></head><body><div id=''content''><div
-        id=''message''><h2>The request is blocked.</h2></div><div id=''errorref''><span>0CXMFXwAAAABj7dJdF0a0S5Y48AuT1FT4V1NURURHRTA4MTcAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1</span></div></div></body></html>'
+        id=''message''><h2>The request is blocked.</h2></div><div id=''errorref''><span>0XPZMYwAAAAB57HRhclVmR48vbVOm91ZjU0cyRURHRTI3MTcANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2</span></div></div></body></html>'
     headers:
       date:
-      - Wed, 08 Jul 2020 07:17:29 GMT
+      - Mon, 17 Oct 2022 06:29:48 GMT
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0CXMFXwAAAABj7dJdF0a0S5Y48AuT1FT4V1NURURHRTA4MTcAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
+      - 0XPZMYwAAAAB57HRhclVmR48vbVOm91ZjU0cyRURHRTI3MTcANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2
     status:
       code: 403
       message: Forbidden
@@ -2394,7 +976,7 @@ interactions:
       Content-Length:
       - '13'
       User-Agent:
-      - python-requests/2.22.0
+      - python-requests/2.26.0
     method: POST
     uri: http://cli000004.azurefd.net/
   response:
@@ -2426,19 +1008,17 @@ interactions:
       content-type:
       - text/html; charset=UTF-8
       date:
-      - Wed, 08 Jul 2020 07:17:29 GMT
+      - Mon, 17 Oct 2022 06:29:48 GMT
       etag:
-      - '"3147526947+gzip"'
+      - '"3147526947"'
       expires:
-      - Wed, 15 Jul 2020 07:17:29 GMT
+      - Mon, 24 Oct 2022 06:29:48 GMT
       last-modified:
       - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-azure-ref:
-      - 0CXMFXwAAAAC3oVucFyb1R7RsJfJ3vAIcV1NURURHRTA4MjIAY2Y4YjFlOWQtZmJiMi00MTk5LWI4MGQtZjlhYjA0M2FkYmM1
+      - 0XPZMYwAAAADcIRtxVP4GSrBVivZfCYZPU0cyRURHRTI4MTYANjM1NDM2YzYtMjI1NS00YzJiLWFmZjgtY2Y4ZDk5ZDRmNzY2
+      x-cache:
+      - CONFIG_NOCACHE
     status:
       code: 200
       message: OK

@@ -6,59 +6,69 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Any, Optional
+from typing import TYPE_CHECKING
 
-from azure.core import PipelineClient
+from azure.mgmt.core import ARMPipelineClient
 from msrest import Deserializer, Serializer
 
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any, Optional
+
+    from azure.core.credentials import TokenCredential
+
 from ._configuration import DataShareManagementClientConfiguration
-from .operations import AccountOperations
-from .operations import ConsumerInvitationOperations
-from .operations import DataSetOperations
-from .operations import DataSetMappingOperations
-from .operations import InvitationOperations
-from .operations import OperationOperations
-from .operations import ShareOperations
-from .operations import ProviderShareSubscriptionOperations
-from .operations import ShareSubscriptionOperations
-from .operations import ConsumerSourceDataSetOperations
-from .operations import SynchronizationSettingOperations
-from .operations import TriggerOperations
+from .operations import AccountsOperations
+from .operations import ConsumerInvitationsOperations
+from .operations import DataSetsOperations
+from .operations import DataSetMappingsOperations
+from .operations import EmailRegistrationsOperations
+from .operations import InvitationsOperations
+from .operations import Operations
+from .operations import SharesOperations
+from .operations import ProviderShareSubscriptionsOperations
+from .operations import ShareSubscriptionsOperations
+from .operations import ConsumerSourceDataSetsOperations
+from .operations import SynchronizationSettingsOperations
+from .operations import TriggersOperations
 from . import models
 
 
 class DataShareManagementClient(object):
     """Creates a Microsoft.DataShare management client.
 
-    :ivar account: AccountOperations operations
-    :vartype account: data_share_management_client.operations.AccountOperations
-    :ivar consumer_invitation: ConsumerInvitationOperations operations
-    :vartype consumer_invitation: data_share_management_client.operations.ConsumerInvitationOperations
-    :ivar data_set: DataSetOperations operations
-    :vartype data_set: data_share_management_client.operations.DataSetOperations
-    :ivar data_set_mapping: DataSetMappingOperations operations
-    :vartype data_set_mapping: data_share_management_client.operations.DataSetMappingOperations
-    :ivar invitation: InvitationOperations operations
-    :vartype invitation: data_share_management_client.operations.InvitationOperations
-    :ivar operation: OperationOperations operations
-    :vartype operation: data_share_management_client.operations.OperationOperations
-    :ivar share: ShareOperations operations
-    :vartype share: data_share_management_client.operations.ShareOperations
-    :ivar provider_share_subscription: ProviderShareSubscriptionOperations operations
-    :vartype provider_share_subscription: data_share_management_client.operations.ProviderShareSubscriptionOperations
-    :ivar share_subscription: ShareSubscriptionOperations operations
-    :vartype share_subscription: data_share_management_client.operations.ShareSubscriptionOperations
-    :ivar consumer_source_data_set: ConsumerSourceDataSetOperations operations
-    :vartype consumer_source_data_set: data_share_management_client.operations.ConsumerSourceDataSetOperations
-    :ivar synchronization_setting: SynchronizationSettingOperations operations
-    :vartype synchronization_setting: data_share_management_client.operations.SynchronizationSettingOperations
-    :ivar trigger: TriggerOperations operations
-    :vartype trigger: data_share_management_client.operations.TriggerOperations
+    :ivar accounts: AccountsOperations operations
+    :vartype accounts: azure.mgmt.datashare.operations.AccountsOperations
+    :ivar consumer_invitations: ConsumerInvitationsOperations operations
+    :vartype consumer_invitations: azure.mgmt.datashare.operations.ConsumerInvitationsOperations
+    :ivar data_sets: DataSetsOperations operations
+    :vartype data_sets: azure.mgmt.datashare.operations.DataSetsOperations
+    :ivar data_set_mappings: DataSetMappingsOperations operations
+    :vartype data_set_mappings: azure.mgmt.datashare.operations.DataSetMappingsOperations
+    :ivar email_registrations: EmailRegistrationsOperations operations
+    :vartype email_registrations: azure.mgmt.datashare.operations.EmailRegistrationsOperations
+    :ivar invitations: InvitationsOperations operations
+    :vartype invitations: azure.mgmt.datashare.operations.InvitationsOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.datashare.operations.Operations
+    :ivar shares: SharesOperations operations
+    :vartype shares: azure.mgmt.datashare.operations.SharesOperations
+    :ivar provider_share_subscriptions: ProviderShareSubscriptionsOperations operations
+    :vartype provider_share_subscriptions: azure.mgmt.datashare.operations.ProviderShareSubscriptionsOperations
+    :ivar share_subscriptions: ShareSubscriptionsOperations operations
+    :vartype share_subscriptions: azure.mgmt.datashare.operations.ShareSubscriptionsOperations
+    :ivar consumer_source_data_sets: ConsumerSourceDataSetsOperations operations
+    :vartype consumer_source_data_sets: azure.mgmt.datashare.operations.ConsumerSourceDataSetsOperations
+    :ivar synchronization_settings: SynchronizationSettingsOperations operations
+    :vartype synchronization_settings: azure.mgmt.datashare.operations.SynchronizationSettingsOperations
+    :ivar triggers: TriggersOperations operations
+    :vartype triggers: azure.mgmt.datashare.operations.TriggersOperations
     :param credential: Credential needed for the client to connect to Azure.
-    :type credential: azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The subscription identifier.
     :type subscription_id: str
     :param str base_url: Service URL
+    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(
@@ -72,35 +82,38 @@ class DataShareManagementClient(object):
         if not base_url:
             base_url = 'https://management.azure.com'
         self._config = DataShareManagementClientConfiguration(credential, subscription_id, **kwargs)
-        self._client = PipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
+        self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
-        self.account = AccountOperations(
+        self.accounts = AccountsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.consumer_invitation = ConsumerInvitationOperations(
+        self.consumer_invitations = ConsumerInvitationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.data_set = DataSetOperations(
+        self.data_sets = DataSetsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.data_set_mapping = DataSetMappingOperations(
+        self.data_set_mappings = DataSetMappingsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.invitation = InvitationOperations(
+        self.email_registrations = EmailRegistrationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.operation = OperationOperations(
+        self.invitations = InvitationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.share = ShareOperations(
+        self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.provider_share_subscription = ProviderShareSubscriptionOperations(
+        self.shares = SharesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.share_subscription = ShareSubscriptionOperations(
+        self.provider_share_subscriptions = ProviderShareSubscriptionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.consumer_source_data_set = ConsumerSourceDataSetOperations(
+        self.share_subscriptions = ShareSubscriptionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.synchronization_setting = SynchronizationSettingOperations(
+        self.consumer_source_data_sets = ConsumerSourceDataSetsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.trigger = TriggerOperations(
+        self.synchronization_settings = SynchronizationSettingsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.triggers = TriggersOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

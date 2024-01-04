@@ -1,89 +1,40 @@
 interactions:
 - request:
-    body: null
+    body: '{"kind": "Gen1", "location": "westus", "sku": {"capacity": 1, "name": "S1"},
+      "properties": {"dataRetentionTime": "P31D", "partitionKeyProperties": [{"name":
+      "DeviceId1", "type": "String"}], "storageLimitExceededBehavior": "PauseIngress"}}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment standard create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --sku-name --sku-capacity --data-retention-time --partition-key-properties
-        --storage-limit-exceeded-behavior
-      User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.6.0
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_timeseriesinsights000001?api-version=2019-07-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001","name":"cli_test_timeseriesinsights000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-05-18T07:05:29Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '471'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 May 2020 07:05:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "westus", "sku": {"name": "S1", "capacity": 1}, "kind": "Standard",
-      "properties": {"dataRetentionTime": "P31D", "storageLimitExceededBehavior":
-      "PauseIngress", "partitionKeyProperties": [{"name": "DeviceId1", "type": "String"}]}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - timeseriesinsights environment standard create
+      - tsi environment gen1 create
       Connection:
       - keep-alive
       Content-Length:
-      - '242'
+      - '238'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - --resource-group --name --sku-name --sku-capacity --data-retention-time --partition-key-properties
+      - --resource-group --location --name --sku --data-retention-time --partition-key-properties
         --storage-limit-exceeded-behavior
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.6.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2018-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Standard","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-05-18T07:05:46.6439947+00:00","provisioningState":"Accepted","dataAccessId":"38c2b3bb-202d-409b-b6af-13165ba509ef","dataAccessFqdn":"38c2b3bb-202d-409b-b6af-13165ba509ef.env.timeseries.azure.com","requestApiVersion":"2018-08-15-preview"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":{"CreatedOnDate":"2023-08-01T03:27:00.1325150Z"},"properties":{"dataRetentionTime":"P31D","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"storageLimitExceededBehavior":"PauseIngress","creationTime":"2023-08-01T03:27:01.2098313Z","provisioningState":"Succeeded","dataAccessId":"e1e37c22-e694-47a9-8b71-282c7816b494","dataAccessFqdn":"e1e37c22-e694-47a9-8b71-282c7816b494.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '806'
+      - '737'
       content-type:
       - application/json
       date:
-      - Mon, 18 May 2020 07:05:48 GMT
+      - Tue, 01 Aug 2023 03:27:01 GMT
       expires:
       - '-1'
       pragma:
@@ -94,96 +45,47 @@ interactions:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=48f8229a-efaa-4c48-b7c8-08c675d698ec/eastus2euap/11f1333b-9b85-41e3-a897-869c232bdacb
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1189'
+      - '1194'
     status:
       code: 201
       message: Created
 - request:
-    body: null
+    body: '{"properties": {"description": "some description", "principalObjectId":
+      "001", "roles": ["Contributor", "Reader"]}}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment standard create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --sku-name --sku-capacity --data-retention-time --partition-key-properties
-        --storage-limit-exceeded-behavior
-      User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.6.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2018-08-15-preview
-  response:
-    body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Standard","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-05-18T07:05:46.6439947Z","provisioningState":"Succeeded","requestApiVersion":"2018-08-15-preview","dataAccessId":"38c2b3bb-202d-409b-b6af-13165ba509ef","dataAccessFqdn":"38c2b3bb-202d-409b-b6af-13165ba509ef.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '802'
-      content-type:
-      - application/json
-      date:
-      - Mon, 18 May 2020 07:06:19 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"principalObjectId": "001", "description": "some description",
-      "roles": ["Contributor", "Reader"]}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - timeseriesinsights access-policy create
+      - tsi access-policy create
       Connection:
       - keep-alive
       Content-Length:
       - '115'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -g --environment-name --name --principal-object-id --description --roles
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.6.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2018-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2020-05-15
   response:
     body:
-      string: '{"properties":{"principalObjectId":"001","description":"some description","roles":["Contributor","Reader"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
+      string: '{"properties":{"description":"some description","principalObjectId":"001","roles":["Contributor","Reader"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '433'
+      - '371'
       content-type:
       - application/json
       date:
-      - Mon, 18 May 2020 07:06:22 GMT
+      - Tue, 01 Aug 2023 03:27:04 GMT
       expires:
       - '-1'
       pragma:
@@ -199,47 +101,43 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1188'
+      - '1197'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"description": "some description updated"}}'
+    body: '{"properties": {"description": "some description updated", "roles": ["Contributor"]}}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights access-policy update
+      - tsi access-policy update
       Connection:
       - keep-alive
       Content-Length:
-      - '59'
+      - '85'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - -g --environment-name --name --description
+      - -g --environment-name --name --description --roles
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.6.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2018-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2020-05-15
   response:
     body:
-      string: '{"properties":{"principalObjectId":"001","description":"some description
-        updated","roles":["Contributor","Reader"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
+      string: '{"properties":{"description":"some description updated","principalObjectId":"001","roles":["Contributor"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '441'
+      - '370'
       content-type:
       - application/json
       date:
-      - Mon, 18 May 2020 07:06:23 GMT
+      - Tue, 01 Aug 2023 03:27:06 GMT
       expires:
       - '-1'
       pragma:
@@ -255,63 +153,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1187'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"roles": ["Contributor"]}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - timeseriesinsights access-policy update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '42'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -g --environment-name --name --roles
-      User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.6.0
-      accept-language:
-      - en-US
-    method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2018-08-15-preview
-  response:
-    body:
-      string: '{"properties":{"principalObjectId":"001","description":"some description
-        updated","roles":["Contributor"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '432'
-      content-type:
-      - application/json
-      date:
-      - Mon, 18 May 2020 07:06:25 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
+      - '1195'
     status:
       code: 200
       message: OK
@@ -323,31 +165,27 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights access-policy show
+      - tsi access-policy show
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --environment-name --name
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.6.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2018-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2020-05-15
   response:
     body:
-      string: '{"properties":{"principalObjectId":"001","description":"some description
-        updated","roles":["Contributor"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
+      string: '{"properties":{"description":"some description updated","principalObjectId":"001","roles":["Contributor"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '432'
+      - '370'
       content-type:
       - application/json
       date:
-      - Mon, 18 May 2020 07:06:27 GMT
+      - Tue, 01 Aug 2023 03:27:08 GMT
       expires:
       - '-1'
       pragma:
@@ -373,31 +211,27 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights access-policy list
+      - tsi access-policy list
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --environment-name
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.6.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies?api-version=2018-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies?api-version=2020-05-15
   response:
     body:
-      string: '{"value":[{"properties":{"principalObjectId":"001","description":"some
-        description updated","roles":["Contributor"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}]}'
+      string: '{"value":[{"properties":{"description":"some description updated","principalObjectId":"001","roles":["Contributor"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '444'
+      - '382'
       content-type:
       - application/json
       date:
-      - Mon, 18 May 2020 07:06:28 GMT
+      - Tue, 01 Aug 2023 03:27:10 GMT
       expires:
       - '-1'
       pragma:
@@ -419,11 +253,11 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights access-policy delete
+      - tsi access-policy delete
       Connection:
       - keep-alive
       Content-Length:
@@ -431,12 +265,9 @@ interactions:
       ParameterSetName:
       - -g --environment-name --name --yes
       User-Agent:
-      - python/3.8.1 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-timeseriesinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.6.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_timeseriesinsights000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2018-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2020-05-15
   response:
     body:
       string: ''
@@ -446,7 +277,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 18 May 2020 07:06:29 GMT
+      - Tue, 01 Aug 2023 03:27:11 GMT
       expires:
       - '-1'
       pragma:

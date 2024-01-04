@@ -1,0 +1,659 @@
+interactions:
+- request:
+    body: '{"location": "westus", "kind": "web", "properties": {"Application_Type":
+      "web", "Flow_Type": "Bluefield", "Request_Source": "rest", "IngestionMode":
+      "ApplicationInsights"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights component create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '172'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -a -l -g --kind --application-type
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/components/test-app?api-version=2018-05-01-preview
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
+        ,\r\n  \"name\": \"test-app\",\r\n  \"type\": \"microsoft.insights/components\"\
+        ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"kind\": \"web\"\
+        ,\r\n  \"etag\": \"\\\"10008ede-0000-0200-0000-64e567610000\\\"\",\r\n  \"\
+        properties\": {\r\n    \"ApplicationId\": \"test-app\",\r\n    \"AppId\":\
+        \ \"7ef127a8-32f0-4cee-addd-c01b0dfd0d77\",\r\n    \"Application_Type\": \"\
+        web\",\r\n    \"Flow_Type\": \"Bluefield\",\r\n    \"Request_Source\": \"\
+        rest\",\r\n    \"InstrumentationKey\": \"8660d64f-2e10-4553-a4f6-76411a7af065\"\
+        ,\r\n    \"ConnectionString\": \"InstrumentationKey=8660d64f-2e10-4553-a4f6-76411a7af065;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/\"\
+        ,\r\n    \"Name\": \"test-app\",\r\n    \"CreationDate\": \"2023-08-23T01:56:48.9253262+00:00\"\
+        ,\r\n    \"TenantId\": \"0b1f6471-1bf0-4dda-aec3-cb9272f09590\",\r\n    \"\
+        provisioningState\": \"Succeeded\",\r\n    \"SamplingPercentage\": null,\r\
+        \n    \"RetentionInDays\": 90,\r\n    \"IngestionMode\": \"ApplicationInsights\"\
+        ,\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n    \"publicNetworkAccessForQuery\"\
+        : \"Enabled\",\r\n    \"Ver\": \"v2\"\r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1229'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Aug 2023 01:56:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "tags": {"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app":
+      "Resource"}, "kind": "ping", "properties": {"SyntheticMonitorId": "test-webtest",
+      "Name": "test-webtest", "Enabled": true, "Frequency": 900, "Timeout": 120, "Kind":
+      "standard", "RetryEnabled": true, "Locations": [{"Id": "us-fl-mia-edge"}], "Request":
+      {"RequestUrl": "https://www.bing.com", "HttpVerb": "POST", "RequestBody": "SGVsbG8gd29ybGQ="},
+      "ValidationRules": {"SSLCheck": true, "SSLCertRemainingLifetimeCheck": 100}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights web-test create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '614'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -l -g --enabled --frequency --web-test-kind --locations --defined-web-test-name
+        --http-verb --request-body --request-url --retry-enabled --synthetic-monitor-id
+        --timeout --ssl-lifetime-check --ssl-check --tags
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/webtests/test-webtest?api-version=2022-06-15
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/webtests/test-webtest\"\
+        ,\r\n  \"name\": \"test-webtest\",\r\n  \"type\": \"microsoft.insights/webtests\"\
+        ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
+        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"1000ebde-0000-0200-0000-64e567680000\\\
+        \"\",\r\n  \"properties\": {\r\n    \"SyntheticMonitorId\": \"test-webtest\"\
+        ,\r\n    \"Name\": \"test-webtest\",\r\n    \"Description\": null,\r\n   \
+        \ \"Enabled\": true,\r\n    \"Frequency\": 900,\r\n    \"Timeout\": 120,\r\
+        \n    \"Kind\": \"standard\",\r\n    \"RetryEnabled\": true,\r\n    \"Locations\"\
+        : [\r\n      {\r\n        \"Id\": \"us-fl-mia-edge\"\r\n      }\r\n    ],\r\
+        \n    \"Configuration\": null,\r\n    \"Request\": {\r\n      \"RequestUrl\"\
+        : \"https://www.bing.com\",\r\n      \"Headers\": null,\r\n      \"HttpVerb\"\
+        : \"POST\",\r\n      \"RequestBody\": \"SGVsbG8gd29ybGQ=\",\r\n      \"ParseDependentRequests\"\
+        : null,\r\n      \"FollowRedirects\": null\r\n    },\r\n    \"ValidationRules\"\
+        : {\r\n      \"ExpectedHttpStatusCode\": null,\r\n      \"IgnoreHttpStatusCode\"\
+        : null,\r\n      \"ContentValidation\": null,\r\n      \"SSLCheck\": true,\r\
+        \n      \"SSLCertRemainingLifetimeCheck\": 100\r\n    },\r\n    \"provisioningState\"\
+        : \"Succeeded\"\r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1355'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Aug 2023 01:56:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights web-test list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --component-name
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/components/test-app/webtests?api-version=2022-06-15
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/webtests/test-webtest\"\
+        ,\r\n      \"name\": \"test-webtest\",\r\n      \"type\": \"microsoft.insights/webtests\"\
+        ,\r\n      \"location\": \"westus\",\r\n      \"tags\": {\r\n        \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
+        : \"Resource\"\r\n      },\r\n      \"kind\": \"ping\",\r\n      \"etag\"\
+        : \"\\\"1000ebde-0000-0200-0000-64e567680000\\\"\",\r\n      \"properties\"\
+        : {\r\n        \"SyntheticMonitorId\": \"test-webtest\",\r\n        \"Name\"\
+        : \"test-webtest\",\r\n        \"Description\": null,\r\n        \"Enabled\"\
+        : true,\r\n        \"Frequency\": 900,\r\n        \"Timeout\": 120,\r\n  \
+        \      \"Kind\": \"standard\",\r\n        \"RetryEnabled\": true,\r\n    \
+        \    \"Locations\": [\r\n          {\r\n            \"Id\": \"us-fl-mia-edge\"\
+        \r\n          }\r\n        ],\r\n        \"Configuration\": null,\r\n    \
+        \    \"Request\": {\r\n          \"RequestUrl\": \"https://www.bing.com\"\
+        ,\r\n          \"Headers\": null,\r\n          \"HttpVerb\": \"POST\",\r\n\
+        \          \"RequestBody\": \"SGVsbG8gd29ybGQ=\",\r\n          \"ParseDependentRequests\"\
+        : null,\r\n          \"FollowRedirects\": null\r\n        },\r\n        \"\
+        ValidationRules\": {\r\n          \"ExpectedHttpStatusCode\": null,\r\n  \
+        \        \"IgnoreHttpStatusCode\": null,\r\n          \"ContentValidation\"\
+        : null,\r\n          \"SSLCheck\": true,\r\n          \"SSLCertRemainingLifetimeCheck\"\
+        : 100\r\n        },\r\n        \"provisioningState\": \"Succeeded\"\r\n  \
+        \    }\r\n    }\r\n  ],\r\n  \"nextLink\": null\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Aug 2023 01:56:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights web-test update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -l -g --locations
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/webtests/test-webtest?api-version=2018-05-01-preview
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/webtests/test-webtest\"\
+        ,\r\n  \"name\": \"test-webtest\",\r\n  \"type\": \"microsoft.insights/webtests\"\
+        ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
+        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"1000ebde-0000-0200-0000-64e567680000\\\
+        \"\",\r\n  \"properties\": {\r\n    \"SyntheticMonitorId\": \"test-webtest\"\
+        ,\r\n    \"Name\": \"test-webtest\",\r\n    \"Description\": null,\r\n   \
+        \ \"Enabled\": true,\r\n    \"Frequency\": 900,\r\n    \"Timeout\": 120,\r\
+        \n    \"Kind\": \"standard\",\r\n    \"RetryEnabled\": true,\r\n    \"Locations\"\
+        : [\r\n      {\r\n        \"Id\": \"us-fl-mia-edge\"\r\n      }\r\n    ],\r\
+        \n    \"Configuration\": null,\r\n    \"Request\": {\r\n      \"RequestUrl\"\
+        : \"https://www.bing.com\",\r\n      \"Headers\": null,\r\n      \"HttpVerb\"\
+        : \"POST\",\r\n      \"RequestBody\": \"SGVsbG8gd29ybGQ=\",\r\n      \"ParseDependentRequests\"\
+        : null,\r\n      \"FollowRedirects\": null\r\n    },\r\n    \"ValidationRules\"\
+        : {\r\n      \"ExpectedHttpStatusCode\": null,\r\n      \"IgnoreHttpStatusCode\"\
+        : null,\r\n      \"ContentValidation\": null,\r\n      \"SSLCheck\": true,\r\
+        \n      \"SSLCertRemainingLifetimeCheck\": 100\r\n    },\r\n    \"provisioningState\"\
+        : \"Succeeded\"\r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1355'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Aug 2023 01:57:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "tags": {"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app":
+      "Resource"}, "kind": "ping", "properties": {"SyntheticMonitorId": "test-webtest",
+      "Name": "test-webtest", "Enabled": true, "Frequency": 900, "Timeout": 120, "Kind":
+      "standard", "RetryEnabled": true, "Locations": [{"Id": "apac-hk-hkn-azr"}],
+      "Request": {"RequestUrl": "https://www.bing.com", "HttpVerb": "POST", "RequestBody":
+      "SGVsbG8gd29ybGQ="}, "ValidationRules": {"SSLCheck": true, "SSLCertRemainingLifetimeCheck":
+      100}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights web-test update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '615'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -l -g --locations
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/webtests/test-webtest?api-version=2018-05-01-preview
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/webtests/test-webtest\"\
+        ,\r\n  \"name\": \"test-webtest\",\r\n  \"type\": \"microsoft.insights/webtests\"\
+        ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
+        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"100075df-0000-0200-0000-64e567700000\\\
+        \"\",\r\n  \"properties\": {\r\n    \"SyntheticMonitorId\": \"test-webtest\"\
+        ,\r\n    \"Name\": \"test-webtest\",\r\n    \"Description\": null,\r\n   \
+        \ \"Enabled\": true,\r\n    \"Frequency\": 900,\r\n    \"Timeout\": 120,\r\
+        \n    \"Kind\": \"standard\",\r\n    \"RetryEnabled\": true,\r\n    \"Locations\"\
+        : [\r\n      {\r\n        \"Id\": \"apac-hk-hkn-azr\"\r\n      }\r\n    ],\r\
+        \n    \"Configuration\": null,\r\n    \"Request\": {\r\n      \"RequestUrl\"\
+        : \"https://www.bing.com\",\r\n      \"Headers\": null,\r\n      \"HttpVerb\"\
+        : \"POST\",\r\n      \"RequestBody\": \"SGVsbG8gd29ybGQ=\",\r\n      \"ParseDependentRequests\"\
+        : null,\r\n      \"FollowRedirects\": null\r\n    },\r\n    \"ValidationRules\"\
+        : {\r\n      \"ExpectedHttpStatusCode\": null,\r\n      \"IgnoreHttpStatusCode\"\
+        : null,\r\n      \"ContentValidation\": null,\r\n      \"SSLCheck\": true,\r\
+        \n      \"SSLCertRemainingLifetimeCheck\": 100\r\n    },\r\n    \"provisioningState\"\
+        : \"Succeeded\"\r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1356'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Aug 2023 01:57:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights web-test show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/webtests/test-webtest?api-version=2022-06-15
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/webtests/test-webtest\"\
+        ,\r\n  \"name\": \"test-webtest\",\r\n  \"type\": \"microsoft.insights/webtests\"\
+        ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
+        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"100075df-0000-0200-0000-64e567700000\\\
+        \"\",\r\n  \"properties\": {\r\n    \"SyntheticMonitorId\": \"test-webtest\"\
+        ,\r\n    \"Name\": \"test-webtest\",\r\n    \"Description\": null,\r\n   \
+        \ \"Enabled\": true,\r\n    \"Frequency\": 900,\r\n    \"Timeout\": 120,\r\
+        \n    \"Kind\": \"standard\",\r\n    \"RetryEnabled\": true,\r\n    \"Locations\"\
+        : [\r\n      {\r\n        \"Id\": \"apac-hk-hkn-azr\"\r\n      }\r\n    ],\r\
+        \n    \"Configuration\": null,\r\n    \"Request\": {\r\n      \"RequestUrl\"\
+        : \"https://www.bing.com\",\r\n      \"Headers\": null,\r\n      \"HttpVerb\"\
+        : \"POST\",\r\n      \"RequestBody\": \"SGVsbG8gd29ybGQ=\",\r\n      \"ParseDependentRequests\"\
+        : null,\r\n      \"FollowRedirects\": null\r\n    },\r\n    \"ValidationRules\"\
+        : {\r\n      \"ExpectedHttpStatusCode\": null,\r\n      \"IgnoreHttpStatusCode\"\
+        : null,\r\n      \"ContentValidation\": null,\r\n      \"SSLCheck\": true,\r\
+        \n      \"SSLCertRemainingLifetimeCheck\": 100\r\n    },\r\n    \"provisioningState\"\
+        : \"Succeeded\"\r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1356'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Aug 2023 01:57:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights web-test delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/webtests/test-webtest?api-version=2022-06-15
+  response:
+    body:
+      string: ''
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 23 Aug 2023 01:57:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "tags": {"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app":
+      "Resource"}, "kind": "ping", "properties": {"SyntheticMonitorId": "test-webtest",
+      "Name": "test-webtest", "Enabled": true, "Frequency": 900, "Timeout": 120, "Kind":
+      "standard", "RetryEnabled": true, "Locations": [{"Id": "us-fl-mia-edge"}], "Request":
+      {"RequestUrl": "https://www.bing.com", "Headers": [{"key": "x-ms-test", "value":
+      "123"}], "HttpVerb": "POST", "RequestBody": "SGVsbG8gd29ybGQ="}, "ValidationRules":
+      {"SSLCheck": true, "SSLCertRemainingLifetimeCheck": 100}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights web-test create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '665'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -l -g --enabled --frequency --web-test-kind --locations --defined-web-test-name
+        --http-verb --request-body --request-url --retry-enabled --synthetic-monitor-id
+        --timeout --ssl-lifetime-check --ssl-check --headers --tags
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/webtests/test-webtest?api-version=2022-06-15
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/webtests/test-webtest\"\
+        ,\r\n  \"name\": \"test-webtest\",\r\n  \"type\": \"microsoft.insights/webtests\"\
+        ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
+        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"100032e0-0000-0200-0000-64e5677d0000\\\
+        \"\",\r\n  \"properties\": {\r\n    \"SyntheticMonitorId\": \"test-webtest\"\
+        ,\r\n    \"Name\": \"test-webtest\",\r\n    \"Description\": null,\r\n   \
+        \ \"Enabled\": true,\r\n    \"Frequency\": 900,\r\n    \"Timeout\": 120,\r\
+        \n    \"Kind\": \"standard\",\r\n    \"RetryEnabled\": true,\r\n    \"Locations\"\
+        : [\r\n      {\r\n        \"Id\": \"us-fl-mia-edge\"\r\n      }\r\n    ],\r\
+        \n    \"Configuration\": null,\r\n    \"Request\": {\r\n      \"RequestUrl\"\
+        : \"https://www.bing.com\",\r\n      \"Headers\": [\r\n        {\r\n     \
+        \     \"Key\": \"x-ms-test\",\r\n          \"Value\": \"123\"\r\n        }\r\
+        \n      ],\r\n      \"HttpVerb\": \"POST\",\r\n      \"RequestBody\": \"SGVsbG8gd29ybGQ=\"\
+        ,\r\n      \"ParseDependentRequests\": null,\r\n      \"FollowRedirects\"\
+        : null\r\n    },\r\n    \"ValidationRules\": {\r\n      \"ExpectedHttpStatusCode\"\
+        : null,\r\n      \"IgnoreHttpStatusCode\": null,\r\n      \"ContentValidation\"\
+        : null,\r\n      \"SSLCheck\": true,\r\n      \"SSLCertRemainingLifetimeCheck\"\
+        : 100\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1440'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Aug 2023 01:57:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights web-test list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --component-name
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/components/test-app/webtests?api-version=2022-06-15
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/webtests/test-webtest\"\
+        ,\r\n      \"name\": \"test-webtest\",\r\n      \"type\": \"microsoft.insights/webtests\"\
+        ,\r\n      \"location\": \"westus\",\r\n      \"tags\": {\r\n        \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
+        : \"Resource\"\r\n      },\r\n      \"kind\": \"ping\",\r\n      \"etag\"\
+        : \"\\\"100032e0-0000-0200-0000-64e5677d0000\\\"\",\r\n      \"properties\"\
+        : {\r\n        \"SyntheticMonitorId\": \"test-webtest\",\r\n        \"Name\"\
+        : \"test-webtest\",\r\n        \"Description\": null,\r\n        \"Enabled\"\
+        : true,\r\n        \"Frequency\": 900,\r\n        \"Timeout\": 120,\r\n  \
+        \      \"Kind\": \"standard\",\r\n        \"RetryEnabled\": true,\r\n    \
+        \    \"Locations\": [\r\n          {\r\n            \"Id\": \"us-fl-mia-edge\"\
+        \r\n          }\r\n        ],\r\n        \"Configuration\": null,\r\n    \
+        \    \"Request\": {\r\n          \"RequestUrl\": \"https://www.bing.com\"\
+        ,\r\n          \"Headers\": [\r\n            {\r\n              \"Key\": \"\
+        x-ms-test\",\r\n              \"Value\": \"123\"\r\n            }\r\n    \
+        \      ],\r\n          \"HttpVerb\": \"POST\",\r\n          \"RequestBody\"\
+        : \"SGVsbG8gd29ybGQ=\",\r\n          \"ParseDependentRequests\": null,\r\n\
+        \          \"FollowRedirects\": null\r\n        },\r\n        \"ValidationRules\"\
+        : {\r\n          \"ExpectedHttpStatusCode\": null,\r\n          \"IgnoreHttpStatusCode\"\
+        : null,\r\n          \"ContentValidation\": null,\r\n          \"SSLCheck\"\
+        : true,\r\n          \"SSLCertRemainingLifetimeCheck\": 100\r\n        },\r\
+        \n        \"provisioningState\": \"Succeeded\"\r\n      }\r\n    }\r\n  ],\r\
+        \n  \"nextLink\": null\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1678'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Aug 2023 01:57:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,56 @@
+{
+    "type":"object",
+    "properties":{
+        "title":{
+            "description":"The name of the deployment.",
+            "type":"string",
+            "maxLength":50
+        },
+        "description":{
+            "description":"The description of the deployment.",
+            "type":"string",
+            "maxLength":1000
+        },
+        "environmentId":{
+            "description":"The service-scoped resource ID of the deployment environment.",
+            "type":"string"
+        },
+        "definitionId":{
+            "description":"The service-scoped resource ID of the API definition.",
+            "type":"string"
+        },
+        "server":{
+            "description":"The server information of the API deployment.",
+            "type":"object",
+            "properties":{
+                "runtimeUri":{
+                    "description":"Base runtime URIs for this deployment.",
+                    "type":"array",
+                    "items":{
+                        "type":"string"
+                    },
+                    "maxItems":200
+                }
+            },
+            "required":[
+                "runtimeUri"
+            ]
+        },
+        "customProperties":{
+            "type":"object",
+            "properties":{},
+            "unevaluatedProperties":false,
+            "required":[]
+        },
+        "recommended":{
+            "description":"Indicates if this is currently recommended deployment.",
+            "type":"boolean"
+        }
+    },
+    "required":[
+        "title",
+        "environmentId",
+        "definitionId",
+        "server"
+    ]
+}

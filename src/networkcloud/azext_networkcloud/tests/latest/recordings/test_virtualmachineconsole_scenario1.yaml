@@ -1,0 +1,699 @@
+interactions:
+- request:
+    body: '{"extendedLocation": {"name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sim-clustermgr-mrg-7xmmftnqfkqy2/providers/microsoft.extendedlocation/customlocations/sim-cluster-mgr-7xmmftnqfkqy2-cl",
+      "type": "CustomLocation"}, "location": "eastus", "properties": {"enabled": "True",
+      "expiration": "2023-06-01T01:27:03.008Z", "sshPublicKey": {"keyData": "ssh-rsa
+      AAAAB3NzaC1yc2EAAAADAQABAAABgQDL6v2jjsr9GrDkQn5selwh83Kn9LDoSn2XuAokqE63qLlArEo9U56an2WvR3a6ztsU45pIkVQkwaR5NrwT9uStNw+/C+g0tOZLT9OKK6YTovOnhfemuvorJ2i9djW+gfRnUfOa9aClBd/uBvG6jHB9c2sW9ugD5nS8A6/ymfK8X25DsYK6RbTxjbT5xGvKVND2NjSBIk79ll7f4/pulAvJTIngcLFadkGRem7KTkmyTyIMZBu4nYZN/yRws6AjyXWqwOgx2AH3Ts40McFYMt0uvPKcYqZeCGXfxcFaTChQqlzjMe6YyGPOEmii7UFUwLZ4W6DFipmKfql3yBylKDmN3XiY4eSxUPP7NvTgv6EU0CiE5Z1TEsHTzu88F7bLuZVWubXFm8CHdOeCDGxPIDu64z3wBH2N0qxbtla9hXaGjIV62Q4Vax61YwZJp8hc4qIdCuIJSlzr8WTj2sXqQV9mR3UR85mXstW0F1+6TQbJHs7MdCbTatm3Wr3FQirP+yk=
+      azureuser@vm"}}, "tags": {"tag1": "tag1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '968'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --extended-location --location --enabled --expiration --tags --ssh-public-key
+        --resource-group --virtual-machine-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default","name":"default","type":"microsoft.networkcloud/virtualmachines/consoles","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sim-clustermgr-mrg-7xmmftnqfkqy2/providers/microsoft.extendedlocation/customlocations/sim-cluster-mgr-7xmmftnqfkqy2-cl","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-31T20:55:36.3839496Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-31T21:00:51.6427913Z"},"properties":{"provisioningState":"Accepted","privateLinkServiceId":"console-pls","virtualMachineAccessId":"159e8289-901c-5186-a23b-094359dfb52e","detailedStatusMessage":"the
+        cluster has completed update successfully","enabled":"True","expiration":"2023-06-01T01:27:03.008Z","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDL6v2jjsr9GrDkQn5selwh83Kn9LDoSn2XuAokqE63qLlArEo9U56an2WvR3a6ztsU45pIkVQkwaR5NrwT9uStNw+/C+g0tOZLT9OKK6YTovOnhfemuvorJ2i9djW+gfRnUfOa9aClBd/uBvG6jHB9c2sW9ugD5nS8A6/ymfK8X25DsYK6RbTxjbT5xGvKVND2NjSBIk79ll7f4/pulAvJTIngcLFadkGRem7KTkmyTyIMZBu4nYZN/yRws6AjyXWqwOgx2AH3Ts40McFYMt0uvPKcYqZeCGXfxcFaTChQqlzjMe6YyGPOEmii7UFUwLZ4W6DFipmKfql3yBylKDmN3XiY4eSxUPP7NvTgv6EU0CiE5Z1TEsHTzu88F7bLuZVWubXFm8CHdOeCDGxPIDu64z3wBH2N0qxbtla9hXaGjIV62Q4Vax61YwZJp8hc4qIdCuIJSlzr8WTj2sXqQV9mR3UR85mXstW0F1+6TQbJHs7MdCbTatm3Wr3FQirP+yk=
+        azureuser@vm"}}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/409d071c-9745-471d-8ccc-99986bd81673*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1654'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:00:52 GMT
+      etag:
+      - '"51033c9c-0000-0100-0000-6477b5840000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 8680ecd7-a510-4802-bf8c-06aeed15a11f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --extended-location --location --enabled --expiration --tags --ssh-public-key
+        --resource-group --virtual-machine-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/409d071c-9745-471d-8ccc-99986bd81673*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/409d071c-9745-471d-8ccc-99986bd81673*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","name":"409d071c-9745-471d-8ccc-99986bd81673*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default","status":"Accepted","startTime":"2023-05-31T21:00:51.7278787Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '601'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:00:52 GMT
+      etag:
+      - '"de0387dc-0000-0100-0000-6477b5830000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --extended-location --location --enabled --expiration --tags --ssh-public-key
+        --resource-group --virtual-machine-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/409d071c-9745-471d-8ccc-99986bd81673*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/409d071c-9745-471d-8ccc-99986bd81673*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","name":"409d071c-9745-471d-8ccc-99986bd81673*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default","status":"Succeeded","startTime":"2023-05-31T21:00:51.7278787Z","endTime":"2023-05-31T21:01:07.9582142Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '672'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:01:22 GMT
+      etag:
+      - '"de0385e1-0000-0100-0000-6477b5930000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --extended-location --location --enabled --expiration --tags --ssh-public-key
+        --resource-group --virtual-machine-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default","name":"default","type":"microsoft.networkcloud/virtualmachines/consoles","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sim-clustermgr-mrg-7xmmftnqfkqy2/providers/microsoft.extendedlocation/customlocations/sim-cluster-mgr-7xmmftnqfkqy2-cl","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-31T20:55:36.3839496Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-31T21:01:08.4002016Z"},"properties":{"provisioningState":"Succeeded","privateLinkServiceId":"console-pls","virtualMachineAccessId":"159e8289-901c-5186-a23b-094359dfb52e","detailedStatusMessage":"the
+        cluster has completed update successfully","enabled":"True","expiration":"2023-06-01T01:27:03.008Z","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDL6v2jjsr9GrDkQn5selwh83Kn9LDoSn2XuAokqE63qLlArEo9U56an2WvR3a6ztsU45pIkVQkwaR5NrwT9uStNw+/C+g0tOZLT9OKK6YTovOnhfemuvorJ2i9djW+gfRnUfOa9aClBd/uBvG6jHB9c2sW9ugD5nS8A6/ymfK8X25DsYK6RbTxjbT5xGvKVND2NjSBIk79ll7f4/pulAvJTIngcLFadkGRem7KTkmyTyIMZBu4nYZN/yRws6AjyXWqwOgx2AH3Ts40McFYMt0uvPKcYqZeCGXfxcFaTChQqlzjMe6YyGPOEmii7UFUwLZ4W6DFipmKfql3yBylKDmN3XiY4eSxUPP7NvTgv6EU0CiE5Z1TEsHTzu88F7bLuZVWubXFm8CHdOeCDGxPIDu64z3wBH2N0qxbtla9hXaGjIV62Q4Vax61YwZJp8hc4qIdCuIJSlzr8WTj2sXqQV9mR3UR85mXstW0F1+6TQbJHs7MdCbTatm3Wr3FQirP+yk=
+        azureuser@vm"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1676'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:01:22 GMT
+      etag:
+      - '"51033ca7-0000-0100-0000-6477b5940000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"enabled": "True", "expiration": "2023-07-01T01:27:03.008Z",
+      "sshPublicKey": {"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDL6v2jjsr9GrDkQn5selwh83Kn9LDoSn2XuAokqE63qLlArEo9U56an2WvR3a6ztsU45pIkVQkwaR5NrwT9uStNw+/C+g0tOZLT9OKK6YTovOnhfemuvorJ2i9djW+gfRnUfOa9aClBd/uBvG6jHB9c2sW9ugD5nS8A6/ymfK8X25DsYK6RbTxjbT5xGvKVND2NjSBIk79ll7f4/pulAvJTIngcLFadkGRem7KTkmyTyIMZBu4nYZN/yRws6AjyXWqwOgx2AH3Ts40McFYMt0uvPKcYqZeCGXfxcFaTChQqlzjMe6YyGPOEmii7UFUwLZ4W6DFipmKfql3yBylKDmN3XiY4eSxUPP7NvTgv6EU0CiE5Z1TEsHTzu88F7bLuZVWubXFm8CHdOeCDGxPIDu64z3wBH2N0qxbtla9hXaGjIV62Q4Vax61YwZJp8hc4qIdCuIJSlzr8WTj2sXqQV9mR3UR85mXstW0F1+6TQbJHs7MdCbTatm3Wr3FQirP+yk=
+      azureuser@vm"}}, "tags": {"tag1": "tag1", "tag2": "tag2update"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '723'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --enabled --expiration --ssh-public-key --tags --resource-group --virtual-machine-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default?api-version=2023-10-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/25a5d521-8a97-4735-80d9-6cbe2881ecce*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:01:22 GMT
+      etag:
+      - '"510341ad-0000-0100-0000-6477b5a30000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/25a5d521-8a97-4735-80d9-6cbe2881ecce*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507?api-version=2023-10-01-preview
+      mise-correlation-id:
+      - 14ad976d-5979-40b0-b147-b3f8466aaba7
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --enabled --expiration --ssh-public-key --tags --resource-group --virtual-machine-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/25a5d521-8a97-4735-80d9-6cbe2881ecce*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/25a5d521-8a97-4735-80d9-6cbe2881ecce*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","name":"25a5d521-8a97-4735-80d9-6cbe2881ecce*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default","status":"Accepted","startTime":"2023-05-31T21:01:23.195991Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '600'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:01:22 GMT
+      etag:
+      - '"de0368e6-0000-0100-0000-6477b5a30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --enabled --expiration --ssh-public-key --tags --resource-group --virtual-machine-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/25a5d521-8a97-4735-80d9-6cbe2881ecce*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/25a5d521-8a97-4735-80d9-6cbe2881ecce*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","name":"25a5d521-8a97-4735-80d9-6cbe2881ecce*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default","status":"Succeeded","startTime":"2023-05-31T21:01:23.195991Z","endTime":"2023-05-31T21:01:41.2084255Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '671'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:01:53 GMT
+      etag:
+      - '"de03f6eb-0000-0100-0000-6477b5b50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --enabled --expiration --ssh-public-key --tags --resource-group --virtual-machine-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default","name":"default","type":"microsoft.networkcloud/virtualmachines/consoles","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sim-clustermgr-mrg-7xmmftnqfkqy2/providers/microsoft.extendedlocation/customlocations/sim-cluster-mgr-7xmmftnqfkqy2-cl","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-31T20:55:36.3839496Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-31T21:01:41.6237293Z"},"properties":{"privateLinkServiceId":"console-pls","virtualMachineAccessId":"159e8289-901c-5186-a23b-094359dfb52e","detailedStatusMessage":"the
+        cluster has completed update successfully","enabled":"True","expiration":"2023-07-01T01:27:03.008Z","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDL6v2jjsr9GrDkQn5selwh83Kn9LDoSn2XuAokqE63qLlArEo9U56an2WvR3a6ztsU45pIkVQkwaR5NrwT9uStNw+/C+g0tOZLT9OKK6YTovOnhfemuvorJ2i9djW+gfRnUfOa9aClBd/uBvG6jHB9c2sW9ugD5nS8A6/ymfK8X25DsYK6RbTxjbT5xGvKVND2NjSBIk79ll7f4/pulAvJTIngcLFadkGRem7KTkmyTyIMZBu4nYZN/yRws6AjyXWqwOgx2AH3Ts40McFYMt0uvPKcYqZeCGXfxcFaTChQqlzjMe6YyGPOEmii7UFUwLZ4W6DFipmKfql3yBylKDmN3XiY4eSxUPP7NvTgv6EU0CiE5Z1TEsHTzu88F7bLuZVWubXFm8CHdOeCDGxPIDu64z3wBH2N0qxbtla9hXaGjIV62Q4Vax61YwZJp8hc4qIdCuIJSlzr8WTj2sXqQV9mR3UR85mXstW0F1+6TQbJHs7MdCbTatm3Wr3FQirP+yk=
+        azureuser@vm"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1696'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:01:53 GMT
+      etag:
+      - '"510380b5-0000-0100-0000-6477b5b50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --virtual-machine-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default","name":"default","type":"microsoft.networkcloud/virtualmachines/consoles","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sim-clustermgr-mrg-7xmmftnqfkqy2/providers/microsoft.extendedlocation/customlocations/sim-cluster-mgr-7xmmftnqfkqy2-cl","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-31T20:55:36.3839496Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-31T21:01:41.6237293Z"},"properties":{"privateLinkServiceId":"console-pls","virtualMachineAccessId":"159e8289-901c-5186-a23b-094359dfb52e","detailedStatusMessage":"the
+        cluster has completed update successfully","enabled":"True","expiration":"2023-07-01T01:27:03.008Z","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDL6v2jjsr9GrDkQn5selwh83Kn9LDoSn2XuAokqE63qLlArEo9U56an2WvR3a6ztsU45pIkVQkwaR5NrwT9uStNw+/C+g0tOZLT9OKK6YTovOnhfemuvorJ2i9djW+gfRnUfOa9aClBd/uBvG6jHB9c2sW9ugD5nS8A6/ymfK8X25DsYK6RbTxjbT5xGvKVND2NjSBIk79ll7f4/pulAvJTIngcLFadkGRem7KTkmyTyIMZBu4nYZN/yRws6AjyXWqwOgx2AH3Ts40McFYMt0uvPKcYqZeCGXfxcFaTChQqlzjMe6YyGPOEmii7UFUwLZ4W6DFipmKfql3yBylKDmN3XiY4eSxUPP7NvTgv6EU0CiE5Z1TEsHTzu88F7bLuZVWubXFm8CHdOeCDGxPIDu64z3wBH2N0qxbtla9hXaGjIV62Q4Vax61YwZJp8hc4qIdCuIJSlzr8WTj2sXqQV9mR3UR85mXstW0F1+6TQbJHs7MdCbTatm3Wr3FQirP+yk=
+        azureuser@vm"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1696'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:01:56 GMT
+      etag:
+      - '"510380b5-0000-0100-0000-6477b5b50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --virtual-machine-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default","name":"default","type":"microsoft.networkcloud/virtualmachines/consoles","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sim-clustermgr-mrg-7xmmftnqfkqy2/providers/microsoft.extendedlocation/customlocations/sim-cluster-mgr-7xmmftnqfkqy2-cl","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-31T20:55:36.3839496Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-31T21:01:41.6237293Z"},"properties":{"privateLinkServiceId":"console-pls","virtualMachineAccessId":"159e8289-901c-5186-a23b-094359dfb52e","detailedStatusMessage":"the
+        cluster has completed update successfully","enabled":"True","expiration":"2023-07-01T01:27:03.008Z","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDL6v2jjsr9GrDkQn5selwh83Kn9LDoSn2XuAokqE63qLlArEo9U56an2WvR3a6ztsU45pIkVQkwaR5NrwT9uStNw+/C+g0tOZLT9OKK6YTovOnhfemuvorJ2i9djW+gfRnUfOa9aClBd/uBvG6jHB9c2sW9ugD5nS8A6/ymfK8X25DsYK6RbTxjbT5xGvKVND2NjSBIk79ll7f4/pulAvJTIngcLFadkGRem7KTkmyTyIMZBu4nYZN/yRws6AjyXWqwOgx2AH3Ts40McFYMt0uvPKcYqZeCGXfxcFaTChQqlzjMe6YyGPOEmii7UFUwLZ4W6DFipmKfql3yBylKDmN3XiY4eSxUPP7NvTgv6EU0CiE5Z1TEsHTzu88F7bLuZVWubXFm8CHdOeCDGxPIDu64z3wBH2N0qxbtla9hXaGjIV62Q4Vax61YwZJp8hc4qIdCuIJSlzr8WTj2sXqQV9mR3UR85mXstW0F1+6TQbJHs7MdCbTatm3Wr3FQirP+yk=
+        azureuser@vm"},"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1708'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:01:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --virtual-machine-name --yes
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default?api-version=2023-10-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/e0cdf749-ccaf-4599-9ed6-bb98a8d3f11f*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:01:56 GMT
+      etag:
+      - '"51033abe-0000-0100-0000-6477b5c50000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/e0cdf749-ccaf-4599-9ed6-bb98a8d3f11f*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507?api-version=2023-10-01-preview
+      mise-correlation-id:
+      - d2edda3f-543e-4b57-bf4c-be20a8b19bf1
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --virtual-machine-name --yes
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/e0cdf749-ccaf-4599-9ed6-bb98a8d3f11f*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/e0cdf749-ccaf-4599-9ed6-bb98a8d3f11f*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","name":"e0cdf749-ccaf-4599-9ed6-bb98a8d3f11f*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default","status":"Deleting","startTime":"2023-05-31T21:01:56.8409065Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '601'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:01:56 GMT
+      etag:
+      - '"de0338f1-0000-0100-0000-6477b5c40000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --virtual-machine-name --yes
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/e0cdf749-ccaf-4599-9ed6-bb98a8d3f11f*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/e0cdf749-ccaf-4599-9ed6-bb98a8d3f11f*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","name":"e0cdf749-ccaf-4599-9ed6-bb98a8d3f11f*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default","status":"Succeeded","startTime":"2023-05-31T21:01:56.8409065Z","endTime":"2023-05-31T21:02:08.7029088Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '661'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:02:26 GMT
+      etag:
+      - '"de0334f5-0000-0100-0000-6477b5d00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud virtualmachine console delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --virtual-machine-name --yes
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/e0cdf749-ccaf-4599-9ed6-bb98a8d3f11f*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/e0cdf749-ccaf-4599-9ed6-bb98a8d3f11f*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","name":"e0cdf749-ccaf-4599-9ed6-bb98a8d3f11f*57232B302556AD301D8DB1A22B8A0128EEC1D30FD6ADF6192119BF732EB34507","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/virtualMachines/testvmconsole/consoles/default","status":"Succeeded","startTime":"2023-05-31T21:01:56.8409065Z","endTime":"2023-05-31T21:02:08.7029088Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '661'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 31 May 2023 21:02:26 GMT
+      etag:
+      - '"de0334f5-0000-0100-0000-6477b5d00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

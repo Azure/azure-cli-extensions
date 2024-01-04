@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation-order show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-id
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87","name":"73e63333-9b94-442c-8a5d-9403ba0e8b87","type":"microsoft.capacity/reservationOrders","etag":9,"properties":{"originalQuantity":3,"requestDateTime":"2023-03-04T04:17:25.7707892Z","billingPlan":"Monthly","reservations":[{"id":"/providers/Microsoft.Capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328"}],"term":"P1Y","displayName":"VM_RI_03-03-2023_20-16","createdDateTime":"2023-03-04T04:23:13.2717004Z","benefitStartTime":"2023-03-04T04:23:12.3497675Z","provisioningState":"Succeeded","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/61e667a1-0558-45a2-b21a-57fa7893951d","expiryDateTime":"2024-03-04T04:23:12.3497675Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '798'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 20:49:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2251.115
+    status:
+      code: 200
+      message: OK
+version: 1

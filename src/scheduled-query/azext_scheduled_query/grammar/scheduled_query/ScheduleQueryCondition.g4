@@ -18,7 +18,7 @@ metric              : (WORD | WHITESPACE | '.' | '/' | '_' | '\\' | ':' | '%' | 
 
 query_with_quote    : QUOTE query QUOTE ;
 
-query               : (WORD | WHITESPACE | OPERATOR | AND | OR | where | '&' |'.' | '/' | '('| ')' | '_' | '\\' | ':' | '%' | '-' | ',' | '|' | '==' | '\\"' | '\\\'')+ ;
+query               : (WORD | WHITESPACE | NUMBER | OPERATOR | AND | OR | where | '&' |'.' | '/' | '('| ')' | '_' | '\\' | ':' | '%' | '-' | ',' | '|' | '==' | '\\"' | '\\\'')+ ;
 
 operator            : OPERATOR WHITESPACE ;
 

@@ -1,0 +1,992 @@
+interactions:
+- request:
+    body: '{"extendedLocation": {"name": "subscriptions/fca2e8ee-1179-48b8-9532-428ed0873a2e/resourcegroups/k5-0907401cb287-hostedresources-27fbcfcb/providers/microsoft.extendedlocation/customlocations/k5-0907401cb287-cstm-loc",
+      "type": "CustomLocation"}, "location": "eastus", "properties": {"administratorConfiguration":
+      {"adminUsername": "azureuser", "sshPublicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDceRlaHA5Uz+FHJ+n4B7qUNwchjAHRrx5faoZ1JlR0KfSrtoBSBmTOoOauM8SiZgoPgfd7ti9GSniTpbfRgJ2xlB11Ba/E/S8gG6nKMDpCkkvHExtQK01TH6udOc+tjByl1CDBQZWasJ8oLIx+0RSQM8WIlK4sHlYR46nzpjYKAmnnEt0ZaD6aJ7dQ27PSGUwSNoFMOSAZgUB40zmnqYDIyk4lBHr5RiWhsAY68xvjCCr6PuUzKPAbWvYD2CM06FyqW/YIXEGDINza+UFH2oVRz1vEXaEMZlFJ2wDRyr/pZskKdOeMjZoVlAZSQqB+1bumD2XlHskH0rulsy8DgzOAZ1v1EWkynxoeueL/UGI0VkLbmdCvqFBlcfrcqjblHc2Lrjg3ZKsgMSxCIU8ldXHC/MMbUkFba7poEDR03JZJTK/kj3deSTtx2MZtP2FF9csgr56UoCTesrMfBAG96CiNn5QOCuDz0I89qUhCf1xIC2r/ZC5YmiIucrXnu9roxUM=
+      azureuser@VM"}]}, "agentOptions": {"hugepagesCount": 12, "hugepagesSize": "2M"},
+      "attachedNetworkConfiguration": {"l3Networks": [{"ipamEnabled": "False", "networkId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/l3Networks/l3network-509",
+      "pluginType": "SRIOV"}]}, "availabilityZones": ["1"], "count": 1, "labels":
+      [{"key": "fakelabel", "value": "true"}], "mode": "System", "taints": [{"key":
+      "kubernetes.taint", "value": "true:NoSchedule"}], "upgradeSettings": {"maxSurge":
+      "1"}, "vmSkuName": "NC_G2_8_v1"}, "tags": {"tag1": "tag1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1558'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --location --extended-location
+        --administrator-configuration --count --mode --vm-sku-name --agent-options
+        --labels --taints --attached-network-configuration --availability-zones --upgrade-settings
+        --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","name":"systemPool13","type":"microsoft.networkcloud/kubernetesclusters/agentpools","location":"eastus","extendedLocation":{"name":"subscriptions/fca2e8ee-1179-48b8-9532-428ed0873a2e/resourcegroups/k5-0907401cb287-hostedresources-27fbcfcb/providers/microsoft.extendedlocation/customlocations/k5-0907401cb287-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-08T21:13:25.077672Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-08T21:13:25.077672Z"},"properties":{"provisioningState":"Accepted","administratorConfiguration":{"adminUsername":"azureuser","sshPublicKeys":[{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDceRlaHA5Uz+FHJ+n4B7qUNwchjAHRrx5faoZ1JlR0KfSrtoBSBmTOoOauM8SiZgoPgfd7ti9GSniTpbfRgJ2xlB11Ba/E/S8gG6nKMDpCkkvHExtQK01TH6udOc+tjByl1CDBQZWasJ8oLIx+0RSQM8WIlK4sHlYR46nzpjYKAmnnEt0ZaD6aJ7dQ27PSGUwSNoFMOSAZgUB40zmnqYDIyk4lBHr5RiWhsAY68xvjCCr6PuUzKPAbWvYD2CM06FyqW/YIXEGDINza+UFH2oVRz1vEXaEMZlFJ2wDRyr/pZskKdOeMjZoVlAZSQqB+1bumD2XlHskH0rulsy8DgzOAZ1v1EWkynxoeueL/UGI0VkLbmdCvqFBlcfrcqjblHc2Lrjg3ZKsgMSxCIU8ldXHC/MMbUkFba7poEDR03JZJTK/kj3deSTtx2MZtP2FF9csgr56UoCTesrMfBAG96CiNn5QOCuDz0I89qUhCf1xIC2r/ZC5YmiIucrXnu9roxUM=
+        azureuser@VM"}]},"agentOptions":{"hugepagesCount":12,"hugepagesSize":"2M"},"attachedNetworkConfiguration":{"l3Networks":[{"ipamEnabled":"False","networkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/l3Networks/l3network-509","pluginType":"SRIOV"}]},"availabilityZones":["1"],"count":1,"labels":[{"key":"fakelabel","value":"true"}],"mode":"System","taints":[{"key":"kubernetes.taint","value":"true:NoSchedule"}],"upgradeSettings":{"maxSurge":"1"},"vmSkuName":"NC_G2_8_v1"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '2078'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:13:25 GMT
+      etag:
+      - '"ae066a6e-0000-0100-0000-648244760000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 122413df-ffb9-499b-8228-5be3f2cdccd4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --location --extended-location
+        --administrator-configuration --count --mode --vm-sku-name --agent-options
+        --labels --taints --attached-network-configuration --availability-zones --upgrade-settings
+        --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"Accepted","startTime":"2023-06-08T21:13:25.9024378Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '633'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:13:25 GMT
+      etag:
+      - '"15024540-0000-0100-0000-648244750000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --location --extended-location
+        --administrator-configuration --count --mode --vm-sku-name --agent-options
+        --labels --taints --attached-network-configuration --availability-zones --upgrade-settings
+        --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"InProgress","startTime":"2023-06-08T21:13:25.9024378Z","error":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:13:56 GMT
+      etag:
+      - '"15026740-0000-0100-0000-648244790000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --location --extended-location
+        --administrator-configuration --count --mode --vm-sku-name --agent-options
+        --labels --taints --attached-network-configuration --availability-zones --upgrade-settings
+        --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"InProgress","startTime":"2023-06-08T21:13:25.9024378Z","error":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:14:26 GMT
+      etag:
+      - '"1502d440-0000-0100-0000-648244970000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --location --extended-location
+        --administrator-configuration --count --mode --vm-sku-name --agent-options
+        --labels --taints --attached-network-configuration --availability-zones --upgrade-settings
+        --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"InProgress","startTime":"2023-06-08T21:13:25.9024378Z","error":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:14:56 GMT
+      etag:
+      - '"15028d41-0000-0100-0000-648244b50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --location --extended-location
+        --administrator-configuration --count --mode --vm-sku-name --agent-options
+        --labels --taints --attached-network-configuration --availability-zones --upgrade-settings
+        --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"InProgress","startTime":"2023-06-08T21:13:25.9024378Z","error":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:15:26 GMT
+      etag:
+      - '"15028d41-0000-0100-0000-648244b50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --location --extended-location
+        --administrator-configuration --count --mode --vm-sku-name --agent-options
+        --labels --taints --attached-network-configuration --availability-zones --upgrade-settings
+        --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"InProgress","startTime":"2023-06-08T21:13:25.9024378Z","error":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:15:57 GMT
+      etag:
+      - '"1502e442-0000-0100-0000-648244f10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --location --extended-location
+        --administrator-configuration --count --mode --vm-sku-name --agent-options
+        --labels --taints --attached-network-configuration --availability-zones --upgrade-settings
+        --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"7a95437c-e585-4fa7-94c6-79c9845710b5*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"Succeeded","startTime":"2023-06-08T21:13:25.9024378Z","endTime":"2023-06-08T21:16:01.048472Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '703'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:16:27 GMT
+      etag:
+      - '"15026c43-0000-0100-0000-648245110000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --location --extended-location
+        --administrator-configuration --count --mode --vm-sku-name --agent-options
+        --labels --taints --attached-network-configuration --availability-zones --upgrade-settings
+        --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","name":"systemPool13","type":"microsoft.networkcloud/kubernetesclusters/agentpools","location":"eastus","extendedLocation":{"name":"subscriptions/fca2e8ee-1179-48b8-9532-428ed0873a2e/resourcegroups/k5-0907401cb287-hostedresources-27fbcfcb/providers/microsoft.extendedlocation/customlocations/k5-0907401cb287-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-08T21:13:25.077672Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-08T21:13:25.077672Z"},"properties":{"provisioningState":"Succeeded","administratorConfiguration":{"adminUsername":"azureuser","sshPublicKeys":[{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDceRlaHA5Uz+FHJ+n4B7qUNwchjAHRrx5faoZ1JlR0KfSrtoBSBmTOoOauM8SiZgoPgfd7ti9GSniTpbfRgJ2xlB11Ba/E/S8gG6nKMDpCkkvHExtQK01TH6udOc+tjByl1CDBQZWasJ8oLIx+0RSQM8WIlK4sHlYR46nzpjYKAmnnEt0ZaD6aJ7dQ27PSGUwSNoFMOSAZgUB40zmnqYDIyk4lBHr5RiWhsAY68xvjCCr6PuUzKPAbWvYD2CM06FyqW/YIXEGDINza+UFH2oVRz1vEXaEMZlFJ2wDRyr/pZskKdOeMjZoVlAZSQqB+1bumD2XlHskH0rulsy8DgzOAZ1v1EWkynxoeueL/UGI0VkLbmdCvqFBlcfrcqjblHc2Lrjg3ZKsgMSxCIU8ldXHC/MMbUkFba7poEDR03JZJTK/kj3deSTtx2MZtP2FF9csgr56UoCTesrMfBAG96CiNn5QOCuDz0I89qUhCf1xIC2r/ZC5YmiIucrXnu9roxUM=
+        azureuser@VM"}]},"agentOptions":{"hugepagesCount":12,"hugepagesSize":"2M"},"attachedNetworkConfiguration":{"l3Networks":[{"ipamEnabled":"False","networkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/l3Networks/l3network-509","pluginType":"SRIOV"}]},"availabilityZones":["1"],"count":1,"labels":[{"key":"fakelabel","value":"true"}],"mode":"System","taints":[{"key":"kubernetes.taint","value":"true:NoSchedule"}],"upgradeSettings":{"maxSurge":"1"},"vmSkuName":"NC_G2_8_v1"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2079'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:16:27 GMT
+      etag:
+      - '"ae06d796-0000-0100-0000-648245110000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"tag1": "tag1", "tag2": "tag2update"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '48'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13?api-version=2023-10-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c628a37c-ec4d-4e6f-9635-c679ed0741cc*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:16:28 GMT
+      etag:
+      - '"ae06389c-0000-0100-0000-6482452c0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c628a37c-ec4d-4e6f-9635-c679ed0741cc*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+      mise-correlation-id:
+      - ef49a686-733d-4b51-aab1-8708ff06b32f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1153'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c628a37c-ec4d-4e6f-9635-c679ed0741cc*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c628a37c-ec4d-4e6f-9635-c679ed0741cc*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"c628a37c-ec4d-4e6f-9635-c679ed0741cc*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"Accepted","startTime":"2023-06-08T21:16:28.3248019Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '633'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:16:28 GMT
+      etag:
+      - '"15021c44-0000-0100-0000-6482452c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c628a37c-ec4d-4e6f-9635-c679ed0741cc*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c628a37c-ec4d-4e6f-9635-c679ed0741cc*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"c628a37c-ec4d-4e6f-9635-c679ed0741cc*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"Succeeded","startTime":"2023-06-08T21:16:28.3248019Z","endTime":"2023-06-08T21:16:32.7697849Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '704'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:16:58 GMT
+      etag:
+      - '"15022b44-0000-0100-0000-648245300000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","name":"systemPool13","type":"microsoft.networkcloud/kubernetesclusters/agentpools","location":"eastus","extendedLocation":{"name":"subscriptions/fca2e8ee-1179-48b8-9532-428ed0873a2e/resourcegroups/k5-0907401cb287-hostedresources-27fbcfcb/providers/microsoft.extendedlocation/customlocations/k5-0907401cb287-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-08T21:13:25.077672Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-08T21:16:28.2649696Z"},"properties":{"administratorConfiguration":{"adminUsername":"azureuser","sshPublicKeys":[{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDceRlaHA5Uz+FHJ+n4B7qUNwchjAHRrx5faoZ1JlR0KfSrtoBSBmTOoOauM8SiZgoPgfd7ti9GSniTpbfRgJ2xlB11Ba/E/S8gG6nKMDpCkkvHExtQK01TH6udOc+tjByl1CDBQZWasJ8oLIx+0RSQM8WIlK4sHlYR46nzpjYKAmnnEt0ZaD6aJ7dQ27PSGUwSNoFMOSAZgUB40zmnqYDIyk4lBHr5RiWhsAY68xvjCCr6PuUzKPAbWvYD2CM06FyqW/YIXEGDINza+UFH2oVRz1vEXaEMZlFJ2wDRyr/pZskKdOeMjZoVlAZSQqB+1bumD2XlHskH0rulsy8DgzOAZ1v1EWkynxoeueL/UGI0VkLbmdCvqFBlcfrcqjblHc2Lrjg3ZKsgMSxCIU8ldXHC/MMbUkFba7poEDR03JZJTK/kj3deSTtx2MZtP2FF9csgr56UoCTesrMfBAG96CiNn5QOCuDz0I89qUhCf1xIC2r/ZC5YmiIucrXnu9roxUM=
+        azureuser@VM"}]},"agentOptions":{"hugepagesCount":12,"hugepagesSize":"2M"},"attachedNetworkConfiguration":{"l3Networks":[{"ipamEnabled":"False","networkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/l3Networks/l3network-509","pluginType":"SRIOV"}]},"availabilityZones":["1"],"count":1,"labels":[{"key":"fakelabel","value":"true"}],"mode":"System","taints":[{"key":"kubernetes.taint","value":"true:NoSchedule"}],"upgradeSettings":{"maxSurge":"1"},"vmSkuName":"NC_G2_8_v1","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2100'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:16:58 GMT
+      etag:
+      - '"ae06a39d-0000-0100-0000-648245300000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","name":"systemPool13","type":"microsoft.networkcloud/kubernetesclusters/agentpools","location":"eastus","extendedLocation":{"name":"subscriptions/fca2e8ee-1179-48b8-9532-428ed0873a2e/resourcegroups/k5-0907401cb287-hostedresources-27fbcfcb/providers/microsoft.extendedlocation/customlocations/k5-0907401cb287-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-08T21:13:25.077672Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-08T21:16:28.2649696Z"},"properties":{"administratorConfiguration":{"adminUsername":"azureuser","sshPublicKeys":[{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDceRlaHA5Uz+FHJ+n4B7qUNwchjAHRrx5faoZ1JlR0KfSrtoBSBmTOoOauM8SiZgoPgfd7ti9GSniTpbfRgJ2xlB11Ba/E/S8gG6nKMDpCkkvHExtQK01TH6udOc+tjByl1CDBQZWasJ8oLIx+0RSQM8WIlK4sHlYR46nzpjYKAmnnEt0ZaD6aJ7dQ27PSGUwSNoFMOSAZgUB40zmnqYDIyk4lBHr5RiWhsAY68xvjCCr6PuUzKPAbWvYD2CM06FyqW/YIXEGDINza+UFH2oVRz1vEXaEMZlFJ2wDRyr/pZskKdOeMjZoVlAZSQqB+1bumD2XlHskH0rulsy8DgzOAZ1v1EWkynxoeueL/UGI0VkLbmdCvqFBlcfrcqjblHc2Lrjg3ZKsgMSxCIU8ldXHC/MMbUkFba7poEDR03JZJTK/kj3deSTtx2MZtP2FF9csgr56UoCTesrMfBAG96CiNn5QOCuDz0I89qUhCf1xIC2r/ZC5YmiIucrXnu9roxUM=
+        azureuser@VM"}]},"agentOptions":{"hugepagesCount":12,"hugepagesSize":"2M"},"attachedNetworkConfiguration":{"l3Networks":[{"ipamEnabled":"False","networkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/l3Networks/l3network-509","pluginType":"SRIOV"}]},"availabilityZones":["1"],"count":1,"labels":[{"key":"fakelabel","value":"true"}],"mode":"System","taints":[{"key":"kubernetes.taint","value":"true:NoSchedule"}],"upgradeSettings":{"maxSurge":"1"},"vmSkuName":"NC_G2_8_v1","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2100'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:16:58 GMT
+      etag:
+      - '"ae06a39d-0000-0100-0000-648245300000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --kubernetes-cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/agentpool1","name":"agentpool1","type":"microsoft.networkcloud/kubernetesclusters/agentpools","location":"eastus","systemData":{"createdBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","createdByType":"Application","createdAt":"2023-06-08T16:35:24.6374216Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-08T21:16:28.2649696Z"},"properties":{"administratorConfiguration":{"adminUsername":"azureuser","sshPublicKeys":[{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDceRlaHA5Uz+FHJ+n4B7qUNwchjAHRrx5faoZ1JlR0KfSrtoBSBmTOoOauM8SiZgoPgfd7ti9GSniTpbfRgJ2xlB11Ba/E/S8gG6nKMDpCkkvHExtQK01TH6udOc+tjByl1CDBQZWasJ8oLIx+0RSQM8WIlK4sHlYR46nzpjYKAmnnEt0ZaD6aJ7dQ27PSGUwSNoFMOSAZgUB40zmnqYDIyk4lBHr5RiWhsAY68xvjCCr6PuUzKPAbWvYD2CM06FyqW/YIXEGDINza+UFH2oVRz1vEXaEMZlFJ2wDRyr/pZskKdOeMjZoVlAZSQqB+1bumD2XlHskH0rulsy8DgzOAZ1v1EWkynxoeueL/UGI0VkLbmdCvqFBlcfrcqjblHc2Lrjg3ZKsgMSxCIU8ldXHC/MMbUkFba7poEDR03JZJTK/kj3deSTtx2MZtP2FF9csgr56UoCTesrMfBAG96CiNn5QOCuDz0I89qUhCf1xIC2r/ZC5YmiIucrXnu9roxUM=
+        azureuser@VM"}]},"agentOptions":{"hugepagesCount":12,"hugepagesSize":"2M"},"attachedNetworkConfiguration":{"l3Networks":[{"ipamEnabled":"False","networkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/l3Networks/l3network-509","pluginType":"SRIOV"}]},"availabilityZones":["1"],"count":1,"labels":[{"key":"fakelabel","value":"true"}],"mode":"System","taints":[{"key":"kubernetes.taint","value":"true:NoSchedule"}],"upgradeSettings":{"maxSurge":"1"},"vmSkuName":"NC_G2_8_v1","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2978'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:16:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13?api-version=2023-10-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:16:59 GMT
+      etag:
+      - '"ae064aa4-0000-0100-0000-6482454b0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+      mise-correlation-id:
+      - ee79eac9-18dc-41c5-8d1e-10b23d56b65c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"Deleting","startTime":"2023-06-08T21:16:59.5677781Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '633'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:16:59 GMT
+      etag:
+      - '"15027944-0000-0100-0000-6482454b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"Deleting","startTime":"2023-06-08T21:16:59.5677781Z","error":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '644'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:17:29 GMT
+      etag:
+      - '"15028844-0000-0100-0000-648245500000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"Succeeded","startTime":"2023-06-08T21:16:59.5677781Z","endTime":"2023-06-08T21:17:34.7212784Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '693'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:17:59 GMT
+      etag:
+      - '"15022045-0000-0100-0000-6482456e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud kubernetescluster agentpool delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --kubernetes-cluster-name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","name":"99a26749-18e0-44ad-81eb-07a155c5fc1d*1BCAC6E373AE06BF83074191F66CF9B7E7ABE75923D3864853CFA0C90035940F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-k5-0907401cb287-xu9dj/providers/Microsoft.NetworkCloud/kubernetesClusters/res-test-standard-naks-ba585/agentPools/systemPool13","status":"Succeeded","startTime":"2023-06-08T21:16:59.5677781Z","endTime":"2023-06-08T21:17:34.7212784Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '693'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Jun 2023 21:17:59 GMT
+      etag:
+      - '"15022045-0000-0100-0000-6482456e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

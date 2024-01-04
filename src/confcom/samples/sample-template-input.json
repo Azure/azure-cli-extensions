@@ -1,0 +1,76 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "variables": {
+    "container1name": "aci-test",
+    "container1image": "rust:1.52.1"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "secret-volume-demo",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "confidentialComputeProperties": {
+          "ccePolicy": ""
+        },
+        "containers": [
+          {
+            "name": "[variables('container1name')]",
+            "properties": {
+              "image": "[variables('container1image')]",
+              "resources": {
+                "requests": {
+                  "cpu": 1,
+                  "memoryInGb": 1.5
+                }
+              },
+              "ports": [
+                {
+                  "port": 80
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefile",
+                  "mountPath": "/mount/azurefile"
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "PATH",
+                  "value": "/customized/path/value"
+                },
+                {
+                  "name": "TEST_REGEXP_ENV",
+                  "value": "test_regexp_env"
+                }
+              ]
+            }
+          }
+        ],
+        "sku": "Confidential",
+        "osType": "Linux",
+        "ipAddress": {
+          "type": "Public",
+          "ports": [
+            {
+              "protocol": "tcp",
+              "port": "80"
+            }
+          ]
+        },
+        "volumes": [
+          {
+            "name": "azurefile",
+            "azureFile": {
+              "key1": "key-1",
+              "key2": "key-2"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

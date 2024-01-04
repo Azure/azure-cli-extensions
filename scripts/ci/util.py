@@ -3,14 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import logging
 import os
 import re
+import shlex
 import json
 import zipfile
 
-# Dependencies that will not be checked.
-# This is for packages starting with 'azure-' but do not use the 'azure' namespace.
-SKIP_DEP_CHECK = ['azure-batch-extensions']
+from subprocess import check_output
+
+logger = logging.getLogger(__name__)
 
 # copy from wheel==0.30.0
 WHEEL_INFO_RE = re.compile(
@@ -82,8 +84,17 @@ def get_whl_from_url(url, filename, tmp_dir, whl_cache=None):
     if url in whl_cache:
         return whl_cache[url]
     import requests
-    r = requests.get(url, stream=True)
-    assert r.status_code == 200, "Request to {} failed with {}".format(url, r.status_code)
+    TRIES = 3
+    for try_number in range(TRIES):
+        try:
+            r = requests.get(url, stream=True)
+            assert r.status_code == 200, "Request to {} failed with {}".format(url, r.status_code)
+            break
+        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as err:
+            import time
+            time.sleep(0.5)
+            continue
+
     ext_file = os.path.join(tmp_dir, filename)
     with open(ext_file, 'wb') as f:
         for chunk in r.iter_content(chunk_size=1024):
@@ -114,8 +125,41 @@ def get_index_data():
         raise AssertionError("Invalid JSON in {}: {}".format(INDEX_PATH, err))
 
 
-def verify_dependency(dep):
-    # ex. "azure-batch-extensions (<3.1,>=3.0.0)", "paho-mqtt (==1.3.1)", "pyyaml"
-    # check if 'azure-' dependency, as they use 'azure' namespace.
-    dep_split = dep.split()
-    return not (dep_split and dep_split[0].startswith('azure-') and dep_split[0] not in SKIP_DEP_CHECK)
+def diff_code(start, end):
+    diff_ref = []
+
+    for src_d in os.listdir(SRC_PATH):
+        src_d_full = os.path.join(SRC_PATH, src_d)
+        if not os.path.isdir(src_d_full):
+            continue
+        pkg_name = next((d for d in os.listdir(src_d_full) if d.startswith('azext_')), None)
+
+        # If running in Travis CI, only run tests for edited extensions
+        commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
+        if commit_range and not check_output(
+                ['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
+            continue
+
+        # Running in Azure DevOps
+        cmd_tpl = 'git --no-pager diff --name-only origin/{start} {end} -- {code_dir}'
+        # ado_branch_last_commit = os.environ.get('ADO_PULL_REQUEST_LATEST_COMMIT')
+        # ado_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
+        if start and end:
+            if end == '$(System.PullRequest.SourceCommitId)':
+                # default value if ADO_PULL_REQUEST_LATEST_COMMIT not set in ADO
+                continue
+            elif start == '$(System.PullRequest.TargetBranch)':
+                # default value if ADO_PULL_REQUEST_TARGET_BRANCH not set in ADO
+                continue
+            else:
+                cmd = cmd_tpl.format(start=start, end=end,
+                                     code_dir=src_d_full)
+                if not check_output(shlex.split(cmd)):
+                    continue
+
+        diff_ref.append((pkg_name, src_d_full))
+
+    logger.warning(f'start: {start}, '
+                   f'end: {end}, '
+                   f'diff_ref: {diff_ref}.')
+    return diff_ref

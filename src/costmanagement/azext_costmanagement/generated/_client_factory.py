@@ -18,11 +18,11 @@ def cf_costmanagement(cli_ctx, *_):
 
 
 def cf_view(cli_ctx, *_):
-    return cf_costmanagement(cli_ctx).view
+    return cf_costmanagement(cli_ctx).views
 
 
 def cf_alert(cli_ctx, *_):
-    return cf_costmanagement(cli_ctx).alert
+    return cf_costmanagement(cli_ctx).alerts
 
 
 def cf_forecast(cli_ctx, *_):
@@ -30,7 +30,7 @@ def cf_forecast(cli_ctx, *_):
 
 
 def cf_dimension(cli_ctx, *_):
-    return cf_costmanagement(cli_ctx).dimension
+    return cf_costmanagement(cli_ctx).dimensions
 
 
 def cf_query(cli_ctx, *_):
@@ -38,4 +38,4 @@ def cf_query(cli_ctx, *_):
 
 
 def cf_export(cli_ctx, *_):
-    return cf_costmanagement(cli_ctx).export
+    return cf_costmanagement(cli_ctx).exports

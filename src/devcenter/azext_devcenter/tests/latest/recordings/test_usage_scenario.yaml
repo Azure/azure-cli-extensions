@@ -1,0 +1,59 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter admin usage list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/canadacentral/usages?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"currentValue":22,"limit":200,"unit":"Count","name":{"localizedValue":"DevBox
+        Definitions","value":"devBoxDefinitions"}},{"currentValue":13,"limit":100,"unit":"Count","name":{"localizedValue":"Dev
+        Centers","value":"devCenters"}},{"currentValue":8,"limit":20,"unit":"Count","name":{"localizedValue":"Network
+        Connections","value":"networkConnections"}},{"currentValue":33,"limit":500,"unit":"Count","name":{"localizedValue":"Pools","value":"pools"}},{"currentValue":13,"limit":500,"unit":"Count","name":{"localizedValue":"Projects","value":"projects"}},{"currentValue":96,"limit":100,"unit":"Count","name":{"localizedValue":"Dev
+        Box General Cores AMD","value":"general_a_v2"}},{"currentValue":48,"limit":48,"unit":"Count","name":{"localizedValue":"Dev
+        Box General Cores","value":"general_i_v2"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '806'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Aug 2023 03:20:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 82353F5324314F2EB9E09289C2333C7A Ref B: SJC211051203023 Ref C: 2023-08-30T03:20:01Z'
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2023-08-30T03:21:01.6147303Z'
+    status:
+      code: 200
+      message: OK
+version: 1

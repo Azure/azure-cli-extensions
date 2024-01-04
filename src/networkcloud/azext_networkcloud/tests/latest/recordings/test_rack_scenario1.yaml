@@ -1,0 +1,298 @@
+interactions:
+- request:
+    body: '{"properties": {"rackLocation": "Microsoft Datacenter, Floor 2, Aisle 1,
+      Rack 1", "rackSerialNumber": "0000-AAA-1234"}, "tags": {"tag1": "tag1", "tag2":
+      "tag2update"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud rack update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '167'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --rack-location --rack-serial-number --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-624CF26D/providers/Microsoft.NetworkCloud/racks/aa1234?api-version=2023-10-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f441cec6-a868-4b5f-8f8f-b5fe0a1553d5*61FE74D8D49C5BB9C545C0A923B5399D31DE21C3337221153BDFB76643325FEE?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 17 May 2023 16:26:35 GMT
+      etag:
+      - '"350200f3-0000-0100-0000-6465003b0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f441cec6-a868-4b5f-8f8f-b5fe0a1553d5*61FE74D8D49C5BB9C545C0A923B5399D31DE21C3337221153BDFB76643325FEE?api-version=2023-10-01-preview
+      mise-correlation-id:
+      - 1a2921d4-0352-4e53-8175-1d25720280ef
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud rack update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --rack-location --rack-serial-number --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f441cec6-a868-4b5f-8f8f-b5fe0a1553d5*61FE74D8D49C5BB9C545C0A923B5399D31DE21C3337221153BDFB76643325FEE?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f441cec6-a868-4b5f-8f8f-b5fe0a1553d5*61FE74D8D49C5BB9C545C0A923B5399D31DE21C3337221153BDFB76643325FEE","name":"f441cec6-a868-4b5f-8f8f-b5fe0a1553d5*61FE74D8D49C5BB9C545C0A923B5399D31DE21C3337221153BDFB76643325FEE","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-624CF26D/providers/Microsoft.NetworkCloud/racks/aa1234","status":"Accepted","startTime":"2023-05-17T16:26:35.2364072Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 17 May 2023 16:26:35 GMT
+      etag:
+      - '"2f00cf66-0000-0100-0000-6465003b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud rack update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --rack-location --rack-serial-number --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f441cec6-a868-4b5f-8f8f-b5fe0a1553d5*61FE74D8D49C5BB9C545C0A923B5399D31DE21C3337221153BDFB76643325FEE?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f441cec6-a868-4b5f-8f8f-b5fe0a1553d5*61FE74D8D49C5BB9C545C0A923B5399D31DE21C3337221153BDFB76643325FEE","name":"f441cec6-a868-4b5f-8f8f-b5fe0a1553d5*61FE74D8D49C5BB9C545C0A923B5399D31DE21C3337221153BDFB76643325FEE","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-624CF26D/providers/Microsoft.NetworkCloud/racks/aa1234","status":"Succeeded","startTime":"2023-05-17T16:26:35.2364072Z","endTime":"2023-05-17T16:26:40.2567676Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '638'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 17 May 2023 16:27:05 GMT
+      etag:
+      - '"2f00126a-0000-0100-0000-646500400000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud rack update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --rack-location --rack-serial-number --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-624CF26D/providers/Microsoft.NetworkCloud/racks/aa1234?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-624CF26D/providers/Microsoft.NetworkCloud/racks/aa1234","name":"aa1234","type":"microsoft.networkcloud/racks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-hostedresources-624cf26d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","createdByType":"Application","createdAt":"2023-05-12T14:55:20.3733877Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-17T16:26:40.7635961Z"},"properties":{"rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/VLab1_4_Aggregator_x70r3_9_sim","rackSerialNumber":"0000-AAA-1234","availabilityZone":"A","rackLocation":"Microsoft
+        Datacenter, Floor 2, Aisle 1, Rack 1","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/drewwalters-sim-rg/providers/Microsoft.NetworkCloud/clusters/simulator","detailedStatus":"Available","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1268'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 17 May 2023 16:27:05 GMT
+      etag:
+      - '"3502a4f3-0000-0100-0000-646500400000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud rack show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-624CF26D/providers/Microsoft.NetworkCloud/racks/aa1234?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-624CF26D/providers/Microsoft.NetworkCloud/racks/aa1234","name":"aa1234","type":"microsoft.networkcloud/racks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-hostedresources-624cf26d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","createdByType":"Application","createdAt":"2023-05-12T14:55:20.3733877Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-17T16:26:40.7635961Z"},"properties":{"rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/VLab1_4_Aggregator_x70r3_9_sim","rackSerialNumber":"0000-AAA-1234","availabilityZone":"A","rackLocation":"Microsoft
+        Datacenter, Floor 2, Aisle 1, Rack 1","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/drewwalters-sim-rg/providers/Microsoft.NetworkCloud/clusters/simulator","detailedStatus":"Available","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1268'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 17 May 2023 16:27:06 GMT
+      etag:
+      - '"3502a4f3-0000-0100-0000-646500400000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud rack list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-624CF26D/providers/Microsoft.NetworkCloud/racks?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-624CF26D/providers/Microsoft.NetworkCloud/racks/aa1234","name":"aa1234","type":"microsoft.networkcloud/racks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-hostedresources-624cf26d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","createdByType":"Application","createdAt":"2023-05-12T14:55:20.3733877Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-17T16:26:40.7635961Z"},"properties":{"rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/VLab1_4_Aggregator_x70r3_9_sim","rackSerialNumber":"0000-AAA-1234","availabilityZone":"A","rackLocation":"Microsoft
+        Datacenter, Floor 2, Aisle 1, Rack 1","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/drewwalters-sim-rg/providers/Microsoft.NetworkCloud/clusters/simulator","detailedStatus":"Available","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-624CF26D/providers/Microsoft.NetworkCloud/racks/aa5678","name":"aa5678","type":"microsoft.networkcloud/racks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-hostedresources-624cf26d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"CreatedBy":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-hostedresources-624cf26d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc/resourcesyncrules/rackshydrationrule"},"systemData":{"createdBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","createdByType":"Application","createdAt":"2023-05-12T14:55:22.7149988Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-12T14:57:52.4129676Z"},"properties":{"rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/VLab1_4_Compute_DellR750_3C2M_sim","rackSerialNumber":"aa5678","availabilityZone":"1","rackLocation":"Foo
+        Datacenter, Floor 3, Aisle 9, Rack 2","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/drewwalters-sim-rg/providers/Microsoft.NetworkCloud/clusters/simulator","detailedStatus":"Available","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2730'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 17 May 2023 16:27:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 0c54bd20-3525-40bd-8aa6-98badaa9c48b
+      - 7c9470ba-81a7-4764-9e75-f8ecfde87a96
+      - bbe989a7-14e9-45a1-831a-5e02b9523c3a
+    status:
+      code: 200
+      message: OK
+version: 1

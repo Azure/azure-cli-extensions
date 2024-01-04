@@ -1,0 +1,60 @@
+interactions:
+- request:
+    body: '{"location": "westus", "properties": {"packageUrl": "{PackageUrl}", "configuration":
+      "{ServiceConfiguration}", "upgradeMode": "Auto", "roleProfile": {"roles": [{"name":
+      "ContosoFrontend", "sku": {"name": "Standard_D1_v2", "tier": "Standard", "capacity":
+      1}}, {"name": "ContosoBackend", "sku": {"name": "Standard_D1_v2", "tier": "Standard",
+      "capacity": 1}}]}, "osProfile": {}, "networkProfile": {"loadBalancerConfigurations":
+      [{"name": "contosolb", "properties": {"frontendIPConfigurations": [{"name":
+      "contosofe", "properties": {"publicIPAddress": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/contosopublicip"}}}]}}],
+      "swappableCloudService": {}}, "extensionProfile": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cloud-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '824'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --configuration --load-balancer-configurations --package-url
+        --roles --upgrade-mode --resource-group
+      User-Agent:
+      - AZURECLI/2.20.0 azsdk-python-azure-mgmt-compute/19.0.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/cloudServices/cs1?api-version=2020-10-01-preview
+  response:
+    body:
+      string: "{\r\n  \"error\": {\r\n    \"code\": \"InvalidParameter\",\r\n    \"message\":
+        \"The value of parameter packageUrl is invalid.\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '120'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Mar 2021 07:53:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

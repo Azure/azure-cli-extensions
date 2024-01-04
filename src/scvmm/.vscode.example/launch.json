@@ -1,0 +1,44 @@
+// Set AZCLI_SRC_PATH as the path to the azure-cli source code on your local machine.
+// You may also replace the content of `${env:AZCLI_SRC_PATH}` with the absolute path, if desired :).
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Azure CLI Debug (Integrated Console)",
+			"type": "python",
+			"request": "launch",
+			"python": "${command:python.interpreterPath}",
+			"program": "${env:AZCLI_SRC_PATH}/src/azure-cli/azure/cli/__main__.py",
+			"args": [
+				"--help"
+			],
+			"console": "integratedTerminal",
+			"justMyCode": false
+		},
+		{
+			"name": "Azure CLI Debug (External Console)",
+			"type": "python",
+			"request": "launch",
+			"stopOnEntry": true,
+			"python": "${command:python.interpreterPath}",
+			"program": "${env:AZCLI_SRC_PATH}/src/azure-cli/azure/cli/__main__.py",
+			"cwd": "${workspaceRoot}",
+			"args": [
+				"--help"
+			],
+			"console": "externalTerminal"
+		},
+		{
+			"name": "Azdev Scripts",
+			"type": "python",
+			"request": "launch",
+			"python": "${command:python.interpreterPath}",
+			"program": "${env:AZCLI_SRC_PATH}/src/azure-cli/azure/cli/__main__.py",
+			"cwd": "${workspaceRoot}",
+			"args": [
+				"--help"
+			],
+			"console": "integratedTerminal"
+		}
+	]
+}

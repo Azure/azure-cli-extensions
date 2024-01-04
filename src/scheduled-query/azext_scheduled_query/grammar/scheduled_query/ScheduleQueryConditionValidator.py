@@ -8,8 +8,8 @@ from azext_scheduled_query.vendored_sdks.azure_mgmt_scheduled_query.models impor
 
 
 op_conversion = {
-    '=': 'Equals',
-    '!=': 'NotEquals',
+    '=': 'Equal',
+    '!=': 'NotEqual',
     '>': 'GreaterThan',
     '>=': 'GreaterThanOrEqual',
     '<': 'LessThan',
@@ -57,7 +57,10 @@ class ScheduleQueryConditionValidator(ScheduleQueryConditionListener):
 
     # Exit a parse tree produced by MetricAlertConditionParser#threshold.
     def exitQuery(self, ctx):
-        self.parameters['query'] = ctx.getText().strip()
+        query = ctx.getText().strip()
+        query = query.replace("\\\"", "\"")
+        query = query.replace("\\\'", "\'")
+        self.parameters['query'] = query
 
     # Exit a parse tree produced by MetricAlertConditionParser#threshold.
     def exitResource_id(self, ctx):

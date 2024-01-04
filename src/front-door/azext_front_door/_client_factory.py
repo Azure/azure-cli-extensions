@@ -14,6 +14,10 @@ def cf_frontdoor(cli_ctx, _):
     return frontdoor_client_factory(cli_ctx).front_doors
 
 
+def cf_front_door_name_availability(cli_ctx, _):
+    return frontdoor_client_factory(cli_ctx).front_door_name_availability
+
+
 def cf_fd_endpoints(cli_ctx, _):
     return frontdoor_client_factory(cli_ctx).endpoints
 

@@ -35,7 +35,7 @@ DEPENDENCIES = [
     'prompt_toolkit~=1.0.15'
 ]
 
-with open('README.rst', 'r', encoding='utf-8') as f:
+with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
@@ -48,7 +48,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/interactive',
     classifiers=CLASSIFIERS,
     package_data={'azext_interactive': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests"]),

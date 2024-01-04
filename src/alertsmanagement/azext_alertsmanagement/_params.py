@@ -9,67 +9,63 @@
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
-    get_location_type
+    get_three_state_flag
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from knack.arguments import CLIArgumentType
-from .vendored_sdks.alertsmanagement.models import ActionRuleStatus, SuppressionType
+from .vendored_sdks.alertsmanagement.models import ActionType
+from ._validators import validate_datetime_format, validate_severity, \
+    validate_monitor_condition, validate_signal_type, validate_time_format, \
+    validate_monitor_service, validate_alert_rule_name, validate_alert_rule_id, \
+    validate_alert_rule_description, validate_alert_context, validate_target_resource, \
+    validate_resource_group, validate_resource_type
 
 
 def load_arguments(self, _):
 
     name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
 
-    action_rule_name = CLIArgumentType(overrides=name_arg_type, help='Name of action rule.',
-                                       id_part='name')
+    processing_rule_name = CLIArgumentType(overrides=name_arg_type, help='Name of the alert processing rule.',
+                                           id_part='name')
 
-    with self.argument_context('monitor action-rule create') as c:
-        c.argument('action_rule_name', action_rule_name)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+    with self.argument_context('monitor alert-processing-rule create') as c:
+        c.argument('processing_rule_name', processing_rule_name)
+        c.argument('rule_type', arg_type=get_enum_type(ActionType), help='Indicate type of the alert processing rule')
+        c.argument('action_groups', nargs='+', help='List of resource ids (space-delimited) of action groups to add. A use of this argument requires that rule-type is AddActionGroups')
+        c.argument('description', nargs='+', help='Description of the alert processing rule')
+        c.argument('scopes', nargs='+', required=True, help='List of resource IDs (space-delimited) for scope. The rule will apply to alerts that fired on resources within that scope.')
+        c.argument('enabled', arg_type=get_three_state_flag(), help='Indicate if the given alert processing rule is enabled or disabled (default is enabled).')
         c.argument('tags', tags_type)
-        c.argument('status', arg_type=get_enum_type(ActionRuleStatus), id_part=None, help='Indicate if the given action rule is enabled or disabled. Default to enabled.')
-        c.argument('rule_type', arg_type=get_enum_type(['Suppression', 'ActionGroup', 'Diagnostics']), help='Indicate type of action rule')
-        c.argument('description', help='Description of action rule')
-        c.argument('scope_type', help='Type of target scope', arg_type=get_enum_type(['ResourceGroup', 'Resource']))
-        c.argument('scope', nargs='+', help='List of ARM IDs (space-delimited) of the given scope type which will be the target of the given action rule.')
-        c.argument('severity', nargs='+', help='Filter alerts by severity. All filters should follow format "operator value1 value2 ... valueN". Operator is one of Equals, NotEquals, Contains and DoesNotContain.')
-        c.argument('monitor_service', nargs='+', help='Filter alerts by monitor service')
-        c.argument('monitor_condition', nargs='+', help='Filter alerts by monitor condition')
-        c.argument('target_resource_type', nargs='+', help='Filter alerts by target resource type')
-        c.argument('alert_rule', nargs='+', help='Filter alerts by alert rule name or ID')
-        c.argument('alert_description', nargs='+', help='Filter alerts by alert rule description')
-        c.argument('alert_context', nargs='+', help='Filter alerts by alert context (payload)')
-        c.argument('suppression_recurrence_type', arg_type=get_enum_type(SuppressionType), help='Specifies when the suppression should be applied')
-        c.argument('suppression_start_date', help='Start date for suppression. Format: MM/DD/YYYY')
-        c.argument('suppression_end_date', help='End date for suppression. Format: MM/DD/YYYY')
-        c.argument('suppression_start_time', help='Start time for suppression. Format: hh:mm:ss')
-        c.argument('suppression_end_time', help='End time for suppression. Format: hh:mm:ss')
-        c.argument('suppression_recurrence', nargs='+',
-                   help='List of recurrence pattern values, delimited by space. If --suppression-recurrence-type is '
-                        'Weekly, allowed values range from 0 to 6. 0 stands for Sunday, 1 stands for Monday, ..., 6 '
-                        'stands for Saturday. If --suppression-recurrence-type is Monthly, allowed values range from '
-                        '1 to 31, stands for day of month')
+        c.argument('filter_severity', nargs='+', arg_group='Filter', validator=validate_severity, help='Filter alerts by severity <Sev0, Sev1, Sev2, Sev3, Sev4>')
+        c.argument('filter_monitor_service', nargs='+', arg_group='Filter', validator=validate_monitor_service, help='Filter alerts by monitor service')
+        c.argument('filter_monitor_condition', nargs='+', arg_group='Filter', validator=validate_monitor_condition, help='Filter alerts by monitor condition')
+        c.argument('filter_alert_rule_name', nargs='+', arg_group='Filter', validator=validate_alert_rule_name, help='Filter alerts by alert rule name')
+        c.argument('filter_alert_rule_id', nargs='+', arg_group='Filter', validator=validate_alert_rule_id, help='Filter alerts by alert ID')
+        c.argument('filter_alert_rule_description', nargs='+', validator=validate_alert_rule_description, arg_group='Filter', help='Filter alerts by alert rule description')
+        c.argument('filter_alert_context', nargs='+', arg_group='Filter', validator=validate_alert_context, help='Filter alerts by alert context (payload)')
+        c.argument('filter_signal_type', nargs='+', arg_group='Filter', validator=validate_signal_type, help='Filter alerts by signal type')
+        c.argument('filter_target_resource', nargs='+', arg_group='Filter', validator=validate_target_resource, help='Filter alerts by resource')
+        c.argument('filter_resource_group', nargs='+', arg_group='Filter', validator=validate_resource_group, help='Filter alerts by resource group')
+        c.argument('filter_resource_type', nargs='+', arg_group='Filter', validator=validate_resource_type, help='Filter alerts by resource type.')
+        c.argument('schedule_start_datetime', arg_group='Schedule', help='Start date for the rule. Format: \'YYYY-MM-DD hh:mm:ss\'', validator=validate_datetime_format)
+        c.argument('schedule_end_datetime', arg_group='Schedule', help='End date for the rule. Format: \'YYYY-MM-DD hh:mm:ss\'', validator=validate_datetime_format)
+        c.argument('schedule_recurrence_type', arg_group='Schedule First Recurrence', arg_type=get_enum_type(['Daily', 'Weekly', 'Monthly']), help='Specifies when the processing rule should be applied')
+        c.argument('schedule_recurrence_start_time', arg_group='Schedule First Recurrence', help='Start time for each recurrence. Format: \'hh:mm:ss\'', validator=validate_time_format)
+        c.argument('schedule_recurrence_end_time', arg_group='Schedule First Recurrence', help='End time for each recurrence. Format: \'hh:mm:ss\'', validator=validate_time_format)
+        c.argument('schedule_time_zone', arg_group='Schedule', help='schedule time zone')
+        c.argument('schedule_recurrence', nargs='+', arg_group='Schedule First Recurrence')
+        c.argument('schedule_recurrence_2_type', arg_group='Schedule Second Recurrence', arg_type=get_enum_type(['Daily', 'Weekly', 'Monthly']), help='Specifies when the processing rule should be applied. Default to Always')
+        c.argument('schedule_recurrence_2_start_time', arg_group='Schedule Second Recurrence', help='Start time for each recurrence. Format: hh:mm:ss', validator=validate_time_format)
+        c.argument('schedule_recurrence_2_end_time', arg_group='Schedule Second Recurrence', help='End time for each recurrence. Format: hh:mm:ss', validator=validate_time_format)
+        c.argument('schedule_recurrence_2', nargs='+', arg_group='Schedule Second Recurrence')
 
-    with self.argument_context('monitor action-rule update') as c:
-        c.argument('action_rule_name', action_rule_name)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+    with self.argument_context('monitor alert-processing-rule update') as c:
+        c.argument('processing_rule_name', processing_rule_name)
         c.argument('tags', tags_type)
-        c.argument('status', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='Indicates if the given action rule is enabled or disabled')
+        c.argument('enabled', arg_type=get_three_state_flag(), help='Indicate if the given processing rule is enabled or disabled (values are True and False).')
 
-    with self.argument_context('monitor action-rule delete') as c:
-        c.argument('action_rule_name', action_rule_name)
+    with self.argument_context('monitor alert-processing-rule delete') as c:
+        c.argument('processing_rule_name', processing_rule_name)
 
-    with self.argument_context('monitor action-rule show') as c:
-        c.argument('action_rule_name', action_rule_name)
-
-    with self.argument_context('monitor action-rule list') as c:
-        c.argument('target_resource_group', id_part=None, help='Filter by target resource group name. Default value is select all.')
-        c.argument('target_resource_type', id_part=None, help='Filter by target resource type. Default value is select all.')
-        c.argument('target_resource', id_part=None, help='Filter by target resource (which is full ARM ID). Default value is select all.')
-        c.argument('severity', id_part=None, help='Filter by severity. Default value is select all.')
-        c.argument('monitor_service', id_part=None, help='Filter by monitor service which generates the alert instance. Default value is select all.')
-        c.argument('impacted_scope', id_part=None, help='Filter by impacted/target scope (provide comma separated list for multiple scopes). The value should be an well constructed ARM id of the scope.')
-        c.argument('description', id_part=None, help='Filter by alert rule description')
-        c.argument('alert_rule_id', id_part=None, help='Filter by alert rule ID')
-        c.argument('action_group', id_part=None, help='Filter by action group configured as part of action rule')
-        c.argument('name', id_part=None, help='Filter by action rule name')
+    with self.argument_context('monitor alert-processing-rule show') as c:
+        c.argument('processing_rule_name', processing_rule_name)

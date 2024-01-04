@@ -1,229 +1,315 @@
-# --------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See License.txt in the project root for license information.
-# --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long
-# pylint: disable=too-many-statements
+# Licensed under the MIT License. See License.txt in the project root for
+# license information.
+# --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
-# pylint: disable=too-many-locals
-# pylint: disable=unused-argument
 
-from azure.cli.core.util import sdk_no_wait
-
-
-def create_timeseriesinsights_environment_standard(cmd, client,
-                                                   resource_group_name, environment_name,
-                                                   sku_name, sku_capacity,
-                                                   data_retention_time,
-                                                   storage_limit_exceeded_behavior=None,
-                                                   partition_key_properties=None,
-                                                   location=None, tags=None, no_wait=False):
-    from .vendored_sdks.timeseriesinsights.models import StandardEnvironmentCreateOrUpdateParameters, Sku, \
-        TimeSeriesIdProperty
-
-    parameters = StandardEnvironmentCreateOrUpdateParameters(
-        location=location,
-        tags=tags,
-        sku=Sku(name=sku_name, capacity=sku_capacity),
-        data_retention_time=data_retention_time,
-        storage_limit_exceeded_behavior=storage_limit_exceeded_behavior,
-        # Need to confirm whether multiple key properties are supported
-        partition_key_properties=[TimeSeriesIdProperty(name=id_property, type="String") for id_property in partition_key_properties] if partition_key_properties else None
-    )
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
+from azure.cli.core.azclierror import InvalidArgumentValueError
+from .aaz.latest.tsi.environment import List as _EnvironmentList
+from .aaz.latest.tsi.reference_data_set import List as _ReferenceDataSetList
 
 
-def update_timeseriesinsights_environment_standard(cmd, client,
-                                                   resource_group_name, environment_name,
-                                                   sku_name=None, sku_capacity=None,
-                                                   data_retention_time=None, storage_limit_exceeded_behavior=None,
-                                                   partition_key_properties=None, tags=None, no_wait=False):
-    from .vendored_sdks.timeseriesinsights.models import StandardEnvironmentUpdateParameters, Sku, TimeSeriesIdProperty
+def timeseriesinsights_environment_gen1_create(cmd, resource_group_name,
+                                               environment_name,
+                                               location,
+                                               sku,
+                                               data_retention_time,
+                                               tags=None,
+                                               storage_limit_exceeded_behavior=None,
+                                               partition_key_properties=None,
+                                               no_wait=False):
+    from .aaz.latest.tsi.environment import Create as _EnvironmentCreate
+    Create = _EnvironmentCreate(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['sku'] = sku
+    parameters['gen1'] = {}
+    parameters['gen1']['data_retention_time'] = data_retention_time
+    parameters['gen1']['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
+    parameters['gen1']['partition_key_properties'] = partition_key_properties
+    parameters['no_wait'] = no_wait
 
-    parameters = StandardEnvironmentUpdateParameters(
-        tags=tags,
-        sku=Sku(name=sku_name, capacity=sku_capacity) if sku_name and sku_capacity else None,
-        data_retention_time=data_retention_time,
-        storage_limit_exceeded_behavior=storage_limit_exceeded_behavior,
-        partition_key_properties=[TimeSeriesIdProperty(name=id_property, type="String") for id_property in partition_key_properties] if partition_key_properties else None
-    )
-    return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
-
-
-def create_timeseriesinsights_environment_longterm(cmd, client,
-                                                   resource_group_name, environment_name,
-                                                   sku_name, sku_capacity,
-                                                   time_series_id_properties,
-                                                   storage_account_name,
-                                                   storage_management_key,
-                                                   data_retention,
-                                                   location=None, tags=None, no_wait=False):
-    from .vendored_sdks.timeseriesinsights.models import LongTermEnvironmentCreateOrUpdateParameters, Sku, \
-        TimeSeriesIdProperty, LongTermStorageConfigurationInput
-    parameters = LongTermEnvironmentCreateOrUpdateParameters(
-        location=location,
-        tags=tags,
-        sku=Sku(name=sku_name, capacity=sku_capacity),
-        time_series_id_properties=[TimeSeriesIdProperty(name=id_property, type="String") for id_property in time_series_id_properties],
-        storage_configuration=LongTermStorageConfigurationInput(account_name=storage_account_name, management_key=storage_management_key),
-        data_retention=data_retention)
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
+    return Create(parameters)
 
 
-def update_timeseriesinsights_environment_longterm(cmd, client,
-                                                   resource_group_name, environment_name,
-                                                   storage_management_key=None,
-                                                   data_retention=None,
-                                                   tags=None, no_wait=False):
-    from .vendored_sdks.timeseriesinsights.models import LongTermEnvironmentUpdateParameters, \
-        LongTermStorageConfigurationMutableProperties
-    parameters = LongTermEnvironmentUpdateParameters(
-        tags=tags,
-        storage_configuration=LongTermStorageConfigurationMutableProperties(management_key=storage_management_key) if storage_management_key else None,
-        data_retention=data_retention)
-    return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
+def timeseriesinsights_environment_gen1_update(cmd,
+                                               resource_group_name,
+                                               environment_name,
+                                               sku=None,
+                                               data_retention_time=None,
+                                               tags=None,
+                                               storage_limit_exceeded_behavior=None,
+                                               no_wait=False):
+    from .aaz.latest.tsi.environment import Update as _EnvironmentUpdate
+    Update = _EnvironmentUpdate(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    parameters['gen1'] = {}
+    if sku is not None:
+        parameters['sku'] = sku
+    if data_retention_time is not None:
+        parameters['gen1']['data_retention_time'] = data_retention_time
+    if storage_limit_exceeded_behavior is not None:
+        parameters['gen1']['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
+    if tags is not None:
+        parameters['tags'] = tags
+    parameters['no_wait'] = no_wait
+
+    return Update(parameters)
 
 
-def list_timeseriesinsights_environment(cmd, client, resource_group_name=None):
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list_by_subscription()
+def timeseriesinsights_environment_gen2_create(cmd,
+                                               resource_group_name,
+                                               environment_name,
+                                               location,
+                                               sku,
+                                               time_series_id_properties,
+                                               storage_configuration,
+                                               tags=None,
+                                               warm_store_configuration=None,
+                                               no_wait=False):
+    from .aaz.latest.tsi.environment import Create as _EnvironmentCreate
+    Create = _EnvironmentCreate(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['sku'] = sku
+    parameters['gen2'] = {}
+    parameters['gen2']['time_series_id_properties'] = time_series_id_properties
+    parameters['gen2']['storage_configuration'] = storage_configuration
+    if warm_store_configuration is not None:
+        parameters['gen2']['warm_store_configuration'] = warm_store_configuration
+    parameters['no_wait'] = no_wait
+
+    return Create(parameters)
 
 
-def create_timeseriesinsights_event_source_eventhub(cmd, client,
-                                                    resource_group_name, environment_name, event_source_name,
-                                                    event_source_resource_id,
-                                                    consumer_group_name, key_name, shared_access_key,
-                                                    timestamp_property_name=None,
-                                                    location=None, tags=None):
-    from azext_timeseriesinsights.vendored_sdks.timeseriesinsights.models import EventHubEventSourceCreateOrUpdateParameters
-    from msrestazure.tools import parse_resource_id
-    parsed_id = parse_resource_id(event_source_resource_id)
-    parameters = EventHubEventSourceCreateOrUpdateParameters(
-        location=location,
-        timestamp_property_name=timestamp_property_name,
-        event_source_resource_id=event_source_resource_id,
-        service_bus_namespace=parsed_id['name'],
-        event_hub_name=parsed_id['child_name_1'],
-        consumer_group_name=consumer_group_name,
-        key_name=key_name,
-        shared_access_key=shared_access_key,
-        tags=tags
-    )
-    return client.create_or_update(resource_group_name=resource_group_name, environment_name=environment_name, event_source_name=event_source_name, parameters=parameters)
+def timeseriesinsights_environment_gen2_update(cmd,
+                                               resource_group_name,
+                                               environment_name,
+                                               storage_configuration=None,
+                                               tags=None,
+                                               warm_store_configuration=None,
+                                               no_wait=False):
+    from .aaz.latest.tsi.environment import Update as _EnvironmentUpdate
+    Update = _EnvironmentUpdate(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    parameters['gen2'] = {}
+    if storage_configuration is not None:
+        parameters['gen2']['storage_configuration'] = storage_configuration
+    if warm_store_configuration is not None:
+        parameters['gen2']['warm_store_configuration'] = warm_store_configuration
+    if tags is not None:
+        parameters['tags'] = tags
+    parameters['no_wait'] = no_wait
+
+    return Update(parameters)
 
 
-def update_timeseriesinsights_event_source_eventhub(cmd, client, resource_group_name, environment_name, event_source_name,
-                                                    timestamp_property_name=None,
-                                                    local_timestamp_format=None, time_zone_offset_property_name=None,
-                                                    shared_access_key=None, tags=None):
-    from .vendored_sdks.timeseriesinsights.models import EventHubEventSourceUpdateParameters, LocalTimestamp, \
-        LocalTimestampTimeZoneOffset, LocalTimestampFormat
-    local_timestamp = None
-    if local_timestamp_format == LocalTimestampFormat.embedded:
-        local_timestamp = LocalTimestamp(format=local_timestamp_format)
-    elif local_timestamp_format and time_zone_offset_property_name:
-        local_timestamp = LocalTimestamp(format=local_timestamp_format,
-                                         time_zone_offset=LocalTimestampTimeZoneOffset(property_name=time_zone_offset_property_name))
-    parameters = EventHubEventSourceUpdateParameters(tags=tags,
-                                                     timestamp_property_name=timestamp_property_name,
-                                                     local_timestamp=local_timestamp,
-                                                     shared_access_key=shared_access_key)
-
-    return client.update(resource_group_name=resource_group_name, environment_name=environment_name, event_source_name=event_source_name,
-                         parameters=parameters)
+def timeseriesinsights_event_source_list(client,
+                                         resource_group_name,
+                                         environment_name):
+    return client.list_by_environment(resource_group_name=resource_group_name,
+                                      environment_name=environment_name).value
 
 
-def create_timeseriesinsights_event_source_iothub(cmd, client,
-                                                  resource_group_name, environment_name, event_source_name,
-                                                  event_source_resource_id,
-                                                  consumer_group_name, key_name, shared_access_key,
-                                                  timestamp_property_name=None,
-                                                  location=None, tags=None):
-    from .vendored_sdks.timeseriesinsights.models import IoTHubEventSourceCreateOrUpdateParameters
-    from msrestazure.tools import parse_resource_id
-    parsed_id = parse_resource_id(event_source_resource_id)
-    parameters = IoTHubEventSourceCreateOrUpdateParameters(
-        location=location,
-        tags=tags,
-        timestamp_property_name=timestamp_property_name,
-        event_source_resource_id=event_source_resource_id,
-        iot_hub_name=parsed_id['name'],
-        consumer_group_name=consumer_group_name,
-        key_name=key_name,
-        shared_access_key=shared_access_key)
-    return client.create_or_update(
-        resource_group_name=resource_group_name, environment_name=environment_name, event_source_name=event_source_name,
-        parameters=parameters)
+def timeseriesinsights_event_source_show(client,
+                                         resource_group_name,
+                                         environment_name,
+                                         event_source_name):
+    return client.get(resource_group_name=resource_group_name,
+                      environment_name=environment_name,
+                      event_source_name=event_source_name)
 
 
-def update_timeseriesinsights_event_source_iothub(cmd, client,
-                                                  resource_group_name, environment_name, event_source_name,
-                                                  timestamp_property_name=None,
-                                                  local_timestamp_format=None, time_zone_offset_property_name=None,
-                                                  shared_access_key=None,
-                                                  tags=None):
-    from .vendored_sdks.timeseriesinsights.models import IoTHubEventSourceUpdateParameters, LocalTimestamp, \
-        LocalTimestampTimeZoneOffset, LocalTimestampFormat
-    local_timestamp = None
-    if local_timestamp_format == LocalTimestampFormat.embedded:
-        local_timestamp = LocalTimestamp(format=local_timestamp_format)
-    elif local_timestamp_format and time_zone_offset_property_name:
-        local_timestamp = LocalTimestamp(format=local_timestamp_format,
-                                         time_zone_offset=LocalTimestampTimeZoneOffset(property_name=time_zone_offset_property_name))
-    parameters = IoTHubEventSourceUpdateParameters(
-        tags=tags,
-        timestamp_property_name=timestamp_property_name,
-        local_timestamp=local_timestamp,
-        shared_access_key=shared_access_key
-    )
-    return client.update(resource_group_name=resource_group_name, environment_name=environment_name, event_source_name=event_source_name, parameters=parameters)
+def timeseriesinsights_event_source_delete(client,
+                                           resource_group_name,
+                                           environment_name,
+                                           event_source_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         environment_name=environment_name,
+                         event_source_name=event_source_name)
 
 
-def create_timeseriesinsights_reference_data_set(cmd, client,
-                                                 resource_group_name, environment_name, reference_data_set_name,
-                                                 key_properties, data_string_comparison_behavior,
-                                                 location=None, tags=None):
-    from .vendored_sdks.timeseriesinsights.models import ReferenceDataSetCreateOrUpdateParameters, \
-        ReferenceDataSetKeyProperty
-
-    key_properties_list = []
-    key_property_count, remaining = divmod(len(key_properties), 2)
-    if remaining:
-        from knack.util import CLIError
-        raise CLIError("Usage error: --key-properties NAME TYPE ...")
-
-    for _ in range(0, key_property_count):
-        # eg. --key-properties DeviceId1 String DeviceFloor Double
-        key_properties_list.append(ReferenceDataSetKeyProperty(name=key_properties.pop(0), type=key_properties.pop(0)))
-
-    parameters = ReferenceDataSetCreateOrUpdateParameters(
-        location=location,
-        tags=tags,
-        key_properties=key_properties_list,
-        data_string_comparison_behavior=data_string_comparison_behavior
-    )
-
-    return client.create_or_update(resource_group_name=resource_group_name, environment_name=environment_name, reference_data_set_name=reference_data_set_name, parameters=parameters)
-
-
-def update_timeseriesinsights_reference_data_set(cmd, client,
-                                                 resource_group_name, environment_name, reference_data_set_name,
-                                                 tags=None):
-    return client.update(resource_group_name=resource_group_name, environment_name=environment_name, reference_data_set_name=reference_data_set_name, tags=tags)
-
-
-def create_timeseriesinsights_access_policy(cmd, client,
-                                            resource_group_name, environment_name, access_policy_name,
-                                            principal_object_id=None, description=None, roles=None):
-    from .vendored_sdks.timeseriesinsights.models import AccessPolicyCreateOrUpdateParameters
-    parameters = AccessPolicyCreateOrUpdateParameters(
-        principal_object_id=principal_object_id,
-        description=description,
-        roles=roles)
-    return client.create_or_update(resource_group_name=resource_group_name, environment_name=environment_name, access_policy_name=access_policy_name, parameters=parameters)
+def timeseriesinsights_event_source_event_hub_create(client,
+                                                     resource_group_name,
+                                                     environment_name,
+                                                     event_source_name,
+                                                     location,
+                                                     event_source_resource_id,
+                                                     service_bus_namespace,
+                                                     event_hub_name,
+                                                     consumer_group_name,
+                                                     key_name,
+                                                     shared_access_key,
+                                                     tags=None,
+                                                     local_timestamp=None,
+                                                     timestamp_property_name=None):
+    parameters = {}
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['kind'] = 'Microsoft.EventHub'
+    parameters['local_timestamp'] = local_timestamp
+    parameters['timestamp_property_name'] = timestamp_property_name
+    parameters['event_source_resource_id'] = event_source_resource_id
+    parameters['service_bus_namespace'] = service_bus_namespace
+    parameters['event_hub_name'] = event_hub_name
+    parameters['consumer_group_name'] = consumer_group_name
+    parameters['key_name'] = key_name
+    parameters['shared_access_key'] = shared_access_key
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   environment_name=environment_name,
+                                   event_source_name=event_source_name,
+                                   parameters=parameters)
 
 
-def update_timeseriesinsights_access_policy(cmd, client, resource_group_name, environment_name, access_policy_name,
-                                            description=None, roles=None):
-    return client.update(resource_group_name=resource_group_name, environment_name=environment_name, access_policy_name=access_policy_name, description=description, roles=roles)
+def timeseriesinsights_event_source_event_hub_update(client,
+                                                     resource_group_name,
+                                                     environment_name,
+                                                     event_source_name,
+                                                     shared_access_key=None,
+                                                     local_timestamp=None,
+                                                     timestamp_property_name=None,
+                                                     tags=None):
+    instance = timeseriesinsights_event_source_show(client, resource_group_name, environment_name, event_source_name)
+    body = instance.as_dict(keep_readonly=False)
+    if body['kind'] != 'Microsoft.EventHub':
+        raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(
+            body['kind'], 'Microsoft.EventHub'))
+
+    patch_parameters = {
+        'kind': 'Microsoft.EventHub'
+    }
+    if tags is not None:
+        patch_parameters['tags'] = tags
+    if shared_access_key is not None:
+        patch_parameters['shared_access_key'] = shared_access_key
+    if local_timestamp is not None:
+        patch_parameters['local_timestamp'] = local_timestamp
+    if timestamp_property_name is not None:
+        patch_parameters['timestamp_property_name'] = timestamp_property_name
+
+    if len(patch_parameters) > 2:  # Only a single event source property can be updated per PATCH request
+        body.update(patch_parameters)
+        if 'shared_access_key' not in patch_parameters:
+            raise InvalidArgumentValueError('--shared-access-key is required for multi properties update')
+        return client.create_or_update(resource_group_name=resource_group_name,
+                                       environment_name=environment_name,
+                                       event_source_name=event_source_name,
+                                       parameters=body)
+    return client.update(resource_group_name=resource_group_name,
+                         environment_name=environment_name,
+                         event_source_name=event_source_name,
+                         event_source_update_parameters=patch_parameters)
+
+
+def timeseriesinsights_event_source_iot_hub_create(client,
+                                                   resource_group_name,
+                                                   environment_name,
+                                                   event_source_name,
+                                                   location,
+                                                   event_source_resource_id,
+                                                   iot_hub_name,
+                                                   consumer_group_name,
+                                                   key_name,
+                                                   shared_access_key,
+                                                   tags=None,
+                                                   local_timestamp=None,
+                                                   timestamp_property_name=None):
+    parameters = {}
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['kind'] = 'Microsoft.IoTHub'
+    parameters['local_timestamp'] = local_timestamp
+    parameters['timestamp_property_name'] = timestamp_property_name
+    parameters['event_source_resource_id'] = event_source_resource_id
+    parameters['iot_hub_name'] = iot_hub_name
+    parameters['consumer_group_name'] = consumer_group_name
+    parameters['key_name'] = key_name
+    parameters['shared_access_key'] = shared_access_key
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   environment_name=environment_name,
+                                   event_source_name=event_source_name,
+                                   parameters=parameters)
+
+
+def timeseriesinsights_event_source_iot_hub_update(client,
+                                                   resource_group_name,
+                                                   environment_name,
+                                                   event_source_name,
+                                                   shared_access_key=None,
+                                                   local_timestamp=None,
+                                                   timestamp_property_name=None,
+                                                   tags=None):
+    instance = timeseriesinsights_event_source_show(client, resource_group_name, environment_name, event_source_name)
+    body = instance.as_dict(keep_readonly=False)
+    if body['kind'] != 'Microsoft.IoTHub':
+        raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(
+            body['kind'], 'Microsoft.IoTHub'))
+
+    patch_parameters = {
+        'kind': 'Microsoft.IoTHub'
+    }
+    if tags is not None:
+        patch_parameters['tags'] = tags
+    if shared_access_key is not None:
+        patch_parameters['shared_access_key'] = shared_access_key
+    if local_timestamp is not None:
+        patch_parameters['local_timestamp'] = local_timestamp
+    if timestamp_property_name is not None:
+        patch_parameters['timestamp_property_name'] = timestamp_property_name
+
+    if len(patch_parameters) > 2:  # Only a single event source property can be updated per PATCH request
+        body.update(patch_parameters)
+        if 'shared_access_key' not in patch_parameters:
+            raise InvalidArgumentValueError('--shared-access-key is required for multi properties update')
+        return client.create_or_update(resource_group_name=resource_group_name,
+                                       environment_name=environment_name,
+                                       event_source_name=event_source_name,
+                                       parameters=body)
+    return client.update(resource_group_name=resource_group_name,
+                         environment_name=environment_name,
+                         event_source_name=event_source_name,
+                         event_source_update_parameters=patch_parameters)
+
+
+def timeseriesinsights_reference_data_set_create(cmd,
+                                                 resource_group_name,
+                                                 environment_name,
+                                                 reference_data_set_name,
+                                                 location,
+                                                 key_properties,
+                                                 tags=None,
+                                                 data_string_comparison_behavior=None):
+    from .aaz.latest.tsi.reference_data_set import Create as _ReferenceDataSetCreate
+    Create = _ReferenceDataSetCreate(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    parameters['reference_data_set_name'] = reference_data_set_name
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['key_properties'] = key_properties
+    parameters['data_string_comparison_behavior'] = data_string_comparison_behavior
+    return Create(parameters)
+
+
+class EnvironmentList(_EnvironmentList):
+    def _output(self):
+        result = super()._output(self)
+        return result["value"]
+
+
+class ReferenceDataSetList(_ReferenceDataSetList):
+    def _output(self):
+        result = super()._output(self)
+        return result["value"]

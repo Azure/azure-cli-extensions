@@ -8,7 +8,8 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
-# pylint: disable=unused-argument
+
+import json
 
 
 def desktopvirtualization_workspace_list(client,
@@ -28,18 +29,25 @@ def desktopvirtualization_workspace_show(client,
 def desktopvirtualization_workspace_create(client,
                                            resource_group_name,
                                            workspace_name,
-                                           location,
+                                           location=None,
                                            tags=None,
                                            description=None,
                                            friendly_name=None,
                                            application_group_references=None):
+    workspace = {}
+    if location is not None:
+        workspace['location'] = location
+    if tags is not None:
+        workspace['tags'] = tags
+    if description is not None:
+        workspace['description'] = description
+    if friendly_name is not None:
+        workspace['friendly_name'] = friendly_name
+    if application_group_references is not None:
+        workspace['application_group_references'] = application_group_references
     return client.create_or_update(resource_group_name=resource_group_name,
                                    workspace_name=workspace_name,
-                                   tags=tags,
-                                   location=location,
-                                   description=description,
-                                   friendly_name=friendly_name,
-                                   application_group_references=application_group_references)
+                                   workspace=workspace)
 
 
 def desktopvirtualization_workspace_update(client,
@@ -49,12 +57,18 @@ def desktopvirtualization_workspace_update(client,
                                            description=None,
                                            friendly_name=None,
                                            application_group_references=None):
+    workspace = {}
+    if tags is not None:
+        workspace['tags'] = tags
+    if description is not None:
+        workspace['description'] = description
+    if friendly_name is not None:
+        workspace['friendly_name'] = friendly_name
+    if application_group_references is not None:
+        workspace['application_group_references'] = application_group_references
     return client.update(resource_group_name=resource_group_name,
                          workspace_name=workspace_name,
-                         tags=tags,
-                         description=description,
-                         friendly_name=friendly_name,
-                         application_group_references=application_group_references)
+                         workspace=workspace)
 
 
 def desktopvirtualization_workspace_delete(client,
@@ -83,20 +97,26 @@ def desktopvirtualization_applicationgroup_show(client,
 def desktopvirtualization_applicationgroup_create(client,
                                                   resource_group_name,
                                                   application_group_name,
-                                                  location,
                                                   host_pool_arm_path,
                                                   application_group_type,
+                                                  location=None,
                                                   tags=None,
                                                   description=None,
                                                   friendly_name=None):
+    application_group = {}
+    if location is not None:
+        application_group['location'] = location
+    if tags is not None:
+        application_group['tags'] = tags
+    if description is not None:
+        application_group['description'] = description
+    if friendly_name is not None:
+        application_group['friendly_name'] = friendly_name
+    application_group['host_pool_arm_path'] = host_pool_arm_path
+    application_group['application_group_type'] = application_group_type
     return client.create_or_update(resource_group_name=resource_group_name,
                                    application_group_name=application_group_name,
-                                   tags=tags,
-                                   location=location,
-                                   description=description,
-                                   friendly_name=friendly_name,
-                                   host_pool_arm_path=host_pool_arm_path,
-                                   application_group_type=application_group_type)
+                                   application_group=application_group)
 
 
 def desktopvirtualization_applicationgroup_update(client,
@@ -105,11 +125,16 @@ def desktopvirtualization_applicationgroup_update(client,
                                                   tags=None,
                                                   description=None,
                                                   friendly_name=None):
+    application_group = {}
+    if tags is not None:
+        application_group['tags'] = tags
+    if description is not None:
+        application_group['description'] = description
+    if friendly_name is not None:
+        application_group['friendly_name'] = friendly_name
     return client.update(resource_group_name=resource_group_name,
                          application_group_name=application_group_name,
-                         tags=tags,
-                         description=description,
-                         friendly_name=friendly_name)
+                         application_group=application_group)
 
 
 def desktopvirtualization_applicationgroup_delete(client,
@@ -136,36 +161,65 @@ def desktopvirtualization_hostpool_show(client,
 def desktopvirtualization_hostpool_create(client,
                                           resource_group_name,
                                           host_pool_name,
-                                          location,
                                           host_pool_type,
-                                          personal_desktop_assignment_type,
                                           load_balancer_type,
+                                          preferred_app_group_type,
+                                          location=None,
                                           tags=None,
                                           friendly_name=None,
                                           description=None,
+                                          personal_desktop_assignment_type=None,
                                           custom_rdp_property=None,
                                           max_session_limit=None,
                                           ring=None,
                                           validation_environment=None,
                                           registration_info=None,
                                           vm_template=None,
-                                          sso_context=None):
+                                          ssoadfs_authority=None,
+                                          sso_client_id=None,
+                                          sso_client_secret_key_vault_path=None,
+                                          sso_secret_type=None,
+                                          start_vm_on_connect=None):
+    host_pool = {
+        'host_pool_type': host_pool_type,
+        'load_balancer_type': load_balancer_type,
+        'preferred_app_group_type': preferred_app_group_type
+    }
+    if location is not None:
+        host_pool['location'] = location
+    if tags is not None:
+        host_pool['tags'] = tags
+    if friendly_name is not None:
+        host_pool['friendly_name'] = friendly_name
+    if description is not None:
+        host_pool['description'] = description
+    if personal_desktop_assignment_type is not None:
+        host_pool['personal_desktop_assignment_type'] = personal_desktop_assignment_type
+    if custom_rdp_property is not None:
+        host_pool['custom_rdp_property'] = custom_rdp_property
+    if max_session_limit is not None:
+        host_pool['max_session_limit'] = max_session_limit
+    if ring is not None:
+        host_pool['ring'] = ring
+    if validation_environment is not None:
+        host_pool['validation_environment'] = validation_environment
+    if registration_info is not None:
+        host_pool['registration_info'] = registration_info
+    if vm_template is not None:
+        host_pool['vm_template'] = vm_template
+    if ssoadfs_authority is not None:
+        host_pool['ssoadfs_authority'] = ssoadfs_authority
+    if sso_client_id is not None:
+        host_pool['sso_client_id'] = sso_client_id
+    if sso_client_secret_key_vault_path is not None:
+        host_pool['sso_client_secret_key_vault_path'] = sso_client_secret_key_vault_path
+    if sso_secret_type is not None:
+        host_pool['sso_secret_type'] = sso_secret_type
+    if start_vm_on_connect is not None:
+        host_pool['start_vm_on_connect'] = start_vm_on_connect
     return client.create_or_update(resource_group_name=resource_group_name,
                                    host_pool_name=host_pool_name,
-                                   tags=tags,
-                                   location=location,
-                                   friendly_name=friendly_name,
-                                   description=description,
-                                   host_pool_type=host_pool_type,
-                                   personal_desktop_assignment_type=personal_desktop_assignment_type,
-                                   custom_rdp_property=custom_rdp_property,
-                                   max_session_limit=max_session_limit,
-                                   load_balancer_type=load_balancer_type,
-                                   ring=ring,
-                                   validation_environment=validation_environment,
-                                   registration_info=registration_info,
-                                   vm_template=vm_template,
-                                   sso_context=sso_context)
+                                   host_pool=host_pool)
 
 
 def desktopvirtualization_hostpool_update(client,
@@ -181,20 +235,51 @@ def desktopvirtualization_hostpool_update(client,
                                           ring=None,
                                           validation_environment=None,
                                           registration_info=None,
-                                          sso_context=None):
+                                          vm_template=None,
+                                          ssoadfs_authority=None,
+                                          sso_client_id=None,
+                                          sso_client_secret_key_vault_path=None,
+                                          sso_secret_type=None,
+                                          preferred_app_group_type=None,
+                                          start_vm_on_connect=None):
+    host_pool = {}
+    if tags is not None:
+        host_pool['tags'] = tags
+    if friendly_name is not None:
+        host_pool['friendly_name'] = friendly_name
+    if description is not None:
+        host_pool['description'] = description
+    if custom_rdp_property is not None:
+        host_pool['custom_rdp_property'] = custom_rdp_property
+    if max_session_limit is not None:
+        host_pool['max_session_limit'] = max_session_limit
+    if personal_desktop_assignment_type is not None:
+        host_pool['personal_desktop_assignment_type'] = personal_desktop_assignment_type
+    if load_balancer_type is not None:
+        host_pool['load_balancer_type'] = load_balancer_type
+    if ring is not None:
+        host_pool['ring'] = ring
+    if validation_environment is not None:
+        host_pool['validation_environment'] = validation_environment
+    if registration_info is not None:
+        host_pool['registration_info'] = registration_info
+    if vm_template is not None:
+        host_pool['vm_template'] = vm_template
+    if ssoadfs_authority is not None:
+        host_pool['ssoadfs_authority'] = ssoadfs_authority
+    if sso_client_id is not None:
+        host_pool['sso_client_id'] = sso_client_id
+    if sso_client_secret_key_vault_path is not None:
+        host_pool['sso_client_secret_key_vault_path'] = sso_client_secret_key_vault_path
+    if sso_secret_type is not None:
+        host_pool['sso_secret_type'] = sso_secret_type
+    if preferred_app_group_type is not None:
+        host_pool['preferred_app_group_type'] = preferred_app_group_type
+    if start_vm_on_connect is not None:
+        host_pool['start_vm_on_connect'] = start_vm_on_connect
     return client.update(resource_group_name=resource_group_name,
                          host_pool_name=host_pool_name,
-                         tags=tags,
-                         friendly_name=friendly_name,
-                         description=description,
-                         custom_rdp_property=custom_rdp_property,
-                         max_session_limit=max_session_limit,
-                         personal_desktop_assignment_type=personal_desktop_assignment_type,
-                         load_balancer_type=load_balancer_type,
-                         ring=ring,
-                         validation_environment=validation_environment,
-                         registration_info=registration_info,
-                         sso_context=sso_context)
+                         host_pool=host_pool)
 
 
 def desktopvirtualization_hostpool_delete(client,
@@ -204,3 +289,10 @@ def desktopvirtualization_hostpool_delete(client,
     return client.delete(resource_group_name=resource_group_name,
                          host_pool_name=host_pool_name,
                          force=force)
+
+
+def desktopvirtualization_hostpool_retrieve_registration_token(client,
+                                                               resource_group_name,
+                                                               host_pool_name):
+    return client.retrieve_registration_token(resource_group_name=resource_group_name,
+                                              host_pool_name=host_pool_name)

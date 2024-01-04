@@ -1,0 +1,475 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_integration_account_map","date":"2023-06-26T02:11:18Z","module":"logic"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '365'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Jun 2023 02:11:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "sku": {"name": "standard"}, "properties": {"state":
+      "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '87'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --sku
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"state":"Enabled"},"sku":{"name":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002","name":"acc000002","type":"Microsoft.Logic/integrationAccounts","location":"westus"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '291'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Jun 2023 02:11:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account map create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --integration-account --map-type --content-type --map-content
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_integration_account_map","date":"2023-06-26T02:11:18Z","module":"logic"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '365'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Jun 2023 02:11:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"content": "<?xml version=\"1.0\"
+      encoding=\"UTF-16\"?><xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"
+      xmlns:msxsl=\"urn:schemas-microsoft-com:xslt\" xmlns:var=\"http://schemas.microsoft.com/BizTalk/2003/var\"
+      exclude-result-prefixes=\"msxsl var s0 userCSharp\" version=\"1.0\" xmlns:ns0=\"http://BizTalk_Server_Project4.StringFunctoidsDestinationSchema\"
+      xmlns:s0=\"http://BizTalk_Server_Project4.StringFunctoidsSourceSchema\" xmlns:userCSharp=\"http://schemas.microsoft.com/BizTalk/2003/userCSharp\">  <xsl:import
+      href=\"http://btsfunctoids.blob.core.windows.net/functoids/functoids.xslt\"
+      />  <xsl:output omit-xml-declaration=\"yes\" method=\"xml\" version=\"1.0\"
+      />  <xsl:template match=\"/\">    <xsl:apply-templates select=\"/s0:Root\" />  </xsl:template>  <xsl:template
+      match=\"/s0:Root\">    <xsl:variable name=\"var:v1\" select=\"userCSharp:StringFind(string(StringFindSource/text())
+      , &quot;SearchString&quot;)\" />    <xsl:variable name=\"var:v2\" select=\"userCSharp:StringLeft(string(StringLeftSource/text())
+      , &quot;2&quot;)\" />    <xsl:variable name=\"var:v3\" select=\"userCSharp:StringRight(string(StringRightSource/text())
+      , &quot;2&quot;)\" />    <xsl:variable name=\"var:v4\" select=\"userCSharp:StringUpperCase(string(UppercaseSource/text()))\"
+      />    <xsl:variable name=\"var:v5\" select=\"userCSharp:StringLowerCase(string(LowercaseSource/text()))\"
+      />    <xsl:variable name=\"var:v6\" select=\"userCSharp:StringSize(string(SizeSource/text()))\"
+      />    <xsl:variable name=\"var:v7\" select=\"userCSharp:StringSubstring(string(StringExtractSource/text())
+      , &quot;0&quot; , &quot;2&quot;)\" />    <xsl:variable name=\"var:v8\" select=\"userCSharp:StringConcat(string(StringConcatSource/text()))\"
+      />    <xsl:variable name=\"var:v9\" select=\"userCSharp:StringTrimLeft(string(StringLeftTrimSource/text()))\"
+      />    <xsl:variable name=\"var:v10\" select=\"userCSharp:StringTrimRight(string(StringRightTrimSource/text()))\"
+      />    <ns0:Root>      <StringFindDestination>        <xsl:value-of select=\"$var:v1\"
+      />      </StringFindDestination>      <StringLeftDestination>        <xsl:value-of
+      select=\"$var:v2\" />      </StringLeftDestination>      <StringRightDestination>        <xsl:value-of
+      select=\"$var:v3\" />      </StringRightDestination>      <UppercaseDestination>        <xsl:value-of
+      select=\"$var:v4\" />      </UppercaseDestination>      <LowercaseDestination>        <xsl:value-of
+      select=\"$var:v5\" />      </LowercaseDestination>      <SizeDestination>        <xsl:value-of
+      select=\"$var:v6\" />      </SizeDestination>      <StringExtractDestination>        <xsl:value-of
+      select=\"$var:v7\" />      </StringExtractDestination>      <StringConcatDestination>        <xsl:value-of
+      select=\"$var:v8\" />      </StringConcatDestination>      <StringLeftTrimDestination>        <xsl:value-of
+      select=\"$var:v9\" />      </StringLeftTrimDestination>      <StringRightTrimDestination>        <xsl:value-of
+      select=\"$var:v10\" />      </StringRightTrimDestination>    </ns0:Root>  </xsl:template></xsl:stylesheet>\n",
+      "contentType": "application/xml", "mapType": "Xslt"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account map create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '3156'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --integration-account --map-type --content-type --map-content
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002/maps/map000003?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"mapType":"Xslt","contentLink":{"uri":"https://prod-24.westus.logic.azure.com:443/integrationAccounts/6e310e003efe442fa2cfbff1ac6dd2ba/maps/map000003/contents/Value?api-version=2015-08-01-preview&se=2023-06-26T06%3A11%3A31.5487533Z&sp=%2Fmaps%2Fmap000003%2Fread&sv=1.0&sig=0xvq63zs5a-pBTfSaEXQi10Y8aqVUNg5XEmxuj1TBws","contentSize":2955},"createdTime":"2023-06-26T02:11:31.4944874Z","changedTime":"2023-06-26T02:11:31.4956517Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002/maps/map000003","name":"map000003","type":"Microsoft.Logic/integrationAccounts/maps"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '675'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Jun 2023 02:11:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account map update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --integration-account
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_integration_account_map","date":"2023-06-26T02:11:18Z","module":"logic"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '365'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Jun 2023 02:11:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account map update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --integration-account
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002/maps/map000003?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"mapType":"Xslt","contentLink":{"uri":"https://prod-24.westus.logic.azure.com:443/integrationAccounts/6e310e003efe442fa2cfbff1ac6dd2ba/maps/map000003/contents/Value?api-version=2015-08-01-preview&se=2023-06-26T06%3A11%3A34.3918116Z&sp=%2Fmaps%2Fmap000003%2Fread&sv=1.0&sig=YJdv45jUNbJU9-DlT5cKn-SdF3lqFXvsetXtxciTBXo","contentSize":2955},"createdTime":"2023-06-26T02:11:31.4944874Z","changedTime":"2023-06-26T02:11:31.4956517Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002/maps/map000003","name":"map000003","type":"Microsoft.Logic/integrationAccounts/maps"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '675'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Jun 2023 02:11:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"contentLink": {"uri": "https://prod-24.westus.logic.azure.com:443/integrationAccounts/6e310e003efe442fa2cfbff1ac6dd2ba/maps/map000003/contents/Value?api-version=2015-08-01-preview&se=2023-06-26T06%3A11%3A34.3918116Z&sp=%2Fmaps%2Fmap000003%2Fread&sv=1.0&sig=YJdv45jUNbJU9-DlT5cKn-SdF3lqFXvsetXtxciTBXo"},
+      "contentType": "application/xml", "mapType": "Xslt"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account map update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '396'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --integration-account
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002/maps/map000003?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"mapType":"Xslt","contentLink":{"uri":"https://prod-24.westus.logic.azure.com:443/integrationAccounts/6e310e003efe442fa2cfbff1ac6dd2ba/maps/map000003/contents/Value?api-version=2015-08-01-preview&se=2023-06-26T06%3A11%3A35.1574920Z&sp=%2Fmaps%2Fmap000003%2Fread&sv=1.0&sig=CHFHB5bBuSz8OAMGtOtZUOsauN23f0DHemas3ut56t8","contentSize":2955},"createdTime":"2023-06-26T02:11:31.4944874Z","changedTime":"2023-06-26T02:11:35.1312678Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002/maps/map000003","name":"map000003","type":"Microsoft.Logic/integrationAccounts/maps"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '675'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Jun 2023 02:11:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account map show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --integration-account
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002/maps/map000003?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"mapType":"Xslt","contentLink":{"uri":"https://prod-24.westus.logic.azure.com:443/integrationAccounts/6e310e003efe442fa2cfbff1ac6dd2ba/maps/map000003/contents/Value?api-version=2015-08-01-preview&se=2023-06-26T06%3A11%3A37.0118913Z&sp=%2Fmaps%2Fmap000003%2Fread&sv=1.0&sig=JIaceOiv62ITu13MyM2YnxvAi0TV_FeIy2jSdVKBQ1o","contentSize":2955},"createdTime":"2023-06-26T02:11:31.4944874Z","changedTime":"2023-06-26T02:11:35.1312678Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002/maps/map000003","name":"map000003","type":"Microsoft.Logic/integrationAccounts/maps"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '675'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Jun 2023 02:11:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account map list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --integration-account
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002/maps?api-version=2019-05-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"mapType":"Xslt","contentLink":{"uri":"https://prod-24.westus.logic.azure.com:443/integrationAccounts/6e310e003efe442fa2cfbff1ac6dd2ba/maps/map000003/contents/Value?api-version=2015-08-01-preview&se=2023-06-26T06%3A11%3A38.9164614Z&sp=%2Fmaps%2Fmap000003%2Fread&sv=1.0&sig=FNfsaWVmkJoKzclDT_pA7vsl3U4oOlD_MsAT2XcdXeI","contentSize":2955},"createdTime":"2023-06-26T02:11:31.4944874Z","changedTime":"2023-06-26T02:11:35.1312678Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002/maps/map000003","name":"map000003","type":"Microsoft.Logic/integrationAccounts/maps"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '687'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Jun 2023 02:11:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account map delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --integration-account -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Logic/integrationAccounts/acc000002/maps/map000003?api-version=2019-05-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 26 Jun 2023 02:11:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

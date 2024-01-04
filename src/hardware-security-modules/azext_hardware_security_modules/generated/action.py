@@ -7,19 +7,24 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+
+
 # pylint: disable=protected-access
 
+# pylint: disable=no-self-use
+
+
 import argparse
-from knack.util import CLIError
 from collections import defaultdict
+from knack.util import CLIError
 
 
-class AddNetworkProfileSubnet(argparse.Action):
+class AddSubnet(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.network_profile_subnet = action
+        super(AddSubnet, self).__call__(parser, namespace, action, option_string)
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -31,17 +36,24 @@ class AddNetworkProfileSubnet(argparse.Action):
         for k in properties:
             kl = k.lower()
             v = properties[k]
+
             if kl == 'id':
                 d['id'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter subnet. All possible keys are: id'.format(k)
+                )
+
         return d
 
 
-class AddNetworkProfileNetworkInterfaces(argparse._AppendAction):
+class AddNetworkInterfaces(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddNetworkProfileNetworkInterfaces, self).__call__(parser, namespace, action, option_string)
+        super(AddNetworkInterfaces, self).__call__(parser, namespace, action, option_string)
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -53,6 +65,14 @@ class AddNetworkProfileNetworkInterfaces(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
+
             if kl == 'private-ip-address':
                 d['private_ip_address'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter network-interfaces. All possible keys are:'
+                    ' private-ip-address'.format(k)
+                )
+
         return d

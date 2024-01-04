@@ -5,4 +5,4 @@
 
 from azure.cli.core.profiles import CustomResourceType
 
-CUSTOM_VWAN = CustomResourceType('azext_vwan.vendored_sdks.v2020_05_01', 'NetworkManagementClient')
+CUSTOM_VWAN = CustomResourceType('azext_vwan.vendored_sdks.v2022_07_01', 'NetworkManagementClient')

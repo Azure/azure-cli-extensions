@@ -1,0 +1,66 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation list-history
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-id --reservation-id
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328/revisions?api-version=2022-11-01
+  response:
+    body:
+      string: '{"value":[{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328/revisions/11","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"11","etag":11,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":3,"provisioningState":"Succeeded","expiryDateTime":"2024-03-04T04:23:12.3497675Z","benefitStartTime":"2023-03-04T04:23:12.3497675Z","displayName":"VM_RI_03-03-2023_20-161","effectiveDateTime":"2023-03-06T20:46:45.8460396Z","lastUpdatedDateTime":"2023-03-06T20:46:45.9397367Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 1 Year","renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328/revisions/10","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"10","etag":10,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":3,"provisioningState":"Pending","expiryDateTime":"2024-03-04T04:23:12.3497675Z","benefitStartTime":"2023-03-04T04:23:12.3497675Z","displayName":"VM_RI_03-03-2023_20-16","effectiveDateTime":"2023-03-04T04:23:13.2717004Z","extendedStatusInfo":{"statusCode":"Pending","message":"An
+        operation is in progress on your benefit. Please wait for operation to complete
+        before taking further action."},"lastUpdatedDateTime":"2023-03-06T20:46:43.1655158Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 1 Year","renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328/revisions/9","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"9","etag":9,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":3,"provisioningState":"Succeeded","expiryDateTime":"2024-03-04T04:23:12.3497675Z","benefitStartTime":"2023-03-04T04:23:12.3497675Z","displayName":"VM_RI_03-03-2023_20-16","effectiveDateTime":"2023-03-04T04:23:13.2717004Z","lastUpdatedDateTime":"2023-03-04T04:23:13.2717004Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 1 Year","renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328/revisions/8","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"8","etag":8,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":3,"provisioningState":"Succeeded","expiryDateTime":"2024-03-04T04:23:12.3497675Z","benefitStartTime":"2023-03-04T04:23:12.3497675Z","displayName":"VM_RI_03-03-2023_20-16","effectiveDateTime":"2023-03-04T04:23:13.2717004Z","lastUpdatedDateTime":"2023-03-04T04:23:13.2717004Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 1 Year","renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328/revisions/7","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"7","etag":7,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":3,"provisioningState":"ConfirmedBilling","displayName":"VM_RI_03-03-2023_20-16","effectiveDateTime":"2023-03-04T04:17:25.7707892Z","extendedStatusInfo":{"statusCode":"Pending","message":"Your
+        payment has been successfully processed. We are finalizing your reservation."},"lastUpdatedDateTime":"2023-03-04T04:22:58.959617Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 1 Year","renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328/revisions/6","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"6","etag":6,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":3,"provisioningState":"PendingBilling","displayName":"VM_RI_03-03-2023_20-16","effectiveDateTime":"2023-03-04T04:17:25.7707892Z","extendedStatusInfo":{"statusCode":"Pending","message":"Payment
+        processing is in progress."},"lastUpdatedDateTime":"2023-03-04T04:21:48.1041244Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 1 Year","renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328/revisions/5","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"5","etag":5,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":3,"provisioningState":"ConfirmedCapacity","displayName":"VM_RI_03-03-2023_20-16","effectiveDateTime":"2023-03-04T04:17:25.7707892Z","lastUpdatedDateTime":"2023-03-04T04:18:37.767541Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 1 Year","renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328/revisions/4","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"4","etag":4,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":3,"provisioningState":"PendingCapacity","displayName":"VM_RI_03-03-2023_20-16","effectiveDateTime":"2023-03-04T04:17:25.7707892Z","extendedStatusInfo":{"statusCode":"Pending","message":"Reservation
+        of capacity is in progress."},"lastUpdatedDateTime":"2023-03-04T04:18:22.2828706Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 1 Year","renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328/revisions/3","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"3","etag":3,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":3,"provisioningState":"Creating","displayName":"VM_RI_03-03-2023_20-16","effectiveDateTime":"2023-03-04T04:17:25.7707892Z","lastUpdatedDateTime":"2023-03-04T04:18:03.4509376Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 1 Year","renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328/revisions/2","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"2","etag":2,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":3,"provisioningState":"Creating","displayName":"VM_RI_03-03-2023_20-16","effectiveDateTime":"2023-03-04T04:17:25.7707892Z","lastUpdatedDateTime":"2023-03-04T04:17:43.3120432Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 1 Year","renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328/revisions/1","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"1","etag":1,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":3,"provisioningState":"Creating","displayName":"VM_RI_03-03-2023_20-16","effectiveDateTime":"2023-03-04T04:17:25.7707892Z","lastUpdatedDateTime":"2023-03-04T04:17:25.7707892Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 1 Year","renew":false,"archived":false}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '8631'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 20:49:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

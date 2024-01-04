@@ -1,0 +1,28 @@
+files_check:
+  - files:
+      - "src/.*/HISTORY.rst"
+      - "src/.*/setup.py"
+    comment: |
+      Please write the description of changes which can be perceived by customers into HISTORY.rst.
+      If you want to release a new extension version, please update the version in setup.py as well.
+    is_regex: true
+    type: necessary
+allowed_branches:
+  - "main"
+auto_choose_milestone:
+  pr_expected_days: 7
+pull_request:
+  comment:
+    - azure_pipeline:
+        allow_list:
+          - "Azure.azure-cli-extensions Breaking Change Test"
+        result_path: "/breaking_change_test/"
+      group_by_keys:
+        - "TestName"
+        - "Module"
+      template_path: "templates/BreakingChangeTest.handlebars"
+      comment_title: "Azure CLI Extensions Breaking Change Test"
+      init_comment: |
+        Validation for Breaking Change Starting...
+        Thanks for your contribution!
+      disable_check_suit: true

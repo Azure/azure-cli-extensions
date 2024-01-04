@@ -6,9 +6,10 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
+
 helps['storage blob copy start'] = """
 type: command
-short-summary: List blobs in a given container.
+short-summary: Start a copy blob job.
 parameters:
   - name: --source-uri -u
     type: string
@@ -67,52 +68,14 @@ examples:
         az storage blob copy start --account-name MyAccount --destination-blob MyDestinationBlob --destination-container MyDestinationContainer --sas-token $sas --source-uri https://storage.blob.core.windows.net/photos
 """
 
-helps['storage blob download'] = """
-type: command
-short-summary: Download a blob to a file path, with automatic chunking and progress notifications.
-"""
-
 helps['storage blob filter'] = """
 type: command
 short-summary: List blobs across all containers whose tags match a given search expression.
-long-summary: >
-    Filter blobs searches across all containers within a storage account but can be scoped within the expression to
-    a single container.
 parameters:
   - name: --tag-filter
     short-summary: >
             The expression to find blobs whose tags matches the specified condition.
             eg. ""yourtagname"='firsttag' and "yourtagname2"='secondtag'"
-            To specify a container, eg. "@container='containerName' and "Name"='C'"
-"""
-
-helps['storage blob list'] = """
-type: command
-short-summary: List blobs in a given container.
-examples:
-  - name: List all storage blobs in a container whose names start with 'foo'; will match names such as 'foo', 'foobar', and 'foo/bar'
-    text: az storage blob list -c MyContainer --prefix foo
-"""
-
-helps['storage blob metadata'] = """
-type: group
-short-summary: Manage blob metadata.
-"""
-
-helps['storage blob metadata show'] = """
-type: command
-short-summary: Return all user-defined metadata for the specified blob or snapshot.
-examples:
-  - name: Get all user-defined metadata for the specified blob.
-    text: az storage blob metadata show -n myblob -c mycontainer --account-name mystorageaccount --account-key 0000-0000
-"""
-
-helps['storage blob metadata update'] = """
-type: command
-short-summary: Set user-defined metadata for the specified blob as one or more name-value pairs.
-examples:
-  - name:  Set user-defined metadata for the specified blob as one or more name-value pairs.
-    text: az storage blob metadata update -n myblob -c mycontainer --metadata a=b c=d
 """
 
 helps['storage blob tag'] = """

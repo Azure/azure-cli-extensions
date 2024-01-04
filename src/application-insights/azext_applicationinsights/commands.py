@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+# pylint: disable=too-many-statements
 
 from azure.cli.core.commands import CliCommandType
 
@@ -12,10 +13,8 @@ from azext_applicationinsights._client_factory import (
     cf_metrics,
     cf_query,
     cf_components,
-    cf_api_key,
-    cf_component_billing,
-    cf_component_linked_storage_accounts,
-    cf_export_configuration
+    cf_export_configuration,
+    cf_web_test
 )
 
 
@@ -45,30 +44,6 @@ def load_command_table(self, _):
         operations_tmpl='azext_applicationinsights.custom#{}',
         client_factory=cf_components
     )
-    components_billing_sdk = CliCommandType(
-        operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.operations.component_current_billing_features_operations#ComponentCurrentBillingFeaturesOperations.{}',
-        client_factory=cf_component_billing
-    )
-
-    components_billing_custom_sdk = CliCommandType(
-        operations_tmpl='azext_applicationinsights.custom#{}',
-        client_factory=cf_component_billing
-    )
-
-    api_key_sdk = CliCommandType(
-        operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.operations.api_keys_operations#APIKeysOperations.{}',
-        client_factory=cf_api_key
-    )
-
-    api_key_custom_sdk = CliCommandType(
-        operations_tmpl='azext_applicationinsights.custom#{}',
-        client_factory=cf_api_key
-    )
-
-    component_linked_storage_accounts_custom_sdk = CliCommandType(
-        operations_tmpl='azext_applicationinsights.custom#{}',
-        client_factory=cf_component_linked_storage_accounts
-    )
 
     export_configurations_sdk = CliCommandType(
         operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.operations.export_configurations_operations#ExportConfigurationsOperations.{}',
@@ -80,6 +55,16 @@ def load_command_table(self, _):
         client_factory=cf_export_configuration
     )
 
+    web_test_sdk = CliCommandType(
+        operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.operations#WebTestsOperations.{}',
+        client_factory=cf_web_test
+    )
+
+    web_test_custom_sdk = CliCommandType(
+        operations_tmpl='azext_applicationinsights.custom#{}',
+        client_factory=cf_web_test
+    )
+
     with self.command_group('monitor app-insights component', command_type=components_sdk, custom_command_type=components_custom_sdk) as g:
         g.custom_command('create', 'create_or_update_component')
         g.custom_command('update', 'update_component')
@@ -89,14 +74,16 @@ def load_command_table(self, _):
         g.custom_command('connect-webapp', 'connect_webapp')
         g.custom_command('connect-function', 'connect_function')
 
-    with self.command_group('monitor app-insights component billing', command_type=components_billing_sdk, custom_command_type=components_billing_custom_sdk) as g:
-        g.custom_command('update', 'update_component_billing')
-        g.custom_show_command('show', 'show_component_billing')
+    with self.command_group('monitor app-insights component billing'):
+        from .custom import BillingShow, BillingUpdate
+        self.command_table['monitor app-insights component billing show'] = BillingShow(loader=self)
+        self.command_table['monitor app-insights component billing update'] = BillingUpdate(loader=self)
 
-    with self.command_group('monitor app-insights api-key', command_type=api_key_sdk, custom_command_type=api_key_custom_sdk) as g:
-        g.custom_command('create', 'create_api_key')
-        g.custom_show_command('show', 'show_api_key')
-        g.custom_command('delete', 'delete_api_key')
+    with self.command_group('monitor app-insights api-key'):
+        from .custom import APIKeyCreate, APIKeyShow, APIKeyDelete
+        self.command_table['monitor app-insights api-key create'] = APIKeyCreate(loader=self)
+        self.command_table['monitor app-insights api-key show'] = APIKeyShow(loader=self)
+        self.command_table['monitor app-insights api-key delete'] = APIKeyDelete(loader=self)
 
     with self.command_group('monitor app-insights metrics', metrics_sdk) as g:
         g.custom_show_command('show', 'get_metric')
@@ -108,15 +95,26 @@ def load_command_table(self, _):
     with self.command_group('monitor app-insights', query_sdk) as g:
         g.custom_command('query', 'execute_query')
 
-    with self.command_group('monitor app-insights component linked-storage', custom_command_type=component_linked_storage_accounts_custom_sdk) as g:
-        g.custom_show_command('show', 'get_component_linked_storage_account')
-        g.custom_command('link', 'create_component_linked_storage_account')
-        g.custom_command('update', 'update_component_linked_storage_account')
-        g.custom_command('unlink', 'delete_component_linked_storage_account')
+    with self.command_group('monitor app-insights component linked-storage'):
+        from .custom import LinkedStorageAccountLink, LinkedStorageAccountUpdate, LinkedStorageAccountShow, LinkedStorageAccountUnlink
+        self.command_table['monitor app-insights component linked-storage link'] = LinkedStorageAccountLink(loader=self)
+        self.command_table['monitor app-insights component linked-storage update'] = LinkedStorageAccountUpdate(loader=self)
+        self.command_table['monitor app-insights component linked-storage show'] = LinkedStorageAccountShow(loader=self)
+        self.command_table['monitor app-insights component linked-storage unlink'] = LinkedStorageAccountUnlink(loader=self)
+
+    with self.command_group('monitor app-insights component continues-export'):
+        from .custom import ExportConfigurationShow, ExportConfigurationDelete, ExportConfigurationList
+        self.command_table['monitor app-insights component continues-export show'] = ExportConfigurationShow(loader=self)
+        self.command_table['monitor app-insights component continues-export list'] = ExportConfigurationList(loader=self)
+        self.command_table['monitor app-insights component continues-export delete'] = ExportConfigurationDelete(loader=self)
 
     with self.command_group('monitor app-insights component continues-export', command_type=export_configurations_sdk, custom_command_type=export_configurations_custom_sdk) as g:
-        g.custom_command('list', 'list_export_configurations')
-        g.custom_show_command('show', 'get_export_configuration')
         g.custom_command('create', 'create_export_configuration')
         g.custom_command('update', 'update_export_configuration')
-        g.custom_command('delete', 'delete_export_configuration', confirmation=True)
+
+    with self.command_group('monitor app-insights web-test', command_type=web_test_sdk, custom_command_type=web_test_custom_sdk) as g:
+        g.custom_command('list', 'list_web_tests')
+        g.custom_show_command('show', 'get_web_test')
+        g.custom_command('create', 'create_web_test')
+        g.generic_update_command('update', custom_func_name='update_web_test', setter_arg_name='web_test_definition')
+        g.custom_command('delete', 'delete_web_test', confirmation=True)

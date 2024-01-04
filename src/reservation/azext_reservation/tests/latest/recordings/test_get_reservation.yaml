@@ -1,0 +1,49 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-id --reservation-id
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/73e63333-9b94-442c-8a5d-9403ba0e8b87/reservations/ab9761bb-324c-474a-b96c-3471bd643328","name":"ab9761bb-324c-474a-b96c-3471bd643328","type":"microsoft.capacity/reservationOrders/reservations","location":"uksouth","etag":11,"sku":{"name":"Standard_B1ls"},"properties":{"reservedResourceType":"VirtualMachines","userFriendlyRenewState":"Off","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 1 Year","renew":false,"archived":false,"quantity":3,"appliedScopeType":"Shared","displayName":"VM_RI_03-03-2023_20-161","provisioningState":"Succeeded","term":"P1Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Shared","expiryDateTime":"2024-03-04T04:23:12.3497675Z","purchaseDateTime":"2023-03-04T04:17:25.7707892Z","benefitStartTime":"2023-03-04T04:23:12.3497675Z","lastUpdatedDateTime":"2023-03-06T20:46:45.9397367Z","expiryDate":"2024-03-04","purchaseDate":"2023-03-04","effectiveDateTime":"2023-03-06T20:46:45.8460396Z","instanceFlexibility":"On","utilization":{"trend":"","aggregates":[{"grain":1.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":7.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":30.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"}]},"billingPlan":"Monthly","billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 20:49:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2251.115
+    status:
+      code: 200
+      message: OK
+version: 1

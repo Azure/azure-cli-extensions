@@ -3,3 +3,51 @@ network p2s-vpn-gateway vpn-client generate:
     authentication_method:
       rule_exclusions:
       - option_length_too_long
+network vhub connection create:
+  parameters:
+    associated_inbound_routemap:
+      rule_exclusions:
+        - option_length_too_long
+    associated_outbound_routemap:
+      rule_exclusions:
+        - option_length_too_long
+network vhub connection update:
+  parameters:
+    associated_inbound_routemap:
+      rule_exclusions:
+        - option_length_too_long
+    associated_outbound_routemap:
+      rule_exclusions:
+        - option_length_too_long
+network vpn-gateway connection create:
+  parameters:
+    associated_inbound_routemap:
+      rule_exclusions:
+        - option_length_too_long
+    associated_outbound_routemap:
+      rule_exclusions:
+        - option_length_too_long
+network vpn-gateway connection update:
+  parameters:
+    associated_inbound_routemap:
+      rule_exclusions:
+        - option_length_too_long
+    associated_outbound_routemap:
+      rule_exclusions:
+        - option_length_too_long
+network p2s-vpn-gateway create:
+  parameters:
+    associated_inbound_routemap:
+      rule_exclusions:
+        - option_length_too_long
+    associated_outbound_routemap:
+      rule_exclusions:
+        - option_length_too_long
+network p2s-vpn-gateway update:
+  parameters:
+    associated_inbound_routemap:
+      rule_exclusions:
+        - option_length_too_long
+    associated_outbound_routemap:
+      rule_exclusions:
+        - option_length_too_long

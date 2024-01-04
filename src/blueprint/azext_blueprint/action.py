@@ -17,8 +17,9 @@ class ResourceGroupAssignAddAction(argparse._AppendAction):
                 key, value = item.split('=', 1)
                 rg[key] = value
             except ValueError:
-                raise CLIError('Usage error: {} artifact_name=VALUE name=VALUE location=VALUE'.format(option_string))
+                raise CLIError('Usage error: {} artifact_name=VALUE name=VALUE location=VALUE'
+                               .format(option_string)) from ValueError
         if 'artifact_name' not in rg:
             raise CLIError('{} must provide value for artifact_name in the format of artifact_name=VALUE'
                            .format(option_string))
-        super(ResourceGroupAssignAddAction, self).__call__(parser, namespace, rg, option_string)
+        super().__call__(parser, namespace, rg, option_string)

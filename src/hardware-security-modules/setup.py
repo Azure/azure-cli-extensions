@@ -9,9 +9,12 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-# TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.1.0'
+VERSION = '0.2.0'
+try:
+    from azext_hardware_security_modules.manual.version import VERSION
+except ImportError:
+    pass
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -27,8 +30,12 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-# TODO: Add any additional SDK dependencies here
 DEPENDENCIES = []
+
+try:
+    from azext_hardware_security_modules.manual.dependency import DEPENDENCIES
+except ImportError:
+    pass
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
@@ -39,11 +46,9 @@ setup(
     name='hardware-security-modules',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools AzureDedicatedHSMResourceProvider Extension',
-    # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    # TODO: consider pointing directly to your source code instead of the generic repo
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/hardware-security-modules',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

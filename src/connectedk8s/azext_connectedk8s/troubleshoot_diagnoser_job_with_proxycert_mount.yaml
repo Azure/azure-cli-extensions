@@ -1,0 +1,73 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: azure-arc-troubleshoot-sa
+  namespace: azure-arc
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: secret-reader
+  namespace: default 
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: secret-reader
+subjects:
+- kind: ServiceAccount
+  name: azure-arc-troubleshoot-sa
+  namespace: azure-arc
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: Azure-Diagnoser
+  name: azure-arc-diagnoser-job
+  namespace: azure-arc
+spec:
+  backoffLimit: 4
+  template:
+    metadata:
+      labels:
+        app: Arc-Diagnoser
+    spec:
+      containers:
+      - args:
+        - default
+        command:
+        - /bin/bash
+        - /diagnoser_job_script.sh
+        image: mcr.microsoft.com/arck8sdiagnoser:v0.1.1
+        name: azure-arc-diagnoser-container
+        volumeMounts:
+        - mountPath: /etc/ssl/certs/
+          name: ssl-certs
+          readOnly: false
+        - mountPath: /usr/local/share/ca-certificates/proxy-cert.crt
+          name: proxy-certstore
+          subPath: proxy-cert.crt
+      restartPolicy: Never
+      serviceAccountName: azure-arc-troubleshoot-sa
+      volumes:
+      - name: proxy-certstore
+        secret:
+          namespace: azure-arc
+          secretName: proxy-cert
+      - emptyDir: {}
+        name: ssl-certs

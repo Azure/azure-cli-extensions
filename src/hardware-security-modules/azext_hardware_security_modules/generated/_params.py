@@ -7,19 +7,20 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     tags_type,
+    get_enum_type,
     resource_group_name_type,
     get_location_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_hardware_security_modules.action import (
-    AddNetworkProfileSubnet,
-    AddNetworkProfileNetworkInterfaces
+    AddSubnet,
+    AddNetworkInterfaces
 )
 
 
@@ -27,39 +28,49 @@ def load_arguments(self, _):
 
     with self.argument_context('dedicated-hsm list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('top', help='Maximum number of results to return.')
+        c.argument('top', type=int, help='Maximum number of results to return.')
 
     with self.argument_context('dedicated-hsm show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('name', options_list=[
-                   '--name', '-n'], help='The name of the dedicated HSM.')
+        c.argument('name', type=str, help='The name of the dedicated HSM.', id_part='name')
 
     with self.argument_context('dedicated-hsm create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('name', options_list=[
-                   '--name', '-n'], help='Name of the dedicated Hsm')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('name', type=str, help='Name of the dedicated Hsm')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('sku', type=str,
-                   help='The HSM device SKU if a non-standard HSM is wanted (default is: SafeNet Luna Network HSM A790)')
-        c.argument('zones', nargs='+',
-                   help='The Dedicated Hsm zones.')
+        c.argument('zones', nargs='+', help='The Dedicated Hsm zones.')
         c.argument('tags', tags_type)
-        c.argument(
-            'stamp_id', help='This field will be used when RP does not support Availability zones.')
-        c.argument('network_profile_subnet', arg_group='network profile', options_list=['--subnet', '-s'], action=AddNetworkProfileSubnet, nargs='+', help='Specifies the identifier '
-                   'of the subnet. Expected value: id=xx.')
-        c.argument('network_profile_network_interfaces', options_list=['--network-profile-network-interfaces', '-i'], action=AddNetworkProfileNetworkInterfaces, nargs='+', help='Sp'
-                   'ecifies a list of ip address from the specfied subnet for the network interfaces associated with the dedicated HSM. Expe'
-                   'cted value: -i private-ip-address=xx.')
+        c.argument('sku_name', options_list=['--sku'],
+                   arg_type=get_enum_type(['SafeNet Luna Network HSM A790', 'payShield10K_LMK1_CPS60',
+                                           'payShield10K_LMK1_CPS250', 'payShield10K_LMK1_CPS2500',
+                                           'payShield10K_LMK2_CPS60', 'payShield10K_LMK2_CPS250',
+                                           'payShield10K_LMK2_CPS2500']), help='SKU of the dedicated HSM',
+                   arg_group='Sku')
+        c.argument('stamp_id', type=str, help='This field will be used when RP does not support Availability zones.')
+        c.argument('subnet', action=AddSubnet, nargs='+', help='Specifies the identifier of the subnet.',
+                   arg_group='Network Profile')
+        c.argument('network_interfaces', options_list=['--network-interfaces', '-i'], action=AddNetworkInterfaces, nargs='+', help='Specifies the list of resource '
+                   'Ids for the network interfaces associated with the dedicated HSM.', arg_group='Network Profile')
+        c.argument('management_network_profile_subnet', options_list=['--mgmt-network-subnet'], action=AddSubnet, nargs='+', help='Specifies the identifier of '
+                   'the subnet.', arg_group='Management Network Profile')
+        c.argument('management_network_profile_interfaces', options_list=['--mgmt-network-interfaces', '-m'], action=AddNetworkInterfaces, nargs='+', help='Specifies the '
+                   'list of resource Ids for the network interfaces associated with the dedicated HSM.',
+                   arg_group='Management Network Profile')
 
     with self.argument_context('dedicated-hsm update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('name', options_list=[
-                   '--name', '-n'], help='Name of the dedicated HSM')
+        c.argument('name', type=str, help='Name of the dedicated HSM', id_part='name')
         c.argument('tags', tags_type)
 
     with self.argument_context('dedicated-hsm delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('name', options_list=[
-                   '--name', '-n'], help='The name of the dedicated HSM to delete')
+        c.argument('name', type=str, help='The name of the dedicated HSM to delete', id_part='name')
+
+    with self.argument_context('dedicated-hsm list-outbound-network-dependency-endpoint') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('name', type=str, help='The name of the dedicated HSM.')
+
+    with self.argument_context('dedicated-hsm wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('name', type=str, help='The name of the dedicated HSM.', id_part='name')
