@@ -1022,8 +1022,7 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
                        custom_location=None, min_worker_count=None, max_worker_count=None):
     # pylint: disable=too-many-statements, too-many-branches
     if functions_version is None:
-        logger.warning("No functions version specified so defaulting to 4. In the future, specifying a version will "
-                       "be required. To create a 4.x function you would pass in the flag `--functions-version 4`")
+        logger.warning("No functions version specified so defaulting to 4.")
         functions_version = '4'
 
     if deployment_source_url and deployment_local_git:
