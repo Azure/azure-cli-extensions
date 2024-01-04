@@ -2179,7 +2179,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert machine_show["name"] == machine_name
         print(machine_show)
 
-
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
