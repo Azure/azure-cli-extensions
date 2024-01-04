@@ -3,6 +3,11 @@
 Release History
 ===============
 
+<future release version placeholder>
++++++
+* Show suggestions from LLM when a command returns an error.
++++++
+
 0.5.3
 +++++
 * Optimize the visualization of help text when the window is reduced horizontally
