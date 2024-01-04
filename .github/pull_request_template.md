@@ -10,14 +10,12 @@ This checklist is used to make sure that common guidelines for a pull request ar
 
 - [ ] Have you run `azdev style <YOUR_EXT>` locally? (`pip install azdev` required)
 - [ ] Have you run `python scripts/ci/test_index.py -q` locally? (`pip install wheel==0.30.0` required)
+- [ ] My extension version conforms to the [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)
 
 For new extensions:
 
 - [ ] My extension description/summary conforms to the [Extension Summary Guidelines](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/extension_summary_guidelines.md).
 
-### Extension Versioning
-
-CLI extension has launched a standardized version schema for all extension modules. For each module release, please adjust version referring to this [doc](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)
 
 ### About Extension Publish
 
