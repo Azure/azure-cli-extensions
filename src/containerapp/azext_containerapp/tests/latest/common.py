@@ -7,7 +7,7 @@ import os
 from azure.cli.testsdk import (ScenarioTest)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-STAGE_LOCATION = "northcentralusstage"
+STAGE_LOCATION = os.getenv("CLIStageLocation") if os.getenv("CLIStageLocation") else "northcentralusstage"
 TEST_LOCATION = os.getenv("CLITestLocation") if os.getenv("CLITestLocation") else STAGE_LOCATION
 
 

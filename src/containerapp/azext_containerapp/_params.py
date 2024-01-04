@@ -131,6 +131,11 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Inbound Timeout Policy') as c:
         c.argument('in_timeout_response_in_seconds', type=int, options_list=['--in-timeout'], help='Specify the response timeout in seconds for the inbound policy. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries.')
 
+    with self.argument_context('containerapp env dapr-component resiliency', arg_group='Inbound Circuit Breaker Policy') as c:
+        c.argument('in_circuit_breaker_consecutive_errors', type=int, options_list=['--in-cb-sequential-errors'], help='The number of consecutive errors before the circuit is opened.')
+        c.argument('in_circuit_breaker_interval', type=int, options_list=['--in-cb-interval'], help='The optional interval in seconds after which the error count resets to 0. An interval of 0 will never reset. If not specified, the timeout value will be used.')
+        c.argument('in_circuit_breaker_timeout', type=int, options_list=['--in-cb-timeout'], help='The interval in seconds until a retry attempt is made after the circuit is opened.')
+
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound HTTP Retry Policy') as c:
         c.argument('out_http_retry_max', type=int, options_list=['--out-http-retries'], help='Specify the max number of retries for the outbound policy. Default: 3.')
         c.argument('out_http_retry_delay_in_milliseconds', type=int, options_list=['--out-http-delay'], help='Specify the base interval in milliseconds between retries for the outbound policy. Default: 1000.')
@@ -138,6 +143,11 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound Timeout Policy') as c:
         c.argument('out_timeout_response_in_seconds', type=int, options_list=['--out-timeout'], help='Specify the response timeout in seconds for the outbound policy. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries.')
+
+    with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound Circuit Breaker Policy') as c:
+        c.argument('out_circuit_breaker_consecutive_errors', type=int, options_list=['--out-cb-sequential-errors'], help='The number of consecutive errors before the circuit is opened.')
+        c.argument('out_circuit_breaker_interval', type=int, options_list=['--out-cb-interval'], help='The optional interval in seconds after which the error count resets to 0. An interval of 0 will never reset. If not specified, the timeout value will be used.')
+        c.argument('out_circuit_breaker_timeout', type=int, options_list=['--out-cb-timeout'], help='The interval in seconds until a retry attempt is made after the circuit is opened.')
 
     with self.argument_context('containerapp env dapr-component init') as c:
         c.argument('statestore', help="The state store component and dev service to create.")

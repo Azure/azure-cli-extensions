@@ -30,7 +30,7 @@ class ContainerappResiliencyTests(ScenarioTest):
         bad_capp = "bad-capp"
         resil_policy_count = 1
         
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, location=TEST_LOCATION)
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
         self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
@@ -309,12 +309,19 @@ outboundPolicy:
       maxIntervalInMilliseconds: 100
   timeoutPolicy:
     responseTimeoutInSeconds: 17
+  circuitBreakerPolicy:
+    consecutiveErrors: 5
+    timeoutInSeconds: 15
+    intervalInSeconds: 60
 inboundPolicy:
   httpRetryPolicy:
     maxRetries: 15
     retryBackOff:
       initialDelayInMilliseconds: 9
       maxIntervalInMilliseconds: 99
+  circuitBreakerPolicy:
+    consecutiveErrors: 3
+    timeoutInSeconds: 10
 """
         resil_file_name = f"{self._testMethodName}_daprcomp.yml"
 
@@ -324,9 +331,14 @@ inboundPolicy:
             JMESPathCheck("properties.outboundPolicy.httpRetryPolicy.retryBackOff.initialDelayInMilliseconds", "10"),
             JMESPathCheck("properties.outboundPolicy.httpRetryPolicy.retryBackOff.maxIntervalInMilliseconds", "100"),
             JMESPathCheck("properties.outboundPolicy.timeoutPolicy.responseTimeoutInSeconds", "17"),
+            JMESPathCheck("properties.outboundPolicy.circuitBreakerPolicy.consecutiveErrors", "5"),
+            JMESPathCheck("properties.outboundPolicy.circuitBreakerPolicy.timeoutInSeconds", "15"),
+            JMESPathCheck("properties.outboundPolicy.circuitBreakerPolicy.intervalInSeconds", "60"),
             JMESPathCheck("properties.inboundPolicy.httpRetryPolicy.maxRetries", "15"),
             JMESPathCheck("properties.inboundPolicy.httpRetryPolicy.retryBackOff.initialDelayInMilliseconds", "9"),
             JMESPathCheck("properties.inboundPolicy.httpRetryPolicy.retryBackOff.maxIntervalInMilliseconds", "99"),
+            JMESPathCheck("properties.inboundPolicy.circuitBreakerPolicy.consecutiveErrors", "3"),
+            JMESPathCheck("properties.inboundPolicy.circuitBreakerPolicy.timeoutInSeconds", "10"),
         ])
         clean_up_test_file(resil_file_name)
 
