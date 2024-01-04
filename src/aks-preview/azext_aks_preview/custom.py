@@ -21,8 +21,7 @@ from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
     get_graph_rbac_management_client,
-    get_msi_client,
-    cf_machines
+    get_msi_client
 )
 from azext_aks_preview._consts import (
     ADDONS,
