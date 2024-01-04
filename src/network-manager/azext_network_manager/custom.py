@@ -14,6 +14,7 @@ from .aaz.latest.network.manager.group.static_member import Create as _GroupStat
 from .aaz.latest.network.manager.scope_connection import Create as _ScopeConnectionCreate
 from .aaz.latest.network.manager.connection.management_group import Create as _ConnectionManagementGroupCreate
 from .aaz.latest.network.manager.connection.subscription import Create as _ConnectionSubscriptionCreate
+from .aaz.latest.network.manager.connect_config import Create as _ConnectConfigCreate
 
 
 def network_manager_create(cmd,
@@ -78,7 +79,7 @@ def network_manager_connect_config_create(cmd,
                                           delete_existing_peering=None):
     if connectivity_topology == 'HubAndSpoke' and hub is None:
         raise CLIError("if 'HubAndSpoke' is the topolopy seleted,'--hub' is required")
-    from .aaz.latest.network.manager.connect_config import Create as _ConnectConfigCreate
+    from .custom import ConnectConfigCreate as _ConnectConfigCreate
     connectivity_configuration = {}
     connectivity_configuration['resource_group'] = resource_group_name
     connectivity_configuration['network_manager_name'] = network_manager_name
@@ -285,4 +286,15 @@ class ConnectionManagementGroupCreate(_ConnectionManagementGroupCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.network_manager_id._required = True
+        return args_schema
+
+
+class ConnectConfigCreate(_ConnectConfigCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.hubs._element.resource_id._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{}",
+        )
         return args_schema
