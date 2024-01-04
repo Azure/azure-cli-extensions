@@ -126,7 +126,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         table_row = table[0]
         hist_row = table_row['']
         second_char = hist_row[1]
-        self.assertEquals(second_char, "\u2588")    # Expecting a "Full Block" character here 
+        self.assertEquals(second_char, "\u2588")    # Expecting a "Full Block" character here
 
         # Give it a malformed histogram
         test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]"]}'
@@ -135,36 +135,36 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         # Call with output from a failed job
         test_job_results = \
-        '{\
-            "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
-            "cancellationTime": null,\
-            "containerUri": "https://foo...",\
-            "costEstimate": null,\
-            "creationTime": "2022-02-25T18:56:53.275035+00:00",\
-            "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
-            "errorData": {\
-                "code": "InsufficientResources",\
-                "message": "Too many qubits requested"\
-            },\
-            "id": "11111111-2222-3333-4444-555555555555",\
-            "inputDataFormat": "microsoft.ionq-ir.v2",\
-            "inputDataUri": "https://bar...",\
-            "inputParams": {\
-                "shots": "500"\
-            },\
-            "isCancelling": false,\
-            "metadata": {\
-                "entryPointInput": {\"Qubits\":null},\
-                "outputMappingBlobUri": "https://baz..."\
-            },\
-            "name": "",\
-            "outputDataFormat": "microsoft.quantum-results.v1",\
-            "outputDataUri": "https://quux...",\
-            "providerId": "ionq",\
-            "status": "Failed",\
-            "tags": [],\
-            "target": "ionq.simulator"\
-        }'
+            '{\
+                "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+                "cancellationTime": null,\
+                "containerUri": "https://foo...",\
+                "costEstimate": null,\
+                "creationTime": "2022-02-25T18:56:53.275035+00:00",\
+                "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+                "errorData": {\
+                    "code": "InsufficientResources",\
+                    "message": "Too many qubits requested"\
+                },\
+                "id": "11111111-2222-3333-4444-555555555555",\
+                "inputDataFormat": "microsoft.ionq-ir.v2",\
+                "inputDataUri": "https://bar...",\
+                "inputParams": {\
+                    "shots": "500"\
+                },\
+                "isCancelling": false,\
+                "metadata": {\
+                    "entryPointInput": {\"Qubits\":null},\
+                    "outputMappingBlobUri": "https://baz..."\
+                },\
+                "name": "",\
+                "outputDataFormat": "microsoft.quantum-results.v1",\
+                "outputDataUri": "https://quux...",\
+                "providerId": "ionq",\
+                "status": "Failed",\
+                "tags": [],\
+                "target": "ionq.simulator"\
+            }'
 
         table = transform_output(json.loads(test_job_results))
         self.assertEquals(table['Status'], "Failed")
@@ -176,30 +176,30 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         # Call with missing "status", "code", "message", "target", "id", and "creationTime"
         test_job_results = \
-        '{\
-            "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
-            "cancellationTime": null,\
-            "containerUri": "https://foo...",\
-            "costEstimate": null,\
-            "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
-            "errorData": {\
-            },\
-            "inputDataFormat": "microsoft.ionq-ir.v2",\
-            "inputDataUri": "https://bar...",\
-            "inputParams": {\
-                "shots": "500"\
-            },\
-            "isCancelling": false,\
-            "metadata": {\
-                "entryPointInput": {\"Qubits\":null},\
-                "outputMappingBlobUri": "https://baz..."\
-            },\
-            "name": "",\
-            "outputDataFormat": "microsoft.quantum-results.v1",\
-            "outputDataUri": "https://quux...",\
-            "providerId": "ionq",\
-            "tags": []\
-        }'
+            '{\
+                "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+                "cancellationTime": null,\
+                "containerUri": "https://foo...",\
+                "costEstimate": null,\
+                "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+                "errorData": {\
+                },\
+                "inputDataFormat": "microsoft.ionq-ir.v2",\
+                "inputDataUri": "https://bar...",\
+                "inputParams": {\
+                    "shots": "500"\
+                },\
+                "isCancelling": false,\
+                "metadata": {\
+                    "entryPointInput": {\"Qubits\":null},\
+                    "outputMappingBlobUri": "https://baz..."\
+                },\
+                "name": "",\
+                "outputDataFormat": "microsoft.quantum-results.v1",\
+                "outputDataUri": "https://quux...",\
+                "providerId": "ionq",\
+                "tags": []\
+            }'
 
         table = transform_output(json.loads(test_job_results))
         notFound = "Not found"
@@ -291,7 +291,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r \"{test_provider_sku_list}\" --skip-autoadd")
         self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
 
-        # Run a "microsoft.dft" job to test that successful job returns proper output        
+        # Run a "microsoft.dft" job to test that successful job returns proper output
         results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.xyz.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_success.xyz --job-params {{\\\"tasks\\\":[{{\\\"taskType\\\":\\\"spe\\\",\\\"basisSet\\\":{{\\\"name\\\":\\\"def2-svp\\\",\\\"cartesian\\\":false}},\\\"xcFunctional\\\":{{\\\"name\\\":\\\"m06-2x\\\",\\\"gridLevel\\\":4}},\\\"scf\\\":{{\\\"method\\\":\\\"rks\\\",\\\"maxSteps\\\":100,\\\"convergeThreshold\\\":1e-8}}}}]}} -o json").get_output_in_json()
         self.assertIsNotNone(results["results"])
         self.assertTrue(len(results["results"]) == 1)

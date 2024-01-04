@@ -44,6 +44,7 @@ knack_logger = knack.log.get_logger(__name__)
 
 _targets_with_allowed_failure_output = {"microsoft.dft"}
 
+
 def _show_warning(msg):
     import colorama
     colorama.init()
@@ -413,8 +414,8 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if shots is not None:
         try:
             job_params["shots"] = int(shots)
-        except:
-            raise InvalidArgumentValueError("Invalid --shots value.  Shots must be an integer.")
+        except Exception as exc:
+            raise InvalidArgumentValueError("Invalid --shots value.  Shots must be an integer.") from exc
     if target_capability is not None:
         job_params["targetCapability"] = target_capability
     if entry_point is not None:
@@ -424,8 +425,8 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if "count" in job_params.keys():
         try:
             job_params["count"] = int(job_params["count"])
-        except:
-            raise InvalidArgumentValueError("Invalid count value.  Count must be an integer.")
+        except Exception as exc:
+            raise InvalidArgumentValueError("Invalid count value.  Count must be an integer.") from exc
 
     # Convert all other numeric parameter values from string to int or float
     _convert_numeric_params(job_params)
