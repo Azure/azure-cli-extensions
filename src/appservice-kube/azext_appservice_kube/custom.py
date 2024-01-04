@@ -47,7 +47,7 @@ from azure.cli.command_modules.appservice.custom import (
     _convert_camel_to_snake_case,
     _get_content_share_name,
     get_app_service_plan_from_webapp)
-from azure.cli.command_modules.appservice._constants import LINUX_OS_NAME, FUNCTIONS_NO_V2_REGIONS
+from azure.cli.command_modules.appservice._constants import LINUX_OS_NAME
 from azure.cli.command_modules.appservice.utils import retryable_method, get_sku_tier
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
@@ -1022,9 +1022,9 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
                        custom_location=None, min_worker_count=None, max_worker_count=None):
     # pylint: disable=too-many-statements, too-many-branches
     if functions_version is None:
-        logger.warning("No functions version specified so defaulting to 3. In the future, specifying a version will "
-                       "be required. To create a 3.x function you would pass in the flag `--functions-version 3`")
-        functions_version = '3'
+        logger.warning("No functions version specified so defaulting to 4. In the future, specifying a version will "
+                       "be required. To create a 4.x function you would pass in the flag `--functions-version 4`")
+        functions_version = '4'
 
     if deployment_source_url and deployment_local_git:
         raise MutuallyExclusiveArgumentError('usage error: --deployment-source-url <url> | --deployment-local-git')
@@ -1092,10 +1092,6 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
         is_linux = bool(plan_info.reserved)
         functionapp_def.server_farm_id = plan
         functionapp_def.location = location
-
-    if functions_version == '2' and functionapp_def.location in FUNCTIONS_NO_V2_REGIONS:
-        raise ValidationError("2.x functions are not supported in this region. To create a 3.x function, "
-                              "pass in the flag '--functions-version 3'")
 
     if is_linux and not runtime and (consumption_plan_location or not deployment_container_image_name):
         raise ArgumentUsageError(
