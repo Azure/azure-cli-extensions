@@ -1038,7 +1038,7 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
     from azure.mgmt.web.models import Site
     SiteConfig, NameValuePair, SkuDescription = cmd.get_models('SiteConfig', 'NameValuePair', 'SkuDescription')
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
-    disable_app_insights = (disable_app_insights == "true")
+    disable_app_insights = disable_app_insights == "true"
 
     custom_location = _get_custom_location_id(cmd, custom_location, resource_group_name)
 
@@ -1104,7 +1104,7 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
     if not storage_account and not is_kube:
         raise ValidationError("--storage-account required for non-kubernetes function apps")
 
-    runtime_helper = _FunctionAppStackRuntimeHelper(cmd, linux=is_linux, windows=(not is_linux))
+    runtime_helper = _FunctionAppStackRuntimeHelper(cmd, linux=is_linux, windows=not is_linux)
     matched_runtime = runtime_helper.resolve("dotnet" if not runtime else runtime,
                                              runtime_version, functions_version, is_linux)
 
@@ -1385,7 +1385,7 @@ def config_source_control(cmd, resource_group_name, name, repo_url, repository_t
 
     source_control = SiteSourceControl(location=location, repo_url=repo_url, branch=branch,
                                        is_manual_integration=manual_integration,
-                                       is_mercurial=(repository_type != 'git'))
+                                       is_mercurial=repository_type != 'git')
 
     # SCC config can fail if previous commands caused SCMSite shutdown, so retry here.
     for i in range(5):
