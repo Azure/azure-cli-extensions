@@ -15,6 +15,9 @@ For new extensions:
 
 - [ ] My extension description/summary conforms to the [Extension Summary Guidelines](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/extension_summary_guidelines.md).
 
+### Extension Versioning
+
+CLI extension has launched a standardized version schema for all extension modules. For each module release, please adjust version referring to this [doc](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)
 
 ### About Extension Publish
 
