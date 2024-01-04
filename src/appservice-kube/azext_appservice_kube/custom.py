@@ -491,7 +491,7 @@ def _check_custom_location_exists(cmd, name, resource_group):
         custom_location_client.custom_locations.get(resource_name=name, resource_group_name=resource_group)
     except E as e:
         custom_locations = [cl.id for cl in custom_location_client.custom_locations.list_by_subscription()]
-        logger.warning(f"\nPlease choose a custom location from your subscription: \n{custom_locations}\n")
+        logger.warning("\nPlease choose a custom location from your subscription: \n%s\n", custom_locations)
         raise e
 
 
@@ -984,7 +984,8 @@ def scale_webapp(cmd, resource_group_name, name, instance_count, slot=None):
     client = web_client_factory(cmd.cli_ctx)
     webapp = client.web_apps.get(resource_group_name, name)
     if not webapp.extended_location:
-        raise ValidationError("The web app {} is not on Arc enabled Kubernetes. Please use `az appservice plan update` to scale for non-arc enabled app service.".format(name))
+        raise ValidationError("The web app {} is not on Arc enabled Kubernetes. Please use `az appservice plan "
+                              "update` to scale for non-arc enabled app service.".format(name))
     return update_site_configs(cmd, resource_group_name, name,
                                number_of_workers=instance_count, slot=slot)
 
