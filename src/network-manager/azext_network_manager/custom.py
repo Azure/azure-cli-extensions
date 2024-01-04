@@ -15,6 +15,7 @@ from .aaz.latest.network.manager.scope_connection import Create as _ScopeConnect
 from .aaz.latest.network.manager.connection.management_group import Create as _ConnectionManagementGroupCreate
 from .aaz.latest.network.manager.connection.subscription import Create as _ConnectionSubscriptionCreate
 from .aaz.latest.network.manager.connect_config import Create as _ConnectConfigCreate
+from .aaz.latest.network.manager.connect_config import Update as _ConnectConfigUpdate
 
 
 def network_manager_create(cmd,
@@ -104,7 +105,7 @@ def network_manager_connect_config_update(cmd,
                                           is_global=None,
                                           applies_to_groups=None,
                                           delete_existing_peering=None):
-    from .aaz.latest.network.manager.connect_config import Update as _ConnectConfigUpdate
+    from .custom import ConnectConfigUpdate as _ConnectConfigUpdate
     connectivity_configuration = {}
     connectivity_configuration['resource_group'] = resource_group_name
     connectivity_configuration['network_manager_name'] = network_manager_name
@@ -290,6 +291,17 @@ class ConnectionManagementGroupCreate(_ConnectionManagementGroupCreate):
 
 
 class ConnectConfigCreate(_ConnectConfigCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.hubs._element.resource_id._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{}",
+        )
+        return args_schema
+
+
+class ConnectConfigUpdate(_ConnectConfigUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZResourceIdArgFormat
