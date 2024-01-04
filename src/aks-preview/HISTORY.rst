@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.175
++++++++
+* Add `--enable-addon-autoscaling` and `--disable-addon-autoscaling` to the `az aks update` command.
+* Add `--enable-addon-autoscaling` to the `az aks create` command.
+
 0.5.174
 +++++++
 * Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`.
