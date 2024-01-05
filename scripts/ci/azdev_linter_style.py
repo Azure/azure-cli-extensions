@@ -107,7 +107,8 @@ class AzdevExtensionHelper:
                 ext_file = os.path.join(dist_dir, f)
                 break
         metadata = get_ext_metadata(dist_dir, ext_file, extension_name)
-        logger.info(f"metadata in the wheel file is: {metadata}")
+        pretty_metadata = json.dumps(metadata, indent=2)
+        logger.info(f"metadata in the wheel file is: {pretty_metadata}")
         shutil.rmtree(dist_dir)
         if '_' in extension_root_dir_name:
             raise ValueError(f"Underscores `_` are not allowed in the extension root directory, "
