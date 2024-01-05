@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.1.10
+++++++
+* `az functionapp create`: Only allow apps with functions version 4
+
 0.1.9
 ++++++
 * `az webapp scale`: Add validation to reject non-arc enabled app service
