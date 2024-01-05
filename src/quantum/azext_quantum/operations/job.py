@@ -44,6 +44,11 @@ knack_logger = knack.log.get_logger(__name__)
 
 _targets_with_allowed_failure_output = {"microsoft.dft"}
 
+def _show_warning(msg):
+    import colorama
+    colorama.init()
+    print(f"\033[1m{colorama.Fore.YELLOW}{msg}{colorama.Style.RESET_ALL}")
+
 
 def list(cmd, resource_group_name, workspace_name, location):
     """
@@ -464,7 +469,7 @@ def _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, locat
     """
     Submit a Q# project to run on Azure Quantum.
     """
-
+    _show_warning('The direct submission of Q# programs will soon be deprecated. Instead, you can submit QIR bitcode or LLVM. Modern QDK can be used to generate LLVM from Q#.')
     # We first build and then call run.
     # Can't call run directly because it fails to understand the
     # `ExecutionTarget` property when passed in the command line
