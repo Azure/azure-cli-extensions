@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.175
++++++++
+* Add --skip-gpu-driver-install option to node pool property in `az aks nodepool add`.
+
 0.5.174
 +++++++
 * Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`.
@@ -28,7 +32,6 @@ Pending
 * Vendor new SDK and bump API version to 2023-10-02-preview.
 * Update the enum for `--os-sku` in command `az aks nodepool update` to only accept the expected Ubuntu and AzureLinux OSSKUs.
 * Update description `az aks update` and remove description about outbound ip limit.
-* Add --skip-gpu-driver-install option to node pool property in `az aks nodepool add`.
 
 0.5.171
 +++++++
