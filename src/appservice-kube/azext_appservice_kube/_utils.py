@@ -24,7 +24,7 @@ def _validate_asp_sku(app_service_environment, custom_location, sku):
     # Isolated SKU is supported only for ASE
     if sku.upper() not in ['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V2', 'P1V3', 'P2V2',
                            'P3V2', 'PC2', 'PC3', 'PC4', 'I1', 'I2', 'I3', 'K1']:
-        raise InvalidArgumentValueError('Invalid sku entered: {}'.format(sku))
+        raise InvalidArgumentValueError(f'Invalid sku entered: {sku}')
 
     if sku.upper() in ['I1', 'I2', 'I3', 'I1V2', 'I2V2', 'I3V2']:
         if not app_service_environment:
