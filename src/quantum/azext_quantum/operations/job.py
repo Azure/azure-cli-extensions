@@ -664,7 +664,7 @@ def _get_job_output(cmd, job, item=None):
 
         blob_service.get_blob_to_path(containerName, blobName, path)
 
-    with open(path) as json_file:
+    with open(path, encoding="utf-8") as json_file:
         lines = [line.strip() for line in json_file.readlines()]
 
         # Receiving an empty response is valid.
