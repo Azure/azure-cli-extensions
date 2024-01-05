@@ -7,8 +7,9 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
+# pylint disable=unused-import
 from azure.cli.core import AzCommandsLoader
+import azext_network_manager._help # pylint: disable=unused-import
 
 
 class NetworkManagementClientCommandsLoader(AzCommandsLoader):
