@@ -2827,9 +2827,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=True)  # pylint: disable=no-member
             )
 
-        # set up addon autoscaling
-        mc = self.set_up_addon_autoscaling(mc)
-
         return mc
 
     def set_up_custom_ca_trust_certificates(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3172,6 +3169,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_workload_auto_scaler_profile(mc)
         # set up vpa
         mc = self.set_up_vpa(mc)
+        # set up addon autoscaling
+        mc = self.set_up_addon_autoscaling(mc)
         # set up kube-proxy config
         mc = self.set_up_kube_proxy_config(mc)
         # set up custom ca trust certificates
@@ -3890,9 +3889,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=False)  # pylint: disable=no-member
             )
 
-        # update addon autoscaling
-        mc = self.update_addon_autoscaling(mc)
-
         return mc
 
     def update_custom_ca_trust_certificates(self, mc: ManagedCluster) -> ManagedCluster:
@@ -4452,6 +4448,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_azure_monitor_profile(mc)
         # update vpa
         mc = self.update_vpa(mc)
+        # update addon autoscaling
+        mc = self.update_addon_autoscaling(mc)
         # update creation data
         mc = self.update_creation_data(mc)
         # update linux profile

@@ -4625,7 +4625,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         mc_1 = self.models.ManagedCluster(location="test_location")
         dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.set_up_workload_auto_scaler_profile(mc_1)
+        dec_mc_1 = dec_1.set_up_addon_autoscaling(mc_1)
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
@@ -4637,7 +4637,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_workload_auto_scaler_profile(mc_2)
+        dec_mc_2 = dec_2.set_up_addon_autoscaling(mc_2)
         workload_auto_scaler_profile = (
             self.models.ManagedClusterWorkloadAutoScalerProfile()
         )
@@ -7278,7 +7278,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         dec_0.context.attach_mc(mc_0)
-        dec_mc_0 = dec_0.update_workload_auto_scaler_profile(mc_0)
+        dec_mc_0 = dec_0.update_addon_autoscaling(mc_0)
         ground_truth_mc_0 = self.models.ManagedCluster(
             location="test_location",
         )
@@ -7296,7 +7296,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_1.context.attach_mc(mc_1)
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            dec_1.update_workload_auto_scaler_profile(mc_1)
+            dec_1.update_addon_autoscaling(mc_1)
 
         # enable addon autoscaling should set addon_autoscaling to Enabled
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
@@ -7309,7 +7309,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.update_workload_auto_scaler_profile(mc_2)
+        dec_mc_2 = dec_2.update_addon_autoscaling(mc_2)
         workload_auto_scaler_profile = (
             self.models.ManagedClusterWorkloadAutoScalerProfile()
         )
@@ -7336,7 +7336,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         dec_3.context.attach_mc(mc_3)
-        dec_mc_3 = dec_3.update_workload_auto_scaler_profile(mc_3)
+        dec_mc_3 = dec_3.update_addon_autoscaling(mc_3)
         workload_auto_scaler_profile = (
             self.models.ManagedClusterWorkloadAutoScalerProfile()
         )
