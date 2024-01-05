@@ -122,7 +122,7 @@ class AzdevExtensionHelper:
 def find_modified_files_against_master_branch():
     """
     Find modified files from src/ only.
-    A: Added, C: Copied, M: Modified, R: Renamed, T: File type changed. 
+    A: Added, C: Copied, M: Modified, R: Renamed, T: File type changed.
     Deleted files don't count in diff.
     """
     ado_pr_target_branch = 'origin/' + os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
