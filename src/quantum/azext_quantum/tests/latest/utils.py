@@ -38,6 +38,17 @@ def get_test_workspace_location():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_LOCATION", TEST_WORKSPACE_DEFAULT_LOCATION)
 
 
+def get_test_workspace_location_for_dft():
+    """ TODO: Currently, "microsoft.dft" target is not available in WestUS2 region, 
+        therefore we need to specify the region to WestUS. At the same time, 
+        we need to preserve functionality of setting the region via environment variable
+        so that we could override the region in E2E tests.
+
+        Remove, this method once/if "microsoft.dft" target is available in WestUS2.
+    """
+    return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_LOCATION", "westus")
+
+
 def get_test_workspace_storage():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_STORAGE", TEST_WORKSPACE_DEFAULT_STORAGE)
 
