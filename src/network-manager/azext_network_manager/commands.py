@@ -8,7 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-statements
-# pylint: disable=too-many-locals option_length_too_long
+# pylint: disable=too-many-locals
 
 
 def load_command_table(self, _):
@@ -46,4 +46,5 @@ def load_command_table(self, _):
 
     with self.command_group("network manager connection management-group"):
         from .custom import ConnectionManagementGroupCreate
-        self.command_table["network manager connection management-group create"] = ConnectionManagementGroupCreate(loader=self)
+        self.command_table["network manager connection management-group create"] = \
+            ConnectionManagementGroupCreate(loader=self)
