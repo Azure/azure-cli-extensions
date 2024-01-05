@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+import sys
 import time
 import requests
 from azure.cli.command_modules.containerapp._utils import format_location
@@ -27,7 +27,7 @@ def prepare_containerapp_env_for_app_e2e_tests(test_cls, location=TEST_LOCATION)
             rg_location = location
             if format_location(rg_location) == format_location(STAGE_LOCATION):
                 rg_location = "eastus"
-            test_cls.cmd(f'group create -n {rg_name} -l {location}')
+            test_cls.cmd(f'group create -n {rg_name} -l {rg_location}')
             test_cls.cmd(f'containerapp env create -g {rg_name} -n {env_name} --logs-destination none')
             managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
 
@@ -37,18 +37,22 @@ def prepare_containerapp_env_for_app_e2e_tests(test_cls, location=TEST_LOCATION)
     return managed_env["id"]
 
 
-def create_containerapp_env(test_cls, env_name, resource_group, location=None):
+def create_containerapp_env(test_cls, env_name, resource_group, location=TEST_LOCATION, subnetId=None):
     logs_workspace_name = test_cls.create_random_name(prefix='containerapp-env', length=24)
+    if format_location(location) == format_location(STAGE_LOCATION):
+        location = "eastus"
     logs_workspace_location = location
-    if format_location(logs_workspace_location) == format_location(STAGE_LOCATION):
-        logs_workspace_location = "eastus"
     logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l {}'.format(resource_group, logs_workspace_name, logs_workspace_location)).get_output_in_json()["customerId"]
     logs_workspace_key = test_cls.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
+    env_command = f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_workspace_id} --logs-workspace-key {logs_workspace_key}'
     if location:
-        test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_workspace_id} --logs-workspace-key {logs_workspace_key} -l {location}')
-    else:
-        test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_workspace_id} --logs-workspace-key {logs_workspace_key}')
+        env_command = f'{env_command} -l {location}'
+
+    if subnetId:
+        env_command = f'{env_command} --infrastructure-subnet-resource-id {subnetId}'
+    print(*env_command, file=sys.stdout)
+    test_cls.cmd(env_command)
 
     containerapp_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
