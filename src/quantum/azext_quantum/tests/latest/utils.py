@@ -44,7 +44,7 @@ def get_test_workspace_location_for_dft():
         we need to preserve functionality of setting the region via environment variable
         so that we could override the region in E2E tests.
 
-        Remove, this method once/if "microsoft.dft" target is available in WestUS2.
+        Remove this method once/if "microsoft.dft" target is available in WestUS2.
     """
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_LOCATION", "westus")
 
