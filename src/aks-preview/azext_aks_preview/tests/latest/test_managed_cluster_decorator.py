@@ -4638,14 +4638,18 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.set_up_workload_auto_scaler_profile(mc_2)
-
+        workload_auto_scaler_profile = (
+            self.models.ManagedClusterWorkloadAutoScalerProfile()
+        )
+        workload_auto_scaler_profile.vertical_pod_autoscaler = (
+            self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
+                enabled=True,
+                addon_autoscaling="Enabled"
+            )
+        )
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
-            workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
-                vertical_pod_autoscaler=self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
-                    enabled=True, addon_autoscaling="Enabled"
-                )
-            ),
+            workload_auto_scaler_profile=workload_auto_scaler_profile
         )
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
@@ -7306,13 +7310,18 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_workload_auto_scaler_profile(mc_2)
+        workload_auto_scaler_profile = (
+            self.models.ManagedClusterWorkloadAutoScalerProfile()
+        )
+        workload_auto_scaler_profile.vertical_pod_autoscaler = (
+            self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
+                enabled=True,
+                addon_autoscaling="Enabled"
+            )
+        )
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
-            workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
-                vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
-                    enabled=True, addon_autoscaling="Enabled"    
-                )
-            ),
+            workload_auto_scaler_profile=workload_auto_scaler_profile
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
@@ -7328,13 +7337,18 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.update_workload_auto_scaler_profile(mc_3)
+        workload_auto_scaler_profile = (
+            self.models.ManagedClusterWorkloadAutoScalerProfile()
+        )
+        workload_auto_scaler_profile.vertical_pod_autoscaler = (
+            self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
+                enabled=False,
+                addon_autoscaling="Disabled"
+            )
+        )
         ground_truth_mc_3 = self.models.ManagedCluster(
             location="test_location",
-            workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
-                vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
-                    enabled=False, addon_autoscaling="Disabled"    
-                )
-            ),
+            workload_auto_scaler_profile=workload_auto_scaler_profile
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
