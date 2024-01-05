@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.1
++++++
+* `az network manager connect-config`: Fix cross-tenant resource id for `--hubs`
+
 1.0.0
 +++++
 * Fix example and help info (Fix #6788)
