@@ -692,3 +692,16 @@ def log_in_file(log_text, opened_file, no_print=False):
 def remove_ansi_characters(text):
     regular_expression = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
     return regular_expression.sub("", text)
+
+
+# Remove null/None/empty dict properties in a model, not remove empty list
+def clean_empty_values(d):
+    if isinstance(d, dict):
+        return {
+            k: v
+            for k, v in ((k, clean_empty_values(v)) for k, v in d.items())
+            if (isinstance(v, dict) and len(v.items()) > 0) or (not isinstance(v, dict) and v is not None) or isinstance(v, list)
+        }
+    if isinstance(d, list):
+        return [v for v in map(clean_empty_values, d) if v]
+    return d

@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env dapr-component resiliency': Remove empty properties include empty dictionary
 
 0.3.46
 ++++++

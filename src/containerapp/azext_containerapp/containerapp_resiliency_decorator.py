@@ -10,6 +10,7 @@ from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
 from azure.cli.core.commands import AzCliCommand
 from msrest.exceptions import DeserializationError
 
+from ._utils import clean_empty_values
 from ._decorator_utils import load_yaml_file, create_deserializer, process_containerapp_resiliency_yaml
 from ._models import (
     ContainerAppsResiliency as ContainerAppsResiliencyModel)
@@ -18,7 +19,7 @@ from knack.log import get_logger
 
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._utils import (
-    clean_null_values, safe_get, _convert_object_from_snake_to_camel_case,
+    safe_get, _convert_object_from_snake_to_camel_case,
     _object_to_dict, _remove_additional_attributes, _remove_readonly_attributes)
 from ._clients import ContainerAppsResiliencyPreviewClient
 from ._client_factory import handle_raw_exception
@@ -175,7 +176,7 @@ class ContainerAppResiliencyDecorator(BaseResource):
         # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
         _remove_additional_attributes(containerapp_def)
         _remove_readonly_attributes(containerapp_def)
-        containerapp_def = clean_null_values(containerapp_def)
+        containerapp_def = clean_empty_values(containerapp_def)
 
         # Now we just add defaults where required
         # Retries
@@ -239,7 +240,7 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
                 name=self.get_argument_name(), container_app_name=self.get_argument_container_app_name(),
                 container_app_resiliency_envelope=self.containerapp_resiliency_def,
                 no_wait=self.get_argument_no_wait())
-            r = clean_null_values(r)
+            r = clean_empty_values(r)
             return r
         except Exception as e:
             handle_raw_exception(e)
@@ -303,7 +304,7 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
         self.containerapp_resiliency_def["properties"]["tcpConnectionPool"] = tcp_connectionpool_def
         self.containerapp_resiliency_def["properties"]["httpConnectionPool"] = http_connectionpool_def
 
-        self.containerapp_resiliency_def = clean_null_values(self.containerapp_resiliency_def)
+        self.containerapp_resiliency_def = clean_empty_values(self.containerapp_resiliency_def)
 
         if self.containerapp_resiliency_def is None or self.containerapp_resiliency_def == {}:
             self.containerapp_resiliency_def["properties"] = {}
@@ -351,7 +352,7 @@ class ContainerAppResiliencyPreviewShowDecorator(ContainerAppResiliencyDecorator
         try:
             r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                                  name=self.get_argument_name(), container_app_name=self.get_argument_container_app_name())
-            r = clean_null_values(r)
+            r = clean_empty_values(r)
             return r
         except Exception as e:
             handle_raw_exception(e)
@@ -365,7 +366,7 @@ class ContainerAppResiliencyPreviewListDecorator(ContainerAppResiliencyDecorator
         try:
             r = self.client.list(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                                  container_app_name=self.get_argument_container_app_name())
-            r = clean_null_values(r)
+            r = clean_empty_values(r)
             return r
         except Exception as e:
             handle_raw_exception(e)
@@ -456,7 +457,7 @@ class ContainerAppResiliencyPreviewUpdateDecorator(ContainerAppResiliencyDecorat
             http_connectionpool_def["http2MaxRequests"] = self.get_argument_http_connection_pool_http2_max_req() if self.get_argument_http_connection_pool_http2_max_req() is not None else DEFAULT_HTTP2_MAX_REQ
             self.containerapp_resiliency_update_def["properties"]["httpConnectionPool"] = http_connectionpool_def
 
-        self.containerapp_resiliency_update_def = clean_null_values(self.containerapp_resiliency_update_def)
+        self.containerapp_resiliency_update_def = clean_empty_values(self.containerapp_resiliency_update_def)
 
     def update(self):
         try:
@@ -470,7 +471,7 @@ class ContainerAppResiliencyPreviewUpdateDecorator(ContainerAppResiliencyDecorat
                                        name=self.get_argument_name(), container_app_name=self.get_argument_container_app_name(),
                                        container_app_resiliency_envelope=self.containerapp_resiliency_update_def,
                                        no_wait=self.get_argument_no_wait())
-            r = clean_null_values(r)
+            r = clean_empty_values(r)
             return r
         except Exception as e:
             handle_raw_exception(e)

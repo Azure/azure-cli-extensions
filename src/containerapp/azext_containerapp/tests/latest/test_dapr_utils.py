@@ -10,6 +10,7 @@ from azext_containerapp._constants import (
     DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST,
 )
 from azext_containerapp._dapr_utils import DaprUtils
+from azext_containerapp._utils import clean_empty_values
 
 
 class DaprUtilsTest(unittest.TestCase):
@@ -140,3 +141,82 @@ class DaprUtilsTest(unittest.TestCase):
                     str(e),
                     f"Dapr component type {testcase['component_type']} with service type {testcase['service_type']} is not supported.",
                 )
+
+    def test_clean_empty_values(self):
+        test_dict = {
+
+        }
+        result = clean_empty_values(test_dict)
+        self.assertEqual({}, result)
+
+        test_dict["properties"] = {}
+
+        result = clean_empty_values(test_dict)
+
+        self.assertEqual({}, result)
+
+        test_dict = {
+            "properties": {
+                "inboundPolicy": {
+                    "timeoutPolicy": {
+                        "responseTimeoutInSeconds": None,
+                    },
+                    "httpRetryPolicy": {
+                        "maxRetries": None,
+                        "retryBackOff": {
+                            "initialDelayInMilliseconds": None,
+                            "maxIntervalInMilliseconds": None,
+                        }
+                    },
+                },
+                "outboundPolicy": {
+                    "timeoutPolicy": {
+                        "responseTimeoutInSeconds": None,
+                    },
+                    "httpRetryPolicy": {
+                        "maxRetries": None,
+                        "retryBackOff": {
+                            "initialDelayInMilliseconds": None,
+                            "maxIntervalInMilliseconds": None,
+                        }
+                    },
+                }
+            }
+        }
+
+        result = clean_empty_values(test_dict)
+        self.assertEqual({}, result)
+
+        test_dict = {
+            "properties": {
+                "inboundPolicy": {
+                    "timeoutPolicy": {
+                        "responseTimeoutInSeconds": None,
+                    },
+                    "httpRetryPolicy": {
+                        "maxRetries": 1,
+                        "testZero": 0,
+                        "retryBackOff": {
+                            "initialDelayInMilliseconds": None,
+                            "maxIntervalInMilliseconds": None,
+                        }
+                    },
+                },
+                "outboundPolicy": {
+                    "timeoutPolicy": {
+                        "responseTimeoutInSeconds": None,
+                    },
+                    "httpRetryPolicy": {
+                        "maxRetries": None,
+                        "retryBackOff": {
+                            "initialDelayInMilliseconds": None,
+                            "maxIntervalInMilliseconds": None,
+                        }
+                    },
+                }
+            }
+        }
+
+        result = clean_empty_values(test_dict)
+        expect_result = {"properties": {"inboundPolicy": {"httpRetryPolicy": {"maxRetries": 1, "testZero": 0}}}}
+        self.assertEqual(expect_result, result)

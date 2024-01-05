@@ -10,12 +10,13 @@ from azure.cli.core.commands import AzCliCommand
 from msrest.exceptions import DeserializationError
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
-from azure.cli.command_modules.containerapp._utils import (clean_null_values, _convert_object_from_snake_to_camel_case, safe_get, safe_set,
+from azure.cli.command_modules.containerapp._utils import (_convert_object_from_snake_to_camel_case, safe_get, safe_set,
                                                            _object_to_dict, _remove_additional_attributes, _remove_readonly_attributes)
 from knack.log import get_logger
 
 from copy import copy as shallowcopy
 
+from ._utils import clean_empty_values
 from ._decorator_utils import load_yaml_file, create_deserializer, process_dapr_component_resiliency_yaml
 from ._models import (
     DaprComponentResiliency as DaprComponentResiliencyModel)
@@ -133,7 +134,7 @@ class DaprComponentResiliencyDecorator(BaseResource):
         _remove_additional_attributes(component_resiliency_def)
         _remove_readonly_attributes(component_resiliency_def)
 
-        component_resiliency_def = clean_null_values(component_resiliency_def)
+        component_resiliency_def = clean_empty_values(component_resiliency_def)
 
         # Now we just add defaults where required
         # Inbound Retries
@@ -175,7 +176,7 @@ class DaprComponentResiliencyPreviewCreateDecorator(DaprComponentResiliencyDecor
                 name=self.get_argument_name(), dapr_component_name=self.get_argument_dapr_component_name(),
                 environment_name=self.get_argument_environment(), component_resiliency_envelope=self.component_resiliency_def,
                 no_wait=self.get_argument_no_wait())
-            r = clean_null_values(r)
+            r = clean_empty_values(r)
             return r
         except Exception as e:
             handle_raw_exception(e)
@@ -227,7 +228,7 @@ class DaprComponentResiliencyPreviewCreateDecorator(DaprComponentResiliencyDecor
             out_retry_def["retryBackOff"]["maxIntervalInMilliseconds"] = self.get_argument_out_http_retry_interval_in_milliseconds() if self.get_argument_out_http_retry_interval_in_milliseconds() is not None else DEFAULT_COMPONENT_HTTP_RETRY_BACKOFF_MAX_DELAY
             self.component_resiliency_def["properties"]["outboundPolicy"]["httpRetryPolicy"] = out_retry_def
 
-        self.component_resiliency_def = clean_null_values(self.component_resiliency_def)
+        self.component_resiliency_def = clean_empty_values(self.component_resiliency_def)
 
         if self.component_resiliency_def is None or self.component_resiliency_def == {}:
             self.component_resiliency_def["properties"] = {}
@@ -314,7 +315,7 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
         if safe_get(self.component_resiliency_patch_def, "properties", "outboundPolicy", "timeoutPolicy", "responseTimeoutInSeconds"):
             safe_set(component_resiliency_def, "properties", "outboundPolicy", "timeoutPolicy", value=safe_get(self.component_resiliency_patch_def, "properties", "outboundPolicy", "timeoutPolicy"))
 
-        component_resiliency_def = clean_null_values(component_resiliency_def)
+        component_resiliency_def = clean_empty_values(component_resiliency_def)
         self.component_resiliency_update_def = component_resiliency_def
 
     def update(self):
@@ -325,7 +326,7 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
                 environment_name=self.get_argument_environment(), component_resiliency_envelope=self.component_resiliency_update_def,
                 no_wait=self.get_argument_no_wait())
 
-            r = clean_null_values(r)
+            r = clean_empty_values(r)
 
             return r
 
@@ -342,7 +343,7 @@ class DaprComponentResiliencyPreviewShowDecorator(DaprComponentResiliencyDecorat
             r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                                  name=self.get_argument_name(), dapr_component_name=self.get_argument_dapr_component_name(),
                                  environment_name=self.get_argument_environment())
-            r = clean_null_values(r)
+            r = clean_empty_values(r)
             return r
         except Exception as e:
             handle_raw_exception(e)
@@ -356,7 +357,7 @@ class DaprComponentResiliencyPreviewListDecorator(DaprComponentResiliencyDecorat
         try:
             r = self.client.list(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                                  dapr_component_name=self.get_argument_dapr_component_name(), environment_name=self.get_argument_environment())
-            r = clean_null_values(r)
+            r = clean_empty_values(r)
             return r
         except Exception as e:
             handle_raw_exception(e)

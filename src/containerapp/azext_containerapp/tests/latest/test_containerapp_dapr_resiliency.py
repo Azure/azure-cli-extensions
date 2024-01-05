@@ -30,7 +30,7 @@ class ContainerappResiliencyTests(ScenarioTest):
         bad_capp = "bad-capp"
         resil_policy_count = 1
         
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, TEST_LOCATION)
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
         self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
@@ -202,7 +202,7 @@ class DaprComponentResiliencyTests(ScenarioTest):
         bad_env = "bad-env"
         resil_policy_count = 1
 
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, TEST_LOCATION)
 
         file_ref, dapr_file = tempfile.mkstemp(suffix=".yml")
 
