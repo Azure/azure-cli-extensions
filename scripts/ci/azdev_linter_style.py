@@ -13,11 +13,10 @@ import json
 import logging
 import os
 import shutil
-from subprocess import check_call, check_output, CalledProcessError
-
-from pkg_resources import parse_version
+from subprocess import CalledProcessError, check_call, check_output
 
 import service_name
+from pkg_resources import parse_version
 from util import get_ext_metadata
 
 logger = logging.getLogger(__name__)
@@ -103,6 +102,7 @@ class AzdevExtensionHelper:
                 ext_file = os.path.join(dist_dir, f)
                 break
         metadata = get_ext_metadata(dist_dir, ext_file, self.extension_name)
+        logger.info(f"metadata in the wheel file is: {metadata}")
         logger.info(f"metadata name in setup.py is: {metadata['name']}")
         shutil.rmtree(dist_dir)
         if '_' in self.extension_name:
@@ -117,7 +117,7 @@ class AzdevExtensionHelper:
 def find_modified_files_against_master_branch():
     """
     Find modified files from src/ only.
-    A: Added, C: Copied, M: Modified, R: Renamed, T: File type changed.
+    A: Added, C: Copied, M: Modified, R: Renamed, T: File type changed. 
     Deleted files don't count in diff.
     """
     ado_pr_target_branch = 'origin/' + os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
