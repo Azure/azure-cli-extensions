@@ -64,6 +64,21 @@ def load_arguments(self, _):
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
 
+    with self.argument_context('containerapp env storage') as c:
+        c.argument('name', id_part=None)
+        c.argument('storage_name', help="Name of the storage.")
+        c.argument('storage_type', help="Type of the storage. Assumed to be AzureFile if not specified. Allowed values: AzureFile, NfsAzureFile.")
+        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]),
+                   help="Access mode for the AzureFile storage.")
+        c.argument('azure_file_account_key', options_list=["--azure-file-account-key", "--storage-account-key", "-k"],
+                   help="Key of the AzureFile storage account.")
+        c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "--file-share", "-f"],
+                   help="Name of the share on the AzureFile or nfs AzureFile storage.")
+        c.argument('azure_file_account_name', options_list=["--azure-file-account-name", "--account-name", "-a"],
+                   help="Name of the AzureFile storage account.")
+        c.argument('server', options_list=["--server", "-s"],
+                   help="Server of the NfsAzureFile storage account.")
+        
     # App Resiliency
     with self.argument_context('containerapp resiliency') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)

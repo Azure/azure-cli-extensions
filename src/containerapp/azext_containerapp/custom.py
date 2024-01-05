@@ -64,12 +64,14 @@ from .daprcomponent_resiliency_decorator import (
 )
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
+from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 from ._client_factory import handle_raw_exception
 from ._clients import (
     GitHubActionPreviewClient,
     ContainerAppPreviewClient,
     AuthPreviewClient,
     SubscriptionPreviewClient,
+    StoragePreviewClient,
     ContainerAppsJobPreviewClient,
     ContainerAppsResiliencyPreviewClient,
     DaprComponentResiliencyPreviewClient,
@@ -86,7 +88,8 @@ from ._models import (
     AzureCredentials as AzureCredentialsModel,
     SourceControl as SourceControlModel,
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
-    AzureFileProperties as AzureFilePropertiesModel)
+    AzureFileProperties as AzureFilePropertiesModel
+)
 
 from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running, parse_build_env_vars
 
@@ -96,7 +99,8 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
-                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST)
+                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST, AZURE_FILE_STORAGE_TYPE, NFS_AZURE_FILE_STORAGE_TYPE)
+
 
 logger = get_logger(__name__)
 
@@ -769,6 +773,66 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
     containerapp_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
     return containerapp_env_decorator.delete()
+
+
+def show_storage(cmd, name, storage_name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    raw_parameters = locals()
+    containerapp_env_storage_decorator = ContainerappEnvStorageDecorator(
+        cmd=cmd,
+        client=StoragePreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_env_storage_decorator.show()
+
+
+def list_storage(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    raw_parameters = locals()
+    containerapp_env_storage_decorator = ContainerappEnvStorageDecorator(
+        cmd=cmd,
+        client=StoragePreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_env_storage_decorator.list()
+
+
+def create_or_update_storage(cmd, storage_name, resource_group_name, name, storage_type=None,
+                             azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None,
+                             server=None, access_mode=None, no_wait=False):  # pylint: disable=redefined-builtin
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    raw_parameters = locals()
+    containerapp_env_storage_decorator = ContainerappEnvStorageDecorator(
+        cmd=cmd,
+        client=StoragePreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_storage_decorator.register_provider(CONTAINER_APPS_RP)
+    containerapp_env_storage_decorator.validate_arguments()
+    containerapp_env_storage_decorator.construct_payload()
+    return containerapp_env_storage_decorator.create_or_update()
+
+
+def remove_storage(cmd, storage_name, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    raw_parameters = locals()
+    containerapp_env_storage_decorator = ContainerappEnvStorageDecorator(
+        cmd=cmd,
+        client=StoragePreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_env_storage_decorator.delete()
 
 
 def create_containerappsjob(cmd,
