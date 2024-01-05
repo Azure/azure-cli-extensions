@@ -36,8 +36,8 @@ class AddNetworkManagerScopes(argparse.Action):
             elif kl == 'subscriptions':
                 d['subscriptions'] = v
             else:
-                raise CLIError(f'Unsupported Key {k} is provided for parameter network_manager_scopes. All possible keys '
-                               'are: management-groups, subscriptions')
+                raise CLIError(f'Unsupported Key {k} is provided for parameter network_manager_scopes. '
+                               f'All possible keys are: management-groups, subscriptions')
         return d
 
 
@@ -67,8 +67,8 @@ class AddConnectivityconfigurationsAppliesToGroups(argparse._AppendAction):
             elif kl == 'group-connectivity':
                 d['group_connectivity'] = v[0]
             else:
-                raise CLIError(f'Unsupported Key {k} is provided for parameter applies_to_groups. All possible keys are: '
-                               'network-group-id, use-hub-gateway, is-global, group-connectivity')
+                raise CLIError(f'Unsupported Key {k} is provided for parameter applies_to_groups. All possible keys '
+                               f'are: network-group-id, use-hub-gateway, is-global, group-connectivity')
         return d
 
 
