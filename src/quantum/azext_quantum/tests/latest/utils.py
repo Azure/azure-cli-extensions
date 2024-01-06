@@ -42,7 +42,7 @@ def get_test_workspace_location_for_dft():
     """ TODO: Currently, "microsoft.dft" target is not available in WestUS2 region, 
         therefore we need to specify the region to WestUS. At the same time, 
         we need to preserve functionality of setting the region via environment variable
-        so that we could override the region in E2E tests.
+        so that we could override it in E2E tests.
 
         Remove this method once/if "microsoft.dft" target is available in WestUS2.
     """
