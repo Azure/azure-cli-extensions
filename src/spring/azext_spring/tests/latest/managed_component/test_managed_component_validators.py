@@ -71,7 +71,7 @@ class TestValidateComponentList(unittest.TestCase):
     def test_tier(self, is_enterprise_tier_mock):
         is_enterprise_tier_mock.return_value = False
 
-        with self.assertRaises(NotSupportedPricingTierError) as context:
+        with self.assertRaises(NotSupportedPricingTierError):
             validate_component_list(_get_test_cmd(), Namespace(resource_group="group", service="service"))
 
         is_enterprise_tier_mock.return_value = True
@@ -105,7 +105,7 @@ class TestValidateComponentInstanceList(unittest.TestCase):
         validate_instance_list(_get_test_cmd(), ns)
 
         is_enterprise_tier_mock.return_value = False
-        with self.assertRaises(NotSupportedPricingTierError) as context:
+        with self.assertRaises(NotSupportedPricingTierError):
             validate_instance_list(_get_test_cmd(), ns)
 
 
@@ -117,8 +117,8 @@ class TestValidateComponentLogs(unittest.TestCase):
         ns = Namespace(
             resource_group="group",
             service="service",
-            all_instances = True,
-            instance = "fake-instance-name"
+            all_instances=True,
+            instance="fake-instance-name"
         )
 
         with self.assertRaises(InvalidArgumentValueError) as context:
