@@ -76,8 +76,8 @@ def update_test_run(
     cmd,
     test_run_id,
     load_test_resource,
-    description = None,
-    display_name = None,
+    description=None,
+    display_name=None,
     resource_group_name=None,
 ):
     logger.info("Update test run started")
