@@ -4,7 +4,9 @@
 # --------------------------------------------------------------------------------------------
 import json
 from azext_aks_preview.azuremonitormetrics.deaults import get_default_region
-from azext_aks_preview.azuremonitormetrics.responseparsers.amwlocationresponseparser import parseResourceProviderResponseForLocations
+from azext_aks_preview.azuremonitormetrics.responseparsers.amwlocationresponseparser import (
+    parseResourceProviderResponseForLocations,
+)
 from azext_aks_preview.azuremonitormetrics.constants import RP_LOCATION_API
 from knack.util import CLIError
 

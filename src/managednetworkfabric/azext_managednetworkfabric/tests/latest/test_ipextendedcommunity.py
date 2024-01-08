@@ -14,13 +14,16 @@ Ip Extended Community tests scenarios
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
+
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
     pass
 
+
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
+
 
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
@@ -33,6 +36,7 @@ def call_scenario1(test):
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
+
 def step_create(test, checks=None):
     '''ipextendedcommunity create operation'''
     if checks is None:
@@ -40,11 +44,14 @@ def step_create(test, checks=None):
     test.cmd('az networkfabric ipextendedcommunity create --resource-group {rg} --location {location} --resource-name {name}'
              ' --ip-extended-community-rules {ipExtendedCommunityRules}', checks=checks)
 
+
 def step_show(test, checks=None):
     '''ipextendedcommunity show operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric ipextendedcommunity show --resource-name {name} --resource-group {rg}')
+    test.cmd(
+        'az networkfabric ipextendedcommunity show --resource-name {name} --resource-group {rg}')
+
 
 def step_update(test, checks=None):
     '''ipextendedcommunity update operation'''
@@ -52,7 +59,8 @@ def step_update(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric ipextendedcommunity create --resource-group {rg} --location {location} --resource-name {name}'
-             ' --ip-extended-community-rules {updatedIpExtendedCommunityRules}', checks=checks)
+        ' --ip-extended-community-rules {updatedIpExtendedCommunityRules}', checks=checks)
+
 
 @AllowLargeResponse()
 def step_list_resource_group(test, checks=None):
@@ -61,6 +69,7 @@ def step_list_resource_group(test, checks=None):
         checks = []
     test.cmd('az networkfabric ipextendedcommunity list --resource-group {rg}')
 
+
 @AllowLargeResponse()
 def step_list_subscription(test, checks=None):
     '''ipextendedcommunity list by subscription'''
@@ -68,11 +77,14 @@ def step_list_subscription(test, checks=None):
         checks = []
     test.cmd('az networkfabric ipextendedcommunity list')
 
+
 def step_delete(test, checks=None):
     '''ipextendedcommunity delete operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric ipextendedcommunity delete --resource-name {name} --resource-group {rg}')
+    test.cmd(
+        'az networkfabric ipextendedcommunity delete --resource-name {name} --resource-group {rg}')
+
 
 class GA_IpExtendedCommunityScenarioTest1(ScenarioTest):
     ''' Ip Extended Community Scenario test'''

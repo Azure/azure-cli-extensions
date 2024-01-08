@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import json
+import re
 from datetime import datetime
 from enum import Enum
 import os
@@ -207,7 +208,20 @@ def get_azure_files_info(file_sas_url):
 
 
 def _get_azure_storage_client_info(account_type, sas_url):
-    regex = compile("http(s)?://(?P<account_name>.*?)\.{0}\.(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/(?P<relative_path>.*?)\?(?P<sas_token>.*)".format(account_type))
+    """
+    http(s)?://: Matches the beginning of the URL, which can start with either “http://” or “https://”.
+    (?P<account_name>.*?): Matches the account name in the URL.
+    The ?P<account_name> syntax creates a named group that can be referred to later in the expression.
+    {re.escape(".")}: Escapes the period character so that it matches a literal period in the URL.
+    {account_type}: Leverage f-string, to insert account_type into the string.
+    {re.escape(".")}: Escapes the period character again.
+    (?P<endpoint_suffix>.*?): Matches the endpoint suffix in the URL.
+    /(?P<container_name>.*?): Matches the container name in the URL.
+    /(?P<relative_path>.*?): Matches the relative path in the URL.
+    {re.escape("?")}: The ? character is escaped so that it matches a literal question mark in the URL.
+    (?P<sas_token>.*): Matches the SAS token in the URL.
+    """
+    regex = compile(f'http(s)?://(?P<account_name>.*?){re.escape(".")}{account_type}{re.escape(".")}(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/(?P<relative_path>.*?){re.escape("?")}(?P<sas_token>.*)')
     matchObj = search(regex, sas_url)
     account_name = matchObj.group('account_name')
     endpoint_suffix = matchObj.group('endpoint_suffix')

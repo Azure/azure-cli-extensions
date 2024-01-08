@@ -27,8 +27,7 @@ def add_role_assignment(cmd, role, service_principal_msi_id, is_service_principa
     from azure.cli.core import __version__ as core_version
     if core_version <= "2.45.0":
         return _add_role_assignment_old(cmd, role, service_principal_msi_id, is_service_principal, delay, scope)
-    else:
-        return _add_role_assignment_new(cmd, role, service_principal_msi_id, is_service_principal, delay, scope)
+    return _add_role_assignment_new(cmd, role, service_principal_msi_id, is_service_principal, delay, scope)
 
 
 # TODO(fuming): remove and replaced by import from azure.cli.command_modules.acs once dependency bumped to 2.47.0

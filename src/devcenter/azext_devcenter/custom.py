@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=protected-access
+# pylint: disable=too-many-lines
 
 from datetime import datetime
 import json
@@ -459,6 +460,8 @@ class ProjectEnvironmentTypeCreate(_ProjectEnvironmentTypeCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.deployment_target_id._required = True
         args_schema.status._required = True
+        args_schema.roles._required = True
+        args_schema.identity_type._required = True
         return args_schema
 
     def _cli_arguments_loader(self):
