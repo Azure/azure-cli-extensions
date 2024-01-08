@@ -3658,6 +3658,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_nodepool_cmd = (
             "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={aks_name2} --os-type Windows --node-count=1"
             "--skip-gpu-driver-install"
+            "-k {k8s_version} -o json"
         )
         self.cmd(
             create_nodepool_cmd,
