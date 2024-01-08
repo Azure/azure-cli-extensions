@@ -7,9 +7,9 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
+# pylint disable=unused-import
 from azure.cli.core import AzCommandsLoader
-import azext_network_manager._help
+import azext_network_manager._help  # pylint: disable=unused-import
 
 
 class NetworkManagementClientCommandsLoader(AzCommandsLoader):
@@ -17,8 +17,7 @@ class NetworkManagementClientCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(operations_tmpl='azext_network_manager.custom#{}')
-        super(NetworkManagementClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                                    custom_command_type=custom_command_type)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=custom_command_type)
 
     def load_command_table(self, args):
         from azext_network_manager.commands import load_command_table
