@@ -2895,10 +2895,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         if self.context.get_enable_addon_autoscaling():
             if mc.workload_auto_scaler_profile is None:
-                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile() # pylint: disable=no-member
             if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler = (
-                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()
+                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler() # pylint: disable=no-member
                 )
             # set enabled
             mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
@@ -4039,10 +4039,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if self.context.get_enable_addon_autoscaling():
             if mc.workload_auto_scaler_profile is None:
-                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile() # pylint: disable=no-member
             if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler = (
-                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()
+                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler() # pylint: disable=no-member
                 )
             # set enabled
             mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
@@ -4050,10 +4050,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if self.context.get_disable_addon_autoscaling():
             if mc.workload_auto_scaler_profile is None:
-                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile() # pylint: disable=no-member
             if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler = (
-                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()
+                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler() # pylint: disable=no-member
                 )
             # set disabled
             mc.workload_auto_scaler_profile.vertical_pod_autoscaler.addon_autoscaling = "Disabled"

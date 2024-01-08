@@ -7265,7 +7265,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_6.context.attach_mc(mc_6)
         with self.assertRaises(MutuallyExclusiveArgumentError):
             dec_6.update_metrics_profile(mc_6)
-    
+
     def test_update_addon_autoscaling(self):
         # Should not update mc if unset
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
