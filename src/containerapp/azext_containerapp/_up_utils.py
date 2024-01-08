@@ -577,7 +577,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                     name = env_var.get("name")
                     value = env_var.get("value")
                     command.extend(['--env', f"{name}={value}"])
-
+            
+            sub_id = get_subscription_id(self.cmd.cli_ctx)
+            command.extend(['--env', f"ORYX_SUBSCRIPTION_ID={sub_id}"])
+            command.extend(['--env', f"CALLER_ID=cli"])
             logger.debug(f"Calling '{' '.join(command)}'")
             try:
                 is_non_supported_platform = False
