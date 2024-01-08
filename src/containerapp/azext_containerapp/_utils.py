@@ -700,7 +700,7 @@ def clean_empty_values(d):
         return {
             k: v
             for k, v in ((k, clean_empty_values(v)) for k, v in d.items())
-            if (isinstance(v, dict) and len(v.items()) > 0) or (not isinstance(v, dict) and v is not None) or isinstance(v, list)
+            if v or isinstance(v, list)
         }
     if isinstance(d, list):
         return [v for v in map(clean_empty_values, d) if v]

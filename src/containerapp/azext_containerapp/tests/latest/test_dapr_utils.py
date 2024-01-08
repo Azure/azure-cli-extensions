@@ -195,7 +195,6 @@ class DaprUtilsTest(unittest.TestCase):
                     },
                     "httpRetryPolicy": {
                         "maxRetries": 1,
-                        "testZero": 0,
                         "retryBackOff": {
                             "initialDelayInMilliseconds": None,
                             "maxIntervalInMilliseconds": None,
@@ -218,5 +217,5 @@ class DaprUtilsTest(unittest.TestCase):
         }
 
         result = clean_empty_values(test_dict)
-        expect_result = {"properties": {"inboundPolicy": {"httpRetryPolicy": {"maxRetries": 1, "testZero": 0}}}}
+        expect_result = {"properties": {"inboundPolicy": {"httpRetryPolicy": {"maxRetries": 1}}}}
         self.assertEqual(expect_result, result)

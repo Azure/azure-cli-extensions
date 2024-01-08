@@ -4,7 +4,8 @@ Release History
 ===============
 upcoming
 ++++++
-* 'az containerapp env dapr-component resiliency': Remove empty properties include empty dictionary
+* 'az containerapp env dapr-component resiliency': Fix error DaprComponentResiliencyInvalidDuration
+* 'az containerapp resiliency': Fix error AppResiliencyValueMustBeSetAndGreater
 
 0.3.46
 ++++++
