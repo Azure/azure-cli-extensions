@@ -31,7 +31,7 @@ class JobParamsAction(argparse._AppendAction):
         return params
 
 
-def load_arguments(self, _):
+def load_arguments(self, _):  # pylint: disable=too-many-locals
     workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', configured_default='workspace', id_part=None)
     storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace.')
     program_args_type = CLIArgumentType(nargs='*', help='List of arguments expected by the Q# operation specified as --name=value after `--`.')

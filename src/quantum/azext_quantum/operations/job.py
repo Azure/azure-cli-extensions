@@ -270,7 +270,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
             raise RequiredArgumentMissingError(ERROR_MSG_MISSING_OUTPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
 
     # An entry point is required on QIR jobs
-    if job_type == QIR_JOB:
+    if job_type == QIR_JOB:  # pylint: disable=too-many-nested-blocks
         # An entry point is required for a QIR job, but there are four ways to specify it in a CLI command:
         #   -  Use the --entry-point parameter
         #   -  Include it in --job-params as entryPoint=MyEntryPoint
