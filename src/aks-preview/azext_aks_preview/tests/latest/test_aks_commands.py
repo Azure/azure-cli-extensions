@@ -3640,7 +3640,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        # create an aks cluster not using snapshot
+        # create an aks cluster
         create_cmd = (
             "aks create --resource-group {resource_group} --name {name} --location {location} "
             "--node-count 1 "
@@ -3654,7 +3654,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
 
-        # create nodepool from the cluster
+        # create nodepool from the cluster without gpu install
         create_nodepool_cmd = (
             "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={aks_name2} --os-type Windows --node-count=1"
             "--skip-gpu-driver-install"
