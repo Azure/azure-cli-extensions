@@ -3610,6 +3610,67 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         delete_snapshot_cmd = "aks snapshot delete --resource-group {resource_group} --name {snapshot_name} --yes --no-wait"
         self.cmd(delete_snapshot_cmd, checks=[self.is_empty()])
 
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="westcentralus",
+        preserve_default_location=True,
+    )
+    def test_aks_snapshot_update(self, resource_group, resource_group_location):
+        print(resource_group_location)
+        create_version, upgrade_version = self._get_versions(resource_group_location)
+        aks_name = self.create_random_name("cliakstest", 16)
+        aks_name2 = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("c", 6)
+        snapshot_name = self.create_random_name("s", 16)
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "aks_name2": aks_name2,
+                "location": resource_group_location,
+                "nodepool_name": nodepool_name,
+                "snapshot_name": snapshot_name,
+                "k8s_version": upgrade_version,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "windows_admin_username": "azureuser1",
+                "windows_admin_password": "replace-Password1234$",
+            }
+        )
+
+        # create an aks cluster not using snapshot
+        create_cmd = (
+            "aks create --resource-group {resource_group} --name {name} --location {location} "
+            "--node-count 1 "
+            "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
+            "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
+            "-k {k8s_version} "
+            "--ssh-key-value={ssh_key_value} -o json"
+        )
+        self.cmd(
+            create_cmd, checks=[self.check("provisioningState", "Succeeded")]
+        )
+
+
+        # create nodepool from the cluster
+        create_nodepool_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={aks_name2} --os-type Windows --node-count=1"
+            "--skip-gpu-driver-install"
+        )
+        self.cmd(
+            create_nodepool_cmd,
+            checks=[self.check("provisioningState", "Succeeded"),
+                self.check('gpuProfile.InstallGPUDriver', False)],
+        )
+
+        # delete the original AKS cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
     # @AllowLargeResponse()
     # @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     # def test_aks_upgrade_node_image_only_cluster(self, resource_group, resource_group_location):
