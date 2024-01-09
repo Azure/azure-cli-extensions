@@ -3656,8 +3656,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create nodepool from the cluster without gpu install
         create_nodepool_cmd = (
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={aks_name2} --os-type Windows --node-count=1"
-            "--skip-gpu-driver-install"
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={aks_name2} --os-type windows --node-count 1 "
+            "--skip-gpu-driver-install "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/WindowsGPUPreview "
             "-k {k8s_version} -o json"
         )
         self.cmd(
