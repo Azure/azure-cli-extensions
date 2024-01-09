@@ -112,9 +112,9 @@ def get_data_plane_scope(cli_ctx):
     cloud_name = cli_ctx.cloud.name
     
     if cloud_name.lower() == "azureusgovernment":
-        return "https://cnt-prod.loadtesting.azure.us/.default"
+        return ["https://cnt-prod.loadtesting.azure.us/.default"]
     
-    return "https://cnt-prod.loadtesting.azure.com/.default"
+    return ["https://cnt-prod.loadtesting.azure.com/.default"]
     
 
 def get_enum_values(enum):
