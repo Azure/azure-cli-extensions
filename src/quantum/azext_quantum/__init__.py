@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=line-too-long
+
 from azure.cli.core import AzCommandsLoader
 
 import azext_quantum._help  # pylint: disable=unused-import
@@ -35,7 +37,7 @@ class QuantumCommandsLoader(AzCommandsLoader):
         from ._version_check_helper import check_version
         from .operations.workspace import _show_tip
         from datetime import datetime
-        message = check_version(self.cli_ctx_config, CLI_REPORTED_VERSION, str(datetime.today()).split(' ')[0])
+        message = check_version(self.cli_ctx_config, CLI_REPORTED_VERSION, str(datetime.today()).split(' ', maxsplit=1)[0])
         if message is not None:
             _show_tip(message)
 
