@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "k8s-runtime load-balancer show",
+    "k8s-runtime service show",
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a LoadBalancer
+    """Get a Service
 
-    :example: Get a load balancer
-        az k8s-runtime load-balancer show --load-balancer-name testlb1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1
+    :example: Show storageclass service
+        az k8s-runtime service show --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --service-name storageclass
     """
 
     _aaz_info = {
         "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/loadbalancers/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/services/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -45,24 +45,24 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.load_balancer_name = AAZStrArg(
-            options=["--load-balancer-name"],
-            help="The name of the LoadBalancer",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
-            ),
-        )
         _args_schema.resource_uri = AAZStrArg(
             options=["--resource-uri"],
             help="The fully qualified Azure Resource manager identifier of the resource.",
             required=True,
         )
+        _args_schema.service_name = AAZStrArg(
+            options=["--service-name"],
+            help="The name of the the service",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^(storageclass|networking)$",
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LoadBalancersGet(ctx=self.ctx)()
+        self.ServicesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,7 +77,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class LoadBalancersGet(AAZHttpOperation):
+    class ServicesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -91,7 +91,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/Microsoft.KubernetesRuntime/loadBalancers/{loadBalancerName}",
+                "/{resourceUri}/providers/Microsoft.KubernetesRuntime/services/{serviceName}",
                 **self.url_parameters
             )
 
@@ -107,12 +107,12 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "loadBalancerName", self.ctx.args.load_balancer_name,
+                    "resourceUri", self.ctx.args.resource_uri,
+                    skip_quote=True,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceUri", self.ctx.args.resource_uri,
-                    skip_quote=True,
+                    "serviceName", self.ctx.args.service_name,
                     required=True,
                 ),
             }
@@ -173,26 +173,14 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.addresses = AAZListType(
-                flags={"required": True},
-            )
-            properties.advertise_mode = AAZStrType(
-                serialized_name="advertiseMode",
-                flags={"required": True},
-            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.service_selector = AAZDictType(
-                serialized_name="serviceSelector",
+            properties.rp_object_id = AAZStrType(
+                serialized_name="rpObjectId",
+                flags={"read_only": True},
             )
-
-            addresses = cls._schema_on_200.properties.addresses
-            addresses.Element = AAZStrType()
-
-            service_selector = cls._schema_on_200.properties.service_selector
-            service_selector.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

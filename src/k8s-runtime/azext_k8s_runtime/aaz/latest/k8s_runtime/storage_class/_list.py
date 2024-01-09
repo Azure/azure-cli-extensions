@@ -195,6 +195,7 @@ class List(AAZCommand):
             properties.provisioner = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.type_properties = AAZObjectType(
                 serialized_name="typeProperties",

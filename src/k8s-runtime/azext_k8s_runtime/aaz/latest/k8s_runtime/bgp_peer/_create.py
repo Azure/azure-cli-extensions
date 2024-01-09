@@ -243,6 +243,7 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200_201.system_data

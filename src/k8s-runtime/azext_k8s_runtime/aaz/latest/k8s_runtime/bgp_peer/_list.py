@@ -188,6 +188,7 @@ class List(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

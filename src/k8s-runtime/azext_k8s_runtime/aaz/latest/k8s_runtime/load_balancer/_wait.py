@@ -177,6 +177,7 @@ class Wait(AAZWaitCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.service_selector = AAZDictType(
                 serialized_name="serviceSelector",

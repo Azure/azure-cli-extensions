@@ -8,3 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "k8s-runtime service",
+    is_preview=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage Kubernetes runtime services of Arc Kubernetes clusters
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
