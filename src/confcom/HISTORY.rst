@@ -4,7 +4,7 @@ Release History
 ===============
 0.3.3
 ++++++
-* improving testing for katapolicygen
+* improving testing standards from pytest recommendations
 * updating genpolicy version up through genpolicy-0.6.2-5
 
 0.3.2
