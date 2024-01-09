@@ -3614,25 +3614,21 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="westcentralus",
+        location="eastus",
         preserve_default_location=True,
     )
-    def test_aks_nodepool_flag_gpu(self, resource_group, resource_group_location):
+    def test_aks_skip_gpu_driver_install(self, resource_group, resource_group_location):
         print(resource_group_location)
         create_version, upgrade_version = self._get_versions(resource_group_location)
         aks_name = self.create_random_name("cliakstest", 16)
-        aks_name2 = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("c", 6)
-        snapshot_name = self.create_random_name("s", 16)
 
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "name": aks_name,
-                "aks_name2": aks_name2,
                 "location": resource_group_location,
                 "nodepool_name": nodepool_name,
-                "snapshot_name": snapshot_name,
                 "k8s_version": upgrade_version,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "windows_admin_username": "azureuser1",
@@ -3643,7 +3639,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create an aks cluster
         create_cmd = (
             "aks create --resource-group {resource_group} --name {name} --location {location} "
-            "--node-count 1 "
+            "--node-count 2 "
             "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
             "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
             "-k {k8s_version} "
@@ -3653,18 +3649,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             create_cmd, checks=[self.check("provisioningState", "Succeeded")]
         )
 
-
         # create nodepool from the cluster without gpu install
         create_nodepool_cmd = (
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={aks_name2} --os-type windows --node-count 1 "
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --os-type windows --node-count 1 "
             "--skip-gpu-driver-install "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/WindowsGPUPreview "
+            "--node-vm-size standard_nc6s_v3 "
             "-k {k8s_version} -o json"
         )
         self.cmd(
             create_nodepool_cmd,
             checks=[self.check("provisioningState", "Succeeded"),
-                self.check('gpuProfile.InstallGPUDriver', False)],
+                self.check('gpuProfile.installGpuDriver', False)],
         )
 
         # delete the original AKS cluster
