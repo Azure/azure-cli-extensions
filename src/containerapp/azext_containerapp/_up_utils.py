@@ -571,6 +571,11 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             # Specify the image as the 'build-cache' image to ensure that the local cache is used for build layers
             command = [pack_exec_path, 'build', cache_image_name, '--builder', builder_image, '--path', source, '--tag', image_name]
 
+            # Pass the subscription ID and caller ID to the buildpack
+            sub_id = get_subscription_id(self.cmd.cli_ctx)
+            command.extend(['--env', f"ORYX_SUBSCRIPTION_ID={sub_id}"])
+            command.extend(['--env', f"CALLER_ID=cli"])
+
             # If the user specifies environment variables, pass it to the buildpack
             if build_env_vars:
                 for env_var in build_env_vars:

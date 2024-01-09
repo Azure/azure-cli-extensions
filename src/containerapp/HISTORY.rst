@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp create/update/up': support --build-env-vars to set environment variables for build
 
 0.3.46
 ++++++
