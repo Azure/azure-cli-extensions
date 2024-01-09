@@ -18,7 +18,7 @@ def admin_data_plane_client(cli_ctx, subscription=None, endpoint=None, credentia
     user_agent_policy = UserAgentPolicy(user_agent=get_az_user_agent())
     credential_scopes = get_data_plane_scope(cli_ctx)
     return LoadTestAdministrationClient(
-        endpoint=endpoint, credential=credential, user_agent_policy=user_agent_policy, credential_scopes=credential_scopes
+        endpoint=endpoint, credential=credential, user_agent_policy=user_agent_policy, credential_scopes=credential_scopes  # pylint: disable=C0301
     )
 
 
@@ -35,5 +35,5 @@ def testrun_data_plane_client(
     user_agent_policy = UserAgentPolicy(user_agent=get_az_user_agent())
     credential_scopes = get_data_plane_scope(cli_ctx)
     return LoadTestRunClient(
-        endpoint=endpoint, credential=credential, user_agent_policy=user_agent_policy, credential_scopes=credential_scopes
+        endpoint=endpoint, credential=credential, user_agent_policy=user_agent_policy, credential_scopes=credential_scopes  # pylint: disable=C0301
     )

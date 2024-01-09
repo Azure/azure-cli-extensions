@@ -108,14 +108,14 @@ def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=N
         credential=credential,
     )
 
+
 def get_data_plane_scope(cli_ctx):
     cloud_name = cli_ctx.cloud.name
-    
     if cloud_name.lower() == "azureusgovernment":
         return ["https://cnt-prod.loadtesting.azure.us/.default"]
-    
+
     return ["https://cnt-prod.loadtesting.azure.com/.default"]
-    
+
 
 def get_enum_values(enum):
     if not isinstance(enum, EnumMeta):
