@@ -903,6 +903,36 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy delete -g {rg} --name {policy}')
 
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_explicit_proxy', location='westus2')
+    def test_azure_firewall_policy_explicit_proxy(self, resource_group):
+        self.kwargs.update({
+            'policy_name': 'testFirewallPolicy',
+            'sas_url': "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D"
+        })
+        self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium --explicit-proxy enable-explicit-proxy=true http-port=85 https-port=121 enable-pac-file=true pac-file-port=122 pac-file="{sas_url}"',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 85),
+                     self.check('explicitProxy.httpsPort', 121),
+                     self.check('explicitProxy.pacFile', '{sas_url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                 ])
+
+        self.cmd(
+            'network firewall policy update -g {rg} -n {policy_name} --explicit-proxy enable-explicit-proxy=true http-port=86 https-port=123 enable-pac-file=true pac-file-port=124 pac-file="{sas_url}"',
+            checks=[
+                self.check('name', '{policy_name}'),
+                self.check('explicitProxy.enableExplicitProxy', True),
+                self.check('explicitProxy.enablePacFile', True),
+                self.check('explicitProxy.httpPort', 86),
+                self.check('explicitProxy.httpsPort', 123),
+                self.check('explicitProxy.pacFile', '{sas_url}'),
+                self.check('explicitProxy.pacFilePort', 124),
+            ])
+
     @ResourceGroupPreparer(name_prefix='test_firewall_with_dns_proxy_')
     def test_firewall_with_dns_proxy(self, resource_group):
         self.kwargs.update({
