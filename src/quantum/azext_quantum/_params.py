@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,protected-access,no-self-use,too-many-statements
+# pylint: disable=line-too-long,protected-access,too-many-statements
 
 import argparse
 from knack.arguments import CLIArgumentType
@@ -27,11 +27,11 @@ class JobParamsAction(argparse._AppendAction):
                     key, value = item.split('=', 1)
                     params[key] = value
                 except ValueError as e:
-                    raise InvalidArgumentValueError('Usage error: {} KEY=VALUE [KEY=VALUE ...], json string, or @file expected'.format(option_string)) from e
+                    raise InvalidArgumentValueError(f'Usage error: {option_string} KEY=VALUE [KEY=VALUE ...], json string, or @file expected') from e
         return params
 
 
-def load_arguments(self, _):
+def load_arguments(self, _):  # pylint: disable=too-many-locals
     workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', configured_default='workspace', id_part=None)
     storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace.')
     program_args_type = CLIArgumentType(nargs='*', help='List of arguments expected by the Q# operation specified as --name=value after `--`.')
