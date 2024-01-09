@@ -108,6 +108,14 @@ def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=N
         credential=credential,
     )
 
+def get_data_plane_scope(cli_ctx):
+    cloud_name = cli_ctx.cloud.name
+    
+    if cloud_name.lower() == "azureusgovernment":
+        return ["https://cnt-prod.loadtesting.azure.us/.default"]
+    
+    return ["https://cnt-prod.loadtesting.azure.com/.default"]
+    
 
 def get_enum_values(enum):
     if not isinstance(enum, EnumMeta):
@@ -422,6 +430,7 @@ def create_or_update_test_with_config(
     # quick test is not supported in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
 
+    new_body["passFailCriteria"] = {}
     for key in body.get("passFailCriteria", {}):
         new_body["passFailCriteria"][key] = None
     if yaml_test_body.get("passFailCriteria") is not None:
