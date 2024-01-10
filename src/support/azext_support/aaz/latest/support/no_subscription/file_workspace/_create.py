@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Creates a new file workspace.
 
     :example: Create a file workspace
-        az support file-workspace create --file-workspace-name "TestWorkspaceName"
+        az support no-subscription file-workspace create --file-workspace-name "TestWorkspaceName"
     """
 
     _aaz_info = {

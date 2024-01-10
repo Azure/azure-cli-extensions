@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Gets details for a specific file workspace.
 
     :example: Create a file workspace
-        az support file-workspace show --file-workspace-name "TestWorkspaceName"
+        az support no-subscription file-workspace show --file-workspace-name "TestWorkspaceName"
     """
 
     _aaz_info = {
