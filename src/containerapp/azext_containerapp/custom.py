@@ -167,17 +167,6 @@ def delete_qdrant_service(cmd, service_name, resource_group_name, no_wait=False)
     return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_QDRANT_SERVICE_TYPE)
 
 
-def create_weaviate_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
-                            disable_warnings=True):
-    return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
-                                          disable_warnings, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_SERVICE_TYPE,
-                                          DEV_WEAVIATE_CONTAINER_NAME)
-
-
-def delete_weaviate_service(cmd, service_name, resource_group_name, no_wait=False):
-    return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_WEAVIATE_SERVICE_TYPE)
-
-
 def create_container_app_resiliency(cmd, name, resource_group_name, container_app_name,
                                     yaml=None,
                                     no_wait=False,
