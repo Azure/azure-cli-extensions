@@ -1099,7 +1099,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_addon_binding_e2e(self, resource_group):
-        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use francecentral as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
             location = "francecentral"
