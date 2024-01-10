@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials import TokenCredential
 
+
 class SourceControlConfigurationClient:
     """KubernetesConfiguration Client.
 
@@ -58,20 +59,28 @@ class SourceControlConfigurationClient:
         base_url: str = "https://management.azure.com",
         **kwargs: Any
     ) -> None:
-        self._config = SourceControlConfigurationClientConfiguration(credential=credential, subscription_id=subscription_id, **kwargs)
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._config = SourceControlConfigurationClientConfiguration(
+            credential=credential, subscription_id=subscription_id, **kwargs)
+        self._client = ARMPipelineClient(
+            base_url=base_url, config=self._config, **kwargs)
 
-        client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
+        client_models = {k: v for k,
+                         v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.extensions = ExtensionsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.operation_status = OperationStatusOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.flux_configurations = FluxConfigurationsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.flux_config_operation_status = FluxConfigOperationStatusOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.source_control_configurations = SourceControlConfigurationsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
-
+        self.extensions = ExtensionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operation_status = OperationStatusOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.flux_configurations = FluxConfigurationsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.flux_config_operation_status = FluxConfigOperationStatusOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.source_control_configurations = SourceControlConfigurationsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize)
 
     def _send_request(
         self,

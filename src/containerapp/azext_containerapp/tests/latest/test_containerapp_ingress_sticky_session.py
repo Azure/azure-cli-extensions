@@ -3,16 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from .utils import prepare_containerapp_env_for_app_e2e_tests
 import os
 
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
+from azure.cli.testsdk import (
+    ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerAppIngressStickySessionsTest(ScenarioTest):
@@ -32,7 +32,9 @@ class ContainerAppIngressStickySessionsTest(ScenarioTest):
         ])
 
         self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/k8se/quickstart:latest --environment {} -n {} ".format(resource_group, env_id, app))
-        self.cmd("az containerapp ingress sticky-sessions set -n {} -g {} --affinity sticky".format(app, resource_group))        
+        self.cmd(
+            "az containerapp ingress sticky-sessions set -n {} -g {} --affinity sticky".format(app, resource_group))
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, app), checks=[
-            JMESPathCheck('properties.configuration.ingress.stickySessions.affinity', "sticky"),        
+            JMESPathCheck(
+                'properties.configuration.ingress.stickySessions.affinity', "sticky"),
         ])

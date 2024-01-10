@@ -42,7 +42,8 @@ class ConnectedEnvironmentDecorator(BaseResource):
         connected_envs = super().list()
         custom_location = self.get_argument_custom_location()
         if custom_location:
-            connected_envs = [c for c in connected_envs if c["extendedLocation"]["name"].lower() == custom_location.lower()]
+            connected_envs = [c for c in connected_envs if c["extendedLocation"]["name"].lower(
+            ) == custom_location.lower()]
 
         return connected_envs
 
@@ -55,17 +56,20 @@ class ConnectedEnvironmentCreateDecorator(ConnectedEnvironmentDecorator):
         self.connected_env_def = ConnectedEnvironmentModel
 
     def validate_arguments(self):
-        location = validate_environment_location(self.cmd, self.get_argument_location(), CONNECTED_ENVIRONMENT_RESOURCE_TYPE)
+        location = validate_environment_location(
+            self.cmd, self.get_argument_location(), CONNECTED_ENVIRONMENT_RESOURCE_TYPE)
         self.set_argument_location(location)
         validate_custom_location(self.cmd, self.get_argument_custom_location())
 
     def construct_payload(self):
         self.connected_env_def["location"] = self.get_argument_location()
         if self.get_argument_dapr_ai_connection_string():
-            self.connected_env_def["properties"]["daprAIConnectionString"] = self.get_argument_dapr_ai_connection_string()
+            self.connected_env_def["properties"]["daprAIConnectionString"] = self.get_argument_dapr_ai_connection_string(
+            )
 
         if self.get_argument_static_ip():
-            self.connected_env_def["properties"]["staticIp"] = self.get_argument_static_ip()
+            self.connected_env_def["properties"]["staticIp"] = self.get_argument_static_ip(
+            )
 
         if self.get_argument_tags():
             self.connected_env_def["tags"] = self.get_argument_tags()

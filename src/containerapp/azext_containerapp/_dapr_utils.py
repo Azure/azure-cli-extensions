@@ -238,10 +238,12 @@ class DaprUtils:
         """
         supported_services = DaprUtils._get_supported_services()
         if service_type not in supported_services:
-            raise ValidationError(f"Service type {service_type} is not supported.")
+            raise ValidationError(
+                f"Service type {service_type} is not supported.")
 
         # Look up the service, if it already exists, return it.
-        logger.debug("Looking up service %s of type %s", service_name, service_type)
+        logger.debug("Looking up service %s of type %s",
+                     service_name, service_type)
         service_def = None
         try:
             service_def = ContainerAppPreviewClient.show(
@@ -259,7 +261,8 @@ class DaprUtils:
             return service_def
 
         # Create the service.
-        logger.debug("Creating service %s of type %s", service_name, service_type)
+        logger.debug("Creating service %s of type %s",
+                     service_name, service_type)
         create_service_func = supported_services[service_type]
 
         try:

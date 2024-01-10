@@ -44,5 +44,6 @@ services:
             self.check('[].name', ['foo']),
             self.check('[] | length(@)', 1),
         ])
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
         clean_up_test_file(compose_file_name)

@@ -3,26 +3,27 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from .utils import prepare_containerapp_env_for_app_e2e_tests
+from azext_containerapp.tests.latest.common import TEST_LOCATION
 import os
 import time
 
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
-from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
+from azure.cli.testsdk import (
+    ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azext_containerapp.tests.latest.common import (
+    write_test_file, clean_up_test_file)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-from azext_containerapp.tests.latest.common import TEST_LOCATION
-from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerAppJobsExecutionsTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerapp_job_executionstest_e2e(self, resource_group):
-        
+
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         job = self.create_random_name(prefix='job2', length=24)
@@ -42,13 +43,15 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         # wait for 60s for the job to be provisioned
         jobProvisioning = True
         timeout = time.time() + 60*1   # 1 minutes from now
-        while(jobProvisioning):
-            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()['properties']['provisioningState'] != "Succeeded"
-            if(time.time() > timeout):
+        while (jobProvisioning):
+            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(
+                resource_group, job)).get_output_in_json()['properties']['provisioningState'] != "Succeeded"
+            if (time.time() > timeout):
                 break
 
         # start the job execution
-        execution = self.cmd("az containerapp job start --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()
+        execution = self.cmd("az containerapp job start --resource-group {} --name {}".format(
+            resource_group, job)).get_output_in_json()
         if "id" in execution:
             # check if the job execution id is in the response
             self.assertEqual(job in execution['id'], True)
@@ -57,15 +60,18 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             self.assertEqual(job in execution['name'], True)
 
         # get list of all executions for the job
-        executionList = self.cmd("az containerapp job execution list --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()
+        executionList = self.cmd(
+            "az containerapp job execution list --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()
         self.assertTrue(len(executionList) == 1)
-        
+
         # get single execution for the job
-        singleExecution = self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name'])).get_output_in_json()
+        singleExecution = self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(
+            resource_group, job, execution['name'])).get_output_in_json()
         self.assertEqual(job in singleExecution['name'], True)
-        
+
         # start a job execution and stop it
-        execution = self.cmd("az containerapp job start --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()
+        execution = self.cmd("az containerapp job start --resource-group {} --name {}".format(
+            resource_group, job)).get_output_in_json()
         if "id" in execution:
             # check if the job execution id is in the response
             self.assertEqual(job in execution['id'], True)
@@ -74,10 +80,12 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             self.assertEqual(job in execution['name'], True)
 
         # stop the most recently started execution
-        self.cmd("az containerapp job stop --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name'])).get_output_in_json()
-        
+        self.cmd("az containerapp job stop --resource-group {} --name {} --job-execution-name {}".format(
+            resource_group, job, execution['name'])).get_output_in_json()
+
         # get stopped execution for the job and check status
-        singleExecution = self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name'])).get_output_in_json()
+        singleExecution = self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(
+            resource_group, job, execution['name'])).get_output_in_json()
         self.assertEqual(job in singleExecution['name'], True)
         self.assertEqual(singleExecution['properties']['status'], "Stopped")
 
@@ -105,15 +113,17 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         # wait for 60s for the job to be provisioned
         jobProvisioning = True
         timeout = time.time() + 60*1   # 1 minutes from now
-        while(jobProvisioning):
-            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()['properties']['provisioningState'] != "Succeeded"
-            if(time.time() > timeout):
+        while (jobProvisioning):
+            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(
+                resource_group, job)).get_output_in_json()['properties']['provisioningState'] != "Succeeded"
+            if (time.time() > timeout):
                 break
 
         # start an execution with custom container information
         customContainerImage = "mcr.microsoft.com/k8se/quickstart:latest"
         customContainerName = "job3-custom-exec"
-        execution = self.cmd("az containerapp job start --resource-group {} --name {} --image {} --container-name {} --cpu '0.5' --memory '1Gi'".format(resource_group, job, customContainerImage, customContainerName)).get_output_in_json()
+        execution = self.cmd("az containerapp job start --resource-group {} --name {} --image {} --container-name {} --cpu '0.5' --memory '1Gi'".format(
+            resource_group, job, customContainerImage, customContainerName)).get_output_in_json()
         if "id" in execution:
             # check if the job execution id is in the response
             self.assertEqual(job in execution['id'], True)
@@ -123,10 +133,14 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
 
         # get the execution and check if the custom container information is present
         self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name']), checks=[
-            JMESPathCheck('properties.template.containers[0].name', customContainerName),
-            JMESPathCheck('properties.template.containers[0].image', customContainerImage),
-            JMESPathCheck('properties.template.containers[0].resources.cpu', '0.5'),
-            JMESPathCheck('properties.template.containers[0].resources.memory', '1Gi')
+            JMESPathCheck(
+                'properties.template.containers[0].name', customContainerName),
+            JMESPathCheck(
+                'properties.template.containers[0].image', customContainerImage),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.cpu', '0.5'),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.memory', '1Gi')
         ])
 
         # yaml file to start a job execution
@@ -152,22 +166,32 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
                     memory: 0.5Gi
             """
         containerappjob_file_name = f"{self._testMethodName}_containerappjob.yml"
-        write_test_file(containerappjob_file_name, containerappjobexecution_yaml_text)
+        write_test_file(containerappjob_file_name,
+                        containerappjobexecution_yaml_text)
 
         # start job execution with yaml file
-        execution = self.cmd("az containerapp job start --resource-group {} --name {} --yaml {}".format(resource_group, job, containerappjob_file_name)).get_output_in_json()
+        execution = self.cmd("az containerapp job start --resource-group {} --name {} --yaml {}".format(
+            resource_group, job, containerappjob_file_name)).get_output_in_json()
         self.assertEqual(job in execution['id'], True)
-        self.assertEqual(job in execution['name'], True)            
+        self.assertEqual(job in execution['name'], True)
 
         # get the execution and check if the custom container information is present
         self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name']), checks=[
-            JMESPathCheck('properties.template.containers[0].name', "test-yaml-execution"),
-            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
-            JMESPathCheck('properties.template.containers[0].resources.cpu', '0.5'),
-            JMESPathCheck('properties.template.containers[0].resources.memory', '1Gi'),
-            JMESPathCheck('properties.template.initContainers[0].name', "simple-sleep-container"),
-            JMESPathCheck('properties.template.initContainers[0].image', "k8seteste2e.azurecr.io/e2e-apps/kuar:green"),
-            JMESPathCheck('properties.template.initContainers[0].resources.cpu', '0.25'),
-            JMESPathCheck('properties.template.initContainers[0].resources.memory', '0.5Gi')
+            JMESPathCheck(
+                'properties.template.containers[0].name', "test-yaml-execution"),
+            JMESPathCheck(
+                'properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.cpu', '0.5'),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.memory', '1Gi'),
+            JMESPathCheck(
+                'properties.template.initContainers[0].name', "simple-sleep-container"),
+            JMESPathCheck(
+                'properties.template.initContainers[0].image', "k8seteste2e.azurecr.io/e2e-apps/kuar:green"),
+            JMESPathCheck(
+                'properties.template.initContainers[0].resources.cpu', '0.25'),
+            JMESPathCheck(
+                'properties.template.initContainers[0].resources.memory', '0.5Gi')
         ])
         clean_up_test_file(containerappjob_file_name)

@@ -14,7 +14,8 @@ from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
+from azure.cli.testsdk import (
+    ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 from knack.util import CLIError
 
 from azext_containerapp.tests.latest.common import TEST_LOCATION
@@ -33,7 +34,8 @@ class ContainerappScenarioTest(ScenarioTest):
 
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        containerapp_name = self.create_random_name(prefix='containerapp-e2e', length=24)
+        containerapp_name = self.create_random_name(
+            prefix='containerapp-e2e', length=24)
 
         # Create basic Container App with default image
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, containerapp_name, env_id), checks=[
@@ -50,12 +52,15 @@ class ContainerappScenarioTest(ScenarioTest):
         ])
 
         # Create Container App with image, resource and replica limits
-        create_string = "containerapp create -g {} -n {} --environment {} --image nginx --cpu 0.5 --memory 1.0Gi --min-replicas 2 --max-replicas 4".format(resource_group, containerapp_name, env_id)
+        create_string = "containerapp create -g {} -n {} --environment {} --image nginx --cpu 0.5 --memory 1.0Gi --min-replicas 2 --max-replicas 4".format(
+            resource_group, containerapp_name, env_id)
         self.cmd(create_string, checks=[
             JMESPathCheck('name', containerapp_name),
             JMESPathCheck('properties.template.containers[0].image', 'nginx'),
-            JMESPathCheck('properties.template.containers[0].resources.cpu', '0.5'),
-            JMESPathCheck('properties.template.containers[0].resources.memory', '1Gi'),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.cpu', '0.5'),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.memory', '1Gi'),
             JMESPathCheck('properties.template.scale.minReplicas', '2'),
             JMESPathCheck('properties.template.scale.maxReplicas', '4')
         ])
@@ -67,10 +72,12 @@ class ContainerappScenarioTest(ScenarioTest):
 
         # Container App with ingress should fail unless target port is specified
         with self.assertRaises(CLIError):
-            self.cmd('containerapp create -g {} -n {} --environment {} --ingress external'.format(resource_group, containerapp_name, env_id))
+            self.cmd('containerapp create -g {} -n {} --environment {} --ingress external'.format(
+                resource_group, containerapp_name, env_id))
 
         # Create Container App with secrets and environment variables
-        containerapp_name = self.create_random_name(prefix='containerapp-e2e', length=24)
+        containerapp_name = self.create_random_name(
+            prefix='containerapp-e2e', length=24)
         create_string = 'containerapp create -g {} -n {} --environment {} --secrets mysecret=secretvalue1 anothersecret="secret value 2" --env-vars GREETING="Hello, world" SECRETENV=secretref:anothersecret'.format(
             resource_group, containerapp_name, env_id)
         self.cmd(create_string, checks=[
@@ -79,8 +86,8 @@ class ContainerappScenarioTest(ScenarioTest):
             JMESPathCheck('length(properties.configuration.secrets)', 2)
         ])
 
-
     # TODO rename
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_update(self, resource_group):
@@ -93,12 +100,14 @@ class ContainerappScenarioTest(ScenarioTest):
         env_id = prepare_containerapp_env_for_app_e2e_tests(self, location)
 
         # Create basic Container App with default image
-        containerapp_name = self.create_random_name(prefix='containerapp-update', length=24)
+        containerapp_name = self.create_random_name(
+            prefix='containerapp-update', length=24)
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, containerapp_name, env_id), checks=[
             JMESPathCheck('name', containerapp_name),
             JMESPathCheck('length(properties.template.containers)', 1),
-            JMESPathCheck('properties.template.containers[0].name', containerapp_name)
+            JMESPathCheck(
+                'properties.template.containers[0].name', containerapp_name)
         ])
 
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, containerapp_name), checks=[
@@ -111,12 +120,15 @@ class ContainerappScenarioTest(ScenarioTest):
         ])
 
         # Create Container App with image, resource and replica limits
-        create_string = "containerapp create -g {} -n {} --environment {} --image nginx --cpu 0.5 --memory 1.0Gi --min-replicas 2 --max-replicas 4".format(resource_group, containerapp_name, env_id)
+        create_string = "containerapp create -g {} -n {} --environment {} --image nginx --cpu 0.5 --memory 1.0Gi --min-replicas 2 --max-replicas 4".format(
+            resource_group, containerapp_name, env_id)
         self.cmd(create_string, checks=[
             JMESPathCheck('name', containerapp_name),
             JMESPathCheck('properties.template.containers[0].image', 'nginx'),
-            JMESPathCheck('properties.template.containers[0].resources.cpu', '0.5'),
-            JMESPathCheck('properties.template.containers[0].resources.memory', '1Gi'),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.cpu', '0.5'),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.memory', '1Gi'),
             JMESPathCheck('properties.template.scale.minReplicas', '2'),
             JMESPathCheck('properties.template.scale.maxReplicas', '4')
         ])
@@ -128,10 +140,12 @@ class ContainerappScenarioTest(ScenarioTest):
 
         # Container App with ingress should fail unless target port is specified
         with self.assertRaises(CLIError):
-            self.cmd('containerapp create -g {} -n {} --environment {} --ingress external'.format(resource_group, containerapp_name, env_id))
+            self.cmd('containerapp create -g {} -n {} --environment {} --ingress external'.format(
+                resource_group, containerapp_name, env_id))
 
         # Create Container App with secrets and environment variables
-        containerapp_name = self.create_random_name(prefix='containerapp-e2e', length=24)
+        containerapp_name = self.create_random_name(
+            prefix='containerapp-e2e', length=24)
         create_string = 'containerapp create -g {} -n {} --environment {} --secrets mysecret=secretvalue1 anothersecret="secret value 2" --env-vars GREETING="Hello, world" SECRETENV=secretref:anothersecret'.format(
             resource_group, containerapp_name, env_id)
         self.cmd(create_string, checks=[
@@ -140,35 +154,41 @@ class ContainerappScenarioTest(ScenarioTest):
             JMESPathCheck('length(properties.configuration.secrets)', 2)
         ])
 
-
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_container_acr(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        containerapp_name = self.create_random_name(prefix='containerapp-e2e', length=24)
-        registry_name = self.create_random_name(prefix='containerapp', length=24)
+        containerapp_name = self.create_random_name(
+            prefix='containerapp-e2e', length=24)
+        registry_name = self.create_random_name(
+            prefix='containerapp', length=24)
 
         # Create ACR
         acr_location = TEST_LOCATION
         if format_location(acr_location) == format_location(STAGE_LOCATION):
             acr_location = "eastus"
-        acr = self.cmd('acr create -g {} -n {} --sku Basic --admin-enabled --location {}'.format(resource_group, registry_name, acr_location)).get_output_in_json()
+        acr = self.cmd('acr create -g {} -n {} --sku Basic --admin-enabled --location {}'.format(
+            resource_group, registry_name, acr_location)).get_output_in_json()
         registry_server = acr["loginServer"]
 
-        acr_credentials = self.cmd('acr credential show -g {} -n {}'.format(resource_group, registry_name)).get_output_in_json()
+        acr_credentials = self.cmd(
+            'acr credential show -g {} -n {}'.format(resource_group, registry_name)).get_output_in_json()
         registry_username = acr_credentials["username"]
         registry_password = acr_credentials["passwords"][0]["value"]
 
         # Create Container App with ACR
-        containerapp_name = self.create_random_name(prefix='containerapp-e2e', length=24)
+        containerapp_name = self.create_random_name(
+            prefix='containerapp-e2e', length=24)
         create_string = 'containerapp create -g {} -n {} --environment {} --registry-username {} --registry-server {} --registry-password {}'.format(
             resource_group, containerapp_name, env_id, registry_username, registry_server, registry_password)
         self.cmd(create_string, checks=[
             JMESPathCheck('name', containerapp_name),
-            JMESPathCheck('properties.configuration.registries[0].server', registry_server),
-            JMESPathCheck('properties.configuration.registries[0].username', registry_username),
+            JMESPathCheck(
+                'properties.configuration.registries[0].server', registry_server),
+            JMESPathCheck(
+                'properties.configuration.registries[0].username', registry_username),
             JMESPathCheck('length(properties.configuration.secrets)', 1),
         ])
 
@@ -177,27 +197,34 @@ class ContainerappScenarioTest(ScenarioTest):
             resource_group, containerapp_name)
         self.cmd(update_string, checks=[
             JMESPathCheck('name', containerapp_name),
-            JMESPathCheck('properties.configuration.registries[0].server', registry_server),
-            JMESPathCheck('properties.configuration.registries[0].username', registry_username),
+            JMESPathCheck(
+                'properties.configuration.registries[0].server', registry_server),
+            JMESPathCheck(
+                'properties.configuration.registries[0].username', registry_username),
             JMESPathCheck('length(properties.configuration.secrets)', 1),
             JMESPathCheck('properties.template.scale.minReplicas', '0'),
             JMESPathCheck('properties.template.scale.maxReplicas', '1'),
             JMESPathCheck('length(properties.template.containers[0].env)', 1),
-            JMESPathCheck('properties.template.containers[0].env[0].name', "testenv"),
-            JMESPathCheck('properties.template.containers[0].env[0].value', None),
+            JMESPathCheck(
+                'properties.template.containers[0].env[0].name', "testenv"),
+            JMESPathCheck(
+                'properties.template.containers[0].env[0].value', None),
         ])
 
         # Add secrets to Container App with ACR
-        containerapp_secret = self.cmd('containerapp secret list -g {} -n {}'.format(resource_group, containerapp_name)).get_output_in_json()
+        containerapp_secret = self.cmd('containerapp secret list -g {} -n {}'.format(
+            resource_group, containerapp_name)).get_output_in_json()
         secret_name = containerapp_secret[0]["name"]
-        secret_string = 'containerapp secret set -g {} -n {} --secrets newsecret=test'.format(resource_group, containerapp_name)
+        secret_string = 'containerapp secret set -g {} -n {} --secrets newsecret=test'.format(
+            resource_group, containerapp_name)
         self.cmd(secret_string, checks=[
             JMESPathCheck('length(@)', 2),
         ])
 
         with self.assertRaises(CLIError):
             # Removing ACR password should fail since it is needed for ACR
-            self.cmd('containerapp secret remove -g {} -n {} --secret-names {}'.format(resource_group, containerapp_name, secret_name))
+            self.cmd('containerapp secret remove -g {} -n {} --secret-names {}'.format(
+                resource_group, containerapp_name, secret_name))
 
     # TODO rename
     @AllowLargeResponse(8192)
@@ -208,11 +235,13 @@ class ContainerappScenarioTest(ScenarioTest):
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
 
         # Create basic Container App with default image
-        containerapp_name = self.create_random_name(prefix='containerapp-update', length=24)
+        containerapp_name = self.create_random_name(
+            prefix='containerapp-update', length=24)
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, containerapp_name, env_id), checks=[
             JMESPathCheck('name', containerapp_name),
             JMESPathCheck('length(properties.template.containers)', 1),
-            JMESPathCheck('properties.template.containers[0].name', containerapp_name)
+            JMESPathCheck(
+                'properties.template.containers[0].name', containerapp_name)
         ])
 
         # Update existing Container App that has a single container
@@ -222,13 +251,17 @@ class ContainerappScenarioTest(ScenarioTest):
         self.cmd(update_string, checks=[
             JMESPathCheck('name', containerapp_name),
             JMESPathCheck('length(properties.template.containers)', 1),
-            JMESPathCheck('properties.template.containers[0].name', containerapp_name),
+            JMESPathCheck(
+                'properties.template.containers[0].name', containerapp_name),
             JMESPathCheck('properties.template.containers[0].image', 'nginx'),
-            JMESPathCheck('properties.template.containers[0].resources.cpu', '0.5'),
-            JMESPathCheck('properties.template.containers[0].resources.memory', '1Gi'),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.cpu', '0.5'),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.memory', '1Gi'),
             JMESPathCheck('properties.template.scale.minReplicas', '2'),
             JMESPathCheck('properties.template.scale.maxReplicas', '34'),
-            JMESPathCheck('properties.template.containers[0].command[0]', "mycommand"),
+            JMESPathCheck(
+                'properties.template.containers[0].command[0]', "mycommand"),
             JMESPathCheck('length(properties.template.containers[0].args)', 2)
         ])
 
@@ -254,10 +287,14 @@ class ContainerappScenarioTest(ScenarioTest):
         update_string = 'containerapp update -g {} -n {} --container-name {} --cpu {} --memory {}'.format(
             resource_group, containerapp_name, containerapp_name, '0.75', '1.5Gi')
         self.cmd(update_string, checks=[
-            JMESPathCheck('properties.template.containers[0].resources.cpu', '0.75'),
-            JMESPathCheck('properties.template.containers[0].resources.memory', '1.5Gi'),
-            JMESPathCheck('properties.template.containers[1].resources.cpu', '0.75'),
-            JMESPathCheck('properties.template.containers[1].resources.memory', '1.5Gi'),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.cpu', '0.75'),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.memory', '1.5Gi'),
+            JMESPathCheck(
+                'properties.template.containers[1].resources.cpu', '0.75'),
+            JMESPathCheck(
+                'properties.template.containers[1].resources.memory', '1.5Gi'),
         ])
 
     @ResourceGroupPreparer(location="northeurope")
@@ -265,9 +302,11 @@ class ContainerappScenarioTest(ScenarioTest):
         containerapp_name = self.create_random_name(prefix='capp', length=24)
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'containerapp create -g {resource_group} -n {containerapp_name} --environment {env_id} --min-replicas 1 --ingress external --target-port 80')
+        self.cmd(
+            f'containerapp create -g {resource_group} -n {containerapp_name} --environment {env_id} --min-replicas 1 --ingress external --target-port 80')
 
-        self.cmd(f'containerapp logs show -n {containerapp_name} -g {resource_group}')
+        self.cmd(
+            f'containerapp logs show -n {containerapp_name} -g {resource_group}')
 
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_eventstream(self, resource_group):
@@ -278,9 +317,11 @@ class ContainerappScenarioTest(ScenarioTest):
         env_rg = parse_resource_id(env_id).get('resource_group')
         env_name = parse_resource_id(env_id).get('name')
 
-        self.cmd(f'containerapp create -g {resource_group} -n {containerapp_name} --environment {env_id} --min-replicas 1 --ingress external --target-port 80')
+        self.cmd(
+            f'containerapp create -g {resource_group} -n {containerapp_name} --environment {env_id} --min-replicas 1 --ingress external --target-port 80')
 
-        self.cmd(f'containerapp logs show -n {containerapp_name} -g {resource_group} --type system')
+        self.cmd(
+            f'containerapp logs show -n {containerapp_name} -g {resource_group} --type system')
         self.cmd(f'containerapp env logs show -n {env_name} -g {env_rg}')
 
     @ResourceGroupPreparer(location="northeurope")
@@ -296,19 +337,33 @@ class ContainerappScenarioTest(ScenarioTest):
 
         env_id = prepare_containerapp_env_for_app_e2e_tests(self, location)
 
-        self.cmd(f'containerapp create -g {resource_group} -n {app} --environment {env_id} --min-replicas 1 --ingress external --target-port 80')
-        self.cmd(f'acr create -g {resource_group} -n {acr} --sku basic --admin-enabled')
+        self.cmd(
+            f'containerapp create -g {resource_group} -n {app} --environment {env_id} --min-replicas 1 --ingress external --target-port 80')
+        self.cmd(
+            f'acr create -g {resource_group} -n {acr} --sku basic --admin-enabled')
         # self.cmd(f'acr credential renew -n {acr} ')
-        self.cmd(f'containerapp registry set --server {acr}.azurecr.io -g {resource_group} -n {app}')
-        app_data = self.cmd(f'containerapp show -g {resource_group} -n {app}').get_output_in_json()
-        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("server"), f'{acr}.azurecr.io')
-        self.assertIsNotNone(app_data["properties"]["configuration"]["registries"][0].get("passwordSecretRef"))
-        self.assertIsNotNone(app_data["properties"]["configuration"]["registries"][0].get("username"))
-        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("identity"), "")
+        self.cmd(
+            f'containerapp registry set --server {acr}.azurecr.io -g {resource_group} -n {app}')
+        app_data = self.cmd(
+            f'containerapp show -g {resource_group} -n {app}').get_output_in_json()
+        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get(
+            "server"), f'{acr}.azurecr.io')
+        self.assertIsNotNone(
+            app_data["properties"]["configuration"]["registries"][0].get("passwordSecretRef"))
+        self.assertIsNotNone(
+            app_data["properties"]["configuration"]["registries"][0].get("username"))
+        self.assertEqual(
+            app_data["properties"]["configuration"]["registries"][0].get("identity"), "")
 
-        self.cmd(f'containerapp registry set --server {acr}.azurecr.io -g {resource_group} -n {app} --identity system')
-        app_data = self.cmd(f'containerapp show -g {resource_group} -n {app}').get_output_in_json()
-        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("server"), f'{acr}.azurecr.io')
-        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("passwordSecretRef"), "")
-        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("username"), "")
-        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("identity"), "system")
+        self.cmd(
+            f'containerapp registry set --server {acr}.azurecr.io -g {resource_group} -n {app} --identity system')
+        app_data = self.cmd(
+            f'containerapp show -g {resource_group} -n {app}').get_output_in_json()
+        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get(
+            "server"), f'{acr}.azurecr.io')
+        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get(
+            "passwordSecretRef"), "")
+        self.assertEqual(
+            app_data["properties"]["configuration"]["registries"][0].get("username"), "")
+        self.assertEqual(app_data["properties"]["configuration"]
+                         ["registries"][0].get("identity"), "system")

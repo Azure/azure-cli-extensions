@@ -47,11 +47,15 @@ services:
         command_string += ' --registry-password {registry_pass}'
 
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`foo`].properties.configuration.registries[0].server', ["foobar.azurecr.io"]),
-            self.check(f'[?name==`foo`].properties.configuration.registries[0].username', ["foobar"]),
-            self.check(f'[?name==`foo`].properties.configuration.registries[0].passwordSecretRef', ["foobarazurecrio-foobar"]),  # pylint: disable=C0301
+            self.check(f'[?name==`foo`].properties.configuration.registries[0].server', [
+                       "foobar.azurecr.io"]),
+            self.check(
+                f'[?name==`foo`].properties.configuration.registries[0].username', ["foobar"]),
+            self.check(f'[?name==`foo`].properties.configuration.registries[0].passwordSecretRef', [
+                       "foobarazurecrio-foobar"]),  # pylint: disable=C0301
         ])
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -76,7 +80,7 @@ services:
             'compose': compose_file_name,
             'registry_server': "foobar.azurecr.io",
         })
-        
+
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
         command_string += ' --resource-group {rg}'
@@ -85,6 +89,7 @@ services:
 
         # This test fails because prompts are not supported in NoTTY environments
         self.cmd(command_string, expect_failure=True)
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)

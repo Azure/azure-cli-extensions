@@ -21,4 +21,5 @@ class AddCustomizedKeys(argparse.Action):
             properties = dict(properties)
             return properties
         except ValueError:
-            raise ValidationError('Usage error: {} [DesiredKey=DefaultKey ...]'.format(option_string))
+            raise ValidationError(
+                'Usage error: {} [DesiredKey=DefaultKey ...]'.format(option_string))

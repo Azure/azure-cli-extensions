@@ -35,13 +35,16 @@ def handle_raw_exception(e):
     stringErr = str(e)
 
     if "WorkloadProfileNameRequired" in stringErr:
-        raise CLIInternalError("Workload profile name is required. Please provide --workload-profile-name.")
+        raise CLIInternalError(
+            "Workload profile name is required. Please provide --workload-profile-name.")
 
     if "Unknown properties Name in Microsoft.ContainerApps.WebApi.Views.Version20221101Preview.WorkloadProfile are not supported" in stringErr:
-        raise CLIInternalError("Bad Request: Workload profile name is not yet supported in this region.")
+        raise CLIInternalError(
+            "Bad Request: Workload profile name is not yet supported in this region.")
 
     if "Error starting job" in stringErr:
-        raise CLIInternalError("There was an error starting the job execution. Please check input parameters and try again.")
+        raise CLIInternalError(
+            "There was an error starting the job execution. Please check input parameters and try again.")
 
     if "{" in stringErr and "}" in stringErr:
         jsonError = stringErr[stringErr.index("{"):stringErr.rindex("}") + 1]
@@ -98,7 +101,8 @@ def handle_non_404_status_code_exception(e):
 
     string_err = str(e)
     if "{" in string_err and "}" in string_err:
-        json_error = string_err[string_err.index("{"):string_err.rindex("}") + 1]
+        json_error = string_err[string_err.index(
+            "{"):string_err.rindex("}") + 1]
         json_error = json.loads(json_error)
         if 'error' in json_error:
             json_error = json_error['error']
@@ -145,12 +149,14 @@ def custom_location_client_factory(cli_ctx, api_version=None, subscription_id=No
 def k8s_extension_client_factory(cli_ctx, subscription_id=None):
     from .vendored_sdks.kubernetesconfiguration import SourceControlConfigurationClient
 
-    r = get_mgmt_service_client(cli_ctx, SourceControlConfigurationClient, subscription_id=subscription_id)
+    r = get_mgmt_service_client(
+        cli_ctx, SourceControlConfigurationClient, subscription_id=subscription_id)
     return r.extensions
 
 
 def connected_k8s_client_factory(cli_ctx, subscription_id=None):
     from .vendored_sdks.hybridkubernetes import ConnectedKubernetesClient
 
-    r = get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, subscription_id=subscription_id)
+    r = get_mgmt_service_client(
+        cli_ctx, ConnectedKubernetesClient, subscription_id=subscription_id)
     return r.connected_cluster

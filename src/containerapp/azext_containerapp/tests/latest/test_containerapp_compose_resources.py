@@ -44,9 +44,11 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
+            self.check(
+                f'[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
         ])
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -81,9 +83,11 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
+            self.check(
+                f'[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
         ])
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -112,14 +116,16 @@ services:
             'environment': env,
             'compose': compose_file_name,
         })
-        
+
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
+            self.check(
+                f'[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
         ])
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)

@@ -3,18 +3,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from .utils import prepare_containerapp_env_for_app_e2e_tests
+from .common import TEST_LOCATION, STAGE_LOCATION
 import os
 
 from azure.cli.command_modules.containerapp._utils import format_location
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists, JMESPathCheckNotExists)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer,
+                               JMESPathCheck, JMESPathCheckExists, JMESPathCheckNotExists)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-from .common import TEST_LOCATION, STAGE_LOCATION
-from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
@@ -39,7 +39,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck('name', env_name)
         ])
 
-        ## test for CRUD operations on Container App Job resource with trigger type as manual
+        # test for CRUD operations on Container App Job resource with trigger type as manual
         # create a Container App Job resource with trigger type as manual and with a system assigned identity
         self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --secrets 'testsecret=testsecretvalue' --replica-timeout 200 --replica-retry-limit 2 --trigger-type manual --parallelism 1 --replica-completion-count 1 --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi' --system-assigned".format(resource_group, job, env_id))
 
@@ -48,8 +48,10 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck('name', job),
             JMESPathCheck('properties.configuration.replicaTimeout', 200),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 2),
-            JMESPathCheck('properties.configuration.triggerType', "manual", case_sensitive=False),
-            JMESPathCheck('identity.type', "SystemAssigned", case_sensitive=False),
+            JMESPathCheck('properties.configuration.triggerType',
+                          "manual", case_sensitive=False),
+            JMESPathCheck('identity.type', "SystemAssigned",
+                          case_sensitive=False),
             JMESPathCheckExists('identity.principalId'),
             JMESPathCheckExists('identity.tenantId'),
         ])
@@ -62,13 +64,16 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         ])
 
         # create a user assigned identity
-        user_identity_name = self.create_random_name(prefix='containerappjob-user', length=24)
-        user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
+        user_identity_name = self.create_random_name(
+            prefix='containerappjob-user', length=24)
+        user_identity = self.cmd('identity create -g {} -n {}'.format(
+            resource_group, user_identity_name)).get_output_in_json()
         user_identity_id = user_identity['id']
 
         # assign user identity to container app job
         self.cmd("az containerapp job identity assign --resource-group {} --name {} --user-assigned '{}'".format(resource_group, job, user_identity_id), checks=[
-            JMESPathCheck('type', "SystemAssigned, UserAssigned", case_sensitive=False),
+            JMESPathCheck('type', "SystemAssigned, UserAssigned",
+                          case_sensitive=False),
             JMESPathCheckExists('principalId'),
             JMESPathCheckExists('tenantId'),
             JMESPathCheckExists('userAssignedIdentities'),

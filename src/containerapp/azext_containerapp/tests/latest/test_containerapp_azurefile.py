@@ -3,6 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from .utils import create_containerapp_env
+from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
+                     clean_up_test_file,
+                     )
 import os
 import time
 import unittest
@@ -10,13 +14,10 @@ import unittest
 from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
+from azure.cli.testsdk import (
+    ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
-                     clean_up_test_file,
-                     )
-from .utils import create_containerapp_env
 
 
 class ContainerAppMountAzureFileTest(ScenarioTest):
@@ -41,7 +42,8 @@ class ContainerAppMountAzureFileTest(ScenarioTest):
         account_key = self.cmd(f'az storage account keys list -g {resource_group} -n {storage} --query "[0].value" '
                                '-otsv').output.strip()
 
-        self.cmd(f'az containerapp env storage set -g {resource_group} -n {env} -a {storage} -k {account_key} -f {share} --storage-name {share} --access-mode ReadWrite')
+        self.cmd(
+            f'az containerapp env storage set -g {resource_group} -n {env} -a {storage} -k {account_key} -f {share} --storage-name {share} --access-mode ReadWrite')
 
         containerapp_env = self.cmd('containerapp env show -n {} -g {}'.format(env, resource_group), checks=[
             JMESPathCheck('name', env)
@@ -89,23 +91,36 @@ class ContainerAppMountAzureFileTest(ScenarioTest):
             f'az containerapp create -g {resource_group} --environment {env} -n {app} --yaml {containerapp_file_name}')
 
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, app), checks=[
-            JMESPathCheck('properties.template.volumes[0].storageType', 'AzureFile'),
+            JMESPathCheck(
+                'properties.template.volumes[0].storageType', 'AzureFile'),
             JMESPathCheck('properties.template.volumes[0].storageName', share),
-            JMESPathCheck('properties.template.volumes[0].name', 'azure-files-volume'),
-            JMESPathCheck('properties.template.volumes[0].mountOptions', 'uid=999,gid=999'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].subPath', 'sub'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
+            JMESPathCheck(
+                'properties.template.volumes[0].name', 'azure-files-volume'),
+            JMESPathCheck(
+                'properties.template.volumes[0].mountOptions', 'uid=999,gid=999'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].subPath', 'sub'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
         ])
 
         self.cmd('az containerapp revision list -g {} -n {}'.format(resource_group, app), checks=[
-            JMESPathCheck('[0].properties.template.volumes[0].storageType', 'AzureFile'),
-            JMESPathCheck('[0].properties.template.volumes[0].storageName', share),
-            JMESPathCheck('[0].properties.template.volumes[0].name', 'azure-files-volume'),
-            JMESPathCheck('[0].properties.template.volumes[0].mountOptions', 'uid=999,gid=999'),
-            JMESPathCheck('[0].properties.template.containers[0].volumeMounts[0].subPath', 'sub'),
-            JMESPathCheck('[0].properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
-            JMESPathCheck('[0].properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
+            JMESPathCheck(
+                '[0].properties.template.volumes[0].storageType', 'AzureFile'),
+            JMESPathCheck(
+                '[0].properties.template.volumes[0].storageName', share),
+            JMESPathCheck(
+                '[0].properties.template.volumes[0].name', 'azure-files-volume'),
+            JMESPathCheck(
+                '[0].properties.template.volumes[0].mountOptions', 'uid=999,gid=999'),
+            JMESPathCheck(
+                '[0].properties.template.containers[0].volumeMounts[0].subPath', 'sub'),
+            JMESPathCheck(
+                '[0].properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
+            JMESPathCheck(
+                '[0].properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
         ])
         clean_up_test_file(containerapp_file_name)
 
@@ -151,22 +166,35 @@ class ContainerAppMountAzureFileTest(ScenarioTest):
             f'az containerapp update -g {resource_group} -n {app} --yaml {containerapp_file_name}')
 
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, app), checks=[
-            JMESPathCheck('properties.template.volumes[0].storageType', 'AzureFile'),
+            JMESPathCheck(
+                'properties.template.volumes[0].storageType', 'AzureFile'),
             JMESPathCheck('properties.template.volumes[0].storageName', share),
-            JMESPathCheck('properties.template.volumes[0].name', 'azure-files-volume'),
-            JMESPathCheck('properties.template.volumes[0].mountOptions', 'uid=1000,gid=1000'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].subPath', 'sub2'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
+            JMESPathCheck(
+                'properties.template.volumes[0].name', 'azure-files-volume'),
+            JMESPathCheck(
+                'properties.template.volumes[0].mountOptions', 'uid=1000,gid=1000'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].subPath', 'sub2'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
         ])
 
         self.cmd('az containerapp revision list -g {} -n {}'.format(resource_group, app), checks=[
-            JMESPathCheck('[1].properties.template.volumes[0].storageType', 'AzureFile'),
-            JMESPathCheck('[1].properties.template.volumes[0].storageName', share),
-            JMESPathCheck('[1].properties.template.volumes[0].name', 'azure-files-volume'),
-            JMESPathCheck('[1].properties.template.volumes[0].mountOptions', 'uid=1000,gid=1000'),
-            JMESPathCheck('[1].properties.template.containers[0].volumeMounts[0].subPath', 'sub2'),
-            JMESPathCheck('[1].properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
-            JMESPathCheck('[1].properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
+            JMESPathCheck(
+                '[1].properties.template.volumes[0].storageType', 'AzureFile'),
+            JMESPathCheck(
+                '[1].properties.template.volumes[0].storageName', share),
+            JMESPathCheck(
+                '[1].properties.template.volumes[0].name', 'azure-files-volume'),
+            JMESPathCheck(
+                '[1].properties.template.volumes[0].mountOptions', 'uid=1000,gid=1000'),
+            JMESPathCheck(
+                '[1].properties.template.containers[0].volumeMounts[0].subPath', 'sub2'),
+            JMESPathCheck(
+                '[1].properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
+            JMESPathCheck(
+                '[1].properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
         ])
         clean_up_test_file(containerapp_file_name)

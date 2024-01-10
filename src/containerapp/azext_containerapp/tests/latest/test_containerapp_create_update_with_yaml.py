@@ -7,7 +7,8 @@ import time
 import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azure.cli.testsdk import (
+    ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 from msrestazure.tools import parse_resource_id
 
 from .common import (write_test_file, clean_up_test_file)
@@ -36,7 +37,8 @@ class ContainerappYamlTests(ScenarioTest):
         containerapp_env2 = self.cmd(
             'containerapp env show -g {} -n {}'.format(resource_group, env2)).get_output_in_json()
 
-        user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
+        user_identity_name = self.create_random_name(
+            prefix='containerapp-user', length=24)
         user_identity = self.cmd(
             'identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
         user_identity_id = user_identity['id']
@@ -104,32 +106,46 @@ class ContainerappYamlTests(ScenarioTest):
         containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
 
         write_test_file(containerapp_file_name, containerapp_yaml_text)
-        self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env2} --yaml {containerapp_file_name}')
+        self.cmd(
+            f'containerapp create -n {app} -g {resource_group} --environment {env2} --yaml {containerapp_file_name}')
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.environmentId", containerapp_env1["id"]),
             JMESPathCheck("properties.configuration.ingress.external", False),
-            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[0].external", False),
-            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[0].targetPort", 12345),
-            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].external", False),
-            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].targetPort", 9090),
-            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].exposedPort", 23456),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
+            JMESPathCheck(
+                "properties.configuration.ingress.additionalPortMappings[0].external", False),
+            JMESPathCheck(
+                "properties.configuration.ingress.additionalPortMappings[0].targetPort", 12345),
+            JMESPathCheck(
+                "properties.configuration.ingress.additionalPortMappings[1].external", False),
+            JMESPathCheck(
+                "properties.configuration.ingress.additionalPortMappings[1].targetPort", 9090),
+            JMESPathCheck(
+                "properties.configuration.ingress.additionalPortMappings[1].exposedPort", 23456),
+            JMESPathCheck(
+                "properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange",
                           "1.1.1.1/10"),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck(
+                "properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("properties.environmentId", containerapp_env1["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
-            JMESPathCheck("properties.template.terminationGracePeriodSeconds", 90),
+            JMESPathCheck(
+                "properties.template.terminationGracePeriodSeconds", 90),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
-            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
-            JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
-            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
-            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
-            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+            JMESPathCheck(
+                "properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck(
+                "properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
+            JMESPathCheck(
+                "properties.template.scale.rules[0].http.metadata.key", "value"),
+            JMESPathCheck(
+                "properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck(
+                "properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
         ])
 
         containerapp_yaml_text = f"""
@@ -193,30 +209,44 @@ class ContainerappYamlTests(ScenarioTest):
 
         write_test_file(containerapp_file_name, containerapp_yaml_text)
         app2 = self.create_random_name(prefix='yaml2', length=24)
-        self.cmd(f'containerapp create -n {app2} -g {resource_group} --environment {env2} --yaml {containerapp_file_name}')
+        self.cmd(
+            f'containerapp create -n {app2} -g {resource_group} --environment {env2} --yaml {containerapp_file_name}')
         self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.environmentId", containerapp_env2["id"]),
             JMESPathCheck("properties.configuration.ingress.external", False),
-            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[0].external", False),
-            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[0].targetPort", 12345),
-            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].external", False),
-            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].targetPort", 9090),
-            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].exposedPort", 23456),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
+            JMESPathCheck(
+                "properties.configuration.ingress.additionalPortMappings[0].external", False),
+            JMESPathCheck(
+                "properties.configuration.ingress.additionalPortMappings[0].targetPort", 12345),
+            JMESPathCheck(
+                "properties.configuration.ingress.additionalPortMappings[1].external", False),
+            JMESPathCheck(
+                "properties.configuration.ingress.additionalPortMappings[1].targetPort", 9090),
+            JMESPathCheck(
+                "properties.configuration.ingress.additionalPortMappings[1].exposedPort", 23456),
+            JMESPathCheck(
+                "properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange",
                           "1.1.1.1/10"),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck(
+                "properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("properties.environmentId", containerapp_env2["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
-            JMESPathCheck("properties.template.terminationGracePeriodSeconds", 90),
+            JMESPathCheck(
+                "properties.template.terminationGracePeriodSeconds", 90),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
-            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
-            JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
-            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
-            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
-            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+            JMESPathCheck(
+                "properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck(
+                "properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
+            JMESPathCheck(
+                "properties.template.scale.rules[0].http.metadata.key", "value"),
+            JMESPathCheck(
+                "properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck(
+                "properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
         ])
         clean_up_test_file(containerapp_file_name)

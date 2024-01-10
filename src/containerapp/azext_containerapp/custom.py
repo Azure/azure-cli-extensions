@@ -100,11 +100,13 @@ logger = get_logger(__name__)
 
 
 def list_all_services(cmd, environment_name, resource_group_name):
-    services = list_containerapp(cmd, resource_group_name=resource_group_name, managed_env=environment_name)
+    services = list_containerapp(
+        cmd, resource_group_name=resource_group_name, managed_env=environment_name)
     dev_service_list = []
 
     for service in services:
-        service_type = safe_get(service, "properties", "configuration", "service", "type", default="")
+        service_type = safe_get(service, "properties",
+                                "configuration", "service", "type", default="")
         if service_type in DEV_SERVICE_LIST:
             dev_service_list.append(service)
 
@@ -564,7 +566,8 @@ def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_base_decorator.validate_subscription_registered(
+        CONTAINER_APPS_RP)
 
     return containerapp_base_decorator.show()
 
@@ -577,7 +580,8 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None, environme
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_list_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_list_decorator.validate_subscription_registered(
+        CONTAINER_APPS_RP)
 
     return containerapp_list_decorator.list()
 
@@ -603,7 +607,8 @@ def list_usages(cmd, location):
 def list_environment_usages(cmd, resource_group_name, name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
-        r = ManagedEnvironmentPreviewClient.list_usages(cmd, resource_group_name, name)
+        r = ManagedEnvironmentPreviewClient.list_usages(
+            cmd, resource_group_name, name)
         return r
     except CLIError as e:
         handle_raw_exception(e)
@@ -617,7 +622,8 @@ def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_base_decorator.validate_subscription_registered(
+        CONTAINER_APPS_RP)
 
     return containerapp_base_decorator.delete()
 
@@ -706,7 +712,8 @@ def show_managed_environment(cmd, name, resource_group_name):
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_env_decorator.validate_subscription_registered(
+        CONTAINER_APPS_RP)
 
     return containerapp_env_decorator.show()
 
@@ -719,7 +726,8 @@ def list_managed_environments(cmd, resource_group_name=None):
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_env_decorator.validate_subscription_registered(
+        CONTAINER_APPS_RP)
 
     return containerapp_env_decorator.list()
 
@@ -732,7 +740,8 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_env_decorator.validate_subscription_registered(
+        CONTAINER_APPS_RP)
 
     return containerapp_env_decorator.delete()
 
@@ -800,7 +809,8 @@ def show_containerappsjob(cmd, name, resource_group_name):
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_job_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_job_decorator.validate_subscription_registered(
+        CONTAINER_APPS_RP)
 
     return containerapp_job_decorator.show()
 
@@ -813,7 +823,8 @@ def list_containerappsjob(cmd, resource_group_name=None):
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_job_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_job_decorator.validate_subscription_registered(
+        CONTAINER_APPS_RP)
 
     return containerapp_job_decorator.list()
 
@@ -826,7 +837,8 @@ def delete_containerappsjob(cmd, name, resource_group_name, no_wait=False):
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_job_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_job_decorator.validate_subscription_registered(
+        CONTAINER_APPS_RP)
 
     return containerapp_job_decorator.delete()
 
@@ -856,26 +868,31 @@ def create_or_update_github_action(cmd,
         scopes = ["admin:repo_hook", "repo", "workflow"]
         token = get_github_access_token(cmd, scopes)
     elif token and login_with_github:
-        logger.warning("Both token and --login-with-github flag are provided. Will use provided token")
+        logger.warning(
+            "Both token and --login-with-github flag are provided. Will use provided token")
 
     repo = repo_url_to_name(repo_url)
-    repo_url = f"https://github.com/{repo}"  # allow specifying repo as <user>/<repo> without the full github url
+    # allow specifying repo as <user>/<repo> without the full github url
+    repo_url = f"https://github.com/{repo}"
 
     branch = _validate_github(repo, branch, token)
 
     source_control_info = None
 
     try:
-        source_control_info = GitHubActionClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        source_control_info = GitHubActionClient.show(
+            cmd=cmd, resource_group_name=resource_group_name, name=name)
 
     except Exception as ex:
         if not service_principal_client_id or not service_principal_client_secret or not service_principal_tenant_id:
-            raise RequiredArgumentMissingError('Service principal client ID, secret and tenant ID are required to add github actions for the first time. Please create one using the command \"az ad sp create-for-rbac --name {{name}} --role contributor --scopes /subscriptions/{{subscription}}/resourceGroups/{{resourceGroup}} --sdk-auth\"') from ex
+            raise RequiredArgumentMissingError(
+                'Service principal client ID, secret and tenant ID are required to add github actions for the first time. Please create one using the command \"az ad sp create-for-rbac --name {{name}} --role contributor --scopes /subscriptions/{{subscription}}/resourceGroups/{{resourceGroup}} --sdk-auth\"') from ex
         source_control_info = SourceControlModel
 
     # Need to trigger the workflow manually if it already exists (performing an update)
     try:
-        workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+        workflow_name = GitHubActionClient.get_workflow_name(
+            cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
         if workflow_name is not None:
             if trigger_existing_workflow:
                 trigger_workflow(token, repo, workflow_name, branch)
@@ -899,15 +916,20 @@ def create_or_update_github_action(cmd,
     if registry_username is None or registry_password is None:
         # If registry is Azure Container Registry, we can try inferring credentials
         if not registry_url or ACR_IMAGE_SUFFIX not in registry_url:
-            raise RequiredArgumentMissingError('Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
-        logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
+            raise RequiredArgumentMissingError(
+                'Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
+        logger.warning(
+            'No credential was provided to access Azure Container Registry. Trying to look up...')
         parsed = urlparse(registry_url)
-        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
+        registry_name = (
+            parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
 
         try:
-            registry_username, registry_password, _ = _get_acr_cred(cmd.cli_ctx, registry_name)
+            registry_username, registry_password, _ = _get_acr_cred(
+                cmd.cli_ctx, registry_name)
         except Exception as ex:
-            raise RequiredArgumentMissingError('Failed to retrieve credentials for container registry. Please provide the registry username and password') from ex
+            raise RequiredArgumentMissingError(
+                'Failed to retrieve credentials for container registry. Please provide the registry username and password') from ex
 
     registry_info = RegistryInfoModel
     registry_info["registryUrl"] = registry_url
@@ -926,7 +948,8 @@ def create_or_update_github_action(cmd,
 
     try:
         logger.warning("Creating Github action...")
-        r = GitHubActionClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
+        r = GitHubActionClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name,
+                                                name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
         if not no_wait:
             WORKFLOW_POLL_RETRY = 6
             WORKFLOW_POLL_SLEEP = 10
@@ -934,7 +957,8 @@ def create_or_update_github_action(cmd,
             # Poll for the workflow file just created (may take up to 30s)
             for _ in range(0, WORKFLOW_POLL_RETRY):
                 time.sleep(WORKFLOW_POLL_SLEEP)
-                workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+                workflow_name = GitHubActionClient.get_workflow_name(
+                    cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
                 if workflow_name is not None:
                     await_github_action(token, repo, workflow_name)
                     return r
@@ -1030,7 +1054,8 @@ def containerapp_up(cmd,
                             check_env_name_on_rg, get_token, _has_dockerfile)
     from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
-    dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
+    # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
+    dockerfile = "Dockerfile"
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _validate_up_args(cmd, source, artifact, image, repo, registry_server)
@@ -1045,7 +1070,8 @@ def containerapp_up(cmd,
         # At this point we know for sure that source isn't set (else _validate_up_args would have failed), so we can build with this value.
         source = artifact
     validate_container_app_name(name, AppType.ContainerApp.name)
-    check_env_name_on_rg(cmd, environment, resource_group_name, location, custom_location_id, connected_cluster_id)
+    check_env_name_on_rg(cmd, environment, resource_group_name,
+                         location, custom_location_id, connected_cluster_id)
 
     image = _reformat_image(source, repo, image)
     token = get_token(cmd, repo, token)
@@ -1057,25 +1083,35 @@ def containerapp_up(cmd,
     if image:
         if ingress and not target_port:
             target_port = 80
-            logger.warning("No ingress provided, defaulting to port 80. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
+            logger.warning(
+                "No ingress provided, defaulting to port 80. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
 
     # Check if source contains a Dockerfile
     # and ignore checking if Dockerfile exists in repo since GitHub action inherently checks for it.
     if _has_dockerfile(source, dockerfile):
-        dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
-        ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
+        dockerfile_content = _get_dockerfile_content(
+            repo, branch, token, source, context_path, dockerfile)
+        ingress, target_port = _get_ingress_and_target_port(
+            ingress, target_port, dockerfile_content)
 
-    resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
-    custom_location = CustomLocation(cmd, name=custom_location_id, resource_group_name=resource_group_name, connected_cluster_id=connected_cluster_id)
-    extension = Extension(cmd, logs_rg=resource_group_name, logs_location=location, logs_share_key=logs_key, logs_customer_id=logs_customer_id, connected_cluster_id=connected_cluster_id)
-    env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
-    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress)
+    resource_group = ResourceGroup(
+        cmd, name=resource_group_name, location=location)
+    custom_location = CustomLocation(
+        cmd, name=custom_location_id, resource_group_name=resource_group_name, connected_cluster_id=connected_cluster_id)
+    extension = Extension(cmd, logs_rg=resource_group_name, logs_location=location, logs_share_key=logs_key,
+                          logs_customer_id=logs_customer_id, connected_cluster_id=connected_cluster_id)
+    env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key,
+                                  logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
+    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server,
+                       registry_user, registry_pass, env_vars, workload_profile_name, ingress)
 
-    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app, custom_location, extension)
+    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id,
+                     location, resource_group, env, app, custom_location, extension)
 
     if app.check_exists():
         if app.get()["properties"]["provisioningState"] == "InProgress":
-            raise ValidationError("Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
+            raise ValidationError(
+                "Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
 
     resource_group.create_if_needed()
     extension.create_if_needed()
@@ -1084,12 +1120,15 @@ def containerapp_up(cmd,
 
     if source or repo:
         if not registry_server:
-            _get_registry_from_app(app, source)  # if the app exists, get the registry
-        _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
+            # if the app exists, get the registry
+            _get_registry_from_app(app, source)
+        # fetch ACR creds from arguments registry arguments
+        _get_registry_details(cmd, app, source)
 
     used_default_container_registry = False
     if source:
-        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=True, registry_server=registry_server)
+        used_default_container_registry = app.run_source_to_cloud_flow(
+            source, dockerfile, can_create_acr_if_needed=True, registry_server=registry_server)
     else:
         app.create_acr_if_needed()
 
@@ -1102,13 +1141,15 @@ def containerapp_up(cmd,
     if browse:
         open_containerapp_in_browser(cmd, app.name, app.resource_group.name)
 
-    up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
+    up_output(app, no_dockerfile=(
+        source and not _has_dockerfile(source, dockerfile)))
 
 
 def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None):
     containerapp_def = None
     try:
-        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        containerapp_def = ContainerAppPreviewClient.show(
+            cmd=cmd, resource_group_name=resource_group_name, name=name)
     except:
         pass
 
@@ -1120,15 +1161,19 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
 
 def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None):
     if certificate_name and not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
-        raise ValidationError(f"Certificate name '{certificate_name}' is not available.")
+        raise ValidationError(
+            f"Certificate name '{certificate_name}' is not available.")
     cert_name = certificate_name
     while not cert_name:
-        cert_name = generate_randomized_managed_cert_name(hostname, resource_group_name)
+        cert_name = generate_randomized_managed_cert_name(
+            hostname, resource_group_name)
         if not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
             cert_name = None
-    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method.upper())
+    certificate_envelop = prepare_managed_certificate_envelop(
+        cmd, name, resource_group_name, hostname, validation_method.upper())
     try:
-        r = ManagedEnvironmentPreviewClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method.upper() == 'TXT')
+        r = ManagedEnvironmentPreviewClient.create_or_update_managed_certificate(
+            cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method.upper() == 'TXT')
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -1142,7 +1187,8 @@ def list_certificates(cmd, name, resource_group_name, location=None, certificate
 def delete_certificate(cmd, resource_group_name, name, location=None, certificate=None, thumbprint=None):
     from azure.cli.command_modules.containerapp.custom import delete_certificate_logic
 
-    delete_certificate_logic(cmd=cmd, resource_group_name=resource_group_name, name=name, cert_name=certificate, location=location, certificate=certificate, thumbprint=thumbprint)
+    delete_certificate_logic(cmd=cmd, resource_group_name=resource_group_name, name=name,
+                             cert_name=certificate, location=location, certificate=certificate, thumbprint=thumbprint)
 
 
 def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, certificate=None, location=None, environment=None, validation_method=None):
@@ -1168,7 +1214,8 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
 
     containerapp_auth_decorator.construct_payload()
     if containerapp_auth_decorator.get_argument_token_store() and containerapp_auth_decorator.get_argument_sas_url_secret() is not None:
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={containerapp_auth_decorator.get_argument_sas_url_secret()}"], no_wait=True, disable_max_length=True)
+        set_secrets(cmd, name, resource_group_name, secrets=[
+                    f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={containerapp_auth_decorator.get_argument_sas_url_secret()}"], no_wait=True, disable_max_length=True)
     return containerapp_auth_decorator.create_or_update()
 
 
@@ -1246,9 +1293,12 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         logger.info(  # pylint: disable=W1203
             f"Creating the Container Apps instance for {service_name} under {resource_group_name} in {location}.")
         ingress_type, target_port = resolve_ingress_and_target_port(service)
-        registry, registry_username, registry_password = resolve_registry_from_cli_args(registry_server, registry_user, registry_pass)  # pylint: disable=C0301
-        transport_setting = resolve_transport_from_cli_args(service_name, transport_mapping)
-        startup_command, startup_args = resolve_service_startup_command(service)
+        registry, registry_username, registry_password = resolve_registry_from_cli_args(
+            registry_server, registry_user, registry_pass)  # pylint: disable=C0301
+        transport_setting = resolve_transport_from_cli_args(
+            service_name, transport_mapping)
+        startup_command, startup_args = resolve_service_startup_command(
+            service)
         cpu, memory = validate_memory_and_cpu_setting(
             resolve_cpu_configuration_from_service(service),
             resolve_memory_configuration_from_service(service),
@@ -1256,14 +1306,16 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         )
         replicas = resolve_replicas_from_service(service)
         environment = resolve_environment_from_service(service)
-        secret_vars, secret_env_ref = resolve_secret_from_service(service, parsed_compose_file.secrets)
+        secret_vars, secret_env_ref = resolve_secret_from_service(
+            service, parsed_compose_file.secrets)
         if environment is not None and secret_env_ref is not None:
             environment.extend(secret_env_ref)
         elif secret_env_ref is not None:
             environment = secret_env_ref
         if service.build is not None:
             logger.warning("Build configuration defined for this service.")
-            logger.warning("The build will be performed by Azure Container Registry.")
+            logger.warning(
+                "The build will be performed by Azure Container Registry.")
             context = service.build.context
             dockerfile = "Dockerfile"
             if service.build.dockerfile is not None:
@@ -1334,7 +1386,8 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
             id_parts = parse_resource_id(ca["id"])
             resource_group_name = id_parts.get('resource_group')
             container_app_name = id_parts.get('name')
-            managed_env_id_parts = parse_resource_id(ca["properties"]["environmentId"])
+            managed_env_id_parts = parse_resource_id(
+                ca["properties"]["environmentId"])
             managed_env_name = managed_env_id_parts.get('name')
             containers = safe_get(ca, "properties", "template", "containers")
             for container in containers:
@@ -1351,7 +1404,8 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
     inspect_results = []
     logger.warning("Inspecting container apps images...")
     with ThreadPoolExecutor(max_workers=10) as executor:
-        [executor.submit(patch_get_image_inspection, pack_exec_path, img, inspect_results) for img in imgs]
+        [executor.submit(patch_get_image_inspection,
+                         pack_exec_path, img, inspect_results) for img in imgs]
 
     # Fetch the list of Oryx-based run images that could be used to patch previously built images
     oryx_run_images = get_oryx_run_image_tags()
@@ -1360,11 +1414,13 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
     results = []
     logger.warning("Checking for patches...")
     for inspect_result in inspect_results:
-        results.append(_get_patchable_check_result(inspect_result, oryx_run_images))
+        results.append(_get_patchable_check_result(
+            inspect_result, oryx_run_images))
     if show_all is False:
         results = [result for result in results if result["id"] is not None]
     if not results:
-        logger.warning("No container apps available to patch at this time. Use --show-all to show the container apps that cannot be patched.")
+        logger.warning(
+            "No container apps available to patch at this time. Use --show-all to show the container apps that cannot be patched.")
     return results
 
 
@@ -1404,7 +1460,8 @@ def _get_patchable_check_result(inspect_result, oryx_run_images):
         return result
 
     # Define the MCR repositories that are supported for patching
-    mcr_repos = ["oryx/dotnetcore", "oryx/node", "oryx/python", "azure-buildpacks/java"]
+    mcr_repos = ["oryx/dotnetcore", "oryx/node",
+                 "oryx/python", "azure-buildpacks/java"]
 
     # Iterate over each base run image found to see if a patch can be applied
     for run_images_prop in run_images_props:
@@ -1440,37 +1497,45 @@ def patch_interactive(cmd, resource_group_name=None, managed_env=None, show_all=
     if is_docker_running() is False:
         logger.error("Please install or start Docker and try again.")
         return
-    patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
+    patchable_check_results = patch_list(
+        cmd, resource_group_name, managed_env, show_all=show_all)
     pack_exec_path = get_pack_exec_path()
     if pack_exec_path is None:
         return
     if patchable_check_results is None:
         return
-    patchable_check_results_json = json.dumps(patchable_check_results, indent=2)
+    patchable_check_results_json = json.dumps(
+        patchable_check_results, indent=2)
     without_unpatchable_results = []
-    without_unpatchable_results = [result for result in patchable_check_results if result["id"] is not None]
+    without_unpatchable_results = [
+        result for result in patchable_check_results if result["id"] is not None]
     if without_unpatchable_results == [] and (patchable_check_results is None or show_all is False):
         return
     logger.warning(patchable_check_results_json)
     if without_unpatchable_results == []:
         return
-    user_input = input("Do you want to apply all the patches or specify by id? (y/n/id)\n")
-    patch_apply_handle_input(cmd, patchable_check_results, user_input, pack_exec_path)
+    user_input = input(
+        "Do you want to apply all the patches or specify by id? (y/n/id)\n")
+    patch_apply_handle_input(
+        cmd, patchable_check_results, user_input, pack_exec_path)
 
 
 def patch_apply(cmd, resource_group_name=None, managed_env=None, show_all=False):
     if is_docker_running() is False:
         logger.error("Please install or start Docker and try again.")
         return
-    patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
+    patchable_check_results = patch_list(
+        cmd, resource_group_name, managed_env, show_all=show_all)
     pack_exec_path = get_pack_exec_path()
     if pack_exec_path is None:
         return
     if patchable_check_results is None:
         return
-    patchable_check_results_json = json.dumps(patchable_check_results, indent=2)
+    patchable_check_results_json = json.dumps(
+        patchable_check_results, indent=2)
     without_unpatchable_results = []
-    without_unpatchable_results = [result for result in patchable_check_results if result["id"] is not None]
+    without_unpatchable_results = [
+        result for result in patchable_check_results if result["id"] is not None]
     if without_unpatchable_results == [] and (patchable_check_results is None or show_all is False):
         return
     logger.warning(patchable_check_results_json)
@@ -1527,29 +1592,40 @@ def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
 
 def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, pack_exec_path):
     try:
-        logger.warning("Applying patch for container app: " + container_app_name + " container: " + container_name)
-        subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image} --force", shell=True, check=True)
-        new_target_image_name = target_image_name.split(":")[0] + ":" + new_run_image.split(":")[1]
-        subprocess.run(f"docker tag {target_image_name} {new_target_image_name}", shell=True, check=True)
+        logger.warning("Applying patch for container app: " +
+                       container_app_name + " container: " + container_name)
+        subprocess.run(
+            f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image} --force", shell=True, check=True)
+        new_target_image_name = target_image_name.split(
+            ":")[0] + ":" + new_run_image.split(":")[1]
+        subprocess.run(
+            f"docker tag {target_image_name} {new_target_image_name}", shell=True, check=True)
         logger.debug(f"Publishing {new_target_image_name} to registry...")
-        subprocess.run(f"docker push -q {new_target_image_name}", shell=True, check=True)
-        logger.warning("Patch applied and published successfully.\nNew image: " + new_target_image_name)
+        subprocess.run(
+            f"docker push -q {new_target_image_name}", shell=True, check=True)
+        logger.warning(
+            "Patch applied and published successfully.\nNew image: " + new_target_image_name)
     except Exception:
-        logger.error("Error: Failed to apply patch and publish. Check if registry is logged in and has write access.")
+        logger.error(
+            "Error: Failed to apply patch and publish. Check if registry is logged in and has write access.")
         raise
     try:
-        logger.warning("Patching container app: " + container_app_name + " container: " + container_name)
-        logger.info("Creating new revision with image: " + new_target_image_name)
+        logger.warning("Patching container app: " +
+                       container_app_name + " container: " + container_name)
+        logger.info("Creating new revision with image: " +
+                    new_target_image_name)
         update_info_json = update_containerapp(cmd,
                                                name=container_app_name,
                                                resource_group_name=resource_group,
                                                container_name=container_name,
                                                image=new_target_image_name)
         logger.warning(json.dumps(update_info_json, indent=2))
-        logger.warning("Container app revision created successfully from the patched image.")
+        logger.warning(
+            "Container app revision created successfully from the patched image.")
         return
     except Exception:
-        logger.error("Error: Failed to create new revision with the container app.")
+        logger.error(
+            "Error: Failed to create new revision with the container app.")
         raise
 
 
@@ -1633,7 +1709,8 @@ def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name)
+        r = ConnectedEnvDaprComponentClient.delete(
+            cmd, resource_group_name, environment_name, name=dapr_component_name)
         logger.warning("Dapr componenet successfully deleted.")
         return r
     except Exception as e:
@@ -1645,16 +1722,19 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
 
     yaml_dapr_component = load_yaml_file(yaml)
     if type(yaml_dapr_component) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.')
+        raise ValidationError(
+            'Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.')
 
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
     try:
         deserializer = create_deserializer()
         daprcomponent_def = deserializer('DaprComponent', yaml_dapr_component)
     except DeserializationError as ex:
-        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
+        raise ValidationError(
+            'Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
 
-    daprcomponent_def = _convert_object_from_snake_to_camel_case(_object_to_dict(daprcomponent_def))
+    daprcomponent_def = _convert_object_from_snake_to_camel_case(
+        _object_to_dict(daprcomponent_def))
 
     # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
     _remove_additional_attributes(daprcomponent_def)
@@ -1693,13 +1773,15 @@ def connected_env_list_certificates(cmd, name, resource_group_name, location=Non
         else:
             certificate_name = certificate
         try:
-            r = ConnectedEnvCertificateClient.show_certificate(cmd, resource_group_name, name, certificate_name)
+            r = ConnectedEnvCertificateClient.show_certificate(
+                cmd, resource_group_name, name, certificate_name)
             return [r] if both_match(r) else []
         except Exception as e:
             handle_raw_exception(e)
     else:
         try:
-            r = ConnectedEnvCertificateClient.list_certificates(cmd, resource_group_name, name)
+            r = ConnectedEnvCertificateClient.list_certificates(
+                cmd, resource_group_name, name)
             return list(filter(both_match, r))
         except Exception as e:
             handle_raw_exception(e)
@@ -1712,15 +1794,18 @@ def connected_env_upload_certificate(cmd, name, resource_group_name, certificate
 
     cert_name = None
     if certificate_name:
-        name_availability = connected_env_check_cert_name_availability(cmd, resource_group_name, name, certificate_name)
+        name_availability = connected_env_check_cert_name_availability(
+            cmd, resource_group_name, name, certificate_name)
         if not name_availability["nameAvailable"]:
             if name_availability["reason"] == NAME_ALREADY_EXISTS:
                 msg = '{}. If continue with this name, it will be overwritten by the new certificate file.\nOverwrite?'
                 overwrite = True
                 if prompt:
-                    overwrite = prompt_y_n(msg.format(name_availability["message"]))
+                    overwrite = prompt_y_n(msg.format(
+                        name_availability["message"]))
                 else:
-                    logger.warning('{}. It will be overwritten by the new certificate file.'.format(name_availability["message"]))
+                    logger.warning('{}. It will be overwritten by the new certificate file.'.format(
+                        name_availability["message"]))
                 if overwrite:
                     cert_name = certificate_name
             else:
@@ -1729,8 +1814,10 @@ def connected_env_upload_certificate(cmd, name, resource_group_name, certificate
             cert_name = certificate_name
 
     while not cert_name:
-        random_name = generate_randomized_cert_name(thumbprint, name, resource_group_name)
-        check_result = connected_env_check_cert_name_availability(cmd, resource_group_name, name, random_name)
+        random_name = generate_randomized_cert_name(
+            thumbprint, name, resource_group_name)
+        check_result = connected_env_check_cert_name_availability(
+            cmd, resource_group_name, name, random_name)
         if check_result["nameAvailable"]:
             cert_name = random_name
         elif not check_result["nameAvailable"] and (check_result["reason"] == NAME_INVALID):
@@ -1742,13 +1829,15 @@ def connected_env_upload_certificate(cmd, name, resource_group_name, certificate
     certificate["location"] = location
     if not certificate["location"]:
         try:
-            env = ConnectedEnvironmentClient.show(cmd, resource_group_name, name)
+            env = ConnectedEnvironmentClient.show(
+                cmd, resource_group_name, name)
             certificate["location"] = env["location"]
         except Exception as e:
             handle_raw_exception(e)
 
     try:
-        r = ConnectedEnvCertificateClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
+        r = ConnectedEnvCertificateClient.create_or_update_certificate(
+            cmd, resource_group_name, name, cert_name, certificate)
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -1758,12 +1847,16 @@ def connected_env_delete_certificate(cmd, resource_group_name, name, certificate
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if not certificate and not thumbprint:
-        raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
-    certs = connected_env_list_certificates(cmd, name, resource_group_name, certificate=certificate, thumbprint=thumbprint)
+        raise RequiredArgumentMissingError(
+            'Please specify at least one of parameters: --certificate and --thumbprint')
+    certs = connected_env_list_certificates(
+        cmd, name, resource_group_name, certificate=certificate, thumbprint=thumbprint)
     for cert in certs:
         try:
-            ConnectedEnvCertificateClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
-            logger.warning('Successfully deleted certificate: {}'.format(cert["name"]))
+            ConnectedEnvCertificateClient.delete_certificate(
+                cmd, resource_group_name, name, cert["name"])
+            logger.warning(
+                'Successfully deleted certificate: {}'.format(cert["name"]))
         except Exception as e:
             handle_raw_exception(e)
 
@@ -1792,12 +1885,14 @@ def connected_env_create_or_update_storage(cmd, storage_name, resource_group_nam
     r = None
 
     try:
-        r = ConnectedEnvStorageClient.show(cmd, resource_group_name, name, storage_name)
+        r = ConnectedEnvStorageClient.show(
+            cmd, resource_group_name, name, storage_name)
     except:
         pass
 
     if r:
-        logger.warning("Only AzureFile account keys can be updated. In order to change the AzureFile share name or account name, please delete this storage and create a new one.")
+        logger.warning(
+            "Only AzureFile account keys can be updated. In order to change the AzureFile share name or account name, please delete this storage and create a new one.")
 
     storage_def = AzureFilePropertiesModel
     storage_def["accountKey"] = azure_file_account_key

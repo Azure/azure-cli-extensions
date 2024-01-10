@@ -40,7 +40,8 @@ class ManagedRedisUtils:
                                           binding_name):
         resource_id = ManagedRedisUtils.build_redis_resource_id(subscription_id, resource_group_name, service_name,
                                                                 arg_dict)
-        parameters = ManagedRedisUtils.build_redis_params(resource_id, name, key_vault_id=None)
+        parameters = ManagedRedisUtils.build_redis_params(
+            resource_id, name, key_vault_id=None)
         return {"linker_name": binding_name, "parameters": parameters, "resource_id": resource_id}
 
 
@@ -78,10 +79,12 @@ class ManagedCosmosDBUtils:
     def build_cosmosdb_service_connector_def(subscription_id, resource_group_name, service_name, arg_dict, name,
                                              binding_name):
         if "database" not in arg_dict:
-            raise ValidationError("Managed Cosmos DB needs the database argument.")
+            raise ValidationError(
+                "Managed Cosmos DB needs the database argument.")
         resource_id = ManagedCosmosDBUtils.build_cosmos_resource_id(subscription_id, resource_group_name, service_name,
                                                                     arg_dict)
-        parameters = ManagedCosmosDBUtils.build_cosmos_params(resource_id, name, key_vault_id=None)
+        parameters = ManagedCosmosDBUtils.build_cosmos_params(
+            resource_id, name, key_vault_id=None)
         return {"linker_name": binding_name, "parameters": parameters, "resource_id": resource_id}
 
 

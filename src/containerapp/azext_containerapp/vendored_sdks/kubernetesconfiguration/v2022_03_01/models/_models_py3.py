@@ -890,7 +890,8 @@ class FluxConfigurationPatch(msrest.serialization.Model):
         suspend: Optional[bool] = None,
         git_repository: Optional["GitRepositoryPatchDefinition"] = None,
         bucket: Optional["BucketPatchDefinition"] = None,
-        kustomizations: Optional[Dict[str, "KustomizationPatchDefinition"]] = None,
+        kustomizations: Optional[Dict[str,
+                                      "KustomizationPatchDefinition"]] = None,
         configuration_protected_settings: Optional[Dict[str, str]] = None,
         **kwargs
     ):
@@ -1557,7 +1558,8 @@ class ObjectStatusDefinition(msrest.serialization.Model):
         name: Optional[str] = None,
         namespace: Optional[str] = None,
         kind: Optional[str] = None,
-        compliance_state: Optional[Union[str, "FluxComplianceState"]] = "Unknown",
+        compliance_state: Optional[Union[str,
+                                         "FluxComplianceState"]] = "Unknown",
         applied_by: Optional["ObjectReferenceDefinition"] = None,
         status_conditions: Optional[List["ObjectStatusConditionDefinition"]] = None,
         helm_release_properties: Optional["HelmReleasePropertiesDefinition"] = None,

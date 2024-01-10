@@ -21,7 +21,8 @@ from azure.cli.command_modules.containerapp._utils import safe_get, _ensure_loca
     _generate_log_analytics_if_not_provided
 from azure.cli.command_modules.containerapp._client_factory import handle_raw_exception
 from azure.cli.core._profile import Profile
-from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, CLIError, InvalidArgumentValueError)
+from azure.cli.core.azclierror import (
+    ValidationError, ResourceNotFoundError, CLIError, InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.resource import ResourceManagementClient
@@ -69,15 +70,19 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
                                                                                 service_name, arg_dict,
                                                                                 name, binding_name))
             elif service["type"] == "Microsoft.App/containerApps":
-                containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=service_name)
+                containerapp_def = ContainerAppPreviewClient.show(
+                    cmd=cmd, resource_group_name=resource_group_name, name=service_name)
 
                 if not containerapp_def:
-                    raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
+                    raise ResourceNotFoundError(
+                        f"The service '{service_name}' does not exist")
 
-                service_type = safe_get(containerapp_def, "properties", "configuration", "service", "type")
+                service_type = safe_get(
+                    containerapp_def, "properties", "configuration", "service", "type")
 
                 if service_type is None or service_type not in DEV_SERVICE_LIST:
-                    raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
+                    raise ResourceNotFoundError(
+                        f"The service '{service_name}' does not exist")
                 service_bind = {
                     "serviceId": containerapp_def["id"],
                     "name": binding_name,
@@ -92,7 +97,8 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
                 raise ValidationError("Service not supported")
             break
     else:
-        raise ResourceNotFoundError("Service with the given name does not exist")
+        raise ResourceNotFoundError(
+            "Service with the given name does not exist")
 
 
 def get_linker_client(cmd):
@@ -114,22 +120,27 @@ def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def
     containerapp_def = None
 
     try:
-        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        containerapp_def = ContainerAppPreviewClient.show(
+            cmd=cmd, resource_group_name=resource_group_name, name=name)
     except:  # pylint: disable=bare-except
         pass
     all_bindings = []
 
     if containerapp_def:
-        managed_bindings = linker_client.linker.list(resource_uri=containerapp_def["id"])
-        service_binds = containerapp_def["properties"].get("template", {}).get("serviceBinds", [])
+        managed_bindings = linker_client.linker.list(
+            resource_uri=containerapp_def["id"])
+        service_binds = containerapp_def["properties"].get(
+            "template", {}).get("serviceBinds", [])
 
         if managed_bindings:
             all_bindings.extend([item.name for item in managed_bindings])
         if service_binds:
             all_bindings.extend([item["name"] for item in service_binds])
 
-    service_binding_names = [service_bind["name"] for service_bind in service_bindings_def_list]
-    linker_names = [connector["linker_name"] for connector in service_connectors_def_list]
+    service_binding_names = [service_bind["name"]
+                             for service_bind in service_bindings_def_list]
+    linker_names = [connector["linker_name"]
+                    for connector in service_connectors_def_list]
 
     all_bindings_set = set(all_bindings)
     service_binding_names_set = set(service_binding_names)
@@ -181,7 +192,8 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
                                             "[my-aca-pgaddon], but you can override the default and specify your own "
                                             "compliant binding name like this --bind my-aca-pgaddon[:my_aca_pgaddon].")
 
-        resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient)
+        resource_client = get_mgmt_service_client(
+            cmd.cli_ctx, ResourceManagementClient)
 
         if "resourcegroup" in arg_dict:
             # Search in target rg
@@ -196,7 +208,8 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
         # Create a list with required items
         resource_list = []
         for item in resources:
-            resource_list.append({"name": item.name, "type": item.type, "id": item.id})
+            resource_list.append(
+                {"name": item.name, "type": item.type, "id": item.id})
 
         subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -212,37 +225,44 @@ def connected_env_check_cert_name_availability(cmd, resource_group_name, name, c
     name_availability_request["name"] = cert_name
     name_availability_request["type"] = CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE
     try:
-        r = ConnectedEnvCertificateClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
+        r = ConnectedEnvCertificateClient.check_name_availability(
+            cmd, resource_group_name, name, name_availability_request)
     except CLIError as e:
         handle_raw_exception(e)
     return r
 
 
 def validate_environment_location(cmd, location, resource_type=MANAGED_ENVIRONMENT_RESOURCE_TYPE):
-    res_locations = list_environment_locations(cmd, resource_type=resource_type)
+    res_locations = list_environment_locations(
+        cmd, resource_type=resource_type)
 
     allowed_locs = ", ".join(res_locations)
 
     if location:
         try:
-            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, resource_type)
+            _ensure_location_allowed(
+                cmd, location, CONTAINER_APPS_RP, resource_type)
 
             return location
         except Exception as e:  # pylint: disable=broad-except
-            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
+            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(
+                location, allowed_locs)) from e
     else:
         return res_locations[0]
 
 
 def list_environment_locations(cmd, resource_type=MANAGED_ENVIRONMENT_RESOURCE_TYPE):
-    providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
-    resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
+    providers_client = providers_client_factory(
+        cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
+    resource_types = getattr(providers_client.get(
+        CONTAINER_APPS_RP), 'resource_types', [])
     res_locations = []
     for res in resource_types:
         if res and getattr(res, 'resource_type', "") == resource_type:
             res_locations = getattr(res, 'locations', [])
 
-    res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+    res_locations = [res_loc.lower().replace(" ", "").replace(
+        "(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
 
     return res_locations
 
@@ -317,8 +337,10 @@ def get_pack_exec_path():
         with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
             _, stderr = process.communicate()
             if process.returncode != 0:
-                raise CLIError(f"Error thrown when running 'pack config experimental true': {stderr.decode('utf-8')}")
-            logger.debug("Successfully enabled experimental features for the installed pack CLI.")
+                raise CLIError(
+                    f"Error thrown when running 'pack config experimental true': {stderr.decode('utf-8')}")
+            logger.debug(
+                "Successfully enabled experimental features for the installed pack CLI.")
 
         return exec_local_path
     except Exception as e:
@@ -349,22 +371,29 @@ def patchable_check(base_run_image_name, oryx_run_images, inspect_result):
         return result.update(reason="Image is not based from an MCR repository.")
 
     base_run_image_split = base_run_image_name.split(":")
-    base_run_image_no_tag = base_run_image_split[0]                         # e.g., "mcr.microsoft.com/oryx/dotnetcore"
-    base_run_image_repository = base_run_image_no_tag.split(MCR_PREFIX)[1]  # e.g., "oryx/dotnetcore"
-    base_run_image_framework = base_run_image_repository.split("/")[1]      # e.g., "dotnetcore"
-    base_run_image_tag = base_run_image_split[1]                            # e.g., "7.0.9-debian-buster"
+    # e.g., "mcr.microsoft.com/oryx/dotnetcore"
+    base_run_image_no_tag = base_run_image_split[0]
+    base_run_image_repository = base_run_image_no_tag.split(
+        MCR_PREFIX)[1]  # e.g., "oryx/dotnetcore"
+    base_run_image_framework = base_run_image_repository.split(
+        "/")[1]      # e.g., "dotnetcore"
+    # e.g., "7.0.9-debian-buster"
+    base_run_image_tag = base_run_image_split[1]
 
     # Parse the provided base run image to pull properties from the tag
-    tag_prop = parse_oryx_run_image(base_run_image_repository, base_run_image_tag)
+    tag_prop = parse_oryx_run_image(
+        base_run_image_repository, base_run_image_tag)
 
     # Check if the provided base run image has at least a patch version specified in the tag
     if len(str(tag_prop["version"]).split(".")) < 3:
         return result.update(reason="Image is based from a version of its run image that does not contain at least a patch identifier.")
 
-    version_key = _get_oryx_run_image_version_key(tag_prop, base_run_image_framework)
+    version_key = _get_oryx_run_image_version_key(
+        tag_prop, base_run_image_framework)
 
     # Fetch the latest version of the provided base run image's framework from the MCR tag dictionary
-    matching_version_info = oryx_run_images[tag_prop["framework"]][version_key][tag_prop["support"]][tag_prop["os"]]
+    matching_version_info = oryx_run_images[tag_prop["framework"]
+                                            ][version_key][tag_prop["support"]][tag_prop["os"]]
 
     # Check if any MCR versions were found for the given tag
     if matching_version_info is None:
@@ -381,8 +410,10 @@ def patchable_check(base_run_image_name, oryx_run_images, inspect_result):
 
         # Check if the current image can be updated to the latest image available on MCR for the given version key
         if current_minor_ver < latest_minor_ver or (current_minor_ver == latest_minor_ver and current_patch_ver < latest_patch_ver) or (current_patch_ver == latest_patch_ver and current_post_ver < latest_post_ver):
-            result["newRunImage"] = "{}:{}".format(base_run_image_no_tag, matching_version_info[0]["fullTag"])
-            result["id"] = hashlib.md5(str(result["oldRunImage"] + result["targetContainerName"] + result["targetContainerAppName"] + result["targetResourceGroup"] + result["newRunImage"]).encode()).hexdigest()
+            result["newRunImage"] = "{}:{}".format(
+                base_run_image_no_tag, matching_version_info[0]["fullTag"])
+            result["id"] = hashlib.md5(str(result["oldRunImage"] + result["targetContainerName"] +
+                                       result["targetContainerAppName"] + result["targetResourceGroup"] + result["newRunImage"]).encode()).hexdigest()
             result["reason"] = "New security patch released for your current run image."
         else:
             result["reason"] = "The image is not patchable. Please check for major or minor version upgrade."
@@ -394,10 +425,14 @@ def patchable_check(base_run_image_name, oryx_run_images, inspect_result):
 
 def get_oryx_run_image_tags() -> dict:
     result = {}
-    result.update(_get_oryx_run_image_tags("https://mcr.microsoft.com/v2/oryx/dotnetcore/tags/list", parse_oryx_run_image))
-    result.update(_get_oryx_run_image_tags("https://mcr.microsoft.com/v2/oryx/node/tags/list", parse_oryx_run_image))
-    result.update(_get_oryx_run_image_tags("https://mcr.microsoft.com/v2/oryx/python/tags/list", parse_oryx_run_image))
-    result.update(_get_oryx_run_image_tags("https://mcr.microsoft.com/v2/azure-buildpacks/java/tags/list", parse_oryx_run_image))
+    result.update(_get_oryx_run_image_tags(
+        "https://mcr.microsoft.com/v2/oryx/dotnetcore/tags/list", parse_oryx_run_image))
+    result.update(_get_oryx_run_image_tags(
+        "https://mcr.microsoft.com/v2/oryx/node/tags/list", parse_oryx_run_image))
+    result.update(_get_oryx_run_image_tags(
+        "https://mcr.microsoft.com/v2/oryx/python/tags/list", parse_oryx_run_image))
+    result.update(_get_oryx_run_image_tags(
+        "https://mcr.microsoft.com/v2/azure-buildpacks/java/tags/list", parse_oryx_run_image))
 
     # Return the merged result of all Oryx-supported platform tags
     return result
@@ -406,7 +441,8 @@ def get_oryx_run_image_tags() -> dict:
 def _get_oryx_run_image_tags(tags_list_url, tag_parse_func) -> dict:
     r = requests.get(tags_list_url, timeout=30)
     response = r.json()
-    image_repository = response["name"]  # e.g., "oryx/dotnetcore" for "https://mcr.microsoft.com/v2/oryx/dotnetcore/tags/list"
+    # e.g., "oryx/dotnetcore" for "https://mcr.microsoft.com/v2/oryx/dotnetcore/tags/list"
+    image_repository = response["name"]
     tag_dict = {}
 
     tags = list(response["tags"])
@@ -418,16 +454,21 @@ def _get_oryx_run_image_tags(tags_list_url, tag_parse_func) -> dict:
             os_prop = tag_obj["os"]
             version_key = _get_oryx_run_image_version_key(tag_obj, framework)
             if framework not in tag_dict:
-                tag_dict[framework] = {version_key: {support: {os_prop: [tag_obj]}}}
+                tag_dict[framework] = {version_key: {
+                    support: {os_prop: [tag_obj]}}}
             elif version_key not in tag_dict[framework]:
-                tag_dict[framework][version_key] = {support: {os_prop: [tag_obj]}}
+                tag_dict[framework][version_key] = {
+                    support: {os_prop: [tag_obj]}}
             elif support not in tag_dict[framework][version_key]:
-                tag_dict[framework][version_key][support] = {os_prop: [tag_obj]}
+                tag_dict[framework][version_key][support] = {
+                    os_prop: [tag_obj]}
             elif os_prop not in tag_dict[framework][version_key][support]:
                 tag_dict[framework][version_key][support][os_prop] = [tag_obj]
             else:
-                tag_dict[framework][version_key][support][os_prop].append(tag_obj)
-                tag_dict[framework][version_key][support][os_prop].sort(reverse=True, key=lambda x: x["version"])
+                tag_dict[framework][version_key][support][os_prop].append(
+                    tag_obj)
+                tag_dict[framework][version_key][support][os_prop].sort(
+                    reverse=True, key=lambda x: x["version"])
     return tag_dict
 
 
@@ -459,7 +500,8 @@ def get_custom_location(cmd, custom_location_id):
     custom_loc_rg = parsed_custom_loc.get("resource_group")
     custom_location = None
     try:
-        custom_location = custom_location_client_factory(cmd.cli_ctx, subscription_id=subscription_id).get(resource_group_name=custom_loc_rg, resource_name=custom_loc_name)
+        custom_location = custom_location_client_factory(cmd.cli_ctx, subscription_id=subscription_id).get(
+            resource_group_name=custom_loc_rg, resource_name=custom_loc_name)
     except ResourceNotFoundError:
         pass
     return custom_location
@@ -467,7 +509,8 @@ def get_custom_location(cmd, custom_location_id):
 
 def list_custom_location(cmd, resource_group=None, connected_cluster_id=None):
     if resource_group:
-        r = custom_location_client_factory(cmd.cli_ctx).list_by_resource_group(resource_group_name=resource_group)
+        r = custom_location_client_factory(cmd.cli_ctx).list_by_resource_group(
+            resource_group_name=resource_group)
     else:
         r = custom_location_client_factory(cmd.cli_ctx).list_by_subscription()
 
@@ -499,11 +542,13 @@ def get_cluster_extension(cmd, cluster_extension_id=None):
 
 def validate_custom_location(cmd, custom_location=None):
     if not is_valid_resource_id(custom_location):
-        raise ValidationError('{} is not a valid Azure resource ID.'.format(custom_location))
+        raise ValidationError(
+            '{} is not a valid Azure resource ID.'.format(custom_location))
 
     r = get_custom_location(cmd=cmd, custom_location_id=custom_location)
     if r is None:
-        raise ResourceNotFoundError("Cannot find custom location with custom location ID {}".format(custom_location))
+        raise ResourceNotFoundError(
+            "Cannot find custom location with custom location ID {}".format(custom_location))
 
     # check extension type
     extension_existing = False
@@ -513,7 +558,8 @@ def validate_custom_location(cmd, custom_location=None):
             extension_existing = True
             break
     if not extension_existing:
-        raise ValidationError('There is no Microsoft.App.Environment extension found associated with custom location {}'.format(custom_location))
+        raise ValidationError(
+            'There is no Microsoft.App.Environment extension found associated with custom location {}'.format(custom_location))
     return r.location
 
 
@@ -521,15 +567,18 @@ def _validate_custom_loc_and_location(cmd, custom_location_id=None, env=None, co
     from .custom import list_connected_environments
 
     if not is_valid_resource_id(custom_location_id):
-        raise ValidationError('{} is not a valid Azure resource ID.'.format(custom_location_id))
+        raise ValidationError(
+            '{} is not a valid Azure resource ID.'.format(custom_location_id))
 
     r = get_custom_location(cmd=cmd, custom_location_id=custom_location_id)
     if r is None:
-        raise ResourceNotFoundError("Cannot find custom location with custom location ID {}".format(custom_location_id))
+        raise ResourceNotFoundError(
+            "Cannot find custom location with custom location ID {}".format(custom_location_id))
 
     if connected_cluster_id:
         if connected_cluster_id.lower() != r.host_resource_id.lower():
-            raise ValidationError('Custom location {} not in cluster {}.'.format(custom_location_id, connected_cluster_id))
+            raise ValidationError('Custom location {} not in cluster {}.'.format(
+                custom_location_id, connected_cluster_id))
 
     # check if custom location can be used by target environment
     if env:
@@ -543,7 +592,8 @@ def _validate_custom_loc_and_location(cmd, custom_location_id=None, env=None, co
             env_name = env_dict.get("name")
 
         env_list = []
-        env_with_custom_location = list_connected_environments(cmd=cmd, custom_location=custom_location_id)
+        env_with_custom_location = list_connected_environments(
+            cmd=cmd, custom_location=custom_location_id)
         for e in env_with_custom_location:
             if env_id is not None:
                 if e["id"].lower() != env_id.lower():
@@ -552,7 +602,8 @@ def _validate_custom_loc_and_location(cmd, custom_location_id=None, env=None, co
                 env_list.append(e)
 
         if len(env_list) > 0:
-            raise ValidationError(f'The provided custom location already used by other environment {env_list[0].get("id")}. If you want to use this custom location, please specify associated environment with --environment. \n Otherwise, please use another custom location.')
+            raise ValidationError(
+                f'The provided custom location already used by other environment {env_list[0].get("id")}. If you want to use this custom location, please specify associated environment with --environment. \n Otherwise, please use another custom location.')
 
     # check is extension type contains "microsoft.app.environment"
     containerapp_extension_exists_in_cluster = False
@@ -562,25 +613,30 @@ def _validate_custom_loc_and_location(cmd, custom_location_id=None, env=None, co
             containerapp_extension_exists_in_cluster = True
             break
     if not containerapp_extension_exists_in_cluster:
-        raise ValidationError('There is no Microsoft.App.Environment extension found associated with custom location {}'.format(custom_location_id))
+        raise ValidationError(
+            'There is no Microsoft.App.Environment extension found associated with custom location {}'.format(custom_location_id))
 
     return r.location
 
 
 def _validate_connected_k8s_exists(cmd, connected_cluster_id=None):
     if not is_valid_resource_id(connected_cluster_id):
-        raise ValidationError('{} is not a valid Azure resource ID.'.format(connected_cluster_id))
+        raise ValidationError(
+            '{} is not a valid Azure resource ID.'.format(connected_cluster_id))
     parsed_connected_cluster = parse_resource_id(connected_cluster_id)
     cluster_type = parsed_connected_cluster.get("type")
     if cluster_type != CONNECTED_CLUSTER_TYPE:
-        raise ValidationError('{} is not a connectedCluster resource ID.'.format(connected_cluster_id))
+        raise ValidationError(
+            '{} is not a connectedCluster resource ID.'.format(connected_cluster_id))
     connected_cluster = None
     try:
-        connected_cluster = get_connected_k8s(cmd, connected_cluster_id=connected_cluster_id)
+        connected_cluster = get_connected_k8s(
+            cmd, connected_cluster_id=connected_cluster_id)
     except Exception as e:
         handle_non_404_status_code_exception(e)
     if connected_cluster is None:
-        raise ResourceNotFoundError("Cannot find connected cluster with connected cluster ID {}".format(connected_cluster_id))
+        raise ResourceNotFoundError(
+            "Cannot find connected cluster with connected cluster ID {}".format(connected_cluster_id))
 
 
 def get_connected_k8s(cmd, connected_cluster_id=None):
@@ -629,7 +685,8 @@ def create_extension(cmd, extension_name, connected_cluster_id=None, namespace=N
     e.release_train = 'stable'
     e.auto_upgrade_minor_version = True
 
-    e.scope = models.Scope(cluster=models.ScopeCluster(release_namespace=namespace))
+    e.scope = models.Scope(
+        cluster=models.ScopeCluster(release_namespace=namespace))
 
     e.configuration_settings = {
         "Microsoft.CustomLocation.ServiceAccount": "default",
@@ -637,7 +694,8 @@ def create_extension(cmd, extension_name, connected_cluster_id=None, namespace=N
         "logProcessor.appLogs.destination": "log-analytics"
     }
 
-    b64_customer_id = b64encode(bytes(logs_customer_id, 'utf-8')).decode("utf-8")
+    b64_customer_id = b64encode(
+        bytes(logs_customer_id, 'utf-8')).decode("utf-8")
     b64_share_key = b64encode(bytes(logs_share_key, 'utf-8')).decode("utf-8")
     e.configuration_protected_settings = {
         "logProcessor.appLogs.logAnalyticsConfig.customerId": b64_customer_id,
@@ -660,11 +718,13 @@ def create_custom_location(cmd, custom_location_name=None, resource_group=None, 
 
     parameters = models.CustomLocation(name=custom_location_name,
                                        location=location,
-                                       cluster_extension_ids=[cluster_extension_id],
+                                       cluster_extension_ids=[
+                                           cluster_extension_id],
                                        host_resource_id=connected_cluster_id,
                                        namespace=namespace,
                                        host_type=models.HostType.KUBERNETES)
-    custom_location = custom_location_client_factory(cmd.cli_ctx).begin_create_or_update(resource_group_name=resource_group, resource_name=custom_location_name, parameters=parameters).result()
+    custom_location = custom_location_client_factory(cmd.cli_ctx).begin_create_or_update(
+        resource_group_name=resource_group, resource_name=custom_location_name, parameters=parameters).result()
 
     return custom_location
 

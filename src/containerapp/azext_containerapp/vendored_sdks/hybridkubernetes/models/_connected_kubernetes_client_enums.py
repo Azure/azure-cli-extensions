@@ -9,6 +9,7 @@
 from enum import Enum, EnumMeta
 from six import with_metaclass
 
+
 class _CaseInsensitiveEnumMeta(EnumMeta):
     def __getitem__(self, name):
         return super().__getitem__(name.upper())
@@ -33,6 +34,7 @@ class AuthenticationMethod(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     TOKEN = "Token"
     AAD = "AAD"
 
+
 class ConnectivityStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Represents the connectivity status of the connected cluster.
     """
@@ -41,6 +43,7 @@ class ConnectivityStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     CONNECTED = "Connected"
     OFFLINE = "Offline"
     EXPIRED = "Expired"
+
 
 class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
@@ -51,6 +54,7 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
+
 class LastModifiedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that last modified the resource.
     """
@@ -59,6 +63,7 @@ class LastModifiedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     APPLICATION = "Application"
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
+
 
 class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The current deployment state of connectedClusters.
@@ -71,6 +76,7 @@ class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     UPDATING = "Updating"
     DELETING = "Deleting"
     ACCEPTED = "Accepted"
+
 
 class ResourceIdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity used for the connected cluster. The type 'SystemAssigned, includes a

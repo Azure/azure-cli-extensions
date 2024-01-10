@@ -19,10 +19,12 @@ def load_yaml_file(file_name):
             return yaml.safe_load(stream.read().replace('\x00', ''))
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
-            raise ValidationError('{} does not exist'.format(file_name)) from ex
+            raise ValidationError(
+                '{} does not exist'.format(file_name)) from ex
         raise
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
-        raise ValidationError('Error parsing {} ({})'.format(file_name, str(ex))) from ex
+        raise ValidationError(
+            'Error parsing {} ({})'.format(file_name, str(ex))) from ex
 
 
 def create_deserializer(models):
@@ -43,7 +45,8 @@ def create_deserializer(models):
 
 def process_loaded_yaml(yaml_containerapp):
     if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+        raise ValidationError(
+            'Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
     if not yaml_containerapp.get('properties'):
         yaml_containerapp['properties'] = {}
 
@@ -83,9 +86,11 @@ def process_loaded_yaml(yaml_containerapp):
 def process_containerapp_resiliency_yaml(containerapp_resiliency):
 
     if type(containerapp_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please provide a valid container app resiliency YAML spec.')
+        raise ValidationError(
+            'Invalid YAML provided. Please provide a valid container app resiliency YAML spec.')
     if 'additionalProperties' in containerapp_resiliency and not containerapp_resiliency['additionalProperties']:
-        raise ValidationError('Invalid YAML provided. Please provide a valid containerapp resiliency YAML spec.')
+        raise ValidationError(
+            'Invalid YAML provided. Please provide a valid containerapp resiliency YAML spec.')
     if not containerapp_resiliency.get('properties'):
         containerapp_resiliency['properties'] = {}
 
@@ -97,7 +102,8 @@ def process_containerapp_resiliency_yaml(containerapp_resiliency):
                          "httpConnectionPool"]
     for nested_property in nested_properties:
         # Fix this and remove additionalProperties after flattening is avoided
-        tmp = containerapp_resiliency['additionalProperties'].get(nested_property)
+        tmp = containerapp_resiliency['additionalProperties'].get(
+            nested_property)
         if nested_property in containerapp_resiliency:
             containerapp_resiliency['properties'][nested_property] = tmp
             del containerapp_resiliency[nested_property]
@@ -108,16 +114,19 @@ def process_containerapp_resiliency_yaml(containerapp_resiliency):
 def process_dapr_component_resiliency_yaml(dapr_component_resiliency):
 
     if type(dapr_component_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please provide a valid dapr component resiliency YAML spec.')
+        raise ValidationError(
+            'Invalid YAML provided. Please provide a valid dapr component resiliency YAML spec.')
     if 'additionalProperties' in dapr_component_resiliency and not dapr_component_resiliency['additionalProperties']:
-        raise ValidationError('Invalid YAML provided. Please provide a valid dapr component resiliency YAML spec.')
+        raise ValidationError(
+            'Invalid YAML provided. Please provide a valid dapr component resiliency YAML spec.')
     if not dapr_component_resiliency.get('properties'):
         dapr_component_resiliency['properties'] = {}
 
     nested_properties = ["inboundPolicy",
                          "outboundPolicy"]
     for nested_property in nested_properties:
-        tmp = dapr_component_resiliency['additionalProperties'].get(nested_property)
+        tmp = dapr_component_resiliency['additionalProperties'].get(
+            nested_property)
         if nested_property in dapr_component_resiliency:
             dapr_component_resiliency['properties'][nested_property] = tmp
             del dapr_component_resiliency[nested_property]

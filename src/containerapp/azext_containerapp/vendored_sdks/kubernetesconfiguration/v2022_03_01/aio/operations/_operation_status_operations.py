@@ -22,7 +22,9 @@ from ... import models as _models
 from ..._vendor import _convert_request
 from ...operations._operation_status_operations import build_get_request, build_list_request
 T = TypeVar('T')
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest,
+                                              AsyncHttpResponse], T, Dict[str, Any]], Any]]
+
 
 class OperationStatusOperations:
     """OperationStatusOperations async operations.
@@ -78,13 +80,13 @@ class OperationStatusOperations:
         :rtype: ~azure.mgmt.kubernetesconfiguration.v2022_03_01.models.OperationStatusResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.OperationStatusResult"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["_models.OperationStatusResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        
         request = build_get_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
@@ -102,11 +104,15 @@ class OperationStatusOperations:
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('OperationStatusResult', pipeline_response)
+        deserialized = self._deserialize(
+            'OperationStatusResult', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -114,7 +120,6 @@ class OperationStatusOperations:
         return deserialized
 
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/extensions/{extensionName}/operations/{operationId}'}  # type: ignore
-
 
     @distributed_trace
     def list(
@@ -143,14 +148,16 @@ class OperationStatusOperations:
          ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kubernetesconfiguration.v2022_03_01.models.OperationStatusList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.OperationStatusList"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["_models.OperationStatusList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+
         def prepare_request(next_link=None):
             if not next_link:
-                
+
                 request = build_list_request(
                     subscription_id=self._config.subscription_id,
                     resource_group_name=resource_group_name,
@@ -163,7 +170,7 @@ class OperationStatusOperations:
                 request.url = self._client.format_url(request.url)
 
             else:
-                
+
                 request = build_list_request(
                     subscription_id=self._config.subscription_id,
                     resource_group_name=resource_group_name,
@@ -178,7 +185,8 @@ class OperationStatusOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("OperationStatusList", pipeline_response)
+            deserialized = self._deserialize(
+                "OperationStatusList", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -191,12 +199,14 @@ class OperationStatusOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+                map_error(status_code=response.status_code,
+                          response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(
+                    response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
-
 
         return AsyncItemPaged(
             get_next, extract_data

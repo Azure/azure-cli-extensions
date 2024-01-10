@@ -110,21 +110,32 @@ class ContainerAppResiliencyDecorator(BaseResource):
     def validate_max_ejection(self):
         max_ejection = self.get_argument_circuit_breaker_max_ejection()
         if max_ejection is not None and (max_ejection < 1 or max_ejection > 100):
-            raise ValidationError(f"--cb-max-ejection must be between 1 and 100")
+            raise ValidationError(
+                f"--cb-max-ejection must be between 1 and 100")
 
     def validate_arguments(self):
-        self.validate_positive_argument("circuit_breaker_consecutive_errors", "cb-sequential-errors")
-        self.validate_positive_argument("circuit_breaker_interval", "cb-interval")
+        self.validate_positive_argument(
+            "circuit_breaker_consecutive_errors", "cb-sequential-errors")
+        self.validate_positive_argument(
+            "circuit_breaker_interval", "cb-interval")
         self.validate_max_ejection()
-        self.validate_positive_argument("tcp_connection_pool_max_connections", "tcp-connections")
-        self.validate_positive_argument("http_connection_pool_http1_max_pending_req", "http1-pending")
-        self.validate_positive_argument("http_connection_pool_http2_max_req", "http2-parallel")
-        self.validate_positive_argument("timeout_response_in_seconds", "timeout")
-        self.validate_positive_argument("timeout_connection_in_seconds", "timeout-connect")
-        self.validate_positive_argument("tcp_retry_max_connect_attempts", "tcp-retries")
+        self.validate_positive_argument(
+            "tcp_connection_pool_max_connections", "tcp-connections")
+        self.validate_positive_argument(
+            "http_connection_pool_http1_max_pending_req", "http1-pending")
+        self.validate_positive_argument(
+            "http_connection_pool_http2_max_req", "http2-parallel")
+        self.validate_positive_argument(
+            "timeout_response_in_seconds", "timeout")
+        self.validate_positive_argument(
+            "timeout_connection_in_seconds", "timeout-connect")
+        self.validate_positive_argument(
+            "tcp_retry_max_connect_attempts", "tcp-retries")
         self.validate_positive_argument("http_retry_max", "http-retries")
-        self.validate_positive_argument("http_retry_delay_in_milliseconds", "http-delay")
-        self.validate_positive_argument("http_retry_interval_in_milliseconds", "http-interval")
+        self.validate_positive_argument(
+            "http_retry_delay_in_milliseconds", "http-delay")
+        self.validate_positive_argument(
+            "http_retry_interval_in_milliseconds", "http-interval")
 
     def set_up_containerapp_resiliency_yaml(self, file_name):
         containerapp_def = ContainerAppsResiliencyModel
@@ -142,10 +153,12 @@ class ContainerAppResiliencyDecorator(BaseResource):
 
         yaml_containerapps_resiliency = load_yaml_file(file_name)
         if type(yaml_containerapps_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
-            raise ValidationError('Invalid YAML provided. Please supply a valid YAML spec.')
+            raise ValidationError(
+                'Invalid YAML provided. Please supply a valid YAML spec.')
 
         if yaml_containerapps_resiliency.get('type') and yaml_containerapps_resiliency.get('type').lower() != "microsoft.app/containerapps/resiliencypolicies":
-            raise ValidationError('Containerapp resiliency type must be \"Microsoft.App/containerApps/resiliencyPolicies\"')
+            raise ValidationError(
+                'Containerapp resiliency type must be \"Microsoft.App/containerApps/resiliencyPolicies\"')
 
         if yaml_containerapps_resiliency.get('name') and yaml_containerapps_resiliency.get('name').lower() != self.get_argument_name().lower():
             logger.warning(
@@ -157,20 +170,24 @@ class ContainerAppResiliencyDecorator(BaseResource):
             logger.warning(
                 'The containerapp name provided in the --yaml file "{}" does not match the one provided in the --container-app-name flag "{}". The one provided in the --yaml file will be used.'.format(
                     yaml_containerapps_resiliency.get('containerAppName'), self.get_argument_container_app_name()))
-            self.set_argument_container_app_name(yaml_containerapps_resiliency.get('containerAppName'))
+            self.set_argument_container_app_name(
+                yaml_containerapps_resiliency.get('containerAppName'))
 
         # Deserialize the yaml into a ContainerAppsResiliency object. Need this since we're not using SDK
         try:
             deserializer = create_deserializer(self.models)
 
-            containerapp_def = deserializer('AppResiliency', yaml_containerapps_resiliency)
+            containerapp_def = deserializer(
+                'AppResiliency', yaml_containerapps_resiliency)
         except DeserializationError as ex:
-            raise ValidationError('Invalid YAML provided. Please supply a valid YAML spec.') from ex
+            raise ValidationError(
+                'Invalid YAML provided. Please supply a valid YAML spec.') from ex
 
         containerapp_def = _convert_object_from_snake_to_camel_case(
             _object_to_dict(containerapp_def))
 
-        containerapp_def = process_containerapp_resiliency_yaml(containerapp_def)
+        containerapp_def = process_containerapp_resiliency_yaml(
+            containerapp_def)
 
         # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
         _remove_additional_attributes(containerapp_def)
@@ -179,13 +196,17 @@ class ContainerAppResiliencyDecorator(BaseResource):
 
         # Now we just add defaults where required
         # Retries
-        http_retry_policy = safe_get(containerapp_def, 'properties', 'httpRetryPolicy')
+        http_retry_policy = safe_get(
+            containerapp_def, 'properties', 'httpRetryPolicy')
         if http_retry_policy and ('maxRetries' in http_retry_policy or 'retryBackOff' in http_retry_policy or 'matches' in http_retry_policy):
-            http_retry_policy['maxRetries'] = http_retry_policy.get('maxRetries', DEFAULT_HTTP_RETRY_MAX)
+            http_retry_policy['maxRetries'] = http_retry_policy.get(
+                'maxRetries', DEFAULT_HTTP_RETRY_MAX)
             retry_backoff = safe_get(http_retry_policy, 'retryBackOff')
             if retry_backoff and ('initialDelayInMilliseconds' in retry_backoff or 'maxIntervalInMilliseconds' in retry_backoff):
-                retry_backoff['initialDelayInMilliseconds'] = retry_backoff.get('initialDelayInMilliseconds', DEFAULT_HTTP_RETRY_DELAY_IN_MILLISECONDS)
-                retry_backoff['maxIntervalInMilliseconds'] = retry_backoff.get('maxIntervalInMilliseconds', DEFAULT_HTTP_RETRY_INTERVAL_IN_MILLISECONDS)
+                retry_backoff['initialDelayInMilliseconds'] = retry_backoff.get(
+                    'initialDelayInMilliseconds', DEFAULT_HTTP_RETRY_DELAY_IN_MILLISECONDS)
+                retry_backoff['maxIntervalInMilliseconds'] = retry_backoff.get(
+                    'maxIntervalInMilliseconds', DEFAULT_HTTP_RETRY_INTERVAL_IN_MILLISECONDS)
             else:
                 retry_backoff = {
                     "initialDelayInMilliseconds": DEFAULT_HTTP_RETRY_DELAY_IN_MILLISECONDS,
@@ -194,7 +215,8 @@ class ContainerAppResiliencyDecorator(BaseResource):
             http_retry_policy['retryBackOff'] = retry_backoff
             matches = safe_get(http_retry_policy, 'matches')
             if matches and 'errors' in matches:
-                matches['errors'] = matches.get('errors', DEFAULT_HTTP_RETRY_ERRORS)
+                matches['errors'] = matches.get(
+                    'errors', DEFAULT_HTTP_RETRY_ERRORS)
             else:
                 matches = {
                     "errors": DEFAULT_HTTP_RETRY_ERRORS
@@ -203,25 +225,35 @@ class ContainerAppResiliencyDecorator(BaseResource):
             containerapp_def['properties']['httpRetryPolicy'] = http_retry_policy
 
         # Timeouts
-        timeout_policy = safe_get(containerapp_def, 'properties', 'timeoutPolicy')
+        timeout_policy = safe_get(
+            containerapp_def, 'properties', 'timeoutPolicy')
         if timeout_policy and ('responseTimeoutInSeconds' in timeout_policy or 'connectionTimeoutInSeconds' in timeout_policy):
-            timeout_policy['responseTimeoutInSeconds'] = timeout_policy.get('responseTimeoutInSeconds', DEFAULT_RESPONSE_TIMEOUT)
-            timeout_policy['connectionTimeoutInSeconds'] = timeout_policy.get('connectionTimeoutInSeconds', DEFAULT_CONNECTION_TIMEOUT)
+            timeout_policy['responseTimeoutInSeconds'] = timeout_policy.get(
+                'responseTimeoutInSeconds', DEFAULT_RESPONSE_TIMEOUT)
+            timeout_policy['connectionTimeoutInSeconds'] = timeout_policy.get(
+                'connectionTimeoutInSeconds', DEFAULT_CONNECTION_TIMEOUT)
             containerapp_def['properties']['timeoutPolicy'] = timeout_policy
 
         # Circuit Breaker
-        circuit_breaker_policy = safe_get(containerapp_def, 'properties', 'circuitBreakerPolicy')
+        circuit_breaker_policy = safe_get(
+            containerapp_def, 'properties', 'circuitBreakerPolicy')
         if circuit_breaker_policy and ('consecutiveErrors' in circuit_breaker_policy or 'intervalInSeconds' in circuit_breaker_policy or 'maxEjectionPercent' in circuit_breaker_policy):
-            circuit_breaker_policy['consecutiveErrors'] = circuit_breaker_policy.get('consecutiveErrors', DEFAULT_CONSECUTIVE_ERRORS)
-            circuit_breaker_policy['intervalInSeconds'] = circuit_breaker_policy.get('intervalInSeconds', DEFAULT_INTERVAL)
-            circuit_breaker_policy['maxEjectionPercent'] = circuit_breaker_policy.get('maxEjectionPercent', DEFAULT_MAX_EJECTION)
+            circuit_breaker_policy['consecutiveErrors'] = circuit_breaker_policy.get(
+                'consecutiveErrors', DEFAULT_CONSECUTIVE_ERRORS)
+            circuit_breaker_policy['intervalInSeconds'] = circuit_breaker_policy.get(
+                'intervalInSeconds', DEFAULT_INTERVAL)
+            circuit_breaker_policy['maxEjectionPercent'] = circuit_breaker_policy.get(
+                'maxEjectionPercent', DEFAULT_MAX_EJECTION)
             containerapp_def['properties']['circuitBreakerPolicy'] = circuit_breaker_policy
 
         # HTTP Connection Pool
-        http_connection_pool = safe_get(containerapp_def, 'properties', 'httpConnectionPool')
+        http_connection_pool = safe_get(
+            containerapp_def, 'properties', 'httpConnectionPool')
         if http_connection_pool and ('http1MaxPendingRequests' in http_connection_pool or 'http2MaxRequests' in http_connection_pool):
-            http_connection_pool['http1MaxPendingRequests'] = http_connection_pool.get('http1MaxPendingRequests', DEFAULT_HTTP1_MAX_PENDING_REQ)
-            http_connection_pool['http2MaxRequests'] = http_connection_pool.get('http2MaxRequests', DEFAULT_HTTP2_MAX_REQ)
+            http_connection_pool['http1MaxPendingRequests'] = http_connection_pool.get(
+                'http1MaxPendingRequests', DEFAULT_HTTP1_MAX_PENDING_REQ)
+            http_connection_pool['http2MaxRequests'] = http_connection_pool.get(
+                'http2MaxRequests', DEFAULT_HTTP2_MAX_REQ)
             containerapp_def['properties']['httpConnectionPool'] = http_connection_pool
 
         return containerapp_def
@@ -246,7 +278,8 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
 
     def construct_payload(self):
         if self.get_argument_yaml():
-            self.containerapp_resiliency_def = self.set_up_containerapp_resiliency_yaml(file_name=self.get_argument_yaml())
+            self.containerapp_resiliency_def = self.set_up_containerapp_resiliency_yaml(
+                file_name=self.get_argument_yaml())
             return
 
         if self.get_argument_default():
@@ -258,7 +291,8 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
                 self.get_argument_http_retry_interval_in_milliseconds() is not None or \
                 self.get_argument_http_retry_status_codes() is not None or \
                 self.get_argument_http_retry_errors() is not None:
-            http_retry_def["maxRetries"] = self.get_argument_http_retry_max() if self.get_argument_http_retry_max() is not None else DEFAULT_HTTP_RETRY_MAX
+            http_retry_def["maxRetries"] = self.get_argument_http_retry_max(
+            ) if self.get_argument_http_retry_max() is not None else DEFAULT_HTTP_RETRY_MAX
             http_retry_def["retryBackOff"] = {
                 "initialDelayInMilliseconds": self.get_argument_http_retry_delay_in_milliseconds() if self.get_argument_http_retry_delay_in_milliseconds() is not None else DEFAULT_HTTP_RETRY_DELAY_IN_MILLISECONDS,
                 "maxIntervalInMilliseconds": self.get_argument_http_retry_interval_in_milliseconds() if self.get_argument_http_retry_interval_in_milliseconds() is not None else DEFAULT_HTTP_RETRY_INTERVAL_IN_MILLISECONDS
@@ -271,8 +305,10 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
         timeout_def = TimeoutPolicyModel
         if self.get_argument_timeout_response_in_seconds() is not None or \
            self.get_argument_timeout_connection_in_seconds() is not None:
-            timeout_def["responseTimeoutInSeconds"] = self.get_argument_timeout_response_in_seconds() if self.get_argument_timeout_response_in_seconds() is not None else DEFAULT_RESPONSE_TIMEOUT
-            timeout_def["connectionTimeoutInSeconds"] = self.get_argument_timeout_connection_in_seconds() if self.get_argument_timeout_connection_in_seconds() is not None else DEFAULT_CONNECTION_TIMEOUT
+            timeout_def["responseTimeoutInSeconds"] = self.get_argument_timeout_response_in_seconds(
+            ) if self.get_argument_timeout_response_in_seconds() is not None else DEFAULT_RESPONSE_TIMEOUT
+            timeout_def["connectionTimeoutInSeconds"] = self.get_argument_timeout_connection_in_seconds(
+            ) if self.get_argument_timeout_connection_in_seconds() is not None else DEFAULT_CONNECTION_TIMEOUT
 
         tcpretry_def = TcpRetryPolicyModel
         if self.get_argument_tcp_retry_max_connect_attempts() is not None:
@@ -282,19 +318,25 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
         if self.get_argument_circuit_breaker_consecutive_errors() is not None or \
            self.get_argument_circuit_breaker_interval() is not None or \
            self.get_argument_circuit_breaker_max_ejection() is not None:
-            circuitbreaker_def["consecutiveErrors"] = self.get_argument_circuit_breaker_consecutive_errors() if self.get_argument_circuit_breaker_consecutive_errors() is not None else DEFAULT_CONSECUTIVE_ERRORS
-            circuitbreaker_def["intervalInSeconds"] = self.get_argument_circuit_breaker_interval() if self.get_argument_circuit_breaker_interval() is not None else DEFAULT_INTERVAL
-            circuitbreaker_def["maxEjectionPercent"] = self.get_argument_circuit_breaker_max_ejection() if self.get_argument_circuit_breaker_max_ejection() is not None else DEFAULT_MAX_EJECTION
+            circuitbreaker_def["consecutiveErrors"] = self.get_argument_circuit_breaker_consecutive_errors(
+            ) if self.get_argument_circuit_breaker_consecutive_errors() is not None else DEFAULT_CONSECUTIVE_ERRORS
+            circuitbreaker_def["intervalInSeconds"] = self.get_argument_circuit_breaker_interval(
+            ) if self.get_argument_circuit_breaker_interval() is not None else DEFAULT_INTERVAL
+            circuitbreaker_def["maxEjectionPercent"] = self.get_argument_circuit_breaker_max_ejection(
+            ) if self.get_argument_circuit_breaker_max_ejection() is not None else DEFAULT_MAX_EJECTION
 
         tcp_connectionpool_def = TcpConnectionPoolModel
         if self.get_argument_tcp_connection_pool_max_connections() is not None:
-            tcp_connectionpool_def["maxConnections"] = self.get_argument_tcp_connection_pool_max_connections()
+            tcp_connectionpool_def["maxConnections"] = self.get_argument_tcp_connection_pool_max_connections(
+            )
 
         http_connectionpool_def = HttpConnectionPoolModel
         if self.get_argument_http_connection_pool_http1_max_pending_req() is not None or \
            self.get_argument_http_connection_pool_http2_max_req() is not None:
-            http_connectionpool_def["http1MaxPendingRequests"] = self.get_argument_http_connection_pool_http1_max_pending_req() if self.get_argument_http_connection_pool_http1_max_pending_req() is not None else DEFAULT_HTTP1_MAX_PENDING_REQ
-            http_connectionpool_def["http2MaxRequests"] = self.get_argument_http_connection_pool_http2_max_req() if self.get_argument_http_connection_pool_http2_max_req() is not None else DEFAULT_HTTP2_MAX_REQ
+            http_connectionpool_def["http1MaxPendingRequests"] = self.get_argument_http_connection_pool_http1_max_pending_req(
+            ) if self.get_argument_http_connection_pool_http1_max_pending_req() is not None else DEFAULT_HTTP1_MAX_PENDING_REQ
+            http_connectionpool_def["http2MaxRequests"] = self.get_argument_http_connection_pool_http2_max_req(
+            ) if self.get_argument_http_connection_pool_http2_max_req() is not None else DEFAULT_HTTP2_MAX_REQ
 
         self.containerapp_resiliency_def["properties"]["httpRetryPolicy"] = http_retry_def
         self.containerapp_resiliency_def["properties"]["timeoutPolicy"] = timeout_def
@@ -303,7 +345,8 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
         self.containerapp_resiliency_def["properties"]["tcpConnectionPool"] = tcp_connectionpool_def
         self.containerapp_resiliency_def["properties"]["httpConnectionPool"] = http_connectionpool_def
 
-        self.containerapp_resiliency_def = clean_null_values(self.containerapp_resiliency_def)
+        self.containerapp_resiliency_def = clean_null_values(
+            self.containerapp_resiliency_def)
 
         if self.containerapp_resiliency_def is None or self.containerapp_resiliency_def == {}:
             self.containerapp_resiliency_def["properties"] = {}
@@ -391,7 +434,8 @@ class ContainerAppResiliencyPreviewUpdateDecorator(ContainerAppResiliencyDecorat
 
     def construct_payload(self):
         if self.get_argument_yaml():
-            self.containerapp_resiliency_update_def = self.set_up_containerapp_resiliency_yaml(file_name=self.get_argument_yaml())
+            self.containerapp_resiliency_update_def = self.set_up_containerapp_resiliency_yaml(
+                file_name=self.get_argument_yaml())
             return
 
         containerapps_resiliency_def = None
@@ -403,7 +447,8 @@ class ContainerAppResiliencyPreviewUpdateDecorator(ContainerAppResiliencyDecorat
             pass
 
         if not containerapps_resiliency_def:
-            raise ResourceNotFoundError("The containerapp resiliency policy '{}' does not exist".format(self.get_argument_name()))
+            raise ResourceNotFoundError(
+                "The containerapp resiliency policy '{}' does not exist".format(self.get_argument_name()))
 
         http_retry_def = HttpRetryPolicyModel
         if (self.get_argument_http_retry_max() is not None or
@@ -411,7 +456,8 @@ class ContainerAppResiliencyPreviewUpdateDecorator(ContainerAppResiliencyDecorat
                 self.get_argument_http_retry_interval_in_milliseconds() is not None or
                 self.get_argument_http_retry_status_codes() is not None or
                 self.get_argument_http_retry_errors() is not None):
-            http_retry_def["maxRetries"] = self.get_argument_http_retry_max() if self.get_argument_http_retry_max() is not None else safe_get(containerapps_resiliency_def, 'properties', 'httpRetryPolicy', 'maxRetries', default=DEFAULT_HTTP_RETRY_MAX)
+            http_retry_def["maxRetries"] = self.get_argument_http_retry_max() if self.get_argument_http_retry_max() is not None else safe_get(
+                containerapps_resiliency_def, 'properties', 'httpRetryPolicy', 'maxRetries', default=DEFAULT_HTTP_RETRY_MAX)
             http_retry_def["retryBackOff"] = {
                 "initialDelayInMilliseconds": self.get_argument_http_retry_delay_in_milliseconds() if self.get_argument_http_retry_delay_in_milliseconds() is not None else safe_get(containerapps_resiliency_def, 'properties', 'httpRetryPolicy', 'retryBackOff', 'initialDelayInMilliseconds', default=DEFAULT_HTTP_RETRY_DELAY_IN_MILLISECONDS),
                 "maxIntervalInMilliseconds": self.get_argument_http_retry_interval_in_milliseconds() if self.get_argument_http_retry_interval_in_milliseconds() is not None else safe_get(containerapps_resiliency_def, 'properties', 'httpRetryPolicy', 'retryBackOff', 'maxIntervalInMilliseconds', default=DEFAULT_HTTP_RETRY_INTERVAL_IN_MILLISECONDS)
@@ -426,8 +472,10 @@ class ContainerAppResiliencyPreviewUpdateDecorator(ContainerAppResiliencyDecorat
 
         timeout_def = TimeoutPolicyModel
         if self.get_argument_timeout_response_in_seconds() is not None or self.get_argument_timeout_connection_in_seconds() is not None:
-            timeout_def["responseTimeoutInSeconds"] = self.get_argument_timeout_response_in_seconds() if self.get_argument_timeout_response_in_seconds() is not None else safe_get(containerapps_resiliency_def, 'properties', 'timeoutPolicy', 'responseTimeoutInSeconds', default=DEFAULT_RESPONSE_TIMEOUT)
-            timeout_def["connectionTimeoutInSeconds"] = self.get_argument_timeout_connection_in_seconds() if self.get_argument_timeout_connection_in_seconds() is not None else safe_get(containerapps_resiliency_def, 'properties', 'timeoutPolicy', 'connectionTimeoutInSeconds', default=DEFAULT_CONNECTION_TIMEOUT)
+            timeout_def["responseTimeoutInSeconds"] = self.get_argument_timeout_response_in_seconds() if self.get_argument_timeout_response_in_seconds(
+            ) is not None else safe_get(containerapps_resiliency_def, 'properties', 'timeoutPolicy', 'responseTimeoutInSeconds', default=DEFAULT_RESPONSE_TIMEOUT)
+            timeout_def["connectionTimeoutInSeconds"] = self.get_argument_timeout_connection_in_seconds() if self.get_argument_timeout_connection_in_seconds(
+            ) is not None else safe_get(containerapps_resiliency_def, 'properties', 'timeoutPolicy', 'connectionTimeoutInSeconds', default=DEFAULT_CONNECTION_TIMEOUT)
             self.containerapp_resiliency_update_def["properties"]["timeoutPolicy"] = timeout_def
 
         tcpretry_def = TcpRetryPolicyModel
@@ -439,24 +487,31 @@ class ContainerAppResiliencyPreviewUpdateDecorator(ContainerAppResiliencyDecorat
         if self.get_argument_circuit_breaker_consecutive_errors() is not None or \
            self.get_argument_circuit_breaker_interval() is not None or \
            self.get_argument_circuit_breaker_max_ejection() is not None:
-            circuitbreaker_def["consecutiveErrors"] = self.get_argument_circuit_breaker_consecutive_errors() if self.get_argument_circuit_breaker_consecutive_errors() is not None else safe_get(containerapps_resiliency_def, 'properties', 'circuitBreakerPolicy', 'consecutiveErrors', default=DEFAULT_CONSECUTIVE_ERRORS)
-            circuitbreaker_def["intervalInSeconds"] = self.get_argument_circuit_breaker_interval() if self.get_argument_circuit_breaker_interval() is not None else safe_get(containerapps_resiliency_def, 'properties', 'circuitBreakerPolicy', 'intervalInSeconds', default=DEFAULT_INTERVAL)
-            circuitbreaker_def["maxEjectionPercent"] = self.get_argument_circuit_breaker_max_ejection() if self.get_argument_circuit_breaker_max_ejection() is not None else safe_get(containerapps_resiliency_def, 'properties', 'circuitBreakerPolicy', 'maxEjectionPercent', default=DEFAULT_MAX_EJECTION)
+            circuitbreaker_def["consecutiveErrors"] = self.get_argument_circuit_breaker_consecutive_errors() if self.get_argument_circuit_breaker_consecutive_errors(
+            ) is not None else safe_get(containerapps_resiliency_def, 'properties', 'circuitBreakerPolicy', 'consecutiveErrors', default=DEFAULT_CONSECUTIVE_ERRORS)
+            circuitbreaker_def["intervalInSeconds"] = self.get_argument_circuit_breaker_interval() if self.get_argument_circuit_breaker_interval(
+            ) is not None else safe_get(containerapps_resiliency_def, 'properties', 'circuitBreakerPolicy', 'intervalInSeconds', default=DEFAULT_INTERVAL)
+            circuitbreaker_def["maxEjectionPercent"] = self.get_argument_circuit_breaker_max_ejection() if self.get_argument_circuit_breaker_max_ejection(
+            ) is not None else safe_get(containerapps_resiliency_def, 'properties', 'circuitBreakerPolicy', 'maxEjectionPercent', default=DEFAULT_MAX_EJECTION)
             self.containerapp_resiliency_update_def["properties"]["circuitBreakerPolicy"] = circuitbreaker_def
 
         tcp_connectionpool_def = TcpConnectionPoolModel
         if self.get_argument_tcp_connection_pool_max_connections() is not None:
-            tcp_connectionpool_def["maxConnections"] = self.get_argument_tcp_connection_pool_max_connections()
+            tcp_connectionpool_def["maxConnections"] = self.get_argument_tcp_connection_pool_max_connections(
+            )
             self.containerapp_resiliency_update_def["properties"]["tcpConnectionPool"] = tcp_connectionpool_def
 
         http_connectionpool_def = HttpConnectionPoolModel
         if self.get_argument_http_connection_pool_http1_max_pending_req() is not None or \
            self.get_argument_http_connection_pool_http2_max_req() is not None:
-            http_connectionpool_def["http1MaxPendingRequests"] = self.get_argument_http_connection_pool_http1_max_pending_req() if self.get_argument_http_connection_pool_http1_max_pending_req() is not None else DEFAULT_HTTP1_MAX_PENDING_REQ
-            http_connectionpool_def["http2MaxRequests"] = self.get_argument_http_connection_pool_http2_max_req() if self.get_argument_http_connection_pool_http2_max_req() is not None else DEFAULT_HTTP2_MAX_REQ
+            http_connectionpool_def["http1MaxPendingRequests"] = self.get_argument_http_connection_pool_http1_max_pending_req(
+            ) if self.get_argument_http_connection_pool_http1_max_pending_req() is not None else DEFAULT_HTTP1_MAX_PENDING_REQ
+            http_connectionpool_def["http2MaxRequests"] = self.get_argument_http_connection_pool_http2_max_req(
+            ) if self.get_argument_http_connection_pool_http2_max_req() is not None else DEFAULT_HTTP2_MAX_REQ
             self.containerapp_resiliency_update_def["properties"]["httpConnectionPool"] = http_connectionpool_def
 
-        self.containerapp_resiliency_update_def = clean_null_values(self.containerapp_resiliency_update_def)
+        self.containerapp_resiliency_update_def = clean_null_values(
+            self.containerapp_resiliency_update_def)
 
     def update(self):
         try:

@@ -39,7 +39,7 @@ secrets:
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
         write_test_file(compose_file_name, compose_text)
-        
+
         secrets_file_name = "./my_secret.txt"
         secrets_text = "Lorem Ipsum\n"
         write_test_file(secrets_file_name, secrets_text)
@@ -56,11 +56,15 @@ secrets:
         command_string += ' --environment {environment}'
 
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`foo`].properties.configuration.secrets[0].name', ["redis-secret"]),
-            self.check(f'[?name==`foo`].properties.template.containers[0].env[0].name', ["redis-secret"]),
-            self.check(f'[?name==`foo`].properties.template.containers[0].env[0].secretRef', ["redis-secret"])  # pylint: disable=C0301
+            self.check(f'[?name==`foo`].properties.configuration.secrets[0].name', [
+                       "redis-secret"]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].env[0].name', [
+                       "redis-secret"]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].env[0].secretRef', [
+                       "redis-secret"])  # pylint: disable=C0301
         ])
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
         clean_up_test_file(secrets_file_name)
@@ -110,9 +114,11 @@ secrets:
         command_string += ' --environment {environment}'
 
         self.cmd(command_string, checks=[
-            self.check(f'length([?name==`foo`].properties.template.containers[0].env[].name)', 6),
+            self.check(
+                f'length([?name==`foo`].properties.template.containers[0].env[].name)', 6),
         ])
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
         clean_up_test_file(secrets_file_name)
@@ -145,7 +151,7 @@ secrets:
             'environment': env_id,
             'compose': compose_file_name,
         })
-        
+
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
         command_string += ' --resource-group {rg}'
@@ -153,7 +159,8 @@ secrets:
 
         # This test fails with duplicate environment variable names
         self.cmd(command_string, expect_failure=True)
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
         clean_up_test_file(secrets_file_name)

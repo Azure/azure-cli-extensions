@@ -10,8 +10,10 @@ from azure.cli.command_modules.containerapp._utils import format_location
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
-from .common import (write_test_file, clean_up_test_file, TEST_LOCATION, STAGE_LOCATION)
+from azure.cli.testsdk import (
+    ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from .common import (write_test_file, clean_up_test_file,
+                     TEST_LOCATION, STAGE_LOCATION)
 from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -38,15 +40,18 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             f'az storage share-rm create --resource-group {resource_group}  --storage-account {storage} --name {share} --quota 1024 --enabled-protocols SMB --output none')
 
         create_containerapp_env(self, env, resource_group)
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        containerapp_env = self.cmd(
+            'containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
         account_key = self.cmd(f'az storage account keys list -g {resource_group} -n {storage} --query "[0].value" '
                                '-otsv').output.strip()
         self.cmd(
             f'az containerapp env storage set -g {resource_group} -n {env} -a {storage} -k {account_key} -f {share} --storage-name {share} --access-mode ReadWrite')
 
-        user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
-        user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
+        user_identity_name = self.create_random_name(
+            prefix='containerapp-user', length=24)
+        user_identity = self.cmd('identity create -g {} -n {}'.format(
+            resource_group, user_identity_name)).get_output_in_json()
         user_identity_id = user_identity['id']
 
         # test job create with yaml
@@ -117,46 +122,67 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         write_test_file(containerappjob_file_name, containerappjob_yaml_text)
         self.cmd(f'containerapp job create -n {job} -g {resource_group} --environment {env} --yaml {containerappjob_file_name}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
-            JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
+            JMESPathCheck("properties.configuration.triggerType",
+                          "Manual", case_sensitive=False),
             JMESPathCheck('properties.configuration.replicaTimeout', 100),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
-            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
-            JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
-            JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
+            JMESPathCheck(
+                'properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.cpu', "0.5"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.memory', "1Gi"),
             JMESPathCheck('identity.type', "UserAssigned"),
-            JMESPathCheck('properties.template.volumes[0].storageType', 'AzureFile'),
+            JMESPathCheck(
+                'properties.template.volumes[0].storageType', 'AzureFile'),
             JMESPathCheck('properties.template.volumes[0].storageName', share),
-            JMESPathCheck('properties.template.volumes[0].name', 'azure-files-volume'),
-            JMESPathCheck('properties.template.volumes[0].mountOptions', 'uid=999,gid=999'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].subPath', 'sub'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume')
+            JMESPathCheck(
+                'properties.template.volumes[0].name', 'azure-files-volume'),
+            JMESPathCheck(
+                'properties.template.volumes[0].mountOptions', 'uid=999,gid=999'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].subPath', 'sub'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume')
         ])
 
         self.cmd(f'containerapp job show -g {resource_group} -n {job}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
-            JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
+            JMESPathCheck("properties.configuration.triggerType",
+                          "Manual", case_sensitive=False),
             JMESPathCheck('properties.configuration.replicaTimeout', 100),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
-            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
-            JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
-            JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
+            JMESPathCheck(
+                'properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.cpu', "0.5"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.memory', "1Gi"),
             JMESPathCheck('identity.type', "UserAssigned"),
-            JMESPathCheck('properties.template.volumes[0].storageType', 'AzureFile'),
+            JMESPathCheck(
+                'properties.template.volumes[0].storageType', 'AzureFile'),
             JMESPathCheck('properties.template.volumes[0].storageName', share),
-            JMESPathCheck('properties.template.volumes[0].name', 'azure-files-volume'),
-            JMESPathCheck('properties.template.volumes[0].mountOptions', 'uid=999,gid=999'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].subPath', 'sub'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume')
+            JMESPathCheck(
+                'properties.template.volumes[0].name', 'azure-files-volume'),
+            JMESPathCheck(
+                'properties.template.volumes[0].mountOptions', 'uid=999,gid=999'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].subPath', 'sub'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume')
         ])
 
         # wait for provisioning state of job to be succeeded before updating
         jobProvisioning = True
         timeout = time.time() + 60*1   # 1 minutes from now
-        while(jobProvisioning):
-            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()['properties']['provisioningState'] != "Succeeded"
-            if(time.time() > timeout):
+        while (jobProvisioning):
+            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(
+                resource_group, job)).get_output_in_json()['properties']['provisioningState'] != "Succeeded"
+            if (time.time() > timeout):
                 break
 
         # test container app job update with yaml
@@ -219,30 +245,42 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             """
         write_test_file(containerappjob_file_name, containerappjob_yaml_text)
 
-        self.cmd(f'containerapp job update -n {job} -g {resource_group} --yaml {containerappjob_file_name}')
+        self.cmd(
+            f'containerapp job update -n {job} -g {resource_group} --yaml {containerappjob_file_name}')
 
         self.cmd(f'containerapp job show -g {resource_group} -n {job}', checks=[
-            JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
+            JMESPathCheck("properties.configuration.triggerType",
+                          "Manual", case_sensitive=False),
             JMESPathCheck('properties.configuration.replicaTimeout', 200),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
-            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
-            JMESPathCheck('properties.template.containers[0].resources.cpu', "0.75"),
-            JMESPathCheck('properties.template.containers[0].resources.memory', "1.5Gi"),
-            JMESPathCheck('properties.template.volumes[0].storageType', 'AzureFile'),
+            JMESPathCheck(
+                'properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.cpu', "0.75"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.memory', "1.5Gi"),
+            JMESPathCheck(
+                'properties.template.volumes[0].storageType', 'AzureFile'),
             JMESPathCheck('properties.template.volumes[0].storageName', share),
-            JMESPathCheck('properties.template.volumes[0].name', 'azure-files-volume'),
-            JMESPathCheck('properties.template.volumes[0].mountOptions', 'uid=1000,gid=1000'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].subPath', 'sub2'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
-            JMESPathCheck('properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
+            JMESPathCheck(
+                'properties.template.volumes[0].name', 'azure-files-volume'),
+            JMESPathCheck(
+                'properties.template.volumes[0].mountOptions', 'uid=1000,gid=1000'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].subPath', 'sub2'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
+            JMESPathCheck(
+                'properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
         ])
 
         # wait for provisioning state of job to be succeeded before updating
         jobProvisioning = True
         timeout = time.time() + 60*1   # 1 minutes from now
-        while(jobProvisioning):
-            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()['properties']['provisioningState'] != "Succeeded"
-            if(time.time() > timeout):
+        while (jobProvisioning):
+            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(
+                resource_group, job)).get_output_in_json()['properties']['provisioningState'] != "Succeeded"
+            if (time.time() > timeout):
                 break
 
         # test update for job with yaml not containing environmentId
@@ -253,7 +291,8 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
                             """
         write_test_file(containerappjob_file_name, containerappjob_yaml_text)
 
-        self.cmd(f'containerapp job update -n {job} -g {resource_group} --yaml {containerappjob_file_name}')
+        self.cmd(
+            f'containerapp job update -n {job} -g {resource_group} --yaml {containerappjob_file_name}')
 
         self.cmd(f'containerapp job show -g {resource_group} -n {job}', checks=[
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
@@ -275,10 +314,13 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         env_id = prepare_containerapp_env_for_app_e2e_tests(self, location)
         env_rg = parse_resource_id(env_id).get('resource_group')
         env_name = parse_resource_id(env_id).get('name')
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
+        containerapp_env = self.cmd(
+            'containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
 
-        user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
-        user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
+        user_identity_name = self.create_random_name(
+            prefix='containerapp-user', length=24)
+        user_identity = self.cmd('identity create -g {} -n {}'.format(
+            resource_group, user_identity_name)).get_output_in_json()
         user_identity_id = user_identity['id']
 
         # test job create with yaml
@@ -352,32 +394,45 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         containerappjob_file_name = f"{self._testMethodName}_containerappjob.yml"
 
         write_test_file(containerappjob_file_name, containerappjob_yaml_text)
-        self.cmd(f'containerapp job create -n {job} -g {resource_group} --environment {env_id} --yaml {containerappjob_file_name}')
+        self.cmd(
+            f'containerapp job create -n {job} -g {resource_group} --environment {env_id} --yaml {containerappjob_file_name}')
 
         self.cmd(f'containerapp job show -g {resource_group} -n {job}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
-            JMESPathCheck("properties.configuration.triggerType", "Event", case_sensitive=False),
+            JMESPathCheck("properties.configuration.triggerType",
+                          "Event", case_sensitive=False),
             JMESPathCheck('properties.configuration.replicaTimeout', 100),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
-            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
-            JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
-            JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.replicaCompletionCount', 1),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.parallelism', 1),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.minExecutions', 0),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.maxExecutions', 10),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].type', "github-runner"),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].metadata.runnerScope', "repo"),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].auth[0].secretRef', "personal-access-token"),
+            JMESPathCheck(
+                'properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.cpu', "0.5"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.memory', "1Gi"),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.replicaCompletionCount', 1),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.parallelism', 1),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.scale.minExecutions', 0),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.scale.maxExecutions', 10),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.scale.rules[0].type', "github-runner"),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.scale.rules[0].metadata.runnerScope', "repo"),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.scale.rules[0].auth[0].secretRef', "personal-access-token"),
             JMESPathCheck('identity.type', "UserAssigned"),
         ])
 
         # wait for provisioning state of job to be succeeded before updating
         jobProvisioning = True
         timeout = time.time() + 60*1   # 1 minutes from now
-        while(jobProvisioning):
-            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()['properties']['provisioningState'] != "Succeeded"
-            if(time.time() > timeout):
+        while (jobProvisioning):
+            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(
+                resource_group, job)).get_output_in_json()['properties']['provisioningState'] != "Succeeded"
+            if (time.time() > timeout):
                 break
 
         # test container app job update with yaml
@@ -413,21 +468,32 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             """
         write_test_file(containerappjob_file_name, containerappjob_yaml_text)
 
-        self.cmd(f'containerapp job update -n {job} -g {resource_group} --yaml {containerappjob_file_name}')
+        self.cmd(
+            f'containerapp job update -n {job} -g {resource_group} --yaml {containerappjob_file_name}')
 
         self.cmd(f'containerapp job show -g {resource_group} -n {job}', checks=[
-            JMESPathCheck("properties.configuration.triggerType", "Event", case_sensitive=False),
+            JMESPathCheck("properties.configuration.triggerType",
+                          "Event", case_sensitive=False),
             JMESPathCheck('properties.configuration.replicaTimeout', 200),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 2),
-            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.replicaCompletionCount', 2),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.parallelism', 2),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.minExecutions', 5),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.maxExecutions', 95),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].name', "github-runner-testv2"),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].metadata.runnerScope', "repo"),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].metadata.owner', "test_org_1"),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].auth[0].secretRef', "personal-access-token"),
+            JMESPathCheck(
+                'properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.replicaCompletionCount', 2),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.parallelism', 2),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.scale.minExecutions', 5),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.scale.maxExecutions', 95),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.scale.rules[0].name', "github-runner-testv2"),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.scale.rules[0].metadata.runnerScope', "repo"),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.scale.rules[0].metadata.owner', "test_org_1"),
+            JMESPathCheck(
+                'properties.configuration.eventTriggerConfig.scale.rules[0].auth[0].secretRef', "personal-access-token"),
         ])
         clean_up_test_file(containerappjob_file_name)
 
@@ -441,7 +507,8 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         job1 = self.create_random_name(prefix='yaml1', length=24)
 
         create_containerapp_env(self, env1, resource_group)
-        containerapp_env1 = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env1)).get_output_in_json()
+        containerapp_env1 = self.cmd(
+            'containerapp env show -g {} -n {}'.format(resource_group, env1)).get_output_in_json()
 
         create_containerapp_env(self, env2, resource_group)
         containerapp_env2 = self.cmd(
@@ -504,25 +571,33 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             f'containerapp job create -n {job1} -g {resource_group} --environment {env2} --yaml {containerappjob_file_name}',
             checks=[
                 JMESPathCheck("properties.provisioningState", "Succeeded"),
-                JMESPathCheck("properties.environmentId", containerapp_env1["id"]),
-                JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
+                JMESPathCheck("properties.environmentId",
+                              containerapp_env1["id"]),
+                JMESPathCheck("properties.configuration.triggerType",
+                              "Manual", case_sensitive=False),
                 JMESPathCheck('properties.configuration.replicaTimeout', 100),
                 JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
                 JMESPathCheck('properties.template.containers[0].image',
                               "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
-                JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
-                JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
+                JMESPathCheck(
+                    'properties.template.containers[0].resources.cpu', "0.5"),
+                JMESPathCheck(
+                    'properties.template.containers[0].resources.memory', "1Gi"),
             ])
 
         self.cmd(f'containerapp job show -g {resource_group} -n {job1}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.environmentId", containerapp_env1["id"]),
-            JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
+            JMESPathCheck("properties.configuration.triggerType",
+                          "Manual", case_sensitive=False),
             JMESPathCheck('properties.configuration.replicaTimeout', 100),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
-            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
-            JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
-            JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
+            JMESPathCheck(
+                'properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.cpu', "0.5"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.memory', "1Gi"),
         ])
 
         # test container app job update with yaml
@@ -578,13 +653,16 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         self.cmd(f'containerapp job create -n {job2} -g {resource_group} --environment {env2} --yaml {containerappjob_file_name}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.environmentId", containerapp_env2["id"]),
-            JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
+            JMESPathCheck("properties.configuration.triggerType",
+                          "Manual", case_sensitive=False),
             JMESPathCheck('properties.configuration.replicaTimeout', 200),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
             JMESPathCheck('properties.template.containers[0].image',
                           "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
-            JMESPathCheck('properties.template.containers[0].resources.cpu', "0.75"),
-            JMESPathCheck('properties.template.containers[0].resources.memory', "1.5Gi"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.cpu', "0.75"),
+            JMESPathCheck(
+                'properties.template.containers[0].resources.memory', "1.5Gi"),
         ])
 
         self.cmd(f'containerapp job list -g {resource_group}', checks=[

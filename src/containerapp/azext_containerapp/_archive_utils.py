@@ -48,15 +48,18 @@ def upload_source_code(cmd, client,
         upload_url = source_upload_location.upload_url
         relative_path = source_upload_location.relative_path
     except (AttributeError, CloudError) as e:
-        raise CLIInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e.message)) from e
+        raise CLIInternalError(
+            "Failed to get a SAS URL to upload context. Error: {}".format(e.message)) from e
 
     if not upload_url:
         raise CLIInternalError("Failed to get a SAS URL to upload context.")
 
-    BlobClient = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB, '_blob_client#BlobClient')
+    BlobClient = get_sdk(
+        cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB, '_blob_client#BlobClient')
     BlobClient = BlobClient.from_blob_url(upload_url, connection_timeout=300)
     with open(tar_file_path, "rb") as data:
-        BlobClient.upload_blob(data=data, blob_type="BlockBlob", overwrite=True)
+        BlobClient.upload_blob(
+            data=data, blob_type="BlockBlob", overwrite=True)
     logger.info("Sending context ({0:.3f} {1}) to registry: {2}...".format(
         size, unit, registry_name))
     return relative_path
@@ -69,14 +72,18 @@ def archive_source_code(tar_file_path, source_location):
 def _pack_source_code(source_location, tar_file_path, docker_file_path, docker_file_in_tar):
     logger.info("Packing source code into tar to upload...")
 
-    original_docker_file_name = os.path.basename(docker_file_path.replace("\\", os.sep))
-    ignore_list, ignore_list_size = _load_dockerignore_file(source_location, original_docker_file_name)
-    common_vcs_ignore_list = {'.git', '.gitignore', '.bzr', 'bzrignore', '.hg', '.hgignore', '.svn', 'mvnw'}
+    original_docker_file_name = os.path.basename(
+        docker_file_path.replace("\\", os.sep))
+    ignore_list, ignore_list_size = _load_dockerignore_file(
+        source_location, original_docker_file_name)
+    common_vcs_ignore_list = {'.git', '.gitignore', '.bzr',
+                              'bzrignore', '.hg', '.hgignore', '.svn', 'mvnw'}
 
     def _ignore_check(tarinfo, parent_ignored, parent_matching_rule_index):
         # ignore common vcs dir or file
         if tarinfo.name in common_vcs_ignore_list:
-            logger.info("Excluding '%s' based on default ignore rules", tarinfo.name)
+            logger.info(
+                "Excluding '%s' based on default ignore rules", tarinfo.name)
             return True, parent_matching_rule_index
 
         if ignore_list is None:
@@ -157,7 +164,8 @@ def _load_dockerignore_file(source_location, original_docker_file_name):
         docker_ignore_file_override = os.path.join(
             source_location, "{}.dockerignore".format(original_docker_file_name))
         if os.path.exists(docker_ignore_file_override):
-            logger.info("Overriding .dockerignore with %s", docker_ignore_file_override)
+            logger.info("Overriding .dockerignore with %s",
+                        docker_ignore_file_override)
             docker_ignore_file = docker_ignore_file_override
 
     if not os.path.exists(docker_ignore_file):
@@ -226,7 +234,8 @@ def check_remote_source_code(source_location):
     # http
     if lower_source_location.startswith("https://") or lower_source_location.startswith("http://") \
        or lower_source_location.startswith("github.com/"):
-        isVSTS = any(url in lower_source_location for url in TASK_VALID_VSTS_URLS)
+        isVSTS = any(
+            url in lower_source_location for url in TASK_VALID_VSTS_URLS)
         if isVSTS or re.search(r"\.git(?:#.+)?$", lower_source_location):
             # git url must contain ".git" or be from VSTS/Azure DevOps.
             # This is because Azure DevOps doesn't follow the standard git server convention of putting
@@ -236,7 +245,8 @@ def check_remote_source_code(source_location):
             # Others are tarball
             if requests.head(source_location).status_code < 400:
                 return source_location
-            raise CLIInternalError("'{}' doesn't exist.".format(source_location))
+            raise CLIInternalError(
+                "'{}' doesn't exist.".format(source_location))
 
     # oci
     if lower_source_location.startswith("oci://"):

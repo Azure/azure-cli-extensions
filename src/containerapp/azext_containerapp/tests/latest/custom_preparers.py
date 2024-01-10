@@ -34,14 +34,19 @@ class ConnectedClusterPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             if format_location(self.location) == format_location(STAGE_LOCATION):
                 aks_location = "southcentralus"
                 arc_location = "eastus2euap"
-            self.live_only_execute(self.cli_ctx, f'az aks create --resource-group {group} --name {self.infra_cluster} --enable-aad --generate-ssh-keys --enable-cluster-autoscaler --min-count 4 --max-count 10 --node-count 4 --location {aks_location}')
-            self.live_only_execute(self.cli_ctx, f'az aks get-credentials --resource-group {group} --name {self.infra_cluster} --overwrite-existing --admin')
+            self.live_only_execute(
+                self.cli_ctx, f'az aks create --resource-group {group} --name {self.infra_cluster} --enable-aad --generate-ssh-keys --enable-cluster-autoscaler --min-count 4 --max-count 10 --node-count 4 --location {aks_location}')
+            self.live_only_execute(
+                self.cli_ctx, f'az aks get-credentials --resource-group {group} --name {self.infra_cluster} --overwrite-existing --admin')
 
-            self.live_only_execute(self.cli_ctx, f'az connectedk8s connect --resource-group {group} --name {self.connected_cluster_name} --location {arc_location}')
-            connected_cluster = self.live_only_execute(self.cli_ctx, f'az connectedk8s show --resource-group {group} --name {self.connected_cluster_name}').get_output_in_json()
+            self.live_only_execute(
+                self.cli_ctx, f'az connectedk8s connect --resource-group {group} --name {self.connected_cluster_name} --location {arc_location}')
+            connected_cluster = self.live_only_execute(
+                self.cli_ctx, f'az connectedk8s show --resource-group {group} --name {self.connected_cluster_name}').get_output_in_json()
             while connected_cluster is not None and connected_cluster["connectivityStatus"] == "Connecting":
                 time.sleep(5)
-                connected_cluster = self.live_only_execute(self.cli_ctx, f'az connectedk8s show --resource-group {group} --name {self.connected_cluster_name}').get_output_in_json()
+                connected_cluster = self.live_only_execute(
+                    self.cli_ctx, f'az connectedk8s show --resource-group {group} --name {self.connected_cluster_name}').get_output_in_json()
 
         except AttributeError:  # live only execute returns None if playing from record
             pass

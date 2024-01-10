@@ -3,18 +3,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from .utils import prepare_containerapp_env_for_app_e2e_tests
+from azext_containerapp.tests.latest.common import TEST_LOCATION
 import os
 import time
 
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azure.cli.testsdk import (
+    ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-from azext_containerapp.tests.latest.common import TEST_LOCATION
-from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
@@ -36,7 +36,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck('name', env_name)
         ])
 
-        ## test for CRUD operations on Container App Job resource with trigger type as manual
+        # test for CRUD operations on Container App Job resource with trigger type as manual
         # create a Container App Job resource with trigger type as manual
         self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --secrets 'testsecret=testsecretvalue' --replica-timeout 200 --replica-retry-limit 2 --trigger-type manual --parallelism 1 --replica-completion-count 1 --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job, env_id))
 
@@ -45,28 +45,30 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck('name', job),
             JMESPathCheck('properties.configuration.replicaTimeout', 200),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 2),
-            JMESPathCheck('properties.configuration.triggerType', "manual", case_sensitive=False),
-            JMESPathCheck('properties.configuration.secrets[0].name', "testsecret"),
+            JMESPathCheck('properties.configuration.triggerType',
+                          "manual", case_sensitive=False),
+            JMESPathCheck(
+                'properties.configuration.secrets[0].name', "testsecret"),
         ])
 
         # get list of Container App Jobs secrets
         job_secret_list = self.cmd("az containerapp job secret list --resource-group {} --name {}".format(resource_group, job), checks=[
             JMESPathCheck('[0].name', "testsecret"),
-            ]).get_output_in_json()
+        ]).get_output_in_json()
         self.assertTrue(len(job_secret_list) == 1)
 
         # get list of Container App Jobs secrets with secret value
         job_secret_list = self.cmd("az containerapp job secret list --resource-group {} --name {} --show-values".format(resource_group, job), checks=[
             JMESPathCheck('[0].name', "testsecret"),
             JMESPathCheck('[0].value', "testsecretvalue"),
-            ]).get_output_in_json()
+        ]).get_output_in_json()
         self.assertTrue(len(job_secret_list) == 1)
 
         # Show value of specified secret in a Container App Job
         self.cmd("az containerapp job secret show --resource-group {} --name {} --secret-name testsecret".format(resource_group, job), checks=[
             JMESPathCheck('name', "testsecret"),
             JMESPathCheck('value', "testsecretvalue"),
-            ])
+        ])
 
         # Update value of existing secret in a Container App Job
         self.cmd("az containerapp job secret set --resource-group {} --name {} --secret 'testsecret=testsecretvaluev2'".format(resource_group, job))
@@ -78,7 +80,8 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         ])
 
         # add secret for a Container App Job
-        job_secret_list_updated = self.cmd("az containerapp job secret set --resource-group {} --name {} --secret 'testsecret2=testsecretvalue2'".format(resource_group, job)).get_output_in_json()
+        job_secret_list_updated = self.cmd(
+            "az containerapp job secret set --resource-group {} --name {} --secret 'testsecret2=testsecretvalue2'".format(resource_group, job)).get_output_in_json()
         self.assertTrue(len(job_secret_list_updated) == 2)
 
         # check for added secret in a Container App Job
@@ -94,6 +97,5 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         job_secret_list = self.cmd("az containerapp job secret list --resource-group {} --name {} --show-values".format(resource_group, job), checks=[
             JMESPathCheck('[0].name', "testsecret"),
             JMESPathCheck('[0].value', "testsecretvaluev2"),
-            ]).get_output_in_json()
+        ]).get_output_in_json()
         self.assertTrue(len(job_secret_list) == 1)
-        

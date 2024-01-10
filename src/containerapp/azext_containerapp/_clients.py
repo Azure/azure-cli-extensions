@@ -64,7 +64,8 @@ class ContainerAppsResiliencyPreviewClient():
             name,
             cls.api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(container_app_resiliency_envelope))
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url,
+                             body=json.dumps(container_app_resiliency_envelope))
 
         if no_wait:
             return r.json()
@@ -98,7 +99,8 @@ class ContainerAppsResiliencyPreviewClient():
             name,
             cls.api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(container_app_resiliency_envelope))
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(
+            container_app_resiliency_envelope))
 
         if no_wait:
             return
@@ -106,7 +108,8 @@ class ContainerAppsResiliencyPreviewClient():
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
             if response is None:
-                raise ResourceNotFoundError("Could not find the app resiliency policy")
+                raise ResourceNotFoundError(
+                    "Could not find the app resiliency policy")
             else:
                 return response
 
@@ -191,7 +194,8 @@ class DaprComponentResiliencyPreviewClient():
             name,
             cls.api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(component_resiliency_envelope))
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url,
+                             body=json.dumps(component_resiliency_envelope))
 
         if no_wait:
             return r.json()
@@ -234,7 +238,8 @@ class DaprComponentResiliencyPreviewClient():
             if r.status_code == 202:
                 operation_url = r.headers.get(HEADER_LOCATION)
                 poll_results(cmd, operation_url)
-                logger.warning('Dapr Component Resiliency Policy successfully deleted')
+                logger.warning(
+                    'Dapr Component Resiliency Policy successfully deleted')
 
     @classmethod
     def show(cls, cmd, name, resource_group_name, dapr_component_name, environment_name):
@@ -337,7 +342,8 @@ class ConnectedEnvironmentClient():
             name,
             cls.api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(connected_environment_envelope))
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url,
+                             body=json.dumps(connected_environment_envelope))
 
         if no_wait:
             return r.json()
@@ -360,7 +366,8 @@ class ConnectedEnvironmentClient():
             name,
             cls.api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(managed_environment_envelope))
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url,
+                             body=json.dumps(managed_environment_envelope))
 
         if no_wait:
             return
@@ -368,7 +375,8 @@ class ConnectedEnvironmentClient():
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
             if response is None:
-                raise ResourceNotFoundError("Could not find a connected environment")
+                raise ResourceNotFoundError(
+                    "Could not find a connected environment")
             else:
                 return response
 
@@ -522,7 +530,8 @@ class ConnectedEnvCertificateClient():
             certificate_name,
             cls.api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(certificate))
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url,
+                             body=json.dumps(certificate))
         return r.json()
 
     @classmethod
@@ -553,7 +562,8 @@ class ConnectedEnvCertificateClient():
             name,
             api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(name_availability_request))
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url,
+                             body=json.dumps(name_availability_request))
         return r.json()
 
 
@@ -574,7 +584,8 @@ class ConnectedEnvDaprComponentClient():
             name,
             cls.api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(dapr_component_envelope))
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url,
+                             body=json.dumps(dapr_component_envelope))
 
         return r.json()
 
@@ -656,7 +667,8 @@ class ConnectedEnvStorageClient():
             name,
             cls.api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(storage_envelope))
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url,
+                             body=json.dumps(storage_envelope))
 
         return r.json()
 
@@ -762,7 +774,8 @@ class BuilderClient():
             }
         }
 
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(body_data))
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url,
+                             body=json.dumps(body_data))
 
         if no_wait:
             return r.json()
@@ -794,7 +807,8 @@ class BuildClient():
             "properties": {}
         }
 
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(body_data))
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url,
+                             body=json.dumps(body_data))
 
         if no_wait:
             return r.json()
@@ -836,5 +850,6 @@ class BuildClient():
             "location": location,
             "properties": {}
         }
-        r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(body_data))
+        r = send_raw_request(cmd.cli_ctx, "POST",
+                             request_url, body=json.dumps(body_data))
         return r.json()

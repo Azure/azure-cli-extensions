@@ -46,10 +46,12 @@ class DaprUtilsTest(unittest.TestCase):
     def test_get_service_name(self):
         testcases = [["foo", "dapr-foo"], ["foo-bar", "dapr-foo-bar"]]
         for testcase in testcases:
-            self.assertEqual(DaprUtils._get_service_name(testcase[0]), testcase[1])
+            self.assertEqual(DaprUtils._get_service_name(
+                testcase[0]), testcase[1])
 
     def test_get_dapr_component_name(self):
-        testcases = [["state", "statestore"], ["pubsub", "pubsub"], ["foo", "foo"]]
+        testcases = [["state", "statestore"], [
+            "pubsub", "pubsub"], ["foo", "foo"]]
         for testcase in testcases:
             self.assertEqual(
                 DaprUtils._get_dapr_component_name(testcase[0]), testcase[1]
@@ -59,7 +61,8 @@ class DaprUtilsTest(unittest.TestCase):
         component_model = DaprUtils._get_dapr_component_model_from_service(
             "state", "redis", "dapr-redis", "redisId"
         )
-        self.assertEqual(component_model["properties"]["componentType"], "state.redis")
+        self.assertEqual(
+            component_model["properties"]["componentType"], "state.redis")
         self.assertEqual(component_model["properties"]["version"], "v1")
         self.assertEqual(component_model["properties"]["ignoreErrors"], False)
         self.assertEqual(
@@ -70,7 +73,8 @@ class DaprUtilsTest(unittest.TestCase):
             "redisId",
         )
         self.assertEqual(
-            len(component_model["properties"]["serviceComponentBind"]["metadata"]), 1
+            len(component_model["properties"]
+                ["serviceComponentBind"]["metadata"]), 1
         )
         self.assertEqual(
             component_model["properties"]["serviceComponentBind"]["metadata"][
@@ -88,7 +92,8 @@ class DaprUtilsTest(unittest.TestCase):
             True,
             {"foo": "bar", "bar": "baz"},
         )
-        self.assertEqual(component_model["properties"]["componentType"], "pubsub.kafka")
+        self.assertEqual(
+            component_model["properties"]["componentType"], "pubsub.kafka")
         self.assertEqual(component_model["properties"]["version"], "v2")
         self.assertEqual(component_model["properties"]["ignoreErrors"], True)
         self.assertEqual(len(component_model["properties"]["metadata"]), 2)

@@ -18,6 +18,7 @@ class AKSIdentityType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     SYSTEM_ASSIGNED = "SystemAssigned"
     USER_ASSIGNED = "UserAssigned"
 
+
 class ComplianceStateType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The compliance state of the configuration.
     """
@@ -28,6 +29,7 @@ class ComplianceStateType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     INSTALLED = "Installed"
     FAILED = "Failed"
 
+
 class CreatedByType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
     """
@@ -36,6 +38,7 @@ class CreatedByType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     APPLICATION = "Application"
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
+
 
 class FluxComplianceState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Compliance state of the cluster object.
@@ -47,6 +50,7 @@ class FluxComplianceState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     SUSPENDED = "Suspended"
     UNKNOWN = "Unknown"
 
+
 class KustomizationValidationType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Specify whether to validate the Kubernetes objects referenced in the Kustomization before
     applying them to the cluster.
@@ -56,6 +60,7 @@ class KustomizationValidationType(with_metaclass(CaseInsensitiveEnumMeta, str, E
     CLIENT = "client"
     SERVER = "server"
 
+
 class LevelType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Level of the status.
     """
@@ -63,6 +68,7 @@ class LevelType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     ERROR = "Error"
     WARNING = "Warning"
     INFORMATION = "Information"
+
 
 class MessageLevelType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Level of the message.
@@ -72,6 +78,7 @@ class MessageLevelType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     WARNING = "Warning"
     INFORMATION = "Information"
 
+
 class OperatorScopeType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Scope at which the operator will be installed.
     """
@@ -79,11 +86,13 @@ class OperatorScopeType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     CLUSTER = "cluster"
     NAMESPACE = "namespace"
 
+
 class OperatorType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Type of the operator
     """
 
     FLUX = "Flux"
+
 
 class ProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioning state of the resource.
@@ -96,6 +105,7 @@ class ProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     UPDATING = "Updating"
     DELETING = "Deleting"
 
+
 class ProvisioningStateType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioning state of the resource provider.
     """
@@ -106,12 +116,14 @@ class ProvisioningStateType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
 
+
 class ScopeType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Scope at which the configuration will be installed.
     """
 
     CLUSTER = "cluster"
     NAMESPACE = "namespace"
+
 
 class SourceKindType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Source Kind to pull the configuration data from.

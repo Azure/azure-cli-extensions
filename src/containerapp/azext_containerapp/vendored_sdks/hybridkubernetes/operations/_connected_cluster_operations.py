@@ -23,7 +23,9 @@ if TYPE_CHECKING:
     from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
 
     T = TypeVar('T')
-    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+    ClsType = Optional[Callable[[
+        PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+
 
 class ConnectedClusterOperations(object):
     """ConnectedClusterOperations operations.
@@ -55,7 +57,8 @@ class ConnectedClusterOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.ConnectedCluster"
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ConnectedCluster"]
+        # type: ClsType["_models.ConnectedCluster"]
+        cls = kwargs.pop('cls', None)
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -75,36 +78,48 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Content-Type'] = self._serialize.header(
+            "content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(connected_cluster, 'ConnectedCluster')
+        body_content = self._serialize.body(
+            connected_cluster, 'ConnectedCluster')
         body_content_kwargs['content'] = body_content
-        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        request = self._client.put(
+            url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse, response)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('ConnectedCluster', pipeline_response)
+            deserialized = self._deserialize(
+                'ConnectedCluster', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('ConnectedCluster', pipeline_response)
+            deserialized = self._deserialize(
+                'ConnectedCluster', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}  # type: ignore
+    _create_initial.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}  # type: ignore
 
     def begin_create(
         self,
@@ -135,19 +150,22 @@ class ConnectedClusterOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~connected_kubernetes_client.models.ConnectedCluster]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ConnectedCluster"]
+        polling = kwargs.pop(
+            'polling', True)  # type: Union[bool, PollingMethod]
+        # type: ClsType["_models.ConnectedCluster"]
+        cls = kwargs.pop('cls', None)
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
         )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        cont_token = kwargs.pop('continuation_token',
+                                None)  # type: Optional[str]
         if cont_token is None:
             raw_result = self._create_initial(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
                 connected_cluster=connected_cluster,
-                cls=lambda x,y,z: x,
+                cls=lambda x, y, z: x,
                 **kwargs
             )
 
@@ -155,7 +173,8 @@ class ConnectedClusterOperations(object):
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('ConnectedCluster', pipeline_response)
+            deserialized = self._deserialize(
+                'ConnectedCluster', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, {})
@@ -167,9 +186,13 @@ class ConnectedClusterOperations(object):
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay, lro_options={
+                                        'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         if cont_token:
             return LROPoller.from_continuation_token(
                 polling_method=polling_method,
@@ -179,7 +202,8 @@ class ConnectedClusterOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}  # type: ignore
+    begin_create.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}  # type: ignore
 
     def update(
         self,
@@ -204,7 +228,8 @@ class ConnectedClusterOperations(object):
         :rtype: ~connected_kubernetes_client.models.ConnectedCluster
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ConnectedCluster"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["_models.ConnectedCluster"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -224,24 +249,33 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Content-Type'] = self._serialize.header(
+            "content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(connected_cluster_patch, 'ConnectedClusterPatch')
+        body_content = self._serialize.body(
+            connected_cluster_patch, 'ConnectedClusterPatch')
         body_content_kwargs['content'] = body_content
-        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        request = self._client.patch(
+            url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse, response)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('ConnectedCluster', pipeline_response)
 
@@ -249,7 +283,8 @@ class ConnectedClusterOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}  # type: ignore
+    update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}  # type: ignore
 
     def get(
         self,
@@ -272,7 +307,8 @@ class ConnectedClusterOperations(object):
         :rtype: ~connected_kubernetes_client.models.ConnectedCluster
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ConnectedCluster"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["_models.ConnectedCluster"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -291,20 +327,26 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse, response)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('ConnectedCluster', pipeline_response)
 
@@ -312,7 +354,9 @@ class ConnectedClusterOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}  # type: ignore
+    # type: ignore
+    get.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}
 
     def _delete_initial(
         self,
@@ -340,25 +384,32 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202, 204]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse, response)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}  # type: ignore
+    _delete_initial.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}  # type: ignore
 
     def begin_delete(
         self,
@@ -385,18 +436,20 @@ class ConnectedClusterOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
+        polling = kwargs.pop(
+            'polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
         )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        cont_token = kwargs.pop('continuation_token',
+                                None)  # type: Optional[str]
         if cont_token is None:
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
-                cls=lambda x,y,z: x,
+                cls=lambda x, y, z: x,
                 **kwargs
             )
 
@@ -413,9 +466,13 @@ class ConnectedClusterOperations(object):
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'location'}, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay, lro_options={
+                                        'final-state-via': 'location'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         if cont_token:
             return LROPoller.from_continuation_token(
                 polling_method=polling_method,
@@ -425,7 +482,8 @@ class ConnectedClusterOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}  # type: ignore
+    begin_delete.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}  # type: ignore
 
     def list_cluster_user_credential(
         self,
@@ -451,7 +509,8 @@ class ConnectedClusterOperations(object):
         :rtype: ~connected_kubernetes_client.models.CredentialResults
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CredentialResults"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["_models.CredentialResults"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -471,32 +530,43 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Content-Type'] = self._serialize.header(
+            "content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(properties, 'ListClusterUserCredentialProperties')
+        body_content = self._serialize.body(
+            properties, 'ListClusterUserCredentialProperties')
         body_content_kwargs['content'] = body_content
-        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        request = self._client.post(
+            url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse, response)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('CredentialResults', pipeline_response)
+        deserialized = self._deserialize(
+            'CredentialResults', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list_cluster_user_credential.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}/listClusterUserCredential'}  # type: ignore
+    list_cluster_user_credential.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}/listClusterUserCredential'}  # type: ignore
 
     def list_by_resource_group(
         self,
@@ -515,7 +585,8 @@ class ConnectedClusterOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~connected_kubernetes_client.models.ConnectedClusterList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ConnectedClusterList"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["_models.ConnectedClusterList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -526,11 +597,13 @@ class ConnectedClusterOperations(object):
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+            header_parameters['Accept'] = self._serialize.header(
+                "accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
-                url = self.list_by_resource_group.metadata['url']  # type: ignore
+                # type: ignore
+                url = self.list_by_resource_group.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
@@ -538,17 +611,21 @@ class ConnectedClusterOperations(object):
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query(
+                    "api_version", api_version, 'str')
 
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('ConnectedClusterList', pipeline_response)
+            deserialized = self._deserialize(
+                'ConnectedClusterList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -557,20 +634,25 @@ class ConnectedClusterOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(
+                request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse, response)
+                map_error(status_code=response.status_code,
+                          response=response, error_map=error_map)
+                raise HttpResponseError(
+                    response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters'}  # type: ignore
+    list_by_resource_group.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters'}  # type: ignore
 
     def list_by_subscription(
         self,
@@ -586,7 +668,8 @@ class ConnectedClusterOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~connected_kubernetes_client.models.ConnectedClusterList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ConnectedClusterList"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["_models.ConnectedClusterList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -597,7 +680,8 @@ class ConnectedClusterOperations(object):
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+            header_parameters['Accept'] = self._serialize.header(
+                "accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
@@ -608,17 +692,21 @@ class ConnectedClusterOperations(object):
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query(
+                    "api_version", api_version, 'str')
 
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('ConnectedClusterList', pipeline_response)
+            deserialized = self._deserialize(
+                'ConnectedClusterList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -627,17 +715,22 @@ class ConnectedClusterOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(
+                request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse, response)
+                map_error(status_code=response.status_code,
+                          response=response, error_map=error_map)
+                raise HttpResponseError(
+                    response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Kubernetes/connectedClusters'}  # type: ignore
+    list_by_subscription.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Kubernetes/connectedClusters'}  # type: ignore

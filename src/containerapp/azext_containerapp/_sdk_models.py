@@ -18,11 +18,13 @@ from . import _sdk_models, _sdk_enums as _models
 if sys.version_info >= (3, 9):
     from collections.abc import MutableMapping
 else:
-    from typing import MutableMapping  # type: ignore  # pylint: disable=ungrouped-imports
+    # type: ignore  # pylint: disable=ungrouped-imports
+    from typing import MutableMapping
 if sys.version_info >= (3, 8):
     from typing import Literal  # pylint: disable=no-name-in-module, ungrouped-imports
 else:
-    from typing_extensions import Literal  # type: ignore  # pylint: disable=ungrouped-imports
+    # type: ignore  # pylint: disable=ungrouped-imports
+    from typing_extensions import Literal
 
 JSON = MutableMapping[str, Any]  # pylint: disable=unsubscriptable-object
 
@@ -1999,7 +2001,8 @@ class CertificateProperties(_serialization.Model):  # pylint: disable=too-many-i
         *,
         password: Optional[str] = None,
         value: Optional[bytes] = None,
-        certificate_type: Optional[Union[str, "_models.CertificateType"]] = None,
+        certificate_type: Optional[Union[str,
+                                         "_models.CertificateType"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -2075,7 +2078,8 @@ class CheckNameAvailabilityResponse(_serialization.Model):
         self,
         *,
         name_available: Optional[bool] = None,
-        reason: Optional[Union[str, "_models.CheckNameAvailabilityReason"]] = None,
+        reason: Optional[Union[str,
+                               "_models.CheckNameAvailabilityReason"]] = None,
         message: Optional[str] = None,
         **kwargs: Any
     ) -> None:
@@ -2211,7 +2215,8 @@ class Configuration(_serialization.Model):
         self,
         *,
         secrets: Optional[List["_models.Secret"]] = None,
-        active_revisions_mode: Union[str, "_models.ActiveRevisionsMode"] = "Single",
+        active_revisions_mode: Union[str,
+                                     "_models.ActiveRevisionsMode"] = "Single",
         ingress: Optional["_models.Ingress"] = None,
         registries: Optional[List["_models.RegistryCredentials"]] = None,
         dapr: Optional["_models.Dapr"] = None,
@@ -3260,7 +3265,8 @@ class CookieExpiration(_serialization.Model):
     def __init__(
         self,
         *,
-        convention: Optional[Union[str, "_models.CookieExpirationConvention"]] = None,
+        convention: Optional[Union[str,
+                                   "_models.CookieExpirationConvention"]] = None,
         time_to_expiration: Optional[str] = None,
         **kwargs: Any
     ) -> None:
@@ -5614,7 +5620,8 @@ class ForwardProxy(_serialization.Model):
     def __init__(
         self,
         *,
-        convention: Optional[Union[str, "_models.ForwardProxyConvention"]] = None,
+        convention: Optional[Union[str,
+                                   "_models.ForwardProxyConvention"]] = None,
         custom_host_header_name: Optional[str] = None,
         custom_proto_header_name: Optional[str] = None,
         **kwargs: Any
@@ -5786,7 +5793,8 @@ class GlobalValidation(_serialization.Model):
     def __init__(
         self,
         *,
-        unauthenticated_client_action: Optional[Union[str, "_models.UnauthenticatedClientActionV2"]] = None,
+        unauthenticated_client_action: Optional[Union[str,
+                                                      "_models.UnauthenticatedClientActionV2"]] = None,
         redirect_to_provider: Optional[str] = None,
         excluded_paths: Optional[List[str]] = None,
         **kwargs: Any
@@ -6195,7 +6203,8 @@ class IdentityProviders(_serialization.Model):
         twitter: Optional["_models.Twitter"] = None,
         apple: Optional["_models.Apple"] = None,
         azure_static_web_apps: Optional["_models.AzureStaticWebApps"] = None,
-        custom_open_id_connect_providers: Optional[Dict[str, "_models.CustomOpenIdConnectProvider"]] = None,
+        custom_open_id_connect_providers: Optional[Dict[str,
+                                                        "_models.CustomOpenIdConnectProvider"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -6304,7 +6313,8 @@ class Ingress(_serialization.Model):  # pylint: disable=too-many-instance-attrib
         allow_insecure: bool = False,
         ip_security_restrictions: Optional[List["_models.IpSecurityRestrictionRule"]] = None,
         sticky_sessions: Optional["_models.IngressStickySessions"] = None,
-        client_certificate_mode: Optional[Union[str, "_models.IngressClientCertificateMode"]] = None,
+        client_certificate_mode: Optional[Union[str,
+                                                "_models.IngressClientCertificateMode"]] = None,
         cors_policy: Optional["_models.CorsPolicy"] = None,
         additional_port_mappings: Optional[List["_models.IngressPortMapping"]] = None,
         **kwargs: Any
@@ -7932,7 +7942,8 @@ class ManagedCertificateProperties(_serialization.Model):
         self,
         *,
         subject_name: Optional[str] = None,
-        domain_control_validation: Optional[Union[str, "_models.ManagedCertificateDomainControlValidation"]] = None,
+        domain_control_validation: Optional[Union[str,
+                                                  "_models.ManagedCertificateDomainControlValidation"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -8352,7 +8363,8 @@ class ManagedServiceIdentity(_serialization.Model):
         self,
         *,
         type: Union[str, "_models.ManagedServiceIdentityType"],
-        user_assigned_identities: Optional[Dict[str, "_models.UserAssignedIdentity"]] = None,
+        user_assigned_identities: Optional[Dict[str,
+                                                "_models.UserAssignedIdentity"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -9669,7 +9681,8 @@ class SystemData(_serialization.Model):
         created_by_type: Optional[Union[str, "_models.CreatedByType"]] = None,
         created_at: Optional[datetime.datetime] = None,
         last_modified_by: Optional[str] = None,
-        last_modified_by_type: Optional[Union[str, "_models.CreatedByType"]] = None,
+        last_modified_by_type: Optional[Union[str,
+                                              "_models.CreatedByType"]] = None,
         last_modified_at: Optional[datetime.datetime] = None,
         **kwargs: Any
     ) -> None:

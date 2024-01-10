@@ -24,10 +24,12 @@ from .. import models as _models
 from .._vendor import _convert_request, _format_url_section
 T = TypeVar('T')
 JSONType = Any
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[
+    PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
 _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
+
 
 def build_get_request(
     subscription_id: str,
@@ -41,7 +43,8 @@ def build_get_request(
     api_version = "2022-03-01"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/{sourceControlConfigurationName}')
+    url = kwargs.pop(
+        "template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/{sourceControlConfigurationName}')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
@@ -55,7 +58,8 @@ def build_get_request(
 
     # Construct parameters
     query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+    query_parameters['api-version'] = _SERIALIZER.query(
+        "api_version", api_version, 'str')
 
     # Construct headers
     header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
@@ -87,7 +91,8 @@ def build_create_or_update_request(
     api_version = "2022-03-01"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/{sourceControlConfigurationName}')
+    url = kwargs.pop(
+        "template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/{sourceControlConfigurationName}')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
@@ -101,12 +106,14 @@ def build_create_or_update_request(
 
     # Construct parameters
     query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+    query_parameters['api-version'] = _SERIALIZER.query(
+        "api_version", api_version, 'str')
 
     # Construct headers
     header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
     if content_type is not None:
-        header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
+        header_parameters['Content-Type'] = _SERIALIZER.header(
+            "content_type", content_type, 'str')
     header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
 
     return HttpRequest(
@@ -132,7 +139,8 @@ def build_delete_request_initial(
     api_version = "2022-03-01"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/{sourceControlConfigurationName}')
+    url = kwargs.pop(
+        "template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/{sourceControlConfigurationName}')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
@@ -146,7 +154,8 @@ def build_delete_request_initial(
 
     # Construct parameters
     query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+    query_parameters['api-version'] = _SERIALIZER.query(
+        "api_version", api_version, 'str')
 
     # Construct headers
     header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
@@ -172,7 +181,8 @@ def build_list_request(
     api_version = "2022-03-01"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations')
+    url = kwargs.pop(
+        "template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
@@ -185,7 +195,8 @@ def build_list_request(
 
     # Construct parameters
     query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+    query_parameters['api-version'] = _SERIALIZER.query(
+        "api_version", api_version, 'str')
 
     # Construct headers
     header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
@@ -198,6 +209,7 @@ def build_list_request(
         headers=header_parameters,
         **kwargs
     )
+
 
 class SourceControlConfigurationsOperations(object):
     """SourceControlConfigurationsOperations operations.
@@ -250,13 +262,13 @@ class SourceControlConfigurationsOperations(object):
         :rtype: ~azure.mgmt.kubernetesconfiguration.v2022_03_01.models.SourceControlConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.SourceControlConfiguration"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["_models.SourceControlConfiguration"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        
         request = build_get_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
@@ -269,15 +281,20 @@ class SourceControlConfigurationsOperations(object):
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('SourceControlConfiguration', pipeline_response)
+        deserialized = self._deserialize(
+            'SourceControlConfiguration', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -285,7 +302,6 @@ class SourceControlConfigurationsOperations(object):
         return deserialized
 
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/{sourceControlConfigurationName}'}  # type: ignore
-
 
     @distributed_trace
     def create_or_update(
@@ -320,15 +336,18 @@ class SourceControlConfigurationsOperations(object):
         :rtype: ~azure.mgmt.kubernetesconfiguration.v2022_03_01.models.SourceControlConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.SourceControlConfiguration"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["_models.SourceControlConfiguration"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+        content_type = kwargs.pop(
+            'content_type', "application/json")  # type: Optional[str]
 
-        _json = self._serialize.body(source_control_configuration, 'SourceControlConfiguration')
+        _json = self._serialize.body(
+            source_control_configuration, 'SourceControlConfiguration')
 
         request = build_create_or_update_request(
             subscription_id=self._config.subscription_id,
@@ -344,27 +363,33 @@ class SourceControlConfigurationsOperations(object):
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('SourceControlConfiguration', pipeline_response)
+            deserialized = self._deserialize(
+                'SourceControlConfiguration', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('SourceControlConfiguration', pipeline_response)
+            deserialized = self._deserialize(
+                'SourceControlConfiguration', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/{sourceControlConfigurationName}'}  # type: ignore
-
+    create_or_update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/{sourceControlConfigurationName}'}  # type: ignore
 
     def _delete_initial(
         self,
@@ -381,7 +406,6 @@ class SourceControlConfigurationsOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        
         request = build_delete_request_initial(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
@@ -394,18 +418,21 @@ class SourceControlConfigurationsOperations(object):
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 204]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise HttpResponseError(
+                response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/{sourceControlConfigurationName}'}  # type: ignore
-
+    _delete_initial.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/{sourceControlConfigurationName}'}  # type: ignore
 
     @distributed_trace
     def begin_delete(
@@ -444,13 +471,15 @@ class SourceControlConfigurationsOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, azure.core.polling.PollingMethod]
+        polling = kwargs.pop(
+            'polling', True)  # type: Union[bool, azure.core.polling.PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
         )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        cont_token = kwargs.pop('continuation_token',
+                                None)  # type: Optional[str]
         if cont_token is None:
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
@@ -458,7 +487,7 @@ class SourceControlConfigurationsOperations(object):
                 cluster_resource_name=cluster_resource_name,
                 cluster_name=cluster_name,
                 source_control_configuration_name=source_control_configuration_name,
-                cls=lambda x,y,z: x,
+                cls=lambda x, y, z: x,
                 **kwargs
             )
         kwargs.pop('error_map', None)
@@ -467,10 +496,12 @@ class SourceControlConfigurationsOperations(object):
             if cls:
                 return cls(pipeline_response, None, {})
 
-
-        if polling is True: polling_method = ARMPolling(lro_delay, **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay, **kwargs)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         if cont_token:
             return LROPoller.from_continuation_token(
                 polling_method=polling_method,
@@ -511,14 +542,16 @@ class SourceControlConfigurationsOperations(object):
          ~azure.core.paging.ItemPaged[~azure.mgmt.kubernetesconfiguration.v2022_03_01.models.SourceControlConfigurationList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.SourceControlConfigurationList"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["_models.SourceControlConfigurationList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+
         def prepare_request(next_link=None):
             if not next_link:
-                
+
                 request = build_list_request(
                     subscription_id=self._config.subscription_id,
                     resource_group_name=resource_group_name,
@@ -531,7 +564,7 @@ class SourceControlConfigurationsOperations(object):
                 request.url = self._client.format_url(request.url)
 
             else:
-                
+
                 request = build_list_request(
                     subscription_id=self._config.subscription_id,
                     resource_group_name=resource_group_name,
@@ -546,7 +579,8 @@ class SourceControlConfigurationsOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("SourceControlConfigurationList", pipeline_response)
+            deserialized = self._deserialize(
+                "SourceControlConfigurationList", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -555,16 +589,19 @@ class SourceControlConfigurationsOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(
+                request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+                map_error(status_code=response.status_code,
+                          response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(
+                    response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
-
 
         return ItemPaged(
             get_next, extract_data

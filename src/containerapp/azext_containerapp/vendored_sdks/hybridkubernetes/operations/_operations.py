@@ -21,7 +21,9 @@ if TYPE_CHECKING:
     from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
 
     T = TypeVar('T')
-    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+    ClsType = Optional[Callable[[
+        PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+
 
 class Operations(object):
     """Operations operations.
@@ -68,24 +70,29 @@ class Operations(object):
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+            header_parameters['Accept'] = self._serialize.header(
+                "accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
                 url = self.get.metadata['url']  # type: ignore
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query(
+                    "api_version", api_version, 'str')
 
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('OperationList', pipeline_response)
+            deserialized = self._deserialize(
+                'OperationList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -94,17 +101,22 @@ class Operations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(
+                request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse, response)
+                map_error(status_code=response.status_code,
+                          response=response, error_map=error_map)
+                raise HttpResponseError(
+                    response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(
             get_next, extract_data
         )
-    get.metadata = {'url': '/providers/Microsoft.Kubernetes/operations'}  # type: ignore
+    # type: ignore
+    get.metadata = {'url': '/providers/Microsoft.Kubernetes/operations'}

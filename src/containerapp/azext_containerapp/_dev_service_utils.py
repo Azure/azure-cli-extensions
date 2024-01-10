@@ -51,11 +51,14 @@ class DevServiceUtils:
             pass
 
         if not containerapp_def:
-            raise ResourceNotFoundError("The service '{}' does not exist".format(service_name))
+            raise ResourceNotFoundError(
+                "The service '{}' does not exist".format(service_name))
         if containerapp_def["properties"]["configuration"]["service"] is None:
-            raise ResourceNotFoundError("The service '{}' of type {} does not exist".format(service_name, service_type))
+            raise ResourceNotFoundError(
+                "The service '{}' of type {} does not exist".format(service_name, service_type))
         if containerapp_def["properties"]["configuration"]["service"]["type"] != service_type:
-            raise ResourceNotFoundError("The service '{}' of type {} does not exist".format(service_name, service_type))
+            raise ResourceNotFoundError(
+                "The service '{}' of type {} does not exist".format(service_name, service_type))
 
         try:
             return ContainerAppClient.delete(cmd=cmd, name=service_name, resource_group_name=resource_group_name,

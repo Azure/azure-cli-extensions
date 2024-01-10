@@ -70,7 +70,8 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(
+            self.ctx.vars.instance, client_flatten=True)
         return result
 
     class VirtualNetworksGet(AAZHttpOperation):
@@ -78,7 +79,8 @@ class Show(AAZCommand):
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
+            session = self.client.send_request(
+                request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
 
@@ -163,7 +165,8 @@ class Show(AAZCommand):
             _schema_on_200.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
             )
-            _ShowHelper._build_schema_extended_location_read(_schema_on_200.extended_location)
+            _ShowHelper._build_schema_extended_location_read(
+                _schema_on_200.extended_location)
             _schema_on_200.id = AAZStrType()
             _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
@@ -181,7 +184,8 @@ class Show(AAZCommand):
             properties.address_space = AAZObjectType(
                 serialized_name="addressSpace",
             )
-            _ShowHelper._build_schema_address_space_read(properties.address_space)
+            _ShowHelper._build_schema_address_space_read(
+                properties.address_space)
             properties.bgp_communities = AAZObjectType(
                 serialized_name="bgpCommunities",
             )
@@ -292,18 +296,21 @@ class Show(AAZCommand):
             properties.remote_address_space = AAZObjectType(
                 serialized_name="remoteAddressSpace",
             )
-            _ShowHelper._build_schema_address_space_read(properties.remote_address_space)
+            _ShowHelper._build_schema_address_space_read(
+                properties.remote_address_space)
             properties.remote_bgp_communities = AAZObjectType(
                 serialized_name="remoteBgpCommunities",
             )
             properties.remote_virtual_network = AAZObjectType(
                 serialized_name="remoteVirtualNetwork",
             )
-            _ShowHelper._build_schema_sub_resource_read(properties.remote_virtual_network)
+            _ShowHelper._build_schema_sub_resource_read(
+                properties.remote_virtual_network)
             properties.remote_virtual_network_address_space = AAZObjectType(
                 serialized_name="remoteVirtualNetworkAddressSpace",
             )
-            _ShowHelper._build_schema_address_space_read(properties.remote_virtual_network_address_space)
+            _ShowHelper._build_schema_address_space_read(
+                properties.remote_virtual_network_address_space)
             properties.remote_virtual_network_encryption = AAZObjectType(
                 serialized_name="remoteVirtualNetworkEncryption",
             )
@@ -687,11 +694,13 @@ class _ShowHelper:
 
         backend_ip_configurations = _schema_network_interface_ip_configuration_read.properties.application_gateway_backend_address_pools.Element.properties.backend_ip_configurations
         backend_ip_configurations.Element = AAZObjectType()
-        cls._build_schema_network_interface_ip_configuration_read(backend_ip_configurations.Element)
+        cls._build_schema_network_interface_ip_configuration_read(
+            backend_ip_configurations.Element)
 
         application_security_groups = _schema_network_interface_ip_configuration_read.properties.application_security_groups
         application_security_groups.Element = AAZObjectType()
-        cls._build_schema_application_security_group_read(application_security_groups.Element)
+        cls._build_schema_application_security_group_read(
+            application_security_groups.Element)
 
         load_balancer_backend_address_pools = _schema_network_interface_ip_configuration_read.properties.load_balancer_backend_address_pools
         load_balancer_backend_address_pools.Element = AAZObjectType()
@@ -747,7 +756,8 @@ class _ShowHelper:
 
         backend_ip_configurations = _schema_network_interface_ip_configuration_read.properties.load_balancer_backend_address_pools.Element.properties.backend_ip_configurations
         backend_ip_configurations.Element = AAZObjectType()
-        cls._build_schema_network_interface_ip_configuration_read(backend_ip_configurations.Element)
+        cls._build_schema_network_interface_ip_configuration_read(
+            backend_ip_configurations.Element)
 
         inbound_nat_rules = _schema_network_interface_ip_configuration_read.properties.load_balancer_backend_address_pools.Element.properties.inbound_nat_rules
         inbound_nat_rules.Element = AAZObjectType()
@@ -776,11 +786,13 @@ class _ShowHelper:
         properties.load_balancer_frontend_ip_configuration = AAZObjectType(
             serialized_name="loadBalancerFrontendIPConfiguration",
         )
-        cls._build_schema_sub_resource_read(properties.load_balancer_frontend_ip_configuration)
+        cls._build_schema_sub_resource_read(
+            properties.load_balancer_frontend_ip_configuration)
         properties.network_interface_ip_configuration = AAZObjectType(
             serialized_name="networkInterfaceIPConfiguration",
         )
-        cls._build_schema_sub_resource_read(properties.network_interface_ip_configuration)
+        cls._build_schema_sub_resource_read(
+            properties.network_interface_ip_configuration)
         properties.subnet = AAZObjectType()
         cls._build_schema_sub_resource_read(properties.subnet)
         properties.virtual_network = AAZObjectType(
@@ -843,7 +855,8 @@ class _ShowHelper:
         properties.backend_ip_configuration = AAZObjectType(
             serialized_name="backendIPConfiguration",
         )
-        cls._build_schema_network_interface_ip_configuration_read(properties.backend_ip_configuration)
+        cls._build_schema_network_interface_ip_configuration_read(
+            properties.backend_ip_configuration)
         properties.backend_port = AAZIntType(
             serialized_name="backendPort",
         )
@@ -856,7 +869,8 @@ class _ShowHelper:
         properties.frontend_ip_configuration = AAZObjectType(
             serialized_name="frontendIPConfiguration",
         )
-        cls._build_schema_sub_resource_read(properties.frontend_ip_configuration)
+        cls._build_schema_sub_resource_read(
+            properties.frontend_ip_configuration)
         properties.frontend_port = AAZIntType(
             serialized_name="frontendPort",
         )
@@ -893,7 +907,8 @@ class _ShowHelper:
 
         virtual_network_taps = _schema_network_interface_ip_configuration_read.properties.virtual_network_taps
         virtual_network_taps.Element = AAZObjectType()
-        cls._build_schema_virtual_network_tap_read(virtual_network_taps.Element)
+        cls._build_schema_virtual_network_tap_read(
+            virtual_network_taps.Element)
 
         _schema.etag = cls._schema_network_interface_ip_configuration_read.etag
         _schema.id = cls._schema_network_interface_ip_configuration_read.id
@@ -936,7 +951,8 @@ class _ShowHelper:
         properties.virtual_network_tap = AAZObjectType(
             serialized_name="virtualNetworkTap",
         )
-        cls._build_schema_virtual_network_tap_read(properties.virtual_network_tap)
+        cls._build_schema_virtual_network_tap_read(
+            properties.virtual_network_tap)
 
         _schema.etag = cls._schema_network_interface_tap_configuration_read.etag
         _schema.id = cls._schema_network_interface_tap_configuration_read.id
@@ -968,7 +984,8 @@ class _ShowHelper:
         network_interface_read.extended_location = AAZObjectType(
             serialized_name="extendedLocation",
         )
-        cls._build_schema_extended_location_read(network_interface_read.extended_location)
+        cls._build_schema_extended_location_read(
+            network_interface_read.extended_location)
         network_interface_read.id = AAZStrType()
         network_interface_read.location = AAZStrType()
         network_interface_read.name = AAZStrType(
@@ -1016,7 +1033,8 @@ class _ShowHelper:
         properties.network_security_group = AAZObjectType(
             serialized_name="networkSecurityGroup",
         )
-        cls._build_schema_network_security_group_read(properties.network_security_group)
+        cls._build_schema_network_security_group_read(
+            properties.network_security_group)
         properties.nic_type = AAZStrType(
             serialized_name="nicType",
         )
@@ -1085,7 +1103,8 @@ class _ShowHelper:
 
         ip_configurations = _schema_network_interface_read.properties.ip_configurations
         ip_configurations.Element = AAZObjectType()
-        cls._build_schema_network_interface_ip_configuration_read(ip_configurations.Element)
+        cls._build_schema_network_interface_ip_configuration_read(
+            ip_configurations.Element)
 
         private_link_service = _schema_network_interface_read.properties.private_link_service
         private_link_service.etag = AAZStrType(
@@ -1094,7 +1113,8 @@ class _ShowHelper:
         private_link_service.extended_location = AAZObjectType(
             serialized_name="extendedLocation",
         )
-        cls._build_schema_extended_location_read(private_link_service.extended_location)
+        cls._build_schema_extended_location_read(
+            private_link_service.extended_location)
         private_link_service.id = AAZStrType()
         private_link_service.location = AAZStrType()
         private_link_service.name = AAZStrType(
@@ -1184,7 +1204,8 @@ class _ShowHelper:
 
         load_balancer_frontend_ip_configurations = _schema_network_interface_read.properties.private_link_service.properties.load_balancer_frontend_ip_configurations
         load_balancer_frontend_ip_configurations.Element = AAZObjectType()
-        cls._build_schema_frontend_ip_configuration_read(load_balancer_frontend_ip_configurations.Element)
+        cls._build_schema_frontend_ip_configuration_read(
+            load_balancer_frontend_ip_configurations.Element)
 
         network_interfaces = _schema_network_interface_read.properties.private_link_service.properties.network_interfaces
         network_interfaces.Element = AAZObjectType()
@@ -1218,7 +1239,8 @@ class _ShowHelper:
         properties.private_link_service_connection_state = AAZObjectType(
             serialized_name="privateLinkServiceConnectionState",
         )
-        cls._build_schema_private_link_service_connection_state_read(properties.private_link_service_connection_state)
+        cls._build_schema_private_link_service_connection_state_read(
+            properties.private_link_service_connection_state)
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
@@ -1235,7 +1257,8 @@ class _ShowHelper:
 
         tap_configurations = _schema_network_interface_read.properties.tap_configurations
         tap_configurations.Element = AAZObjectType()
-        cls._build_schema_network_interface_tap_configuration_read(tap_configurations.Element)
+        cls._build_schema_network_interface_tap_configuration_read(
+            tap_configurations.Element)
 
         tags = _schema_network_interface_read.tags
         tags.Element = AAZStrType()
@@ -1441,7 +1464,8 @@ class _ShowHelper:
         private_endpoint_read.extended_location = AAZObjectType(
             serialized_name="extendedLocation",
         )
-        cls._build_schema_extended_location_read(private_endpoint_read.extended_location)
+        cls._build_schema_extended_location_read(
+            private_endpoint_read.extended_location)
         private_endpoint_read.id = AAZStrType()
         private_endpoint_read.location = AAZStrType()
         private_endpoint_read.name = AAZStrType(
@@ -1487,7 +1511,8 @@ class _ShowHelper:
 
         application_security_groups = _schema_private_endpoint_read.properties.application_security_groups
         application_security_groups.Element = AAZObjectType()
-        cls._build_schema_application_security_group_read(application_security_groups.Element)
+        cls._build_schema_application_security_group_read(
+            application_security_groups.Element)
 
         custom_dns_configs = _schema_private_endpoint_read.properties.custom_dns_configs
         custom_dns_configs.Element = AAZObjectType()
@@ -1529,7 +1554,8 @@ class _ShowHelper:
 
         manual_private_link_service_connections = _schema_private_endpoint_read.properties.manual_private_link_service_connections
         manual_private_link_service_connections.Element = AAZObjectType()
-        cls._build_schema_private_link_service_connection_read(manual_private_link_service_connections.Element)
+        cls._build_schema_private_link_service_connection_read(
+            manual_private_link_service_connections.Element)
 
         network_interfaces = _schema_private_endpoint_read.properties.network_interfaces
         network_interfaces.Element = AAZObjectType()
@@ -1537,7 +1563,8 @@ class _ShowHelper:
 
         private_link_service_connections = _schema_private_endpoint_read.properties.private_link_service_connections
         private_link_service_connections.Element = AAZObjectType()
-        cls._build_schema_private_link_service_connection_read(private_link_service_connections.Element)
+        cls._build_schema_private_link_service_connection_read(
+            private_link_service_connections.Element)
 
         tags = _schema_private_endpoint_read.tags
         tags.Element = AAZStrType()
@@ -1608,7 +1635,8 @@ class _ShowHelper:
         properties.private_link_service_connection_state = AAZObjectType(
             serialized_name="privateLinkServiceConnectionState",
         )
-        cls._build_schema_private_link_service_connection_state_read(properties.private_link_service_connection_state)
+        cls._build_schema_private_link_service_connection_state_read(
+            properties.private_link_service_connection_state)
         properties.private_link_service_id = AAZStrType(
             serialized_name="privateLinkServiceId",
         )
@@ -1655,7 +1683,8 @@ class _ShowHelper:
         public_ip_address_read.extended_location = AAZObjectType(
             serialized_name="extendedLocation",
         )
-        cls._build_schema_extended_location_read(public_ip_address_read.extended_location)
+        cls._build_schema_extended_location_read(
+            public_ip_address_read.extended_location)
         public_ip_address_read.id = AAZStrType()
         public_ip_address_read.location = AAZStrType()
         public_ip_address_read.name = AAZStrType(
@@ -1697,7 +1726,8 @@ class _ShowHelper:
         properties.linked_public_ip_address = AAZObjectType(
             serialized_name="linkedPublicIPAddress",
         )
-        cls._build_schema_public_ip_address_read(properties.linked_public_ip_address)
+        cls._build_schema_public_ip_address_read(
+            properties.linked_public_ip_address)
         properties.migration_phase = AAZStrType(
             serialized_name="migrationPhase",
         )
@@ -1725,7 +1755,8 @@ class _ShowHelper:
         properties.service_public_ip_address = AAZObjectType(
             serialized_name="servicePublicIPAddress",
         )
-        cls._build_schema_public_ip_address_read(properties.service_public_ip_address)
+        cls._build_schema_public_ip_address_read(
+            properties.service_public_ip_address)
 
         ddos_settings = _schema_public_ip_address_read.properties.ddos_settings
         ddos_settings.ddos_custom_policy = AAZObjectType(
@@ -1917,7 +1948,8 @@ class _ShowHelper:
 
         destination_application_security_groups = _schema_security_rule_read.properties.destination_application_security_groups
         destination_application_security_groups.Element = AAZObjectType()
-        cls._build_schema_application_security_group_read(destination_application_security_groups.Element)
+        cls._build_schema_application_security_group_read(
+            destination_application_security_groups.Element)
 
         destination_port_ranges = _schema_security_rule_read.properties.destination_port_ranges
         destination_port_ranges.Element = AAZStrType()
@@ -1927,7 +1959,8 @@ class _ShowHelper:
 
         source_application_security_groups = _schema_security_rule_read.properties.source_application_security_groups
         source_application_security_groups.Element = AAZObjectType()
-        cls._build_schema_application_security_group_read(source_application_security_groups.Element)
+        cls._build_schema_application_security_group_read(
+            source_application_security_groups.Element)
 
         source_port_ranges = _schema_security_rule_read.properties.source_port_ranges
         source_port_ranges.Element = AAZStrType()
@@ -2007,7 +2040,8 @@ class _ShowHelper:
         properties.network_security_group = AAZObjectType(
             serialized_name="networkSecurityGroup",
         )
-        cls._build_schema_network_security_group_read(properties.network_security_group)
+        cls._build_schema_network_security_group_read(
+            properties.network_security_group)
         properties.private_endpoint_network_policies = AAZStrType(
             serialized_name="privateEndpointNetworkPolicies",
         )
@@ -2410,11 +2444,13 @@ class _ShowHelper:
         properties.destination_load_balancer_front_end_ip_configuration = AAZObjectType(
             serialized_name="destinationLoadBalancerFrontEndIPConfiguration",
         )
-        cls._build_schema_frontend_ip_configuration_read(properties.destination_load_balancer_front_end_ip_configuration)
+        cls._build_schema_frontend_ip_configuration_read(
+            properties.destination_load_balancer_front_end_ip_configuration)
         properties.destination_network_interface_ip_configuration = AAZObjectType(
             serialized_name="destinationNetworkInterfaceIPConfiguration",
         )
-        cls._build_schema_network_interface_ip_configuration_read(properties.destination_network_interface_ip_configuration)
+        cls._build_schema_network_interface_ip_configuration_read(
+            properties.destination_network_interface_ip_configuration)
         properties.destination_port = AAZIntType(
             serialized_name="destinationPort",
         )
@@ -2433,7 +2469,8 @@ class _ShowHelper:
 
         network_interface_tap_configurations = _schema_virtual_network_tap_read.properties.network_interface_tap_configurations
         network_interface_tap_configurations.Element = AAZObjectType()
-        cls._build_schema_network_interface_tap_configuration_read(network_interface_tap_configurations.Element)
+        cls._build_schema_network_interface_tap_configuration_read(
+            network_interface_tap_configurations.Element)
 
         tags = _schema_virtual_network_tap_read.tags
         tags.Element = AAZStrType()

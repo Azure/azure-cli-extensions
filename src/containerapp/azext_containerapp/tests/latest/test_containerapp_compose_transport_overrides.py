@@ -29,14 +29,14 @@ services:
         compose_file_name = f"{self._testMethodName}_compose.yml"
         write_test_file(compose_file_name, compose_text)
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
-        
+
         self.kwargs.update({
             'environment': env_id,
             'compose': compose_file_name,
             'transport': f"foo=http2 bar=auto",
             'second_transport': "baz=http",
         })
-        
+
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
         command_string += ' --resource-group {rg}'
@@ -44,9 +44,11 @@ services:
         command_string += ' --transport-mapping {transport}'
         command_string += ' --transport-mapping {second_transport}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`foo`].properties.configuration.ingress.transport', ["Http2"]),
+            self.check(
+                f'[?name==`foo`].properties.configuration.ingress.transport', ["Http2"]),
         ])
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -78,8 +80,10 @@ services:
         command_string += ' --transport-mapping {transport}'
         command_string += ' --transport-mapping {second_transport}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`foo`].properties.configuration.ingress.transport', ["Http2"]),
+            self.check(
+                f'[?name==`foo`].properties.configuration.ingress.transport', ["Http2"]),
         ])
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)

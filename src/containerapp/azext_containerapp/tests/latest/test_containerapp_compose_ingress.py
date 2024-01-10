@@ -40,10 +40,13 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`foo`].properties.configuration.ingress.targetPort', [80]),
-            self.check(f'[?name==`foo`].properties.configuration.ingress.external', [True]),
+            self.check(
+                f'[?name==`foo`].properties.configuration.ingress.targetPort', [80]),
+            self.check(
+                f'[?name==`foo`].properties.configuration.ingress.external', [True]),
         ])
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -72,10 +75,13 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`foo`].properties.configuration.ingress.targetPort', [3000]),
-            self.check(f'[?name==`foo`].properties.configuration.ingress.external', [False]),
+            self.check(
+                f'[?name==`foo`].properties.configuration.ingress.targetPort', [3000]),
+            self.check(
+                f'[?name==`foo`].properties.configuration.ingress.external', [False]),
         ])
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -106,10 +112,13 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`foo`].properties.configuration.ingress.targetPort', [3000]),
-            self.check(f'[?name==`foo`].properties.configuration.ingress.external', [True]),
+            self.check(
+                f'[?name==`foo`].properties.configuration.ingress.targetPort', [3000]),
+            self.check(
+                f'[?name==`foo`].properties.configuration.ingress.external', [True]),
         ])
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -139,7 +148,7 @@ services:
             'environment': env_id,
             'compose': compose_file_name,
         })
-        
+
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
         command_string += ' --resource-group {rg}'
@@ -147,6 +156,7 @@ services:
 
         # This test fails because prompts are not supported in NoTTY environments
         self.cmd(command_string, expect_failure=True)
-        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)

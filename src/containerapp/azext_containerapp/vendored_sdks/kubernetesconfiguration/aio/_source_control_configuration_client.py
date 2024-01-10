@@ -23,12 +23,14 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
     from azure.core.credentials_async import AsyncTokenCredential
 
+
 class _SDKClient(object):
     def __init__(self, *args, **kwargs):
         """This is a fake class to support current implemetation of MultiApiClientMixin."
         Will be removed in final version of multiapi azure-core based client
         """
         pass
+
 
 class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
     """KubernetesConfiguration Client.
@@ -76,8 +78,10 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         profile: KnownProfiles = KnownProfiles.default,
         **kwargs  # type: Any
     ) -> None:
-        self._config = SourceControlConfigurationClientConfiguration(credential, subscription_id, **kwargs)
-        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._config = SourceControlConfigurationClientConfiguration(
+            credential, subscription_id, **kwargs)
+        self._client = AsyncARMPipelineClient(
+            base_url=base_url, config=self._config, **kwargs)
         super(SourceControlConfigurationClient, self).__init__(
             api_version=api_version,
             profile=profile
@@ -142,7 +146,8 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import ClusterExtensionTypeOperations as OperationClass
         else:
-            raise ValueError("API version {} does not have operation group 'cluster_extension_type'".format(api_version))
+            raise ValueError(
+                "API version {} does not have operation group 'cluster_extension_type'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -161,7 +166,8 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import ClusterExtensionTypesOperations as OperationClass
         else:
-            raise ValueError("API version {} does not have operation group 'cluster_extension_types'".format(api_version))
+            raise ValueError(
+                "API version {} does not have operation group 'cluster_extension_types'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -180,7 +186,8 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import ExtensionTypeVersionsOperations as OperationClass
         else:
-            raise ValueError("API version {} does not have operation group 'extension_type_versions'".format(api_version))
+            raise ValueError(
+                "API version {} does not have operation group 'extension_type_versions'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -208,7 +215,8 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2022-03-01':
             from ..v2022_03_01.aio.operations import ExtensionsOperations as OperationClass
         else:
-            raise ValueError("API version {} does not have operation group 'extensions'".format(api_version))
+            raise ValueError(
+                "API version {} does not have operation group 'extensions'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -227,7 +235,8 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2022-03-01':
             from ..v2022_03_01.aio.operations import FluxConfigOperationStatusOperations as OperationClass
         else:
-            raise ValueError("API version {} does not have operation group 'flux_config_operation_status'".format(api_version))
+            raise ValueError(
+                "API version {} does not have operation group 'flux_config_operation_status'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -246,7 +255,8 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2022-03-01':
             from ..v2022_03_01.aio.operations import FluxConfigurationsOperations as OperationClass
         else:
-            raise ValueError("API version {} does not have operation group 'flux_configurations'".format(api_version))
+            raise ValueError(
+                "API version {} does not have operation group 'flux_configurations'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -265,7 +275,8 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import LocationExtensionTypesOperations as OperationClass
         else:
-            raise ValueError("API version {} does not have operation group 'location_extension_types'".format(api_version))
+            raise ValueError(
+                "API version {} does not have operation group 'location_extension_types'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -290,7 +301,8 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2022-03-01':
             from ..v2022_03_01.aio.operations import OperationStatusOperations as OperationClass
         else:
-            raise ValueError("API version {} does not have operation group 'operation_status'".format(api_version))
+            raise ValueError(
+                "API version {} does not have operation group 'operation_status'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -324,7 +336,8 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2022-03-01':
             from ..v2022_03_01.aio.operations import Operations as OperationClass
         else:
-            raise ValueError("API version {} does not have operation group 'operations'".format(api_version))
+            raise ValueError(
+                "API version {} does not have operation group 'operations'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -355,13 +368,16 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2022-03-01':
             from ..v2022_03_01.aio.operations import SourceControlConfigurationsOperations as OperationClass
         else:
-            raise ValueError("API version {} does not have operation group 'source_control_configurations'".format(api_version))
+            raise ValueError(
+                "API version {} does not have operation group 'source_control_configurations'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     async def close(self):
         await self._client.close()
+
     async def __aenter__(self):
         await self._client.__aenter__()
         return self
+
     async def __aexit__(self, *exc_details):
         await self._client.__aexit__(*exc_details)

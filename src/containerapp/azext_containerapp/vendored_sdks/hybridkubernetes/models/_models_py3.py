@@ -208,7 +208,8 @@ class ConnectedCluster(TrackedResource):
         infrastructure: Optional[str] = None,
         **kwargs
     ):
-        super(ConnectedCluster, self).__init__(tags=tags, location=location, **kwargs)
+        super(ConnectedCluster, self).__init__(
+            tags=tags, location=location, **kwargs)
         self.identity = identity
         self.system_data = None
         self.agent_public_key_certificate = agent_public_key_certificate
@@ -686,7 +687,8 @@ class SystemData(msrest.serialization.Model):
         created_by_type: Optional[Union[str, "CreatedByType"]] = None,
         created_at: Optional[datetime.datetime] = None,
         last_modified_by: Optional[str] = None,
-        last_modified_by_type: Optional[Union[str, "LastModifiedByType"]] = None,
+        last_modified_by_type: Optional[Union[str,
+                                              "LastModifiedByType"]] = None,
         last_modified_at: Optional[datetime.datetime] = None,
         **kwargs
     ):

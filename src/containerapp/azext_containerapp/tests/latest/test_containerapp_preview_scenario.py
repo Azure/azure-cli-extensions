@@ -9,7 +9,8 @@ from time import sleep
 
 from msrestazure.tools import parse_resource_id
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
+from azure.cli.testsdk import (
+    ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 
 from .common import (write_test_file, TEST_LOCATION, clean_up_test_file)
 from .custom_preparers import ConnectedClusterPreparer
@@ -25,7 +26,8 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
     def test_containerapp_preview_environment_type(self, resource_group, infra_cluster, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         custom_location_name = "my-custom-location"
-        create_extension_and_custom_location(self, resource_group, connected_cluster_name, custom_location_name)
+        create_extension_and_custom_location(
+            self, resource_group, connected_cluster_name, custom_location_name)
 
         # create connected environment with client or create a command for connected?
         sub_id = self.cmd('az account show').get_output_in_json()['id']
@@ -58,7 +60,8 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
             f'az containerapp create --name {ca_name1} --resource-group {resource_group} --environment {connected_env_name} --image "mcr.microsoft.com/k8se/quickstart:latest" --ingress external --target-port 80 --environment-type connected',
             checks=[
                 JMESPathCheck('name', ca_name1),
-                JMESPathCheck('properties.environmentId', connected_env_resource_id),
+                JMESPathCheck('properties.environmentId',
+                              connected_env_resource_id),
                 JMESPathCheck('properties.provisioningState', "Succeeded")
             ])
 
@@ -67,7 +70,8 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
             f'az containerapp create --name {ca_name2} --resource-group {resource_group} --environment {connected_env_name} --image "mcr.microsoft.com/k8se/quickstart:latest" --environment-type connected',
             checks=[
                 JMESPathCheck('name', ca_name2),
-                JMESPathCheck('properties.environmentId', connected_env_resource_id),
+                JMESPathCheck('properties.environmentId',
+                              connected_env_resource_id),
                 JMESPathCheck('properties.provisioningState', "Succeeded")
             ])
 
@@ -88,19 +92,23 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
             JMESPathCheck('length(@)', 0)
         ])
 
-        app2 = self.cmd('containerapp show -n {} -g {}'.format(ca_name2, resource_group)).get_output_in_json()
+        app2 = self.cmd('containerapp show -n {} -g {}'.format(ca_name2,
+                        resource_group)).get_output_in_json()
         self.cmd('containerapp delete --ids {} --yes'.format(app2['id']))
 
-        self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name1, resource_group))
+        self.cmd(
+            'containerapp delete -n {} -g {} --yes'.format(ca_name1, resource_group))
 
         self.cmd('containerapp list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0)
         ])
-        self.cmd(f'containerapp connected-env delete -g {resource_group} --name {connected_env_name} --yes', expect_failure=False)
-        self.cmd(f'containerapp connected-env delete -g {resource_group} --name {connected_env_name} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp connected-env delete -g {resource_group} --name {connected_env_name} --yes', expect_failure=False)
+        self.cmd(
+            f'containerapp connected-env delete -g {resource_group} --name {connected_env_name} --yes', expect_failure=False)
 
         self.cmd(f'containerapp connected-env list -g {resource_group} --custom-location {custom_location_name}', expect_failure=False, checks=[
-                JMESPathCheck('length(@)', 0),
+            JMESPathCheck('length(@)', 0),
         ])
 
     @ResourceGroupPreparer(location="eastus")
@@ -113,19 +121,22 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         env_rg = parse_resource_id(env_id).get('resource_group')
         env_name = parse_resource_id(env_id).get('name')
 
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
+        containerapp_env = self.cmd(
+            'containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
 
         self.cmd(
             f'az containerapp create --name {ca_name} --resource-group {resource_group} --environment {env_id} --image "mcr.microsoft.com/k8se/quickstart:latest" --environment-type managed',
             checks=[
-                JMESPathCheck('properties.environmentId', containerapp_env['id']),
+                JMESPathCheck('properties.environmentId',
+                              containerapp_env['id']),
                 JMESPathCheck('properties.provisioningState', "Succeeded")
             ])
 
         app = self.cmd(
             'containerapp show -n {} -g {}'.format(ca_name, resource_group),
             checks=[
-                JMESPathCheck('properties.environmentId', containerapp_env['id']),
+                JMESPathCheck('properties.environmentId',
+                              containerapp_env['id']),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck('name', ca_name),
             ]
