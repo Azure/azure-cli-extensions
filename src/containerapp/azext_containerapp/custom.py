@@ -168,7 +168,7 @@ def delete_qdrant_service(cmd, service_name, resource_group_name, no_wait=False)
 
 
 def create_weaviate_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
-                          disable_warnings=True):
+                            disable_warnings=True):
     return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
                                           disable_warnings, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_SERVICE_TYPE,
                                           DEV_WEAVIATE_CONTAINER_NAME)
