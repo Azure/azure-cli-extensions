@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: continuation line over-indented for hanging indent
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, JMESPathCheck, NoneCheck,
                                api_version_constraint)
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
@@ -81,7 +82,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network public-ip create -g {rg} -n {pubip} --sku standard')
         self.cmd('network public-ip create -g {rg} -n {pubip2} --sku standard')
         vnet_instance = self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
-        subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
+        # subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
         # Disable it due to service limitation.
         # self.cmd('network firewall ip-config create -g {rg} -n {ipconfig} -f {af} --public-ip-address {pubip} --vnet-name {vnet}', checks=[
         #     self.check('name', '{ipconfig}'),
@@ -269,9 +270,9 @@ class AzureFirewallScenario(ScenarioTest):
         })
         # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        #self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2 --sku Standard')
-        #self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub}')
-        #self.cmd('network firewall update -g {rg} -n {af} --vhub ""')
+        # self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2 --sku Standard')
+        # self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub}')
+        # self.cmd('network firewall update -g {rg} -n {af} --vhub ""')
 
         # with self.assertRaisesRegexp(CLIError, "allow active ftp is not allowed for azure firewall on virtual hub."):
         #     self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub} --allow-active-ftp')
@@ -332,13 +333,13 @@ class AzureFirewallScenario(ScenarioTest):
         # test firewall policy with vhub firewall
         self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        #self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l {location} --sku Standard')
+        # self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l {location} --sku Standard')
 
         self.cmd('network firewall policy create -g {rg} -n {policy} -l {location}', checks=[
             self.check('type', 'Microsoft.Network/FirewallPolicies'),
             self.check('name', '{policy}')
         ])
-        #self.cmd('network firewall create -g {rg} -n {af} --count 1 --sku AZFW_Hub --vhub clitestvhub --firewall-policy {policy}')
+        # self.cmd('network firewall create -g {rg} -n {af} --count 1 --sku AZFW_Hub --vhub clitestvhub --firewall-policy {policy}')
 
         self.kwargs.update({'location': 'westus2'})
 
@@ -347,8 +348,8 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network public-ip create -g {rg} -n {pubip} -l {location} --sku standard')
         vnet_instance = self.cmd(
             'network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" -l {location} --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
-        subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
-        
+        # subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
+
         # Disable it due to service limitation.
         # self.cmd(
         #     'network firewall ip-config create -g {rg} -n {ipconfig} -f {af2} --public-ip-address {pubip} --vnet-name {vnet}',
@@ -377,7 +378,7 @@ class AzureFirewallScenario(ScenarioTest):
         # test firewall policy identity
         identity = self.cmd('identity create -g {rg} -n identitytest',).get_output_in_json()
         self.kwargs.update({'id': identity['id']})
-        #needs a check in the future
+        # needs a check in the future
         # self.cmd('network firewall policy update -g {rg} -n {policy2} --identity {id}',
         #          checks=[self.exists('identity')])
         # self.cmd('network firewall policy update -g {rg} -n {policy2} --remove {id}',
@@ -715,9 +716,10 @@ class AzureFirewallScenario(ScenarioTest):
                  '--location {location} '
                  '--name {policy} '
                  '--dns-servers {dns_servers} '
-                 '--enable-dns-proxy', checks=[
-                    self.check('type', 'Microsoft.Network/FirewallPolicies'),
-                    self.check('name', '{policy}')
+                 '--enable-dns-proxy',
+                 checks=[
+                     self.check('type', 'Microsoft.Network/FirewallPolicies'),
+                     self.check('name', '{policy}')
                  ])
 
         self.cmd(
@@ -769,6 +771,7 @@ class AzureFirewallScenario(ScenarioTest):
                  checks=[
                      self.check('length(ruleCollections[1].rules)', 2)
                  ])
+
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='westus2')
     def test_azure_firewall_policy_rules_with_ip_groups(self, resource_group, resource_group_location):
