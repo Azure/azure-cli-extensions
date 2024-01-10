@@ -4,7 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
-* 'az containerapp add-on' : support for add-on milvus create and delete commands
+* 'az containerapp add-on' : support for add-on weaviate create and delete commands
 
 0.3.46
 ++++++
