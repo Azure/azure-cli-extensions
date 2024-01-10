@@ -160,11 +160,11 @@ def load_command_table(self, _):
     with self.command_group('containerapp env java-component spring-cloud-config') as g:
         g.custom_command('create', 'create_spring_cloud_config', supports_no_wait=True)
         g.custom_command('update', 'update_spring_cloud_config', supports_no_wait=True)
-        g.custom_show_command('show', 'show_spring_cloud_config', table_transformer=transform_containerapp_output)
-        g.custom_command('delete', 'delete_spring_cloud_config', confirmation=True, supports_no_wait=True)
+        g.custom_show_command('show', 'show_java_component')
+        g.custom_command('delete', 'delete_java_component', confirmation=True, supports_no_wait=True)
 
     with self.command_group('containerapp env java-component spring-cloud-eureka') as g:
         g.custom_command('create', 'create_spring_cloud_eureka', supports_no_wait=True)
         g.custom_command('update', 'update_spring_cloud_eureka', supports_no_wait=True)
-        g.custom_show_command('show', 'show_spring_cloud_eureka', table_transformer=transform_containerapp_output)
-        g.custom_command('delete', 'delete_spring_cloud_eureka', confirmation=True, supports_no_wait=True)
+        g.custom_show_command('show', 'show_java_component')
+        g.custom_command('delete', 'delete_java_component', confirmation=True, supports_no_wait=True)

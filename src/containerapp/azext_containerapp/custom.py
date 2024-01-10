@@ -1870,43 +1870,51 @@ def init_dapr_components(cmd, resource_group_name, environment_name, statestore=
 
 def list_java_components(cmd, environment_name, resource_group_name):
     raw_parameters = locals()
-    java_component_preview_list_decorator = JavaComponentPreviewListDecorator(
+    java_component_list_decorator = JavaComponentPreviewListDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
 
-    return java_component_preview_list_decorator.list()
+    return java_component_list_decorator.list()
 
 
-def create_spring_cloud_config(cmd, name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
+def show_java_component(cmd, java_component_name, environment_name, resource_group_name):
+    raw_parameters = locals()
+    java_component_show_decorator = JavaComponentPreviewShowDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return java_component_show_decorator.show()
+
+
+def delete_java_component(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    java_component_delete_decorator = JavaComponentPreviewDeleteDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return java_component_delete_decorator.delete()
+
+
+def create_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
     return "create_spring_cloud_config"
 
 
-def update_spring_cloud_config(cmd, name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
+def update_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
     return "update_spring_cloud_config"
 
 
-def show_spring_cloud_config(cmd, name, environment_name, resource_group_name):
-    return "show_spring_cloud_config"
-
-
-def delete_spring_cloud_config(cmd, name, environment_name, resource_group_name, no_wait=False):
-    return "delete_spring_cloud_config"
-
-
-def create_spring_cloud_eureka(cmd, name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
+def create_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
     return "create_spring_cloud_eureka"
 
 
-def update_spring_cloud_eureka(cmd, name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
+def update_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
     return "update_spring_cloud_eureka"
-
-
-def show_spring_cloud_eureka(cmd, name, environment_name, resource_group_name):
-    return "show_spring_cloud_eureka"
-
-
-def delete_spring_cloud_eureka(cmd, name, environment_name, resource_group_name, no_wait=False):
-    return "delete_spring_cloud_eureka"

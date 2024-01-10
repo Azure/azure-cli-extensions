@@ -66,6 +66,9 @@ class JavaComponentDecorator(BaseResource):
     def get_argument_environment(self):
         return self.get_param("environment_name")
 
+    def get_argument_java_component_name(self):
+        return self.get_param("java_component_name")
+
     def get_argument_dapr_component_name(self):
         return self.get_param("dapr_component_name")
 
@@ -340,7 +343,7 @@ class JavaComponentPreviewShowDecorator(JavaComponentDecorator):
     def show(self):
         try:
             r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                 environment_name=self.get_argument_environment(), name=self.get_argument_name())
+                                 environment_name=self.get_argument_environment(), name=self.get_argument_java_component_name())
             r = clean_null_values(r)
             return r
         except Exception as e:
@@ -368,7 +371,7 @@ class JavaComponentPreviewDeleteDecorator(JavaComponentDecorator):
     def delete(self):
         try:
             return self.client.delete(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                      environment_name=self.get_argument_environment(), name=self.get_argument_name(),
+                                      environment_name=self.get_argument_environment(), name=self.get_argument_java_component_name(),
                                       no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
