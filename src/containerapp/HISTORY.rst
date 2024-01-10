@@ -4,7 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
-
+-history test
 0.3.46
 ++++++
 * 'az containerapp create': Fix BadRequest Error about the clientType with --bind
