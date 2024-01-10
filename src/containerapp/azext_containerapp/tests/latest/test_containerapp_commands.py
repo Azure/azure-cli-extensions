@@ -1102,10 +1102,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
         # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "francecentral"
         self.cmd('configure --defaults location={}'.format(location))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
         redis_ca_name = 'redis'
@@ -1113,75 +1112,86 @@ class ContainerappServiceBindingTests(ScenarioTest):
         kafka_ca_name = 'kafka'
         mariadb_ca_name = 'mariadb'
         qdrant_ca_name = "qdrant"
-        ADDON_LIST = ["redis", "postgres", "kafka", "mariadb", "qdrant"]
-        create_containerapp_env(self, env_name, resource_group)
+        weaviate_ca_name = "weaviate"
+        ADDON_LIST = ["redis", "postgres", "kafka", "mariadb", "qdrant", "weaviate"]
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
 
         self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(
-            resource_group, redis_ca_name, env_name))
+            env_rg, redis_ca_name, env_name))
 
         self.cmd('containerapp add-on postgres create -g {} -n {} --environment {}'.format(
-            resource_group, postgres_ca_name, env_name))
+            env_rg, postgres_ca_name, env_name))
 
         self.cmd('containerapp add-on kafka create -g {} -n {} --environment {}'.format(
-            resource_group, kafka_ca_name, env_name))
+            env_rg, kafka_ca_name, env_name))
 
         self.cmd('containerapp add-on mariadb create -g {} -n {} --environment {}'.format(
-            resource_group, mariadb_ca_name, env_name))
+            env_rg, mariadb_ca_name, env_name))
 
         self.cmd('containerapp add-on qdrant create -g {} -n {} --environment {}'.format(
-            resource_group, qdrant_ca_name, env_name))
+            env_rg, qdrant_ca_name, env_name))
+
+        self.cmd('containerapp add-on weaviate create -g {} -n {} --environment {}'.format(
+            env_rg, weaviate_ca_name, env_name))
 
         for addon in ADDON_LIST:
-            self.cmd(f'containerapp show -g {resource_group} -n {addon}', checks=[
+            self.cmd(f'containerapp show -g {env_rg} -n {addon}', checks=[
                 JMESPathCheck("properties.provisioningState", "Succeeded")])
 
         self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
-            resource_group, ca_name, env_name, image), checks=[
+            env_rg, ca_name, env_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
         ])
 
         self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
-            resource_group, ca_name, image), checks=[
+            env_rg, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant'.format(
-            resource_group, ca_name, image), checks=[
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant weaviate'.format(
+            env_rg, ca_name, image), checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
             JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
-            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant")
+            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant"),
+            JMESPathCheck('properties.template.serviceBinds[5].name', "weaviate")
         ])
 
         self.cmd('containerapp add-on postgres delete -g {} -n {} --yes'.format(
-            resource_group, postgres_ca_name, env_name))
+            env_rg, postgres_ca_name, env_name))
 
         self.cmd('containerapp add-on redis delete -g {} -n {} --yes'.format(
-            resource_group, redis_ca_name, env_name))
+            env_rg, redis_ca_name, env_name))
 
         self.cmd('containerapp add-on kafka delete -g {} -n {} --yes'.format(
-            resource_group, kafka_ca_name, env_name))
+            env_rg, kafka_ca_name, env_name))
 
         self.cmd('containerapp add-on mariadb delete -g {} -n {} --yes'.format(
-            resource_group, mariadb_ca_name, env_name))
+            env_rg, mariadb_ca_name, env_name))
 
         self.cmd('containerapp add-on qdrant delete -g {} -n {} --yes'.format(
-            resource_group, qdrant_ca_name, env_name))
+            env_rg, qdrant_ca_name, env_name))
 
-        self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes')
+        self.cmd('containerapp add-on weaviate delete -g {} -n {} --yes'.format(
+            env_rg, weaviate_ca_name, env_name))
 
-        self.cmd('containerapp add-on list -g {} --environment {}'.format(resource_group, env_name), checks=[
+        self.cmd(f'containerapp delete -g {env_rg} -n {ca_name} --yes')
+
+        self.cmd('containerapp add-on list -g {} --environment {}'.format(env_rg, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
 
-        self.cmd('containerapp list -g {} --environment {}'.format(resource_group, env_name), checks=[
+        self.cmd('containerapp list -g {} --environment {}'.format(env_rg, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
 
-        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
+        self.cmd(f'containerapp env delete -g {env_rg} -n {env_name} --yes')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")

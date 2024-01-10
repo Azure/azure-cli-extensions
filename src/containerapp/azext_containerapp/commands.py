@@ -96,6 +96,10 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_qdrant_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_qdrant_service', confirmation=True, supports_no_wait=True)
 
+    with self.command_group('containerapp add-on weaviate') as g:
+        g.custom_command('create', 'create_weaviate_service', supports_no_wait=True)
+        g.custom_command('delete', 'delete_weaviate_service', confirmation=True, supports_no_wait=True)
+
     with self.command_group('containerapp resiliency', is_preview=True) as g:
         g.custom_command('create', 'create_container_app_resiliency', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_show_command('update', 'update_container_app_resiliency', supports_no_wait=True, exception_handler=ex_handler_factory())
