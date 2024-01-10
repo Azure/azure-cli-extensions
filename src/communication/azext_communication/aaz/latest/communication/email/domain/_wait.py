@@ -10,10 +10,11 @@
 
 from azure.cli.core.aaz import *
 
+
 @register_command(
     "communication email domain wait",
 )
-class DomainWait(AAZWaitCommand):
+class Wait(AAZWaitCommand):
     """Place the CLI in a waiting state until a condition is met.
     """
 
@@ -37,32 +38,37 @@ class DomainWait(AAZWaitCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
+
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="The name of the EmailCommunicationService resource.",
+        _args_schema.domain_name = AAZStrArg(
+            options=["-n", "--name", "--domain-name"],
+            help="The name of the Domains resource.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                max_length=253,
+                min_length=1,
+            ),
+        )
+        _args_schema.email_service_name = AAZStrArg(
+            options=["--email-service-name"],
+            help="The name of the EmailService resource.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w]+$",
+                pattern="^[a-zA-Z0-9-]+$",
                 max_length=63,
                 min_length=1,
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
-            required=True,
-        )
-        _args_schema.domain_name = AAZStrArg(
-            options=["--domain-name"],
-            help="Name of the domain.",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.EmailCommunicationServicesWaitDomain(ctx=self.ctx)()
+        self.DomainsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,7 +83,7 @@ class DomainWait(AAZWaitCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class EmailCommunicationServicesWaitDomain(AAZHttpOperation):
+    class DomainsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -85,13 +91,13 @@ class DomainWait(AAZWaitCommand):
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
-            
+
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}/domains/{domainName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}/domains/{domainName}",
                 **self.url_parameters
             )
 
@@ -111,7 +117,7 @@ class DomainWait(AAZWaitCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "emailcommunicationServiceName", self.ctx.args.name,
+                    "emailServiceName", self.ctx.args.email_service_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -181,32 +187,84 @@ class DomainWait(AAZWaitCommand):
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
-            )            
+            )
 
             properties = cls._schema_on_200.properties
             properties.data_location = AAZStrType(
                 serialized_name="dataLocation",
+                flags={"read_only": True},
+            )
+            properties.domain_management = AAZStrType(
+                serialized_name="domainManagement",
                 flags={"required": True},
             )
-            properties.host_name = AAZStrType(
-                serialized_name="hostName",
+            properties.from_sender_domain = AAZStrType(
+                serialized_name="fromSenderDomain",
                 flags={"read_only": True},
             )
-            properties.immutable_resource_id = AAZStrType(
-                serialized_name="immutableResourceId",
-                flags={"read_only": True},
-            )
-            properties.notification_hub_id = AAZStrType(
-                serialized_name="notificationHubId",
+            properties.mail_from_sender_domain = AAZStrType(
+                serialized_name="mailFromSenderDomain",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.version = AAZStrType(
+            properties.user_engagement_tracking = AAZStrType(
+                serialized_name="userEngagementTracking",
+            )
+            properties.verification_records = AAZObjectType(
+                serialized_name="verificationRecords",
                 flags={"read_only": True},
             )
+            properties.verification_states = AAZObjectType(
+                serialized_name="verificationStates",
+                flags={"read_only": True},
+            )
+
+            verification_records = cls._schema_on_200.properties.verification_records
+            verification_records.dkim = AAZObjectType(
+                serialized_name="DKIM",
+            )
+            _WaitHelper._build_schema_dns_record_read(verification_records.dkim)
+            verification_records.dkim2 = AAZObjectType(
+                serialized_name="DKIM2",
+            )
+            _WaitHelper._build_schema_dns_record_read(verification_records.dkim2)
+            verification_records.dmarc = AAZObjectType(
+                serialized_name="DMARC",
+            )
+            _WaitHelper._build_schema_dns_record_read(verification_records.dmarc)
+            verification_records.domain = AAZObjectType(
+                serialized_name="Domain",
+            )
+            _WaitHelper._build_schema_dns_record_read(verification_records.domain)
+            verification_records.spf = AAZObjectType(
+                serialized_name="SPF",
+            )
+            _WaitHelper._build_schema_dns_record_read(verification_records.spf)
+
+            verification_states = cls._schema_on_200.properties.verification_states
+            verification_states.dkim = AAZObjectType(
+                serialized_name="DKIM",
+            )
+            _WaitHelper._build_schema_verification_status_record_read(verification_states.dkim)
+            verification_states.dkim2 = AAZObjectType(
+                serialized_name="DKIM2",
+            )
+            _WaitHelper._build_schema_verification_status_record_read(verification_states.dkim2)
+            verification_states.dmarc = AAZObjectType(
+                serialized_name="DMARC",
+            )
+            _WaitHelper._build_schema_verification_status_record_read(verification_states.dmarc)
+            verification_states.domain = AAZObjectType(
+                serialized_name="Domain",
+            )
+            _WaitHelper._build_schema_verification_status_record_read(verification_states.domain)
+            verification_states.spf = AAZObjectType(
+                serialized_name="SPF",
+            )
+            _WaitHelper._build_schema_verification_status_record_read(verification_states.spf)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -233,9 +291,64 @@ class DomainWait(AAZWaitCommand):
 
             return cls._schema_on_200
 
-class _DomainWaitHelper:
-    """Helper class for DomainWait"""
 
-__all__ = ["DomainWait"]
+class _WaitHelper:
+    """Helper class for Wait"""
+
+    _schema_dns_record_read = None
+
+    @classmethod
+    def _build_schema_dns_record_read(cls, _schema):
+        if cls._schema_dns_record_read is not None:
+            _schema.name = cls._schema_dns_record_read.name
+            _schema.ttl = cls._schema_dns_record_read.ttl
+            _schema.type = cls._schema_dns_record_read.type
+            _schema.value = cls._schema_dns_record_read.value
+            return
+
+        cls._schema_dns_record_read = _schema_dns_record_read = AAZObjectType()
+
+        dns_record_read = _schema_dns_record_read
+        dns_record_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        dns_record_read.ttl = AAZIntType(
+            flags={"read_only": True},
+        )
+        dns_record_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+        dns_record_read.value = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        _schema.name = cls._schema_dns_record_read.name
+        _schema.ttl = cls._schema_dns_record_read.ttl
+        _schema.type = cls._schema_dns_record_read.type
+        _schema.value = cls._schema_dns_record_read.value
+
+    _schema_verification_status_record_read = None
+
+    @classmethod
+    def _build_schema_verification_status_record_read(cls, _schema):
+        if cls._schema_verification_status_record_read is not None:
+            _schema.error_code = cls._schema_verification_status_record_read.error_code
+            _schema.status = cls._schema_verification_status_record_read.status
+            return
+
+        cls._schema_verification_status_record_read = _schema_verification_status_record_read = AAZObjectType()
+
+        verification_status_record_read = _schema_verification_status_record_read
+        verification_status_record_read.error_code = AAZStrType(
+            serialized_name="errorCode",
+            flags={"read_only": True},
+        )
+        verification_status_record_read.status = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        _schema.error_code = cls._schema_verification_status_record_read.error_code
+        _schema.status = cls._schema_verification_status_record_read.status
 
 
+__all__ = ["Wait"]

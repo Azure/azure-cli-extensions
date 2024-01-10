@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "communication email create",
+    "communication email domain create",
 )
 class Create(AAZCommand):
-    """Create a new EmailService or update an existing EmailService.
+    """Create a new Domains resource under the parent EmailService resource or update an existing Domains resource.
 
-    :example: Create a email resource with tags
-        az communication email create -n ResourceName -g ResourceGroup --location global --data-location unitedstates --tags "{tag:tag}"
+    :example: Create a domain with tags
+        az communication email domain create --domain-name DomainName --email-service-name ResourceName -g ResourceGroup --location global --domain-management AzureManaged/CustomerManaged --tags "{tag:tag}" --user-engmnt-tracking Enabled/Disabled
     """
 
     _aaz_info = {
         "version": "2023-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}", "2023-04-01-preview"],
         ]
     }
 
@@ -45,8 +45,17 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.domain_name = AAZStrArg(
+            options=["-n", "--name", "--domain-name"],
+            help="The name of the Domains resource.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                max_length=253,
+                min_length=1,
+            ),
+        )
         _args_schema.email_service_name = AAZStrArg(
-            options=["-n", "--name", "--email-service-name"],
+            options=["--email-service-name"],
             help="The name of the EmailService resource.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -82,16 +91,23 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.data_location = AAZStrArg(
-            options=["--data-location"],
+        _args_schema.domain_management = AAZStrArg(
+            options=["--domain-management"],
             arg_group="Properties",
-            help="The location where the email service stores its data at rest.",
+            help="Describes how a Domains resource is being managed.",
+            enum={"AzureManaged": "AzureManaged", "CustomerManaged": "CustomerManaged", "CustomerManagedInExchangeOnline": "CustomerManagedInExchangeOnline"},
+        )
+        _args_schema.user_engmnt_tracking = AAZStrArg(
+            options=["--user-engmnt-tracking"],
+            arg_group="Properties",
+            help="Describes whether user engagement tracking is enabled or disabled.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.EmailServicesCreateOrUpdate(ctx=self.ctx)()
+        yield self.DomainsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -106,7 +122,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class EmailServicesCreateOrUpdate(AAZHttpOperation):
+    class DomainsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -136,7 +152,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}/domains/{domainName}",
                 **self.url_parameters
             )
 
@@ -151,6 +167,10 @@ class Create(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "domainName", self.ctx.args.domain_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "emailServiceName", self.ctx.args.email_service_name,
                     required=True,
@@ -201,7 +221,8 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("dataLocation", AAZStrType, ".data_location", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("domainManagement", AAZStrType, ".domain_management", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("userEngagementTracking", AAZStrType, ".user_engmnt_tracking")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -251,12 +272,79 @@ class Create(AAZCommand):
             properties = cls._schema_on_200_201.properties
             properties.data_location = AAZStrType(
                 serialized_name="dataLocation",
+                flags={"read_only": True},
+            )
+            properties.domain_management = AAZStrType(
+                serialized_name="domainManagement",
                 flags={"required": True},
+            )
+            properties.from_sender_domain = AAZStrType(
+                serialized_name="fromSenderDomain",
+                flags={"read_only": True},
+            )
+            properties.mail_from_sender_domain = AAZStrType(
+                serialized_name="mailFromSenderDomain",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.user_engagement_tracking = AAZStrType(
+                serialized_name="userEngagementTracking",
+            )
+            properties.verification_records = AAZObjectType(
+                serialized_name="verificationRecords",
+                flags={"read_only": True},
+            )
+            properties.verification_states = AAZObjectType(
+                serialized_name="verificationStates",
+                flags={"read_only": True},
+            )
+
+            verification_records = cls._schema_on_200_201.properties.verification_records
+            verification_records.dkim = AAZObjectType(
+                serialized_name="DKIM",
+            )
+            _CreateHelper._build_schema_dns_record_read(verification_records.dkim)
+            verification_records.dkim2 = AAZObjectType(
+                serialized_name="DKIM2",
+            )
+            _CreateHelper._build_schema_dns_record_read(verification_records.dkim2)
+            verification_records.dmarc = AAZObjectType(
+                serialized_name="DMARC",
+            )
+            _CreateHelper._build_schema_dns_record_read(verification_records.dmarc)
+            verification_records.domain = AAZObjectType(
+                serialized_name="Domain",
+            )
+            _CreateHelper._build_schema_dns_record_read(verification_records.domain)
+            verification_records.spf = AAZObjectType(
+                serialized_name="SPF",
+            )
+            _CreateHelper._build_schema_dns_record_read(verification_records.spf)
+
+            verification_states = cls._schema_on_200_201.properties.verification_states
+            verification_states.dkim = AAZObjectType(
+                serialized_name="DKIM",
+            )
+            _CreateHelper._build_schema_verification_status_record_read(verification_states.dkim)
+            verification_states.dkim2 = AAZObjectType(
+                serialized_name="DKIM2",
+            )
+            _CreateHelper._build_schema_verification_status_record_read(verification_states.dkim2)
+            verification_states.dmarc = AAZObjectType(
+                serialized_name="DMARC",
+            )
+            _CreateHelper._build_schema_verification_status_record_read(verification_states.dmarc)
+            verification_states.domain = AAZObjectType(
+                serialized_name="Domain",
+            )
+            _CreateHelper._build_schema_verification_status_record_read(verification_states.domain)
+            verification_states.spf = AAZObjectType(
+                serialized_name="SPF",
+            )
+            _CreateHelper._build_schema_verification_status_record_read(verification_states.spf)
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
@@ -286,6 +374,61 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    _schema_dns_record_read = None
+
+    @classmethod
+    def _build_schema_dns_record_read(cls, _schema):
+        if cls._schema_dns_record_read is not None:
+            _schema.name = cls._schema_dns_record_read.name
+            _schema.ttl = cls._schema_dns_record_read.ttl
+            _schema.type = cls._schema_dns_record_read.type
+            _schema.value = cls._schema_dns_record_read.value
+            return
+
+        cls._schema_dns_record_read = _schema_dns_record_read = AAZObjectType()
+
+        dns_record_read = _schema_dns_record_read
+        dns_record_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        dns_record_read.ttl = AAZIntType(
+            flags={"read_only": True},
+        )
+        dns_record_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+        dns_record_read.value = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        _schema.name = cls._schema_dns_record_read.name
+        _schema.ttl = cls._schema_dns_record_read.ttl
+        _schema.type = cls._schema_dns_record_read.type
+        _schema.value = cls._schema_dns_record_read.value
+
+    _schema_verification_status_record_read = None
+
+    @classmethod
+    def _build_schema_verification_status_record_read(cls, _schema):
+        if cls._schema_verification_status_record_read is not None:
+            _schema.error_code = cls._schema_verification_status_record_read.error_code
+            _schema.status = cls._schema_verification_status_record_read.status
+            return
+
+        cls._schema_verification_status_record_read = _schema_verification_status_record_read = AAZObjectType()
+
+        verification_status_record_read = _schema_verification_status_record_read
+        verification_status_record_read.error_code = AAZStrType(
+            serialized_name="errorCode",
+            flags={"read_only": True},
+        )
+        verification_status_record_read.status = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        _schema.error_code = cls._schema_verification_status_record_read.error_code
+        _schema.status = cls._schema_verification_status_record_read.status
 
 
 __all__ = ["Create"]

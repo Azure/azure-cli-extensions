@@ -12,21 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "communication email domain list",
+    "communication email domain sender-username list",
 )
-class DomainList(AAZCommand):
-    """List requests to list all domains in a email communication resource.
+class List(AAZCommand):
+    """List all valid sender usernames for a domains resource.
 
-    :example: Get all domains from a email communication resource
-        az communication email domain list -n ResourceName -g ResourceGroup
+    :example: Get all sender usernames from a domain resource
+        az communication email domain sender-username list --domain-name DomainName --email-service-name ResourceName -g ResourceGroup
     """
 
     _aaz_info = {
         "version": "2023-04-01-preview",
-        "resources": [            
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains", "2023-04-01-preview"],
+        "resources": [
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}/senderusernames", "2023-04-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -41,26 +43,35 @@ class DomainList(AAZCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
-        _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
-        )
 
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="The name of the EmailCommunicationService resource.",
+        _args_schema = cls._args_schema
+        _args_schema.domain_name = AAZStrArg(
+            options=["--domain-name"],
+            help="The name of the Domains resource.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w]+$",
+                max_length=253,
+                min_length=1,
+            ),
+        )
+        _args_schema.email_service_name = AAZStrArg(
+            options=["--email-service-name"],
+            help="The name of the EmailService resource.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]+$",
                 max_length=63,
                 min_length=1,
             ),
         )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
-        self.pre_operations()        
-        self.EmailCommunicationServicesListByEmailCommunicationResource(ctx=self.ctx)()        
+        self.pre_operations()
+        self.SenderUsernamesListByDomains(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +87,7 @@ class DomainList(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class EmailCommunicationServicesListByEmailCommunicationResource(AAZHttpOperation):
+    class SenderUsernamesListByDomains(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +101,7 @@ class DomainList(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}/domains",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}/domains/{domainName}/senderUsernames",
                 **self.url_parameters
             )
 
@@ -106,15 +117,19 @@ class DomainList(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "domainName", self.ctx.args.domain_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "emailServiceName", self.ctx.args.email_service_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "emailcommunicationServiceName", self.ctx.args.name,
                     required=True,
                 ),
             }
@@ -169,9 +184,6 @@ class DomainList(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -182,34 +194,24 @@ class DomainList(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
-            
+
             properties = cls._schema_on_200.value.Element.properties
             properties.data_location = AAZStrType(
                 serialized_name="dataLocation",
-                flags={"required": True},
-            )
-            properties.host_name = AAZStrType(
-                serialized_name="hostName",
                 flags={"read_only": True},
             )
-            properties.immutable_resource_id = AAZStrType(
-                serialized_name="immutableResourceId",
-                flags={"read_only": True},
-            )
-            properties.notification_hub_id = AAZStrType(
-                serialized_name="notificationHubId",
-                flags={"read_only": True},
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.version = AAZStrType(
-                flags={"read_only": True},
+            properties.username = AAZStrType(
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
@@ -232,13 +234,11 @@ class DomainList(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200    
-
-class _DomainListHelper:
-    """Helper class for Domain List"""
+            return cls._schema_on_200
 
 
-__all__ = ["DomainList"]
+class _ListHelper:
+    """Helper class for List"""
+
+
+__all__ = ["List"]

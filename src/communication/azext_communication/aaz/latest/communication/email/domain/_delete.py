@@ -10,15 +10,16 @@
 
 from azure.cli.core.aaz import *
 
+
 @register_command(
     "communication email domain delete",
     confirmation="Are you sure you want to perform this operation?",
 )
-class DomainDelete(AAZCommand):
-    """Delete a Domain.
+class Delete(AAZCommand):
+    """Delete to delete a Domains resource.
 
-    :example: Delete a domain
-        az communication email domain delete -n ResourceName -g ResourceGroup --domain-name DomainName
+    :example: Delete a domain resource
+        az communication email domain delete --domain-name DomainName --email-service-name ResourceName -g ResourceGroup
     """
 
     _aaz_info = {
@@ -45,31 +46,35 @@ class DomainDelete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="The name of the emailCommunicationService resource.",
+        _args_schema.domain_name = AAZStrArg(
+            options=["-n", "--name", "--domain-name"],
+            help="The name of the Domains resource.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                max_length=253,
+                min_length=1,
+            ),
+        )
+        _args_schema.email_service_name = AAZStrArg(
+            options=["--email-service-name"],
+            help="The name of the EmailService resource.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w]+$",
+                pattern="^[a-zA-Z0-9-]+$",
                 max_length=63,
                 min_length=1,
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
-            required=True,
-        )
-        _args_schema.domain_name = AAZStrArg(
-            options=["--domain-name"],
-            help="Name of the domain.",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.EmailCommunicationServicesDeleteDomain(ctx=self.ctx)()
+        yield self.DomainsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -80,7 +85,7 @@ class DomainDelete(AAZCommand):
     def post_operations(self):
         pass
 
-    class EmailCommunicationServicesDeleteDomain(AAZHttpOperation):
+    class DomainsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -119,7 +124,7 @@ class DomainDelete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}/domains/{domainName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}/domains/{domainName}",
                 **self.url_parameters
             )
 
@@ -134,12 +139,12 @@ class DomainDelete(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                 **self.serialize_url_param(
+                **self.serialize_url_param(
                     "domainName", self.ctx.args.domain_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "emailcommunicationServiceName", self.ctx.args.name,
+                    "emailServiceName", self.ctx.args.email_service_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -169,7 +174,9 @@ class DomainDelete(AAZCommand):
         def on_204(self, session):
             pass
 
-class _DomainDeleteHelper:
-    """Helper class for Domain Delete"""
 
-__all__ = ["DomainDelete"]
+class _DeleteHelper:
+    """Helper class for Delete"""
+
+
+__all__ = ["Delete"]

@@ -16,9 +16,9 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a EmailCommunicationService.
+    """Delete to delete a EmailService.
 
-    :example: Delete a email communication resource
+    :example: Delete a email resource
         az communication email delete -n ResourceName -g ResourceGroup
     """
 
@@ -44,27 +44,27 @@ class Delete(AAZCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
+
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="The name of the EmailCommunicationService resource.",
+        _args_schema.email_service_name = AAZStrArg(
+            options=["-n", "--name", "--email-service-name"],
+            help="The name of the EmailService resource.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w]+$",
+                pattern="^[a-zA-Z0-9-]+$",
                 max_length=63,
                 min_length=1,
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.EmailCommunicationServicesDelete(ctx=self.ctx)()
+        yield self.EmailServicesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,7 +75,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class EmailCommunicationServicesDelete(AAZHttpOperation):
+    class EmailServicesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -114,7 +114,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}",
                 **self.url_parameters
             )
 
@@ -130,7 +130,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "emailcommunicationServiceName", self.ctx.args.name,
+                    "emailServiceName", self.ctx.args.email_service_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

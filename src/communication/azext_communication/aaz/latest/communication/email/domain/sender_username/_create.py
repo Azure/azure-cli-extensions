@@ -10,29 +10,28 @@
 
 from azure.cli.core.aaz import *
 
+
 @register_command(
-    "communication email domain create",
+    "communication email domain sender-username create",
 )
-class DomainCreate(AAZCommand):
-    """Create a new Domain or update an existing Domain.
+class Create(AAZCommand):
+    """Create a new SenderUsername resource under the parent Domains resource or update an existing SenderUsername resource.
 
-    :example: Create a domain with tags
-        az communication email domain create -n ResourceName -g ResourceGroup --location global --domain-name DomainName --domain-management AzureManaged/CustomerManaged --tags "{tag:tag}" --user-engmnt-tracking 1/0
-
+    :example: Create a sender username
+        az communication email domain sender-username create --domain-name DomainName --email-service-name ResourceName -g ResourceGroup --sender-username SenderUsername --username Username --display-name DisplayName
     """
 
     _aaz_info = {
         "version": "2023-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}/senderusernames/{}", "2023-04-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -43,74 +42,58 @@ class DomainCreate(AAZCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
+
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="The name of the EmailCommunicationService resource.",
+        _args_schema.domain_name = AAZStrArg(
+            options=["--domain-name"],
+            help="The name of the Domains resource.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w]+$",
+                max_length=253,
+                min_length=1,
+            ),
+        )
+        _args_schema.email_service_name = AAZStrArg(
+            options=["--email-service-name"],
+            help="The name of the EmailService resource.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]+$",
                 max_length=63,
                 min_length=1,
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
-
-        _args_schema.domain_name = AAZStrArg(
-            options=["--domain-name"],
-            help="Name of the domain. Allowed name for Azure domain is AzureManagedDomain and for Custom domain is user defined name.",
+        _args_schema.sender_username = AAZStrArg(
+            options=["-n", "--name", "--sender-username"],
+            help="The valid sender Username.",
             required=True,
-        )       
-
-        # define Arg Group "Parameters"
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
+            fmt=AAZStrArgFormat(
+                max_length=253,
+                min_length=1,
             ),
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Domain tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
+
         _args_schema = cls._args_schema
-        _args_schema.domain_management = AAZStrArg(
-            options=["--domain-management"],
-            required=True,
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
             arg_group="Properties",
-            help="Name of the Domain Management Allowed values: AzureManaged/CustomerManaged",
-        ) 
-
-        domain_management = cls._args_schema.domain_management
-        domain_management.Element = AAZStrArg()       
-
-        _args_schema.user_engagement_tracking = AAZStrArg(
-            options=["--user-engmnt-tracking"],
-            required=False,
+            help="The display name for the senderUsername.",
+        )
+        _args_schema.username = AAZStrArg(
+            options=["--username"],
             arg_group="Properties",
-            help="User Engagement Tracking. Allowed values: 0, 1, Disabled, Enabled",
-        ) 
-
-        user_engagement_tracking = cls._args_schema.user_engagement_tracking
-        user_engagement_tracking.Element = AAZStrArg()  
-
+            help="A sender senderUsername to be used when sending emails.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.EmailCommunicationServicesCreateOrUpdateDomain(ctx=self.ctx)()
+        self.SenderUsernamesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -125,37 +108,21 @@ class DomainCreate(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class EmailCommunicationServicesCreateOrUpdateDomain(AAZHttpOperation):
+    class SenderUsernamesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200_201(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}/domains/{domainName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}/domains/{domainName}/senderUsernames/{senderUsername}",
                 **self.url_parameters
             )
 
@@ -175,11 +142,15 @@ class DomainCreate(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "emailcommunicationServiceName", self.ctx.args.name,
+                    "emailServiceName", self.ctx.args.email_service_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "senderUsername", self.ctx.args.sender_username,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -218,18 +189,13 @@ class DomainCreate(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")           
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("domainManagement", AAZStrType, ".domain_management", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("userEngagementTracking", AAZStrType, ".user_engagement_tracking", typ_kwargs={"flags": {"required": False}})
+                properties.set_prop("displayName", AAZStrType, ".display_name")
+                properties.set_prop("username", AAZStrType, ".username", typ_kwargs={"flags": {"required": True}})
 
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
             return self.serialize_content(_content_value)
 
         def on_200_201(self, session):
@@ -253,9 +219,6 @@ class DomainCreate(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.location = AAZStrType(
-                flags={"required": True},
-            )
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -266,40 +229,24 @@ class DomainCreate(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
-            )            
-
-            properties = cls._schema_on_200_201.properties            
-            properties.domain_management = AAZStrType(
-                serialized_name="domainManagement",
-                flags={"required": True},
             )
 
-            properties.user_engagement_tracking = AAZStrType(
-                serialized_name="userEngagementTracking",
-                flags={"required": True},
-            )
-
-            properties.host_name = AAZStrType(
-                serialized_name="hostName",
+            properties = cls._schema_on_200_201.properties
+            properties.data_location = AAZStrType(
+                serialized_name="dataLocation",
                 flags={"read_only": True},
             )
-            properties.immutable_resource_id = AAZStrType(
-                serialized_name="immutableResourceId",
-                flags={"read_only": True},
-            )
-            properties.notification_hub_id = AAZStrType(
-                serialized_name="notificationHubId",
-                flags={"read_only": True},
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.version = AAZStrType(
-                flags={"read_only": True},
+            properties.username = AAZStrType(
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200_201.system_data
@@ -322,12 +269,11 @@ class DomainCreate(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200_201
 
-class _DomainCreateHelper:
-    """Helper class for Domain Create"""
 
-__all__ = ["DomainCreate"]
+class _CreateHelper:
+    """Helper class for Create"""
+
+
+__all__ = ["Create"]

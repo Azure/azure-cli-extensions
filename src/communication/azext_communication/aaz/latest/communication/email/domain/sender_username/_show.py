@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "communication email domain show",
+    "communication email domain sender-username show",
 )
-class DomainShow(AAZCommand):
-    """Get the Domain and its properties.
+class Show(AAZCommand):
+    """Get a valid sender username for a domains resource.
 
-    :example: Get a domain properties
-        az communication email domain show -n ResourceName -g ResourceGroup --domain-name DomainName
+    :example: Get a sender username's properties
+        az communication email domain sender-username show --domain-name DomainName --email-service-name ResourceName -g ResourceGroup --sender-username SenderUsername
     """
 
     _aaz_info = {
-        "version": "2023-04-01-preview",    
+        "version": "2023-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}/senderusernames/{}", "2023-04-01-preview"],
         ]
     }
 
@@ -44,31 +44,45 @@ class DomainShow(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="The name of the EmailCommunicationService resource.",
+        _args_schema.domain_name = AAZStrArg(
+            options=["--domain-name"],
+            help="The name of the Domains resource.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                max_length=253,
+                min_length=1,
+            ),
+        )
+        _args_schema.email_service_name = AAZStrArg(
+            options=["--email-service-name"],
+            help="The name of the EmailService resource.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w]+$",
+                pattern="^[a-zA-Z0-9-]+$",
                 max_length=63,
                 min_length=1,
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
-        _args_schema.domain_name = AAZStrArg(
-            options=["--domain-name"],
-            help="Name of the domain.",
+        _args_schema.sender_username = AAZStrArg(
+            options=["-n", "--name", "--sender-username"],
+            help="The valid sender Username.",
             required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                max_length=253,
+                min_length=1,
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.EmailCommunicationServicesGetDomain(ctx=self.ctx)()
+        self.SenderUsernamesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,7 +97,7 @@ class DomainShow(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class EmailCommunicationServicesGetDomain(AAZHttpOperation):
+    class SenderUsernamesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -97,7 +111,7 @@ class DomainShow(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}/domains/{domainName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}/domains/{domainName}/senderUsernames/{senderUsername}",
                 **self.url_parameters
             )
 
@@ -117,11 +131,15 @@ class DomainShow(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "emailcommunicationServiceName", self.ctx.args.name,
+                    "emailServiceName", self.ctx.args.email_service_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "senderUsername", self.ctx.args.sender_username,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -171,9 +189,6 @@ class DomainShow(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -184,34 +199,24 @@ class DomainShow(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
-            )            
+            )
 
             properties = cls._schema_on_200.properties
             properties.data_location = AAZStrType(
                 serialized_name="dataLocation",
-                flags={"required": True},
-            )
-            properties.host_name = AAZStrType(
-                serialized_name="hostName",
                 flags={"read_only": True},
             )
-            properties.immutable_resource_id = AAZStrType(
-                serialized_name="immutableResourceId",
-                flags={"read_only": True},
-            )
-            properties.notification_hub_id = AAZStrType(
-                serialized_name="notificationHubId",
-                flags={"read_only": True},
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.version = AAZStrType(
-                flags={"read_only": True},
+            properties.username = AAZStrType(
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.system_data
@@ -234,14 +239,11 @@ class DomainShow(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
-class _DomainShowHelper:
-    """Helper class for Domain Show"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["DomainShow"]
+__all__ = ["Show"]

@@ -8,16 +8,9 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "communication email",
-)
-class __CMDGroup(AAZCommandGroup):
-    """communication email
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._create import *
+from ._delete import *
+from ._list import *
+from ._show import *
+from ._update import *

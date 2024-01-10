@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "communication email",
+    "communication email domain",
 )
 class __CMDGroup(AAZCommandGroup):
-    """communication email
+    """communication email domain
     """
     pass
 

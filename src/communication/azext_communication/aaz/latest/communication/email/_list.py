@@ -15,18 +15,22 @@ from azure.cli.core.aaz import *
     "communication email list",
 )
 class List(AAZCommand):
-    """List requests to list all email communication resources.
+    """List requests to list all resources in a subscription.
 
-    :example: Get all email communication resources from a resource group
+    :example: Get all resources from a subscription/resource group
+        az communication email list --subscription SubscriptionId
         az communication email list -g ResourceGroup
     """
 
     _aaz_info = {
         "version": "2023-04-01-preview",
         "resources": [
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.communication/emailservices", "2023-04-01-preview"],
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices", "2023-04-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -41,10 +45,9 @@ class List(AAZCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
+
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -52,9 +55,9 @@ class List(AAZCommand):
         condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
         if condition_0:
-            self.EmailCommunicationServicesListByResourceGroup(ctx=self.ctx)()
+            self.EmailServicesListByResourceGroup(ctx=self.ctx)()
         if condition_1:
-            self.EmailCommunicationServicesListBySubscription(ctx=self.ctx)()
+            self.EmailServicesListBySubscription(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,7 +73,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class EmailCommunicationServicesListByResourceGroup(AAZHttpOperation):
+    class EmailServicesListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -159,7 +162,6 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -178,59 +180,13 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200.value.Element.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType(
-                flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType(
-                nullable=True,
-            )
-
-            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
             properties = cls._schema_on_200.value.Element.properties
             properties.data_location = AAZStrType(
                 serialized_name="dataLocation",
                 flags={"required": True},
             )
-            properties.host_name = AAZStrType(
-                serialized_name="hostName",
-                flags={"read_only": True},
-            )
-            properties.immutable_resource_id = AAZStrType(
-                serialized_name="immutableResourceId",
-                flags={"read_only": True},
-            )
-            properties.notification_hub_id = AAZStrType(
-                serialized_name="notificationHubId",
-                flags={"read_only": True},
-            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.version = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -259,7 +215,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class EmailCommunicationServicesListBySubscription(AAZHttpOperation):
+    class EmailServicesListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -344,7 +300,6 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -363,59 +318,13 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200.value.Element.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType(
-                flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType(
-                nullable=True,
-            )
-
-            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
             properties = cls._schema_on_200.value.Element.properties
             properties.data_location = AAZStrType(
                 serialized_name="dataLocation",
                 flags={"required": True},
             )
-            properties.host_name = AAZStrType(
-                serialized_name="hostName",
-                flags={"read_only": True},
-            )
-            properties.immutable_resource_id = AAZStrType(
-                serialized_name="immutableResourceId",
-                flags={"read_only": True},
-            )
-            properties.notification_hub_id = AAZStrType(
-                serialized_name="notificationHubId",
-                flags={"read_only": True},
-            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.version = AAZStrType(
                 flags={"read_only": True},
             )
 

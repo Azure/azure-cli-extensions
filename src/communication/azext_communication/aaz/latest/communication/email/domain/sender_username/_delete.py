@@ -10,29 +10,29 @@
 
 from azure.cli.core.aaz import *
 
+
 @register_command(
-    "communication email senderusername delete",
+    "communication email domain sender-username delete",
     confirmation="Are you sure you want to perform this operation?",
 )
-class SenderUsernameDelete(AAZCommand):
-    """Delete a Sender Username.
+class Delete(AAZCommand):
+    """Delete to delete a SenderUsernames resource.
 
-    :example: Delete a sender username
-        az communication email senderusername delete -n ResourceName -g ResourceGroup --domain-name DomainName --sender-username SenderuserName
+    :example: Delete a sender username resource
+        az communication email domain sender-username delete --domain-name DomainName --email-service-name ResourceName -g ResourceGroup --sender-username SenderUsername
     """
 
     _aaz_info = {
         "version": "2023-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Communication/emailServices/{}/domains/{}/senderUsernames/{}", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}/senderusernames/{}", "2023-04-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -45,36 +45,45 @@ class SenderUsernameDelete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="The name of the emailCommunicationService resource.",
+        _args_schema.domain_name = AAZStrArg(
+            options=["--domain-name"],
+            help="The name of the Domains resource.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                max_length=253,
+                min_length=1,
+            ),
+        )
+        _args_schema.email_service_name = AAZStrArg(
+            options=["--email-service-name"],
+            help="The name of the EmailService resource.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w]+$",
+                pattern="^[a-zA-Z0-9-]+$",
                 max_length=63,
                 min_length=1,
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
-            required=True,
-        )
-        _args_schema.domain_name = AAZStrArg(
-            options=["--domain-name"],
-            help="Name of the domain.",
             required=True,
         )
         _args_schema.sender_username = AAZStrArg(
-            options=["--sender-username"],
-            help="Name of the sender username.",
+            options=["-n", "--name", "--sender-username"],
+            help="The valid sender Username.",
             required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                max_length=253,
+                min_length=1,
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.EmailCommunicationServicesDeleteSenderUsername(ctx=self.ctx)()
+        self.SenderUsernamesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -85,46 +94,23 @@ class SenderUsernameDelete(AAZCommand):
     def post_operations(self):
         pass
 
-    class EmailCommunicationServicesDeleteSenderUsername(AAZHttpOperation):
+    class SenderUsernamesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}/domains/{domainName}/senderUsernames/{senderUsername}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}/domains/{domainName}/senderUsernames/{senderUsername}",
                 **self.url_parameters
             )
 
@@ -140,19 +126,19 @@ class SenderUsernameDelete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "senderUsername", self.ctx.args.sender_username,
-                    required=True,
-                ),
-                 **self.serialize_url_param(
                     "domainName", self.ctx.args.domain_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "emailcommunicationServiceName", self.ctx.args.name,
+                    "emailServiceName", self.ctx.args.email_service_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "senderUsername", self.ctx.args.sender_username,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -178,7 +164,9 @@ class SenderUsernameDelete(AAZCommand):
         def on_204(self, session):
             pass
 
-class _SenderUsernameDeleteHelper:
-    """Helper class for SenderUsernameDelete"""
 
-__all__ = ["SenderUsernameDelete"]
+class _DeleteHelper:
+    """Helper class for Delete"""
+
+
+__all__ = ["Delete"]

@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "communication email update",
 )
 class Update(AAZCommand):
-    """Update an existing EmailCommunicationService.
+    """Update a new EmailService or update an existing EmailService.
 
-    :example: Update a email communication resource with tags
+    :example: Update a email resource with tags
         az communication email update -n ResourceName -g ResourceGroup --tags "{tag:tag}"
     """
 
@@ -45,25 +45,26 @@ class Update(AAZCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
+
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="The name of the EmailCommunicationService resource.",
+        _args_schema.email_service_name = AAZStrArg(
+            options=["-n", "--name", "--email-service-name"],
+            help="The name of the EmailService resource.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w]+$",
+                pattern="^[a-zA-Z0-9-]+$",
                 max_length=63,
                 min_length=1,
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
-        )      
+        )
 
         # define Arg Group "Parameters"
-        _args_schema = cls._args_schema        
+
+        _args_schema = cls._args_schema
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Parameters",
@@ -75,17 +76,16 @@ class Update(AAZCommand):
         tags.Element = AAZStrArg(
             nullable=True,
         )
-
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.EmailCommunicationServicesGet(ctx=self.ctx)()
+        self.EmailServicesGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.EmailCommunicationServicesCreateOrUpdate(ctx=self.ctx)()
+        yield self.EmailServicesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -108,7 +108,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class EmailCommunicationServicesGet(AAZHttpOperation):
+    class EmailServicesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -122,7 +122,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}",
                 **self.url_parameters
             )
 
@@ -138,7 +138,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "emailcommunicationServiceName", self.ctx.args.name,
+                    "emailServiceName", self.ctx.args.email_service_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -187,11 +187,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_emailcommunication_service_resource_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_email_service_resource_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class EmailCommunicationServicesCreateOrUpdate(AAZHttpOperation):
+    class EmailServicesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -221,7 +221,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailcommunicationServiceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}",
                 **self.url_parameters
             )
 
@@ -237,7 +237,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "emailcommunicationServiceName", self.ctx.args.name,
+                    "emailServiceName", self.ctx.args.email_service_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -298,7 +298,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_emailcommunication_service_resource_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_email_service_resource_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -313,8 +313,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")            
+            _builder.set_prop("tags", AAZDictType, ".tags")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -334,70 +333,55 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_emailcommunication_service_resource_read = None
+    _schema_email_service_resource_read = None
 
     @classmethod
-    def _build_schema_emailcommunication_service_resource_read(cls, _schema):
-        if cls._schema_emailcommunication_service_resource_read is not None:
-            _schema.id = cls._schema_emailcommunication_service_resource_read.id
-            _schema.location = cls._schema_emailcommunication_service_resource_read.location
-            _schema.name = cls._schema_emailcommunication_service_resource_read.name
-            _schema.properties = cls._schema_emailcommunication_service_resource_read.properties
-            _schema.system_data = cls._schema_emailcommunication_service_resource_read.system_data
-            _schema.tags = cls._schema_emailcommunication_service_resource_read.tags
-            _schema.type = cls._schema_emailcommunication_service_resource_read.type
+    def _build_schema_email_service_resource_read(cls, _schema):
+        if cls._schema_email_service_resource_read is not None:
+            _schema.id = cls._schema_email_service_resource_read.id
+            _schema.location = cls._schema_email_service_resource_read.location
+            _schema.name = cls._schema_email_service_resource_read.name
+            _schema.properties = cls._schema_email_service_resource_read.properties
+            _schema.system_data = cls._schema_email_service_resource_read.system_data
+            _schema.tags = cls._schema_email_service_resource_read.tags
+            _schema.type = cls._schema_email_service_resource_read.type
             return
 
-        cls._schema_emailcommunication_service_resource_read = _schema_emailcommunication_service_resource_read = AAZObjectType()
+        cls._schema_email_service_resource_read = _schema_email_service_resource_read = AAZObjectType()
 
-        emailcommunication_service_resource_read = _schema_emailcommunication_service_resource_read
-        emailcommunication_service_resource_read.id = AAZStrType(
+        email_service_resource_read = _schema_email_service_resource_read
+        email_service_resource_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        emailcommunication_service_resource_read.location = AAZStrType(
+        email_service_resource_read.location = AAZStrType(
             flags={"required": True},
         )
-        emailcommunication_service_resource_read.name = AAZStrType(
+        email_service_resource_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        emailcommunication_service_resource_read.properties = AAZObjectType(
+        email_service_resource_read.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
-        emailcommunication_service_resource_read.system_data = AAZObjectType(
+        email_service_resource_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        emailcommunication_service_resource_read.tags = AAZDictType()
-        emailcommunication_service_resource_read.type = AAZStrType(
+        email_service_resource_read.tags = AAZDictType()
+        email_service_resource_read.type = AAZStrType(
             flags={"read_only": True},
-        )       
+        )
 
-        properties = _schema_emailcommunication_service_resource_read.properties
+        properties = _schema_email_service_resource_read.properties
         properties.data_location = AAZStrType(
             serialized_name="dataLocation",
             flags={"required": True},
-        )
-        properties.host_name = AAZStrType(
-            serialized_name="hostName",
-            flags={"read_only": True},
-        )
-        properties.immutable_resource_id = AAZStrType(
-            serialized_name="immutableResourceId",
-            flags={"read_only": True},
-        )
-        properties.notification_hub_id = AAZStrType(
-            serialized_name="notificationHubId",
-            flags={"read_only": True},
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.version = AAZStrType(
-            flags={"read_only": True},
-        )
 
-        system_data = _schema_emailcommunication_service_resource_read.system_data
+        system_data = _schema_email_service_resource_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -417,16 +401,16 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        tags = _schema_emailcommunication_service_resource_read.tags
+        tags = _schema_email_service_resource_read.tags
         tags.Element = AAZStrType()
 
-        _schema.id = cls._schema_emailcommunication_service_resource_read.id
-        _schema.location = cls._schema_emailcommunication_service_resource_read.location
-        _schema.name = cls._schema_emailcommunication_service_resource_read.name
-        _schema.properties = cls._schema_emailcommunication_service_resource_read.properties
-        _schema.system_data = cls._schema_emailcommunication_service_resource_read.system_data
-        _schema.tags = cls._schema_emailcommunication_service_resource_read.tags
-        _schema.type = cls._schema_emailcommunication_service_resource_read.type
+        _schema.id = cls._schema_email_service_resource_read.id
+        _schema.location = cls._schema_email_service_resource_read.location
+        _schema.name = cls._schema_email_service_resource_read.name
+        _schema.properties = cls._schema_email_service_resource_read.properties
+        _schema.system_data = cls._schema_email_service_resource_read.system_data
+        _schema.tags = cls._schema_email_service_resource_read.tags
+        _schema.type = cls._schema_email_service_resource_read.type
 
 
 __all__ = ["Update"]
