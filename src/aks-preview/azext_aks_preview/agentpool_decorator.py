@@ -572,7 +572,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         if self.context.get_skip_gpu_driver_install():
             if agentpool.gpu_profile is None:
-                agentpool.gpu_profile = self.models.AgentPoolGPUProfile() # pylint: disable=no-member
+                agentpool.gpu_profile = self.models.AgentPoolGPUProfile()  # pylint: disable=no-member
             agentpool.gpu_profile.install_gpu_driver = False
         return agentpool
 
