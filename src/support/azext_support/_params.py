@@ -19,6 +19,7 @@ def load_arguments(self, _):
     load_problem_classifications_argument(self, _)
     load_tickets_argument(self, _)
     load_communications_argument(self, _)
+    load_file_workspace_argument(self, _)
 
 
 def load_services_argument(self, _):
@@ -151,3 +152,18 @@ def load_communications_argument(self, _):
         c.argument('communication_body', help='Text of the communication.', required=True)
         c.argument('communication_subject', help='Subject of the communication.', required=True)
         c.argument('communication_sender', help='Email address of the sender.')
+
+def load_file_workspace_argument(self, _):
+    with self.argument_context('support in-subscription file-workspace create') as c:
+		c.argument('workspace_name', help='Name of the workspace.', required=True)
+        c.argument('subscription', help='Specified subscription for the file workspace', required=True)
+
+    with self.argument_context('support in-subscription file-workspace show') as c:
+        c.argument('workspace_name', help='Name of the workspace.', required=True)
+		c.argument('subscription', help='Specified subscription for the file workspace', required=True)
+
+    with self.argument_context('support no-subscription file-workspace create') as c:
+        c.argument('workspace_name', help='Name of the workspace.', required=True)
+
+    with self.argument_context('support no-subscription file-workspace show') as c:
+		c.argument('workspace_name', help='Name of the workspace.', required=True)
