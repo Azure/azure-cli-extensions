@@ -523,7 +523,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_3.get_ip_families(), "IPv4,IPv6")
+        self.assertEqual(ctx_3.get_ip_families(), ["IPv4", "IPv6"])
 
     def test_get_load_balancer_managed_outbound_ip_count(self):
         # default
