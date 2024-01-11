@@ -511,7 +511,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"ip_families": []}),
+            AKSManagedClusterParamDict({"ip_families": ""}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -519,11 +519,11 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         ctx_3 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"ip_families": ["IPv4", "IPv6"]}),
+            AKSManagedClusterParamDict({"ip_families": "IPv4,IPv6"}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_3.get_ip_families(), ["IPv4", "IPv6"])
+        self.assertEqual(ctx_3.get_ip_families(), "IPv4,IPv6")
 
     def test_get_load_balancer_managed_outbound_ip_count(self):
         # default
@@ -3847,7 +3847,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "network_policy": None,
                 "nat_gateway_managed_outbound_ip_count": None,
                 "nat_gateway_idle_timeout": None,
-                "ip_families": ["IPv4", "IPv6"],
+                "ip_families": "IPv4,IPv6",
                 "pod_cidrs": "10.246.0.0/16,2001:abcd::/64",
                 "service_cidrs": "10.0.0.0/16,2001:ffff::/108",
                 "load_balancer_managed_outbound_ipv6_count": 3,
@@ -5544,7 +5544,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "ip_families": ["ipv4", "ipv6"]
+                "ip_families": "IPv4,IPv6"
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
