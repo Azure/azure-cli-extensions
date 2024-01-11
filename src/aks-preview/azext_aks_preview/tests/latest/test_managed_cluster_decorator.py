@@ -5544,7 +5544,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "ip_families": "IPv4,IPv6"
+                "ip_families": "ipv4,ipv6"
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
