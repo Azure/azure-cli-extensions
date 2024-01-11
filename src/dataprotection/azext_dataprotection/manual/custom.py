@@ -110,29 +110,7 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
             raise InvalidArgumentValueError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
                                             ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources, '
                                             ' --backup-hook-references for given datasource type.')
-        if vaulted_backup_containers:
-            return {
-                "object_type": "BlobBackupDatasourceParameters",
-                "containers_list": vaulted_backup_containers
-            }
-        elif include_all_containers:
-            if storage_account_name and storage_account_resource_group:
-                from azure.cli.command_modules.storage.operations.blob import list_container_rm
-                container_list_generator = list_container_rm(cmd, client, storage_account_resource_group, storage_account_name)
-                containers_list = [container.name for container in list(container_list_generator)]
-                # Verify and raise error if number of containers > 100
-                # if len(containers_list) > 100:
-                #     raise InvalidArgumentValueError('Storage account has more than 100 containers. Please select 100 containers or less for backup configuration.')
-                return {
-                    "object_type": "BlobBackupDatasourceParameters",
-                    "containers_list": containers_list
-                }
-            else:
-                raise RequiredArgumentMissingError('Please input --storage-account-name and --storage-account-resource-group parameters '
-                                                   'for fetching all vaulted containers.')
-        else:
-            raise RequiredArgumentMissingError('Please provide --vaulted-backup-containers argument or --include-all-containers argument '
-                                               'for given workload type.')
+        return helper.get_blob_backupconfig(vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group)
     else:
         raise InvalidArgumentValueError('Given datasource type is not supported currently. '
                                         'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
@@ -142,72 +120,30 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
                                               friendly_name=None, backup_configuration=None,
                                               secret_store_type=None, secret_store_uri=None,
                                               snapshot_resource_group_name=None, tags=None):
-    datasource_info = helper.get_datasource_info(datasource_type, datasource_id, datasource_location)
-    datasourceset_info = None
     manifest = helper.load_manifest(datasource_type)
+
+    datasource_info = helper.get_datasource_info(datasource_type, datasource_id, datasource_location)
+
+    datasourceset_info = None
     if manifest["isProxyResource"]:
         datasourceset_info = helper.get_datasourceset_info(datasource_type, datasource_id, datasource_location)
 
     policy_parameters = None
-    # Azure Disk and AKS specific code for adding datastoreparameter list in the json
     if manifest["addDataStoreParametersList"]:
-        policy_parameters = {
-            "data_store_parameters_list": [
-                {
-                    "object_type": "AzureOperationalStoreParameters",
-                    "data_store_type": "OperationalStore",
-                    "resource_group_id": helper.get_rg_id_from_arm_id(datasource_id)
-                }
-            ]
-        }
-
-        if snapshot_resource_group_name:
-            disk_sub_id = helper.get_sub_id_from_arm_id(datasource_id)
-            policy_parameters["data_store_parameters_list"][0]["resource_group_id"] = (disk_sub_id + "/resourceGroups/"
-                                                                                       + snapshot_resource_group_name)
+        policy_parameters = helper.get_policy_parameters(datasource_id, snapshot_resource_group_name)
 
     datasource_auth_credentials_info = None
     if manifest["supportSecretStoreAuthentication"]:
-        if secret_store_uri and secret_store_type:
-            datasource_auth_credentials_info = {
-                "secret_store_resource": {
-                    "uri": secret_store_uri,
-                    "value": None,
-                    "secret_store_type": secret_store_type
-                },
-                "object_type": "SecretStoreBasedAuthCredentials"
-            }
-        elif secret_store_uri or secret_store_type:
-            raise RequiredArgumentMissingError("Either secret store uri or secret store type not provided.")
+        datasource_auth_credentials_info = helper.get_datasource_auth_credentials_info(secret_store_type, secret_store_uri)
 
     policy_info = {
         "policy_id": policy_id,
         "policy_parameters": policy_parameters
     }
 
-    # Fetching or setting Friendly name, as appropriate
-    # Following earlier patterns, not raising any concern if friendly name is provided where it isn't required
-    # However, boilerplate code has been added here as Powershell raises an error here. We might want to flag to the user
-    # that their provided friendly name will not be used.
-    if not manifest["friendlyNameRequired"] and friendly_name is not None:
-        logger.warning("--friendly-name is not a required parameter for the given DatasourceType, and the user input will be overridden")
+    friendly_name = helper.get_friendly_name(datasource_type, friendly_name, datasourceset_info, datasource_info)
 
-    # If friendly name is required, we use the user input/validate accordingly if it wasn't provided. If it isn't, we override user input if any
-    if manifest["friendlyNameRequired"]:
-        if friendly_name is None:
-            raise RequiredArgumentMissingError("friendly-name parameter is required for the given DatasourceType")
-        friendly_name = datasourceset_info["resource_name"] + "/" + friendly_name
-    elif manifest["isProxyResource"]:
-        friendly_name = datasourceset_info["resource_name"] + "/" + datasource_info["resource_name"]
-    else:
-        friendly_name = datasource_info["resource_name"]
-
-    guid = uuid.uuid1()
-    backup_instance_name = ""
-    if manifest["isProxyResource"]:
-        backup_instance_name = datasourceset_info["resource_name"] + "-" + datasource_info["resource_name"] + "-" + str(guid)
-    else:
-        backup_instance_name = datasource_info["resource_name"] + "-" + datasource_info["resource_name"] + "-" + str(guid)
+    backup_instance_name = helper.get_backup_instance_name(datasource_type, datasourceset_info, datasource_info)
 
     if manifest["addBackupDatasourceParametersList"]:
         if manifest["backupConfigurationRequired"] and backup_configuration is None:
