@@ -155,15 +155,15 @@ def load_communications_argument(self, _):
 
 def load_file_workspace_argument(self, _):
     with self.argument_context('support in-subscription file-workspace create') as c:
-		c.argument('workspace_name', help='Name of the workspace.', required=True)
+        c.argument('workspace_name', help='Name of the workspace.', required=True)
         c.argument('subscription', help='Specified subscription for the file workspace', required=True)
 
     with self.argument_context('support in-subscription file-workspace show') as c:
         c.argument('workspace_name', help='Name of the workspace.', required=True)
-		c.argument('subscription', help='Specified subscription for the file workspace', required=True)
+        c.argument('subscription', help='Specified subscription for the file workspace', required=True)
 
     with self.argument_context('support no-subscription file-workspace create') as c:
         c.argument('workspace_name', help='Name of the workspace.', required=True)
 
     with self.argument_context('support no-subscription file-workspace show') as c:
-		c.argument('workspace_name', help='Name of the workspace.', required=True)
+        c.argument('workspace_name', help='Name of the workspace.', required=True)
