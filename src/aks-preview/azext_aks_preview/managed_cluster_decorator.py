@@ -276,6 +276,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         # read the original value passed by the command
         ip_families = self.raw_param.get("ip_families")
+        # normalize
+        ip_families = extract_comma_separated_string(ip_families, keep_none=True, default_value=[])
 
         # try to read the property value corresponding to the parameter from the `mc` object
         # when it wasn't provided as param.
