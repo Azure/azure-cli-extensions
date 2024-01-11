@@ -7007,6 +7007,123 @@ class JavaComponentServiceBind(_serialization.Model):
         self.service_id = service_id
 
 
+class ContainerAppsJob(TrackedResource):  # pylint: disable=too-many-instance-attributes
+    """Container App Job.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.appcontainers.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar location: The geo-location where the resource lives. Required.
+    :vartype location: str
+    :ivar extended_location: The complex type of the extended location.
+    :vartype extended_location: ~azure.mgmt.appcontainers.models.ExtendedLocation
+    :ivar identity: Managed identities needed by a container app job to interact with other Azure
+     services to not maintain any secrets or credentials in code.
+    :vartype identity: ~azure.mgmt.appcontainers.models.ManagedServiceIdentity
+    :ivar provisioning_state: Provisioning state of the Container Apps Job. Known values are:
+     "InProgress", "Succeeded", "Failed", "Canceled", and "Deleting".
+    :vartype provisioning_state: str or ~azure.mgmt.appcontainers.models.JobProvisioningState
+    :ivar environment_id: Resource ID of environment.
+    :vartype environment_id: str
+    :ivar workload_profile_name: Workload profile name to pin for container apps job execution.
+    :vartype workload_profile_name: str
+    :ivar configuration: Container Apps Job configuration properties.
+    :vartype configuration: ~azure.mgmt.appcontainers.models.JobConfiguration
+    :ivar template: Container Apps job definition.
+    :vartype template: ~azure.mgmt.appcontainers.models.JobTemplate
+    :ivar outbound_ip_addresses: Outbound IP Addresses of a container apps job.
+    :vartype outbound_ip_addresses: list[str]
+    :ivar event_stream_endpoint: The endpoint of the eventstream of the container apps job.
+    :vartype event_stream_endpoint: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "location": {"required": True},
+        "provisioning_state": {"readonly": True},
+        "outbound_ip_addresses": {"readonly": True},
+        "event_stream_endpoint": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
+        "extended_location": {"key": "extendedLocation", "type": "ExtendedLocation"},
+        "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+        "environment_id": {"key": "properties.environmentId", "type": "str"},
+        "workload_profile_name": {"key": "properties.workloadProfileName", "type": "str"},
+        "configuration": {"key": "properties.configuration", "type": "JobConfiguration"},
+        "template": {"key": "properties.template", "type": "JobTemplate"},
+        "outbound_ip_addresses": {"key": "properties.outboundIpAddresses", "type": "[str]"},
+        "event_stream_endpoint": {"key": "properties.eventStreamEndpoint", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        tags: Optional[Dict[str, str]] = None,
+        extended_location: Optional["_models.ExtendedLocation"] = None,
+        identity: Optional["_models.ManagedServiceIdentity"] = None,
+        environment_id: Optional[str] = None,
+        workload_profile_name: Optional[str] = None,
+        configuration: Optional["_models.JobConfiguration"] = None,
+        template: Optional["_models.JobTemplate"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword tags: Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
+        :keyword extended_location: The complex type of the extended location.
+        :paramtype extended_location: ~azure.mgmt.appcontainers.models.ExtendedLocation
+        :keyword identity: Managed identities needed by a container app job to interact with other
+         Azure services to not maintain any secrets or credentials in code.
+        :paramtype identity: ~azure.mgmt.appcontainers.models.ManagedServiceIdentity
+        :keyword environment_id: Resource ID of environment.
+        :paramtype environment_id: str
+        :keyword workload_profile_name: Workload profile name to pin for container apps job execution.
+        :paramtype workload_profile_name: str
+        :keyword configuration: Container Apps Job configuration properties.
+        :paramtype configuration: ~azure.mgmt.appcontainers.models.JobConfiguration
+        :keyword template: Container Apps job definition.
+        :paramtype template: ~azure.mgmt.appcontainers.models.JobTemplate
+        """
+        super().__init__(tags=tags, location=location, **kwargs)
+        self.extended_location = extended_location
+        self.identity = identity
+        self.provisioning_state = None
+        self.environment_id = environment_id
+        self.workload_profile_name = workload_profile_name
+        self.configuration = configuration
+        self.template = template
+        self.outbound_ip_addresses = None
+        self.event_stream_endpoint = None
+
+
 class Job(TrackedResource):  # pylint: disable=too-many-instance-attributes
     """Container App Job.
 
