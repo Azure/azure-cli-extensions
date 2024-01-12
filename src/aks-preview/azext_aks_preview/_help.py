@@ -526,6 +526,9 @@ helps['aks create'] = f"""
         - name: --enable-vpa
           type: bool
           short-summary: Enable vertical pod autoscaler for cluster.
+        - name: --enable-addon-autoscaling
+          type: bool
+          short-summary: Enable addon autoscaling for cluster.
         - name: --nodepool-allowed-host-ports
           type: string
           short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
@@ -870,6 +873,10 @@ helps['aks update'] = """
         - name: --enable-disk-driver
           type: bool
           short-summary: Enable AzureDisk CSI Driver.
+        - name: --ip-families
+          type: string
+          short-summary: A comma separated list of IP versions to use for cluster networking.
+          long-summary: Each IP version should be in the format IPvN. For example, IPv4.
         - name: --pod-cidr
           type: string
           short-summary: A CIDR notation IP range from which to assign pod IPs when kubenet is used.
@@ -1079,6 +1086,12 @@ helps['aks update'] = """
         - name: --disable-vpa
           type: bool
           short-summary: Disable vertical pod autoscaler for cluster.
+        - name: --enable-addon-autoscaling
+          type: bool
+          short-summary: Enable addon autoscaling for cluster.
+        - name: --disable-addon-autoscaling
+          type: bool
+          short-summary: Disable addon autoscaling for cluster.
         - name: --cluster-snapshot-id
           type: string
           short-summary: The source cluster snapshot id is used to update existing cluster.
