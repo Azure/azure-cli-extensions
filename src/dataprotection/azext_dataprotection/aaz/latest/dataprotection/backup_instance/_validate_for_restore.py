@@ -23,9 +23,9 @@ class ValidateForRestore(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/validaterestore", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/validaterestore", "2023-11-01"],
         ]
     }
 
@@ -196,6 +196,9 @@ class ValidateForRestore(AAZCommand):
         _element.kubernetes_cluster_restore_criteria = AAZObjectArg(
             options=["kubernetes-cluster-restore-criteria"],
         )
+        _element.kubernetes_cluster_vault_tier_restore_criteria = AAZObjectArg(
+            options=["kubernetes-cluster-vault-tier-restore-criteria"],
+        )
         _element.kubernetes_pv_restore_criteria = AAZObjectArg(
             options=["kubernetes-pv-restore-criteria"],
         )
@@ -290,16 +293,82 @@ class ValidateForRestore(AAZCommand):
 
         restore_hook_references = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.restore_hook_references
         restore_hook_references.Element = AAZObjectArg()
+        cls._build_args_namespaced_name_resource_create(restore_hook_references.Element)
 
-        _element = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.restore_hook_references.Element
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="Name of the resource",
+        kubernetes_cluster_vault_tier_restore_criteria = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_vault_tier_restore_criteria
+        kubernetes_cluster_vault_tier_restore_criteria.conflict_policy = AAZStrArg(
+            options=["conflict-policy"],
+            help="Gets or sets the Conflict Policy property. This property sets policy during conflict of resources during restore from vault.",
+            enum={"Patch": "Patch", "Skip": "Skip"},
         )
-        _element.namespace = AAZStrArg(
-            options=["namespace"],
-            help="Namespace in which the resource exists",
+        kubernetes_cluster_vault_tier_restore_criteria.excluded_namespaces = AAZListArg(
+            options=["excluded-namespaces"],
+            help="Gets or sets the exclude namespaces property. This property sets the namespaces to be excluded during restore from vault.",
         )
+        kubernetes_cluster_vault_tier_restore_criteria.excluded_resource_types = AAZListArg(
+            options=["excluded-resource-types"],
+            help="Gets or sets the exclude resource types property. This property sets the resource types to be excluded during restore from vault.",
+        )
+        kubernetes_cluster_vault_tier_restore_criteria.include_cluster_scope_resources = AAZBoolArg(
+            options=["include-cluster-scope-resources"],
+            help="Gets or sets the include cluster resources property. This property if enabled will include cluster scope resources during restore from vault.",
+            required=True,
+        )
+        kubernetes_cluster_vault_tier_restore_criteria.included_namespaces = AAZListArg(
+            options=["included-namespaces"],
+            help="Gets or sets the include namespaces property. This property sets the namespaces to be included during restore from vault.",
+        )
+        kubernetes_cluster_vault_tier_restore_criteria.included_resource_types = AAZListArg(
+            options=["included-resource-types"],
+            help="Gets or sets the include resource types property. This property sets the resource types to be included during restore from vault.",
+        )
+        kubernetes_cluster_vault_tier_restore_criteria.label_selectors = AAZListArg(
+            options=["label-selectors"],
+            help="Gets or sets the LabelSelectors property. This property sets the resource with such label selectors to be included during restore from vault.",
+        )
+        kubernetes_cluster_vault_tier_restore_criteria.namespace_mappings = AAZDictArg(
+            options=["namespace-mappings"],
+            help="Gets or sets the Namespace Mappings property. This property sets if namespace needs to be change during restore from vault.",
+        )
+        kubernetes_cluster_vault_tier_restore_criteria.persistent_volume_restore_mode = AAZStrArg(
+            options=["persistent-volume-restore-mode"],
+            help="Gets or sets the PV (Persistent Volume) Restore Mode property. This property sets whether volumes needs to be restored from vault.",
+            enum={"RestoreWithVolumeData": "RestoreWithVolumeData", "RestoreWithoutVolumeData": "RestoreWithoutVolumeData"},
+        )
+        kubernetes_cluster_vault_tier_restore_criteria.restore_hook_references = AAZListArg(
+            options=["restore-hook-references"],
+            help="Gets or sets the restore hook references. This property sets the hook reference to be executed during restore from vault.",
+        )
+        kubernetes_cluster_vault_tier_restore_criteria.staging_resource_group_id = AAZResourceIdArg(
+            options=["staging-resource-group-id"],
+            help="Gets or sets the staging RG Id for creating staging disks and snapshots during restore from vault.",
+        )
+        kubernetes_cluster_vault_tier_restore_criteria.staging_storage_account_id = AAZResourceIdArg(
+            options=["staging-storage-account-id"],
+            help="Gets or sets the staging Storage Account Id for creating backup extension object store data during restore from vault.",
+        )
+
+        excluded_namespaces = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_vault_tier_restore_criteria.excluded_namespaces
+        excluded_namespaces.Element = AAZStrArg()
+
+        excluded_resource_types = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_vault_tier_restore_criteria.excluded_resource_types
+        excluded_resource_types.Element = AAZStrArg()
+
+        included_namespaces = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_vault_tier_restore_criteria.included_namespaces
+        included_namespaces.Element = AAZStrArg()
+
+        included_resource_types = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_vault_tier_restore_criteria.included_resource_types
+        included_resource_types.Element = AAZStrArg()
+
+        label_selectors = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_vault_tier_restore_criteria.label_selectors
+        label_selectors.Element = AAZStrArg()
+
+        namespace_mappings = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_vault_tier_restore_criteria.namespace_mappings
+        namespace_mappings.Element = AAZStrArg()
+
+        restore_hook_references = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_vault_tier_restore_criteria.restore_hook_references
+        restore_hook_references.Element = AAZObjectArg()
+        cls._build_args_namespaced_name_resource_create(restore_hook_references.Element)
 
         kubernetes_pv_restore_criteria = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_pv_restore_criteria
         kubernetes_pv_restore_criteria.name = AAZStrArg(
@@ -562,6 +631,30 @@ class ValidateForRestore(AAZCommand):
         _schema.resource_type = cls._args_datasource_create.resource_type
         _schema.resource_uri = cls._args_datasource_create.resource_uri
 
+    _args_namespaced_name_resource_create = None
+
+    @classmethod
+    def _build_args_namespaced_name_resource_create(cls, _schema):
+        if cls._args_namespaced_name_resource_create is not None:
+            _schema.name = cls._args_namespaced_name_resource_create.name
+            _schema.namespace = cls._args_namespaced_name_resource_create.namespace
+            return
+
+        cls._args_namespaced_name_resource_create = AAZObjectArg()
+
+        namespaced_name_resource_create = cls._args_namespaced_name_resource_create
+        namespaced_name_resource_create.name = AAZStrArg(
+            options=["name"],
+            help="Name of the resource",
+        )
+        namespaced_name_resource_create.namespace = AAZStrArg(
+            options=["namespace"],
+            help="Namespace in which the resource exists",
+        )
+
+        _schema.name = cls._args_namespaced_name_resource_create.name
+        _schema.namespace = cls._args_namespaced_name_resource_create.namespace
+
     def _execute_operations(self):
         self.pre_operations()
         yield self.BackupInstancesValidateForRestore(ctx=self.ctx)()
@@ -647,7 +740,7 @@ class ValidateForRestore(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }
@@ -718,11 +811,13 @@ class ValidateForRestore(AAZCommand):
             if _elements is not None:
                 _elements.set_const("objectType", "ItemPathBasedRestoreCriteria", AAZStrType, ".item_path_based_restore_criteria", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "KubernetesClusterRestoreCriteria", AAZStrType, ".kubernetes_cluster_restore_criteria", typ_kwargs={"flags": {"required": True}})
+                _elements.set_const("objectType", "KubernetesClusterVaultTierRestoreCriteria", AAZStrType, ".kubernetes_cluster_vault_tier_restore_criteria", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "KubernetesPVRestoreCriteria", AAZStrType, ".kubernetes_pv_restore_criteria", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "KubernetesStorageClassRestoreCriteria", AAZStrType, ".kubernetes_storage_class_restore_criteria", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "RangeBasedItemLevelRestoreCriteria", AAZStrType, ".range_based_item_level_restore_criteria", typ_kwargs={"flags": {"required": True}})
                 _elements.discriminate_by("objectType", "ItemPathBasedRestoreCriteria")
                 _elements.discriminate_by("objectType", "KubernetesClusterRestoreCriteria")
+                _elements.discriminate_by("objectType", "KubernetesClusterVaultTierRestoreCriteria")
                 _elements.discriminate_by("objectType", "KubernetesPVRestoreCriteria")
                 _elements.discriminate_by("objectType", "KubernetesStorageClassRestoreCriteria")
                 _elements.discriminate_by("objectType", "RangeBasedItemLevelRestoreCriteria")
@@ -776,12 +871,50 @@ class ValidateForRestore(AAZCommand):
 
             restore_hook_references = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.restoreHookReferences")
             if restore_hook_references is not None:
-                restore_hook_references.set_elements(AAZObjectType, ".")
+                _ValidateForRestoreHelper._build_schema_namespaced_name_resource_create(restore_hook_references.set_elements(AAZObjectType, "."))
 
-            _elements = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.restoreHookReferences[]")
-            if _elements is not None:
-                _elements.set_prop("name", AAZStrType, ".name")
-                _elements.set_prop("namespace", AAZStrType, ".namespace")
+            disc_kubernetes_cluster_vault_tier_restore_criteria = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterVaultTierRestoreCriteria}")
+            if disc_kubernetes_cluster_vault_tier_restore_criteria is not None:
+                disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("conflictPolicy", AAZStrType, ".kubernetes_cluster_vault_tier_restore_criteria.conflict_policy")
+                disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("excludedNamespaces", AAZListType, ".kubernetes_cluster_vault_tier_restore_criteria.excluded_namespaces")
+                disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("excludedResourceTypes", AAZListType, ".kubernetes_cluster_vault_tier_restore_criteria.excluded_resource_types")
+                disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("includeClusterScopeResources", AAZBoolType, ".kubernetes_cluster_vault_tier_restore_criteria.include_cluster_scope_resources", typ_kwargs={"flags": {"required": True}})
+                disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("includedNamespaces", AAZListType, ".kubernetes_cluster_vault_tier_restore_criteria.included_namespaces")
+                disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("includedResourceTypes", AAZListType, ".kubernetes_cluster_vault_tier_restore_criteria.included_resource_types")
+                disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("labelSelectors", AAZListType, ".kubernetes_cluster_vault_tier_restore_criteria.label_selectors")
+                disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("namespaceMappings", AAZDictType, ".kubernetes_cluster_vault_tier_restore_criteria.namespace_mappings")
+                disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("persistentVolumeRestoreMode", AAZStrType, ".kubernetes_cluster_vault_tier_restore_criteria.persistent_volume_restore_mode")
+                disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("restoreHookReferences", AAZListType, ".kubernetes_cluster_vault_tier_restore_criteria.restore_hook_references")
+                disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("stagingResourceGroupId", AAZStrType, ".kubernetes_cluster_vault_tier_restore_criteria.staging_resource_group_id")
+                disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("stagingStorageAccountId", AAZStrType, ".kubernetes_cluster_vault_tier_restore_criteria.staging_storage_account_id")
+
+            excluded_namespaces = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterVaultTierRestoreCriteria}.excludedNamespaces")
+            if excluded_namespaces is not None:
+                excluded_namespaces.set_elements(AAZStrType, ".")
+
+            excluded_resource_types = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterVaultTierRestoreCriteria}.excludedResourceTypes")
+            if excluded_resource_types is not None:
+                excluded_resource_types.set_elements(AAZStrType, ".")
+
+            included_namespaces = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterVaultTierRestoreCriteria}.includedNamespaces")
+            if included_namespaces is not None:
+                included_namespaces.set_elements(AAZStrType, ".")
+
+            included_resource_types = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterVaultTierRestoreCriteria}.includedResourceTypes")
+            if included_resource_types is not None:
+                included_resource_types.set_elements(AAZStrType, ".")
+
+            label_selectors = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterVaultTierRestoreCriteria}.labelSelectors")
+            if label_selectors is not None:
+                label_selectors.set_elements(AAZStrType, ".")
+
+            namespace_mappings = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterVaultTierRestoreCriteria}.namespaceMappings")
+            if namespace_mappings is not None:
+                namespace_mappings.set_elements(AAZStrType, ".")
+
+            restore_hook_references = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterVaultTierRestoreCriteria}.restoreHookReferences")
+            if restore_hook_references is not None:
+                _ValidateForRestoreHelper._build_schema_namespaced_name_resource_create(restore_hook_references.set_elements(AAZObjectType, "."))
 
             disc_kubernetes_pv_restore_criteria = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesPVRestoreCriteria}")
             if disc_kubernetes_pv_restore_criteria is not None:
@@ -911,6 +1044,13 @@ class _ValidateForRestoreHelper:
         cls._build_schema_base_resource_properties_create(_builder.set_prop("resourceProperties", AAZObjectType, ".resource_properties"))
         _builder.set_prop("resourceType", AAZStrType, ".resource_type")
         _builder.set_prop("resourceUri", AAZStrType, ".resource_uri")
+
+    @classmethod
+    def _build_schema_namespaced_name_resource_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("name", AAZStrType, ".name")
+        _builder.set_prop("namespace", AAZStrType, ".namespace")
 
 
 __all__ = ["ValidateForRestore"]

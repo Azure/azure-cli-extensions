@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-11-01"],
         ]
     }
 
@@ -106,6 +106,19 @@ class Update(AAZCommand):
         )
 
         # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.replicated_regions = AAZListArg(
+            options=["--replicated-regions"],
+            arg_group="Properties",
+            help="List of replicated regions for Backup Vault",
+            nullable=True,
+        )
+
+        replicated_regions = cls._args_schema.replicated_regions
+        replicated_regions.Element = AAZStrArg(
+            nullable=True,
+        )
 
         # define Arg Group "SecuritySettings"
 
@@ -214,7 +227,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }
@@ -313,7 +326,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }
@@ -383,6 +396,7 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("featureSettings", AAZObjectType)
                 properties.set_prop("monitoringSettings", AAZObjectType)
+                properties.set_prop("replicatedRegions", AAZListType, ".replicated_regions")
                 properties.set_prop("securitySettings", AAZObjectType)
 
             feature_settings = _builder.get(".properties.featureSettings")
@@ -400,6 +414,10 @@ class Update(AAZCommand):
             azure_monitor_alert_settings = _builder.get(".properties.monitoringSettings.azureMonitorAlertSettings")
             if azure_monitor_alert_settings is not None:
                 azure_monitor_alert_settings.set_prop("alertsForAllJobFailures", AAZStrType, ".azure_monitor_alerts_for_job_failures")
+
+            replicated_regions = _builder.get(".properties.replicatedRegions")
+            if replicated_regions is not None:
+                replicated_regions.set_elements(AAZStrType, ".")
 
             security_settings = _builder.get(".properties.securitySettings")
             if security_settings is not None:
@@ -519,6 +537,9 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.replicated_regions = AAZListType(
+            serialized_name="replicatedRegions",
+        )
         properties.resource_move_details = AAZObjectType(
             serialized_name="resourceMoveDetails",
         )
@@ -561,6 +582,9 @@ class _UpdateHelper:
         azure_monitor_alert_settings.alerts_for_all_job_failures = AAZStrType(
             serialized_name="alertsForAllJobFailures",
         )
+
+        replicated_regions = _schema_backup_vault_resource_read.properties.replicated_regions
+        replicated_regions.Element = AAZStrType()
 
         resource_move_details = _schema_backup_vault_resource_read.properties.resource_move_details
         resource_move_details.completion_time_utc = AAZStrType(
