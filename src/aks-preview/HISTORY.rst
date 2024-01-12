@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `--ip-families` to the `az aks update` command.
 
 0.5.174
 +++++++

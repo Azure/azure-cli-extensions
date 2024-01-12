@@ -5539,6 +5539,75 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
 
+        # test update ip families
+        dec_8 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "ip_families": "ipv4,ipv6"
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                ip_families=["ipv4"]
+            ),
+        )
+
+        dec_8.context.attach_mc(mc_8)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_8.update_network_profile(None)
+        dec_mc_8 = dec_8.update_network_profile(mc_8)
+
+        ground_truth_mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                ip_families=["ipv4", "ipv6"]
+            ),
+        )
+
+        self.assertEqual(dec_mc_8, ground_truth_mc_8)
+
+        # test ip_families aren't updated when updating other fields
+        dec_9 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "network_plugin_mode": "overlay"
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                ip_families=["ipv6", "ipv4"]
+            ),
+        )
+
+        dec_9.context.attach_mc(mc_9)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_9.update_network_profile(None)
+        dec_mc_9 = dec_9.update_network_profile(mc_9)
+
+        ground_truth_mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                ip_families=["ipv6", "ipv4"]
+            ),
+        )
+
+        self.assertEqual(dec_mc_9, ground_truth_mc_9)
+
     def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,

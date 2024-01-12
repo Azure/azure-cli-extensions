@@ -742,6 +742,7 @@ def aks_update(
     network_plugin_mode=None,
     network_policy=None,
     network_dataplane=None,
+    ip_families=None,
     pod_cidr=None,
     enable_pod_security_policy=False,
     disable_pod_security_policy=False,

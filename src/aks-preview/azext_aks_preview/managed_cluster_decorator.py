@@ -278,8 +278,15 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         ip_families = self.raw_param.get("ip_families")
         # normalize
         ip_families = extract_comma_separated_string(ip_families, keep_none=True, default_value=[])
+
         # try to read the property value corresponding to the parameter from the `mc` object
-        if self.mc and self.mc.network_profile and self.mc.network_profile.ip_families is not None:
+        # when it wasn't provided as param.
+        if (
+            not ip_families and
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.ip_families is not None
+        ):
             ip_families = self.mc.network_profile.ip_families
 
         # this parameter does not need dynamic completion
@@ -3416,6 +3423,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         error_msg = f"Please specify one or more of {' or '.join(option_names)}."
         raise RequiredArgumentMissingError(error_msg)
 
+    def update_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        ip_families = self.context.get_ip_families()
+        if ip_families:
+            mc.network_profile.ip_families = ip_families
+
+        self.update_network_plugin_settings(mc)
+
+        return mc
+
     def update_network_plugin_settings(self, mc: ManagedCluster) -> ManagedCluster:
         """Update network plugin settings of network profile for the ManagedCluster object.
 
@@ -4344,7 +4362,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # update linux profile
         mc = self.update_linux_profile(mc)
         # update network profile
-        mc = self.update_network_plugin_settings(mc)
+        mc = self.update_network_profile(mc)
         # update outbound type
         mc = self.update_outbound_type_in_network_profile(mc)
         # update loadbalancer profile
