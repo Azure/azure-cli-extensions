@@ -12,22 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network firewall policy rule-collection-group wait",
+    "network firewall policy rule-collection-group collection delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Delete(AAZCommand):
+    """None
     """
 
     _aaz_info = {
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}/rulecollectiongroups/{}", "2022-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}/rulecollectiongroups/{}", "2022-11-01", "properties.ruleCollections[]"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        self.SubresourceSelector(ctx=self.ctx, name="subresource")
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -44,22 +48,28 @@ class Wait(AAZWaitCommand):
             options=["--policy-name"],
             help="The name of the Firewall Policy.",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
+        _args_schema.rule_collection_group_name = AAZStrArg(
+            options=["--rcg-name", "--rule-collection-group-name"],
             help="The name of the Firewall Policy Rule Collection Group.",
             required=True,
-            id_part="child_name_1",
+        )
+        _args_schema.rule_collection_index = AAZIntArg(
+            options=["--rule-collection-index"],
+            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
         self.FirewallPolicyRuleCollectionGroupsGet(ctx=self.ctx)()
+        self.pre_instance_delete()
+        self.InstanceDeleteByJson(ctx=self.ctx)()
+        self.post_instance_delete()
+        yield self.FirewallPolicyRuleCollectionGroupsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,9 +80,39 @@ class Wait(AAZWaitCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
-        return result
+    @register_callback
+    def pre_instance_delete(self):
+        pass
+
+    @register_callback
+    def post_instance_delete(self):
+        pass
+
+    class SubresourceSelector(AAZJsonSelector):
+
+        def _get(self):
+            result = self.ctx.vars.instance
+            result = result.properties.ruleCollections
+            filters = enumerate(result)
+            filters = filter(
+                lambda e: e[0] == self.ctx.args.rule_collection_index,
+                filters
+            )
+            idx = next(filters)[0]
+            return result[idx]
+
+        def _set(self, value):
+            result = self.ctx.vars.instance
+            result = result.properties.ruleCollections
+            filters = enumerate(result)
+            filters = filter(
+                lambda e: e[0] == self.ctx.args.rule_collection_index,
+                filters
+            )
+            idx = next(filters, [len(result)])[0]
+            self.ctx.args.rule_collection_index = idx
+            result[idx] = value
+            return
 
     class FirewallPolicyRuleCollectionGroupsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -112,7 +152,7 @@ class Wait(AAZWaitCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "ruleCollectionGroupName", self.ctx.args.name,
+                    "ruleCollectionGroupName", self.ctx.args.rule_collection_group_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -157,68 +197,209 @@ class Wait(AAZWaitCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.etag = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.id = AAZStrType()
-            _schema_on_200.name = AAZStrType()
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.priority = AAZIntType()
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.rule_collections = AAZListType(
-                serialized_name="ruleCollections",
-            )
-
-            rule_collections = cls._schema_on_200.properties.rule_collections
-            rule_collections.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.rule_collections.Element
-            _element.name = AAZStrType()
-            _element.priority = AAZIntType()
-            _element.rule_collection_type = AAZStrType(
-                serialized_name="ruleCollectionType",
-                flags={"required": True},
-            )
-
-            disc_firewall_policy_filter_rule_collection = cls._schema_on_200.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection")
-            disc_firewall_policy_filter_rule_collection.action = AAZObjectType()
-            disc_firewall_policy_filter_rule_collection.rules = AAZListType()
-
-            action = cls._schema_on_200.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection").action
-            action.type = AAZStrType()
-
-            rules = cls._schema_on_200.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection").rules
-            rules.Element = AAZObjectType()
-            _WaitHelper._build_schema_firewall_policy_rule_read(rules.Element)
-
-            disc_firewall_policy_nat_rule_collection = cls._schema_on_200.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection")
-            disc_firewall_policy_nat_rule_collection.action = AAZObjectType()
-            disc_firewall_policy_nat_rule_collection.rules = AAZListType()
-
-            action = cls._schema_on_200.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection").action
-            action.type = AAZStrType()
-
-            rules = cls._schema_on_200.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection").rules
-            rules.Element = AAZObjectType()
-            _WaitHelper._build_schema_firewall_policy_rule_read(rules.Element)
+            _DeleteHelper._build_schema_firewall_policy_rule_collection_group_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
+    class FirewallPolicyRuleCollectionGroupsCreateOrUpdate(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
 
-class _WaitHelper:
-    """Helper class for Wait"""
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/firewallPolicies/{firewallPolicyName}/ruleCollectionGroups/{ruleCollectionGroupName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "PUT"
+
+        @property
+        def error_format(self):
+            return "ODataV4Format"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "firewallPolicyName", self.ctx.args.policy_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "ruleCollectionGroupName", self.ctx.args.rule_collection_group_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2022-11-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=self.ctx.vars.instance,
+            )
+
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200_201
+            )
+
+        _schema_on_200_201 = None
+
+        @classmethod
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
+
+            cls._schema_on_200_201 = AAZObjectType()
+            _DeleteHelper._build_schema_firewall_policy_rule_collection_group_read(cls._schema_on_200_201)
+
+            return cls._schema_on_200_201
+
+    class InstanceDeleteByJson(AAZJsonInstanceDeleteOperation):
+
+        def __call__(self, *args, **kwargs):
+            self.ctx.selectors.subresource.set(self._delete_instance())
+
+
+class _DeleteHelper:
+    """Helper class for Delete"""
+
+    _schema_firewall_policy_rule_collection_group_read = None
+
+    @classmethod
+    def _build_schema_firewall_policy_rule_collection_group_read(cls, _schema):
+        if cls._schema_firewall_policy_rule_collection_group_read is not None:
+            _schema.etag = cls._schema_firewall_policy_rule_collection_group_read.etag
+            _schema.id = cls._schema_firewall_policy_rule_collection_group_read.id
+            _schema.name = cls._schema_firewall_policy_rule_collection_group_read.name
+            _schema.properties = cls._schema_firewall_policy_rule_collection_group_read.properties
+            _schema.type = cls._schema_firewall_policy_rule_collection_group_read.type
+            return
+
+        cls._schema_firewall_policy_rule_collection_group_read = _schema_firewall_policy_rule_collection_group_read = AAZObjectType()
+
+        firewall_policy_rule_collection_group_read = _schema_firewall_policy_rule_collection_group_read
+        firewall_policy_rule_collection_group_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
+        firewall_policy_rule_collection_group_read.id = AAZStrType()
+        firewall_policy_rule_collection_group_read.name = AAZStrType()
+        firewall_policy_rule_collection_group_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        firewall_policy_rule_collection_group_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_firewall_policy_rule_collection_group_read.properties
+        properties.priority = AAZIntType()
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.rule_collections = AAZListType(
+            serialized_name="ruleCollections",
+        )
+
+        rule_collections = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections
+        rule_collections.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element
+        _element.name = AAZStrType()
+        _element.priority = AAZIntType()
+        _element.rule_collection_type = AAZStrType(
+            serialized_name="ruleCollectionType",
+            flags={"required": True},
+        )
+
+        disc_firewall_policy_filter_rule_collection = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection")
+        disc_firewall_policy_filter_rule_collection.action = AAZObjectType()
+        disc_firewall_policy_filter_rule_collection.rules = AAZListType()
+
+        action = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection").action
+        action.type = AAZStrType()
+
+        rules = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyFilterRuleCollection").rules
+        rules.Element = AAZObjectType()
+        cls._build_schema_firewall_policy_rule_read(rules.Element)
+
+        disc_firewall_policy_nat_rule_collection = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection")
+        disc_firewall_policy_nat_rule_collection.action = AAZObjectType()
+        disc_firewall_policy_nat_rule_collection.rules = AAZListType()
+
+        action = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection").action
+        action.type = AAZStrType()
+
+        rules = _schema_firewall_policy_rule_collection_group_read.properties.rule_collections.Element.discriminate_by("rule_collection_type", "FirewallPolicyNatRuleCollection").rules
+        rules.Element = AAZObjectType()
+        cls._build_schema_firewall_policy_rule_read(rules.Element)
+
+        _schema.etag = cls._schema_firewall_policy_rule_collection_group_read.etag
+        _schema.id = cls._schema_firewall_policy_rule_collection_group_read.id
+        _schema.name = cls._schema_firewall_policy_rule_collection_group_read.name
+        _schema.properties = cls._schema_firewall_policy_rule_collection_group_read.properties
+        _schema.type = cls._schema_firewall_policy_rule_collection_group_read.type
 
     _schema_firewall_policy_rule_read = None
 
@@ -449,4 +630,4 @@ class _WaitHelper:
             )
 
 
-__all__ = ["Wait"]
+__all__ = ["Delete"]

@@ -13,16 +13,15 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network firewall policy rule-collection-group create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create an Azure firewall policy rule collection group.
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}/rulecollectiongroups/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}/rulecollectiongroups/{}", "2022-11-01"],
         ]
     }
 
@@ -185,6 +184,10 @@ class Create(AAZCommand):
             options=["fqdn-tags"],
             help="List of FQDN Tags for this rule.",
         )
+        application_rule.http_headers_to_insert = AAZListArg(
+            options=["http-headers-to-insert"],
+            help="List of HTTP/S headers to insert.",
+        )
         application_rule.protocols = AAZListArg(
             options=["protocols"],
             help="Array of Application Protocols.",
@@ -219,6 +222,19 @@ class Create(AAZCommand):
 
         fqdn_tags = cls._args_firewall_policy_rule_create.application_rule.fqdn_tags
         fqdn_tags.Element = AAZStrArg()
+
+        http_headers_to_insert = cls._args_firewall_policy_rule_create.application_rule.http_headers_to_insert
+        http_headers_to_insert.Element = AAZObjectArg()
+
+        _element = cls._args_firewall_policy_rule_create.application_rule.http_headers_to_insert.Element
+        _element.header_name = AAZStrArg(
+            options=["header-name"],
+            help="Contains the name of the header",
+        )
+        _element.header_value = AAZStrArg(
+            options=["header-value"],
+            help="Contains the value of the header",
+        )
 
         protocols = cls._args_firewall_policy_rule_create.application_rule.protocols
         protocols.Element = AAZObjectArg()
@@ -448,7 +464,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -618,6 +634,7 @@ class _CreateHelper:
         if disc_application_rule is not None:
             disc_application_rule.set_prop("destinationAddresses", AAZListType, ".application_rule.destination_addresses")
             disc_application_rule.set_prop("fqdnTags", AAZListType, ".application_rule.fqdn_tags")
+            disc_application_rule.set_prop("httpHeadersToInsert", AAZListType, ".application_rule.http_headers_to_insert")
             disc_application_rule.set_prop("protocols", AAZListType, ".application_rule.protocols")
             disc_application_rule.set_prop("sourceAddresses", AAZListType, ".application_rule.source_addresses")
             disc_application_rule.set_prop("sourceIpGroups", AAZListType, ".application_rule.source_ip_groups")
@@ -633,6 +650,15 @@ class _CreateHelper:
         fqdn_tags = _builder.get("{ruleType:ApplicationRule}.fqdnTags")
         if fqdn_tags is not None:
             fqdn_tags.set_elements(AAZStrType, ".")
+
+        http_headers_to_insert = _builder.get("{ruleType:ApplicationRule}.httpHeadersToInsert")
+        if http_headers_to_insert is not None:
+            http_headers_to_insert.set_elements(AAZObjectType, ".")
+
+        _elements = _builder.get("{ruleType:ApplicationRule}.httpHeadersToInsert[]")
+        if _elements is not None:
+            _elements.set_prop("headerName", AAZStrType, ".header_name")
+            _elements.set_prop("headerValue", AAZStrType, ".header_value")
 
         protocols = _builder.get("{ruleType:ApplicationRule}.protocols")
         if protocols is not None:
@@ -783,6 +809,9 @@ class _CreateHelper:
         disc_application_rule.fqdn_tags = AAZListType(
             serialized_name="fqdnTags",
         )
+        disc_application_rule.http_headers_to_insert = AAZListType(
+            serialized_name="httpHeadersToInsert",
+        )
         disc_application_rule.protocols = AAZListType()
         disc_application_rule.source_addresses = AAZListType(
             serialized_name="sourceAddresses",
@@ -808,6 +837,17 @@ class _CreateHelper:
 
         fqdn_tags = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").fqdn_tags
         fqdn_tags.Element = AAZStrType()
+
+        http_headers_to_insert = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").http_headers_to_insert
+        http_headers_to_insert.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").http_headers_to_insert.Element
+        _element.header_name = AAZStrType(
+            serialized_name="headerName",
+        )
+        _element.header_value = AAZStrType(
+            serialized_name="headerValue",
+        )
 
         protocols = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").protocols
         protocols.Element = AAZObjectType()
