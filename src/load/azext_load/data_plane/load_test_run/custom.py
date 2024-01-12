@@ -75,8 +75,9 @@ def get_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None)
 def update_test_run(
     cmd,
     test_run_id,
-    description,
     load_test_resource,
+    description=None,
+    display_name=None,
     resource_group_name=None,
 ):
     logger.info("Update test run started")
@@ -87,8 +88,14 @@ def update_test_run(
         msg = f"Test run with given test run ID : {test_run_id} does not exist."
         logger.debug(msg)
         raise InvalidArgumentValueError(msg) from e
+    if description:
+        if description.casefold() in ["null", ""]:
+            description = None
+        else:
+            description = description or test_run_body.get("description")
+    display_name = display_name or test_run_body.get("displayName")
     test_run_body = create_or_update_test_run_body(
-        test_run_body.get("testId"), description=description
+        test_run_body.get("testId"), description=description, display_name=display_name
     )
     logger.info("Updating test run %s", test_run_id)
     # pylint: disable-next=protected-access

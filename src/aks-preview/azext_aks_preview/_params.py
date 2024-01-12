@@ -686,6 +686,12 @@ def load_arguments(self, _):
             help="enable vertical pod autoscaler for cluster",
         )
         c.argument(
+            "enable_addon_autoscaling",
+            action="store_true",
+            is_preview=True,
+            help="enable addon autoscaling for cluster",
+        )
+        c.argument(
             "enable_node_restriction",
             action="store_true",
             is_preview=True,
@@ -851,6 +857,7 @@ def load_arguments(self, _):
         c.argument("network_dataplane", arg_type=get_enum_type(network_dataplanes))
         c.argument("network_policy")
         c.argument("network_plugin", arg_type=get_enum_type(network_plugins))
+        c.argument("ip_families")
         c.argument("kube_proxy_config")
         c.argument(
             "auto_upgrade_channel", arg_type=get_enum_type(auto_upgrade_channels)
@@ -1093,6 +1100,18 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
             help="disable vertical pod autoscaler for cluster",
+        )
+        c.argument(
+            "enable_addon_autoscaling",
+            action="store_true",
+            is_preview=True,
+            help="enable addon autoscaling for cluster",
+        )
+        c.argument(
+            "disable_addon_autoscaling",
+            action="store_true",
+            is_preview=True,
+            help="disable addon autoscaling for cluster",
         )
         c.argument(
             "cluster_snapshot_id",
