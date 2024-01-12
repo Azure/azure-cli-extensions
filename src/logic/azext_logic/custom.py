@@ -134,6 +134,7 @@ class WorkflowCreate(_WorkflowCreate):
                                                 "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
         )
         args_schema.identity._registered = False
+        args_schema.parameters._registered = False
         return args_schema
 
     def pre_operations(self):
@@ -142,6 +143,7 @@ class WorkflowCreate(_WorkflowCreate):
             raise RequiredArgumentMissingError("--definition does not contain a 'definition' key")
         definition = args.definition.to_serialized_data()
         args.access_control = definition.get('accessControl', args.access_control)
+        args.parameters = definition.get('parameters', None)
         args.definition = definition['definition']
         if args.mi_system_assigned:
             args.identity.type = "SystemAssigned"
@@ -165,6 +167,7 @@ class WorkflowUpdate(_WorkflowUpdate):
         args_schema.integration_service_environment._registered = False
         args_schema.integration_account._registered = False
         args_schema.access_control._registered = False
+        args_schema.parameters._registered = False
         return args_schema
 
     def pre_operations(self):
@@ -175,6 +178,7 @@ class WorkflowUpdate(_WorkflowUpdate):
             definition = args.definition.to_serialized_data()
             args.definition = definition['definition']
             args.access_control = definition.get('accessControl', args.access_control)
+            args.parameters = definition.get('parameters', None)
 
     def pre_instance_update(self, instance):
         self.ctx.args.location = instance.location

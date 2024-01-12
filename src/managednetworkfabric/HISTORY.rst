@@ -2,6 +2,10 @@
 
 Release History
 ===============
+4.2.0
+++++++
+* Added support for upgrading Device and Network Fabric resource.
+* Added support for validate configuration in Network Fabric resources.
 
 4.1.1
 ++++++

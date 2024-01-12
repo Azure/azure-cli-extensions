@@ -2,6 +2,20 @@
 
 Release History
 ===============
+
+1.6.3
+++++++
+* Skip checking operation version support for non-stable release trains.
+
+1.6.2
+++++++
+* Additional bugfixes.
+
+1.6.1
+++++++
+* Added support for reading ARM metadata 2023-11-01.
+* Enable connectedk8s CLI extension to be used for new cluster kind of provisioned clusters.
+
 1.6.0
 ++++++
 

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "logic workflow show",
 )
 class Show(AAZCommand):
-    """Get a workflow.
+    """Show a workflow.
 
     :example: Show workflow
         az logic workflow show --resource-group rg --name workflow
@@ -226,6 +226,7 @@ class Show(AAZCommand):
                 serialized_name="integrationServiceEnvironment",
             )
             _ShowHelper._build_schema_resource_reference_read(properties.integration_service_environment)
+            properties.parameters = AAZFreeFormDictType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
             )

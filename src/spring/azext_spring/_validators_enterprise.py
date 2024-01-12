@@ -452,7 +452,7 @@ def _validate_gateway_response_cache_scope(namespace):
 def _validate_gateway_response_cache_size(namespace):
     if namespace.response_cache_size is not None:
         size = namespace.response_cache_size
-        if type(size) != str:
+        if not isinstance(size, str):
             raise InvalidArgumentValueError('--response-cache-size should be a string')
         if GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE.lower() == size.lower():
             # Normalize the input
@@ -467,7 +467,7 @@ def _validate_gateway_response_cache_size(namespace):
 def _validate_gateway_response_cache_ttl(namespace):
     if namespace.response_cache_ttl is not None:
         ttl = namespace.response_cache_ttl
-        if type(ttl) != str:
+        if not isinstance(ttl, str):
             raise InvalidArgumentValueError('--response-cache-ttl should be a string')
         if GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE.lower() == ttl.lower():
             # Normalize the input
@@ -657,3 +657,39 @@ def validate_build_cert_reference(cmd, namespace):
     get_cert_resource_id(cert_names, cmd, namespace, result)
 
     namespace.build_certificates = result
+
+
+def validate_create_app_binding_default_service_registry(cmd, namespace):
+    if namespace.bind_service_registry:
+        namespace.bind_service_registry = _get_eactly_one_service_registry_resource_id(cmd,
+                                                                                       namespace.resource_group,
+                                                                                       namespace.service)
+
+
+def _get_eactly_one_service_registry_resource_id(cmd, resource_group, service):
+    client = get_client(cmd)
+    service_registry_resources = list(client.service_registries.list(resource_group, service))
+    if len(service_registry_resources) == 0:
+        raise ClientRequestError('App cannot bind to service registry because it is not configured.')
+    if len(service_registry_resources) > 1:
+        raise ClientRequestError('App cannot bind to multiple service registries.')
+    return service_registry_resources[0].id
+
+
+def validate_create_app_binding_default_application_configuration_service(cmd, namespace):
+    if namespace.bind_application_configuration_service:
+        namespace.bind_application_configuration_service \
+            = _get_eactly_one_application_configuration_service_resource_id(cmd,
+                                                                            namespace.resource_group,
+                                                                            namespace.service)
+
+
+def _get_eactly_one_application_configuration_service_resource_id(cmd, resource_group, service):
+    client = get_client(cmd)
+    acs_resources = list(client.configuration_services.list(resource_group, service))
+    if len(acs_resources) == 0:
+        raise ClientRequestError('App cannot bind to application configuration service '
+                                 'because it is not configured.')
+    if len(acs_resources) > 1:
+        raise ClientRequestError('App cannot bind to multiple application configuration services.')
+    return acs_resources[0].id

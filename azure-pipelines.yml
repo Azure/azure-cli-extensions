@@ -137,11 +137,6 @@ jobs:
         AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
 
         AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/azdev_linter_style.py --type style
-        echo "------------------- Please note -------------------"
-        echo "This task does not block the PR merge."
-        echo "And it is recommended if you want to create a separate PR to fix these style issues."
-        echo "CLI will modify it to force block PR merge on 2025."
-        echo "---------------------- Thanks ----------------------"
       displayName: "azdev style on Modified Extensions"
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
@@ -172,23 +167,23 @@ jobs:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
-- job: IndexRefDocVerify
-  displayName: "Verify Ref Docs"
-  continueOnError: true
-  pool:
-    name: 'pool-ubuntu-2004'
-  steps:
-  - task: UsePythonVersion@0
-    displayName: 'Use Python 3.11'
-    inputs:
-      versionSpec: 3.11
-  - bash: pip install wheel==0.30.0
-    displayName: 'Install wheel==0.30.0'
-  - task: Bash@3
-    displayName: "Verify Extension Ref Docs"
-    inputs:
-      targetType: 'filePath'
-      filePath: scripts/ci/test_index_ref_doc.sh
+#- job: IndexRefDocVerify
+#  displayName: "Verify Ref Docs"
+#  continueOnError: true
+#  pool:
+#    name: 'pool-ubuntu-2004'
+#  steps:
+#  - task: UsePythonVersion@0
+#    displayName: 'Use Python 3.11'
+#    inputs:
+#      versionSpec: 3.11
+#  - bash: pip install wheel==0.30.0
+#    displayName: 'Install wheel==0.30.0'
+#  - task: Bash@3
+#    displayName: "Verify Extension Ref Docs"
+#    inputs:
+#      targetType: 'filePath'
+#      filePath: scripts/ci/test_index_ref_doc.sh
 
 - job: CheckInit
   displayName: "Check Init Files"

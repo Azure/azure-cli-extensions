@@ -623,7 +623,7 @@ definitions available for a project."
 --project-name "DevProject"
       - name: List using endpoint
         text: |-
-               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter" \
+               az devcenter dev environment-definition list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --project-name "DevProject"
       - name: List by catalog using dev center
         text: |-
