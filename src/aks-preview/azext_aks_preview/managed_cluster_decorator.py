@@ -1981,6 +1981,63 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_vpa(enable_validation=True)
 
+    def _get_enable_addon_autoscaling(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_addon_autoscaling.
+        This function supports the option of enable_addon_autoscaling.
+        When enabled, if both enable_addon_autoscaling and disable_addon_autoscaling are
+        specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        enable_addon_autoscaling = self.raw_param.get("enable_addon_autoscaling")
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_addon_autoscaling and self._get_disable_addon_autoscaling(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-addon-autoscaling and --disable-addon-autoscaling at the same time."
+                )
+
+        return enable_addon_autoscaling
+
+    def get_enable_addon_autoscaling(self) -> bool:
+        """Obtain the value of enable_addon_autoscaling.
+        This function will verify the parameter by default.
+        If both enable_addon_autoscaling and disable_addon_autoscaling are specified,
+        raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_enable_addon_autoscaling(enable_validation=True)
+
+    def _get_disable_addon_autoscaling(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_addon_autoscaling.
+        This function supports the option of enable_addon_autoscaling.
+        When enabled, if both enable_addon_autoscaling and disable_addon_autoscaling are specified,
+        raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_addon_autoscaling = self.raw_param.get("disable_addon_autoscaling")
+
+        # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if disable_addon_autoscaling and self._get_enable_addon_autoscaling(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-addon-autoscaling and --disable-addon-autoscaling at the same time."
+                )
+
+        return disable_addon_autoscaling
+
+    def get_disable_addon_autoscaling(self) -> bool:
+        """Obtain the value of disable_addon_autoscaling.
+        This function will verify the parameter by default.
+        If both enable_addon_autoscaling and disable_addon_autoscaling are specified,
+        raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_disable_addon_autoscaling(enable_validation=True)
+
     def get_ssh_key_value_for_update(self) -> Tuple[str, bool]:
         """Obtain the value of ssh_key_value for "az aks update".
 
@@ -2836,6 +2893,26 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
         return mc
 
+    def set_up_addon_autoscaling(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up workload auto-scaler vertical pod autsocaler profile
+        for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_addon_autoscaling():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()  # pylint: disable=no-member
+            if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
+                mc.workload_auto_scaler_profile.vertical_pod_autoscaler = (
+                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()  # pylint: disable=no-member
+                )
+            # set enabled
+            mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
+            mc.workload_auto_scaler_profile.vertical_pod_autoscaler.addon_autoscaling = "Enabled"
+
+        return mc
+
     def set_up_kube_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up kube-proxy config for the ManagedCluster object.
 
@@ -3099,6 +3176,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_workload_auto_scaler_profile(mc)
         # set up vpa
         mc = self.set_up_vpa(mc)
+        # set up addon autoscaling
+        mc = self.set_up_addon_autoscaling(mc)
         # set up kube-proxy config
         mc = self.set_up_kube_proxy_config(mc)
         # set up custom ca trust certificates
@@ -3969,6 +4048,36 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_addon_autoscaling(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update workload auto-scaler vertical pod auto-scaler profile
+        for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_addon_autoscaling():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()  # pylint: disable=no-member
+            if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
+                mc.workload_auto_scaler_profile.vertical_pod_autoscaler = (
+                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()  # pylint: disable=no-member
+                )
+            # set enabled
+            mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
+            mc.workload_auto_scaler_profile.vertical_pod_autoscaler.addon_autoscaling = "Enabled"
+
+        if self.context.get_disable_addon_autoscaling():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()  # pylint: disable=no-member
+            if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
+                mc.workload_auto_scaler_profile.vertical_pod_autoscaler = (
+                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()  # pylint: disable=no-member
+                )
+            # set disabled
+            mc.workload_auto_scaler_profile.vertical_pod_autoscaler.addon_autoscaling = "Disabled"
+
+        return mc
+
     def update_creation_data(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
         snapshot_id = self.context.get_cluster_snapshot_id()
@@ -4357,6 +4466,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_azure_monitor_profile(mc)
         # update vpa
         mc = self.update_vpa(mc)
+        # update addon autoscaling
+        mc = self.update_addon_autoscaling(mc)
         # update creation data
         mc = self.update_creation_data(mc)
         # update linux profile

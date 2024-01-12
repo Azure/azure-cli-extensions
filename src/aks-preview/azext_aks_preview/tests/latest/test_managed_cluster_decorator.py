@@ -4616,6 +4616,44 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
+    def test_set_up_addon_autoscaling(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_addon_autoscaling(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_addon_autoscaling": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_addon_autoscaling(mc_2)
+        workload_auto_scaler_profile = (
+            self.models.ManagedClusterWorkloadAutoScalerProfile()
+        )
+        workload_auto_scaler_profile.vertical_pod_autoscaler = (
+            self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
+                enabled=True,
+                addon_autoscaling="Enabled"
+            )
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=workload_auto_scaler_profile
+        )
+
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
     def test_set_up_azure_service_mesh(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -7296,6 +7334,92 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_6.context.attach_mc(mc_6)
         with self.assertRaises(MutuallyExclusiveArgumentError):
             dec_6.update_metrics_profile(mc_6)
+
+    def test_update_addon_autoscaling(self):
+        # Should not update mc if unset
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_addon_autoscaling(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Should error if both set
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_addon_autoscaling": True, "disable_addon_autoscaling": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_1.update_addon_autoscaling(mc_1)
+
+        # enable addon autoscaling should set addon_autoscaling to Enabled
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_addon_autoscaling": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_addon_autoscaling(mc_2)
+        workload_auto_scaler_profile = (
+            self.models.ManagedClusterWorkloadAutoScalerProfile()
+        )
+        workload_auto_scaler_profile.vertical_pod_autoscaler = (
+            self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
+                enabled=True,
+                addon_autoscaling="Enabled"
+            )
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=workload_auto_scaler_profile
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # disable addon autoscaling should set addon_autoscaling to Disabled
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_addon_autoscaling": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_addon_autoscaling(mc_3)
+        workload_auto_scaler_profile = (
+            self.models.ManagedClusterWorkloadAutoScalerProfile()
+        )
+        workload_auto_scaler_profile.vertical_pod_autoscaler = (
+            self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
+                enabled=False,
+                addon_autoscaling="Disabled"
+            )
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=workload_auto_scaler_profile
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
     def test_update_app_routing_profile(self):
         # enable app routing
