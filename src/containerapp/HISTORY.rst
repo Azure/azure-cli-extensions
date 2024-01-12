@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp create --bind kafkaconfluent': Add support for Managed Kafka service, with support for update with --bind and --unbind flags.
 
 0.3.46
 ++++++

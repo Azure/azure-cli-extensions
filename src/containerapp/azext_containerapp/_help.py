@@ -877,6 +877,26 @@ helps['containerapp create'] = """
           --environment MyContainerappEnv --registry-server MyRegistryServer \\
           --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
           --source .
+    - name: Create a Container App and bind it to one or more (space-separated) dev services. Binding name is optional and defaults to service name if not provided
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          --environment MyContainerappEnv --bind MyServiceName:MyBindingName MyService2Name MyServiceName3
+    - name: Create a Container App and bind it to a managed service with a binding name
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          --environment MyContainerappEnv \\
+          --bind MyServiceName:MyBindingName,arg1=MyArg1,arg2=MyArg2,arg3=MyArg3,arg4=MyArg4
+    - name: Create a Container App and bind it to a MySQL Flexible Server (A Managed Service) without a binding name
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          --environment MyContainerappEnv \\
+          --bind MyFlexibleServerName,database=MyDatabaseName,username=MyUsername,password=MyPassword
+    - name: Create a Container App and bind it to Managed Kafka with optional registry parameters
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          --environment MyContainerappEnv \\
+          --bind kafkaconfluent,bootstrap_server=MyServer,kafka_key=MyKey,kafka_secret=MySecret, \\
+          schema_registry=MyServer1,schema_key=MyKey1,schema_secret=MySecret1
 """
 
 # containerapp update for preview
@@ -907,7 +927,24 @@ helps['containerapp update'] = """
               --scale-rule-auth triggerparam=secretref triggerparam=secretref
     - name: Update a Container App from the provided application source
       text: |
-          az containerapp update -n my-containerapp -g MyResourceGroup --source .
+          az containerapp update -n MyContainerapp -g MyResourceGroup --source .
+    - name: Update a Container App with a bind to one or more (space-separated) dev services. Binding name is optional and defaults to service name if not provided
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+          --bind MyServiceName:MyBindingName MyService2Name MyServiceName3
+    - name: Update a Container App with a bind to a managed service with a binding name
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+          --bind MyServiceName:MyBindingName,arg1=MyArg1,arg2=MyArg2,arg3=MyArg3,arg4=MyArg4
+    - name: Update a Container App with a bind to a MySQL Flexible Server (A Managed Service) without a binding name
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+          --bind MyFlexibleServerName,database=MyDatabaseName,username=MyUsername,password=MyPassword
+    - name: Update a Container App with a bind to Managed Kafka with optional registry parameters
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+          --bind kafkaconfluent,bootstrap_server=MyServer,kafka_key=MyKey,kafka_secret=MySecret, \\
+          schema_registry=MyServer1,schema_key=MyKey1,schema_secret=MySecret1
 """
 
 # containerapp list for preview

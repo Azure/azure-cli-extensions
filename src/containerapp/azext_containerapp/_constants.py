@@ -73,6 +73,8 @@ DEV_QDRANT_IMAGE = 'qdrant'
 DEV_QDRANT_SERVICE_TYPE = 'qdrant'
 DEV_QDRANT_CONTAINER_NAME = 'qdrant'
 
+MANAGED_KAFKA_SERVICE_NAME = 'kafkaconfluent'
+
 PENDING_STATUS = "Pending"
 SUCCEEDED_STATUS = "Succeeded"
 UPDATING_STATUS = "Updating"
