@@ -12,7 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-0.5.175
+1.0.0b1
 +++++++
 * Add `--enable-addon-autoscaling` and `--disable-addon-autoscaling` to the `az aks update` command.
 * Add `--enable-addon-autoscaling` to the `az aks create` command.
