@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-locals, missing-timeout, too-many-statements, consider-using-with, too-many-branches
 
+import shutil
 from threading import Thread
 import os
 import re
@@ -18,6 +19,7 @@ from azure.cli.core.azclierror import (
 from ._archive_utils import archive_source_code
 
 from ._clients import BuilderClient, BuildClient
+import mimetypes
 
 from ._utils import (
     log_in_file,
@@ -128,27 +130,32 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
 
         # Source code compression
         done_spinner = False
-        thread = display_spinner(f"Compressing data: {font_bold}{source}{font_default}")
-        tar_file_path = os.path.join(tempfile.gettempdir(), f"{build_name}.tar.gz")
-        archive_source_code(tar_file_path, source)
+        source_file_path = source
+        if os.path.isdir(source):
+            thread = display_spinner(f"Compressing data: {font_bold}{source}{font_default}")
+            source_file_path = os.path.join(tempfile.gettempdir(), f"{build_name}.tar.gz")
+            archive_source_code(source_file_path, source)
         done_spinner = True
         thread.join()
 
         # File upload
         done_spinner = False
-        thread = display_spinner("Uploading compressed data")
+        thread = display_spinner("Uploading data")
         headers = {'Authorization': 'Bearer ' + token}
         try:
-            tar_file = open(tar_file_path, "rb")
-            files = [("file", ("build_data.tar.gz", tar_file, "application/x-tar"))]
+            source_file = open(source_file_path, "rb")
+            file_extension = os.path.splitext(source_file_path)[1]
+            files = [("file", ("build_data" + file_extension, source_file))]
             response_file_upload = requests.post(
                 upload_endpoint,
                 files=files,
                 headers=headers)
         finally:
-            # Close and delete the file now that it was uploaded.
-            tar_file.close()
-            os.unlink(tar_file_path)
+            # Close the file now that it was uploaded.
+            source_file.close()
+            # if the source file is tar.gz, delete the temp file
+            if file_extension == ".tar.gz":
+                os.unlink(source_file_path)
         if not response_file_upload.ok:
             raise ValidationError(f"Error when uploading the file, request exited with {response_file_upload.status_code}")
         done_spinner = True
