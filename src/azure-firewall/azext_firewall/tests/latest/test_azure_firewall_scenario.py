@@ -8,6 +8,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccou
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 from azure.cli.core.azclierror import ValidationError
 
+
 class AzureFirewallScenario(ScenarioTest):
 
     def __init__(self, method_name, config_file=None, recording_dir=None, recording_name=None,
