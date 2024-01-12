@@ -17,7 +17,6 @@ Pending
 * Add --skip-gpu-driver-install option to node pool property in `az aks nodepool add`.
 * Add `--ip-families` to the `az aks update` command.
 
-
 1.0.0b1
 +++++++
 * Add `--enable-addon-autoscaling` and `--disable-addon-autoscaling` to the `az aks update` command.
