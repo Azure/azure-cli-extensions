@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6.3
+++++++
+* Skip checking operation version support for non-stable release trains.
+
 1.6.2
 ++++++
 * Additional bugfixes.
