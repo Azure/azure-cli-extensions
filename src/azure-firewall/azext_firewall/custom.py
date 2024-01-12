@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=protected-access, line-too-long, raise-missing-from
+# pylint: disable=too-many-lines, too-many-branches, too-many-statements
 
 import copy
 from knack.util import CLIError

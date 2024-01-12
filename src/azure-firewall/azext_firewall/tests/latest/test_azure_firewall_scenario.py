@@ -3,12 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: continuation line over-indented for hanging indent
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, JMESPathCheck, NoneCheck,
                                api_version_constraint)
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 from azure.cli.core.azclierror import ValidationError
-
 
 class AzureFirewallScenario(ScenarioTest):
 
@@ -56,12 +54,12 @@ class AzureFirewallScenario(ScenarioTest):
             ]
         )
         self.cmd(
-             "network firewall update -n {firewall_name} -g {rg} "
-             "--enable-fat-flow-logging false --enable-udp-log-optimization false",
-             checks=[
-                 self.not_exists('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"'),
-                 self.not_exists('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"')
-             ]
+            "network firewall update -n {firewall_name} -g {rg} "
+            "--enable-fat-flow-logging false --enable-udp-log-optimization false",
+            checks=[
+                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"'),
+                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"')
+            ]
         )
 
         self.cmd("network firewall delete -n {firewall_name} -g {rg}")
@@ -81,7 +79,8 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall create -g {rg} -n {af}')
         self.cmd('network public-ip create -g {rg} -n {pubip} --sku standard')
         self.cmd('network public-ip create -g {rg} -n {pubip2} --sku standard')
-        vnet_instance = self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
+        self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24')
+        # vnet_instance = self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
         # subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
         # Disable it due to service limitation.
         # self.cmd('network firewall ip-config create -g {rg} -n {ipconfig} -f {af} --public-ip-address {pubip} --vnet-name {vnet}', checks=[
@@ -346,8 +345,9 @@ class AzureFirewallScenario(ScenarioTest):
         # test firewall policy with vnet firewall
         self.cmd('network firewall create -g {rg} -n {af2} -l {location} --firewall-policy {policy}')
         self.cmd('network public-ip create -g {rg} -n {pubip} -l {location} --sku standard')
-        vnet_instance = self.cmd(
-            'network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" -l {location} --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
+        self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" -l {location} --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24')
+        # vnet_instance = self.cmd(
+        #     'network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" -l {location} --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
         # subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
 
         # Disable it due to service limitation.
