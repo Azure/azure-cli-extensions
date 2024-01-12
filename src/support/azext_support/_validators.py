@@ -79,7 +79,7 @@ def _validate_resource_name(cmd, resource_id):
     session_subid = get_subscription_id(cmd.cli_ctx)
     if subid != session_subid:
         raise CLIError("{0} {1} does not match with {2}".format(base_error_msg, subid, session_subid))
-    
+
 
 def _is_guid(guid):
     try:
@@ -92,27 +92,30 @@ def _is_guid(guid):
 def _check_name_availability_subscription(cli_ctx, resource_name, resource_type):
     from .aaz.latest.support.in_subscription import CheckNameAvailability
     check_name_availability_input = {"name": resource_name, "type": resource_type}
-    resp = CheckNameAvailability(cli_ctx=cli_ctx)(command_args=check_name_availability_input) 
+    resp = CheckNameAvailability(cli_ctx=cli_ctx)(command_args=check_name_availability_input)
     if not resp["nameAvailable"]:
         raise CLIError(resp["message"])
-    
+
+
 def _check_name_availability_subscription_ticket(cli_ctx, ticket_name, resource_name, resource_type):
     from .aaz.latest.support.in_subscription.tickets import CheckNameAvailability
     check_name_availability_input = {"support_ticket_name": ticket_name, "name": resource_name, "type": resource_type}
-    resp = CheckNameAvailability(cli_ctx=cli_ctx)(command_args=check_name_availability_input) 
+    resp = CheckNameAvailability(cli_ctx=cli_ctx)(command_args=check_name_availability_input)
     if not resp["nameAvailable"]:
         raise CLIError(resp["message"])
-    
+
+
 def _check_name_availability_no_subscription(cli_ctx, resource_name, resource_type):
     from .aaz.latest.support.no_subscription import CheckNameAvailability
     check_name_availability_input = {"name": resource_name, "type": resource_type}
-    resp = CheckNameAvailability(cli_ctx=cli_ctx)(command_args=check_name_availability_input) 
+    resp = CheckNameAvailability(cli_ctx=cli_ctx)(command_args=check_name_availability_input)
     if not resp["nameAvailable"]:
         raise CLIError(resp["message"])
-    
+
+
 def _check_name_availability_no_subscription_ticket(cli_ctx, ticket_name, resource_name, resource_type):
     from .aaz.latest.support.no_subscription.tickets import CheckNameAvailability
     check_name_availability_input = {"support_ticket_name": ticket_name, "name": resource_name, "type": resource_type}
-    resp = CheckNameAvailability(cli_ctx=cli_ctx)(command_args=check_name_availability_input) 
+    resp = CheckNameAvailability(cli_ctx=cli_ctx)(command_args=check_name_availability_input)
     if not resp["nameAvailable"]:
         raise CLIError(resp["message"])
