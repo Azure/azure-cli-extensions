@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}", "2023-09-01"],
         ]
     }
 
@@ -209,6 +209,10 @@ class Create(AAZCommand):
             help="List of IPs associated with the Firewall",
             required=True,
         )
+        network_profile.trusted_ranges = AAZListArg(
+            options=["trusted-ranges"],
+            help="Non-RFC 1918 address",
+        )
         network_profile.vnet_configuration = AAZObjectArg(
             options=["vnet-configuration"],
             help="Vnet configurations",
@@ -225,6 +229,9 @@ class Create(AAZCommand):
         public_ips = cls._args_schema.network_profile.public_ips
         public_ips.Element = AAZObjectArg()
         cls._build_args_ip_address_create(public_ips.Element)
+
+        trusted_ranges = cls._args_schema.network_profile.trusted_ranges
+        trusted_ranges.Element = AAZStrArg()
 
         vnet_configuration = cls._args_schema.network_profile.vnet_configuration
         vnet_configuration.ip_of_trust_subnet_for_udr = AAZObjectArg(
@@ -513,7 +520,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -608,6 +615,7 @@ class Create(AAZCommand):
                 network_profile.set_prop("enableEgressNat", AAZStrType, ".enable_egress_nat", typ_kwargs={"flags": {"required": True}})
                 network_profile.set_prop("networkType", AAZStrType, ".network_type", typ_kwargs={"flags": {"required": True}})
                 network_profile.set_prop("publicIps", AAZListType, ".public_ips", typ_kwargs={"flags": {"required": True}})
+                network_profile.set_prop("trustedRanges", AAZListType, ".trusted_ranges")
                 network_profile.set_prop("vnetConfiguration", AAZObjectType, ".vnet_configuration")
                 network_profile.set_prop("vwanConfiguration", AAZObjectType, ".vwan_configuration")
 
@@ -618,6 +626,10 @@ class Create(AAZCommand):
             public_ips = _builder.get(".properties.networkProfile.publicIps")
             if public_ips is not None:
                 _CreateHelper._build_schema_ip_address_create(public_ips.set_elements(AAZObjectType, "."))
+
+            trusted_ranges = _builder.get(".properties.networkProfile.trustedRanges")
+            if trusted_ranges is not None:
+                trusted_ranges.set_elements(AAZStrType, ".")
 
             vnet_configuration = _builder.get(".properties.networkProfile.vnetConfiguration")
             if vnet_configuration is not None:
@@ -831,6 +843,9 @@ class Create(AAZCommand):
                 serialized_name="publicIps",
                 flags={"required": True},
             )
+            network_profile.trusted_ranges = AAZListType(
+                serialized_name="trustedRanges",
+            )
             network_profile.vnet_configuration = AAZObjectType(
                 serialized_name="vnetConfiguration",
             )
@@ -845,6 +860,9 @@ class Create(AAZCommand):
             public_ips = cls._schema_on_200_201.properties.network_profile.public_ips
             public_ips.Element = AAZObjectType()
             _CreateHelper._build_schema_ip_address_read(public_ips.Element)
+
+            trusted_ranges = cls._schema_on_200_201.properties.network_profile.trusted_ranges
+            trusted_ranges.Element = AAZStrType()
 
             vnet_configuration = cls._schema_on_200_201.properties.network_profile.vnet_configuration
             vnet_configuration.ip_of_trust_subnet_for_udr = AAZObjectType(
