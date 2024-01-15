@@ -91,7 +91,8 @@ class Unlock(_Unlock):
             })
 
             formatted_operation_list = [item['defaultResourceRequest'] for
-                                        item in resource_guard_mapping["properties"]["resourceGuardOperationDetails"]]
+                                        item in resource_guard_mapping["properties"]["resourceGuardOperationDetails"] if
+                                        'defaultResourceRequest' in item]
             formatted_operation = [op for op in formatted_operation_list if
                                    operation_request_map[str(operation)] in op]
 
