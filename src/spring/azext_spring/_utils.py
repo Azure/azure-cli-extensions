@@ -71,7 +71,7 @@ def _is_java(runtime_version):
 
 
 def _java_runtime_in_number():
-    return [8, 11, 17]
+    return [8, 11, 17, 21]
 
 
 def _pack_source_code(source_location, tar_file_path):
