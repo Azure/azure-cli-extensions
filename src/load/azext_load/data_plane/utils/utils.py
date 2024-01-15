@@ -214,10 +214,8 @@ def parse_secrets(secrets):
         if not validators._validate_akv_url(value, "secrets"):
             raise InvalidArgumentValueError(f"Invalid AKV Certificate URL: {value}")
         secrets_dict[name] = {
-            name: {
-                "type": "AKV_SECRET_URI",
-                "value": value,
-            }
+            "type": "AKV_SECRET_URI",
+            "value": value,
         }
     logger.debug("Parsed secrets: %s", secrets_dict)
     logger.debug("Secrets parsed successfully")
@@ -432,6 +430,9 @@ def create_or_update_test_with_config(
 
     new_body["passFailCriteria"] = {}
     for key in body.get("passFailCriteria", {}):
+        if "passFailCriteria" not in new_body:
+            new_body["passFailCriteria"] = {}
+        new_body.get("passFailCriteria", {})[key] = None
         new_body["passFailCriteria"][key] = None
     if yaml_test_body.get("passFailCriteria") is not None:
         new_body["passFailCriteria"] = yaml_test_body.get("passFailCriteria", {})
