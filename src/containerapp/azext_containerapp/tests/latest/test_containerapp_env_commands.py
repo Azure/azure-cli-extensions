@@ -121,7 +121,11 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="australiaeast")
     def test_containerapp_env_logs_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # azure-monitor is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
@@ -144,10 +148,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
         storage_account_name = self.create_random_name(prefix='cappstorage', length=24)
-        storage_account_location = TEST_LOCATION
-        if format_location(storage_account_location) == format_location(STAGE_LOCATION):
-            storage_account_location = "eastus"
-        storage_account = self.cmd('storage account create -g {} -n {} --location {} --https-only'.format(resource_group, storage_account_name, storage_account_location)).get_output_in_json()["id"]
+        storage_account = self.cmd('storage account create -g {} -n {} --https-only'.format(resource_group, storage_account_name)).get_output_in_json()["id"]
         self.cmd('containerapp env update -g {} -n {} --logs-destination azure-monitor --storage-account {}'.format(resource_group, env_name, storage_account))
 
         env = self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
@@ -593,10 +594,14 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         vnet = self.create_random_name(prefix='name', length=24)
         infra_rg = self.create_random_name(prefix='irg', length=24)
 
-        self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
+        vnet_location = TEST_LOCATION
+        if format_location(vnet_location) == format_location(STAGE_LOCATION):
+            vnet_location = "centralus"
+
+        self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet} --location {vnet_location}")
         sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
 
-        self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {sub_id} -i {infra_rg} --enable-workload-profiles true')
+        self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {sub_id} -i {infra_rg} --enable-workload-profiles true --logs-destination none')
 
         containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
 
