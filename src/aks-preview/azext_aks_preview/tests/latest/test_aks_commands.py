@@ -11105,121 +11105,85 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(role["rules"]) > 0
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
-    )
-    def test_aks_trustedaccess_rolebinding(
-        self, resource_group, resource_group_location
-    ):
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_trustedaccess_rolebinding(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         # kwargs for string formatting
-        aks_name = self.create_random_name("cliakstest", 16)
+        aks_name = self.create_random_name('cliakstest', 16)
 
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "location": resource_group_location,
-                "resource_type": "Microsoft.ContainerService/ManagedClusters",
-                "vm_size": "Standard_D4s_v3",
-                "node_count": 1,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'vm_size': 'Standard_D4s_v3',
+            'node_count': 1,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
 
-        create_cmd = " ".join(
-            [
-                "aks",
-                "create",
-                "--resource-group={resource_group}",
-                "--name={name}",
-                "--location={location}",
-                "--node-vm-size {vm_size}",
-                "--node-count {node_count}",
-                "--ssh-key-value={ssh_key_value}",
-                "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedAccessPreview",
-            ]
-        )
-        self.cmd(
-            create_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-            ],
-        )
+        create_cmd = ' '.join([
+            'aks', 'create', '--resource-group={resource_group}', '--name={name}', '--location={location}',
+            '--node-vm-size {vm_size}',
+            '--node-count {node_count}',
+            '--ssh-key-value={ssh_key_value}'
+        ])
 
-        binding_name = "testbinding"
-        node_rg_cmd = (
-            'aks list -g {resource_group} --query "[0].nodeResourceGroup" -o tsv'
-        )
-        node_rg = self.cmd(node_rg_cmd).output.strip()
-        self.kwargs.update({"node_rg": node_rg, "binding_name": binding_name})
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
-        vmss_cmd = 'vmss list -g {node_rg} --query "[0].id" -o tsv'
-        vmss_id = self.cmd(vmss_cmd).output.strip()
-        self.kwargs.update({"vmss_id": vmss_id})
+        list_binding_cmd = 'aks trustedaccess rolebinding list ' \
+            '--cluster-name={name} ' \
+            '--resource-group={resource_group}'
+        self.cmd(list_binding_cmd, checks=[
+            self.is_empty(),
+        ])
 
-        # test create rolebinding
-        create_ta_binding_cmd = " ".join(
-            [
-                "aks",
-                "trustedaccess",
-                "rolebinding",
-                "create",
-                "-g {resource_group}",
-                "--cluster-name {name}",
-                "-n {binding_name}",
-                "-s {vmss_id}",
-                "--roles Microsoft.Compute/virtualMachineScaleSets/test-node-reader,Microsoft.Compute/virtualMachineScaleSets/test-admin",
-            ]
-        )
-        binding = self.cmd(
-            create_ta_binding_cmd,
-            checks=[
-                self.check("name", binding_name),
-                self.check(
-                    "type",
-                    "Microsoft.ContainerService/managedClusters/trustedAccessRoleBindings",
-                ),
-                self.check("sourceResourceId", vmss_id),
-            ],
-        ).get_output_in_json()
-        assert len(binding["roles"]) == 2
-        time.sleep(20)  # wait for binding creation
+        subscription_id = self.get_subscription_id()
+        sid = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.MachineLearningServices/workspaces/fake_workspace'.format(subscription_id, resource_group)
+        self.kwargs.update({
+            'sid': sid
+        })
+        create_binding_cmd = 'aks trustedaccess rolebinding create ' \
+            '--resource-group={resource_group} ' \
+            '--cluster-name={name} ' \
+            '-n testbinding ' \
+            '-r {sid} ' \
+            '--roles Microsoft.MachineLearningServices/workspaces/mlworkload'
+        self.cmd(create_binding_cmd)
+        self.cmd(list_binding_cmd, checks=[
+            self.check('[0].type', 'Microsoft.ContainerService/managedClusters/trustedAccessRoleBindings'),
+            self.check('[0].name', 'testbinding'),
+        ])
 
-        # test list rolebinding
-        list_binding_cmd = "aks trustedaccess rolebinding list --cluster-name {name} -g {resource_group}"
-        listed_bindings = self.cmd(list_binding_cmd).get_output_in_json()
-        assert len(listed_bindings) == 1
+        get_binding_cmd = 'aks trustedaccess rolebinding show ' \
+            '-n testbinding ' \
+            '--resource-group={resource_group} ' \
+            '--cluster-name={name}'
+        self.cmd(get_binding_cmd, checks=[
+            self.check('type', 'Microsoft.ContainerService/managedClusters/trustedAccessRoleBindings'),
+            self.check('name', 'testbinding'),
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
-        # test get rolebinding
-        get_binding_cmd = "aks trustedaccess rolebinding show --cluster-name {name} -g {resource_group} -n {binding_name}"
-        got_binding = self.cmd(get_binding_cmd).get_output_in_json()
-        assert got_binding["name"] == binding_name
-        assert len(got_binding["roles"]) == 2
-        assert got_binding["sourceResourceId"] == vmss_id
-        assert (
-            got_binding["type"]
-            == "Microsoft.ContainerService/managedClusters/trustedAccessRoleBindings"
-        )
+        update_binding_cmd = 'aks trustedaccess rolebinding update ' \
+            '--cluster-name={name} ' \
+            '-n testbinding ' \
+            '--resource-group={resource_group} ' \
+            '--roles Microsoft.MachineLearningServices/workspaces/mlworkload'
+        self.cmd(update_binding_cmd, checks=[
+            self.check('roles[0]', 'Microsoft.MachineLearningServices/workspaces/mlworkload'),
+        ])
 
-        # test update rolebinding
-        update_binding_cmd = "aks trustedaccess rolebinding update -g {resource_group} --cluster-name {name} -n {binding_name} \
-            --roles Microsoft.Compute/virtualMachineScaleSets/test-node-reader"
-        updated_binding = self.cmd(update_binding_cmd).get_output_in_json()
-        assert updated_binding["name"] == binding_name
-        assert len(updated_binding["roles"]) == 1
-        assert (
-            updated_binding["roles"][0]
-            == "Microsoft.Compute/virtualMachineScaleSets/test-node-reader"
-        )
-
-        # test delete rolebinding
-        delete_binding_cmd = "aks trustedaccess rolebinding delete -g {resource_group} --cluster-name {name} -n {binding_name} -y"
+        delete_binding_cmd = 'aks trustedaccess rolebinding delete ' \
+            '--cluster-name={name} ' \
+            '-n testbinding ' \
+            '--resource-group={resource_group} -y'
         self.cmd(delete_binding_cmd)
-        time.sleep(20)  # wait for binding deleting
-        listed_bindings = self.cmd(list_binding_cmd).get_output_in_json()
-        assert len(listed_bindings) == 0
+        self.cmd(list_binding_cmd, checks=[
+            self.is_empty(),
+        ])
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
