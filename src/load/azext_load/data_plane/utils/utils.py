@@ -58,7 +58,12 @@ def get_load_test_resource_endpoint(
         name = load_test_resource
 
     arm_endpoint, arm_token_scope = get_arm_endpoint_and_scope(cli_ctx)
-    mgmt_client = LoadTestMgmtClient(credential=cred, subscription_id=subscription_id, base_url=arm_endpoint, credential_scopes=arm_token_scope)
+    mgmt_client = LoadTestMgmtClient(
+        credential=cred,
+        subscription_id=subscription_id,
+        base_url=arm_endpoint,
+        credential_scopes=arm_token_scope
+    )
     data_plane_uri = mgmt_client.load_tests.get(resource_group, name).data_plane_uri
     logger.info("Azure Load Testing data plane URI: %s", data_plane_uri)
     return data_plane_uri
