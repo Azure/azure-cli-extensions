@@ -26,7 +26,7 @@ logger = get_logger(__name__)
 
 
 def get_load_test_resource_endpoint(
-    cred, load_test_resource, resource_group=None, subscription_id=None
+    cli_ctx, cred, load_test_resource, resource_group=None, subscription_id=None
 ):
     if subscription_id is None:
         return None
@@ -57,7 +57,8 @@ def get_load_test_resource_endpoint(
             )
         name = load_test_resource
 
-    mgmt_client = LoadTestMgmtClient(credential=cred, subscription_id=subscription_id)
+    arm_endpoint = get_arm_endpoint(cli_ctx)
+    mgmt_client = LoadTestMgmtClient(credential=cred, subscription_id=subscription_id, base_url=arm_endpoint)
     data_plane_uri = mgmt_client.load_tests.get(resource_group, name).data_plane_uri
     logger.info("Azure Load Testing data plane URI: %s", data_plane_uri)
     return data_plane_uri
@@ -78,6 +79,7 @@ def get_admin_data_plane_client(cmd, load_test_resource, resource_group_name=Non
 
     credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
     endpoint = get_load_test_resource_endpoint(
+        cmd.cli_ctx,
         credential,
         load_test_resource,
         resource_group=resource_group_name,
@@ -96,6 +98,7 @@ def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=N
 
     credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
     endpoint = get_load_test_resource_endpoint(
+        cmd.cli_ctx,
         credential,
         load_test_resource,
         resource_group=resource_group_name,
@@ -115,6 +118,13 @@ def get_data_plane_scope(cli_ctx):
         return ["https://cnt-prod.loadtesting.azure.us/.default"]
 
     return ["https://cnt-prod.loadtesting.azure.com/.default"]
+
+def get_arm_endpoint(cli_ctx):
+    cloud_name = cli_ctx.cloud.name
+    if cloud_name.lower() == "azureusgovernment":
+        return "https://management.usgovcloudapi.net"
+
+    return "https://management.azure.com"
 
 
 def get_enum_values(enum):
