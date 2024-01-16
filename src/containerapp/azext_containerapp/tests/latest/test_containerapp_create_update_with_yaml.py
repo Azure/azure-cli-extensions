@@ -33,11 +33,11 @@ class ContainerappYamlTests(ScenarioTest):
 
         app = self.create_random_name(prefix='yaml1', length=24)
 
-        create_containerapp_env(self, env1, resource_group, location)
+        create_containerapp_env(self, env1, resource_group)
         containerapp_env1 = self.cmd(
             'containerapp env show -g {} -n {}'.format(resource_group, env1)).get_output_in_json()
 
-        create_containerapp_env(self, env2, resource_group, location)
+        create_containerapp_env(self, env2, resource_group)
         containerapp_env2 = self.cmd(
             'containerapp env show -g {} -n {}'.format(resource_group, env2)).get_output_in_json()
 

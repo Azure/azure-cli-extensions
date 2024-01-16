@@ -8,6 +8,7 @@ import time
 import yaml
 from azure.cli.command_modules.containerapp._utils import format_location
 
+from azure.cli.testsdk.decorators import serial_test
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
 
@@ -319,11 +320,15 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.version', "v1"),
         ])
 
+    @serial_test()
     @AllowLargeResponse(8192)
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_env_certificate_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
@@ -451,13 +456,15 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
-
+    @serial_test()
     @AllowLargeResponse(8192)
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_env_custom_domains(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
@@ -497,12 +504,15 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
         ])
 
-
+    @serial_test()
     @AllowLargeResponse(8192)
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_env_update_custom_domains(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
@@ -586,7 +596,6 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
 
     @ResourceGroupPreparer(location="eastus")
-    @live_only()  # passes live but hits CannotOverwriteExistingCassetteException when run from recording
     def test_containerapp_env_infrastructure_rg(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 

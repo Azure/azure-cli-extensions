@@ -37,7 +37,7 @@ def prepare_containerapp_env_for_app_e2e_tests(test_cls, location=TEST_LOCATION)
     return managed_env["id"]
 
 
-def create_containerapp_env(test_cls, env_name, resource_group, location=TEST_LOCATION, subnetId=None):
+def create_containerapp_env(test_cls, env_name, resource_group, location=None, subnetId=None):
     logs_workspace_name = test_cls.create_random_name(prefix='containerapp-env', length=24)
     logs_workspace_location = location
     if format_location(logs_workspace_location) == format_location(STAGE_LOCATION):
