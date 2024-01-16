@@ -36,7 +36,9 @@ _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 
 
-def build_list_request(location: str, instance_id: str, subscription_id: str, **kwargs: Any) -> HttpRequest:
+def build_list_request(
+    resource_group_name: str, throughput_pool_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
@@ -46,12 +48,21 @@ def build_list_request(location: str, instance_id: str, subscription_id: str, **
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{instanceId}/restorableMongodbDatabases",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/throughputPools/{throughputPoolName}/throughputPoolAccounts",
     )  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
-        "location": _SERIALIZER.url("location", location, "str"),
-        "instanceId": _SERIALIZER.url("instance_id", instance_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "throughputPoolName": _SERIALIZER.url(
+            "throughput_pool_name",
+            throughput_pool_name,
+            "str",
+            max_length=50,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
+        ),
     }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
@@ -65,14 +76,14 @@ def build_list_request(location: str, instance_id: str, subscription_id: str, **
     return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-class RestorableMongodbDatabasesOperations:
+class ThroughputPoolAccountsOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
         :class:`~azure.mgmt.cosmosdb.CosmosDBManagementClient`'s
-        :attr:`restorable_mongodb_databases` attribute.
+        :attr:`throughput_pool_accounts` attribute.
     """
 
     models = _models
@@ -86,30 +97,26 @@ class RestorableMongodbDatabasesOperations:
 
     @distributed_trace
     def list(
-        self, location: str, instance_id: str, **kwargs: Any
-    ) -> Iterable["_models.RestorableMongodbDatabaseGetResult"]:
-        """Show the event feed of all mutations done on all the Azure Cosmos DB MongoDB databases under
-        the restorable account.  This helps in scenario where database was accidentally deleted to get
-        the deletion time.  This API requires
-        'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/.../read' permission.
+        self, resource_group_name: str, throughput_pool_name: str, **kwargs: Any
+    ) -> Iterable["_models.ThroughputPoolAccountResource"]:
+        """Lists all the Azure Cosmos DB accounts available under the subscription.
 
-        :param location: Cosmos DB region, with spaces between words and each word capitalized.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
-        :type location: str
-        :param instance_id: The instanceId GUID of a restorable database account. Required.
-        :type instance_id: str
+        :type resource_group_name: str
+        :param throughput_pool_name: Cosmos DB Throughput Pool name. Required.
+        :type throughput_pool_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either RestorableMongodbDatabaseGetResult or the result
-         of cls(response)
-        :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.RestorableMongodbDatabaseGetResult]
+        :return: An iterator like instance of either ThroughputPoolAccountResource or the result of
+         cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.ThroughputPoolAccountResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.RestorableMongodbDatabasesListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ThroughputPoolAccountsListResult] = kwargs.pop("cls", None)
 
         error_map = {
             401: ClientAuthenticationError,
@@ -123,8 +130,8 @@ class RestorableMongodbDatabasesOperations:
             if not next_link:
 
                 request = build_list_request(
-                    location=location,
-                    instance_id=instance_id,
+                    resource_group_name=resource_group_name,
+                    throughput_pool_name=throughput_pool_name,
                     subscription_id=self._config.subscription_id,
                     api_version=api_version,
                     template_url=self.list.metadata["url"],
@@ -153,11 +160,11 @@ class RestorableMongodbDatabasesOperations:
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("RestorableMongodbDatabasesListResult", pipeline_response)
+            deserialized = self._deserialize("ThroughputPoolAccountsListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -170,12 +177,13 @@ class RestorableMongodbDatabasesOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(get_next, extract_data)
 
     list.metadata = {
-        "url": "/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{instanceId}/restorableMongodbDatabases"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/throughputPools/{throughputPoolName}/throughputPoolAccounts"
     }
