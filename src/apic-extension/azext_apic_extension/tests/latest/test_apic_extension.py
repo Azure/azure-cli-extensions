@@ -108,7 +108,7 @@ class ApicExtensionScenario(ScenarioTest):
                          self.check('title', self.kwargs['api_version_title_update'])])
 
         # list api version
-        list_api_version_result = self.cmd('az apic api version list -g {resource_group} -s {service_name} --api-name {api_name}')
+        self.cmd('az apic api version list -g {resource_group} -s {service_name} --api-name {api_name}')
 
         # ------------------------------------------- API Definition -------------------------------------------
         # create api definition
@@ -159,7 +159,7 @@ class ApicExtensionScenario(ScenarioTest):
         # ------------------------------------------- Deployment -------------------------------------------
         # create deployment
         environment_id = "/workspaces/default/environments/" + self.kwargs['environment_name']
-        definition_id = "/workspaces/default/apis/" + self.kwargs['api_name']+"/versions/" + self.kwargs['api_version'] + "/definitions/" + self.kwargs['api_definition_name']
+        definition_id = "/workspaces/default/apis/" + self.kwargs['api_name'] + "/versions/" + self.kwargs['api_version'] + "/definitions/" + self.kwargs['api_definition_name']
         server = {"runtime-uri": ["https://api.contoso.com"]}
         self.kwargs.update({
             'environment_id': environment_id,
