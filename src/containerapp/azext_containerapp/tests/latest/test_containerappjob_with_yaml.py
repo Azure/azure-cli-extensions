@@ -9,7 +9,6 @@ import time
 from azure.cli.command_modules.containerapp._utils import format_location
 from msrestazure.tools import parse_resource_id
 
-from azure.cli.testsdk.decorators import serial_test
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 from .common import (write_test_file, clean_up_test_file, TEST_LOCATION, STAGE_LOCATION)
@@ -18,8 +17,10 @@ from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class ContainerAppJobsExecutionsTest(ScenarioTest):
-    @serial_test() #  The region where the resources are located is not the default TEST_LOCATION. Parallel running will affect each other, so serial running is required.
+class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerappjob_create_with_yaml(self, resource_group):
@@ -263,7 +264,6 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         ])
         clean_up_test_file(containerappjob_file_name)
 
-    @serial_test() #  The region where the resources are located is not the default TEST_LOCATION. Parallel running will affect each other, so serial running is required.
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerappjob_eventtriggered_create_with_yaml(self, resource_group):
@@ -433,6 +433,11 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].auth[0].secretRef', "personal-access-token"),
         ])
         clean_up_test_file(containerappjob_file_name)
+
+
+class ContainerAppJobsExecutionsTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")

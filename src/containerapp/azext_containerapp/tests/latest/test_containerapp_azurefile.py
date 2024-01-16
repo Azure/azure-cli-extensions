@@ -21,7 +21,9 @@ from .utils import create_containerapp_env
 
 
 class ContainerAppMountAzureFileTest(ScenarioTest):
-    @serial_test() #  The region where the resources are located is not the default TEST_LOCATION. Parallel running will affect each other, so serial running is required.
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
     def test_container_app_mount_azurefile_e2e(self, resource_group):

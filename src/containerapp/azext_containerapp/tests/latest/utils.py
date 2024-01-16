@@ -40,7 +40,7 @@ def prepare_containerapp_env_for_app_e2e_tests(test_cls, location=TEST_LOCATION)
 def create_containerapp_env(test_cls, env_name, resource_group, location=None, subnetId=None):
     logs_workspace_name = test_cls.create_random_name(prefix='containerapp-env', length=24)
     logs_workspace_location = location
-    if format_location(logs_workspace_location) == format_location(STAGE_LOCATION):
+    if logs_workspace_location is None or format_location(logs_workspace_location) == format_location(STAGE_LOCATION):
         logs_workspace_location = "eastus"
     logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l {}'.format(resource_group, logs_workspace_name, logs_workspace_location)).get_output_in_json()["customerId"]
     logs_workspace_key = test_cls.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
