@@ -57,8 +57,8 @@ def get_load_test_resource_endpoint(
             )
         name = load_test_resource
 
-    arm_endpoint = get_arm_endpoint(cli_ctx)
-    mgmt_client = LoadTestMgmtClient(credential=cred, subscription_id=subscription_id, base_url=arm_endpoint)
+    arm_endpoint, arm_token_scope = get_arm_endpoint_and_scope(cli_ctx)
+    mgmt_client = LoadTestMgmtClient(credential=cred, subscription_id=subscription_id, base_url=arm_endpoint, credential_scopes=arm_token_scope)
     data_plane_uri = mgmt_client.load_tests.get(resource_group, name).data_plane_uri
     logger.info("Azure Load Testing data plane URI: %s", data_plane_uri)
     return data_plane_uri
@@ -119,12 +119,13 @@ def get_data_plane_scope(cli_ctx):
 
     return ["https://cnt-prod.loadtesting.azure.com/.default"]
 
-def get_arm_endpoint(cli_ctx):
+
+def get_arm_endpoint_and_scope(cli_ctx):
     cloud_name = cli_ctx.cloud.name
     if cloud_name.lower() == "azureusgovernment":
-        return "https://management.usgovcloudapi.net"
+        return "https://management.usgovcloudapi.net", ["https://management.usgovcloudapi.net/.default"]
 
-    return "https://management.azure.com"
+    return "https://management.azure.com", ["https://management.azure.com/.default"]
 
 
 def get_enum_values(enum):
