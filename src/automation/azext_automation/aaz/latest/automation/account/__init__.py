@@ -8,3 +8,6 @@
 # pylint: skip-file
 # flake8: noqa
 
+from .__cmd_group import *
+from ._list_keys import *
+from ._show_linked_workspace import *
