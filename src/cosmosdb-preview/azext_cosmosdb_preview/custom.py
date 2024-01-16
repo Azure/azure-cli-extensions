@@ -1606,7 +1606,8 @@ def cosmosdb_copy_job(client,
                       dest_mongo=None,
                       job_name=None,
                       worker_count=0,
-                      host_copy_on_src=False):
+                      host_copy_on_src=False,
+                      mode="Offline"):
     job_create_properties = {}
     is_cross_account = src_account != dest_account
     remote_account_name = dest_account if host_copy_on_src else src_account
@@ -1672,6 +1673,8 @@ def cosmosdb_copy_job(client,
 
     if worker_count > 0:
         job_create_properties['worker_count'] = worker_count
+
+    job_create_properties['mode'] = mode
 
     job_create_parameters = {}
     job_create_parameters['properties'] = job_create_properties

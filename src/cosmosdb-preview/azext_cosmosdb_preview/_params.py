@@ -464,6 +464,7 @@ def load_arguments(self, _):
         c.argument('dest_nosql', nargs='+', arg_group='Azure Cosmos DB API for NoSQL container copy', action=AddSqlContainerAction, help='Destination NoSql container details')
         c.argument('host_copy_on_src', arg_type=get_three_state_flag(), help=argparse.SUPPRESS)
         c.argument('worker_count', type=int, help=argparse.SUPPRESS)
+        c.argument('mode', help='Copy Mode (Online / Offline)')
 
     for scope in [
             'cosmosdb copy list',
