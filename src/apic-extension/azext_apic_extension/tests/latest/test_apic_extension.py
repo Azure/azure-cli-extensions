@@ -39,10 +39,9 @@ class ApicExtensionScenario(ScenarioTest):
             'environment_name': 'cli-test-public'
         })
         self.cmd('az apic environment create -g {resource_group} -s {service_name} --name {environment_name} --title "Public cloud" --kind "development" --server "{server_details}"',
-            checks=[
-                self.check('name', self.kwargs['environment_name']),
-                self.check('title', 'Public cloud'),
-                self.check('kind', 'development')])
+                 checks=[self.check('name', self.kwargs['environment_name']),
+                         self.check('title', 'Public cloud'),
+                         self.check('kind', 'development')])
 
         # update environment
         server_details = {
@@ -93,7 +92,7 @@ class ApicExtensionScenario(ScenarioTest):
                 self.check('kind', 'rest')])
 
         # list api
-        list_api_result = self.cmd('az apic api list -g {resource_group} -s {service_name}')
+        self.cmd('az apic api list -g {resource_group} -s {service_name}')
 
         # ------------------------------------------- API Version -------------------------------------------
         # create api version
