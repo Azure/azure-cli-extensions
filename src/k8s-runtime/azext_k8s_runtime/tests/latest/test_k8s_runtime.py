@@ -17,6 +17,7 @@ def _get_test_data_filepath():
     with tempfile.NamedTemporaryFile(delete=False) as temp:
         return temp.name
 
+
 CANARY_REGION = "eastus2euap"
 
 
