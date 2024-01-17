@@ -44,6 +44,7 @@ from azure.cli.command_modules.containerapp._utils import (
     register_provider_if_needed,
     format_location
 )
+from azure.cli.core import telemetry as telemetry_core
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 from knack.log import get_logger
@@ -560,16 +561,20 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         except Exception as ex:
             raise ValidationError(f"Unable to run 'pack config' command to set default builder: {ex}") from ex
 
-        # If the user specifies a target port, pass it to the buildpack
-        if self.target_port:
-            command.extend(['--env', f"ORYX_RUNTIME_PORT={self.target_port}"])
-
         logger.warning("Selecting a compatible builder for the provided application source...")
         could_build_image = False
         for builder_image in builder_image_list:
             # Run 'pack build' to produce a runnable application image for the Container App
             # Specify the image as the 'build-cache' image to ensure that the local cache is used for build layers
             command = [pack_exec_path, 'build', cache_image_name, '--builder', builder_image, '--path', source, '--tag', image_name]
+
+            # If the user specifies a target port, pass it to the buildpack
+            if self.target_port:
+                command.extend(['--env', f"ORYX_RUNTIME_PORT={self.target_port}"])
+
+            # If the user has disabled telemetry collection for the CLI, propagate that to the builder
+            if not telemetry_core.is_telemetry_enabled():
+                command.extend(['--env', 'ORYX_DISABLE_TELEMETRY=true'])
 
             logger.debug(f"Calling '{' '.join(command)}'")
             try:
