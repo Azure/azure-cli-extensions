@@ -8,6 +8,7 @@ Describe 'Extension Types Testing' {
     }
 
     It 'Performs a show-by-cluster extension types call' {
+        Start-Sleep -Seconds 240
         $output = az $Env:K8sExtensionName extension-types show-by-cluster -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType
         $? | Should -BeTrue
         $output | Should -Not -BeNullOrEmpty
