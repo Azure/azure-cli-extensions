@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+0.3.4
+++++++
+* Fix '(InvalidRequestBody) Secret "xxxxx" value can't be null' error that occurs when using 'az load test create/update' with a config file that contains secrets.
+
 0.3.3
 ++++++
 * Fix for 'az load test update' command when using --load-test-config-file option failing due to accessing undefined object.
