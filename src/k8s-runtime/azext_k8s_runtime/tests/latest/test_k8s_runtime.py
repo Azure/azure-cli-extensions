@@ -19,10 +19,11 @@ def _get_test_data_filepath():
 
 CANARY_REGION = "eastus2euap"
 
+
 class K8sRuntimeScenario(ScenarioTest):
     def create_connected_cluster(self, resource_group):
         managed_cluster_name = self.create_random_name(prefix='test-connect', length=24)
-        kubeconfig=_get_test_data_filepath()
+        kubeconfig = _get_test_data_filepath()
         self.kwargs.update({
             'rg': resource_group,
             'name': self.create_random_name(prefix='cc-', length=12),
@@ -67,9 +68,9 @@ class K8sRuntimeScenario(ScenarioTest):
         self.cmd("az k8s-runtime storage-class disable --resource-uri {resource_uri}", checks=[
             self.check("extension.id", enable_result["extension"]["id"]),
             self.check("storage_class_contributor_role_assignment.id",
-                enable_result["storage_class_contributor_role_assignment"]["id"]),
+                       enable_result["storage_class_contributor_role_assignment"]["id"]),
             self.check("kubernetes_extension_contributor_role_assignment.id",
-                enable_result["kubernetes_extension_contributor_role_assignment"]["id"]),
+                       enable_result["kubernetes_extension_contributor_role_assignment"]["id"]),
         ])
 
         os.remove(self.kwargs["kubeconfig"])
