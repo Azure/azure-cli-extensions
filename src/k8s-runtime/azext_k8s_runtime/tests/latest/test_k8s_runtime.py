@@ -8,6 +8,7 @@
 import os
 import tempfile
 import azext_k8s_runtime.custom_commands.storage_class as sc
+import azext_k8s_runtime.custom_commands.load_balancer as lb
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, live_only
 
@@ -19,10 +20,7 @@ def _get_test_data_filepath():
 CANARY_REGION = "eastus2euap"
 
 class K8sRuntimeScenario(ScenarioTest):
-
-    @live_only()
-    @ResourceGroupPreparer(name_prefix='k8srttest', random_name_length=16)
-    def test_storage_class_enable_disable(self, resource_group):
+    def create_connected_cluster(self, resource_group):
         managed_cluster_name = self.create_random_name(prefix='test-connect', length=24)
         kubeconfig=_get_test_data_filepath()
         self.kwargs.update({
@@ -46,6 +44,11 @@ class K8sRuntimeScenario(ScenarioTest):
             "resource_uri": connected_cluster_resource_uri,
         })
 
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='k8srttest', random_name_length=16)
+    def test_storage_class_enable_disable(self, resource_group):
+        self.create_connected_cluster(resource_group)
+
         enable_result = self.cmd("az k8s-runtime storage-class enable --resource-uri {resource_uri}", checks=[
             self.check("extension.name", sc.STORAGE_CLASS_EXTENSION_NAME),
             self.check("extension.extensionType", sc.STORAGE_CLASS_EXTENSION_TYPE),
@@ -57,7 +60,7 @@ class K8sRuntimeScenario(ScenarioTest):
 
         k8s_ext_contrib_role_assignment = enable_result["kubernetes_extension_contributor_role_assignment"]
 
-        assert k8s_ext_contrib_role_assignment["id"].startswith(connected_cluster_resource_uri + "/providers/Microsoft.Authorization/roleAssignments/")
+        assert k8s_ext_contrib_role_assignment["id"].startswith(self.kwargs["resource_uri"] + "/providers/Microsoft.Authorization/roleAssignments/")
         assert k8s_ext_contrib_role_assignment["roleDefinitionId"].endswith(sc.KUBERNETES_EXTENSION_CONTRIBUTOR_ROLE_ID)
         assert k8s_ext_contrib_role_assignment["principalId"] == sc.KUBERNETES_RUNTIME_FPA_APP_ID
 
@@ -69,10 +72,27 @@ class K8sRuntimeScenario(ScenarioTest):
                 enable_result["kubernetes_extension_contributor_role_assignment"]["id"]),
         ])
 
-        os.remove(kubeconfig)
+        os.remove(self.kwargs["kubeconfig"])
 
     def test_storage_class_enable_disable_only_connected_cluster(self):
         self.kwargs["resource_uri"] = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Kubernetes/managedClusters/cluster"
 
         self.cmd("az k8s-runtime storage-class enable --resource-uri {resource_uri}", expect_failure=True)
         self.cmd("az k8s-runtime storage-class disable --resource-uri {resource_uri}", expect_failure=True)
+
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='k8srttest', random_name_length=16)
+    def test_load_balancer_enable_disable(self, resource_group):
+        self.create_connected_cluster(resource_group)
+
+        enable_result = self.cmd("az k8s-runtime load-balancer enable --resource-uri {resource_uri}", checks=[
+            self.check("extension.name", lb.LOAD_BALANCER_EXTENSION_NAME),
+            self.check("extension.extensionType", lb.LOAD_BALANCER_EXTENSION_TYPE),
+            self.check("extension.provisioningState", "Succeeded"),
+        ]).get_output_in_json()
+
+        self.cmd("az k8s-runtime load-balancer disable --resource-uri {resource_uri}", checks=[
+            self.check("extension.id", enable_result["extension"]["id"]),
+        ])
+
+        os.remove(self.kwargs["kubeconfig"])
