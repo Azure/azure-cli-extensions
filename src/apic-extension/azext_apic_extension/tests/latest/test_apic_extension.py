@@ -11,7 +11,31 @@ import unittest
 
 class ApicExtensionScenario(ScenarioTest):
 
-    @unittest.skip('Test account does not have permissions to create service')
+    #@unittest.skip('Test account does not have permissions to create service or use APIM service')
+    def test_import_from_apim(self):
+        
+        self.kwargs.update({
+            'resource_group': 'api-center-test',
+            'service_name': 'contosoeuap'
+        })
+
+        # Import from APIM - API does not exist
+        from azure.core.exceptions import HttpResponseError
+        import_resource_id_does_not_exist = '"/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-Central-US-EUAP/providers/Microsoft.ApiManagement/service/alzasloneuap06/apis/doesnotexist"'
+        self.kwargs.update({
+            'resource_id_does_not_exist': import_resource_id_does_not_exist
+        })
+        with self.assertRaisesRegexp(HttpResponseError, 'Failed to obtain schema from APIM'):
+            self.cmd('az apic service import-from-apim -g {resource_group} --service-name {service_name} --source-resource-ids "{resource_id_does_not_exist}"')
+
+        # Import from APIM - API does not exist
+        import_resource_id_exists = '"/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-Central-US-EUAP/providers/Microsoft.ApiManagement/service/alzasloneuap06/apis/uspto"'
+        self.kwargs.update({
+            'resource_id_exists': import_resource_id_exists
+        })
+        self.cmd('az apic service import-from-apim -g {resource_group} --service-name {service_name} --source-resource-ids "{resource_id_exists}" --debug')
+
+    #@unittest.skip('Test account does not have permissions to create service')
     def test_apic_scenarios(self):
 
         # create service - TODO in future. Use fixed service for now
@@ -244,3 +268,5 @@ class ApicExtensionScenario(ScenarioTest):
             'environment_name': self.kwargs['environment_name']
         })
         self.cmd('az apic api register -g {resource_group} -s {service_name} --api-location "{templateFile}" --environment-name {environment_name}')
+
+    

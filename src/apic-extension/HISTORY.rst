@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.1.0
+1.0.0b3
 +++++
 * Add: Support for Import from apim command along with add examples for create service
 

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ImportFromApim(AAZCommand):
     """Imports from APIM instance.
+
+    :example: Import From APIM
+        az az apic service import-from-apim -g api-center-test --service-name contosoeuap --source-resource-ids '/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/servicegroup/providers/Microsoft.ApiManagement/service/contoso/apis/contosoapi
     """
 
     _aaz_info = {
