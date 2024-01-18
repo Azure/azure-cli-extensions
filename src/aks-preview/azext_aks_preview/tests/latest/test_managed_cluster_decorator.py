@@ -7671,17 +7671,16 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 ),
             ),
             addon_profiles={
-            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
                 enabled=True,
                 config={
                     CONST_SECRET_ROTATION_ENABLED: "false",
                     CONST_ROTATION_POLL_INTERVAL: "2m",
-                    },
+                       },
                 )
             },
         )
         self.assertEqual(dec_mc_8, ground_truth_mc_8)
-
 
     def test_update_mc_profile_preview(self):
         import inspect
