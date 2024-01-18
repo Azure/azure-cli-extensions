@@ -55,11 +55,11 @@ class TunnelServer:
         self.host_name = None
         self.cli_ctx = cli_ctx
         logger.info('Creating a socket on port: %s', self.local_port)
-        if socket.has_ipv6:
+        family = _guess_ip_family(local_addr, self.local_port)
+        self.sock = socket.socket(family, socket.SOCK_STREAM)
+        if family == socket.AF_INET6:
             # dual stack
-            self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
-        else:
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
         logger.info('Setting socket options')
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         logger.info('Binding to socket on local address and port')
@@ -226,3 +226,16 @@ class TunnelServer:
 
     def set_host_name(self, hostname):
         self.host_name = hostname
+
+
+def _guess_ip_family(host, port):
+    if not socket.has_ipv6:
+        return socket.AF_INET
+    if host == "":
+        return socket.AF_INET6
+    infos = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM, flags=socket.AI_PASSIVE, )
+    for info in infos:
+        family, _, _, _, _ = info
+        if family == socket.AF_INET6:
+            return family
+    return socket.AF_INET

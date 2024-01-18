@@ -356,7 +356,9 @@ def _get_tunnel(cmd, bastion, bastion_endpoint, vm_id, resource_port, port=None,
     if port is None:
         port = 0  # will auto-select a free port from 1024-65535
     if bind_host is None:
-        bind_host = "localhost"
+        bind_host = "127.0.0.1"
+    elif bind_host == "any":
+        bind_host = ""
     tunnel_server = TunnelServer(cmd.cli_ctx, bind_host, port, bastion, bastion_endpoint, vm_id, resource_port)
 
     return tunnel_server

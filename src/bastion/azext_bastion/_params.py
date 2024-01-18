@@ -45,5 +45,5 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context("network bastion tunnel") as c:
         c.argument("port", help="Local port to use for the tunneling.", options_list=["--port"])
         c.argument("timeout", help="Timeout for connection to bastion host tunnel.", options_list=["--timeout"])
-        c.argument("bind_host", help="Local hostname or IP address the tunneling is listening on.",
-                   options_list=["--bind-host"])
+        c.argument("bind_host", options_list=["--bind-host"],
+                   help="Local hostname or IP the tunneling is listening on. Use 'any' to bind on all interfaces.")
