@@ -2026,4 +2026,42 @@ class FilterRuleUpdate(_RuleCollectionGroupUpdate):
                     target_rule_collection.rules[i] = new_rule
         if new_rule is None:
             raise UserFault(f'{args.rule_name} does not exist!!!')
+        
+@register_command(
+    "network firewall application-rule test",
+    is_preview=True,
+)
+class ApplicationRuleTest(_RuleCollectionGroupUpdate):
+    """
+    Update222222 a rule of an Azure firewall policy rule collection.
+        Filter collection supports having a list of network rules or application rules.
+        NatRule collection supports including a list of nat rules.
+
+    :example: Upda22222te a rule of an Azure firewall policy rule collection.
+        az network firewall policy rule-collection-group collection rule update -g {rg} --policy-
+        name {policy} --rule-collection-group-name {rcg} --collection-name {cn} -n {rule_name}
+        --target-fqdns XXX
+
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZListArg, AAZDictArg, AAZArgEnum, AAZResourceIdArg, \
+            AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.rule_name = args.name
+        args.name = args.rcg_name
+
+    def pre_instance_update(self, instance):
+        args = self.ctx.args
+        new_rule = None
+        if new_rule is None:
+            raise UserFault("Can222 find corresponding rule, please check parameters")
+  
+
 # endregion

@@ -116,5 +116,9 @@ def load_command_table(self, _):
         self.command_table['network firewall policy rule-collection-group collection rule add'] = FilterRuleAdd(loader=self)
         self.command_table['network firewall policy rule-collection-group collection rule update'] = FilterRuleUpdate(loader=self)
         self.command_table['network firewall policy rule-collection-group collection rule remove'] = FilterRuleRemove(loader=self)
+        
+    with self.command_group('network firewall application-rule test'):
+        from .custom import ApplicationRuleTest
+        self.command_table['network firewall application-rule test'] = ApplicationRuleTest(loader=self)
 
     # endregion
