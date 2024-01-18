@@ -55,7 +55,11 @@ class TunnelServer:
         self.host_name = None
         self.cli_ctx = cli_ctx
         logger.info('Creating a socket on port: %s', self.local_port)
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if socket.has_ipv6:
+            # dual stack
+            self.sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+        else:
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         logger.info('Setting socket options')
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         logger.info('Binding to socket on local address and port')

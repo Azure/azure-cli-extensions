@@ -350,12 +350,14 @@ def _write_to_file(response, file_path):
             f.write(line + "\n")
 
 
-def _get_tunnel(cmd, bastion, bastion_endpoint, vm_id, resource_port, port=None):
+def _get_tunnel(cmd, bastion, bastion_endpoint, vm_id, resource_port, port=None, bind_host=None):
     from .tunnel import TunnelServer
 
     if port is None:
         port = 0  # will auto-select a free port from 1024-65535
-    tunnel_server = TunnelServer(cmd.cli_ctx, "localhost", port, bastion, bastion_endpoint, vm_id, resource_port)
+    if bind_host is None:
+        bind_host = "localhost"
+    tunnel_server = TunnelServer(cmd.cli_ctx, bind_host, port, bastion, bastion_endpoint, vm_id, resource_port)
 
     return tunnel_server
 
@@ -372,7 +374,7 @@ def _tunnel_close_handler(tunnel):
 
 
 def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_group_name, bastion_host_name, resource_port, port,
-                          timeout=None):
+                          timeout=None, bind_host=None):
 
     from .aaz.latest.network.bastion import Show
     bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
@@ -394,7 +396,7 @@ def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_g
     _validate_resourceid(target_resource_id)
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
-    tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port, port)
+    tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port, port, bind_host=bind_host)
     if ip_connect:
         tunnel_server.set_host_name(target_ip_address)
     t = threading.Thread(target=_start_tunnel, args=(tunnel_server,))
