@@ -1215,7 +1215,7 @@ def _get_env_and_group_from_log_analytics(
 
 
 def _get_acr_from_image(cmd, app, registry_server_set=None):
-    if app.image is not None and "azurecr.io" in app.image and registry_server_set is False or None:
+    if app.image is not None and "azurecr.io" in app.image and not registry_server_set:
         app.registry_server = app.image.split("/")[
             0
         ]  # TODO what if this conflicts with registry_server param?
