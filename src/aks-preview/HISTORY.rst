@@ -16,6 +16,16 @@ Pending
 +++++++
 * Change the format for az aks machine commands to separate the ipv4, ipv6 columns
 
+1.0.0b2
++++++++
+* Add --skip-gpu-driver-install option to node pool property in `az aks nodepool add`.
+
+1.0.0b1
++++++++
+* Add `--enable-addon-autoscaling` and `--disable-addon-autoscaling` to the `az aks update` command.
+* Add `--enable-addon-autoscaling` to the `az aks create` command.
+* Add `--ip-families` to the `az aks update` command.
+
 0.5.174
 +++++++
 * Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`.

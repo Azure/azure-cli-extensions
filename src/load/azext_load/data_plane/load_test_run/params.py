@@ -24,6 +24,7 @@ def load_arguments(self, _):
     with self.argument_context("load test-run update") as c:
         c.argument("test_id", argtypes.test_id)
         c.argument("description", argtypes.test_run_description)
+        c.argument("display_name", argtypes.test_run_display_name)
 
     with self.argument_context("load test-run download-files") as c:
         c.argument("path", argtypes.dir_path)
