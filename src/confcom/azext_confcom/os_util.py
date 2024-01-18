@@ -135,18 +135,27 @@ def load_tar_mapping_from_file(path: str) -> dict:
     return raw_json
 
 
+def load_tar_mapping_from_config_file(path: str) -> dict:
+    raw_json = load_json_from_file(path)
+    containers = raw_json.get("containers", [])
+    output_dict = {}
+    for container in containers:
+        tar_path = container.get("path")
+        if tar_path and not os.path.isfile(tar_path):
+            eprint(f"Tarball does not exist at path: {tar_path}")
+        image_name = container.get("properties", {}).get("image", "")
+        output_dict[image_name] = tar_path
+    return output_dict
+
+
 def map_image_from_tar_backwards_compatibility(image_name: str, tar: TarFile, tar_location: str):
     tar_dir = os.path.dirname(tar_location)
     # grab all files in the folder and only take the one that's named with hex values and a json extension
     members = tar.getmembers()
-    info_file_name = [
-        file
-        for file in members
-        if file.name.endswith(".json") and not file.name.startswith("manifest")
-    ]
+
     info_file = None
     # if there's more than one image in the tarball, we need to do some more logic
-    if len(info_file_name) > 0:
+    if len(members) > 0:
         # extract just the manifest file and see if any of the RepoTags match the image_name we're searching for
         # the manifest.json should have a list of all the image tags
         # and what json files they map to to get env vars, startup cmd, etc.
@@ -157,7 +166,7 @@ def map_image_from_tar_backwards_compatibility(image_name: str, tar: TarFile, ta
         for image in manifest:
             if image_name in image.get("RepoTags"):
                 info_file = [
-                    item for item in info_file_name if item.name == image.get("Config")
+                    item for item in members if item.name == image.get("Config")
                 ][0]
                 break
         # remove the extracted manifest file to clean up

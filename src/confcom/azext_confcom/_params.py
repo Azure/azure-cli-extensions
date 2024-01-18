@@ -13,6 +13,15 @@ from azext_confcom._validators import (
     validate_save_to_file,
     validate_faster_hashing,
     validate_katapolicygen_input,
+    validate_fragment_key_and_chain,
+    validate_fragment_source,
+    validate_fragment_generate_import,
+    validate_fragment_namespace_and_svn,
+    validate_fragment_minimum_svn,
+    validate_fragment_algo,
+    validate_fragment_path,
+    validate_fragment_json,
+    validate_fragment_json_policy,
 )
 
 
@@ -158,6 +167,153 @@ def load_arguments(self, _):
             options_list=("--omit-id"),
             required=False,
             help="Omit the id field in the policy. This is helpful if the image being used will be present in multiple registries and used interchangeably.",
+        )
+
+        c.argument(
+            "include_fragments",
+            options_list=("--include-fragments", "-f"),
+            required=False,
+            help="Include fragments in the generated policy",
+        )
+        c.argument(
+            "fragments_json",
+            options_list=("--fragments-json", "-j"),
+            required=False,
+            help="Path to JSON file containing fragment information",
+            validator=validate_fragment_json_policy,
+        )
+        c.argument(
+            "exclude_default_fragments",
+            options_list=("--exclude-default-fragments", "-e"),
+            required=False,
+            help="Exclude default fragments in the generated policy",
+        )
+
+    with self.argument_context("confcom acifragmentgen") as c:
+        c.argument(
+            "image_name",
+            options_list=("--image"),
+            required=False,
+            help="Image Name to be used for the generated policy fragment",
+            validator=validate_fragment_source
+        )
+        c.argument(
+            "input_path",
+            options_list=("--input", "-i"),
+            required=False,
+            help="Config file for information about the intended generated policy fragment",
+            validator=validate_fragment_source
+        )
+        c.argument(
+            "tar_mapping_location",
+            options_list=("--tar",),
+            required=False,
+            help="Tar file locations in JSON format where the key is the name and tag of the image and the value is the path to the tar file",
+        )
+        c.argument(
+            "namespace",
+            options_list=("--namespace", "-n"),
+            required=False,
+            help="Namespace for the generated policy fragment",
+            validator=validate_fragment_namespace_and_svn,
+        )
+        c.argument(
+            "svn",
+            options_list=("--svn"),
+            required=False,
+            help="Software Version Number for the generated policy fragment",
+            validator=validate_fragment_namespace_and_svn,
+        )
+        c.argument(
+            "feed",
+            options_list=("--feed", "-f"),
+            required=False,
+            help="Feed for the generated policy fragment",
+        )
+        c.argument(
+            "key",
+            options_list=("--key", "-k"),
+            required=False,
+            help="Key for signing the generated policy fragment. Must be in PEM format",
+            validator=validate_fragment_key_and_chain,
+        )
+        c.argument(
+            "chain",
+            options_list=("--chain"),
+            required=False,
+            help="Certificate chain for signing the generated policy fragment. Must be in PEM format",
+            validator=validate_fragment_key_and_chain,
+        )
+        c.argument(
+            "algo",
+            options_list=("--algo"),
+            required=False,
+            help="Algorithm for signing the generated policy fragment",
+            validator=validate_fragment_algo,
+        )
+        c.argument(
+            "fragment_path",
+            options_list=("--fragment-path", "-p"),
+            required=False,
+            help="Path to a policy fragment to be used with --generate-import to make import statements without having access to the fragment's OCI registry",
+            validator=validate_fragment_path,
+        )
+        c.argument(
+            "generate_import",
+            options_list=("--generate-import", "-g"),
+            required=False,
+            help="Generate an import statement for a policy fragment",
+            validator=validate_fragment_generate_import,
+        )
+        c.argument(
+            "minimum_svn",
+            options_list=("--minimum-svn",),
+            required=False,
+            help="Used with --generate-import to specify the minimum SVN for the import statement",
+            validator=validate_fragment_minimum_svn,
+        )
+        c.argument(
+            "disable_stdio",
+            options_list=("--disable-stdio",),
+            required=False,
+            help="Disabling container stdio will disable the ability to see the output of the container in the terminal for Confidential ACI",
+        )
+        c.argument(
+            "debug_mode",
+            options_list=("--debug-mode",),
+            required=False,
+            help="Debug mode will enable processes in a container group that are helpful for debugging",
+        )
+        c.argument(
+            "output_filename",
+            options_list=("--output-filename"),
+            required=False,
+            help="Output filename for the generated policy fragment",
+        )
+        c.argument(
+            "outraw",
+            options_list=("--outraw"),
+            required=False,
+            help="Output policy fragment in clear text compact JSON instead of default base64 format",
+        )
+        c.argument(
+            "upload_fragment",
+            options_list=("--upload-fragment", "-u"),
+            required=False,
+            help="Upload a policy fragment to a container registry",
+        )
+        c.argument(
+            "no_print",
+            options_list=("--no-print",),
+            required=False,
+            help="Do not print the generated policy fragment to stdout",
+        )
+        c.argument(
+            "fragments_json",
+            options_list=("--fragments-json", "-j"),
+            required=False,
+            help="Path to JSON file to write fragment import information. This is used with --generate-import. If not specified, the import statement will print to the console",
+            validator=validate_fragment_json,
         )
 
     with self.argument_context("confcom katapolicygen") as c:

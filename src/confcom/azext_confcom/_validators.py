@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
+from azext_confcom.config import RESERVED_FRAGMENT_NAMES, SUPPORTED_ALGOS
 
 
 def validate_params_file(namespace):
@@ -45,6 +46,67 @@ def validate_save_to_file(namespace):
         raise CLIError("Must print policy to terminal when saving to file")
 
 
+def validate_fragment_json_policy(namespace):
+    if namespace.fragments_json and not namespace.include_fragments:
+        raise CLIError("Must provide --include-fragments to reference a fragment import JSON file")
+
+
 def validate_katapolicygen_input(namespace):
     if not (namespace.yaml_path or namespace.print_version):
         raise CLIError("Either --yaml-path or --print-version is required")
+
+
+def validate_fragment_key_and_chain(namespace):
+    if sum(map(bool, [namespace.key, namespace.chain])) == 1:
+        raise CLIError("Must provide both --key and --chain to sign a fragment")
+
+
+def validate_fragment_source(namespace):
+    if not namespace.generate_import and sum(map(bool, [namespace.image_name, namespace.input_path])) != 1:
+        raise CLIError("Must provide either an image name or an input file to generate a fragment")
+
+
+def validate_fragment_generate_import(namespace):
+    if namespace.generate_import and sum(map(bool, [
+        namespace.fragment_path,
+        namespace.input_path,
+        namespace.image_name
+    ])) != 1:
+        raise CLIError(
+            (
+                "Must provide either a fragment path, an input file, or "
+                "an image name to generate an import statement"
+            )
+        )
+
+
+def validate_fragment_namespace_and_svn(namespace):
+    if not namespace.generate_import and (not namespace.namespace or not namespace.svn):
+        raise CLIError("Must provide both --namespace and --svn to generate a fragment")
+    if not namespace.generate_import and namespace.namespace in RESERVED_FRAGMENT_NAMES:
+        raise CLIError(f"Namespace '{namespace.namespace}' is reserved")
+    if namespace.svn and not namespace.svn.isdigit():
+        raise CLIError("--svn must be an integer")
+    if not namespace.generate_import and (namespace.svn and int(namespace.svn) < 0):
+        raise CLIError("--svn must be greater than or equal to 0")
+
+
+def validate_fragment_minimum_svn(namespace):
+    if namespace.generate_import and (not namespace.minimum_svn or int(namespace.minimum_svn) < 0):
+        raise CLIError("--minimum-svn must be greater than or equal to 0")
+
+
+def validate_fragment_algo(namespace):
+    validate_fragment_key_and_chain(namespace)
+    if namespace.algo not in SUPPORTED_ALGOS:
+        raise CLIError(f"Algorithm '{namespace.algo}' is not supported. Supported algorithms are {SUPPORTED_ALGOS}")
+
+
+def validate_fragment_path(namespace):
+    if namespace.fragment_path and not namespace.generate_import:
+        raise CLIError("Must provide --generate-import to specify a fragment path")
+
+
+def validate_fragment_json(namespace):
+    if namespace.fragments_json and not namespace.generate_import:
+        raise CLIError("Must provide --fragment-path to place a fragment import into a file")

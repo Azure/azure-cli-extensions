@@ -874,28 +874,6 @@ class CustomJsonParsingIncorrect(unittest.TestCase):
             load_policy_from_str(custom_json)
         self.assertEqual(exc_info.exception.code, 1)
 
-    def test_json_missing_version(self):
-        custom_json = """
-        {
-            "containers": [
-                {
-                    "containerImage": "mcr.microsoft.com/azuredocs/aci-dataprocessing-cc:v1",
-                    "environmentVariables": [
-                        {
-                            "name": "port",
-                            "value": "80",
-                            "strategy": "string"
-                        }
-                    ],
-                    "command": ["python", "app.py"]
-                }
-            ]
-        }
-        """
-        with self.assertRaises(SystemExit) as exc_info:
-            load_policy_from_str(custom_json)
-        self.assertEqual(exc_info.exception.code, 1)
-
     def test_json_missing_containerImage(self):
         custom_json = """
         {

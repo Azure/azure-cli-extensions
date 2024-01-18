@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from azext_confcom import os_util
+from azext_confcom.os_util import load_json_from_file, load_str_from_file
 
 # input json values
 ACI_FIELD_VERSION = "version"
@@ -146,11 +146,15 @@ POLICY_FIELD_CONTAINERS_ELEMENTS_SECCOMP_PROFILE_SHA256 = "seccomp_profile_sha25
 POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS = "allow_stdio_access"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS = "fragments"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED = "feed"
+POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_PATH = "path"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISS = "iss"
+POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER = "issuer"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN = "minimum_svn"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES = "includes"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_LOCATION = "/mnt/configmap"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_TYPE = "emptyDir"
+REGO_CONTAINER_START = "containers := "
+REGO_FRAGMENT_START = "fragments := "
 
 
 CONFIG_FILE = "./data/internal_config.json"
@@ -158,7 +162,7 @@ CONFIG_FILE = "./data/internal_config.json"
 script_directory = os.path.dirname(os.path.realpath(__file__))
 CONFIG_FILE_PATH = f"{script_directory}/{CONFIG_FILE}"
 
-_config = os_util.load_json_from_file(CONFIG_FILE_PATH)
+_config = load_json_from_file(CONFIG_FILE_PATH)
 DEFAULT_WORKING_DIR = _config["containerd"]["defaultWorkingDir"]
 
 MOUNT_SOURCE_TABLE = {}
@@ -191,15 +195,22 @@ DEFAULT_MOUNT_POLICY = _config["mount"]["default_policy"]
 DEFAULT_REGO_FRAGMENTS = _config["default_rego_fragments"]
 # things that need to be set for debug mode
 DEBUG_MODE_SETTINGS = _config["debugMode"]
+# reserved fragment names for existing pieces of Rego
+RESERVED_FRAGMENT_NAMES = _config["reserved_fragment_namespaces"]
+# fragment artifact type
+ARTIFACT_TYPE = "application/x-ms-policy-frag"
 # customer rego file for data to be injected
 REGO_FILE = "./data/customer_rego_policy.txt"
+REGO_FRAGMENT_FILE = "./data/customer_rego_fragment.txt"
 script_directory = os.path.dirname(os.path.realpath(__file__))
 REGO_FILE_PATH = f"{script_directory}/{REGO_FILE}"
-CUSTOMER_REGO_POLICY = os_util.load_str_from_file(REGO_FILE_PATH)
+REGO_FRAGMENT_FILE_PATH = f"{script_directory}/{REGO_FRAGMENT_FILE}"
+CUSTOMER_REGO_POLICY = load_str_from_file(REGO_FILE_PATH)
+CUSTOMER_REGO_FRAGMENT = load_str_from_file(REGO_FRAGMENT_FILE_PATH)
 # sidecar rego file
 SIDECAR_REGO_FILE = "./data/sidecar_rego_policy.txt"
 SIDECAR_REGO_FILE_PATH = f"{script_directory}/{SIDECAR_REGO_FILE}"
-SIDECAR_REGO_POLICY = os_util.load_str_from_file(SIDECAR_REGO_FILE_PATH)
+SIDECAR_REGO_POLICY = load_str_from_file(SIDECAR_REGO_FILE_PATH)
 # data folder
 DATA_FOLDER = os.path.join(script_directory, "data")
 
@@ -249,3 +260,13 @@ SIGNALS = {
     "SIGSYS": 31,
     "SIGUNUSED": 31
 }
+# these algorithms are the only supported ones in https://github.com/veraison/go-cose/blob/main/algorithm.go
+SUPPORTED_ALGOS = [
+    "PS256",
+    "PS384",
+    "PS512",
+    "ES256",
+    "ES384",
+    "ES512",
+    "EdDSA",
+]

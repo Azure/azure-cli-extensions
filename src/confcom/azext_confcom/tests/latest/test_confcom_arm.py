@@ -1254,7 +1254,7 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/base/nginx:1-cm2.0"
             },
             "containername": {
                 "type": "string",
@@ -1583,8 +1583,7 @@ class PolicyDiff(unittest.TestCase):
         cls.aci_policy.populate_policy_content_for_all_images()
         cls.aci_policy2 = load_policy_from_arm_template_str(cls.custom_json2, "")[0]
         cls.aci_policy2.populate_policy_content_for_all_images()
-        container_start = "containers := "
-        cls.containers = json.loads(extract_containers_from_text(cls.aci_policy.get_serialized_output(OutputType.PRETTY_PRINT), container_start))
+        cls.containers = json.loads(extract_containers_from_text(cls.aci_policy.get_serialized_output(OutputType.PRETTY_PRINT), config.REGO_CONTAINER_START))
 
     def test_policy_diff(self):
         self.aci_policy._existing_cce_policy = self.containers
@@ -2044,8 +2043,7 @@ class MultiplePolicyTemplate(unittest.TestCase):
         cls.aci_policy3.populate_policy_content_for_all_images(faster_hashing=True)
 
     def test_multiple_policies(self):
-        container_start = "containers := "
-        policy2_containers = json.loads(extract_containers_from_text(self.aci_policy2.get_serialized_output(OutputType.PRETTY_PRINT), container_start))
+        policy2_containers = json.loads(extract_containers_from_text(self.aci_policy2.get_serialized_output(OutputType.PRETTY_PRINT), config.REGO_CONTAINER_START))
 
         self.aci_policy._existing_cce_policy = policy2_containers
         is_valid, diff = self.aci_policy.validate_cce_policy()
@@ -2979,10 +2977,7 @@ class PrintExistingPolicy(unittest.TestCase):
 
             self.assertEqual(exc_info.exception.code, 1)
 
-            with self.assertRaises(SystemExit) as exc_info:
-                acipolicygen_confcom(None, "test_template2.json", None, None, None, None, None, print_existing_policy=True)
-
-            self.assertEqual(exc_info.exception.code, 0)
+            acipolicygen_confcom(None, "test_template2.json", None, None, None, None, None, print_existing_policy=True)
         finally:
             # delete test file
             os.remove("test_template.json")

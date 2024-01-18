@@ -19,7 +19,6 @@ from azext_confcom.errors import (
 from azext_confcom import os_util
 from azext_confcom import config
 
-
 # TODO: these can be optimized to not have so many groups in the single match
 # make this global so it can be used in multiple functions
 PARAMETER_AND_VARIABLE_REGEX = r"\[(?:parameters|variables)\(\s*'([^\.\/]+?)'\s*\)\]"
@@ -164,12 +163,11 @@ def get_image_info(progress, message_queue, tar_mapping, image):
         config.ACI_FIELD_CONTAINERS_ARCHITECTURE_VALUE
     ):
         progress.close()
-        eprint(
-            f"{image_name} is attempting to build for unsupported architecture: " +
+        eprint((
+            f"{image_name} is attempting to build for unsupported architecture: "
             f"{raw_image.attrs.get(config.ACI_FIELD_CONTAINERS_ARCHITECTURE_KEY)}. "
-            + f"Only {config.ACI_FIELD_CONTAINERS_ARCHITECTURE_VALUE} is supported by Confidential ACI"
-        )
-
+            f"Only {config.ACI_FIELD_CONTAINERS_ARCHITECTURE_VALUE} is supported by Confidential ACI"
+        ))
     return image_info, tar
 
 
@@ -200,7 +198,7 @@ def process_env_vars_from_template(params: dict,
     # add in the env vars from the template
     template_env_vars = case_insensitive_dict_get(
         image_properties, config.ACI_FIELD_TEMPLATE_ENVS
-    )
+    ) or []
 
     if template_env_vars:
         for env_var in template_env_vars:
@@ -282,9 +280,10 @@ def process_env_vars_from_yaml(container, config_maps, secrets, approve_wildcard
 
                     response = (approve_wildcards or
                                 configmap_name in wildcarded_resource_names or
-                                input("Would you like to use a wildcard value for ConfigMap " +
-                                      f"{configmap_name}? (y/n): "
-                                      )
+                                input((
+                                    "Would you like to use a wildcard value for ConfigMap "
+                                    f"{configmap_name}? (y/n): "
+                                ))
                                 )
 
                     if (
@@ -327,10 +326,10 @@ def process_env_vars_from_yaml(container, config_maps, secrets, approve_wildcard
                 if value is None and secret_name not in not_wildcarded_resource_names:
                     response = (approve_wildcards or
                                 secret_name in wildcarded_resource_names or
-                                input("Would you like to use a wildcard value for Secret " +
-                                      f"{secret_name}? (y/n): "
-                                      )
-                                )
+                                input((
+                                    "Would you like to use a wildcard value for Secret "
+                                    f"{secret_name}? (y/n): "
+                                )))
 
                     if (
                             approve_wildcards or
@@ -344,9 +343,11 @@ def process_env_vars_from_yaml(container, config_maps, secrets, approve_wildcard
                             config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "re2",
                         })
                     else:
-                        eprint(f"Secret {name} needs a value. " +
-                               "Either attach the Secret resource " +
-                               "to the yaml file or use a wildcard.")
+                        eprint((
+                            f"Secret {name} needs a value. "
+                            "Either attach the Secret resource "
+                            "to the yaml file or use a wildcard."
+                        ))
 
                 elif secret_name in not_wildcarded_resource_names:
                     output_env_vars.append({
@@ -377,8 +378,8 @@ def process_env_vars_from_yaml(container, config_maps, secrets, approve_wildcard
                 container_name = ref.get('resourceFieldRef').get('containerName')
 
                 if container_name != container.get('name'):
-                    eprint("Container names other than the current " +
-                           f"container are not currently supported: {container_name}")
+                    eprint(("Container names other than the current "
+                           f"container are not currently supported: {container_name}"))
                 resource = ref.get('resourceFieldRef').get('resource')
                 request_or_limit, resource_type = resource.split('.')
 
@@ -458,6 +459,83 @@ def filter_non_pod_resources(resources: List[dict]) -> List[dict]:
     return [resource for resource in resources if resource and resource.get("kind") in important_resource_names]
 
 
+def process_env_vars_from_config(container) -> List[Dict[str, str]]:
+    env_vars = []
+    # add in the env vars from the template
+    template_env_vars = case_insensitive_dict_get(
+        container, config.ACI_FIELD_TEMPLATE_ENVS
+    ) or []
+    for env_var in template_env_vars:
+        name = case_insensitive_dict_get(env_var, "name")
+        secure_value = case_insensitive_dict_get(env_var, "secureValue")
+        is_secure = bool(secure_value)
+        value = case_insensitive_dict_get(env_var, "value") or secure_value
+
+        if not name and not is_secure:
+            eprint(
+                f"Environment variable with value: {value} is missing a name"
+            )
+        elif not name and is_secure:
+            eprint(
+                "Environment variable with secure value is missing a name"
+            )
+        elif not value:
+            eprint(f'Environment variable {name} does not have a value. Please check the template file.')
+
+        env_vars.append({
+            config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+            config.ACI_FIELD_CONTAINERS_ENVS_VALUE: value,
+            config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY:
+                "re2" if case_insensitive_dict_get(env_var, "regex") else "string",
+        })
+
+    return env_vars
+
+
+def process_fragment_imports(rego_imports) -> None:
+    for rego_import in rego_imports:
+        feed = case_insensitive_dict_get(
+            rego_import, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED
+        )
+        if not isinstance(feed, str):
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                + f'["{config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED}"] '
+                + "can only be a string value."
+            )
+
+        iss = case_insensitive_dict_get(
+            rego_import, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER
+        )
+        if not isinstance(iss, str):
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                + f'["{config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER}"] '
+                + "can only be a string value."
+            )
+
+        minimum_svn = case_insensitive_dict_get(
+            rego_import, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN
+        )
+
+        if not minimum_svn or not isinstance(minimum_svn, str) or not minimum_svn.isdigit():
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                + f'["{config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN}"] '
+                + "can only be an integer value."
+            )
+
+        includes = case_insensitive_dict_get(
+            rego_import, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES
+        )
+        if not isinstance(includes, list):
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                + f'["{config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES}"] '
+                + "can only be a list value."
+            )
+
+
 def process_mounts(image_properties: dict, volumes: List[dict]) -> List[Dict[str, str]]:
     mount_source_table_keys = config.MOUNT_SOURCE_TABLE.keys()
     # initialize empty array of mounts
@@ -526,6 +604,59 @@ def process_configmap(image_properties: dict) -> List[Dict[str, str]]:
                 config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_LOCATION,
             config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY: False,
             }]
+
+
+def process_mounts_from_config(image_properties: dict) -> List[Dict[str, str]]:
+    mounts = []
+    # get the mount types from the mounts section of the ARM template
+    volume_mounts = (
+        case_insensitive_dict_get(
+            image_properties, config.ACI_FIELD_TEMPLATE_VOLUME_MOUNTS
+        )
+        or []
+    )
+
+    if volume_mounts and not isinstance(volume_mounts, list):
+        # parameter definition is in parameter file but not arm
+        # template
+        eprint(
+            f'Parameter ["{config.ACI_FIELD_TEMPLATE_VOLUME_MOUNTS}"] must be a list'
+        )
+
+    # get list of mount information based on mount name
+    for mount in volume_mounts:
+        mount_type = case_insensitive_dict_get(
+            mount, config.ACI_FIELD_TEMPLATE_MOUNTS_TYPE
+        )
+
+        if not mount_type:
+            eprint(
+                f'Field ["{config.ACI_FIELD_TEMPLATE_MOUNTS_TYPE}"] is empty or cannot be found in mount'
+            )
+
+        mount_path = case_insensitive_dict_get(
+            mount, config.ACI_FIELD_TEMPLATE_MOUNTS_PATH
+        )
+
+        if not mount_path:
+            eprint(
+                f'Field ["{config.ACI_FIELD_TEMPLATE_MOUNTS_PATH}"] is empty or cannot be found in mount'
+            )
+
+        mounts.append(
+            {
+                config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE: case_insensitive_dict_get(
+                    mount, config.ACI_FIELD_TEMPLATE_MOUNTS_TYPE
+                ),
+                config.ACI_FIELD_CONTAINERS_MOUNTS_PATH: case_insensitive_dict_get(
+                    mount, config.ACI_FIELD_TEMPLATE_MOUNTS_PATH
+                ),
+                config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY: case_insensitive_dict_get(
+                    mount, config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY
+                ),
+            }
+        )
+    return mounts
 
 
 def get_values_for_params(input_parameter_json: dict, all_params: dict) -> Dict[str, Any]:
@@ -655,6 +786,21 @@ def compare_containers(container1, container2) -> Dict[str, Any]:
     # cast to json using built-in function in deepdiff so there's safe translation
     # e.g. a type will successfully cast to string
     return readable_diff(json.loads(diff.to_json()))
+
+
+def get_container_diff(container1, container2) -> Dict[str, Any]:
+    container1_copy = copy.deepcopy(container1)
+    container2_copy = copy.deepcopy(container2)
+
+    # the ID does not matter so delete them from comparison
+    container1_copy.pop(config.POLICY_FIELD_CONTAINERS_ID, None)
+    container2_copy.pop(config.POLICY_FIELD_CONTAINERS_ID, None)
+    # env vars will be compared later so delete them from this
+    # comparison
+    container1_copy.pop(config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS, None)
+    container2_copy.pop(config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS, None)
+
+    return compare_containers(container1_copy, container2_copy)
 
 
 def change_key_names(dictionary) -> Dict:
@@ -845,9 +991,6 @@ def extract_confidential_properties(
 
 
 def decompose_confidential_properties(cce_policy: str) -> Tuple[List[Dict], List[Dict]]:
-    container_start = "containers := "
-    fragment_start = "fragments := "
-
     cce_policy = os_util.base64_to_str(cce_policy)
     # error check that the decoded policy existing in the template is not in JSON format
     try:
@@ -860,23 +1003,26 @@ def decompose_confidential_properties(cce_policy: str) -> Tuple[List[Dict], List
         # this is expected, we do not want json
         pass
 
+    return extract_containers_and_fragments_from_text(cce_policy)
+
+
+def extract_containers_and_fragments_from_text(text: str) -> Tuple[List[Dict], List[Dict]]:
     try:
-        container_text = extract_containers_from_text(cce_policy, container_start)
+        container_text = extract_containers_from_text(text, config.REGO_CONTAINER_START)
         # replace tabs with 4 spaces, YAML parser can take in JSON with trailing commas but not tabs
         # so we need to get rid of the tabs
         container_text = container_text.replace("\t", "    ")
-
         containers = yaml.load(container_text, Loader=yaml.FullLoader)
-
         fragment_text = extract_containers_from_text(
-            cce_policy, fragment_start
+            text, config.REGO_FRAGMENT_START
         ).replace("\t", "    ")
 
         fragments = yaml.load(
             fragment_text,
             Loader=yaml.FullLoader,
         )
-    except yaml.YAMLError:
+    except yaml.YAMLError as e:
+        eprint(f"Error parsing rego file: {e}")
         # reading the rego file failed, so we'll just return the default outputs
         containers = []
         fragments = []
@@ -1047,10 +1193,10 @@ def inject_policy_into_template(
         container_group_name = get_container_group_name(
             input_arm_json, parameter_data, count
         )
-        user_input = input(
-            "Do you want to overwrite the CCE Policy currently in container group " +
+        user_input = input((
+            "Do you want to overwrite the CCE Policy currently in container group "
             f'"{container_group_name}" in the ARM Template? (y/n) '
-        )
+        ))
         if user_input.lower() == "y":
             confidential_compute_properties[
                 config.ACI_FIELD_TEMPLATE_CCE_POLICY
@@ -1262,7 +1408,6 @@ def print_existing_policy_from_yaml(virtual_node_yaml_path: str) -> None:
 
 
 def process_seccomp_policy(policy2):
-
     # helper function to add fields to a dictionary if they don't exist
     def defaults(obj, default):
         for key in default:
