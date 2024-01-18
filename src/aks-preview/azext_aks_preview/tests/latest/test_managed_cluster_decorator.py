@@ -7653,6 +7653,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ingress_profile=self.models.ManagedClusterIngressProfile(
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
+                    identity=self.models.UserAssignedIdentity(
+                        resource_id="test_resource_id",
+                        client_id="test_client_id",
+                        object_id="test_object_id",
+                    ),
                 ),
             ),
             addon_profiles={
@@ -7668,6 +7673,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ingress_profile=self.models.ManagedClusterIngressProfile(
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
+                    identity=self.models.UserAssignedIdentity(
+                        resource_id="test_resource_id",
+                        client_id="test_client_id",
+                        object_id="test_object_id",
+                    ),
                 ),
             ),
             addon_profiles={
