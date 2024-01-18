@@ -120,7 +120,7 @@ def check_connection(target_iqn, target_portal_hostname, target_portal_port):
     return "No active sessions." not in out and "{}:{},-1 {}".format(target_portal_hostname, target_portal_port, target_iqn) in out
         
 # connect to volume with the specified number of sessions
-def connect_volume(volume_name, target_iqn, target_portal_hostname, target_portal_port, number_of_sessions):    
+def connect_volume(volume_name, target_iqn, target_portal_hostname, target_portal_port, number_of_sessions):
     print("{} [{}]: Connecting to this volume".format(volume_name, target_iqn))
     # add target and attempt to register a session
     command = "sudo iscsiadm -m node --targetname {} --portal {}:{} -o new".format(target_iqn, target_portal_hostname, target_portal_port).split(' ')
@@ -133,7 +133,6 @@ def connect_volume(volume_name, target_iqn, target_portal_hostname, target_porta
     out, err = p.communicate()
     if err:
         raise Exception(err)
-    number_of_sessions-=1
 
     # get session id
     command = "sudo iscsiadm -m session".split(' ')
@@ -149,7 +148,7 @@ def connect_volume(volume_name, target_iqn, target_portal_hostname, target_porta
 
     # register remaining sessions
     command = "sudo iscsiadm -m session -r {} --op new".format(session_id).split(' ')
-    for i in range(number_of_sessions):
+    for i in range(number_of_sessions-1):
         p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         p.communicate()
             
