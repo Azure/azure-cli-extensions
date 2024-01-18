@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b3
++++++++
+* Fix for `az aks approuting update` command not working when `monitoring` addon is enabled.
+
 1.0.0b2
 +++++++
 * Add --skip-gpu-driver-install option to node pool property in `az aks nodepool add`.
