@@ -11,7 +11,7 @@ import unittest
 
 class ApicExtensionScenario(ScenarioTest):
 
-    #@unittest.skip('Test account does not have permissions to create service or use APIM service')
+    @unittest.skip('Test account does not have permissions to create service or use APIM service')
     def test_import_from_apim(self):
         
         self.kwargs.update({
@@ -35,7 +35,7 @@ class ApicExtensionScenario(ScenarioTest):
         })
         self.cmd('az apic service import-from-apim -g {resource_group} --service-name {service_name} --source-resource-ids "{resource_id_exists}" --debug')
 
-    #@unittest.skip('Test account does not have permissions to create service')
+    @unittest.skip('Test account does not have permissions to create service')
     def test_apic_scenarios(self):
 
         # create service - TODO in future. Use fixed service for now
