@@ -1911,8 +1911,8 @@ def load_arguments(self, _):
             "source_resource_id",
             options_list=[
                 "--source-resource-id",
-                "-r",
                 c.deprecate(target="-s", redirect="--source-resource-id", hide=True),
+                c.deprecate(target="-r", redirect="--source-resource-id", hide=True),
             ],
             help="The source resource id of the binding",
         )
