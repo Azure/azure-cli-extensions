@@ -32,8 +32,7 @@ class ElasticSanScenario(ScenarioTest):
                          JMESPathCheck('tags', {"key1810": "aaaa"}),
                          JMESPathCheck('baseSizeTiB', 23),
                          JMESPathCheck('extendedCapacitySizeTiB', 14),
-                         JMESPathCheck('sku', {"name": "Premium_LRS",
-                                                "tier": "Premium"})
+                         JMESPathCheck('sku', {"name": "Premium_LRS", "tier": "Premium"})
                          ])
         self.cmd('az elastic-san list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
         self.cmd('az elastic-san list-sku')
@@ -199,7 +198,7 @@ class ElasticSanScenario(ScenarioTest):
         # Grant access to  the system assigned identity to the key vault created in  step1
         # (key permissions: Get, Unwrap Key, Wrap Key)
         self.cmd('az keyvault set-policy -n {kv_name} --object-id {vg_identity_principal_id} '
-                 '--key-permissions backup create delete get import get list update restore ')
+                 '--key-permissions backup create delete get import get list update restore get wrapkey unwrapkey')
         # 4. PATCH the volume group with the key created in step 1
         self.cmd("az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} "
                  "--encryption EncryptionAtRestWithCustomerManagedKey --encryption-properties "
