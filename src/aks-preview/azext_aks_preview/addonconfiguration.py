@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import json
 from knack.log import get_logger
 from knack.util import CLIError
 from azure.cli.core.azclierror import ArgumentUsageError
@@ -42,45 +41,68 @@ from azext_aks_preview._consts import (
 logger = get_logger(__name__)
 
 
-def enable_addons(cmd,
-                  client,
-                  resource_group_name,
-                  name,
-                  addons,
-                  check_enabled=True,
-                  workspace_resource_id=None,
-                  subnet_name=None,
-                  appgw_name=None,
-                  appgw_subnet_prefix=None,
-                  appgw_subnet_cidr=None,
-                  appgw_id=None,
-                  appgw_subnet_id=None,
-                  appgw_watch_namespace=None,
-                  enable_sgxquotehelper=False,
-                  enable_secret_rotation=False,
-                  rotation_poll_interval=None,
-                  no_wait=False,
-                  dns_zone_resource_id=None,
-                  enable_msi_auth_for_monitoring=False,
-                  enable_syslog=False,
-                  data_collection_settings=None):
+# pylint: disable=too-many-locals
+def enable_addons(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    addons,
+    check_enabled=True,
+    workspace_resource_id=None,
+    subnet_name=None,
+    appgw_name=None,
+    appgw_subnet_prefix=None,
+    appgw_subnet_cidr=None,
+    appgw_id=None,
+    appgw_subnet_id=None,
+    appgw_watch_namespace=None,
+    enable_sgxquotehelper=False,
+    enable_secret_rotation=False,
+    rotation_poll_interval=None,
+    no_wait=False,
+    dns_zone_resource_id=None,
+    dns_zone_resource_ids=None,
+    enable_msi_auth_for_monitoring=True,
+    enable_syslog=False,
+    data_collection_settings=None
+):
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
-    msi_auth = True if instance.service_principal_profile.client_id == "msi" else False
+    msi_auth = False
+    if instance.service_principal_profile.client_id == "msi":
+        msi_auth = True
+    else:
+        enable_msi_auth_for_monitoring = False
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
-    instance = update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
-                             check_enabled=check_enabled,
-                             workspace_resource_id=workspace_resource_id,
-                             enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
-                             appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix,
-                             appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
-                             appgw_watch_namespace=appgw_watch_namespace,
-                             enable_sgxquotehelper=enable_sgxquotehelper,
-                             enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
-                             dns_zone_resource_id=dns_zone_resource_id,
-                             enable_syslog=enable_syslog,
-                             data_collection_settings=data_collection_settings)
+    instance = update_addons(
+        cmd,
+        instance,
+        subscription_id,
+        resource_group_name,
+        name,
+        addons,
+        enable=True,
+        check_enabled=check_enabled,
+        workspace_resource_id=workspace_resource_id,
+        enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring,
+        subnet_name=subnet_name,
+        appgw_name=appgw_name,
+        appgw_subnet_prefix=appgw_subnet_prefix,
+        appgw_subnet_cidr=appgw_subnet_cidr,
+        appgw_id=appgw_id,
+        appgw_subnet_id=appgw_subnet_id,
+        appgw_watch_namespace=appgw_watch_namespace,
+        enable_sgxquotehelper=enable_sgxquotehelper,
+        enable_secret_rotation=enable_secret_rotation,
+        rotation_poll_interval=rotation_poll_interval,
+        no_wait=no_wait,
+        dns_zone_resource_id=dns_zone_resource_id,
+        dns_zone_resource_ids=dns_zone_resource_ids,
+        enable_syslog=enable_syslog,
+        data_collection_settings=data_collection_settings,
+    )
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
        CONST_MONITORING_ADDON_NAME].enabled:
@@ -90,21 +112,20 @@ def enable_addons(cmd,
             if not msi_auth:
                 raise ArgumentUsageError(
                     "--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
-            else:
-                # create a Data Collection Rule (DCR) and associate it with the cluster
-                ensure_container_insights_for_monitoring(
-                    cmd,
-                    instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
-                    subscription_id,
-                    resource_group_name,
-                    name,
-                    instance.location,
-                    aad_route=True,
-                    create_dcr=True,
-                    create_dcra=True,
-                    enable_syslog=enable_syslog,
-                    data_collection_settings=data_collection_settings
-                )
+            # create a Data Collection Rule (DCR) and associate it with the cluster
+            ensure_container_insights_for_monitoring(
+                cmd,
+                instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                subscription_id,
+                resource_group_name,
+                name,
+                instance.location,
+                aad_route=True,
+                create_dcr=True,
+                create_dcra=True,
+                enable_syslog=enable_syslog,
+                data_collection_settings=data_collection_settings
+            )
         else:
             # monitoring addon will use legacy path
             if enable_syslog:
@@ -139,17 +160,7 @@ def enable_addons(cmd,
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(
             client.begin_create_or_update(resource_group_name, name, instance))
-        cloud_name = cmd.cli_ctx.cloud.name
-        # mdm metrics supported only in Azure Public cloud so add the role assignment only in this cloud
-        if monitoring_addon_enabled and cloud_name.lower() == 'azurecloud':
-            from msrestazure.tools import resource_id
-            cluster_resource_id = resource_id(
-                subscription=subscription_id,
-                resource_group=resource_group_name,
-                namespace='Microsoft.ContainerService', type='managedClusters',
-                name=name
-            )
-            add_monitoring_role_assignment(result, cluster_resource_id, cmd)
+
         if ingress_appgw_addon_enabled:
             add_ingress_appgw_addon_role_assignment(result, cmd)
         if enable_virtual_node:
@@ -168,36 +179,43 @@ def enable_addons(cmd,
     return result
 
 
-def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
-                  instance,
-                  subscription_id,
-                  resource_group_name,
-                  name,
-                  addons,
-                  enable,
-                  check_enabled=True,
-                  workspace_resource_id=None,
-                  enable_msi_auth_for_monitoring=False,
-                  subnet_name=None,
-                  appgw_name=None,
-                  appgw_subnet_prefix=None,
-                  appgw_subnet_cidr=None,
-                  appgw_id=None,
-                  appgw_subnet_id=None,
-                  appgw_watch_namespace=None,
-                  enable_sgxquotehelper=False,
-                  enable_secret_rotation=False,
-                  rotation_poll_interval=None,
-                  dns_zone_resource_id=None,
-                  no_wait=False,  # pylint: disable=unused-argument
-                  enable_syslog=False,
-                  data_collection_settings=None):
+# pylint: disable=too-many-locals, too-many-branches, too-many-statements
+def update_addons(
+    cmd,
+    instance,
+    subscription_id,
+    resource_group_name,
+    name,
+    addons,
+    enable,
+    check_enabled=True,
+    workspace_resource_id=None,
+    enable_msi_auth_for_monitoring=True,
+    subnet_name=None,
+    appgw_name=None,
+    appgw_subnet_prefix=None,
+    appgw_subnet_cidr=None,
+    appgw_id=None,
+    appgw_subnet_id=None,
+    appgw_watch_namespace=None,
+    enable_sgxquotehelper=False,
+    enable_secret_rotation=False,
+    rotation_poll_interval=None,
+    dns_zone_resource_id=None,
+    dns_zone_resource_ids=None,
+    no_wait=False,  # pylint: disable=unused-argument
+    enable_syslog=False,  # pylint: disable=unused-argument
+    data_collection_settings=None,  # pylint: disable=unused-argument
+):
     # parse the comma-separated addons argument
     addon_args = addons.split(',')
 
     addon_profiles = instance.addon_profiles or {}
 
     os_type = 'Linux'
+
+    if instance.service_principal_profile.client_id != "msi":
+        enable_msi_auth_for_monitoring = False
 
     # load model
     ManagedClusterAddonProfile = cmd.get_models(
@@ -227,12 +245,23 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 instance.ingress_profile.web_app_routing = ManagedClusterIngressProfileWebAppRouting()
             instance.ingress_profile.web_app_routing.enabled = enable
 
-            if dns_zone_resource_id is not None:
-                instance.ingress_profile.web_app_routing.dns_zone_resource_id = dns_zone_resource_id
+            if dns_zone_resource_ids is not None:
+                instance.ingress_profile.web_app_routing.dns_zone_resource_ids = [
+                    x.strip()
+                    for x in (
+                        dns_zone_resource_ids.split(",")
+                        if dns_zone_resource_ids
+                        else []
+                    )
+                ]
+            # for backward compatibility, if --dns-zone-resource-ids is not specified,
+            # try to read from --dns-zone-resource-id
+            if not instance.ingress_profile.web_app_routing.dns_zone_resource_ids and dns_zone_resource_id:
+                instance.ingress_profile.web_app_routing.dns_zone_resource_ids = [dns_zone_resource_id]
             continue
 
         if addon_arg not in ADDONS:
-            raise CLIError("Invalid addon name: {}.".format(addon_arg))
+            raise CLIError(f"Invalid addon name: {addon_arg}.")
         addon = ADDONS[addon_arg]
         if addon == CONST_VIRTUAL_NODE_ADDON_NAME:
             # only linux is supported for now, in the future this will be a user flag
@@ -262,9 +291,24 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 workspace_resource_id = sanitize_loganalytics_ws_resource_id(
                     workspace_resource_id)
 
+                cloud_name = cmd.cli_ctx.cloud.name
+                if enable_msi_auth_for_monitoring and (cloud_name.lower() == 'ussec' or cloud_name.lower() == 'usnat'):
+                    if (
+                        instance.identity is not None and
+                        instance.identity.type is not None and
+                        instance.identity.type == "userassigned"
+                    ):
+                        logger.warning(
+                            "--enable_msi_auth_for_monitoring is not supported in %s cloud and continuing "
+                            "monitoring enablement without this flag.", cloud_name
+                        )
+                        enable_msi_auth_for_monitoring = False
+
                 addon_profile.config = {
                     logAnalyticsConstName: workspace_resource_id}
-                addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = enable_msi_auth_for_monitoring
+                addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = (
+                    "true" if enable_msi_auth_for_monitoring else "false"
+                )
             elif addon == (CONST_VIRTUAL_NODE_ADDON_NAME + os_type):
                 if addon_profile.enabled and check_enabled:
                     raise CLIError('The virtual-node addon is already enabled for this managed cluster.\n'
@@ -317,10 +361,11 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
             elif addon == CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME:
                 if addon_profile.enabled and check_enabled:
                     raise CLIError(
-                        'The azure-keyvault-secrets-provider addon is already enabled for this managed cluster.\n'
-                        'To change azure-keyvault-secrets-provider configuration, run '
-                        f'"az aks disable-addons -a azure-keyvault-secrets-provider -n {name} -g {resource_group_name}" '
-                        'before enabling it again.')
+                        "The azure-keyvault-secrets-provider addon is already enabled for this managed cluster.\n"
+                        "To change azure-keyvault-secrets-provider configuration, run "
+                        '"az aks disable-addons -a azure-keyvault-secrets-provider '
+                        f'-n {name} -g {resource_group_name}" before enabling it again.'
+                    )
                 addon_profile = ManagedClusterAddonProfile(
                     enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"})
                 if enable_secret_rotation:
@@ -336,7 +381,8 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                         enabled=False)
                 else:
                     raise CLIError(
-                        "The addon {} is not installed.".format(addon))
+                        f"The addon {addon} is not installed."
+                    )
             addon_profiles[addon].config = None
         addon_profiles[addon].enabled = enable
 
@@ -346,39 +392,6 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
     instance.service_principal_profile = None
 
     return instance
-
-
-def add_monitoring_role_assignment(result, cluster_resource_id, cmd):
-    service_principal_msi_id = None
-    # Check if service principal exists, if it does, assign permissions to service principal
-    # Else, provide permissions to MSI
-    if (
-            hasattr(result, 'service_principal_profile') and
-            hasattr(result.service_principal_profile, 'client_id') and
-            result.service_principal_profile.client_id != 'msi'
-    ):
-        logger.info('valid service principal exists, using it')
-        service_principal_msi_id = result.service_principal_profile.client_id
-        is_service_principal = True
-    elif (
-            (hasattr(result, 'addon_profiles')) and
-            (CONST_MONITORING_ADDON_NAME in result.addon_profiles) and
-            (hasattr(result.addon_profiles[CONST_MONITORING_ADDON_NAME], 'identity')) and
-            (hasattr(
-                result.addon_profiles[CONST_MONITORING_ADDON_NAME].identity, 'object_id'))
-    ):
-        logger.info('omsagent MSI exists, using it')
-        service_principal_msi_id = result.addon_profiles[CONST_MONITORING_ADDON_NAME].identity.object_id
-        is_service_principal = False
-
-    if service_principal_msi_id is not None:
-        if not add_role_assignment(cmd.cli_ctx, 'Monitoring Metrics Publisher',
-                                   service_principal_msi_id, is_service_principal, scope=cluster_resource_id):
-            logger.warning('Could not create a role assignment for Monitoring addon. '
-                           'Are you an Owner on this subscription?')
-    else:
-        logger.warning('Could not find service principal or user assigned MSI for role'
-                       'assignment')
 
 
 def add_ingress_appgw_addon_role_assignment(result, cmd):
@@ -411,14 +424,14 @@ def add_ingress_appgw_addon_role_assignment(result, cmd):
             parsed_appgw_id = parse_resource_id(appgw_id)
             appgw_group_id = resource_id(subscription=parsed_appgw_id["subscription"],
                                          resource_group=parsed_appgw_id["resource_group"])
-            if not add_role_assignment(cmd.cli_ctx, 'Contributor',
+            if not add_role_assignment(cmd, 'Contributor',
                                        service_principal_msi_id, is_service_principal, scope=appgw_group_id):
                 logger.warning('Could not create a role assignment for application gateway: %s '
                                'specified in %s addon. '
                                'Are you an Owner on this subscription?', appgw_id, CONST_INGRESS_APPGW_ADDON_NAME)
         if CONST_INGRESS_APPGW_SUBNET_ID in config:
             subnet_id = config[CONST_INGRESS_APPGW_SUBNET_ID]
-            if not add_role_assignment(cmd.cli_ctx, 'Network Contributor',
+            if not add_role_assignment(cmd, 'Network Contributor',
                                        service_principal_msi_id, is_service_principal, scope=subnet_id):
                 logger.warning('Could not create a role assignment for subnet: %s '
                                'specified in %s addon. '
@@ -432,7 +445,7 @@ def add_ingress_appgw_addon_role_assignment(result, cmd):
                                       namespace="Microsoft.Network",
                                       type="virtualNetworks",
                                       name=parsed_subnet_vnet_id["name"])
-                if not add_role_assignment(cmd.cli_ctx, 'Contributor',
+                if not add_role_assignment(cmd, 'Contributor',
                                            service_principal_msi_id, is_service_principal, scope=vnet_id):
                     logger.warning('Could not create a role assignment for virtual network: %s '
                                    'specified in %s addon. '
@@ -469,7 +482,7 @@ def add_virtual_node_role_assignment(cmd, result, vnet_subnet_id):
         is_service_principal = False
 
     if service_principal_msi_id is not None:
-        if not add_role_assignment(cmd.cli_ctx, 'Contributor',
+        if not add_role_assignment(cmd, 'Contributor',
                                    service_principal_msi_id, is_service_principal, scope=vnet_id):
             logger.warning('Could not create a role assignment for virtual node addon. '
                            'Are you an Owner on this subscription?')

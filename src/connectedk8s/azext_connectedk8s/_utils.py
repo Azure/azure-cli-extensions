@@ -3,16 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import sys
 import os
 import shutil
+from packaging import version
 import subprocess
 from subprocess import Popen, PIPE
 import time
-import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import json
-
 from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
@@ -25,8 +25,6 @@ from msrest.exceptions import ValidationError as MSRestValidationError
 from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import resource_providers_client, cf_resource_groups
 import azext_connectedk8s._constants as consts
-import azext_connectedk8s._precheckutils as precheckutils
-import azext_connectedk8s._troubleshootutils as troubleshootutils
 from kubernetes import client as kube_client
 from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
@@ -94,12 +92,8 @@ def validate_custom_token(cmd, resource_group_name, location):
     return False, location
 
 
-def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc-k8sagents'):
-    # Pulling helm chart from registry
-    os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name)
-
-    # Exporting helm chart after cleanup
+def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc-k8sagents', new_path=True):
+    # Exporting Helm chart
     chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', chart_folder_name)
     try:
         if os.path.isdir(chart_export_path):
@@ -107,7 +101,7 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     except:
         logger.warning("Unable to cleanup the {} already present on the machine. In case of failure, please cleanup the directory '{}' and try again.".format(chart_folder_name, chart_export_path))
 
-    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name)
+    pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, new_path, chart_name)
 
     # Returning helm chart path
     helm_chart_path = os.path.join(chart_export_path, chart_name)
@@ -119,8 +113,22 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     return chart_path
 
 
-def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
-    cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
+def pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, new_path, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
+    chart_url = registry_path.split(':')[0]
+    chart_version = registry_path.split(':')[1]
+
+    if new_path:
+        # Version check for stable release train (chart_version will be in X.Y.Z format as opposed to X.Y.Z-NONSTABLE)
+        if '-' not in chart_version and (version.parse(chart_version) < version.parse("1.14.0")):
+            error_summary = "This CLI version does not support upgrading to Agents versions older than v1.14"
+            telemetry.set_exception(exception='Operation not supported on older Agents', fault_type=consts.Operation_Not_Supported_Fault_Type, summary=error_summary)
+            raise ClientRequestError(error_summary, recommendation="Please select an agent-version >= v1.14 to upgrade to using 'az connectedk8s upgrade -g <rg_name> -n <cluster_name> --agent-version <at-least-1.14>'.")
+
+        base_path = os.path.dirname(chart_url)
+        image_name = os.path.basename(chart_url)
+        chart_url = base_path + '/v2/' + image_name
+
+    cmd_helm_chart_pull = [helm_client_location, "pull", "oci://" + chart_url, "--untar", "--untardir", chart_export_path, "--version", chart_version]
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -138,20 +146,6 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
             break
 
 
-def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents'):
-    cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
-    if kube_config:
-        cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd_helm_chart_export.extend(["--kube-context", kube_context])
-    response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
-    _, error_helm_chart_export = response_helm_chart_export.communicate()
-    if response_helm_chart_export.returncode != 0:
-        telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
-                                summary='Unable to export {} helm chart from the registry'.format(chart_name))
-        raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_export.decode("ascii"))
-
-
 def save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available):
     try:
         job_name = "cluster-diagnostic-checks-job"
@@ -167,15 +161,15 @@ def save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_
                 if kube_context:
                     describe_job_pod.extend(["--context", kube_context])
                 response_describe_job_pod = Popen(describe_job_pod, stdout=PIPE, stderr=PIPE)
-                _, error_describe_job_pod = response_describe_job_pod.communicate()
+                output_describe_job_pod, error_describe_job_pod = response_describe_job_pod.communicate()
                 if(response_describe_job_pod.returncode == 0):
-                    pod_description = response_describe_job_pod.communicate()[0].strip()
+                    pod_description = output_describe_job_pod.decode()
                     if storage_space_available:
-                        dns_check_path = os.path.join(filepath_with_timestamp, "cluster_diagnostic_checks_pod_description")
-                        with open(dns_check_path, 'wb') as f:
+                        dns_check_path = os.path.join(filepath_with_timestamp, "cluster_diagnostic_checks_pod_description.txt")
+                        with open(dns_check_path, 'w+') as f:
                             f.write(pod_description)
                 else:
-                    telemetry.set_exception(exception='Failed to save cluster diagnostic checks pod description in the local machine', fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Failed to save cluster diagnostic checks pod description in the local machine")
+                    telemetry.set_exception(exception=error_describe_job_pod.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Failed to save cluster diagnostic checks pod description in the local machine")
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
@@ -234,29 +228,75 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
     return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
-def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):
+def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output, outbound_connectivity_check_for='pre-onboarding-inspector'):
 
     try:
-        outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
-        outbound_connectivity_response = outbound_connectivity_response[::-1]
-        if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
-            return consts.Diagnostic_Check_Incomplete, storage_space_available
-        # Validating if outbound connectiivty is working or not and displaying proper result
-        if(outbound_connectivity_response != "000"):
-            if storage_space_available:
-                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
-                with open(outbound_connectivity_check_path, 'w+') as outbound:
-                    outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
-            return consts.Diagnostic_Check_Passed, storage_space_available
-        else:
-            logger.warning("Error: We found an issue with outbound network connectivity from the cluster.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n")
-            diagnoser_output.append("Error: We found an issue with outbound network connectivity from the cluster.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n")
-            if storage_space_available:
-                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
-                with open(outbound_connectivity_check_path, 'w+') as outbound:
-                    outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")
-            telemetry.set_exception(exception='Outbound network connectivity check failed', fault_type=consts.Outbound_Connectivity_Check_Failed, summary="Outbound network connectivity check failed in the cluster")
-            return consts.Diagnostic_Check_Failed, storage_space_available
+        if outbound_connectivity_check_for == 'pre-onboarding-inspector':
+            if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
+                return consts.Diagnostic_Check_Incomplete, storage_space_available
+
+            Outbound_Connectivity_Log_For_Cluster_Connect = outbound_connectivity_check_log.split('  ')[0]
+            # extracting the endpoints for cluster connect feature
+            Cluster_Connect_Precheck_Endpoint_Url = Outbound_Connectivity_Log_For_Cluster_Connect.split(" : ")[1]
+            # extracting the obo endpoint response code from outbound connectivity check
+            Cluster_Connect_Precheck_Endpoint_response_code = Outbound_Connectivity_Log_For_Cluster_Connect.split(" : ")[2]
+
+            if(Cluster_Connect_Precheck_Endpoint_response_code != "000"):
+                if storage_space_available:
+                    cluster_connect_outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_cluster_connect)
+                    with open(cluster_connect_outbound_connectivity_check_path, 'w+') as outbound:
+                            outbound.write("Response code " + Cluster_Connect_Precheck_Endpoint_response_code + "\nOutbound network connectivity check to cluster connect precheck endpoints passed successfully.")
+            else:
+                logger.warning("The outbound network connectivity check has failed for the endpoint - " + Cluster_Connect_Precheck_Endpoint_Url + "\nThis will affect the \"cluster-connect\" feature. If you are planning to use \"cluster-connect\" functionality , please ensure outbound connectivity to the above endpoint.\n")
+                telemetry.set_exception(exception='Outbound network connectivity check failed for the Cluster Connect endpoint', fault_type=consts.Outbound_Connectivity_Check_Failed_For_Cluster_Connect, summary="Outbound network connectivity check failed for the Cluster Connect precheck endpoint")
+                if storage_space_available:
+                    cluster_connect_outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_cluster_connect)
+                    with open(cluster_connect_outbound_connectivity_check_path, 'w+') as outbound:
+                            outbound.write("Response code " + Cluster_Connect_Precheck_Endpoint_response_code + "\nOutbound connectivity failed for the endpoint:" + Cluster_Connect_Precheck_Endpoint_Url + " ,this is an optional endpoint needed for cluster-connect feature.")
+
+            Onboarding_Precheck_Endpoint_outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
+            Onboarding_Precheck_Endpoint_outbound_connectivity_response = Onboarding_Precheck_Endpoint_outbound_connectivity_response[::-1]
+
+            # Validating if outbound connectiivty is working or not and displaying proper result
+            if(Onboarding_Precheck_Endpoint_outbound_connectivity_response != "000"):
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_onboarding)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                            outbound.write("Response code " + Onboarding_Precheck_Endpoint_outbound_connectivity_response + "\nOutbound network connectivity check to the onboarding precheck endpoint passed successfully.")
+                return consts.Diagnostic_Check_Passed, storage_space_available
+            else:
+                outbound_connectivity_failed_warning_message = "Error: We found an issue with outbound network connectivity from the cluster to the endpoints required for onboarding.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n"
+                logger.warning(outbound_connectivity_failed_warning_message)
+                diagnoser_output.append(outbound_connectivity_failed_warning_message)
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_onboarding)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                        outbound.write("Response code " + Onboarding_Precheck_Endpoint_outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster required for onboarding.")
+                telemetry.set_exception(exception='Outbound network connectivity check failed for onboarding', fault_type=consts.Outbound_Connectivity_Check_Failed_For_Onboarding, summary="Outbound network connectivity check for onboarding failed in the cluster")
+                return consts.Diagnostic_Check_Failed, storage_space_available
+
+        elif outbound_connectivity_check_for == 'troubleshoot':
+            outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
+            outbound_connectivity_response = outbound_connectivity_response[::-1]
+            if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
+                return consts.Diagnostic_Check_Incomplete, storage_space_available
+
+            if(outbound_connectivity_response != "000"):
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                        outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
+                return consts.Diagnostic_Check_Passed, storage_space_available
+            else:
+                outbound_connectivity_failed_warning_message = "Error: We found an issue with outbound network connectivity from the cluster.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n"
+                logger.warning(outbound_connectivity_failed_warning_message)
+                diagnoser_output.append(outbound_connectivity_failed_warning_message)
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                        outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")
+                telemetry.set_exception(exception='Outbound network connectivity check failed', fault_type=consts.Outbound_Connectivity_Check_Failed, summary="Outbound network connectivity check failed in the cluster")
+                return consts.Diagnostic_Check_Failed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -276,54 +316,6 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
         diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     return consts.Diagnostic_Check_Incomplete, storage_space_available
-
-
-def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag, for_preonboarding_checks=False):
-
-    # This function is used to store the output that is obtained throughout the Diagnoser process
-    if for_preonboarding_checks:
-        diagnoser_output = precheckutils.diagnoser_output
-    else:
-        diagnoser_output = troubleshootutils.diagnoser_output
-
-    try:
-        # If storage space is available then only we store the output
-        if storage_space_available:
-            # Path to store the diagnoser results
-            cli_output_logger_path = os.path.join(filepath_with_timestamp, consts.Diagnoser_Results)
-            # If any results are obtained during the process than we will add it to the text file.
-            if len(diagnoser_output) > 0:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    for output in diagnoser_output:
-                        cli_output_writer.write(output + "\n")
-                    # If flag is 0 that means that process was terminated using the Keyboard Interrupt so adding that also to the text file
-                    if flag == 0:
-                        cli_output_writer.write("Process terminated externally.\n")
-
-            # If no issues was found during the whole troubleshoot execution
-            elif flag:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    cli_output_writer.write("The diagnoser didn't find any issues on the cluster.\n")
-            # If process was terminated by user
-            else:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    cli_output_writer.write("Process terminated externally.\n")
-
-        return consts.Diagnostic_Check_Passed
-
-    # For handling storage or OS exception that may occur during the execution
-    except OSError as e:
-        if "[Errno 28]" in str(e):
-            storage_space_available = False
-            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
-
-    # To handle any exception that may occur during the execution
-    except Exception as e:
-        logger.warning("An exception has occured while trying to store the diagnoser results. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type, summary="Error while storing the diagnoser results")
-
-    return consts.Diagnostic_Check_Failed
 
 
 def create_folder_diagnosticlogs(time_stamp, folder_name):
@@ -382,21 +374,21 @@ def add_helm_repo(kube_config, kube_context, helm_client_location):
         raise CLIInternalError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
 
-def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release_train_dogfood=None):
+def get_helm_registry(cmd, config_dp_endpoint, release_train_custom=None):
     # Setting uri
-    get_chart_location_url = "{}/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(config_dp_endpoint, 'azure-arc-k8sagents')
+    api_version = "2019-11-01-preview"
+    chart_location_url_segment = "azure-arc-k8sagents/GetLatestHelmPackagePath?api-version={}".format(api_version)
     release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
-    if dp_endpoint_dogfood:
-        get_chart_location_url = "{}/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(dp_endpoint_dogfood)
-        if release_train_dogfood:
-            release_train = release_train_dogfood
+    chart_location_url = "{}/{}".format(config_dp_endpoint, chart_location_url_segment)
+    if release_train_custom:
+        release_train = release_train_custom
     uri_parameters = ["releaseTrain={}".format(release_train)]
     resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
     headers = None
     if os.getenv('AZURE_ACCESS_TOKEN'):
         headers = ["Authorization=Bearer {}".format(os.getenv('AZURE_ACCESS_TOKEN'))]
     # Sending request with retries
-    r = send_request_with_retries(cmd.cli_ctx, 'post', get_chart_location_url, headers=headers, fault_type=consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while fetching helm chart registry path', uri_parameters=uri_parameters, resource=resource)
+    r = send_request_with_retries(cmd.cli_ctx, 'post', chart_location_url, headers=headers, fault_type=consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while fetching helm chart registry path', uri_parameters=uri_parameters, resource=resource)
     if r.content:
         try:
             return r.json().get('repositoryPath')
@@ -495,18 +487,16 @@ def validate_infrastructure_type(infra):
 
 
 def get_values_file():
-    values_file_provided = False
     values_file = os.getenv('HELMVALUESPATH')
     if (values_file is not None) and (os.path.isfile(values_file)):
-        values_file_provided = True
         logger.warning("Values files detected. Reading additional helm parameters from same.")
         # trimming required for windows os
         if (values_file.startswith("'") or values_file.startswith('"')):
             values_file = values_file[1:]
         if (values_file.endswith("'") or values_file.endswith('"')):
             values_file = values_file[:-1]
-
-    return values_file_provided, values_file
+        return values_file
+    return None
 
 
 def ensure_namespace_cleanup():
@@ -573,11 +563,12 @@ def cleanup_release_install_namespace_if_exists():
 
 
 # DO NOT use this method for re-put scenarios. This method involves new NS creation for helm release. For re-put scenarios, brownfield scenario needs to be handled where helm release still stays in default NS
-def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
-                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
-                         enable_custom_locations, custom_locations_oid, helm_client_location, enable_private_link, onboarding_timeout="600",
+def helm_install_release(resource_manager, chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name,
+                         cluster_name, location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
+                         kube_config, kube_context, no_wait, values_file, cloud_name, disable_auto_upgrade, enable_custom_locations,
+                         custom_locations_oid, helm_client_location, enable_private_link, arm_metadata, onboarding_timeout="600",
                          container_log_path=None):
+
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -593,6 +584,31 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                         "--namespace", "{}".format(consts.Release_Install_Namespace),
                         "--create-namespace",
                         "--output", "json"]
+
+    # Special configurations from 2022-09-01 ARM metadata.
+    if "dataplaneEndpoints" in arm_metadata:
+        if "arcConfigEndpoint" in arm_metadata["dataplaneEndpoints"]:
+            notification_endpoint = arm_metadata["dataplaneEndpoints"]["arcGlobalNotificationServiceEndpoint"]
+            config_endpoint = arm_metadata["dataplaneEndpoints"]["arcConfigEndpoint"]
+            his_endpoint = arm_metadata["dataplaneEndpoints"]["arcHybridIdentityServiceEndpoint"]
+            if his_endpoint[-1] != "/":
+                his_endpoint = his_endpoint + "/"
+            his_endpoint = his_endpoint + f"discovery?location={location}&api-version=1.0-preview"
+            relay_endpoint = arm_metadata["suffixes"]["relayEndpointSuffix"]
+            active_directory = arm_metadata["authentication"]["loginEndpoint"]
+            cmd_helm_install.extend(
+                [
+                    "--set", "systemDefaultValues.azureResourceManagerEndpoint={}".format(resource_manager),
+                    "--set", "systemDefaultValues.azureArcAgents.config_dp_endpoint_override={}".format(config_endpoint),
+                    "--set", "systemDefaultValues.clusterconnect-agent.notification_dp_endpoint_override={}".format(notification_endpoint),
+                    "--set", "systemDefaultValues.clusterconnect-agent.relay_endpoint_suffix_override={}".format(relay_endpoint),
+                    "--set", "systemDefaultValues.clusteridentityoperator.his_endpoint_override={}".format(his_endpoint),
+                    "--set", "systemDefaultValues.activeDirectoryEndpoint={}".format(active_directory)
+                ]
+            )
+        else:
+            logger.debug("'arcConfigEndpoint' doesn't exist under 'dataplaneEndpoints' in the ARM metadata.")
+
     # Add custom-locations related params
     if enable_custom_locations and not enable_private_link:
         cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
@@ -601,7 +617,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     if enable_private_link is True:
         cmd_helm_install.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
     # To set some other helm parameters through file
-    if values_file_provided:
+    if values_file:
         cmd_helm_install.extend(["-f", values_file])
     if disable_auto_upgrade:
         cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
@@ -629,9 +645,10 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
-        if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
+        helm_install_error_message = error_helm_install.decode("ascii")
+        if any(message in helm_install_error_message for message in consts.Helm_Install_Release_Userfault_Messages):
             telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
+        telemetry.set_exception(exception=helm_install_error_message, fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
@@ -646,7 +663,7 @@ def get_release_namespace(kube_config, kube_context, helm_client_location, relea
     response_helm_release = Popen(cmd_helm_release, stdout=PIPE, stderr=PIPE)
     output_helm_release, error_helm_release = response_helm_release.communicate()
     if response_helm_release.returncode != 0:
-        if 'forbidden' in error_helm_release.decode("ascii"):
+        if 'forbidden' in error_helm_release.decode("ascii") or "Kubernetes cluster unreachable" in error_helm_release.decode("ascii"):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_release.decode("ascii"), fault_type=consts.List_HelmRelease_Fault_Type,
                                 summary='Unable to list helm release')
@@ -799,3 +816,23 @@ def is_cli_using_msal_auth():
             continue
         return i > j
     return len(v1.split(".")) == len(v2.split("."))
+
+
+def get_metadata(arm_endpoint, api_version="2022-09-01"):
+    metadata_url_suffix = f"/metadata/endpoints?api-version={api_version}"
+    metadata_endpoint = None
+    try:
+        import requests
+        session = requests.Session()
+        metadata_endpoint = arm_endpoint + metadata_url_suffix
+        response = session.get(metadata_endpoint)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            msg = f"ARM metadata endpoint '{metadata_endpoint}' returned status code {response.status_code}."
+            raise HttpResponseError(msg)
+    except Exception as err:
+        msg = f"Failed to request ARM metadata {metadata_endpoint}."
+        print(msg, file=sys.stderr)
+        print(f"Please ensure you have network connection. Error: {str(err)}", file=sys.stderr)
+        arm_exception_handler(err, msg)

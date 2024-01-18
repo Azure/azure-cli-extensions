@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{}'
+    body: '{"validFrom": null, "validUntil": null, "pstnDialOutEnabled": false}'
     headers:
       Accept:
       - application/json
@@ -9,45 +9,49 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2'
+      - '68'
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - '2022-12-05T20:12:53.919329Z'
-      Repeatability-Request-ID:
-      - 338157d3-74d9-11ed-a746-a864f13124e5
+      - Mon, 16 Oct 2023 16:13:36 GMT
+      Repeatability-Request-Id:
+      - f61e6332-6c3e-11ee-90a9-8cf8c5abc371
       User-Agent:
-      - azsdk-python-communication-rooms/1.0.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.7.2b1 azsdk-python-communication-rooms/1.1.0b1 Python/3.11.5 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=
+      - 2xVVJJKx5brgL5bSWgeu9hhccJP/PkHHEzXUfUClsMI=
       x-ms-date:
-      - Mon, 05 Dec 2022 20:12:53 GMT
+      - Mon, 16 Oct 2023 16:13:36 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2022-02-01
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-10-30-preview
   response:
     body:
-      string: '{"id": "sanitized", "createdDateTime": "2022-12-05T20:12:55.1195262+00:00",
-        "validFrom": "2022-12-05T20:12:54.956281+00:00", "validUntil": "2023-06-03T20:12:54.956281+00:00",
-        "roomJoinPolicy": "InviteOnly", "participants": []}'
+      string: '{"id": "sanitized", "createdAt": "2023-10-16T16:13:39.3118049+00:00",
+        "validFrom": "2023-10-16T16:13:39.2324069+00:00", "validUntil": "2024-04-13T16:13:39.2324069+00:00",
+        "pstnDialOutEnabled": false}'
     headers:
-      api-supported-versions:
+      api-deprecated-versions:
       - 2021-04-07, 2022-02-01
+      api-supported-versions:
+      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:12:54 GMT
+      - Mon, 16 Oct 2023 16:13:38 GMT
       location:
-      - '99443378930471540'
+      - '99415750115958845'
       ms-cv:
-      - JU0Zw2DZakewl4hMql5MVg.0
+      - U/0nF6S9PECfWD7kCJQ+8w.0
       repeatability-result:
       - accepted
+      request-context:
+      - appId=
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0xlCOYwAAAADGYMHYvQ1gQY5ZeGSPFWi/WVZSMzExMDAwMTE1MDA5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 0MmEtZQAAAAD9r8qfXdr+R4LnU/oxkDOwWVZSMzExMDAwMTE1MDQ3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
     status:

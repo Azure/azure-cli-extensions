@@ -13,21 +13,22 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin sku list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List the Microsoft.DevCenter SKUs available in a subscription
+    """List the Microsoft.DevCenter SKUs available in a subscription.
 
     :example: List
         az devcenter admin sku list
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/skus", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/skus", "2023-10-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -102,7 +103,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }

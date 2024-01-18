@@ -1,0 +1,146 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric rack show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.29.4 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab2-4-2-aggrack?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab2-4-2-aggrack","name":"nffab2-4-2-aggrack","type":"microsoft.managednetworkfabric/networkracks","location":"eastus2euap","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-11-16T13:10:09.7281883Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-11-16T13:11:01.5854671Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab2LabNF-4-2/providers/microsoft.managednetworkfabric/networkfabrics/nffab2-4-2","networkDevices":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-CE1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-CE2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-MgmtSwitch1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-MgmtSwitch2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-NPB1"],"provisioningState":"Succeeded","networkRackType":"Aggregate"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1642'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 26 Nov 2023 15:53:20 GMT
+      etag:
+      - '"04007067-0000-3400-0000-655614e50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric rack list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.29.4 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkRacks?api-version=2023-06-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab2-4-2-aggrack","name":"nffab2-4-2-aggrack","type":"microsoft.managednetworkfabric/networkracks","location":"eastus2euap","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-11-16T13:10:09.7281883Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-11-16T13:11:01.5854671Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab2LabNF-4-2/providers/microsoft.managednetworkfabric/networkfabrics/nffab2-4-2","networkDevices":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-CE1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-CE2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-MgmtSwitch1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-MgmtSwitch2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-NPB1"],"provisioningState":"Succeeded","networkRackType":"Aggregate"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab2-4-2-comprack1","name":"nffab2-4-2-comprack1","type":"microsoft.managednetworkfabric/networkracks","location":"eastus2euap","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-11-16T13:10:12.4450604Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-11-16T13:11:01.7416903Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab2LabNF-4-2/providers/microsoft.managednetworkfabric/networkfabrics/nffab2-4-2","networkDevices":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-CompRack1-TOR1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-CompRack1-TOR2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-CompRack1-MgmtSwitch"],"provisioningState":"Succeeded","networkRackType":"Compute"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab2-4-2-comprack2","name":"nffab2-4-2-comprack2","type":"microsoft.managednetworkfabric/networkracks","location":"eastus2euap","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-11-16T13:10:14.8798295Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-11-16T13:11:01.8823179Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab2LabNF-4-2/providers/microsoft.managednetworkfabric/networkfabrics/nffab2-4-2","networkDevices":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-CompRack2-TOR3","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-CompRack2-TOR4","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-CompRack2-MgmtSwitch"],"provisioningState":"Succeeded","networkRackType":"Compute"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4282'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 26 Nov 2023 15:53:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ff2006fa-df30-4939-85b9-5ce50f5a15c4
+      - 40eb5940-7df3-46f3-b843-89135d04eaf4
+      - 0e5592a6-66ad-4433-ab01-619ef6f231e5
+      - 1ab9c06e-5b6b-46f3-bdc6-e07551e719df
+      - f69116de-d17b-4f28-a08e-5ac465435be0
+      - c968d5c4-8538-411a-8563-92367180ceda
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric rack list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.29.4 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/networkRacks?api-version=2023-06-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab2-4-2-aggrack","name":"nffab2-4-2-aggrack","type":"microsoft.managednetworkfabric/networkracks","location":"eastus2euap","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-11-16T13:10:09.7281883Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-11-16T13:11:01.5854671Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab2LabNF-4-2/providers/microsoft.managednetworkfabric/networkfabrics/nffab2-4-2","networkDevices":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-CE1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-CE2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-MgmtSwitch1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-MgmtSwitch2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-AggrRack-NPB1"],"provisioningState":"Succeeded","networkRackType":"Aggregate"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab2-4-2-comprack1","name":"nffab2-4-2-comprack1","type":"microsoft.managednetworkfabric/networkracks","location":"eastus2euap","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-11-16T13:10:12.4450604Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-11-16T13:11:01.7416903Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab2LabNF-4-2/providers/microsoft.managednetworkfabric/networkfabrics/nffab2-4-2","networkDevices":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-CompRack1-TOR1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-CompRack1-TOR2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-CompRack1-MgmtSwitch"],"provisioningState":"Succeeded","networkRackType":"Compute"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab2-4-2-comprack2","name":"nffab2-4-2-comprack2","type":"microsoft.managednetworkfabric/networkracks","location":"eastus2euap","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-11-16T13:10:14.8798295Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-11-16T13:11:01.8823179Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab2LabNF-4-2/providers/microsoft.managednetworkfabric/networkfabrics/nffab2-4-2","networkDevices":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-CompRack2-TOR3","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-CompRack2-TOR4","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab2LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab2-4-2-CompRack2-MgmtSwitch"],"provisioningState":"Succeeded","networkRackType":"Compute"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4282'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 26 Nov 2023 15:53:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 62ebad39-6af3-4b61-a505-734c208bb55a
+      - a860c910-569f-4f91-8f70-a70278c1b455
+      - fa206240-8878-4eb8-9c05-67b97e341a88
+      - a50f332b-4b42-42e4-9cd2-5b174dfc9dc2
+      - a74178db-3a4b-4563-aab6-28ff77274886
+      - 24c43326-d315-4183-aab9-c1cb13237811
+    status:
+      code: 200
+      message: OK
+version: 1

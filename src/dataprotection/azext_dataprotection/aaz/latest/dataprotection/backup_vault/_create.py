@@ -26,9 +26,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-01",
+        "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2022-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-05-01"],
         ]
     }
 
@@ -53,9 +53,19 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.vault_name = AAZStrArg(
-            options=["--vault-name"],
+            options=["-v", "--vault-name"],
             help="The name of the backup vault.",
             required=True,
+        )
+
+        # define Arg Group "FeatureSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.cross_subscription_restore_state = AAZStrArg(
+            options=["--csr-state", "--cross-subscription-restore-state"],
+            arg_group="FeatureSettings",
+            help="CrossSubscriptionRestore state",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled", "PermanentlyDisabled": "PermanentlyDisabled"},
         )
 
         # define Arg Group "Identity"
@@ -145,11 +155,13 @@ class Create(AAZCommand):
             options=["--soft-delete-retention", "--retention-duration-in-days"],
             arg_group="SoftDeleteSettings",
             help="Soft delete retention duration",
+            default=14.0,
         )
         _args_schema.soft_delete_state = AAZStrArg(
             options=["--soft-delete-state"],
             arg_group="SoftDeleteSettings",
             help="State of soft delete",
+            default="On",
             enum={"AlwaysOn": "AlwaysOn", "Off": "Off", "On": "On"},
         )
         return cls._args_schema
@@ -235,7 +247,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }
@@ -272,9 +284,18 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("featureSettings", AAZObjectType)
                 properties.set_prop("monitoringSettings", AAZObjectType)
                 properties.set_prop("securitySettings", AAZObjectType)
                 properties.set_prop("storageSettings", AAZListType, ".storage_setting", typ_kwargs={"flags": {"required": True}})
+
+            feature_settings = _builder.get(".properties.featureSettings")
+            if feature_settings is not None:
+                feature_settings.set_prop("crossSubscriptionRestoreSettings", AAZObjectType)
+
+            cross_subscription_restore_settings = _builder.get(".properties.featureSettings.crossSubscriptionRestoreSettings")
+            if cross_subscription_restore_settings is not None:
+                cross_subscription_restore_settings.set_prop("state", AAZStrType, ".cross_subscription_restore_state")
 
             monitoring_settings = _builder.get(".properties.monitoringSettings")
             if monitoring_settings is not None:
@@ -366,6 +387,22 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             identity.type = AAZStrType()
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
 
             properties = cls._schema_on_200_201.properties
             properties.feature_settings = AAZObjectType(
@@ -389,6 +426,10 @@ class Create(AAZCommand):
                 serialized_name="resourceMoveState",
                 flags={"read_only": True},
             )
+            properties.secure_score = AAZStrType(
+                serialized_name="secureScore",
+                flags={"read_only": True},
+            )
             properties.security_settings = AAZObjectType(
                 serialized_name="securitySettings",
             )
@@ -398,9 +439,15 @@ class Create(AAZCommand):
             )
 
             feature_settings = cls._schema_on_200_201.properties.feature_settings
+            feature_settings.cross_region_restore_settings = AAZObjectType(
+                serialized_name="crossRegionRestoreSettings",
+            )
             feature_settings.cross_subscription_restore_settings = AAZObjectType(
                 serialized_name="crossSubscriptionRestoreSettings",
             )
+
+            cross_region_restore_settings = cls._schema_on_200_201.properties.feature_settings.cross_region_restore_settings
+            cross_region_restore_settings.state = AAZStrType()
 
             cross_subscription_restore_settings = cls._schema_on_200_201.properties.feature_settings.cross_subscription_restore_settings
             cross_subscription_restore_settings.state = AAZStrType()

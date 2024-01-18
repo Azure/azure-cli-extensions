@@ -1,4 +1,4 @@
-This file is a reference page for the [README](README.md) file. 
+This file is a reference page for the [README](README.md) file.
 
 Sample Policy Rego
 
@@ -23,8 +23,6 @@ fragments := [
 containers := [
     {
         "command": ["<command>", "<arg0>", "<arg1>", /*...*/],
-        "allow_stdio_access": true,
-        "signals": [/*...*/],
         "env_rules": [
             {
                 "pattern": "<pattern>",
@@ -46,24 +44,46 @@ containers := [
             },
             /*...*/
         ],
-        "allow_elevated": <true|false>,
-        "working_dir": "<path>",
         "exec_processes": [
             {
-                "command": ["<command>", "<arg0>", "<arg1>", /*...*/],
-                "signals": [/*...*/]
+            "command": ["<command>", "<arg0>", "<arg1>", /*...*/],
+            "signals": [/*...*/]
             },
             /*...*/
         ],
+        "signals": [/*...*/],
+        "user": {
+            "user_idname": {
+                "pattern": "<pattern>",
+                "strategy": "<id|name|re2|any>",
+            },
+            "group_idnames": [{
+                "pattern": "<pattern>",
+                "strategy": "<id|name|re2|any>",
+            }],
+            "umask": "<umask>"
+        },
+        "capabilities": {
+            "ambient": ["<capability>", /*...*/],
+            "bounding": ["<capability>", /*...*/],
+            "effective": ["<capability>", /*...*/],
+            "inheritable": ["<capability>", /*...*/],
+            "permitted": ["<capability>", /*...*/]
+        },
+        "seccomp_profile_sha256": "<sha256 hash of profile|empty string>",
+        "allow_elevated": <true|false>,
+        "working_dir": "<path>",
+        "allow_stdio_access": <true|false>,
+        "no_new_privileges": <true|false>
     }
 ]
 
-allow_properties_access := false
+allow_properties_access := true
 allow_dump_stacks := false
 allow_runtime_logging := false
 allow_environment_variable_dropping := true
 allow_unencrypted_scratch := false
-
+allow_capabilities_dropping := true
 
 
 mount_device := data.framework.mount_device

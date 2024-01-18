@@ -3,10 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import logging
 import os
 import re
+import shlex
 import json
 import zipfile
+
+from subprocess import check_output
+
+logger = logging.getLogger(__name__)
 
 # copy from wheel==0.30.0
 WHEEL_INFO_RE = re.compile(
@@ -117,3 +123,43 @@ def get_index_data():
             return json.load(f, object_pairs_hook=_catch_dup_keys)
     except ValueError as err:
         raise AssertionError("Invalid JSON in {}: {}".format(INDEX_PATH, err))
+
+
+def diff_code(start, end):
+    diff_ref = []
+
+    for src_d in os.listdir(SRC_PATH):
+        src_d_full = os.path.join(SRC_PATH, src_d)
+        if not os.path.isdir(src_d_full):
+            continue
+        pkg_name = next((d for d in os.listdir(src_d_full) if d.startswith('azext_')), None)
+
+        # If running in Travis CI, only run tests for edited extensions
+        commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
+        if commit_range and not check_output(
+                ['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
+            continue
+
+        # Running in Azure DevOps
+        cmd_tpl = 'git --no-pager diff --name-only origin/{start} {end} -- {code_dir}'
+        # ado_branch_last_commit = os.environ.get('ADO_PULL_REQUEST_LATEST_COMMIT')
+        # ado_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
+        if start and end:
+            if end == '$(System.PullRequest.SourceCommitId)':
+                # default value if ADO_PULL_REQUEST_LATEST_COMMIT not set in ADO
+                continue
+            elif start == '$(System.PullRequest.TargetBranch)':
+                # default value if ADO_PULL_REQUEST_TARGET_BRANCH not set in ADO
+                continue
+            else:
+                cmd = cmd_tpl.format(start=start, end=end,
+                                     code_dir=src_d_full)
+                if not check_output(shlex.split(cmd)):
+                    continue
+
+        diff_ref.append((pkg_name, src_d_full))
+
+    logger.warning(f'start: {start}, '
+                   f'end: {end}, '
+                   f'diff_ref: {diff_ref}.')
+    return diff_ref

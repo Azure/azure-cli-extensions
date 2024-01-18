@@ -6,15 +6,15 @@
 import os
 import time
 import yaml
+from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
 
-from .common import TEST_LOCATION
+from .common import TEST_LOCATION, STAGE_LOCATION
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-from .utils import create_containerapp_env
 
 class ContainerappEnvScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -53,6 +53,73 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="australiaeast")
+    def test_containerapp_env_la_dynamic_json(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        default_env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics -j'.format(resource_group, default_env_name, logs_workspace_id, logs_workspace_key), checks=[
+            JMESPathCheck('name', default_env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', True),
+        ])
+
+        default_env_name2 = self.create_random_name(prefix='containerapp-env', length=24)
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} -j false'.format(resource_group, default_env_name2, logs_workspace_id, logs_workspace_key),checks=[
+            JMESPathCheck('name', default_env_name2),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', False),
+        ])
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', False),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} -j'.format(resource_group, env_name))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', True),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {}'.format(resource_group, env_name))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', True),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} -j false'.format(resource_group, env_name))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', False),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="australiaeast")
     def test_containerapp_env_logs_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
@@ -77,7 +144,10 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
         storage_account_name = self.create_random_name(prefix='cappstorage', length=24)
-        storage_account = self.cmd('storage account create -g {} -n {}  --https-only'.format(resource_group, storage_account_name)).get_output_in_json()["id"]
+        storage_account_location = TEST_LOCATION
+        if format_location(storage_account_location) == format_location(STAGE_LOCATION):
+            storage_account_location = "eastus"
+        storage_account = self.cmd('storage account create -g {} -n {} --location {} --https-only'.format(resource_group, storage_account_name, storage_account_location)).get_output_in_json()["id"]
         self.cmd('containerapp env update -g {} -n {} --logs-destination azure-monitor --storage-account {}'.format(resource_group, env_name, storage_account))
 
         env = self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
@@ -122,7 +192,12 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.destination', None),
         ])
 
+        self.cmd('containerapp env update -g {} -n {} --logs-destination none --no-wait'.format(resource_group, env_name))
 
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', None),
+        ])
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
@@ -189,6 +264,58 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env dapr-component list -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('length(@)', 0),
+        ])
+
+        # Invalid pubsub service type should throw an error.
+        self.cmd('containerapp env dapr-component init -n {} -g {} --pubsub {}'.format(env_name, resource_group, "invalid1"), expect_failure=True)
+
+        # Invalid statestore service type should throw an error.
+        self.cmd('containerapp env dapr-component init -n {} -g {} --statestore {}'.format(env_name, resource_group, "invalid2"), expect_failure=True)
+
+        # Should create a Redis statestore and pubsub components as default.
+        output_json = self.cmd('containerapp env dapr-component init -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('length(@)', 2),
+            JMESPathCheck('message', "Operation successful."),
+            JMESPathCheck('length(resources.daprComponents)', 2), # Redis statestore and pubsub components
+            JMESPathCheck('length(resources.devServices)', 1), # Single Redis instance
+        ]).get_output_in_json()
+        self.assertIn("daprComponents/statestore", output_json["resources"]["daprComponents"][0])
+        self.assertIn("daprComponents/pubsub", output_json["resources"]["daprComponents"][1])
+        self.assertIn("containerapps/dapr-redis", output_json["resources"]["devServices"][0])
+
+        # Should not create a Redis statestore and pubsub components if they already exist.
+        output_json = self.cmd('containerapp env dapr-component init -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('length(@)', 2),
+            JMESPathCheck('message', "Operation successful."),
+            JMESPathCheck('length(resources.daprComponents)', 2), # Redis statestore and pubsub components
+            JMESPathCheck('length(resources.devServices)', 1), # Single Redis instance
+        ]).get_output_in_json()
+        self.assertIn("daprComponents/statestore", output_json["resources"]["daprComponents"][0])
+        self.assertIn("daprComponents/pubsub", output_json["resources"]["daprComponents"][1])
+        self.assertIn("containerapps/dapr-redis", output_json["resources"]["devServices"][0])
+
+        # Redis statestore should be correctly created.
+        self.cmd('containerapp env dapr-component show --dapr-component-name {} -n {} -g {}'.format("statestore", env_name, resource_group), checks=[
+            JMESPathCheck('name', "statestore"),
+            JMESPathCheck('properties.componentType', "state.redis"),
+            JMESPathCheck('length(properties.metadata)', 1),
+            JMESPathCheck('properties.metadata[0].name', "actorStateStore"),
+            JMESPathCheck('properties.metadata[0].value', "true"),
+            JMESPathCheck('properties.serviceComponentBind.name', "dapr-redis"),
+            JMESPathCheck('properties.serviceComponentBind.serviceId', output_json["resources"]["devServices"][0]),
+            JMESPathCheck('properties.serviceComponentBind.metadata.DCI_SB_CREATED_BY', "azcli_azext_containerapp_daprutils"),
+            JMESPathCheck('properties.version', "v1"),
+        ])
+
+        # Redis pubsub should be correctly created.
+        self.cmd('containerapp env dapr-component show --dapr-component-name {} -n {} -g {}'.format("pubsub", env_name, resource_group), checks=[
+            JMESPathCheck('name', "pubsub"),
+            JMESPathCheck('properties.componentType', "pubsub.redis"),
+            JMESPathCheck('length(properties.metadata)', 0),
+            JMESPathCheck('properties.serviceComponentBind.name', "dapr-redis"),
+            JMESPathCheck('properties.serviceComponentBind.serviceId', output_json["resources"]["devServices"][0]),
+            JMESPathCheck('properties.serviceComponentBind.metadata.DCI_SB_CREATED_BY', "azcli_azext_containerapp_daprutils"),
+            JMESPathCheck('properties.version', "v1"),
         ])
 
     @AllowLargeResponse(8192)
@@ -279,22 +406,24 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd('network dns record-set cname create -g {} -z {} -n {}'.format(resource_group, zone_name, subdomain_1)).get_output_in_json()
         self.cmd('network dns record-set cname set-record -g {} -z {} -n {} -c {}'.format(resource_group, zone_name, subdomain_1, fqdn)).get_output_in_json()
         
-        # add hostname without binding
+        # add hostname without binding, it is a Private key certificates
         self.cmd('containerapp hostname add -g {} -n {} --hostname {}'.format(resource_group, ca_name, hostname_1), checks={
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].name', hostname_1),
             JMESPathCheck('[0].bindingType', "Disabled"),
         })
         self.cmd('containerapp hostname add -g {} -n {} --hostname {}'.format(resource_group, ca_name, hostname_1), expect_failure=True)
-        
+        self.cmd('containerapp env certificate list -g {} -n {} -c {} -p'.format(resource_group, env_name, cert_name), checks=[
+            JMESPathCheck('length(@)', 1),
+        ])
+
         # create a managed certificate
-        self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v CNAME -c {}'.format(env_name, resource_group, hostname_1, cert_name), checks=[
+        self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v cname -c {}'.format(env_name, resource_group, hostname_1, cert_name), checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/managedCertificates"),
             JMESPathCheck('name', cert_name),
             JMESPathCheck('properties.subjectName', hostname_1),
         ]).get_output_in_json()
 
-        self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v CNAME'.format(env_name, resource_group, hostname_1), expect_failure=True)
         self.cmd('containerapp env certificate list -g {} -n {} -m'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 1),
         ])
@@ -309,7 +438,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
         
-        self.cmd('containerapp hostname bind -g {} -n {} --hostname {} --environment {} -v CNAME'.format(resource_group, ca_name, hostname_1, env_name))
+        self.cmd('containerapp hostname bind -g {} -n {} --hostname {} --environment {} -v cname'.format(resource_group, ca_name, hostname_1, env_name))
         certs = self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 1),
         ]).get_output_in_json()
@@ -413,19 +542,30 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
         ])
 
+        self.cmd('containerapp env update -g {} -n {} --dns-suffix {}'.format(resource_group, env_name, hostname_2))
+
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_2),
+        ])
+
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     @live_only()  # passes live but hits CannotOverwriteExistingCassetteException when run from recording
     def test_containerapp_env_internal_only_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # network is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env = self.create_random_name(prefix='env', length=24)
         logs = self.create_random_name(prefix='logs', length=24)
         vnet = self.create_random_name(prefix='name', length=24)
 
         self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
-        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
 
         logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs} -l eastus").get_output_in_json()["customerId"]
         logs_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {logs}').get_output_in_json()["primarySharedKey"]
@@ -442,3 +582,105 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('name', env),
             JMESPathCheck('properties.vnetConfiguration.internal', True),
         ])
+
+
+    @ResourceGroupPreparer(location="eastus")
+    @live_only()  # passes live but hits CannotOverwriteExistingCassetteException when run from recording
+    def test_containerapp_env_infrastructure_rg(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        vnet = self.create_random_name(prefix='name', length=24)
+        infra_rg = self.create_random_name(prefix='irg', length=24)
+
+        self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
+        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {sub_id} -i {infra_rg} --enable-workload-profiles true')
+
+        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        self.cmd(f'containerapp env show -n {env} -g {resource_group}', checks=[
+            JMESPathCheck('name', env),
+            JMESPathCheck('properties.infrastructureResourceGroup', infra_rg),
+        ])
+
+        self.cmd(f'containerapp env delete -n {env} -g {resource_group} --yes')
+
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_mtls(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --enable-mtls'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.peerAuthentication.mtls.enabled', True),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} --enable-mtls false'.format(resource_group, env_name))
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.peerAuthentication.mtls.enabled', False),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_usages(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        result = self.cmd('containerapp list-usages').get_output_in_json()
+        usages = result["value"]
+        self.assertEqual(len(usages), 1)
+        self.assertEqual(usages[0]["name"]["value"], "ManagedEnvironmentCount")
+        self.assertGreater(usages[0]["limit"], 0)
+        self.assertGreaterEqual(usages[0]["usage"], 0)
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --enable-mtls'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        containerapp_env = self.cmd(
+            'containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(
+                'containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name)
+        ])
+
+        result = self.cmd('containerapp env list-usages --id {}'.format(containerapp_env["id"])).get_output_in_json()
+        usages = result["value"]
+        self.assertEqual(len(usages), 4)
+        self.assertGreater(usages[0]["limit"], 0)
+        self.assertGreaterEqual(usages[0]["usage"], 0)

@@ -22,11 +22,13 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-02-01-preview",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/profiles/{}/accessrules", "2021-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/profiles/{}/accessrules", "2023-07-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -71,7 +73,17 @@ class List(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.NspAccessRulesList(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
@@ -136,7 +148,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2021-02-01-preview",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -194,11 +206,18 @@ class List(AAZCommand):
                 serialized_name="addressPrefixes",
             )
             properties.direction = AAZStrType()
+            properties.email_addresses = AAZListType(
+                serialized_name="emailAddresses",
+            )
             properties.fully_qualified_domain_names = AAZListType(
                 serialized_name="fullyQualifiedDomainNames",
             )
             properties.network_security_perimeters = AAZListType(
                 serialized_name="networkSecurityPerimeters",
+                flags={"read_only": True},
+            )
+            properties.phone_numbers = AAZListType(
+                serialized_name="phoneNumbers",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -209,6 +228,9 @@ class List(AAZCommand):
             address_prefixes = cls._schema_on_200.value.Element.properties.address_prefixes
             address_prefixes.Element = AAZStrType()
 
+            email_addresses = cls._schema_on_200.value.Element.properties.email_addresses
+            email_addresses.Element = AAZStrType()
+
             fully_qualified_domain_names = cls._schema_on_200.value.Element.properties.fully_qualified_domain_names
             fully_qualified_domain_names.Element = AAZStrType()
 
@@ -216,7 +238,9 @@ class List(AAZCommand):
             network_security_perimeters.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.network_security_perimeters.Element
-            _element.id = AAZStrType()
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.location = AAZStrType(
                 flags={"read_only": True},
             )
@@ -224,6 +248,9 @@ class List(AAZCommand):
                 serialized_name="perimeterGuid",
                 flags={"read_only": True},
             )
+
+            phone_numbers = cls._schema_on_200.value.Element.properties.phone_numbers
+            phone_numbers.Element = AAZStrType()
 
             subscriptions = cls._schema_on_200.value.Element.properties.subscriptions
             subscriptions.Element = AAZObjectType()
@@ -235,6 +262,10 @@ class List(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ListHelper:
+    """Helper class for List"""
 
 
 __all__ = ["List"]

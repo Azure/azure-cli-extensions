@@ -75,16 +75,6 @@ az connectedmachine private-link-scope list --resource-group "my-resource-group"
 ```
 az connectedmachine private-link-scope show --resource-group "my-resource-group" --scope-name "my-privatelinkscope"
 ```
-##### Show-validation-detail #####
-```
-az connectedmachine private-link-scope show-validation-detail --location "wus2" \
-    --private-link-scope-id "f5dc51d3-92ed-4d7e-947a-775ea79b4919" 
-```
-##### Show-validation-detail-for-machine #####
-```
-az connectedmachine private-link-scope show-validation-detail-for-machine --machine-name "machineName" \
-    --resource-group "my-resource-group" 
-```
 ##### Update-tag #####
 ```
 az connectedmachine private-link-scope update-tag --tags Tag1="Value1" Tag2="Value2" \

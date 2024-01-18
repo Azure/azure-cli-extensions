@@ -13,21 +13,22 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin pool list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List pools for a project
+    """List pools for a project.
 
     :example: List
-        az devcenter admin pool list --project-name "{projectName}" --resource-group "rg1"
+        az devcenter admin pool list --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools", "2023-10-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -46,11 +47,15 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema
@@ -121,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -188,9 +193,23 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.dev_box_count = AAZIntType(
+                serialized_name="devBoxCount",
+                flags={"read_only": True},
+            )
             properties.dev_box_definition_name = AAZStrType(
                 serialized_name="devBoxDefinitionName",
                 flags={"required": True},
+            )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.health_status = AAZStrType(
+                serialized_name="healthStatus",
+            )
+            properties.health_status_details = AAZListType(
+                serialized_name="healthStatusDetails",
+                flags={"read_only": True},
             )
             properties.license_type = AAZStrType(
                 serialized_name="licenseType",
@@ -200,6 +219,9 @@ class List(AAZCommand):
                 serialized_name="localAdministrator",
                 flags={"required": True},
             )
+            properties.managed_virtual_network_regions = AAZListType(
+                serialized_name="managedVirtualNetworkRegions",
+            )
             properties.network_connection_name = AAZStrType(
                 serialized_name="networkConnectionName",
                 flags={"required": True},
@@ -208,6 +230,35 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.single_sign_on_status = AAZStrType(
+                serialized_name="singleSignOnStatus",
+            )
+            properties.stop_on_disconnect = AAZObjectType(
+                serialized_name="stopOnDisconnect",
+            )
+            properties.virtual_network_type = AAZStrType(
+                serialized_name="virtualNetworkType",
+            )
+
+            health_status_details = cls._schema_on_200.value.Element.properties.health_status_details
+            health_status_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.health_status_details.Element
+            _element.code = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            managed_virtual_network_regions = cls._schema_on_200.value.Element.properties.managed_virtual_network_regions
+            managed_virtual_network_regions.Element = AAZStrType()
+
+            stop_on_disconnect = cls._schema_on_200.value.Element.properties.stop_on_disconnect
+            stop_on_disconnect.grace_period_minutes = AAZIntType(
+                serialized_name="gracePeriodMinutes",
+            )
+            stop_on_disconnect.status = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

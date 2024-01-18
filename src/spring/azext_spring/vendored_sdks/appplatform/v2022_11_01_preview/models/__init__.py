@@ -112,6 +112,7 @@ from ._models_py3 import DeploymentResource
 from ._models_py3 import DeploymentResourceCollection
 from ._models_py3 import DeploymentResourceProperties
 from ._models_py3 import DeploymentSettings
+from ._models_py3 import DevToolPortalComponent
 from ._models_py3 import DevToolPortalFeatureDetail
 from ._models_py3 import DevToolPortalFeatureSettings
 from ._models_py3 import DevToolPortalInstance
@@ -271,7 +272,7 @@ from ._app_platform_management_client_enums import TestKeyType
 from ._app_platform_management_client_enums import TrafficDirection
 from ._app_platform_management_client_enums import Type
 from ._patch import __all__ as _patch_all
-from ._patch import *  # type: ignore # pylint: disable=unused-wildcard-import
+from ._patch import *  # pylint: disable=unused-wildcard-import
 from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
@@ -381,6 +382,7 @@ __all__ = [
     "DeploymentResourceCollection",
     "DeploymentResourceProperties",
     "DeploymentSettings",
+    "DevToolPortalComponent",
     "DevToolPortalFeatureDetail",
     "DevToolPortalFeatureSettings",
     "DevToolPortalInstance",

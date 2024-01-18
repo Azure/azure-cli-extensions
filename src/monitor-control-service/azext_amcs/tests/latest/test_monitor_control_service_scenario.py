@@ -404,7 +404,7 @@ def setup_scenario(test, rg):
         "--level 200 --sku CapacityReservation").get_output_in_json()
     test.kwargs['workspace3_id'] = workspace3_json['id']
 
-    vm_json = test.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-password TestPassword11!! '
+    vm_json = test.cmd('vm create -g {rg} -n {vm} --image Ubuntu2204 --admin-password TestPassword11!! '
                        '--admin-username testadmin --authentication-type password').get_output_in_json()
     test.kwargs['vm_id'] = vm_json['id']
 
@@ -527,10 +527,11 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
         ])
 
         self.cmd('monitor data-collection endpoint update -g {rg} -n {name1} --public-network-access enabled '
-                 '--kind windows', checks=[
-            self.check('networkAcls.publicNetworkAccess', 'Enabled'),
-            self.check('kind', 'Windows')
-        ])
+                 '--kind windows',
+                 checks=[
+                     self.check('networkAcls.publicNetworkAccess', 'Enabled'),
+                     self.check('kind', 'Windows')
+                 ])
 
         self.cmd('monitor data-collection endpoint create -g {rg} -n {name2} '
                  '--public-network-access enabled --kind linux')
@@ -547,6 +548,38 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
         self.cmd('monitor data-collection endpoint list -g {rg}', checks=[
             self.check('length(@)', 1)
         ])
+
+    @ResourceGroupPreparer(name_prefix='clitest_amcs_endpoints_association', location='westus')
+    def test_amcs_data_collection_endpoint_association(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'name1': 'endpoint1',
+            'vm': "vm1",
+            "myAssociation": "configurationAccessEndpoint",
+            "description": "new_description"
+        })
+
+        self.cmd('monitor data-collection endpoint create -g {rg} -n {name1} --public-network-access disabled', checks=[
+            self.check('networkAcls.publicNetworkAccess', 'Disabled'),
+        ])
+
+        endpoint_json = self.cmd('monitor data-collection endpoint show -g {rg} -n {name1}').get_output_in_json()
+        self.kwargs["endpoint_id"] = endpoint_json["id"]
+
+        vm_json = self.cmd('vm create -g {rg} -n {vm} --image Ubuntu2204 --admin-password TestPassword11!! '
+                           '--admin-username testadmin --authentication-type password').get_output_in_json()
+        self.kwargs['vm_id'] = vm_json['id']
+
+        self.cmd('az monitor data-collection rule association create --name {myAssociation} --endpoint-id {endpoint_id} --resource {vm_id}',
+                 checks=[
+                     self.check("name", "configurationAccessEndpoint"),
+                     self.check("dataCollectionEndpointId", endpoint_json["id"])
+                 ])
+        self.cmd('az monitor data-collection rule association update --name {myAssociation} --resource {vm_id} --description {description} ',
+                 checks=[
+                     self.check("description", self.kwargs['description'])
+                 ])
+        self.cmd('az monitor data-collection rule association delete -y --name {myAssociation} --resource {vm_id}')
 
     @ResourceGroupPreparer(name_prefix='clitest_amcs_rule', location='westus2')
     def test_amcs_data_collection_rule(self, resource_group):
@@ -573,7 +606,7 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
         self.cmd('monitor data-collection rule update --resource-group {rg} --name {name} '
                  '--performance-counters name="perfCounter02" '
                  'counter-specifiers=["\\Processor Information(_Total)\\% Processor Time"] '
-                 'sampling-frequency=20 transfer-period="PT1M" streams="Microsoft-InsightsMetrics"',
+                 'sampling-frequency=60 transfer-period="PT1M" streams="Microsoft-InsightsMetrics"',
                  checks=[self.check('provisioningState', 'Succeeded')])
 
         self.cmd('monitor data-collection rule show -g {rg} -n {name}', checks=[
@@ -589,4 +622,3 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
         self.cmd('monitor data-collection rule list -g {rg}', checks=[
             self.check('length(@)', 0)
         ])
-

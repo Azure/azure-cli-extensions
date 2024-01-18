@@ -41,6 +41,9 @@ setupAZ(){
         azdev setup -c "${cli_repo}" -r "${ext_repo}"
     fi
 
+    # fix the issue that vcrpy>=4.3.0 is not compatible with urllib3
+    pip install vcrpy==4.2.1
+
     # post-install-az: check installation result
     which az && az version
 }

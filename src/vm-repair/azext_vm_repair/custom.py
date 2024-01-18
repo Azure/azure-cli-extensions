@@ -14,7 +14,7 @@ from knack.log import get_logger
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from msrestazure.tools import parse_resource_id
-from .exceptions import SkuDoesNotSupportHyperV
+from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 
 from .command_helper_class import command_helper
 from .repair_utils import (
@@ -43,13 +43,19 @@ from .repair_utils import (
     _unlock_encrypted_vm_run,
     _create_repair_vm,
     _check_n_start_vm,
-    _check_existing_rg
+    _check_existing_rg,
+    _fetch_architecture,
+    _select_distro_linux_Arm64
 )
-from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
+from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
 
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False):
+
+    # log all the parameters
+    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes)
+
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
     # Main command calling block
@@ -66,6 +72,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         copy_disk_id = None
         resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
         created_resources = []
+        architecture_type = _fetch_architecture(source_vm)
 
         # Fetch OS image urn and set OS type for disk create
         if is_linux and _uses_managed_disk(source_vm):
@@ -73,8 +80,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             os_type = 'Linux'
             hyperV_generation_linux = _check_linux_hyperV_gen(source_vm)
             if hyperV_generation_linux == 'V2':
-                logger.info('Generation 2 VM detected, RHEL/Centos/Oracle 6 distros not available to be used for rescue VM ')
+                logger.info('Generation 2 VM detected')
                 os_image_urn = _select_distro_linux_gen2(distro)
+            if architecture_type == 'Arm64':
+                logger.info('ARM64 VM detected')
+                os_image_urn = _select_distro_linux_Arm64(distro)
             else:
                 os_image_urn = _select_distro_linux(distro)
         else:
@@ -101,7 +111,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             create_repair_vm_command += ' --zone {zone}'.format(zone=zone)
 
         # Create new resource group
-        if not _check_existing_rg(repair_group_name):
+        existing_rg = _check_existing_rg(repair_group_name)
+        if not existing_rg:
             create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
                                             .format(loc=source_vm.location, group_name=repair_group_name)
             logger.info('Creating resource group for repair VM and its resources...')
@@ -272,7 +283,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     if not command.is_status_success():
         command.set_status_error()
         return_dict = command.init_return_dict()
-        if _check_existing_rg(repair_group_name):
+        if existing_rg:
             _clean_up_resources(repair_group_name, confirm=True)
         else:
             _clean_up_resources(repair_group_name, confirm=False)
@@ -305,9 +316,11 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         # Fetch source and repair VM data
         source_vm = get_vm(cmd, resource_group_name, vm_name)
         is_managed = _uses_managed_disk(source_vm)
-        repair_vm_id = parse_resource_id(repair_vm_id)
-        repair_vm_name = repair_vm_id['name']
-        repair_resource_group = repair_vm_id['resource_group']
+        if repair_vm_id:
+            logger.info('Repair VM ID: %s', repair_vm_id)
+            repair_vm_id = parse_resource_id(repair_vm_id)
+            repair_vm_name = repair_vm_id['name']
+            repair_resource_group = repair_vm_id['resource_group']
         source_disk = None
 
         # MANAGED DISK
@@ -379,6 +392,10 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
 def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_script_file=None, parameters=None, run_on_repair=False, preview=None):
 
+    # log method parameters
+    logger.debug('vm repair run parameters: vm_name: %s, resource_group_name: %s, run_id: %s, repair_vm_id: %s, custom_script_file: %s, parameters: %s, run_on_repair: %s, preview: %s',
+                 vm_name, resource_group_name, run_id, repair_vm_id, custom_script_file, parameters, run_on_repair, preview)
+
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair run')
     LINUX_RUN_SCRIPT_NAME = 'linux-run-driver.sh'
@@ -397,9 +414,13 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             script_name = WINDOWS_RUN_SCRIPT_NAME
 
         # If run_on_repair is False, then repair_vm is the source_vm (scripts run directly on source vm)
-        repair_vm_id = parse_resource_id(repair_vm_id)
-        repair_vm_name = repair_vm_id['name']
-        repair_resource_group = repair_vm_id['resource_group']
+        if run_on_repair:
+            repair_vm_id = parse_resource_id(repair_vm_id)
+            repair_vm_name = repair_vm_id['name']
+            repair_resource_group = repair_vm_id['resource_group']
+        else:
+            repair_vm_name = vm_name
+            repair_resource_group = resource_group_name
 
         run_command_params = []
         additional_scripts = []
@@ -409,11 +430,20 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             # Fetch run path from GitHub
             repair_script_path = _fetch_run_script_path(run_id)
             run_command_params.append('script_path="./{}"'.format(repair_script_path))
-
         # Custom script scenario for script testers
         else:
             run_command_params.append('script_path=no-op')
             additional_scripts.append(custom_script_file)
+
+        if preview:
+            parts = preview.split('/')
+            if len(parts) < 7 or parts.index('map.json') == -1:
+                raise Exception('Invalid preview url. Write full URL of map.json file. example https://github.com/Azure/repair-script-library/blob/main/map.json')
+            last_index = parts.index('map.json')
+            fork_name = parts[last_index - 4]
+            branch_name = parts[last_index - 1]
+            run_command_params.append('repo_fork="{}"'.format(fork_name))
+            run_command_params.append('repo_branch="{}"'.format(branch_name))
 
         # Append Parameters
         if parameters:
@@ -580,9 +610,9 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         vnet_name = subnet_id_tokens[-3]
         vnet_resource_group = subnet_id_tokens[-7]
         ipconfig_name = ip_config_object['name']
-        orig_ip_address = ip_config_object['privateIpAddress']
+        orig_ip_address = ip_config_object['privateIPAddress']
         # Dynamic | Static
-        orig_ip_allocation_method = ip_config_object['privateIpAllocationMethod']
+        orig_ip_allocation_method = ip_config_object['privateIPAllocationMethod']
 
         # Get aviailable ip address within subnet
         get_available_ip_command = 'az network vnet subnet list-available-ips -g {g} --vnet-name {vnet} --name {subnet} --query [0] -o tsv' \
@@ -648,5 +678,87 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             logger.debug(command.error_stack_trace)
         # Generate return object and log errors if needed
         return_dict = command.init_return_dict()
+
+    return return_dict
+
+
+def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
+    from datetime import datetime
+    import secrets
+    import string
+
+    # Init command helper object
+    command = command_helper(logger, cmd, 'vm repair repair-and-restore')
+
+    password_length = 30
+    password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
+    repair_password = ''.join(secrets.choice(password_characters) for i in range(password_length))
+
+    username_length = 20
+    username_characters = string.ascii_lowercase + string.digits
+    repair_username = ''.join(secrets.choice(username_characters) for i in range(username_length))
+
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    repair_vm_name = ('repair-' + vm_name)[:14] + '_'
+    copy_disk_name = vm_name + '-DiskCopy-' + timestamp
+    repair_group_name = 'repair-' + vm_name + '-' + timestamp
+    existing_rg = _check_existing_rg(repair_group_name)
+
+    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True)
+
+    # log create_out
+    logger.info('create_out: %s', create_out)
+
+    repair_vm_name = create_out['repair_vm_name']
+    copy_disk_name = create_out['copied_disk_name']
+    repair_group_name = create_out['repair_resource_group']
+
+    logger.info('Running fstab run command')
+
+    try:
+        run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=["fstab"])
+
+    except Exception:
+        command.set_status_error()
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = "Command failed when running fstab script."
+        command.message = "Command failed when running fstab script."
+        if existing_rg:
+            _clean_up_resources(repair_group_name, confirm=True)
+        else:
+            _clean_up_resources(repair_group_name, confirm=False)
+        return
+
+    # log run_out
+    logger.info('run_out: %s', run_out)
+
+    if run_out['script_status'] == 'ERROR':
+        logger.error('fstab script returned an error.')
+        if existing_rg:
+            _clean_up_resources(repair_group_name, confirm=True)
+        else:
+            _clean_up_resources(repair_group_name, confirm=False)
+        return
+
+    logger.info('Running restore command')
+    show_vm_id = 'az vm show -g {g} -n {n} --query id -o tsv' \
+        .format(g=repair_group_name, n=repair_vm_name)
+
+    repair_vm_id = _call_az_command(show_vm_id)
+
+    restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True)
+
+    command.message = 'fstab script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
+        'The repairs were complete using the fstab script and the repair VM was then deleted. ' \
+        'The repair disk was restored to the source VM. ' \
+        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name)
+
+    command.set_status_success()
+    if command.error_stack_trace:
+        logger.debug(command.error_stack_trace)
+    # Generate return object and log errors if needed
+    return_dict = command.init_return_dict()
+
+    logger.info('\n%s\n', command.message)
 
     return return_dict

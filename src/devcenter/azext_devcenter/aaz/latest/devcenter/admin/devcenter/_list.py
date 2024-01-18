@@ -13,25 +13,26 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devcenter list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List all dev centers in a subscription.
+    """List all dev centers in a resource group.
 
-    :example: List by Resource Group
+    :example: List by resource group
         az devcenter admin devcenter list --resource-group "rg1"
 
-    :example: List by Subscription
+    :example: List by subscription
         az devcenter admin devcenter list
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/devcenters", "2022-11-11-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/devcenters", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters", "2023-10-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -48,9 +49,7 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -120,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -221,9 +220,37 @@ class List(AAZCommand):
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
             )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.encryption = AAZObjectType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            encryption = cls._schema_on_200.value.Element.properties.encryption
+            encryption.customer_managed_key_encryption = AAZObjectType(
+                serialized_name="customerManagedKeyEncryption",
+            )
+
+            customer_managed_key_encryption = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption
+            customer_managed_key_encryption.key_encryption_key_identity = AAZObjectType(
+                serialized_name="keyEncryptionKeyIdentity",
+            )
+            customer_managed_key_encryption.key_encryption_key_url = AAZStrType(
+                serialized_name="keyEncryptionKeyUrl",
+            )
+
+            key_encryption_key_identity = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption.key_encryption_key_identity
+            key_encryption_key_identity.delegated_identity_client_id = AAZStrType(
+                serialized_name="delegatedIdentityClientId",
+            )
+            key_encryption_key_identity.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+            key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
@@ -291,7 +318,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -392,9 +419,37 @@ class List(AAZCommand):
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
             )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.encryption = AAZObjectType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            encryption = cls._schema_on_200.value.Element.properties.encryption
+            encryption.customer_managed_key_encryption = AAZObjectType(
+                serialized_name="customerManagedKeyEncryption",
+            )
+
+            customer_managed_key_encryption = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption
+            customer_managed_key_encryption.key_encryption_key_identity = AAZObjectType(
+                serialized_name="keyEncryptionKeyIdentity",
+            )
+            customer_managed_key_encryption.key_encryption_key_url = AAZStrType(
+                serialized_name="keyEncryptionKeyUrl",
+            )
+
+            key_encryption_key_identity = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption.key_encryption_key_identity
+            key_encryption_key_identity.delegated_identity_client_id = AAZStrType(
+                serialized_name="delegatedIdentityClientId",
+            )
+            key_encryption_key_identity.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+            key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

@@ -11,7 +11,9 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
-from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from .vendored_sdks.appplatform.v2023_11_01_preview import models
+from ._gateway_constant import (GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE,
+                                GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE, GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE)
 from ._utils import get_spring_sku
 
 logger = get_logger(__name__)
@@ -49,11 +51,21 @@ def gateway_update(cmd, client, resource_group, service,
                    properties=None,
                    secrets=None,
                    allowed_origins=None,
+                   allowed_origin_patterns=None,
                    allowed_methods=None,
                    allowed_headers=None,
                    max_age=None,
                    allow_credentials=None,
                    exposed_headers=None,
+                   enable_certificate_verification=None,
+                   certificate_names=None,
+                   addon_configs_json=None,
+                   addon_configs_file=None,
+                   apms=None,
+                   enable_response_cache=None,
+                   response_cache_scope=None,
+                   response_cache_size=None,
+                   response_cache_ttl=None,
                    no_wait=False
                    ):
     gateway = client.gateways.get(resource_group, service, DEFAULT_NAME)
@@ -75,7 +87,10 @@ def gateway_update(cmd, client, resource_group, service,
         gateway.properties.api_metadata_properties, api_title, api_description, api_doc_location, api_version, server_url)
 
     cors_properties = _update_cors(
-        gateway.properties.cors_properties, allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers)
+        gateway.properties.cors_properties, allowed_origins, allowed_origin_patterns, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers)
+
+    client_auth = _update_client_auth(client, resource_group, service,
+                                      gateway.properties.client_auth, enable_certificate_verification, certificate_names)
 
     resource_requests = models.GatewayResourceRequests(
         cpu=cpu or gateway.properties.resource_requests.cpu,
@@ -85,6 +100,19 @@ def gateway_update(cmd, client, resource_group, service,
     update_apm_types = apm_types if apm_types is not None else gateway.properties.apm_types
     environment_variables = _update_envs(gateway.properties.environment_variables, properties, secrets)
 
+    addon_configs = _update_addon_configs(gateway.properties.addon_configs, addon_configs_json, addon_configs_file)
+
+    apms = _update_apms(client, resource_group, service, gateway.properties.apms, apms)
+
+    response_cache = _update_response_cache(client,
+                                            resource_group,
+                                            service,
+                                            gateway.properties.response_cache_properties,
+                                            enable_response_cache,
+                                            response_cache_scope,
+                                            response_cache_size,
+                                            response_cache_ttl)
+
     model_properties = models.GatewayProperties(
         public=assign_endpoint if assign_endpoint is not None else gateway.properties.public,
         https_only=https_only if https_only is not None else gateway.properties.https_only,
@@ -92,8 +120,12 @@ def gateway_update(cmd, client, resource_group, service,
         api_metadata_properties=api_metadata_properties,
         cors_properties=cors_properties,
         apm_types=update_apm_types,
+        apms=apms,
         environment_variables=environment_variables,
-        resource_requests=resource_requests)
+        client_auth=client_auth,
+        addon_configs=addon_configs,
+        resource_requests=resource_requests,
+        response_cache_properties=response_cache)
 
     sku = models.Sku(name=gateway.sku.name, tier=gateway.sku.tier,
                      capacity=instance_count or gateway.sku.capacity)
@@ -118,6 +150,14 @@ def gateway_clear(cmd, client, resource_group, service, no_wait=False):
     logger.warning(LOG_RUNNING_PROMPT)
     return sdk_no_wait(no_wait, client.gateways.begin_create_or_update,
                        resource_group, service, DEFAULT_NAME, gateway_resource)
+
+
+def gateway_restart(cmd, client, service, resource_group, no_wait=False):
+    return client.gateways.begin_restart(resource_group, service, DEFAULT_NAME)
+
+
+def gateway_sync_cert(cmd, client, service, resource_group, no_wait=False):
+    return client.gateways.begin_restart(resource_group, service, DEFAULT_NAME)
 
 
 def gateway_custom_domain_show(cmd, client, resource_group, service, domain_name):
@@ -199,12 +239,14 @@ def _update_api_metadata(existing, api_title, api_description, api_documentation
     return api_metadata
 
 
-def _update_cors(existing, allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers):
-    if allowed_origins is None and allowed_methods is None and allowed_headers is None and max_age is None and allow_credentials is None and exposed_headers is None:
+def _update_cors(existing, allowed_origins, allowed_origin_patterns, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers):
+    if allowed_origins is None and allowed_origin_patterns is None and allowed_methods is None and allowed_headers is None and max_age is None and allow_credentials is None and exposed_headers is None:
         return existing
     cors = existing if existing is not None else models.GatewayCorsProperties()
     if allowed_origins is not None:
         cors.allowed_origins = allowed_origins.split(",") if allowed_origins else None
+    if allowed_origin_patterns is not None:
+        cors.allowed_origin_patterns = allowed_origin_patterns.split(",") if allowed_origin_patterns else None
     if allowed_methods is not None:
         cors.allowed_methods = allowed_methods.split(",") if allowed_methods else None
     if allowed_headers is not None:
@@ -227,6 +269,49 @@ def _update_envs(existing, envs_dict, secrets_dict):
     if secrets_dict is not None:
         envs.secrets = secrets_dict
     return envs
+
+
+def _update_client_auth(client, resource_group, service, existing, enable_certificate_verification, certificate_names):
+    if enable_certificate_verification is None and certificate_names is None:
+        return existing
+    client_auth = existing if existing is not None else models.GatewayPropertiesClientAuth()
+    if enable_certificate_verification is not None:
+        client_auth.certificate_verification = models.GatewayCertificateVerification.ENABLED if enable_certificate_verification else models.GatewayCertificateVerification.DISABLED
+    if certificate_names is not None:
+        client_auth.certificates = []
+        if certificate_names == "":
+            # Clear certificates
+            return client_auth
+        certs_in_asa = client.certificates.list(resource_group, service)
+        certs_array = certificate_names.split(",")
+        for name in certs_array:
+            cert_in_asa = next((c for c in certs_in_asa if c.name == name), None)
+            if cert_in_asa:
+                client_auth.certificates.append(cert_in_asa.id)
+            else:
+                raise InvalidArgumentValueError(f"Certificate {name} not found in Azure Spring Apps.")
+    return client_auth
+
+
+def _update_apms(client, resource_group, service, existing, apms):
+    if apms is None:
+        return existing
+    return apms
+
+
+def _update_addon_configs(existing, addon_configs_json, addon_configs_file):
+    if addon_configs_file is None and addon_configs_json is None:
+        return existing
+
+    raw_json = {}
+    if addon_configs_file is not None:
+        with open(addon_configs_file, 'r') as json_file:
+            raw_json = json.load(json_file)
+
+    if addon_configs_json is not None:
+        raw_json = json.loads(addon_configs_json)
+
+    return raw_json
 
 
 def _validate_route_config_not_exist(client, resource_group, service, name):
@@ -295,3 +380,79 @@ def _route_config_property_convert(raw_json):
             replaced_key = re.sub('(?<!^)(?=[A-Z])', '_', key).lower()
             convert_raw_json[replaced_key] = raw_json[key]
     return convert_raw_json
+
+
+def _update_response_cache(client, resource_group, service, existing_response_cache=None,
+                           enable_response_cache=None,
+                           response_cache_scope=None,
+                           response_cache_size=None,
+                           response_cache_ttl=None):
+    if existing_response_cache is None and not enable_response_cache:
+        if response_cache_scope is not None or response_cache_size is not None or response_cache_ttl is not None:
+            raise InvalidArgumentValueError("Response cache is not enabled. "
+                                            "Please use --enable-response-cache together to configure it.")
+
+    if existing_response_cache is None and enable_response_cache:
+        if response_cache_scope is None:
+            raise InvalidArgumentValueError("--response-cache-scope is required when enable response cache.")
+
+    # enable_response_cache can be None, which can still mean to enable response cache
+    if enable_response_cache is False:
+        return None
+
+    target_cache_scope = _get_target_cache_scope(response_cache_scope, existing_response_cache)
+    target_cache_size = _get_target_cache_size(response_cache_size, existing_response_cache)
+    target_cache_ttl = _get_target_cache_ttl(response_cache_ttl, existing_response_cache)
+
+    if target_cache_scope is None:
+        if target_cache_size is None and target_cache_ttl is None:
+            return None
+        else:
+            raise InvalidArgumentValueError("--response-cache-scope is required when enable response cache.")
+
+    if target_cache_scope == GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE:
+        return models.GatewayLocalResponseCachePerRouteProperties(
+            size=target_cache_size, time_to_live=target_cache_ttl)
+    else:
+        return models.GatewayLocalResponseCachePerInstanceProperties(
+            size=target_cache_size, time_to_live=target_cache_ttl)
+
+
+def _get_target_cache_scope(response_cache_scope, existing_response_cache):
+    if response_cache_scope is not None:
+        return response_cache_scope
+
+    if existing_response_cache is None:
+        return None
+
+    if isinstance(existing_response_cache, models.GatewayLocalResponseCachePerRouteProperties):
+        return GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE
+
+    if isinstance(existing_response_cache, models.GatewayLocalResponseCachePerInstanceProperties):
+        return GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE
+
+
+def _get_target_cache_size(size, existing_response_cache):
+    if size is not None:
+        if size == GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE:
+            return None
+        else:
+            return size
+
+    if existing_response_cache is None or existing_response_cache.size is None:
+        return None
+    else:
+        return existing_response_cache.size
+
+
+def _get_target_cache_ttl(ttl, existing_response_cache):
+    if ttl is not None:
+        if ttl == GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE:
+            return None
+        else:
+            return ttl
+
+    if existing_response_cache is None or existing_response_cache.time_to_live is None:
+        return None
+    else:
+        return existing_response_cache.time_to_live

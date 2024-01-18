@@ -2,6 +2,13 @@
 
 Release History
 ===============
+1.5.0
+++++++
+* Added support for maintenance configuration canncellation.
+
+1.4.0
+++++++
+* Added support for subscription level and resource group levele configuration assignments.
 
 1.3.0
 ++++++

@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin pool create",
-    is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a machine pool
+    """Create a pool.
 
     :example: Create
-        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "{poolName}" --project-name "{projectName}" --resource-group "rg1" --local-administrator Enabled
+        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -50,14 +49,23 @@ class Create(AAZCommand):
             options=["-n", "--name", "--pool-name"],
             help="Name of the pool.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -66,7 +74,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
-            help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
+            help="The geo-location where the resource lives. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
@@ -84,29 +92,54 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.dev_box_definition_name = AAZStrArg(
-            options=["-d", "--dev-box-definition-name"],
+        _args_schema.devbox_definition_name = AAZStrArg(
+            options=["-d", "--devbox-definition-name"],
             arg_group="Properties",
-            help="Name of a Dev Box definition in parent Project of this Pool",
+            help="Name of a dev box definition in parent project of this pool.",
+        )
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
+            arg_group="Properties",
+            help="The display name of the pool.",
         )
         _args_schema.license_type = AAZStrArg(
             options=["--license-type"],
             arg_group="Properties",
-            help="Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.",
+            help="Specifies the license type indicating the caller has already acquired licenses for the dev boxes that will be created.",
             default="Windows_Client",
             enum={"Windows_Client": "Windows_Client"},
         )
         _args_schema.local_administrator = AAZStrArg(
             options=["--local-administrator"],
             arg_group="Properties",
-            help="Indicates whether owners of Dev Boxes in this pool are added as local administrators on the Dev Box.",
+            help="Indicates whether owners of dev boxes in this pool are added as local administrators on the dev box.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.managed_virtual_network_regions = AAZListArg(
+            options=["--managed-virtual-network-regions", "-m"],
+            arg_group="Properties",
+            help="The regions of the managed virtual network (required when managedNetworkType is Managed).",
         )
         _args_schema.network_connection_name = AAZStrArg(
             options=["-c", "--network-connection-name"],
             arg_group="Properties",
-            help="Name of a Network Connection in parent Project of this Pool",
+            help="Name of a network connection in parent project of this pool.",
         )
+        _args_schema.single_sign_on_status = AAZStrArg(
+            options=["--single-sign-on-status"],
+            arg_group="Properties",
+            help="Indicates whether Dev Boxes in this pool are created with single sign on enabled. The also requires that single sign on be enabled on the tenant.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.virtual_network_type = AAZStrArg(
+            options=["--virtual-network-type"],
+            arg_group="Properties",
+            help="Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network.",
+            enum={"Managed": "Managed", "Unmanaged": "Unmanaged"},
+        )
+
+        managed_virtual_network_regions = cls._args_schema.managed_virtual_network_regions
+        managed_virtual_network_regions.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -194,7 +227,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -225,10 +258,18 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("devBoxDefinitionName", AAZStrType, ".dev_box_definition_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("devBoxDefinitionName", AAZStrType, ".devbox_definition_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("licenseType", AAZStrType, ".license_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("localAdministrator", AAZStrType, ".local_administrator", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("managedVirtualNetworkRegions", AAZListType, ".managed_virtual_network_regions")
                 properties.set_prop("networkConnectionName", AAZStrType, ".network_connection_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("singleSignOnStatus", AAZStrType, ".single_sign_on_status")
+                properties.set_prop("virtualNetworkType", AAZStrType, ".virtual_network_type")
+
+            managed_virtual_network_regions = _builder.get(".properties.managedVirtualNetworkRegions")
+            if managed_virtual_network_regions is not None:
+                managed_virtual_network_regions.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -276,9 +317,23 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.dev_box_count = AAZIntType(
+                serialized_name="devBoxCount",
+                flags={"read_only": True},
+            )
             properties.dev_box_definition_name = AAZStrType(
                 serialized_name="devBoxDefinitionName",
                 flags={"required": True},
+            )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.health_status = AAZStrType(
+                serialized_name="healthStatus",
+            )
+            properties.health_status_details = AAZListType(
+                serialized_name="healthStatusDetails",
+                flags={"read_only": True},
             )
             properties.license_type = AAZStrType(
                 serialized_name="licenseType",
@@ -288,6 +343,9 @@ class Create(AAZCommand):
                 serialized_name="localAdministrator",
                 flags={"required": True},
             )
+            properties.managed_virtual_network_regions = AAZListType(
+                serialized_name="managedVirtualNetworkRegions",
+            )
             properties.network_connection_name = AAZStrType(
                 serialized_name="networkConnectionName",
                 flags={"required": True},
@@ -296,6 +354,35 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.single_sign_on_status = AAZStrType(
+                serialized_name="singleSignOnStatus",
+            )
+            properties.stop_on_disconnect = AAZObjectType(
+                serialized_name="stopOnDisconnect",
+            )
+            properties.virtual_network_type = AAZStrType(
+                serialized_name="virtualNetworkType",
+            )
+
+            health_status_details = cls._schema_on_200_201.properties.health_status_details
+            health_status_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.health_status_details.Element
+            _element.code = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            managed_virtual_network_regions = cls._schema_on_200_201.properties.managed_virtual_network_regions
+            managed_virtual_network_regions.Element = AAZStrType()
+
+            stop_on_disconnect = cls._schema_on_200_201.properties.stop_on_disconnect
+            stop_on_disconnect.grace_period_minutes = AAZIntType(
+                serialized_name="gracePeriodMinutes",
+            )
+            stop_on_disconnect.status = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

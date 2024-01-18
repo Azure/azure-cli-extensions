@@ -6,7 +6,7 @@
 
 from knack.arguments import CLIArgumentType
 from azure.cli.core import AzCommandsLoader
-from .vendored_sdks.models import AllocationMethod
+from .vendored_sdks.scvmm.models import AllocationMethod
 from .scvmm_constants import BusType, VHDType
 from ._actions import VmNicAddAction, VmDiskAddAction
 
@@ -19,6 +19,7 @@ def load_arguments(self: AzCommandsLoader, _):
     )
     from azure.cli.core.commands.validators import (
         get_default_location_from_resource_group,
+        validate_file_or_dict,
     )
 
     scvmm_name_type = CLIArgumentType(
@@ -51,6 +52,11 @@ def load_arguments(self: AzCommandsLoader, _):
         options_list=['--force'],
         help='Force the resource to be deleted from azure.',
         action='store_true',
+    )
+
+    virtualmachine_name_type = CLIArgumentType(
+        options_list=['--virtual-machine-name'],
+        help='Name of the VirtualMachine.',
     )
 
     with self.argument_context('scvmm') as c:
@@ -87,6 +93,9 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=['--vm-template-name'],
             help="Name of the VirtualMachineTemplate.",
         )
+
+    with self.argument_context('scvmm vm wait') as c:
+        c.argument('virtual_machine_name', arg_type=virtualmachine_name_type)
 
     for scope in ['create', 'update']:
         with self.argument_context(f'scvmm vm {scope}') as c:
@@ -166,8 +175,33 @@ def load_arguments(self: AzCommandsLoader, _):
     with self.argument_context('scvmm vm stop') as c:
         c.argument(
             'skip_shutdown',
-            arg_type=get_three_state_flag(),
+            arg_type=get_three_state_flag(
+                positive_label='true', negative_label='false', return_label=True
+            ),
             help="Skip shutdown and power-off immediately.",
+        )
+
+    with self.argument_context('scvmm vm create-checkpoint') as c:
+        c.argument(
+            'checkpoint_name',
+            help="Name of the checkpoint to be created.",
+        )
+
+        c.argument(
+            'checkpoint_description',
+            help="Description of the checkpoint to be created.",
+        )
+
+    with self.argument_context('scvmm vm delete-checkpoint') as c:
+        c.argument(
+            'checkpoint_id',
+            help="Checkpoint UUID.",
+        )
+
+    with self.argument_context('scvmm vm restore-checkpoint') as c:
+        c.argument(
+            'checkpoint_id',
+            help="Checkpoint UUID.",
         )
 
     with self.argument_context('scvmm vm nic') as c:
@@ -209,6 +243,7 @@ def load_arguments(self: AzCommandsLoader, _):
         c.argument(
             'nic_names', options_list=['--nics'], nargs='+', help="Names of the NICs."
         )
+        c.argument('virtual_machine_name', arg_type=virtualmachine_name_type)
 
     with self.argument_context('scvmm vm disk') as c:
         c.argument('disk_name', options_list=['--name', '-n'], help="Name of the Disk.")
@@ -248,12 +283,35 @@ def load_arguments(self: AzCommandsLoader, _):
             nargs='+',
             help="Names of the Disks.",
         )
+        c.argument('virtual_machine_name', arg_type=virtualmachine_name_type)
 
     with self.argument_context('scvmm vm delete') as c:
+        c.argument(
+            'force',
+            action='store_true',
+            help="Force delete the azure resource.",
+        )
         c.argument(
             'retain',
             action='store_true',
             help='Disable the VM from azure but retain the VM in VMM.',
+            deprecate_info=c.deprecate(hide=True),
+        )
+        c.argument(
+            'deleteFromHost',
+            action='store_true',
+            help='Delete the VM from the SCVMM.',
+            deprecate_info=c.deprecate(hide=True, redirect='--delete-from-host'),
+        )
+        c.argument(
+            'delete_from_host',
+            action='store_true',
+            help='Delete the VM from the VMware host.',
+        )
+        c.argument(
+            'delete_machine',
+            action='store_true',
+            help='Delete the parent Microsoft.HybridCompute Machine resource',
         )
 
     with self.argument_context('scvmm avset') as c:
@@ -262,3 +320,87 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=['--avset-name', '-a'],
             help="Name of the Availabilty Set.",
         )
+        c.argument(
+            'availability_set_name',
+            help="Name of the AvailabilitySet."
+        )
+
+    with self.argument_context('scvmm cloud') as c:
+        c.argument(
+            'cloud_name',
+            help="Name of the Cloud."
+        )
+
+    with self.argument_context('scvmm vm guest-agent enable') as c:
+        c.argument(
+            'vm_name', help="Name of the VM."
+        )
+        c.argument(
+            'username',
+            options_list=['--username'],
+            help="Username to use for connecting to the vm.",
+        )
+        c.argument(
+            'password', options_list=['--password'],
+            help="Username password credentials to use for connecting to the VM.",
+        )
+        c.argument(
+            'https_proxy', help="HTTPS proxy server url for the VM.",
+        )
+
+    with self.argument_context('scvmm vm guest-agent show') as c:
+        c.argument(
+            'password', options_list=['--password'],
+            help="Username password credentials to use for connecting to the VM.",
+        )
+
+    with self.argument_context('scvmm vm guest-agent show') as c:
+        c.argument(
+            'vm_name', help="Name of the VM.",
+        )
+
+    with self.argument_context('scvmm vm extension list') as c:
+        c.argument('vm_name', help='The name of the vm containing the extension.')
+        c.argument(
+            'expand', help='The expand expression to apply on the operation.')
+
+    with self.argument_context('scvmm vm extension show') as c:
+        c.argument(
+            'vm_name', help='The name of the vm containing the extension.',
+            id_part='name')
+        c.argument('name', help='The name of the vm extension.', id_part='child_name_1')
+
+    for scope in ['scvmm vm extension update', 'scvmm vm extension create']:
+        with self.argument_context(scope) as c:
+            c.argument(
+                'vm_name', help='The name of the vm where the extension '
+                'should be created or updated.')
+            c.argument('name', help='The name of the vm extension.')
+            c.argument('tags', tags_type)
+            c.argument(
+                'force_update_tag', help='How the extension handler should be forced to update even if '
+                'the extension configuration has not changed.')
+            c.argument('publisher', help='The name of the extension handler publisher.')
+            c.argument(
+                'type_', options_list=['--type'], help='Specify the type of the extension; an example '
+                'is "CustomScriptExtension".')
+            c.argument('type_handler_version', help='Specifies the version of the script handler.')
+            c.argument(
+                'enable_auto_upgrade', arg_type=get_three_state_flag(), help='Indicates whether the extension '
+                'should be automatically upgraded by the platform if there is a newer version available.')
+            c.argument(
+                'auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
+                'use a newer minor version if one is available at deployment time. Once deployed, however, the '
+                'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
+            c.argument(
+                'settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
+                'Expected value: json-string/json-file/@json-file.')
+            c.argument(
+                'protected_settings', type=validate_file_or_dict, help='The extension can contain either '
+                'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
+                'value: json-string/json-file/@json-file.')
+
+    with self.argument_context('scvmm vm extension delete') as c:
+        c.argument('vm_name', help='The name of the vm where the extension '
+                   'should be deleted.', id_part='name')
+        c.argument('name', help='The name of the vm extension.', id_part='child_name_1')

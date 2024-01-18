@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a project.
 
     :example: Create
-        az devcenter admin project create --location "eastus" --description "This is my first project." --dev-center-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.DevCenter/devcenters/{devCenterName}" --tags CostCenter="R&D" --name "{projectName}" --resource-group "rg1"
+        az devcenter admin project create --location "eastus" --description "This is my first project." --dev-center-id "/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/rg1/providers/Microsoft.DevCenter/devcenters/Contoso" --tags CostCenter="R&D" --name "DevProject" --resource-group "rg1" --max-dev-boxes-per-user "3"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -50,9 +49,13 @@ class Create(AAZCommand):
             options=["-n", "--name"],
             help="The name of the project.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -61,7 +64,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
-            help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
+            help="The geo-location where the resource lives. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
@@ -87,7 +90,20 @@ class Create(AAZCommand):
         _args_schema.dev_center_id = AAZStrArg(
             options=["--dev-center-id"],
             arg_group="Properties",
-            help="Resource Id of an associated DevCenter",
+            help="Resource ID of an associated dev center.",
+        )
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
+            arg_group="Properties",
+            help="The display name of the project.",
+        )
+        _args_schema.max_dev_boxes_per_user = AAZIntArg(
+            options=["--max-dev-boxes-per-user"],
+            arg_group="Properties",
+            help="When specified, limits the maximum number of dev boxes a single user can create across all pools in the project. This will have no effect on existing dev boxes when reduced.",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
         )
         return cls._args_schema
 
@@ -172,7 +188,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -205,6 +221,8 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("devCenterId", AAZStrType, ".dev_center_id")
+                properties.set_prop("displayName", AAZStrType, ".display_name")
+                properties.set_prop("maxDevBoxesPerUser", AAZIntType, ".max_dev_boxes_per_user")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -259,6 +277,12 @@ class Create(AAZCommand):
             properties.dev_center_uri = AAZStrType(
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
+            )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.max_dev_boxes_per_user = AAZIntType(
+                serialized_name="maxDevBoxesPerUser",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

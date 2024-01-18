@@ -62,8 +62,6 @@
 |[az connectedmachine private-link-scope create](#PrivateLinkScopesCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersPrivateLinkScopesCreateOrUpdate#Create)|[Example](#ExamplesPrivateLinkScopesCreateOrUpdate#Create)|
 |[az connectedmachine private-link-scope update](#PrivateLinkScopesCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersPrivateLinkScopesCreateOrUpdate#Update)|[Example](#ExamplesPrivateLinkScopesCreateOrUpdate#Update)|
 |[az connectedmachine private-link-scope delete](#PrivateLinkScopesDelete)|Delete|[Parameters](#ParametersPrivateLinkScopesDelete)|[Example](#ExamplesPrivateLinkScopesDelete)|
-|[az connectedmachine private-link-scope show-validation-detail](#PrivateLinkScopesGetValidationDetails)|GetValidationDetails|[Parameters](#ParametersPrivateLinkScopesGetValidationDetails)|[Example](#ExamplesPrivateLinkScopesGetValidationDetails)|
-|[az connectedmachine private-link-scope show-validation-detail-for-machine](#PrivateLinkScopesGetValidationDetailsForMachine)|GetValidationDetailsForMachine|[Parameters](#ParametersPrivateLinkScopesGetValidationDetailsForMachine)|[Example](#ExamplesPrivateLinkScopesGetValidationDetailsForMachine)|
 |[az connectedmachine private-link-scope update-tag](#PrivateLinkScopesUpdateTags)|UpdateTags|[Parameters](#ParametersPrivateLinkScopesUpdateTags)|[Example](#ExamplesPrivateLinkScopesUpdateTags)|
 
 
@@ -389,32 +387,6 @@ az connectedmachine private-link-scope delete --resource-group "my-resource-grou
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--scope-name**|string|The name of the Azure Arc PrivateLinkScope resource.|scope_name|scopeName|
-
-#### <a name="PrivateLinkScopesGetValidationDetails">Command `az connectedmachine private-link-scope show-validation-detail`</a>
-
-##### <a name="ExamplesPrivateLinkScopesGetValidationDetails">Example</a>
-```
-az connectedmachine private-link-scope show-validation-detail --location "wus2" --private-link-scope-id \
-"f5dc51d3-92ed-4d7e-947a-775ea79b4919"
-```
-##### <a name="ParametersPrivateLinkScopesGetValidationDetails">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--location**|string|The location of the target resource.|location|location|
-|**--private-link-scope-id**|string|The id (Guid) of the Azure Arc PrivateLinkScope resource.|private_link_scope_id|privateLinkScopeId|
-
-#### <a name="PrivateLinkScopesGetValidationDetailsForMachine">Command `az connectedmachine private-link-scope show-validation-detail-for-machine`</a>
-
-##### <a name="ExamplesPrivateLinkScopesGetValidationDetailsForMachine">Example</a>
-```
-az connectedmachine private-link-scope show-validation-detail-for-machine --machine-name "machineName" \
---resource-group "my-resource-group"
-```
-##### <a name="ParametersPrivateLinkScopesGetValidationDetailsForMachine">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--machine-name**|string|The name of the target machine to get the private link scope validation details for.|machine_name|machineName|
 
 #### <a name="PrivateLinkScopesUpdateTags">Command `az connectedmachine private-link-scope update-tag`</a>
 

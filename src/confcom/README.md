@@ -55,6 +55,7 @@ The `confcom` extension does not currently support:
 
 - [ARM Template functions](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions) other than `variables` and `parameters`.
 - Variables and Parameters with non-primitive data types e.g. objects and arrays
+- Nested and Linked ARM Templates
 
 ## Trademarks
 

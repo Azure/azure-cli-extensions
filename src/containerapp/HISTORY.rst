@@ -2,6 +2,205 @@
 
 Release History
 ===============
+upcoming
+++++++
+* [Breaking Change]  'az containerapp service': deprecate command from Azure CLI version 2.56.1
+* 'az containerapp add-on' : support for add-on weaviate create and delete commands
+
+0.3.46
+++++++
+* 'az containerapp create': Fix BadRequest Error about the clientType with --bind
+* 'az containerapp update': Fix bug for --min-replicas is not set when the value is 0
+
+0.3.45
+++++++
+* 'az containerapp up': Cloud Build Bugfix - 500 Internal Server Error (Wrong env selected to create builder)
+* 'az containerapp up': support to create or update a containerapp on connected environment as well as any associated resources (extension on connected cluster, custom location) with --custom-location or --connected-cluster-id
+
+0.3.44
+++++++
+* 'az containerapp env workload-profile set': deprecate command
+* 'az containerapp add-on': support for az containerapp add-on commands; deprecation of az containerapp service commands
+* 'az containerapp env dapr-component resiliency': Add Dapr Component Resiliency commands
+* 'az containerapp resiliency': Add Container App Resiliency commands
+* 'az containerapp env create': Support --enable-dedicated-gpu
+* 'az containerapp job create': fix problem of parsing parameters minExecutions and maxExecutions from --yaml
+* 'az containerapp env dapr-component init': support initializing Dapr components and dev services for an environment
+* 'az containerapp patch apply': support image patching for java application
+* Upgrade api-version to 2023-08-01-preview
+* 'az containerapp env create/update': Support --logs-dynamic-json-columns/-j to configure whether to parse json string log into dynamic json columns
+* 'az containerapp create/update/up': Remove the region check for the Cloud Build feature
+* 'az containerapp create/update/up': Improve logs on the local buildpack source to cloud flow
+* 'az containerapp create/update': Support --customized-keys and clientType in --bind for dev service
+
+0.3.43
+++++++
+* Update azure cli dependency version >= "2.53.0"
+* Remove GA commands which exists in azure-cli of version 2.53.0
+* 'az containerapp create/update': fix an issue for transforming sensitive values when the scale rules metadata not exists
+* 'az containerapp up': update builder image used when --source is provided with no Dockerfile to support building applications targeting a wider range of platform versions
+* Add Cloud Build support (build without Dockerfile or Docker) in Stage/Canary regions to the 'az containerapp up'/'az containerapp create' and 'az containerapp update' commands
+
+0.3.42
+++++++
+* 'az containerapp job create': Fix AttributeError when --trigger-type is None
+* 'az containerapp update': fix bug for mounting secret volumes using --secret-volume-mount
+* 'az containerapp compose create': fixed an issue where the environment's resource group was not resolved from --environment when the input value was a resource id.
+* 'az containerapp replica count', returns the replica count of a container app
+* [Breaking Change] 'az containerapp job create': add default values for container app job properties --replica-completion-count, --replica-retry-limit, --replica-timeout, --parallelism, --min-executions, --max-executions, --polling-interval
+* 'az containerapp create/update': hide environment variables, scale rules metadata
+* 'az containerapp job create/update': hide environment variables, scale rules metadata, eventTriggerConfig for job
+* [Breaking Change] 'az containerapp env create': update the default value of --enable-workload-profiles to `True`
+* 'az containerapp compose create': fix containerapp invalid memory resource
+
+0.3.41
+++++++
+* 'az containerapp up/create': enable support for no Dockerfile cases with --repo
+
+0.3.40
+++++++
+* 'az containerapp service': add support for creation and deletion of Qdrant vector database as a container app dev service
+* Add command group 'az containerapp connected-env', support show/list/delete/create connected environment
+* 'az containerapp create': support --source and --repo properties
+* 'az containerapp update': support --source property
+* Add command group 'az containerapp connected-env certificate', support list/upload/delete connectedEnvironments certificate
+* Add command group 'az containerapp connected-env dapr-component', support list/show/set/remove connectedEnvironments daprComponents
+* Add command group 'az containerapp connected-env storage', support list/show/set/remove connectedEnvironments storage
+* 'az containerapp env': --infrastructure-resource-group, supports custom rg name for byovnet env creations in WP enabled envs
+
+0.3.39
+++++++
+* 'az containerapp update': fix bug for populating secret value with --yaml
+
+0.3.38
+++++++
+* Add support for binding managed MySQL Flexible server to a containerapp
+* Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
+* 'az containerapp env': --enable-workload-profiles allowed values:true, false
+* 'az containerapp auth': support --token-store, --sas-url-secret, --sas-url-secret-name, --yes
+* 'az containerapp create'/'az containerapp job create': When --environment is provided and the environmentId value does not exist in --yaml, use the value in --environment as environmentId
+* 'az containerapp job create': support --environment-type parameter
+* 'az containerapp show-custom-domain-verification-id': show verfication id used for binding custom domain
+* 'az containerapp list-usages': list usages in subscription
+* 'az containerapp env list-usages': list usages in environment
+* 'az containerapp update': --yaml support property additionalPortMappings for api-version 2023-05-02-preview
+* 'az containerapp create/update': raise ValidationError when value in --yaml is None
+
+0.3.37
+++++++
+* 'az containerapp job start': update start execution payload format to exlude template property from API version 2023-05-01 onwards
+* 'az containerapp service': add support for creation and deletion of MariaDB
+* 'az containerapp create/list': support --environment-type parameter
+* 'az containerapp logs show': fix raising error for response status code is not OK
+* 'az containerapp auth show/update': support api-version 2023-05-02-preview
+* 'az containerapp create': --yaml support property additionalPortMappings for api-version 2023-05-02-preview
+* 'az containerapp create': add support for insecure ingress with flag --allow-insecure
+
+0.3.36
+++++++
+* 'az containerapp hostname bind': fix exception when not bringing --validation-method inputs
+
+0.3.35
+++++++
+* 'az containerapp create/update': --termination-grace-period support custom termination grace period
+* 'az containerapp env logs show': fix issue of constructing connection url
+* 'az containerapp create/update': --revision-suffix allow revision suffix to start with numbers
+* 'az containerapp create/show/list/delete': refactor with containerapp decorator
+
+0.3.34
+++++++
+* 'az containerapp job execution show/list': improve table output format
+* 'az containerapp create/update': --yaml support properties for api-version 2023-04-01-preview (e.g. subPath, mountOptions)
+* 'az containerapp service': add support for creation and deletion of kafka
+* 'az containerapp create': --registry-server support registry with custom port
+* 'az containerapp create': fix containerapp create not waiting for ready environment
+* Add regex to fix validation for containerapp name
+* Add 'az containerapp ingress cors' for CORS support
+* 'az container app env create/update': support --enable-mtls parameter
+* 'az containerapp up': fix issue where --repo throws KeyError
+
+0.3.33
+++++++
+* 'az containerapp create': fix --registry-identity "system" with --revision-suffix
+* 'az containerapp up': fix --target-port value not being propagated when buildpack is used to build image from --source
+* Fix for 'az containerapp job create' with --yaml option to create a Container App job
+* Support 'az containerapp job secret' to manage secrets for Container App jobs
+* Support 'az containerapp job identity' to manage identity for Container App jobs
+* Fix for issue with --user-assigned identity for Container App jobs where identities were getting split incorrectly
+* Add new parameters `--mi-system-assigned` and `--mi-user-assigned` to replace the deprecated parameters `--system-assigned` and `--user-assigned` for `az containerapp job create` command
+
+0.3.32
+++++++
+* Fix for 'az containerapp job update' command when updating Container App job with a trigger configuration
+
+0.3.31
+++++++
+* Fix issue when using 'az containerapp up' to create a container app from a local source with a Dockerfile
+
+0.3.30
+++++++
+* Add 'az containerapp service' for binding a service to a container app
+* Add 'az containerapp patch' to enable the local source to cloud
+* Add 'az containerapp job' to manage Container Apps jobs
+* Split 'az containerapp env workload-profile set' into 'az containerapp env workload-profile add' and 'az containerapp env workload-profile update'
+* Add 'az containerapp env workload-profile add' to support creating a workload profile in an environment
+* Add 'az containerapp env workload-profile update' to support updating an existing workload profile in an environment
+* 'az containerapp auth update': fix excluded paths first and last character being cutoff
+* 'az containerapp update': remove the environmentId in the PATCH payload if it has not been changed
+* Upgrade api-version to 2023-04-01-preview
+
+0.3.29
+++++++
+* 'az containerapp create': support for assigning acrpull permissions to managed identity in cross-subscription; warn when ACR resourceNotFound, do not block the process
+* 'az containerapp hostname bind': fix bug where the prompt for validation method didn't take value in
+* Make --validation-method parameter case insensitive for 'az containerapp hostname bind' and 'az containerapp env certificate create'
+* 'az containerapp auth update': remove unsupported argument --enable-token-store
+* 'az containerapp update'/'az containerapp env update': fix --no-wait
+* 'az containerapp update': fix the --yaml update behavior to respect the empty array in patch-request
+* 'az containerapp create/update': add support for secret volumes yaml and --secret-volume-mount
+
+0.3.28
+++++++
+* 'az containerapp secret set': fix help typo
+* 'az containerapp secret set': add more format validation for key vault secrets
+* 'az containerapp up': fix --location comparison logic
+* 'az containerapp update': change --max-replicas limit
+* Add CLI support for containerapp ingress sticky-sessions'
+* Change quickstart image
+* 'az containerapp create': fix yaml not detecting workloadProfileName
+
+0.3.27
+++++++
+* 'az containerapp secret set': add support for secrets from Key Vault
+* 'az containerapp secret show': add support for secrets from Key Vault
+
+0.3.26
+++++++
+* 'az containerapp exec': fix bugs for consumption workload based environment
+* 'az containerapp env create': fix bug causing --enable-workload-profiles to require an argument
+
+0.3.25
+++++++
+* 'az containerapp create/update': --yaml support properties for api-version 2022-10-01 (e.g. exposedPort,clientCertificateMode,corsPolicy)
+* 'az containerapp env update': fix bugs in update environment.
+* Fix YAML create with user-assigned identity
+* Fix polling logic for long running operations.
+* 'az containerapp env create': add support for workload profiles
+* 'az containerapp env update': add support for workload profiles
+* 'az containerapp create': add support for workload profiles
+* 'az containerapp update': add support for workload profiles
+* Add 'az containerapp env workload-profile delete' to support deleting a workload profile from an environment
+* Add 'az containerapp env workload-profile list' to support listing all workload profiles in an environment
+* Add 'az containerapp env workload-profile list-supported' to support listing all available workload profile types in a region
+* Add 'az containerapp env workload-profile set' to support creating or updating an existing workload profile in an environment
+* Add 'az containerapp env workload-profile show' to support showing details of a single workload profile in an environment
+* Upgrade api-version from 2022-10-01 to 2022-11-01-preview
+* Add `az containerapp ingress update` Command to Update Container App Ingress
+
+0.3.24
+++++++
+* Decouple with the `network` module.
+
 0.3.23
 ++++++
 * BREAKING CHANGE: 'az containerapp env certificate list' returns [] if certificate not found, instead of raising an error.

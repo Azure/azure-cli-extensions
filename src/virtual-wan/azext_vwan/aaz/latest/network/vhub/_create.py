@@ -52,54 +52,87 @@ class Create(AAZCommand):
             options=["-n", "--name"],
             help="Name of the virtual hub.",
             required=True,
-            id_part="name",
         )
-        _args_schema.location = AAZResourceLocationArg(
-            help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
         _args_schema.address_prefix = AAZStrArg(
             options=["--address-prefix"],
+            arg_group="Properties",
             help="CIDR address prefix for the virtual hub.",
+        )
+        _args_schema.allow_b2b_traffic = AAZBoolArg(
+            options=["--allow-b2b-traffic"],
+            arg_group="Properties",
+            help="Flag to control branch-to-branch traffic for VirtualRouter hub.",
         )
         _args_schema.hub_routing_preference = AAZStrArg(
             options=["--hub-routing-preference"],
+            arg_group="Properties",
             help="The hub routing preference gateway types.",
             enum={"ASPath": "ASPath", "ExpressRoute": "ExpressRoute", "VpnGateway": "VpnGateway"},
         )
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
+            arg_group="Properties",
             help="The sku of the VirtualHub. Allowed values: Basic, Standard.",
         )
         _args_schema.asn = AAZIntArg(
             options=["--asn"],
+            arg_group="Properties",
             help="VirtualRouter ASN.",
             fmt=AAZIntArgFormat(
                 maximum=4294967295,
                 minimum=0,
             ),
         )
-        _args_schema.vwan = AAZResourceIdArg(
-            options=["--vwan"],
-            help="Name or ID of the virtual WAN.",
-            fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualWans/{}",
+        _args_schema.auto_scale_config = AAZObjectArg(
+            options=["--auto-scale-config"],
+            arg_group="Properties",
+            help="The VirtualHub Router autoscale configuration.",
+        )
+
+        auto_scale_config = cls._args_schema.auto_scale_config
+        auto_scale_config.min_capacity = AAZIntArg(
+            options=["min-capacity"],
+            help="The minimum number of scale units for VirtualHub Router.",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+
+        # define Arg Group "VirtualHubParameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="VirtualHubParameters",
+            help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
             ),
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
+            arg_group="VirtualHubParameters",
             help="Space-separated tags: key[=value] [key[=value] ...].",
         )
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
 
-        # define Arg Group "Properties"
+        # define Arg Group "VirtualWan"
 
-        # define Arg Group "VirtualHubParameters"
+        _args_schema = cls._args_schema
+        _args_schema.vwan = AAZResourceIdArg(
+            options=["--vwan"],
+            arg_group="VirtualWan",
+            help="Name or ID of the virtual WAN.",
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualWans/{}",
+            ),
+        )
         return cls._args_schema
 
     _args_sub_resource_create = None
@@ -125,11 +158,11 @@ class Create(AAZCommand):
         yield self.VirtualHubsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -233,10 +266,16 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("addressPrefix", AAZStrType, ".address_prefix")
+                properties.set_prop("allowBranchToBranchTraffic", AAZBoolType, ".allow_b2b_traffic")
                 properties.set_prop("hubRoutingPreference", AAZStrType, ".hub_routing_preference")
                 properties.set_prop("sku", AAZStrType, ".sku")
                 properties.set_prop("virtualRouterAsn", AAZIntType, ".asn")
+                properties.set_prop("virtualRouterAutoScaleConfiguration", AAZObjectType, ".auto_scale_config")
                 properties.set_prop("virtualWan", AAZObjectType)
+
+            virtual_router_auto_scale_configuration = _builder.get(".properties.virtualRouterAutoScaleConfiguration")
+            if virtual_router_auto_scale_configuration is not None:
+                virtual_router_auto_scale_configuration.set_prop("minCapacity", AAZIntType, ".min_capacity")
 
             virtual_wan = _builder.get(".properties.virtualWan")
             if virtual_wan is not None:
@@ -297,7 +336,7 @@ class Create(AAZCommand):
             properties.azure_firewall = AAZObjectType(
                 serialized_name="azureFirewall",
             )
-            _build_schema_sub_resource_read(properties.azure_firewall)
+            _CreateHelper._build_schema_sub_resource_read(properties.azure_firewall)
             properties.bgp_connections = AAZListType(
                 serialized_name="bgpConnections",
                 flags={"read_only": True},
@@ -305,7 +344,7 @@ class Create(AAZCommand):
             properties.express_route_gateway = AAZObjectType(
                 serialized_name="expressRouteGateway",
             )
-            _build_schema_sub_resource_read(properties.express_route_gateway)
+            _CreateHelper._build_schema_sub_resource_read(properties.express_route_gateway)
             properties.hub_routing_preference = AAZStrType(
                 serialized_name="hubRoutingPreference",
             )
@@ -316,7 +355,7 @@ class Create(AAZCommand):
             properties.p2_s_vpn_gateway = AAZObjectType(
                 serialized_name="p2SVpnGateway",
             )
-            _build_schema_sub_resource_read(properties.p2_s_vpn_gateway)
+            _CreateHelper._build_schema_sub_resource_read(properties.p2_s_vpn_gateway)
             properties.preferred_routing_gateway = AAZStrType(
                 serialized_name="preferredRoutingGateway",
             )
@@ -338,7 +377,7 @@ class Create(AAZCommand):
             properties.security_partner_provider = AAZObjectType(
                 serialized_name="securityPartnerProvider",
             )
-            _build_schema_sub_resource_read(properties.security_partner_provider)
+            _CreateHelper._build_schema_sub_resource_read(properties.security_partner_provider)
             properties.security_provider_name = AAZStrType(
                 serialized_name="securityProviderName",
             )
@@ -358,22 +397,23 @@ class Create(AAZCommand):
             properties.virtual_wan = AAZObjectType(
                 serialized_name="virtualWan",
             )
+            _CreateHelper._build_schema_sub_resource_read(properties.virtual_wan)
             properties.vpn_gateway = AAZObjectType(
                 serialized_name="vpnGateway",
             )
-            _build_schema_sub_resource_read(properties.vpn_gateway)
+            _CreateHelper._build_schema_sub_resource_read(properties.vpn_gateway)
 
             bgp_connections = cls._schema_on_200_201.properties.bgp_connections
             bgp_connections.Element = AAZObjectType()
-            _build_schema_sub_resource_read(bgp_connections.Element)
+            _CreateHelper._build_schema_sub_resource_read(bgp_connections.Element)
 
             ip_configurations = cls._schema_on_200_201.properties.ip_configurations
             ip_configurations.Element = AAZObjectType()
-            _build_schema_sub_resource_read(ip_configurations.Element)
+            _CreateHelper._build_schema_sub_resource_read(ip_configurations.Element)
 
             route_maps = cls._schema_on_200_201.properties.route_maps
             route_maps.Element = AAZObjectType()
-            _build_schema_sub_resource_read(route_maps.Element)
+            _CreateHelper._build_schema_sub_resource_read(route_maps.Element)
 
             route_table = cls._schema_on_200_201.properties.route_table
             route_table.routes = AAZListType()
@@ -447,36 +487,35 @@ class Create(AAZCommand):
             virtual_router_ips = cls._schema_on_200_201.properties.virtual_router_ips
             virtual_router_ips.Element = AAZStrType()
 
-            virtual_wan = cls._schema_on_200_201.properties.virtual_wan
-            virtual_wan.id = AAZStrType()
-
             tags = cls._schema_on_200_201.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
 
 
-def _build_schema_sub_resource_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("id", AAZStrType, ".id")
+class _CreateHelper:
+    """Helper class for Create"""
 
+    @classmethod
+    def _build_schema_sub_resource_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("id", AAZStrType, ".id")
 
-_schema_sub_resource_read = None
+    _schema_sub_resource_read = None
 
+    @classmethod
+    def _build_schema_sub_resource_read(cls, _schema):
+        if cls._schema_sub_resource_read is not None:
+            _schema.id = cls._schema_sub_resource_read.id
+            return
 
-def _build_schema_sub_resource_read(_schema):
-    global _schema_sub_resource_read
-    if _schema_sub_resource_read is not None:
-        _schema.id = _schema_sub_resource_read.id
-        return
+        cls._schema_sub_resource_read = _schema_sub_resource_read = AAZObjectType()
 
-    _schema_sub_resource_read = AAZObjectType()
+        sub_resource_read = _schema_sub_resource_read
+        sub_resource_read.id = AAZStrType()
 
-    sub_resource_read = _schema_sub_resource_read
-    sub_resource_read.id = AAZStrType()
-
-    _schema.id = _schema_sub_resource_read.id
+        _schema.id = cls._schema_sub_resource_read.id
 
 
 __all__ = ["Create"]

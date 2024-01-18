@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "devcenter admin devbox-definition",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage dev box definition with devcenter
+    """Manage dev box definitions.
     """
     pass
 

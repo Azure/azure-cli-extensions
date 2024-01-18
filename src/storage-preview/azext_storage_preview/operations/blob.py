@@ -22,25 +22,6 @@ def show_directory(client, container_name, directory_name, snapshot=None, lease_
     return directory
 
 
-def show_blob(cmd, client, container_name, blob_name, snapshot=None, lease_id=None,
-              if_modified_since=None, if_unmodified_since=None, if_match=None,
-              if_none_match=None, timeout=None):
-    blob = client.get_blob_properties(
-        container_name, blob_name, snapshot=snapshot, lease_id=lease_id,
-        if_modified_since=if_modified_since, if_unmodified_since=if_unmodified_since, if_match=if_match,
-        if_none_match=if_none_match, timeout=timeout)
-
-    page_ranges = None
-    if blob.properties.blob_type == cmd.get_models('blob.models#_BlobTypes').PageBlob:
-        page_ranges = client.get_page_ranges(
-            container_name, blob_name, snapshot=snapshot, lease_id=lease_id, if_modified_since=if_modified_since,
-            if_unmodified_since=if_unmodified_since, if_match=if_match, if_none_match=if_none_match, timeout=timeout)
-
-    blob.properties.page_ranges = page_ranges
-
-    return blob
-
-
 # pylint: disable=unused-variable,logging-format-interpolation
 def delete_directory(client, container_name, directory_name):
 

@@ -31,7 +31,7 @@ class CommunicationChatScenarios(ScenarioTest):
             self.kwargs.update({ 'connection_string':  connection_str})
         else:
             os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = connection_str
-        res = self.cmd('az communication identity token issue --scope chat').get_output_in_json()
+        res = self.cmd('az communication user-identity token issue --scope chat').get_output_in_json()
         return res['user_id']
 
 
@@ -42,7 +42,7 @@ class CommunicationChatScenarios(ScenarioTest):
         if self.is_live or self.in_recording:
             os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
             self.kwargs.update({ 'connection_string':  communication_resource_info[1] })
-            res = self.cmd('az communication identity token issue --scope chat').get_output_in_json()
+            res = self.cmd('az communication user-identity token issue --scope chat').get_output_in_json()
             return res['token']
         else:
             # header is encoded form of 

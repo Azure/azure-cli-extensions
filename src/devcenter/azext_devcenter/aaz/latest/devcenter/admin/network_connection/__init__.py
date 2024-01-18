@@ -12,9 +12,10 @@ from .__cmd_group import *
 from ._create import *
 from ._delete import *
 from ._list import *
-from ._list_health_detail import *
+from ._list_health_check import *
+from ._list_outbound_network_dependencies_endpoint import *
 from ._run_health_check import *
 from ._show import *
-from ._show_health_detail import *
+from ._show_health_check import *
 from ._update import *
 from ._wait import *

@@ -21,11 +21,24 @@ class ContainerappCommandsLoader(AzCommandsLoader):
 
     def load_command_table(self, args):
         from azext_containerapp.commands import load_command_table
+        from azure.cli.core.aaz import load_aaz_command_table
+        try:
+            from . import aaz
+        except ImportError:
+            aaz = None
+        if aaz:
+            load_aaz_command_table(
+                loader=self,
+                aaz_pkg_name=aaz.__name__,
+                args=args
+            )
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
         from azext_containerapp._params import load_arguments
+        from azure.cli.command_modules.containerapp._params import load_arguments as load_arguments_from_core
+        load_arguments_from_core(self, command)
         load_arguments(self, command)
 
 

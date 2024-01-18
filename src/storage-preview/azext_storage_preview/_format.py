@@ -127,7 +127,7 @@ def transform_boolean_for_table(result):
     return result
 
 
-def transform_file_directory_result(cli_ctx):
+def transform_file_directory_result(result):
     """
     Transform a the result returned from file and directory listing API.
 
@@ -135,20 +135,18 @@ def transform_file_directory_result(cli_ctx):
     in order to align the object's properties so as to offer a better view to the file and dir
     list.
     """
-    def transformer(result):
-        t_file, t_dir = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'File', 'Directory', mod='file.models')
-        return_list = []
-        for each in result:
-            if isinstance(each, t_file):
-                delattr(each, 'content')
-                setattr(each, 'type', 'file')
-            elif isinstance(each, t_dir):
-                setattr(each, 'type', 'dir')
+    from ._transformers import transform_share_directory_json_output, transform_share_file_json_output
+    return_list = []
+    for each in result:
+        if getattr(each, 'is_directory', None):
+            setattr(each, 'type', 'dir')
+            each = transform_share_directory_json_output(each)
+        else:
+            setattr(each, 'type', 'file')
+            each = transform_share_file_json_output(each)
+        return_list.append(each)
 
-            return_list.append(each)
-
-        return return_list
-    return transformer
+    return return_list
 
 
 def transform_immutability_policy(result):
@@ -157,3 +155,7 @@ def transform_immutability_policy(result):
     if result.immutability_period_since_creation_in_days:
         return result
     return None
+
+
+def transform_metadata_show(result):
+    return result.metadata

@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "devcenter admin sku",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage sku with devcenter
+    """Manage skus.
     """
     pass
 

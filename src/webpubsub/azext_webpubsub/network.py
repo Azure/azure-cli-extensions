@@ -8,9 +8,13 @@ from .vendored_sdks.azure_mgmt_webpubsub.models import (
     WebPubSubResource
 )
 
+from .vendored_sdks.azure_mgmt_webpubsub.operations import (
+    WebPubSubOperations
+)
+
 
 # pylint: disable=dangerous-default-value
-def update_network_rules(client, webpubsub_name, resource_group_name, public_network, connection_name=[], allow=[], deny=[]):
+def update_network_rules(client: WebPubSubOperations, webpubsub_name, resource_group_name, public_network, connection_name=[], allow=[], deny=[]):
     resource = client.get(resource_group_name, webpubsub_name)
     network_acl = resource.network_ac_ls
     if public_network:
@@ -23,7 +27,7 @@ def update_network_rules(client, webpubsub_name, resource_group_name, public_net
                 x.allow = allow
                 x.deny = deny
 
-    return client.begin_update(resource_group_name, webpubsub_name, WebPubSubResource(network_ac_ls=network_acl))
+    return client.begin_update(resource_group_name, webpubsub_name, WebPubSubResource(location=resource.location, network_ac_ls=network_acl))
 
 
 def list_network_rules(client, webpubsub_name, resource_group_name):

@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devbox-definition update",
-    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a Dev Box definition.
+    """Update a dev box definition.
 
     :example: Update
         az devcenter admin devbox-definition update --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/devcenters/Contoso/galleries/contosogallery/images/exampleImage/version/2.0.0" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -48,20 +47,29 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dev_box_definition_name = AAZStrArg(
-            options=["-n", "--name", "--dev-box-definition-name"],
-            help="The name of the Dev Box definition.",
+        _args_schema.devbox_definition_name = AAZStrArg(
+            options=["-n", "--name", "--devbox-definition-name"],
+            help="The name of the dev box definition.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
+                max_length=26,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -85,8 +93,9 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.hibernate_support = AAZStrArg(
             options=["--hibernate-support"],
+            is_preview=True,
             arg_group="Properties",
-            help="Indicates whether Dev Boxes created with this definition are capable of hibernation. Not all images are capable of supporting hibernation. To find out more see https://aka.ms/devbox/hibernate",
+            help="Indicates whether dev boxes created with this definition are capable of hibernation. Not all images are capable of supporting hibernation. To find out more see https://aka.ms/devbox/hibernate",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
@@ -98,33 +107,19 @@ class Update(AAZCommand):
         _args_schema.os_storage_type = AAZStrArg(
             options=["--os-storage-type"],
             arg_group="Properties",
-            help="The storage type used for the Operating System disk of Dev Boxes created using this definition.",
+            help="The storage type used for the operating system disk of dev boxes created using this definition.",
+            nullable=True,
         )
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
             arg_group="Properties",
-            help="The SKU for Dev Boxes created using this definition.",
+            help="The SKU for dev boxes created using this definition.",
         )
 
         image_reference = cls._args_schema.image_reference
         image_reference.id = AAZStrArg(
             options=["id"],
             help="Image ID, or Image version ID. When Image ID is provided, its latest version will be used.",
-            nullable=True,
-        )
-        image_reference.offer = AAZStrArg(
-            options=["offer"],
-            help="The image offer.",
-            nullable=True,
-        )
-        image_reference.publisher = AAZStrArg(
-            options=["publisher"],
-            help="The image publisher.",
-            nullable=True,
-        )
-        image_reference.sku = AAZStrArg(
-            options=["sku"],
-            help="The image sku.",
             nullable=True,
         )
 
@@ -216,7 +211,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devBoxDefinitionName", self.ctx.args.dev_box_definition_name,
+                    "devBoxDefinitionName", self.ctx.args.devbox_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -238,7 +233,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -319,7 +314,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devBoxDefinitionName", self.ctx.args.dev_box_definition_name,
+                    "devBoxDefinitionName", self.ctx.args.devbox_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -341,7 +336,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -406,15 +401,12 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("hibernateSupport", AAZStrType, ".hibernate_support")
                 properties.set_prop("imageReference", AAZObjectType, ".image_reference", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("osStorageType", AAZStrType, ".os_storage_type", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("osStorageType", AAZStrType, ".os_storage_type")
                 properties.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
 
             image_reference = _builder.get(".properties.imageReference")
             if image_reference is not None:
                 image_reference.set_prop("id", AAZStrType, ".id")
-                image_reference.set_prop("offer", AAZStrType, ".offer")
-                image_reference.set_prop("publisher", AAZStrType, ".publisher")
-                image_reference.set_prop("sku", AAZStrType, ".sku")
 
             sku = _builder.get(".properties.sku")
             if sku is not None:
@@ -501,7 +493,6 @@ class _UpdateHelper:
         )
         properties.os_storage_type = AAZStrType(
             serialized_name="osStorageType",
-            flags={"required": True},
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
@@ -509,6 +500,9 @@ class _UpdateHelper:
         )
         properties.sku = AAZObjectType(
             flags={"required": True},
+        )
+        properties.validation_status = AAZStrType(
+            serialized_name="validationStatus",
         )
 
         image_validation_error_details = _schema_dev_box_definition_read.properties.image_validation_error_details
@@ -562,9 +556,6 @@ class _UpdateHelper:
         if cls._schema_image_reference_read is not None:
             _schema.exact_version = cls._schema_image_reference_read.exact_version
             _schema.id = cls._schema_image_reference_read.id
-            _schema.offer = cls._schema_image_reference_read.offer
-            _schema.publisher = cls._schema_image_reference_read.publisher
-            _schema.sku = cls._schema_image_reference_read.sku
             return
 
         cls._schema_image_reference_read = _schema_image_reference_read = AAZObjectType()
@@ -575,15 +566,9 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         image_reference_read.id = AAZStrType()
-        image_reference_read.offer = AAZStrType()
-        image_reference_read.publisher = AAZStrType()
-        image_reference_read.sku = AAZStrType()
 
         _schema.exact_version = cls._schema_image_reference_read.exact_version
         _schema.id = cls._schema_image_reference_read.id
-        _schema.offer = cls._schema_image_reference_read.offer
-        _schema.publisher = cls._schema_image_reference_read.publisher
-        _schema.sku = cls._schema_image_reference_read.sku
 
 
 __all__ = ["Update"]

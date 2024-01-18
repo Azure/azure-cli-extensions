@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "devcenter admin image",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage image with devcenter
+    """Manage images.
     """
     pass
 

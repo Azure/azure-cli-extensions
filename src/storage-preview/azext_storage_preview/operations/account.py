@@ -5,8 +5,6 @@
 
 """Custom operations for storage account commands"""
 
-import os
-from azure.cli.core.util import get_file_json, shell_safe_json_parse
 from knack.util import CLIError
 from knack.log import get_logger
 from .._client_factory import storage_client_factory
@@ -19,6 +17,7 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
                            tags=None, custom_domain=None, encryption_services=None, encryption_key_source=None,
                            encryption_key_name=None, encryption_key_vault=None, encryption_key_version=None,
                            access_tier=None, https_only=None, enable_sftp=None, enable_local_user=None,
+                           enable_files_aadkerb=None,
                            enable_files_aadds=None, bypass=None, default_action=None, assign_identity=False,
                            enable_large_file_share=None, enable_files_adds=None, domain_name=None,
                            net_bios_domain_name=None, forest_name=None, domain_guid=None, domain_sid=None,
@@ -94,6 +93,20 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
     if enable_files_aadds is not None:
         params.azure_files_identity_based_authentication = AzureFilesIdentityBasedAuthentication(
             directory_service_options='AADDS' if enable_files_aadds else 'None')
+    if enable_files_aadkerb is not None:
+        if enable_files_aadkerb:
+            active_directory_properties = None
+            if domain_name or domain_guid:
+                ActiveDirectoryProperties = cmd.get_models('ActiveDirectoryProperties')
+                active_directory_properties = ActiveDirectoryProperties(domain_name=domain_name,
+                                                                        domain_guid=domain_guid)
+            params.azure_files_identity_based_authentication = AzureFilesIdentityBasedAuthentication(
+                directory_service_options='AADKERB',
+                active_directory_properties=active_directory_properties)
+        else:
+            params.azure_files_identity_based_authentication = AzureFilesIdentityBasedAuthentication(
+                directory_service_options='None')
+
     if enable_files_adds is not None:
         ActiveDirectoryProperties = cmd.get_models('ActiveDirectoryProperties')
         if enable_files_adds:  # enable AD
@@ -265,15 +278,6 @@ def show_storage_account_connection_string(cmd, resource_group_name, account_nam
     return {'connectionString': connection_string}
 
 
-def show_storage_account_usage(cmd, location):
-    scf = storage_client_factory(cmd.cli_ctx)
-    try:
-        client = scf.usages
-    except NotImplementedError:
-        client = scf.usage
-    return next((x for x in client.list_by_location(location) if x.name.value == 'StorageAccounts'), None)  # pylint: disable=no-member
-
-
 def get_storage_account_properties(cli_ctx, account_id):
     scf = storage_client_factory(cli_ctx)
     from msrestazure.tools import parse_resource_id
@@ -284,7 +288,7 @@ def get_storage_account_properties(cli_ctx, account_id):
 # pylint: disable=too-many-locals, too-many-statements, too-many-branches, too-many-boolean-expressions, line-too-long
 def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=None, use_subdomain=None,
                            encryption_services=None, encryption_key_source=None, encryption_key_version=None,
-                           encryption_key_name=None, encryption_key_vault=None,
+                           encryption_key_name=None, encryption_key_vault=None, enable_files_aadkerb=None,
                            access_tier=None, https_only=None, enable_sftp=None, enable_local_user=None,
                            enable_files_aadds=None, assign_identity=False,
                            bypass=None, default_action=None, enable_large_file_share=None, enable_files_adds=None,
@@ -387,6 +391,40 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
                 params.azure_files_identity_based_authentication = \
                     origin_storage_account.azure_files_identity_based_authentication
 
+    if enable_files_aadkerb is not None:
+        if enable_files_aadkerb:  # enable AADKERB
+            origin_storage_account = get_storage_account_properties(cmd.cli_ctx, instance.id)
+            if origin_storage_account.azure_files_identity_based_authentication and \
+                    origin_storage_account.azure_files_identity_based_authentication.directory_service_options \
+                    == 'AADDS':
+                raise CLIError("The Storage account already enabled AzureActiveDirectoryDomainServicesForFile, "
+                               "please disable it by running this cmdlets with \"--enable-files-aadds false\" "
+                               "before enable AzureActiveDirectoryKerberosForFile.")
+            if origin_storage_account.azure_files_identity_based_authentication and \
+                    origin_storage_account.azure_files_identity_based_authentication.directory_service_options == 'AD':
+                raise CLIError("The Storage account already enabled ActiveDirectoryDomainServicesForFile, "
+                               "please disable it by running this cmdlets with \"--enable-files-adds false\" "
+                               "before enable AzureActiveDirectoryKerberosForFile.")
+            active_directory_properties = None
+            if domain_name or domain_guid:
+                ActiveDirectoryProperties = cmd.get_models('ActiveDirectoryProperties')
+                active_directory_properties = ActiveDirectoryProperties(domain_name=domain_name,
+                                                                        domain_guid=domain_guid)
+            params.azure_files_identity_based_authentication = AzureFilesIdentityBasedAuthentication(
+                directory_service_options='AADKERB',
+                active_directory_properties=active_directory_properties)
+
+        else:  # disable AADKERB
+            # Only disable AADKERB and keep others unchanged
+            origin_storage_account = get_storage_account_properties(cmd.cli_ctx, instance.id)
+            if not origin_storage_account.azure_files_identity_based_authentication or \
+                    origin_storage_account.azure_files_identity_based_authentication.directory_service_options == 'AADKERB':
+                params.azure_files_identity_based_authentication = AzureFilesIdentityBasedAuthentication(
+                    directory_service_options='None')
+            else:
+                params.azure_files_identity_based_authentication = \
+                    origin_storage_account.azure_files_identity_based_authentication
+
     if enable_files_adds is not None:
         ActiveDirectoryProperties = cmd.get_models('ActiveDirectoryProperties')
         if enable_files_adds:  # enable AD
@@ -401,6 +439,11 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
                     == 'AADDS':
                 raise CLIError("The Storage account already enabled AzureActiveDirectoryDomainServicesForFile, "
                                "please disable it by running this cmdlets with \"--enable-files-aadds false\" "
+                               "before enable ActiveDirectoryDomainServicesForFile.")
+            if origin_storage_account.azure_files_identity_based_authentication and \
+                    origin_storage_account.azure_files_identity_based_authentication.directory_service_options == 'AADKERB':
+                raise CLIError("The Storage account already enabled AzureActiveDirectoryKerberosForFile, "
+                               "please disable it by running this cmdlets with \"--enable-files-aadkerb false\" "
                                "before enable ActiveDirectoryDomainServicesForFile.")
             active_directory_properties = ActiveDirectoryProperties(domain_name=domain_name,
                                                                     net_bios_domain_name=net_bios_domain_name,
@@ -511,216 +554,3 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
         params.is_local_user_enabled = enable_local_user
 
     return params
-
-
-def create_blob_inventory_policy(cmd, client, resource_group_name, account_name, policy):
-    # BlobInventoryPolicy = cmd.get_models('BlobInventoryPolicy')
-    # TODO: add again with rule management if bandwidth is allowed
-    # BlobInventoryPolicy, BlobInventoryPolicySchema, BlobInventoryPolicyRule, BlobInventoryPolicyDefinition, \
-    # BlobInventoryPolicyFilter = cmd.get_models('BlobInventoryPolicy', 'BlobInventoryPolicySchema',
-    #                                            'BlobInventoryPolicyRule', 'BlobInventoryPolicyDefinition',
-    #                                            'BlobInventoryPolicyFilter')
-    # filters = BlobInventoryPolicyFilter(prefix_match=prefix_match, blob_types=blob_types,
-    #                                     include_blob_versions=include_blob_versions,
-    #                                     include_snapshots=include_snapshots)
-    # rule = BlobInventoryPolicyRule(enabled=True, name=rule_name,
-    #                                definition=BlobInventoryPolicyDefinition(filters=filters))
-    # policy = BlobInventoryPolicySchema(enabled=enabled, destination=destination,
-    #                                    type=type, rules=[rule])
-    # blob_inventory_policy = BlobInventoryPolicy(policy=policy)
-    #
-    # return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-    #                                blob_inventory_policy_name=blob_inventory_policy_name,
-    #                                properties=blob_inventory_policy,
-    #                                **kwargs)
-    if os.path.exists(policy):
-        policy = get_file_json(policy)
-    else:
-        policy = shell_safe_json_parse(policy)
-
-    BlobInventoryPolicy, InventoryRuleType, BlobInventoryPolicyName = \
-        cmd.get_models('BlobInventoryPolicy', 'InventoryRuleType', 'BlobInventoryPolicyName')
-    properties = BlobInventoryPolicy()
-    if 'type' not in policy:
-        policy['type'] = InventoryRuleType.INVENTORY
-    properties.policy = policy
-
-    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-                                   blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT, properties=properties)
-
-
-def delete_blob_inventory_policy(cmd, client, resource_group_name, account_name):
-    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
-    return client.delete(resource_group_name=resource_group_name, account_name=account_name,
-                         blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT)
-
-
-def get_blob_inventory_policy(cmd, client, resource_group_name, account_name):
-    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
-    return client.get(resource_group_name=resource_group_name, account_name=account_name,
-                      blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT)
-
-
-def update_blob_inventory_policy(cmd, client, resource_group_name, account_name, parameters=None):
-    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
-    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-                                   blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT, properties=parameters)
-
-
-def list_network_rules(client, resource_group_name, account_name):
-    sa = client.get_properties(resource_group_name, account_name)
-    rules = sa.network_rule_set
-    delattr(rules, 'bypass')
-    delattr(rules, 'default_action')
-    return rules
-
-
-def add_network_rule(cmd, client, resource_group_name, account_name, action='Allow', subnet=None,
-                     vnet_name=None, ip_address=None, tenant_id=None, resource_id=None):  # pylint: disable=unused-argument
-    sa = client.get_properties(resource_group_name, account_name)
-    rules = sa.network_rule_set
-    if subnet:
-        from msrestazure.tools import is_valid_resource_id
-        if not is_valid_resource_id(subnet):
-            raise CLIError("Expected fully qualified resource ID: got '{}'".format(subnet))
-        VirtualNetworkRule = cmd.get_models('VirtualNetworkRule')
-        if not rules.virtual_network_rules:
-            rules.virtual_network_rules = []
-        rules.virtual_network_rules = [r for r in rules.virtual_network_rules
-                                       if r.virtual_network_resource_id.lower() != subnet.lower()]
-        rules.virtual_network_rules.append(VirtualNetworkRule(virtual_network_resource_id=subnet, action=action))
-    if ip_address:
-        IpRule = cmd.get_models('IPRule')
-        if not rules.ip_rules:
-            rules.ip_rules = []
-        rules.ip_rules = [r for r in rules.ip_rules if r.ip_address_or_range != ip_address]
-        rules.ip_rules.append(IpRule(ip_address_or_range=ip_address, action=action))
-    if resource_id:
-        ResourceAccessRule = cmd.get_models('ResourceAccessRule')
-        if not rules.resource_access_rules:
-            rules.resource_access_rules = []
-        rules.resource_access_rules = [r for r in rules.resource_access_rules if r.resource_id !=
-                                       resource_id or r.tenant_id != tenant_id]
-        rules.resource_access_rules.append(ResourceAccessRule(tenant_id=tenant_id, resource_id=resource_id))
-
-    StorageAccountUpdateParameters = cmd.get_models('StorageAccountUpdateParameters')
-    params = StorageAccountUpdateParameters(network_rule_set=rules)
-    return client.update(resource_group_name, account_name, params)
-
-
-def remove_network_rule(cmd, client, resource_group_name, account_name, ip_address=None, subnet=None,
-                        vnet_name=None, tenant_id=None, resource_id=None):  # pylint: disable=unused-argument
-    sa = client.get_properties(resource_group_name, account_name)
-    rules = sa.network_rule_set
-    if subnet:
-        rules.virtual_network_rules = [x for x in rules.virtual_network_rules
-                                       if not x.virtual_network_resource_id.endswith(subnet)]
-    if ip_address:
-        rules.ip_rules = [x for x in rules.ip_rules if x.ip_address_or_range != ip_address]
-
-    if resource_id:
-        rules.resource_access_rules = [x for x in rules.resource_access_rules if
-                                       not (x.tenant_id == tenant_id and x.resource_id == resource_id)]
-
-    StorageAccountUpdateParameters = cmd.get_models('StorageAccountUpdateParameters')
-    params = StorageAccountUpdateParameters(network_rule_set=rules)
-    return client.update(resource_group_name, account_name, params)
-
-
-def create_management_policies(client, resource_group_name, account_name, policy=None):
-    if policy:
-        if os.path.exists(policy):
-            policy = get_file_json(policy)
-        else:
-            policy = shell_safe_json_parse(policy)
-    return client.create_or_update_management_policies(resource_group_name, account_name, policy=policy)
-
-
-def update_management_policies(client, resource_group_name, account_name, parameters=None):
-    if parameters:
-        parameters = parameters.policy
-    return client.create_or_update_management_policies(resource_group_name, account_name, policy=parameters)
-
-
-def update_file_service_properties(cmd, instance, enable_delete_retention=None,
-                                   delete_retention_days=None, enable_smb_multichannel=None,
-                                   versions=None, authentication_methods=None, kerberos_ticket_encryption=None,
-                                   channel_encryption=None):
-    from azure.cli.core.azclierror import ValidationError
-    params = {}
-    # set delete retention policy according input
-    if enable_delete_retention is not None:
-        if enable_delete_retention is False:
-            delete_retention_days = None
-        instance.share_delete_retention_policy = cmd.get_models('DeleteRetentionPolicy')(
-            enabled=enable_delete_retention, days=delete_retention_days)
-
-    # If already enabled, only update days
-    if enable_delete_retention is None and delete_retention_days is not None:
-        if instance.share_delete_retention_policy is not None and instance.share_delete_retention_policy.enabled:
-            instance.share_delete_retention_policy.days = delete_retention_days
-        else:
-            raise ValidationError(
-                "Delete Retention Policy hasn't been enabled, and you cannot set delete retention days. "
-                "Please set --enable-delete-retention as true to enable Delete Retention Policy.")
-
-    # Fix the issue in server when delete_retention_policy.enabled=False, the returned days is 0
-    # TODO: remove it when server side return null not 0 for days
-    if instance.share_delete_retention_policy is not None and instance.share_delete_retention_policy.enabled is False:
-        instance.share_delete_retention_policy.days = None
-    if instance.share_delete_retention_policy:
-        params['share_delete_retention_policy'] = instance.share_delete_retention_policy
-
-    # set protocol settings
-    if any([enable_smb_multichannel is not None, versions, authentication_methods, kerberos_ticket_encryption, channel_encryption]):
-        params['protocol_settings'] = instance.protocol_settings
-    if enable_smb_multichannel is not None:
-        params['protocol_settings'].smb.multichannel = cmd.get_models('Multichannel')(enabled=enable_smb_multichannel)
-    if versions is not None:
-        params['protocol_settings'].smb.versions = versions
-    if authentication_methods is not None:
-        params['protocol_settings'].smb.authentication_methods = authentication_methods
-    if kerberos_ticket_encryption is not None:
-        params['protocol_settings'].smb.kerberos_ticket_encryption = kerberos_ticket_encryption
-    if channel_encryption is not None:
-        params['protocol_settings'].smb.channel_encryption = channel_encryption
-
-    return params
-
-
-def _generate_local_user(local_user, permission_scope=None, ssh_authorized_key=None,
-                         home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None):
-    if permission_scope is not None:
-        local_user.permission_scopes = permission_scope
-    if ssh_authorized_key is not None:
-        local_user.ssh_authorized_keys = ssh_authorized_key
-    if home_directory is not None:
-        local_user.home_directory = home_directory
-    if has_shared_key is not None:
-        local_user.has_shared_key = has_shared_key
-    if has_ssh_key is not None:
-        local_user.has_ssh_key = has_ssh_key
-    if has_ssh_password is not None:
-        local_user.has_ssh_password = has_ssh_password
-
-
-def create_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None, home_directory=None,
-                      has_shared_key=None, has_ssh_key=None, has_ssh_password=None, ssh_authorized_key=None, **kwargs):
-    LocalUser = cmd.get_models('LocalUser')
-    local_user = LocalUser()
-
-    _generate_local_user(local_user, permission_scope, ssh_authorized_key,
-                         home_directory, has_shared_key, has_ssh_key, has_ssh_password)
-    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-                                   username=username, properties=local_user)
-
-
-def update_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None,
-                      home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None,
-                      ssh_authorized_key=None, **kwargs):
-    local_user = client.get(resource_group_name, account_name, username)
-
-    _generate_local_user(local_user, permission_scope, ssh_authorized_key,
-                         home_directory, has_shared_key, has_ssh_key, has_ssh_password)
-    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-                                   username=username, properties=local_user)

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "devcenter admin network-connection update",
 )
 class Update(AAZCommand):
-    """Update updates a Network Connection
+    """Update a network connection.
 
     :example: Update
-        az devcenter admin network-connection update --domain-password "New Password value for user" --name "{networkConnectionName}" --resource-group "rg1"
+        az devcenter admin network-connection update --domain-password "New Password value for user" --name "networkConnection" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -50,6 +50,11 @@ class Update(AAZCommand):
             help="Name of the Network Connection that can be applied to a Pool.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -79,6 +84,9 @@ class Update(AAZCommand):
             options=["--domain-password"],
             arg_group="Properties",
             help="The password for the account used to join domain",
+            blank=AAZPromptInput(
+                msg="Domain password:",
+            ),
         )
         _args_schema.domain_username = AAZStrArg(
             options=["--domain-username"],
@@ -178,7 +186,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -209,7 +217,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("domainName", AAZStrType, ".domain_name")
-                properties.set_prop("domainPassword", AAZStrType, ".domain_password")
+                properties.set_prop("domainPassword", AAZStrType, ".domain_password", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("domainUsername", AAZStrType, ".domain_username")
                 properties.set_prop("organizationUnit", AAZStrType, ".organization_unit")
                 properties.set_prop("subnetId", AAZStrType, ".subnet_id")
@@ -269,6 +277,7 @@ class Update(AAZCommand):
             )
             properties.domain_password = AAZStrType(
                 serialized_name="domainPassword",
+                flags={"secret": True},
             )
             properties.domain_username = AAZStrType(
                 serialized_name="domainUsername",

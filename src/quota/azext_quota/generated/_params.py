@@ -10,48 +10,8 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from azure.cli.core.commands.validators import validate_file_or_dict
-from azext_quota.action import AddLimitobject
-
 
 def load_arguments(self, _):
-
-    with self.argument_context('quota usage list') as c:
-        c.argument('scope', type=str, help='The target Azure resource URI')
-
-    with self.argument_context('quota usage show') as c:
-        c.argument('resource_name', type=str, help='The resource name for a given resource provider')
-        c.argument('scope', type=str, help='The target Azure resource URI')
-
-    with self.argument_context('quota list') as c:
-        c.argument('scope', type=str, help='The target Azure resource URI')
-
-    with self.argument_context('quota show') as c:
-        c.argument('resource_name', type=str, help='The resource name for a given resource provider.')
-        c.argument('scope', type=str, help='The target Azure resource URI.')
-
-    with self.argument_context('quota create') as c:
-        c.argument('resource_name', type=str, help='The resource name for a given resource provider.')
-        c.argument('scope', type=str, help='The target Azure resource URI.')
-        c.argument('limit_object', action=AddLimitobject, nargs='+', help='The resource quota limit value.',
-                   arg_group='Limit')
-        c.argument('name', type=str, help=' The resource type name.')
-        c.argument('resource_type', type=str, help='The resource type name.')
-        c.argument('properties', type=validate_file_or_dict, help='The additional properties for the specific resource provider.')
-
-    with self.argument_context('quota update') as c:
-        c.argument('resource_name', type=str, help='The resource name for a given resource provider.')
-        c.argument('scope', type=str, help='The target Azure resource URI.')
-        c.argument('limit_object', action=AddLimitobject, nargs='+', help='The resource quota limit value.',
-                   arg_group='Limit')
-        c.argument('name', type=str, help='The resource type name.')
-        c.argument('resource_type', type=str, help='Resource type name.')
-        c.argument('properties', type=validate_file_or_dict, help='The additional properties for the specific resource provider.')
-        c.ignore('create_quota_request')
-
-    with self.argument_context('quota wait') as c:
-        c.argument('resource_name', type=str, help='The resource name for a given resource provider.')
-        c.argument('scope', type=str, help='The target Azure resource URI.')
 
     with self.argument_context('quota request status list') as c:
         c.argument('scope', type=str, help='The target Azure resource URI.')

@@ -13,7 +13,7 @@ from azext_containerapp.tests.latest.common import (
     clean_up_test_file,
     TEST_DIR, TEST_LOCATION)
 
-from .utils import create_containerapp_env
+from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerappComposeBaseScenarioTest(ContainerappComposePreviewScenarioTest):
@@ -22,22 +22,19 @@ class ContainerappComposeBaseScenarioTest(ContainerappComposePreviewScenarioTest
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_basic_no_existing_resources(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        compose_text = """
+        compose_text = f"""
 services:
   foo:
     image: smurawski/printenv:latest
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
         write_test_file(compose_file_name, compose_text)
-        env_name = self.create_random_name(prefix='containerapp-compose', length=24)
-      
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+
         self.kwargs.update({
-            'environment': env_name,
+            'environment': env_id,
             'compose': compose_file_name,
         })
-
-        create_containerapp_env(self, env_name, resource_group)
 
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
@@ -47,5 +44,5 @@ services:
             self.check('[].name', ['foo']),
             self.check('[] | length(@)', 1),
         ])
-
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
         clean_up_test_file(compose_file_name)

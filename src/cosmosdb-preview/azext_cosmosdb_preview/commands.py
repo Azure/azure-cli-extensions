@@ -23,7 +23,8 @@ from azext_cosmosdb_preview._client_factory import (
     cf_restorable_tables,
     cf_restorable_table_resources,
     cf_restorable_database_accounts,
-    cf_data_transfer_job
+    cf_data_transfer_job,
+    cf_mongo_cluster_job
 )
 
 
@@ -44,6 +45,10 @@ def load_command_table(self, _):
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#MongoDBResourcesOperations.{}',
         client_factory=cf_mongo_db_resources)
 
+    cosmosdb_sql_sdk = CliCommandType(
+        operations_tmpl='azure.mgmt.cosmosdb.operations#SqlResourcesOperations.{}',
+        client_factory=cf_sql_resources)
+
     with self.command_group('managed-cassandra cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_cluster_create', supports_no_wait=True)
         g.custom_command('update', 'cli_cosmosdb_managed_cassandra_cluster_update', supports_no_wait=True)
@@ -52,6 +57,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'cli_cosmosdb_managed_cassandra_cluster_list')
         g.show_command('show', 'get')
         g.command('delete', 'begin_delete', confirmation=True, supports_no_wait=True)
+        g.custom_command('deallocate', 'cli_cosmosdb_managed_cassandra_cluster_deallocate', supports_no_wait=True, confirmation=True)
 
     with self.command_group('managed-cassandra datacenter', cosmosdb_managed_cassandra_datacenter_sdk, client_factory=cf_cassandra_data_center) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_datacenter_create', supports_no_wait=True)
@@ -82,6 +88,10 @@ def load_command_table(self, _):
         g.command('list', 'list_mongo_user_definitions')
         g.show_command('show', 'get_mongo_user_definition')
         g.command('delete', 'begin_delete_mongo_user_definition', confirmation=True)
+
+    with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_sql_container_create')
+        g.custom_command('update', 'cli_cosmosdb_sql_container_update')
 
     # restorable accounts api sdk
     cosmosdb_sdk = CliCommandType(
@@ -180,8 +190,22 @@ def load_command_table(self, _):
         client_factory=cf_data_transfer_job
     )
 
-    with self.command_group('cosmosdb dts', cosmosdb_data_transfer_job, client_factory=cf_data_transfer_job, is_preview=True) as g:
+    with self.command_group('cosmosdb dts', cosmosdb_data_transfer_job, client_factory=cf_data_transfer_job, is_preview=True, deprecate_info=self.deprecate(redirect='cosmosdb copy', hide=True)) as g:
         g.custom_command('copy', 'cosmosdb_data_transfer_copy_job')
+        g.command('list', 'list_by_database_account')
+        g.show_command('show', 'get')
+        g.command('pause', 'pause')
+        g.command('resume', 'resume')
+        g.command('cancel', 'cancel')
+
+    # Data Transfer Service
+    cosmosdb_copy_job = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations._data_transfer_jobs_operations#DataTransferJobsOperations.{}',
+        client_factory=cf_data_transfer_job
+    )
+
+    with self.command_group('cosmosdb copy', cosmosdb_copy_job, client_factory=cf_data_transfer_job, is_preview=True) as g:
+        g.custom_command('create', 'cosmosdb_copy_job')
         g.command('list', 'list_by_database_account')
         g.show_command('show', 'get')
         g.command('pause', 'pause')
@@ -208,6 +232,14 @@ def load_command_table(self, _):
     with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
         g.custom_command('retrieve-partition-throughput', 'cli_begin_retrieve_sql_container_partition_throughput', is_preview=True)
 
+    # Merge partitions for Sql databases
+    with self.command_group('cosmosdb sql database', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
+        g.custom_command('merge', 'cli_begin_sql_database_partition_merge', is_preview=True)
+
+    # Merge partitions for mongodb databases
+    with self.command_group('cosmosdb mongodb database', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
+        g.custom_command('merge', 'cli_begin_mongo_db_database_partition_merge', is_preview=True)
+
     # Redistribute partition throughput for Sql containers
     with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
         g.custom_command('redistribute-partition-throughput', 'cli_begin_redistribute_sql_container_partition_throughput', is_preview=True)
@@ -231,3 +263,32 @@ def load_command_table(self, _):
 
     with self.command_group('cosmosdb mongodb collection', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
         g.custom_command('restore', 'cli_cosmosdb_mongodb_collection_restore', is_preview=True)
+
+    with self.command_group('cosmosdb gremlin database', cosmosdb_gremlin_sdk, client_factory=cf_gremlin_resources) as g:
+        g.custom_command('restore', 'cli_cosmosdb_gremlin_database_restore', is_preview=True)
+
+    with self.command_group('cosmosdb gremlin graph', cosmosdb_gremlin_sdk, client_factory=cf_gremlin_resources) as g:
+        g.custom_command('restore', 'cli_cosmosdb_gremlin_graph_restore', is_preview=True)
+
+    with self.command_group('cosmosdb table', cosmosdb_table_sdk, client_factory=cf_table_resources) as g:
+        g.custom_command('restore', 'cli_cosmosdb_table_restore', is_preview=True)
+
+    # Mongo cluster operations
+    cosmosdb_mongocluster_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations.#MongoClustersOperations.{}',
+        client_factory=cf_mongo_cluster_job)
+
+    # Mongo Cluster create operations
+    with self.command_group('cosmosdb mongocluster', cosmosdb_mongocluster_sdk, client_factory=cf_mongo_cluster_job, is_preview=True) as g:
+        g.custom_command('create', 'cli_cosmosdb_mongocluster_create', is_preview=True)
+        g.custom_command('update', 'cli_cosmosdb_mongocluster_update', is_preview=True)
+        g.custom_command('list', 'cli_cosmosdb_mongocluster_list', is_preview=True)
+        g.custom_show_command('show', 'cli_cosmosdb_mongocluster_get', is_preview=True)
+        g.custom_command('delete', 'cli_cosmosdb_mongocluster_delete', confirmation=True)
+
+    with self.command_group('cosmosdb mongocluster firewall rule', cosmosdb_mongocluster_sdk, client_factory=cf_mongo_cluster_job, is_preview=True) as g:
+        g.custom_command('create', 'cli_cosmosdb_mongocluster_firewall_rule_create', is_preview=True)
+        g.custom_command('update', 'cli_cosmosdb_mongocluster_firewall_rule_update', is_preview=True)
+        g.custom_command('list', 'cli_cosmosdb_mongocluster_firewall_rule_list', is_preview=True)
+        g.custom_show_command('show', 'cli_cosmosdb_mongocluster_firewall_rule_get', is_preview=True)
+        g.custom_command('delete', 'cli_cosmosdb_mongocluster_firewall_rule_delete', confirmation=True)

@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin image show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a gallery image.
 
-    :example: Show
-        az devcenter admin image show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --name "{imageName}" --resource-group "rg1"
+    :example: Get
+        az devcenter admin image show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --name "ContosoBaseImage" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -47,15 +46,25 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
+                max_length=26,
+                min_length=3,
+            ),
         )
         _args_schema.gallery_name = AAZStrArg(
             options=["--gallery-name"],
             help="The name of the gallery.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.image_name = AAZStrArg(
             options=["-n", "--name", "--image-name"],
@@ -64,7 +73,6 @@ class Show(AAZCommand):
             id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema
@@ -142,7 +150,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -195,6 +203,9 @@ class Show(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.description = AAZStrType(
                 flags={"read_only": True},
+            )
+            properties.hibernate_support = AAZStrType(
+                serialized_name="hibernateSupport",
             )
             properties.offer = AAZStrType(
                 flags={"read_only": True},

@@ -35,6 +35,10 @@ def cf_agent_pools(cli_ctx, *_):
     return get_container_service_client(cli_ctx).agent_pools
 
 
+def cf_machines(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).machines
+
+
 def cf_maintenance_configurations(cli_ctx, *_):
     return get_container_service_client(cli_ctx).maintenance_configurations
 
@@ -95,7 +99,7 @@ def get_auth_management_client(cli_ctx, scope=None, **_):
         if matched:
             subscription_id = matched.groupdict()['subscription']
         else:
-            raise CLIError("{} does not contain subscription Id.".format(scope))
+            raise CLIError(f"{scope} does not contain subscription Id.")
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION, subscription_id=subscription_id)
 
 
@@ -125,25 +129,36 @@ def get_resource_by_name(cli_ctx, resource_name, resource_type):
     if not elements:
         from azure.cli.core._profile import Profile
         profile = Profile(cli_ctx=cli_ctx)
-        message = "The resource with name '{}' and type '{}' could not be found".format(
-            resource_name, resource_type)
+        message = f"The resource with name '{resource_name}' and type '{resource_type}' could not be found"
         try:
             subscription = profile.get_subscription(
                 cli_ctx.data['subscription_id'])
             raise CLIError(
-                "{} in subscription '{} ({})'.".format(message, subscription['name'], subscription['id']))
-        except (KeyError, TypeError):
-            raise CLIError(
-                "{} in the current subscription.".format(message))
+                f"{message} in subscription '{subscription['name']} ({subscription['id']})'."
+            )
+        except (KeyError, TypeError) as exc:
+            raise CLIError(f"{message} in the current subscription.") from exc
 
     elif len(elements) == 1:
         return elements[0]
     else:
         raise CLIError(
-            "More than one resources with type '{}' are found with name '{}'.".format(
-                resource_type, resource_name))
+            f"More than one resources with type '{resource_type}' are found with name '{resource_name}'."
+        )
 
 
 def get_msi_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ManagedServiceIdentityClient,
                                    subscription_id=subscription_id)
+
+
+def get_providers_client_factory(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(
+        cli_ctx,
+        ResourceType.MGMT_RESOURCE_RESOURCES,
+        subscription_id=subscription_id
+    ).providers
+
+
+def get_keyvault_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_KEYVAULT, subscription_id=subscription_id).vaults

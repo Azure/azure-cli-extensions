@@ -1,0 +1,334 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --display-name
+      User-Agent:
+      - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.50.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/applications?$filter=startswith%28displayName%2C%27azcliapp000003%27%29
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#applications","value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '87'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Tue, 11 Jul 2023 01:17:46 GMT
+      odata-version:
+      - '4.0'
+      request-id:
+      - 27e0afb7-df0e-4e83-88e0-51be56abb90b
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"South Central US","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SA2PEPF000008A1"}}'
+      x-ms-resource-unit:
+      - '2'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"displayName": "azcliapp000003", "keyCredentials": []}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad app create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '55'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --display-name
+      User-Agent:
+      - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.50.0
+    method: POST
+    uri: https://graph.microsoft.com/v1.0/applications
+  response:
+    body:
+      string: '{"@odata.context": "https://graph.microsoft.com/v1.0/$metadata#applications/$entity",
+        "id": "b2485ea6-f12b-4177-8370-16e590bb57e7", "deletedDateTime": null, "appId":
+        "2a2a53ed-e317-4935-adb6-85ddfc0bf06c", "applicationTemplateId": null, "disabledByMicrosoftStatus":
+        null, "createdDateTime": "2023-07-11T01:17:46.92187Z", "displayName": "azcliapp000003",
+        "description": null, "groupMembershipClaims": null, "identifierUris": [],
+        "isDeviceOnlyAuthSupported": null, "isFallbackPublicClient": null, "notes":
+        null, "publisherDomain": "growthandmonetization.onmicrosoft.com", "serviceManagementReference":
+        null, "signInAudience": "AzureADandPersonalMicrosoftAccount", "tags": [],
+        "tokenEncryptionKeyId": null, "samlMetadataUrl": null, "defaultRedirectUri":
+        null, "certification": null, "optionalClaims": null, "servicePrincipalLockConfiguration":
+        null, "requestSignatureVerification": null, "addIns": [], "api": {"acceptMappedClaims":
+        null, "knownClientApplications": [], "requestedAccessTokenVersion": 2, "oauth2PermissionScopes":
+        [], "preAuthorizedApplications": []}, "appRoles": [], "info": {"logoUrl":
+        null, "marketingUrl": null, "privacyStatementUrl": null, "supportUrl": null,
+        "termsOfServiceUrl": null}, "keyCredentials": [], "parentalControlSettings":
+        {"countriesBlockedForMinors": [], "legalAgeGroupRule": "Allow"}, "passwordCredentials":
+        [], "publicClient": {"redirectUris": []}, "requiredResourceAccess": [], "verifiedPublisher":
+        {"displayName": null, "verifiedPublisherId": null, "addedDateTime": null},
+        "web": {"homePageUrl": null, "logoutUrl": null, "redirectUris": [], "implicitGrantSettings":
+        {"enableAccessTokenIssuance": false, "enableIdTokenIssuance": false}, "redirectUriSettings":
+        []}, "spa": {"redirectUris": []}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1729'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Tue, 11 Jul 2023 01:17:49 GMT
+      location:
+      - https://graph.microsoft.com/v2/67419183-f612-47fe-9b45-48fa5b880dc6/directoryObjects/b2485ea6-f12b-4177-8370-16e590bb57e7/Microsoft.DirectoryServices.Application
+      odata-version:
+      - '4.0'
+      request-id:
+      - 2b5a1859-ab10-4977-bf9a-66afb19ab969
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"South Central US","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SA2PEPF000007E2"}}'
+      x-ms-resource-unit:
+      - '1'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"location": "global", "properties": {"appId": "2a2a53ed-e317-4935-adb6-85ddfc0bf06c"},
+      "tags": {"key1": "value1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph-services account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '115'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --app-id --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.GraphServices/accounts/azcliacc000002?api-version=2023-04-13
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.GraphServices/accounts/azcliacc000002","name":"azcliacc000002","type":"microsoft.graphservices/accounts","location":"global","tags":{"key1":"value1"},"systemData":{"createdByType":"User","createdAt":"2023-07-11T01:19:52.5770574Z","lastModifiedByType":"User","lastModifiedAt":"2023-07-11T01:19:52.5770574Z"},"properties":{"appId":"2a2a53ed-e317-4935-adb6-85ddfc0bf06c","billingPlanId":"e91b25bc-da72-420a-9e95-bd1292e712b7","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 11 Jul 2023 01:19:56 GMT
+      etag:
+      - '"06006a78-0000-0500-0000-64acae3c0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 27e1645a-07e2-4488-8bd5-45d466f07ed0
+      ms-cv:
+      - eJlbK74Lvkq+qGGAaT8b3w.0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph-services account show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.GraphServices/accounts/azcliacc000002?api-version=2023-04-13
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.GraphServices/accounts/azcliacc000002","name":"azcliacc000002","type":"microsoft.graphservices/accounts","location":"global","tags":{"key1":"value1"},"systemData":{"createdByType":"User","createdAt":"2023-07-11T01:19:52.5770574Z","lastModifiedByType":"User","lastModifiedAt":"2023-07-11T01:19:52.5770574Z"},"properties":{"appId":"2a2a53ed-e317-4935-adb6-85ddfc0bf06c","billingPlanId":"e91b25bc-da72-420a-9e95-bd1292e712b7","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 11 Jul 2023 01:19:57 GMT
+      etag:
+      - '"06006a78-0000-0500-0000-64acae3c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph-services account update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --tags --location
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.GraphServices/accounts/azcliacc000002?api-version=2023-04-13
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.GraphServices/accounts/azcliacc000002","name":"azcliacc000002","type":"microsoft.graphservices/accounts","location":"global","tags":{"key1":"value1"},"systemData":{"createdByType":"User","createdAt":"2023-07-11T01:19:52.5770574Z","lastModifiedByType":"User","lastModifiedAt":"2023-07-11T01:19:52.5770574Z"},"properties":{"appId":"2a2a53ed-e317-4935-adb6-85ddfc0bf06c","billingPlanId":"e91b25bc-da72-420a-9e95-bd1292e712b7","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 11 Jul 2023 01:19:58 GMT
+      etag:
+      - '"06006a78-0000-0500-0000-64acae3c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "global", "properties": {"appId": "2a2a53ed-e317-4935-adb6-85ddfc0bf06c"},
+      "tags": {"key1": "value1", "updatedKey1": "updatedValue1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph-services account update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '147'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --tags --location
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.GraphServices/accounts/azcliacc000002?api-version=2023-04-13
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.GraphServices/accounts/azcliacc000002","name":"azcliacc000002","type":"microsoft.graphservices/accounts","location":"global","tags":{"key1":"value1","updatedKey1":"updatedValue1"},"systemData":{"createdByType":"User","createdAt":"2023-07-11T01:19:52.5770574Z","lastModifiedByType":"User","lastModifiedAt":"2023-07-11T01:19:59.1082139Z"},"properties":{"appId":"2a2a53ed-e317-4935-adb6-85ddfc0bf06c","billingPlanId":"e91b25bc-da72-420a-9e95-bd1292e712b7","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 11 Jul 2023 01:20:03 GMT
+      etag:
+      - '"06006c78-0000-0500-0000-64acae430000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 29fde214-52ac-496b-a1d5-a698409865bc
+      ms-cv:
+      - 7mT1a1QTW0GLZVU1RPcB4Q.0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -10,9 +10,8 @@
 
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.commands import AzCommandGroup
-from azext_communication.generated._help import helps  # pylint: disable=unused-import
 try:
-    from azext_communication.manual._help import helps  # pylint: disable=reimported
+    from azext_communication.manual._help import helps  # pylint: disable=unused-import
 except ImportError:
     pass
 
@@ -21,27 +20,35 @@ class CommunicationServiceManagementClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_communication.generated._client_factory import cf_communication_cl
         communication_custom = CliCommandType(
             operations_tmpl='azext_communication.custom#{}',
-            client_factory=cf_communication_cl)
+            client_factory=None)
         parent = super()
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=communication_custom,
                         command_group_cls=CommunicationCommandGroup)
 
     def load_command_table(self, args):
-        from azext_communication.generated.commands import load_command_table
-        load_command_table(self, args)
+        from azext_communication.commands import load_command_table
+        from azure.cli.core.aaz import load_aaz_command_table
+        try:
+            from . import aaz
+        except ImportError:
+            aaz = None
+        if aaz:
+            load_aaz_command_table(
+                loader=self,
+                aaz_pkg_name=aaz.__name__,
+                args=args
+            )
         try:
             from azext_communication.manual.commands import load_command_table as load_command_table_manual
             load_command_table_manual(self, args)
         except ImportError:
             pass
+        load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_communication.generated._params import load_arguments
-        load_arguments(self, command)
         try:
             from azext_communication.manual._params import load_arguments as load_arguments_manual
             load_arguments_manual(self, command)

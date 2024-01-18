@@ -5,7 +5,6 @@
 
 import os
 import unittest
-import pytest
 import deepdiff
 import json
 import docker
@@ -18,22 +17,29 @@ from azext_confcom.errors import (
     AccContainerError,
 )
 import azext_confcom.config as config
+from azext_confcom.template_util import DockerClient
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=11)
+def create_tar_file(image_path: str) -> None:
+    if not os.path.isfile(image_path):
+        with DockerClient() as client:
+            image = client.images.get("nginx:1.22")
+            f = open(image_path, "wb")
+            for chunk in image.save(named=True):
+                f.write(chunk)
+            f.close()
+
+
+def remove_tar_file(image_path: str) -> None:
+    if os.path.isfile(image_path):
+        os.remove(image_path)
+
+
 class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        # this is simulating the output of the "load_tar_mapping_from_file" output
         path = os.path.dirname(__file__)
-        image_path = os.path.join(path, "./nginx.tar")
-
-        tar_mapping_file = {"nginx:1.22": image_path}
-
         cls.path = path
-        cls.tar_mapping_file = tar_mapping_file
-        cls.image_path = image_path
 
     def test_arm_template_with_parameter_file_clean_room_tar(self):
         custom_arm_json_default_value = """
@@ -98,7 +104,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -170,42 +176,29 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             custom_arm_json_default_value, ""
         )[0]
 
-        # save the tar file for the image in the testing directory
-        client = docker.from_env()
-        image = client.images.get("nginx:1.22")
-
-        # Note: Class setup and teardown shouldn't have side effects, and reading from the tar file fails when all the tests are running in parallel, so we want to save and delete this tar file as a part of the test. Not as a part of the testing class.
-        f = open(self.image_path, "wb")
-        for chunk in image.save(named=True):
-            f.write(chunk)
-        f.close()
-        client.close()
-
         try:
+            filename = os.path.join(self.path, "./nginx.tar")
+            tar_mapping_file = {"nginx:1.22": filename}
+            create_tar_file(filename)
             clean_room_image.populate_policy_content_for_all_images(
-                tar_mapping=self.tar_mapping_file
+                tar_mapping=tar_mapping_file
             )
-        except:
+        except Exception as e:
+            print(e)
             raise AccContainerError("Could not get image from tar file")
         finally:
-            # delete the tar file
-            if os.path.isfile(self.image_path):
-                os.remove(self.image_path)
+            remove_tar_file(filename)
 
         regular_image_json = json.loads(
-            regular_image.get_serialized_output(output_type=OutputType.RAW, use_json=True)
+            regular_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
         )
 
         clean_room_json = json.loads(
-            clean_room_image.get_serialized_output(output_type=OutputType.RAW, use_json=True)
+            clean_room_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
         )
 
-        regular_image_json[config.POLICY_FIELD_CONTAINERS][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS
-        ]["0"].pop(config.POLICY_FIELD_CONTAINERS_ID)
-        clean_room_json[config.POLICY_FIELD_CONTAINERS][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS
-        ]["0"].pop(config.POLICY_FIELD_CONTAINERS_ID)
+        regular_image_json[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
+        clean_room_json[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
 
         # see if the remote image and the local one produce the same output
         self.assertEqual(
@@ -247,7 +240,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"python:3.9"
+                "defaultValue":"python:3.6.14-slim-buster"
             },
             "containername2": {
                 "type": "string",
@@ -290,7 +283,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -389,53 +382,30 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             custom_arm_json_default_value, ""
         )[0]
 
-        # save the tar file for the image in the testing directory
-        client = docker.from_env()
-        image = client.images.get("nginx:1.22")
-
-        # Note: Class setup and teardown shouldn't have side effects, and reading from the tar file fails when all the tests are running in parallel, so we want to save and delete this tar file as a part of the test. Not as a part of the testing class.
-        f = open(self.image_path, "wb")
-        for chunk in image.save(named=True):
-            f.write(chunk)
-        f.close()
-        client.close()
-
-        try:
-            clean_room_image.populate_policy_content_for_all_images(
-                tar_mapping=self.tar_mapping_file
-            )
-        finally:
-            # delete the tar file
-            if os.path.isfile(self.image_path):
-                os.remove(self.image_path)
-
+        filename = os.path.join(self.path, "./nginx2.tar")
+        create_tar_file(filename)
+        clean_room_image.populate_policy_content_for_all_images(
+            tar_mapping=filename
+        )
+        remove_tar_file(filename)
         regular_image_json = json.loads(
-            regular_image.get_serialized_output(output_type=OutputType.RAW, use_json=True)
+            regular_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
         )
 
         clean_room_json = json.loads(
-            clean_room_image.get_serialized_output(output_type=OutputType.RAW, use_json=True)
+            clean_room_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
         )
 
-        regular_image_json[config.POLICY_FIELD_CONTAINERS][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS
-        ]["0"].pop(config.POLICY_FIELD_CONTAINERS_ID)
-        clean_room_json[config.POLICY_FIELD_CONTAINERS][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS
-        ]["0"].pop(config.POLICY_FIELD_CONTAINERS_ID)
-        regular_image_json[config.POLICY_FIELD_CONTAINERS][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS
-        ]["1"].pop(config.POLICY_FIELD_CONTAINERS_ID)
-        clean_room_json[config.POLICY_FIELD_CONTAINERS][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS
-        ]["1"].pop(config.POLICY_FIELD_CONTAINERS_ID)
+        regular_image_json[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
+        clean_room_json[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
+        regular_image_json[1].pop(config.POLICY_FIELD_CONTAINERS_ID)
+        clean_room_json[1].pop(config.POLICY_FIELD_CONTAINERS_ID)
 
         # see if the remote image and the local one produce the same output
         self.assertEqual(
             deepdiff.DeepDiff(regular_image_json, clean_room_json, ignore_order=True),
             {},
         )
-
 
     def test_arm_template_with_parameter_file_clean_room_tar_invalid(self):
         custom_arm_json_default_value = """
@@ -457,7 +427,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"rust:latest"
+                "defaultValue":"alpine:3.16"
             },
             "containername": {
                 "type": "string",
@@ -500,7 +470,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -565,29 +535,19 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
         clean_room_image = load_policy_from_arm_template_str(
             custom_arm_json_default_value, ""
         )[0]
-        # save the tar file for the image in the testing directory
-        client = docker.from_env()
-        image = client.images.pull("nginx:1.23")
-        image = client.images.get("nginx:1.23")
 
-        # Note: Class setup and teardown shouldn't have side effects, and reading from the tar file fails when all the tests are running in parallel, so we want to save and delete this tar file as a part of the test. Not as a part of the testing class.
-        f = open(self.image_path, "wb")
-        for chunk in image.save(named=True):
-            f.write(chunk)
-        f.close()
-        client.close()
+        filename = os.path.join(self.path, "./nginx3.tar")
 
         try:
+            create_tar_file(filename)
             clean_room_image.populate_policy_content_for_all_images(
-                tar_mapping=self.tar_mapping_file
+                tar_mapping=filename
             )
             raise AccContainerError("getting image should fail")
         except:
             pass
         finally:
-            # delete the tar file
-            if os.path.isfile(self.image_path):
-                os.remove(self.image_path)
+            remove_tar_file(filename)
 
     def test_clean_room_fake_tar_invalid(self):
         custom_arm_json_default_value = """
@@ -609,7 +569,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"rust:latest"
+                "defaultValue":"alpine:3.16"
             },
             "containername": {
                 "type": "string",
@@ -652,7 +612,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {

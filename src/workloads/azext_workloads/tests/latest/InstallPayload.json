@@ -1,0 +1,91 @@
+{
+    "configurationType": "DeploymentWithOSConfig",
+    "appLocation": "eastus",
+    "infrastructureConfiguration": {
+      "deploymentType": "ThreeTier",
+      "centralServer": {
+        "subnetId": "/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourceGroups/SAP-E2ETest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-vnet/subnets/loopsubnet",
+        "virtualMachineConfiguration": {
+          "vmSize": "Standard_E4ds_v4",
+          "imageReference": {
+              "sku": "12-sp4-gen2",
+              "publisher": "SUSE",
+              "version": "latest",
+              "offer": "SLES-SAP"
+          },
+          "osProfile": {
+            "adminUsername": "azureuser",
+            "osConfiguration": {
+              "osType": "Linux",
+              "disablePasswordAuthentication": true,
+              "sshKeyPair": {
+                "publicKey": "ssh-rsa AAANzaC1yc2EAAAADAQABAAABgQDPasKQ7pRBFzDsyM3y8UiH+ZvhDeGzqUsuTPktiz/YJeufmgjWnKqYTuZX/tLhSAtX/imG9dBDCLEe5bxLtOn1m2i1vRCfsh2NxNqVxSl2GRXTnsC9Ehw5PHqXQhxSHNItDD1K6vKlydVw7DhmJgkl+1Og7WPdxeO/D6YQr1ogmaQHoK2A0AJyH9HXGbNtIiFUuPers8sKhzYztPSZCO9EZvYTB7quNSa7usgv6CByiJ2MOre/RuLaE7B7lRKhysjeIn1M+fQ3xKxW9cXsJhAHTgbqO2peydz5TLpP0S9XuIna0O5pQEXFgUnfdX/W6NT94Vl/Cqs8obSfQntZ/QmGvr1Qb27ZBSQ24eIsYDfr1mI423TuXwUr+1AEvaSCapgRBnDaV3nBzk9qp1kIIGWRGpaz6qb3ahYpDGP+A8lABy19rBk+/Kmfb9N8qkUK7kdNytHeusKoR0kzhW8xpctCnd/13oN3gXbps0Tx8O2E5w7n+BIDNodxEGxzdYD1hh0= generated-by-azure"              }
+            }
+          }
+        },
+        "instanceCount": 1
+      },
+      "applicationServer": {
+        "subnetId": "/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourceGroups/SAP-E2ETest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-vnet/subnets/loopsubnet",
+        "virtualMachineConfiguration": {
+          "vmSize": "Standard_E4ds_v4",
+          "imageReference": {
+              "sku": "12-sp4-gen2",
+              "publisher": "SUSE",
+              "version": "latest",
+              "offer": "SLES-SAP"
+          },
+          "osProfile": {
+            "adminUsername": "azureuser",
+            "osConfiguration": {
+              "osType": "Linux",
+              "disablePasswordAuthentication": true,
+              "sshKeyPair": {
+                "publicKey": "ssh-rsa AAAAB3NzaC1AAAADAQABAAABgQDPasKQ7pRBFzDsyM3y8UiH+ZvhDeGzqUsuTPktiz/YJeufmgjWnKqYTuZX/tLhSAtX/imG9dBDCLEe5bxLtOn1m2i1vRCfsh2NxNqVxSl2GRXTnsC9Ehw5PHqXQhxSHNItDD1K6vKlydVw7DhmJgkl+1Og7WPdxeO/D6YQr1ogmaQHoK2A0AJyH9HXGbNtIiFUuPers8sKhzYztPSZCO9EZvYTB7quNSa7usgv6CByiJ2MOre/RuLaE7B7lRKhysjeIn1M+fQ3xKxW9cXsJhAHTgbqO2peydz5TLpP0S9XuIna0O5pQEXFgUnfdX/W6NT94Vl/Cqs8obSfQntZ/QmGvr1Qb27ZBSQ24eIsYDfr1mI423TuXwUr+1AEvaSCapgRBnDaV3nBzk9qp1kIIGWRGpaz6qb3ahYpDGP+A8lABy19rBk+/Kmfb9N8qkUK7kdNytHeusKoR0kzhW8xpctCnd/13oN3gXbps0Tx8O2E5w7n+BIDNodxEGxzdYD1hh0= generated-by-azure"
+              }
+            }
+          }
+        },
+        "instanceCount": 1
+      },
+      "databaseServer": {
+        "subnetId": "/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourceGroups/SAP-E2ETest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-vnet/subnets/loopsubnet-db",
+        "virtualMachineConfiguration": {
+          "vmSize": "Standard_E16ds_v4",
+          "imageReference": {
+              "sku": "12-sp4-gen2",
+              "publisher": "SUSE",
+              "version": "latest",
+              "offer": "SLES-SAP"
+          },
+          "osProfile": {
+            "adminUsername": "azureuser",
+            "osConfiguration": {
+              "osType": "Linux",
+              "disablePasswordAuthentication": true,
+              "sshKeyPair": {
+                "publicKey": "ssh-rsa AAAAB3NzaC1ycAADAQABAAABgQDPasKQ7pRBFzDsyM3y8UiH+ZvhDeGzqUsuTPktiz/YJeufmgjWnKqYTuZX/tLhSAtX/imG9dBDCLEe5bxLtOn1m2i1vRCfsh2NxNqVxSl2GRXTnsC9Ehw5PHqXQhxSHNItDD1K6vKlydVw7DhmJgkl+1Og7WPdxeO/D6YQr1ogmaQHoK2A0AJyH9HXGbNtIiFUuPers8sKhzYztPSZCO9EZvYTB7quNSa7usgv6CByiJ2MOre/RuLaE7B7lRKhysjeIn1M+fQ3xKxW9cXsJhAHTgbqO2peydz5TLpP0S9XuIna0O5pQEXFgUnfdX/W6NT94Vl/Cqs8obSfQntZ/QmGvr1Qb27ZBSQ24eIsYDfr1mI423TuXwUr+1AEvaSCapgRBnDaV3nBzk9qp1kIIGWRGpaz6qb3ahYpDGP+A8lABy19rBk+/Kmfb9N8qkUK7kdNytHeusKoR0kzhW8xpctCnd/13oN3gXbps0Tx8O2E5w7n+BIDNodxEGxzdYD1hh0= generated-by-azure"
+              }
+            }
+          }
+        },
+        "instanceCount": 1
+      },
+      "storageConfiguration": {
+        "transportFileShareConfiguration": {
+          "configurationType": "Skip"
+        }
+      },
+          "highAvailabilityConfig": null,
+      "appResourceGroup": "CLI-TestRG"
+    },
+    "osSapConfiguration": {
+      "sapFqdn": "sapt99.steelcase.net"
+    },
+        "softwareConfiguration": {
+          "softwareInstallationType": "SAPInstallWithoutOSConfig",
+          "bomUrl": "https://ybteststorageaccount.blob.core.windows.net/sapbits7/sapfiles/boms/S41909SPS03_v0011ms/S41909SPS03_v0011ms.yaml",
+          "softwareVersion": "SAP S/4HANA 1909 SPS 03",
+          "sapBitsStorageAccountId": "/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourceGroups/yb-SapInstall/providers/Microsoft.Storage/storageAccounts/ybteststorageaccount"
+        }
+  }

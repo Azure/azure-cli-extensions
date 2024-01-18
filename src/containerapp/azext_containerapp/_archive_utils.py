@@ -14,7 +14,6 @@ from knack.log import get_logger
 from msrestazure.azure_exceptions import CloudError
 from azure.cli.core.azclierror import (CLIInternalError)
 from azure.cli.core.profiles import ResourceType, get_sdk
-from azure.cli.command_modules.acr._azure_utils import get_blob_info
 from azure.cli.command_modules.acr._constants import TASK_VALID_VSTS_URLS
 
 logger = get_logger(__name__)
@@ -54,19 +53,17 @@ def upload_source_code(cmd, client,
     if not upload_url:
         raise CLIInternalError("Failed to get a SAS URL to upload context.")
 
-    account_name, endpoint_suffix, container_name, blob_name, sas_token = get_blob_info(upload_url)
-    BlockBlobService = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE, 'blob#BlockBlobService')
-    BlockBlobService(account_name=account_name,
-                     sas_token=sas_token,
-                     endpoint_suffix=endpoint_suffix,
-                     # Increase socket timeout from default of 20s for clients with slow network connection.
-                     socket_timeout=300).create_blob_from_path(
-                         container_name=container_name,
-                         blob_name=blob_name,
-                         file_path=tar_file_path)
+    BlobClient = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB, '_blob_client#BlobClient')
+    BlobClient = BlobClient.from_blob_url(upload_url, connection_timeout=300)
+    with open(tar_file_path, "rb") as data:
+        BlobClient.upload_blob(data=data, blob_type="BlockBlob", overwrite=True)
     logger.info("Sending context ({0:.3f} {1}) to registry: {2}...".format(
         size, unit, registry_name))
     return relative_path
+
+
+def archive_source_code(tar_file_path, source_location):
+    _pack_source_code(source_location, tar_file_path, "", None)
 
 
 def _pack_source_code(source_location, tar_file_path, docker_file_path, docker_file_in_tar):
@@ -74,7 +71,7 @@ def _pack_source_code(source_location, tar_file_path, docker_file_path, docker_f
 
     original_docker_file_name = os.path.basename(docker_file_path.replace("\\", os.sep))
     ignore_list, ignore_list_size = _load_dockerignore_file(source_location, original_docker_file_name)
-    common_vcs_ignore_list = {'.git', '.gitignore', '.bzr', 'bzrignore', '.hg', '.hgignore', '.svn'}
+    common_vcs_ignore_list = {'.git', '.gitignore', '.bzr', 'bzrignore', '.hg', '.hgignore', '.svn', 'mvnw'}
 
     def _ignore_check(tarinfo, parent_ignored, parent_matching_rule_index):
         # ignore common vcs dir or file
@@ -189,6 +186,10 @@ def _load_dockerignore_file(source_location, original_docker_file_name):
 
 
 def _archive_file_recursively(tar, name, arcname, parent_ignored, parent_matching_rule_index, ignore_check):
+    if os.path.isfile(name) and (arcname == "" or arcname is None):
+        # If the file is in the root dir, use its name as the arcname
+        arcname = os.path.basename(name)
+
     # create a TarInfo object from the file
     tarinfo = tar.gettarinfo(name, arcname)
 

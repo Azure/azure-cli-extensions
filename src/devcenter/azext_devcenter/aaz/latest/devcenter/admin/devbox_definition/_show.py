@@ -13,23 +13,22 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devbox-definition show",
-    is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a dev box definition
+    """Get a dev box definition configured for a dev center or a project.
 
-    :example: Show dev center dev box definition
+    :example: Get a dev center dev box definition
         az devcenter admin devbox-definition show --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
 
-    :example: Show project dev box definition
+    :example: Get a project dev box definition
         az devcenter admin devbox-definition show --name "WebDevBox" --project-name "ContosoProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2022-11-11-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -49,20 +48,20 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dev_box_definition_name = AAZStrArg(
-            options=["-n", "--name", "--dev-box-definition-name"],
-            help="The name of the Dev Box definition.",
+        _args_schema.devbox_definition_name = AAZStrArg(
+            options=["-n", "--name", "--devbox-definition-name"],
+            help="The name of the dev box definition.",
             required=True,
             id_part="child_name_1",
         )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             id_part="name",
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -73,12 +72,12 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.dev_box_definition_name) and has_value(self.ctx.args.project_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.args.dev_box_definition_name) and has_value(self.ctx.args.dev_center_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        if condition_0:
-            self.DevBoxDefinitionsGetByProject(ctx=self.ctx)()
+        condition_0 = has_value(self.ctx.args.devbox_definition_name) and has_value(self.ctx.args.project_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_1 = has_value(self.ctx.args.devbox_definition_name) and has_value(self.ctx.args.dev_center_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_1:
             self.DevBoxDefinitionsGet(ctx=self.ctx)()
+        elif condition_0:
+            self.DevBoxDefinitionsGetByProject(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -123,7 +122,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devBoxDefinitionName", self.ctx.args.dev_box_definition_name,
+                    "devBoxDefinitionName", self.ctx.args.devbox_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -145,7 +144,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -220,7 +219,6 @@ class Show(AAZCommand):
             )
             properties.os_storage_type = AAZStrType(
                 serialized_name="osStorageType",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -228,6 +226,9 @@ class Show(AAZCommand):
             )
             properties.sku = AAZObjectType(
                 flags={"required": True},
+            )
+            properties.validation_status = AAZStrType(
+                serialized_name="validationStatus",
             )
 
             image_validation_error_details = cls._schema_on_200.properties.image_validation_error_details
@@ -298,7 +299,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devBoxDefinitionName", self.ctx.args.dev_box_definition_name,
+                    "devBoxDefinitionName", self.ctx.args.devbox_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -320,7 +321,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -395,7 +396,6 @@ class Show(AAZCommand):
             )
             properties.os_storage_type = AAZStrType(
                 serialized_name="osStorageType",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -403,6 +403,9 @@ class Show(AAZCommand):
             )
             properties.sku = AAZObjectType(
                 flags={"required": True},
+            )
+            properties.validation_status = AAZStrType(
+                serialized_name="validationStatus",
             )
 
             image_validation_error_details = cls._schema_on_200.properties.image_validation_error_details
@@ -454,9 +457,6 @@ class _ShowHelper:
         if cls._schema_image_reference_read is not None:
             _schema.exact_version = cls._schema_image_reference_read.exact_version
             _schema.id = cls._schema_image_reference_read.id
-            _schema.offer = cls._schema_image_reference_read.offer
-            _schema.publisher = cls._schema_image_reference_read.publisher
-            _schema.sku = cls._schema_image_reference_read.sku
             return
 
         cls._schema_image_reference_read = _schema_image_reference_read = AAZObjectType()
@@ -467,15 +467,9 @@ class _ShowHelper:
             flags={"read_only": True},
         )
         image_reference_read.id = AAZStrType()
-        image_reference_read.offer = AAZStrType()
-        image_reference_read.publisher = AAZStrType()
-        image_reference_read.sku = AAZStrType()
 
         _schema.exact_version = cls._schema_image_reference_read.exact_version
         _schema.id = cls._schema_image_reference_read.id
-        _schema.offer = cls._schema_image_reference_read.offer
-        _schema.publisher = cls._schema_image_reference_read.publisher
-        _schema.sku = cls._schema_image_reference_read.sku
 
 
 __all__ = ["Show"]

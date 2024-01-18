@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2023-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}/virtualnetworkpeerings/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}/virtualnetworkpeerings/{}", "2023-02-01"],
         ]
     }
 
@@ -49,7 +49,6 @@ class Create(AAZCommand):
             options=["-n", "--name"],
             help="The name of the vnet peering.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -58,7 +57,6 @@ class Create(AAZCommand):
             options=["--workspace-name"],
             help="The name of the workspace.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 max_length=64,
                 min_length=3,
@@ -76,12 +74,9 @@ class Create(AAZCommand):
             options=["--allow-virtual-network-access"],
             help="Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space.",
         )
-        _args_schema.remote_vnet = AAZResourceIdArg(
+        _args_schema.remote_vnet = AAZStrArg(
             options=["--remote-vnet"],
             help="The remote virtual network name or Resource ID.",
-            fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{}"
-            )
         )
         _args_schema.use_remote_gateways = AAZBoolArg(
             options=["--use-remote-gateways"],
@@ -197,7 +192,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2023-02-01",
                     required=True,
                 ),
             }
@@ -282,7 +277,7 @@ class Create(AAZCommand):
             properties.databricks_address_space = AAZObjectType(
                 serialized_name="databricksAddressSpace",
             )
-            _build_schema_address_space_read(properties.databricks_address_space)
+            _CreateHelper._build_schema_address_space_read(properties.databricks_address_space)
             properties.databricks_virtual_network = AAZObjectType(
                 serialized_name="databricksVirtualNetwork",
             )
@@ -297,7 +292,7 @@ class Create(AAZCommand):
             properties.remote_address_space = AAZObjectType(
                 serialized_name="remoteAddressSpace",
             )
-            _build_schema_address_space_read(properties.remote_address_space)
+            _CreateHelper._build_schema_address_space_read(properties.remote_address_space)
             properties.remote_virtual_network = AAZObjectType(
                 serialized_name="remoteVirtualNetwork",
                 flags={"required": True},
@@ -315,36 +310,38 @@ class Create(AAZCommand):
             return cls._schema_on_200_201
 
 
-def _build_schema_address_space_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("addressPrefixes", AAZListType, ".address_prefixes")
+class _CreateHelper:
+    """Helper class for Create"""
 
-    address_prefixes = _builder.get(".addressPrefixes")
-    if address_prefixes is not None:
-        address_prefixes.set_elements(AAZStrType, ".")
+    @classmethod
+    def _build_schema_address_space_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("addressPrefixes", AAZListType, ".address_prefixes")
 
+        address_prefixes = _builder.get(".addressPrefixes")
+        if address_prefixes is not None:
+            address_prefixes.set_elements(AAZStrType, ".")
 
-_schema_address_space_read = None
+    _schema_address_space_read = None
 
+    @classmethod
+    def _build_schema_address_space_read(cls, _schema):
+        if cls._schema_address_space_read is not None:
+            _schema.address_prefixes = cls._schema_address_space_read.address_prefixes
+            return
 
-def _build_schema_address_space_read(_schema):
-    global _schema_address_space_read
-    if _schema_address_space_read is not None:
-        _schema.address_prefixes = _schema_address_space_read.address_prefixes
-        return
+        cls._schema_address_space_read = _schema_address_space_read = AAZObjectType()
 
-    _schema_address_space_read = AAZObjectType()
+        address_space_read = _schema_address_space_read
+        address_space_read.address_prefixes = AAZListType(
+            serialized_name="addressPrefixes",
+        )
 
-    address_space_read = _schema_address_space_read
-    address_space_read.address_prefixes = AAZListType(
-        serialized_name="addressPrefixes",
-    )
+        address_prefixes = _schema_address_space_read.address_prefixes
+        address_prefixes.Element = AAZStrType()
 
-    address_prefixes = _schema_address_space_read.address_prefixes
-    address_prefixes.Element = AAZStrType()
-
-    _schema.address_prefixes = _schema_address_space_read.address_prefixes
+        _schema.address_prefixes = cls._schema_address_space_read.address_prefixes
 
 
 __all__ = ["Create"]

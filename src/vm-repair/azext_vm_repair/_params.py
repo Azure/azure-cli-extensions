@@ -53,3 +53,11 @@ def load_arguments(self, _):
     with self.argument_context('vm repair reset-nic') as c:
         c.argument('subscriptionid', help='Subscription id to default subscription using `az account set -s NAME_OR_ID`.')
         c.argument('yes', help='Do not prompt for confirmation to start VM if it is not running.')
+
+    with self.argument_context('vm repair repair-and-restore') as c:
+        c.argument('repair_username', help='Admin username for repair VM.')
+        c.argument('repair_password', help='Admin password for the repair VM.')
+        c.argument('copy_disk_name', help='Name of OS disk copy.')
+        c.argument('repair_vm_name', help='Name of repair VM.')
+        c.argument('copy_disk_name', help='Name of OS disk copy.')
+        c.argument('repair_group_name', help='Name for new or existing resource group that will contain repair VM.')

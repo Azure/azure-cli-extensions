@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a project.
 
     :example: Update
-        az devcenter admin project update --description "This is my first project." --tags CostCenter="R&D" --name "{projectName}" --resource-group "rg1"
+        az devcenter admin project update --description "This is my first project." --tags CostCenter="R&D" --name "DevProject" --resource-group "rg1" --max-dev-boxes-per-user "5"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -53,9 +52,13 @@ class Update(AAZCommand):
             help="The name of the project.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -83,11 +86,20 @@ class Update(AAZCommand):
             help="Description of the project.",
             nullable=True,
         )
-        _args_schema.dev_center_id = AAZStrArg(
-            options=["--dev-center-id"],
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
             arg_group="Properties",
-            help="Resource Id of an associated DevCenter",
+            help="The display name of the project.",
             nullable=True,
+        )
+        _args_schema.max_dev_boxes_per_user = AAZIntArg(
+            options=["--max-dev-boxes-per-user"],
+            arg_group="Properties",
+            help="When specified, limits the maximum number of dev boxes a single user can create across all pools in the project. This will have no effect on existing dev boxes when reduced.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
         )
         return cls._args_schema
 
@@ -169,7 +181,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -268,7 +280,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -332,7 +344,8 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("devCenterId", AAZStrType, ".dev_center_id")
+                properties.set_prop("displayName", AAZStrType, ".display_name")
+                properties.set_prop("maxDevBoxesPerUser", AAZIntType, ".max_dev_boxes_per_user")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -398,6 +411,12 @@ class _UpdateHelper:
         properties.dev_center_uri = AAZStrType(
             serialized_name="devCenterUri",
             flags={"read_only": True},
+        )
+        properties.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        properties.max_dev_boxes_per_user = AAZIntType(
+            serialized_name="maxDevBoxesPerUser",
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",

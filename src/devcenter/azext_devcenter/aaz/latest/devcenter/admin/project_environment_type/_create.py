@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a project environment type.
 
     :example: Create
-        az devcenter admin project-environment-type create --identity-type "UserAssigned" --user-assigned-identities "{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\\":{}}" --roles "{\\"4cbf0b6c-e750-441c-98a7-10da8387e4d6\\":{}}" --deployment-target-id "/subscriptions/00000000-0000-0000-0000-000000000000" --status "Enabled" --user-role-assignments "{\\"e45e3m7c-176e-416a-b466-0c5ec8298f8a\\":{\\"roles\\":{\\"4cbf0b6c-e750-441c-98a7-10da8387e4d6\\":{}}}}" --tags CostCenter="RnD" --environment-type-name "{environmentTypeName}" --project-name "ContosoProj" --resource-group "rg1"
+        az devcenter admin project-environment-type create --identity-type "UserAssigned" --user-assigned-identities "{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\\":{}}" --roles "{\\"4cbf0b6c-e750-441c-98a7-10da8387e4d6\\":{}}" --deployment-target-id "/subscriptions/00000000-0000-0000-0000-000000000000" --status "Enabled" --user-role-assignments "{\\"e45e3m7c-176e-416a-b466-0c5ec8298f8a\\":{\\"roles\\":{\\"4cbf0b6c-e750-441c-98a7-10da8387e4d6\\":{}}}}" --tags CostCenter="RnD" --environment-type-name "DevTest" --project-name "ContosoProj" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/environmenttypes/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/environmenttypes/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -48,11 +48,21 @@ class Create(AAZCommand):
             options=["-n", "--name", "--environment-type-name"],
             help="The name of the environment type.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -63,7 +73,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
-            help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
+            help="The geo-location where the resource lives. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
@@ -118,18 +128,23 @@ class Create(AAZCommand):
         _args_schema.deployment_target_id = AAZStrArg(
             options=["--deployment-target-id"],
             arg_group="Properties",
-            help="Id of a subscription that the environment type will be mapped to. The environment's resources will be deployed into this subscription.",
+            help="ID of a subscription that the environment type will be mapped to. The environment's resources will be deployed into this subscription.",
+        )
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
+            arg_group="Properties",
+            help="The display name of the project environment type.",
         )
         _args_schema.status = AAZStrArg(
             options=["--status"],
             arg_group="Properties",
-            help="Defines whether this Environment Type can be used in this Project.",
+            help="Defines whether this environment type can be used in this project.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.user_role_assignments = AAZDictArg(
             options=["--user-role-assignments"],
             arg_group="Properties",
-            help="Role Assignments created on environment backing resources. This is a mapping from a user object ID to an object of role definition IDs.",
+            help="Role assignments created on environment backing resources. This is a mapping from a user object ID to an object of role definition IDs.",
         )
 
         user_role_assignments = cls._args_schema.user_role_assignments
@@ -229,7 +244,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -272,6 +287,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("creatorRoleAssignment", AAZObjectType)
                 properties.set_prop("deploymentTargetId", AAZStrType, ".deployment_target_id")
+                properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("status", AAZStrType, ".status")
                 properties.set_prop("userRoleAssignments", AAZDictType, ".user_role_assignments")
 
@@ -374,6 +390,13 @@ class Create(AAZCommand):
             )
             properties.deployment_target_id = AAZStrType(
                 serialized_name="deploymentTargetId",
+            )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.environment_count = AAZIntType(
+                serialized_name="environmentCount",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

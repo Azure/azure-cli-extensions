@@ -5,41 +5,48 @@
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
 # pylint: disable=too-many-statements
+# pylint: disable=too-many-lines
 
 from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     get_enum_type,
-    tags_type,
     get_three_state_flag,
 )
 from azure.cli.core.commands.validators import (
     validate_file_or_dict,
 )
-from azext_devcenter.action import (
-    AddEmailNotification,
-    AddWebhookNotification,
-)
 
-from ._validators import validate_dev_box_list, validate_time
+from ._validators import validate_dev_box_list, validate_time, is_iso8601
 
 
 dev_center_type = CLIArgumentType(
     options_list=["--dev-center-name", "--dev-center", "-d"],
-    help='The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.',
-    configured_default='dev-center')
+    help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+    configured_default="dev-center",
+)
 
 project_type = CLIArgumentType(
     options_list=["--project", "--project-name"],
-    help='The name of the project. Use az configure -d project=<project_name> to configure a default.',
-    configured_default='project')
+    help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+    configured_default="project",
+)
+
+endpoint = CLIArgumentType(
+    options_list=["--endpoint"],
+    help="The API endpoint for the developer resources. Use az configure -d endpoint=<endpoint_uri> to configure a default.",
+    configured_default="endpoint",
+)
 
 
 def load_arguments(self, _):
-
     with self.argument_context("devcenter dev project list") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
 
     with self.argument_context("devcenter dev project show") as c:
@@ -48,10 +55,14 @@ def load_arguments(self, _):
             arg_type=dev_center_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "project_name",
             options_list=["--name", "-n"],
             type=str,
-            help="The DevCenter " "Project upon which to execute operations.",
+            help="The dev center " "project upon which to execute operations.",
         )
 
     with self.argument_context("devcenter dev pool list") as c:
@@ -62,6 +73,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
 
     with self.argument_context("devcenter dev pool show") as c:
@@ -74,10 +89,14 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "pool_name",
             options_list=["--name", "-n", "--pool-name"],
             type=str,
-            help="The name of a pool of " "Dev Boxes.",
+            help="The name of a pool of " "dev boxes.",
         )
 
     with self.argument_context("devcenter dev schedule list") as c:
@@ -90,10 +109,14 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "pool_name",
             options_list=["--pool-name", "--pool"],
             type=str,
-            help="The name of a pool of Dev Boxes.",
+            help="The name of a pool of dev boxes.",
         )
 
     with self.argument_context("devcenter dev schedule show") as c:
@@ -106,16 +129,14 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "pool_name",
             options_list=["--pool-name", "--pool"],
             type=str,
-            help="The name of a pool of Dev Boxes.",
-        )
-        c.argument(
-            "schedule_name",
-            options_list=["--name", "-n", "--schedule-name"],
-            type=str,
-            help="The name of a " "schedule.",
+            help="The name of a pool of dev boxes.",
         )
 
     with self.argument_context(
@@ -130,9 +151,13 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
             "authentication context",
         )
 
@@ -146,16 +171,20 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
             "authentication context",
         )
         c.argument(
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
 
     with self.argument_context("devcenter dev dev-box create") as c:
@@ -168,28 +197,26 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
             "authentication context",
         )
         c.argument(
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
         c.argument(
             "pool_name",
             options_list=["--pool-name", "--pool"],
             type=str,
-            help="The name of the Dev Box pool this machine belongs to.",
-        )
-        c.argument(
-            "local_administrator",
-            arg_type=get_enum_type(["Enabled", "Disabled"]),
-            help="Indicates whether the "
-            "owner of the Dev Box is a local administrator.",
+            help="The name of the dev box pool this machine belongs to.",
         )
 
     with self.argument_context("devcenter dev dev-box delete") as c:
@@ -202,38 +229,20 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
             "authentication context",
         )
         c.argument(
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
-        )
-
-    with self.argument_context("devcenter dev dev-box show-remote-connection") as c:
-        c.argument(
-            "dev_center",
-            arg_type=dev_center_type,
-        )
-        c.argument(
-            "project_name",
-            arg_type=project_type,
-        )
-        c.argument(
-            "user_id",
-            type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
-            "authentication context",
-        )
-        c.argument(
-            "dev_box_name",
-            options_list=["--name", "-n", "--dev-box-name"],
-            type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
 
     with self.argument_context("devcenter dev dev-box start") as c:
@@ -246,16 +255,20 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
             "authentication context",
         )
         c.argument(
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
 
     with self.argument_context("devcenter dev dev-box stop") as c:
@@ -268,24 +281,29 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
             "authentication context",
         )
         c.argument(
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
         c.argument(
             "hibernate",
             arg_type=get_three_state_flag(),
             help="Optional parameter to hibernate the dev box.",
+            is_preview=True,
         )
 
-    with self.argument_context("devcenter dev dev-box delay-upcoming-action", validator=validate_time) as c:
+    with self.argument_context("devcenter dev dev-box restart") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -293,6 +311,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
@@ -304,14 +326,10 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
-        c.argument("upcoming_action_id", type=str,
-                   help="The upcoming action id.")
-        c.argument(
-            "delay_time", help="The delayed timespan from the most recent scheduled time. Format HH:MM")
 
-    with self.argument_context("devcenter dev dev-box list-upcoming-action") as c:
+    with self.argument_context("devcenter dev dev-box repair") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -319,6 +337,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
@@ -330,10 +352,10 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
 
-    with self.argument_context("devcenter dev dev-box show-upcoming-action") as c:
+    with self.argument_context("devcenter dev dev-box show-remote-connection") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -343,64 +365,234 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
-            "user_id",
-            type=str,
-            help="The AAD object id of the user. If value is 'me', the identity is taken "
-            "from the authentication context.",
-        )
-        c.argument(
-            "dev_box_name",
-            options_list=["--name", "-n", "--dev-box-name"],
-            type=str,
-            help="The name of a Dev " "Box.",
-        )
-        c.argument("upcoming_action_id", type=str,
-                   help="The upcoming action id.")
-
-    with self.argument_context("devcenter dev dev-box skip-upcoming-action") as c:
-        c.argument(
-            "dev_center",
-            arg_type=dev_center_type,
-        )
-        c.argument(
-            "project_name",
-            arg_type=project_type,
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
             type=str,
-            help="The AAD object id of the user. If value is 'me', the identity is taken "
-            "from the authentication context.",
-        )
-        c.argument(
-            "dev_box_name",
-            options_list=["--name", "-n", "--dev-box-name"],
-            type=str,
-            help="The name of a Dev " "Box.",
-        )
-        c.argument("upcoming_action_id", type=str,
-                   help="The upcoming action id.")
-
-    with self.argument_context("devcenter dev dev-box wait") as c:
-        c.argument(
-            "dev_center",
-            arg_type=dev_center_type,
-        )
-        c.argument(
-            "project_name",
-            arg_type=project_type,
-        )
-        c.argument(
-            "user_id",
-            type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
             "authentication context",
         )
         c.argument(
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
+        )
+
+    with self.argument_context("devcenter dev dev-box list-action") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
+
+    with self.argument_context("devcenter dev dev-box show-action") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
+        c.argument(
+            "action_name",
+            type=str,
+            help="The name of an action that will take place on a dev box.",
+        )
+
+    with self.argument_context("devcenter dev dev-box skip-action") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
+        c.argument(
+            "action_name",
+            type=str,
+            help="The name of an action that will take place on a dev box.",
+        )
+
+    with self.argument_context(
+        "devcenter dev dev-box delay-action", validator=validate_time
+    ) as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
+        c.argument(
+            "action_name",
+            type=str,
+            help="The name of an action that will take place on a dev box.",
+        )
+        c.argument(
+            "delay_time",
+            help="The delayed timespan from the scheduled action time. Format HH:MM",
+        )
+
+    with self.argument_context(
+        "devcenter dev dev-box delay-all-actions", validator=validate_time
+    ) as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
+        c.argument(
+            "delay_time",
+            help="The delayed timespan from the earliest scheduled time of all actions. Format HH:MM",
+        )
+
+    with self.argument_context("devcenter dev dev-box list-operation") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
+
+    with self.argument_context("devcenter dev dev-box show-operation") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
+        c.argument(
+            "operation_id",
+            type=str,
+            help="The id of the operation on a dev box.",
         )
 
     with self.argument_context("devcenter dev environment list") as c:
@@ -411,6 +603,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
@@ -429,9 +625,13 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
             "authentication context",
         )
         c.argument(
@@ -441,7 +641,7 @@ def load_arguments(self, _):
             help="The name " "of the environment.",
         )
 
-    with self.argument_context("devcenter dev environment create") as c:
+    with self.argument_context("devcenter dev environment create", validator=is_iso8601) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -451,10 +651,14 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
-            "authentication context",
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
         )
         c.argument(
             "environment_name",
@@ -462,29 +666,29 @@ def load_arguments(self, _):
             type=str,
             help="The name " "of the environment.",
         )
-        c.argument("description", type=str,
-                   help="Description of the Environment.")
-        c.argument("catalog_name", type=str, required=True,
-                   help="Name of the catalog.")
-        c.argument(
-            "catalog_item_name",
-            type=str,
-            required=True,
-            help="Name of the catalog item.",
-        )
         c.argument(
             "parameters",
             type=validate_file_or_dict,
-            help="Parameters object for the deploy action Expected "
+            help="Parameters object for the environment. Expected "
             "value: json-string/json-file/@json-file.",
         )
-        c.argument("tags", tags_type)
         c.argument("environment_type", type=str, help="Environment type.")
+        c.argument("catalog_name", type=str, help="Name of the catalog.")
         c.argument(
-            "user", type=str, help="The AAD object id of the owner of this Environment."
+            "environment_definition_name",
+            options_list=["-e", "--environment-definition-name"],
+            type=str,
+            help="Name of the environment definition.",
+        )
+        c.argument(
+            "expiration_date",
+            options_list=["--expiration-date", "--expiration"],
+            type=str,
+            help="The time the expiration date will be triggered (UTC), after which the environment"
+            " and associated resources will be deleted. The string format is ISO format.",
         )
 
-    with self.argument_context("devcenter dev environment update") as c:
+    with self.argument_context("devcenter dev environment update", validator=is_iso8601) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -494,10 +698,14 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
-            "authentication context. Default is 'me'",
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
         )
         c.argument(
             "environment_name",
@@ -505,24 +713,56 @@ def load_arguments(self, _):
             type=str,
             help="The name " "of the environment.",
         )
-        c.argument("description", type=str,
-                   help="Description of the Environment.")
-        c.argument("catalog_name", type=str, help="Name of the catalog.")
-        c.argument("catalog_item_name", type=str,
-                   help="Name of the catalog item.")
         c.argument(
             "parameters",
             type=validate_file_or_dict,
-            help="Parameters object for the deploy action Expected "
+            help="Parameters object for the environment. Expected "
             "value: json-string/json-file/@json-file.",
         )
         c.argument(
-            "scheduled_tasks",
-            type=validate_file_or_dict,
-            help="Set of supported scheduled tasks to help "
-            "manage cost. Expected value: json-string/json-file/@json-file.",
+            "expiration_date",
+            options_list=["--expiration-date", "--expiration"],
+            type=str,
+            help="The date of environment expiration. Must be an ISO string",
         )
-        c.argument("tags", tags_type)
+
+    with self.argument_context("devcenter dev environment deploy", validator=is_iso8601) as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
+            type=str,
+            help="The name " "of the environment.",
+        )
+        c.argument(
+            "parameters",
+            type=validate_file_or_dict,
+            help="Parameters object for the environment. Expected "
+            "value: json-string/json-file/@json-file.",
+        )
+        c.argument(
+            "expiration_date",
+            options_list=["--expiration-date", "--expiration"],
+            type=str,
+            help="The date of environment expiration. Must be an ISO string",
+        )
 
     with self.argument_context("devcenter dev environment delete") as c:
         c.argument(
@@ -534,9 +774,13 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
             "authentication context",
         )
         c.argument(
@@ -546,7 +790,7 @@ def load_arguments(self, _):
             help="The name " "of the environment.",
         )
 
-    with self.argument_context("devcenter dev environment wait") as c:
+    with self.argument_context("devcenter dev catalog list") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -556,60 +800,11 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
-            "user_id",
-            type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
-            "authentication context",
-        )
-        c.argument(
-            "environment_name",
-            options_list=["--name", "-n", "--environment-name"],
-            type=str,
-            help="The name " "of the environment.",
+            "endpoint",
+            arg_type=endpoint,
         )
 
-    with self.argument_context("devcenter dev environment deploy-action") as c:
-        c.argument(
-            "dev_center",
-            arg_type=dev_center_type,
-        )
-        c.argument(
-            "project_name",
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
-        )
-        c.argument(
-            "user_id",
-            type=str,
-            help="The AAD object id of the user. If value is 'me', the identity is taken "
-            "from the authentication context",
-        )
-        c.argument(
-            "environment_name",
-            options_list=["--name", "-n", "--environment-name"],
-            type=str,
-            help="The name " "of the environment.",
-        )
-        c.argument("action_id", type=str,
-                   help="The Catalog Item action id to execute")
-        c.argument(
-            "parameters",
-            type=validate_file_or_dict,
-            help="Parameters object for the Action Expected value: "
-            "json-string/json-file/@json-file.",
-        )
-
-    with self.argument_context("devcenter dev catalog-item list") as c:
-        c.argument(
-            "dev_center",
-            arg_type=dev_center_type,
-        )
-        c.argument(
-            "project_name",
-            arg_type=project_type,
-        )
-
-    with self.argument_context("devcenter dev catalog-item show") as c:
+    with self.argument_context("devcenter dev catalog show") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -619,36 +814,53 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
-            "catalog_item_id", type=str, help="The unique id of the catalog item."
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "catalog_name",
+            options_list=["--name", "-n", "--catalog-name"],
+            type=str,
+            help="The name of the catalog",
         )
 
-    with self.argument_context("devcenter dev catalog-item-version list") as c:
+    with self.argument_context("devcenter dev environment-definition list") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
+            required=True,
             arg_type=project_type,
         )
         c.argument(
-            "catalog_item_id", type=str, help="The unique id of the catalog item."
+            "endpoint",
+            arg_type=endpoint,
         )
+        c.argument("catalog_name", type=str, help="The name of the catalog")
 
-    with self.argument_context("devcenter dev catalog-item-version show") as c:
+    with self.argument_context("devcenter dev environment-definition show") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
+            required=True,
             arg_type=project_type,
         )
         c.argument(
-            "catalog_item_id", type=str, help="The unique id of the catalog item."
+            "endpoint",
+            arg_type=endpoint,
         )
-        c.argument("version", type=str,
-                   help="The version of the catalog item.")
+        c.argument("catalog_name", type=str, help="The name of the catalog")
+        c.argument(
+            "definition_name",
+            options_list=["--name", "-n", "--definition-name"],
+            type=str,
+            help="The name of the environment definition",
+        )
 
     with self.argument_context("devcenter dev environment-type list") as c:
         c.argument(
@@ -659,8 +871,12 @@ def load_arguments(self, _):
             "project_name",
             arg_type=project_type,
         )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
 
-    with self.argument_context("devcenter dev notification-setting create") as c:
+    with self.argument_context("devcenter dev environment list-operation") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -670,61 +886,178 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
-            help="The AAD object id of the user. If value is 'me', the identity is taken "
-            "from the authentication context.",
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
         )
         c.argument(
-            "enabled",
-            arg_type=get_three_state_flag(),
-            help="If notification is enabled for the user.",
-        )
-        c.argument(
-            "culture",
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
             type=str,
-            help="The culture that MEO can accommdate requests to send emails in.",
-        )
-        c.argument(
-            "boolean_enabled",
-            arg_type=get_three_state_flag(),
-            help="If notification is enabled for DevBox " "provisioning.",
-            arg_group="Notification Type Dev Box Provisioning Notification",
-        )
-        c.argument(
-            "email_notification",
-            action=AddEmailNotification,
-            nargs="+",
-            help="The email notification",
-            arg_group="Notification Type Dev Box Provisioning Notification Notification Channel",
-        )
-        c.argument(
-            "webhook_notification",
-            action=AddWebhookNotification,
-            nargs="+",
-            help="The webhook notification",
-            arg_group="Notification Type Dev Box Provisioning Notification Notification Channel",
+            help="The name " "of the environment.",
         )
 
-    with self.argument_context("devcenter dev notification-setting show") as c:
+    with self.argument_context("devcenter dev environment show-operation") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            required=True,
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
             type=str,
-            help="The AAD object id of the user. If value is 'me', the identity is taken "
-            "from the authentication context.",
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
+            type=str,
+            help="The name " "of the environment.",
+        )
+        c.argument(
+            "operation_id",
+            options_list=["--operation-id"],
+            type=str,
+            help="The ID " "of the operation.",
+        )
+
+    with self.argument_context("devcenter dev environment show-logs-by-operation") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
+            type=str,
+            help="The name " "of the environment.",
+        )
+        c.argument(
+            "operation_id",
+            options_list=["--operation-id"],
+            type=str,
+            help="The ID " "of the operation.",
+        )
+
+    with self.argument_context("devcenter dev environment show-action") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
+            type=str,
+            help="The name " "of the environment.",
+        )
+        c.argument(
+            "action_name",
+            options_list=["--action-name"],
+            type=str,
+            help="The name of an action that will take place on an environment.",
+        )
+
+    with self.argument_context("devcenter dev environment skip-action") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
+            type=str,
+            help="The name " "of the environment.",
+        )
+        c.argument(
+            "action_name",
+            options_list=["--action-name"],
+            type=str,
+            help="The name of an action that will take place on an environment.",
+        )
+
+    with self.argument_context("devcenter dev environment list-action") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
+            type=str,
+            help="The name " "of the environment.",
         )
 
     with self.argument_context(
-        "devcenter dev notification-setting list-allowed-culture"
+        "devcenter dev environment delay-action", validator=validate_time
     ) as c:
         c.argument(
             "dev_center",
@@ -732,12 +1065,90 @@ def load_arguments(self, _):
         )
         c.argument(
             "project_name",
-            required=True,
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
             type=str,
-            help="The AAD object id of the user. If value is 'me', the identity is taken "
-            "from the authentication context.",
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
+            type=str,
+            help="The name " "of the environment.",
+        )
+        c.argument(
+            "action_name",
+            options_list=["--action-name"],
+            type=str,
+            help="The name of an action that will take place on an environment.",
+        )
+        c.argument(
+            "delay_time",
+            help="The delayed timespan from the scheduled action time. Format HH:MM",
+        )
+
+    with self.argument_context("devcenter dev environment show-outputs") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
+            type=str,
+            help="The name " "of the environment.",
+        )
+
+    with self.argument_context("devcenter dev environment update-expiration-date", validator=is_iso8601) as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
+            type=str,
+            help="The name " "of the environment.",
+        )
+        c.argument(
+            "expiration_date",
+            options_list=["--expiration-date", "--expiration"],
+            type=str,
+            help="The time the expiration date will be triggered (UTC), after which the environment "
+            "and associated resources will be deleted. The string format is ISO format.",
         )

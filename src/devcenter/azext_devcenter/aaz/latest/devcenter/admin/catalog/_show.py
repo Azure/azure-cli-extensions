@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin catalog show",
-    is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a catalog
+    """Get a catalog.
 
-    :example: Show
-        az devcenter admin catalog show --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+    :example: Get
+        az devcenter admin catalog show --name "CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -47,15 +46,25 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.catalog_name = AAZStrArg(
             options=["-n", "--name", "--catalog-name"],
-            help="The name of the Catalog.",
+            help="The name of the catalog.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
+                max_length=26,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -131,7 +140,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -186,10 +195,21 @@ class Show(AAZCommand):
                 serialized_name="adoGit",
             )
             _ShowHelper._build_schema_git_catalog_read(properties.ado_git)
+            properties.connection_state = AAZStrType(
+                serialized_name="connectionState",
+                flags={"read_only": True},
+            )
             properties.git_hub = AAZObjectType(
                 serialized_name="gitHub",
             )
             _ShowHelper._build_schema_git_catalog_read(properties.git_hub)
+            properties.last_connection_time = AAZStrType(
+                serialized_name="lastConnectionTime",
+                flags={"read_only": True},
+            )
+            properties.last_sync_stats = AAZObjectType(
+                serialized_name="lastSyncStats",
+            )
             properties.last_sync_time = AAZStrType(
                 serialized_name="lastSyncTime",
                 flags={"read_only": True},
@@ -200,6 +220,31 @@ class Show(AAZCommand):
             )
             properties.sync_state = AAZStrType(
                 serialized_name="syncState",
+                flags={"read_only": True},
+            )
+            properties.sync_type = AAZStrType(
+                serialized_name="syncType",
+            )
+
+            last_sync_stats = cls._schema_on_200.properties.last_sync_stats
+            last_sync_stats.added = AAZIntType(
+                flags={"read_only": True},
+            )
+            last_sync_stats.removed = AAZIntType(
+                flags={"read_only": True},
+            )
+            last_sync_stats.synchronization_errors = AAZIntType(
+                serialized_name="synchronizationErrors",
+                flags={"read_only": True},
+            )
+            last_sync_stats.unchanged = AAZIntType(
+                flags={"read_only": True},
+            )
+            last_sync_stats.updated = AAZIntType(
+                flags={"read_only": True},
+            )
+            last_sync_stats.validation_errors = AAZIntType(
+                serialized_name="validationErrors",
                 flags={"read_only": True},
             )
 

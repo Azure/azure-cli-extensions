@@ -71,6 +71,12 @@ def load_arguments(self, _):
             required=False,
             validator=get_default_location_from_resource_group,
         )
+        c.argument(
+            "public_network_access",
+            type=str,
+            required=False,
+            help="Whether or not public network access is allowed for the data factory.",
+        )
         c.argument("tags", tags_type)
         c.argument(
             "factory_vsts_configuration",
@@ -101,6 +107,12 @@ def load_arguments(self, _):
             type=str,
             help="The factory name.",
             id_part="name",
+        )
+        c.argument(
+            "public_network_access",
+            type=str,
+            required=False,
+            help="Whether or not public network access is allowed for the data factory.",
         )
         c.argument("tags", tags_type)
 
@@ -294,7 +306,13 @@ def load_arguments(self, _):
             help="The base definition of a linked integration "
             "runtime. Expected value: json-string/json-file/@json-file.",
             arg_group="Type Properties",
-        )
+        ),
+        c.argument(
+            "enableselfcontainedia",
+            options_list=['--enable-self-contained-interactive-authoring', '--enable-scia'],
+            type=str,
+            help="An alternative option to ensure interactive authoring function when your self-hosted integration runtime is unable to establish a connection with Azure Relay.",
+        ),
 
     with self.argument_context("datafactory integration-runtime update") as c:
         c.argument("resource_group_name", resource_group_name_type)

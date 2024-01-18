@@ -224,7 +224,7 @@ def _prompt_public_ip(namespace):
     from knack.prompting import prompt_y_n, NoTTYException
     try:
         if prompt_y_n('Does repair vm requires public ip?'):
-            namespace.associate_public_ip = "yes"
+            namespace.associate_public_ip = namespace.repair_vm_name + "PublicIP"
         else:
             namespace.associate_public_ip = '""'
 
@@ -376,3 +376,57 @@ def validate_vm_username(username, is_linux):
 
     if username.lower() in disallowed_user_names:
         raise CLIError("This username '{}' meets the general requirements, but is specifically disallowed. Please try a different value.".format(username))
+
+
+def validate_repair_and_restore(cmd, namespace):
+    check_extension_version(EXTENSION_NAME)
+
+    logger.info('Validating repair and restore parameters...')
+
+    logger.info(namespace.vm_name + ' ' + namespace.resource_group_name)
+
+    # Check if VM exists and is not classic VM
+    source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    is_linux = _is_linux_os(source_vm)
+
+    # Check repair vm name
+    namespace.repair_vm_name = ('repair-' + namespace.vm_name)[:14] + '_'
+    logger.info('Repair VM name: %s', namespace.repair_vm_name)
+
+    # Check copy disk name
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    if namespace.copy_disk_name:
+        _validate_disk_name(namespace.copy_disk_name)
+    else:
+        namespace.copy_disk_name = namespace.vm_name + '-DiskCopy-' + timestamp
+        logger.info('Copy disk name: %s', namespace.copy_disk_name)
+
+    # Check copy resouce group name
+    if namespace.repair_group_name:
+        if namespace.repair_group_name == namespace.resource_group_name:
+            raise CLIError('The repair resource group name cannot be the same as the source VM resource group.')
+        _validate_resource_group_name(namespace.repair_group_name)
+    else:
+        namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
+        logger.info('Repair resource group name: %s', namespace.repair_group_name)
+
+    # Check encrypted disk
+    encryption_type, _, _, _ = _fetch_encryption_settings(source_vm)
+    # Currently only supporting single pass
+    if encryption_type in (Encryption.SINGLE_WITH_KEK, Encryption.SINGLE_WITHOUT_KEK):
+        if not namespace.unlock_encrypted_vm:
+            _prompt_encrypted_vm(namespace)
+    elif encryption_type is Encryption.DUAL:
+        logger.warning('The source VM\'s OS disk is encrypted using dual pass method.')
+        raise CLIError('The current command does not support VMs which were encrypted using dual pass.')
+    else:
+        logger.debug('The source VM\'s OS disk is not encrypted')
+
+    validate_vm_username(namespace.repair_username, is_linux)
+    validate_vm_password(namespace.repair_password, is_linux)
+    # Prompt input for public ip usage
+    namespace.associate_public_ip = False
+
+    # Validate repair run command
+    source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    is_linux = _is_linux_os(source_vm)

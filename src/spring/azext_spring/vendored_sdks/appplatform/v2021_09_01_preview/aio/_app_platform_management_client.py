@@ -12,7 +12,7 @@ from typing import Any, Awaitable, TYPE_CHECKING
 from azure.core.rest import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core import AsyncARMPipelineClient
 
-from .. import models
+from .. import models as _models
 from ..._serialization import Deserializer, Serializer
 from ._configuration import AppPlatformManagementClientConfiguration
 from .operations import (
@@ -92,28 +92,44 @@ class AppPlatformManagementClient:  # pylint: disable=client-accepts-api-version
         self._config = AppPlatformManagementClientConfiguration(
             credential=credential, subscription_id=subscription_id, **kwargs
         )
-        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client: AsyncARMPipelineClient = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
-        client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
+        client_models = {k: v for k, v in _models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.services = ServicesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.config_servers = ConfigServersOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.services = ServicesOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2021-09-01-preview"
+        )
+        self.config_servers = ConfigServersOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2021-09-01-preview"
+        )
         self.monitoring_settings = MonitoringSettingsOperations(
-            self._client, self._config, self._serialize, self._deserialize
+            self._client, self._config, self._serialize, self._deserialize, "2021-09-01-preview"
         )
-        self.apps = AppsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.bindings = BindingsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.storages = StoragesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.certificates = CertificatesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.custom_domains = CustomDomainsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.deployments = DeploymentsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
+        self.apps = AppsOperations(self._client, self._config, self._serialize, self._deserialize, "2021-09-01-preview")
+        self.bindings = BindingsOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2021-09-01-preview"
+        )
+        self.storages = StoragesOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2021-09-01-preview"
+        )
+        self.certificates = CertificatesOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2021-09-01-preview"
+        )
+        self.custom_domains = CustomDomainsOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2021-09-01-preview"
+        )
+        self.deployments = DeploymentsOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2021-09-01-preview"
+        )
+        self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize, "2021-09-01-preview"
+        )
         self.runtime_versions = RuntimeVersionsOperations(
-            self._client, self._config, self._serialize, self._deserialize
+            self._client, self._config, self._serialize, self._deserialize, "2021-09-01-preview"
         )
-        self.skus = SkusOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.skus = SkusOperations(self._client, self._config, self._serialize, self._deserialize, "2021-09-01-preview")
 
     def _send_request(self, request: HttpRequest, **kwargs: Any) -> Awaitable[AsyncHttpResponse]:
         """Runs the network request through the client's chained policies.
@@ -144,5 +160,5 @@ class AppPlatformManagementClient:  # pylint: disable=client-accepts-api-version
         await self._client.__aenter__()
         return self
 
-    async def __aexit__(self, *exc_details) -> None:
+    async def __aexit__(self, *exc_details: Any) -> None:
         await self._client.__aexit__(*exc_details)

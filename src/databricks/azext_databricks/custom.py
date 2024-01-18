@@ -7,7 +7,8 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
-from .aaz.latest.databricks.workspace import Create as _DatabricksWorkspaceCreate
+from .aaz.latest.databricks.workspace.vnet_peering._create import Create as _WorkspaceVnetPeeringCreate
+from .aaz.latest.databricks.workspace import Create as _DatabricksWorkspaceCreate, Update as _DatabricksWorkspaceUpdate
 
 import random
 import string
@@ -20,6 +21,18 @@ def id_generator(size=13, chars=string.ascii_lowercase + string.digits):
 
 
 class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.managed_resource_group._required = False
+        args_schema.vnet._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{}"
+        )
+        args_schema.disk_key_source._registered = False
+        args_schema.managed_services_key_source._registered = False
+        return args_schema
 
     def pre_operations(self):
         from msrestazure.tools import is_valid_resource_id, resource_id
@@ -38,3 +51,37 @@ class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
             args.managed_resource_group = resource_id(
                 subscription=subscription_id,
                 resource_group=managed_resource_group)
+
+        if has_value(args.disk_key_name):
+            args.disk_key_source = 'Microsoft.Keyvault'
+        if has_value(args.managed_services_key_name):
+            args.managed_services_key_source = 'Microsoft.Keyvault'
+
+
+class DatabricksWorkspaceUpdate(_DatabricksWorkspaceUpdate):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.disk_key_source._registered = False
+        args_schema.managed_services_key_source._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.disk_key_name):
+            args.disk_key_source = 'Microsoft.Keyvault'
+        if has_value(args.managed_services_key_name):
+            args.managed_services_key_source = 'Microsoft.Keyvault'
+
+
+class WorkspaceVnetPeeringCreate(_WorkspaceVnetPeeringCreate):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.remote_vnet._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{}"
+        )
+        return args_schema

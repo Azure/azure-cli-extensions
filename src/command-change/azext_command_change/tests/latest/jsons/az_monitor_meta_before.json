@@ -1,0 +1,283 @@
+{
+    "module_name": "monitor",
+    "name": "az",
+    "commands": {},
+    "sub_groups": {
+        "monitor": {
+            "name": "monitor",
+            "commands": {},
+            "sub_groups": {
+                "monitor private-link-scope": {
+                    "name": "monitor private-link-scope",
+                    "commands": {},
+                    "sub_groups": {
+                        "monitor private-link-scope scoped-resource": {
+                            "name": "monitor private-link-scope scoped-resource",
+                            "commands": {
+                                "monitor private-link-scope scoped-resource show": {
+                                    "name": "monitor private-link-scope scoped-resource show",
+                                    "is_aaz": false,
+                                    "is_preview": true,
+                                    "parameters": [{
+                                        "name": "resource_group_name",
+                                        "options": ["--resource-group", "-g"],
+                                        "required": true,
+                                        "id_part": "resource_group"
+                                    }, {
+                                        "name": "scope_name",
+                                        "options": ["--scope-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "resource_name",
+                                        "options": ["--resource-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "cmd",
+                                        "options": ["--cmd"],
+                                        "nargs": "?"
+                                    }]
+                                },
+                                "monitor private-link-scope scoped-resource create": {
+                                    "name": "monitor private-link-scope scoped-resource create",
+                                    "is_aaz": false,
+                                    "is_preview": true,
+                                    "parameters": [{
+                                        "name": "resource_group_name",
+                                        "options": ["--resource-group", "-g"],
+                                        "required": true,
+                                        "id_part": "resource_group"
+                                    }, {
+                                        "name": "scope_name",
+                                        "options": ["--scope-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "resource_name",
+                                        "options": ["--resource-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "linked_resource_id",
+                                        "options": ["--linked-resource-id"],
+                                        "required": true
+                                    }]
+                                },
+                                "monitor private-link-scope scoped-resource list": {
+                                    "name": "monitor private-link-scope scoped-resource list",
+                                    "is_aaz": false,
+                                    "is_preview": true,
+                                    "parameters": [{
+                                        "name": "resource_group_name",
+                                        "options": ["--resource-group", "-g"],
+                                        "required": true,
+                                        "id_part": "resource_group"
+                                    }, {
+                                        "name": "scope_name",
+                                        "options": ["--scope-name"],
+                                        "required": true
+                                    }]
+                                },
+                                "monitor private-link-scope scoped-resource delete": {
+                                    "name": "monitor private-link-scope scoped-resource delete",
+                                    "is_aaz": false,
+                                    "confirmation": true,
+                                    "is_preview": true,
+                                    "parameters": [{
+                                        "name": "resource_group_name",
+                                        "options": ["--resource-group", "-g"],
+                                        "required": true,
+                                        "id_part": "resource_group"
+                                    }, {
+                                        "name": "scope_name",
+                                        "options": ["--scope-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "resource_name",
+                                        "options": ["--resource-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "yes",
+                                        "options": ["--yes", "-y"]
+                                    }]
+                                }
+                            },
+                            "sub_groups": {}
+                        },
+                        "monitor private-link-scope private-link-resource": {
+                            "name": "monitor private-link-scope private-link-resource",
+                            "commands": {
+                                "monitor private-link-scope private-link-resource show": {
+                                    "name": "monitor private-link-scope private-link-resource show",
+                                    "is_aaz": false,
+                                    "is_preview": true,
+                                    "parameters": [{
+                                        "name": "resource_group_name",
+                                        "options": ["--resource-group", "-g"],
+                                        "required": true,
+                                        "id_part": "resource_group"
+                                    }, {
+                                        "name": "scope_name",
+                                        "options": ["--scope-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "group_name",
+                                        "options": ["--group-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "cmd",
+                                        "options": ["--cmd"],
+                                        "nargs": "?"
+                                    }]
+                                },
+                                "monitor private-link-scope private-link-resource list": {
+                                    "name": "monitor private-link-scope private-link-resource list",
+                                    "is_aaz": false,
+                                    "is_preview": true,
+                                    "parameters": [{
+                                        "name": "resource_group_name",
+                                        "options": ["--resource-group", "-g"],
+                                        "required": true,
+                                        "id_part": "resource_group"
+                                    }, {
+                                        "name": "scope_name",
+                                        "options": ["--scope-name"],
+                                        "required": true
+                                    }]
+                                }
+                            },
+                            "sub_groups": {}
+                        },
+                        "monitor private-link-scope private-endpoint-connection": {
+                            "name": "monitor private-link-scope private-endpoint-connection",
+                            "commands": {
+                                "monitor private-link-scope private-endpoint-connection show": {
+                                    "name": "monitor private-link-scope private-endpoint-connection show",
+                                    "is_aaz": false,
+                                    "is_preview": true,
+                                    "parameters": [{
+                                        "name": "resource_group_name",
+                                        "options": ["--resource-group", "-g"],
+                                        "required": true,
+                                        "id_part": "resource_group"
+                                    }, {
+                                        "name": "scope_name",
+                                        "options": ["--scope-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "private_endpoint_connection_name",
+                                        "options": ["--private-endpoint-connection-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "cmd",
+                                        "options": ["--cmd"],
+                                        "nargs": "?"
+                                    }]
+                                },
+                                "monitor private-link-scope private-endpoint-connection list": {
+                                    "name": "monitor private-link-scope private-endpoint-connection list",
+                                    "is_aaz": false,
+                                    "is_preview": true,
+                                    "parameters": [{
+                                        "name": "resource_group_name",
+                                        "options": ["--resource-group", "-g"],
+                                        "required": true,
+                                        "id_part": "resource_group"
+                                    }, {
+                                        "name": "scope_name",
+                                        "options": ["--scope-name"],
+                                        "required": true
+                                    }]
+                                },
+                                "monitor private-link-scope private-endpoint-connection approve": {
+                                    "name": "monitor private-link-scope private-endpoint-connection approve",
+                                    "is_aaz": false,
+                                    "is_preview": true,
+                                    "parameters": [{
+                                        "name": "cmd",
+                                        "options": ["--cmd"],
+                                        "nargs": "?"
+                                    }, {
+                                        "name": "resource_group_name",
+                                        "options": ["--resource-group", "-g"],
+                                        "required": true,
+                                        "id_part": "resource_group"
+                                    }, {
+                                        "name": "scope_name",
+                                        "options": ["--scope-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "private_endpoint_connection_name",
+                                        "options": ["--private-endpoint-connection-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "description",
+                                        "options": ["--description"]
+                                    }]
+                                },
+                                "monitor private-link-scope private-endpoint-connection reject": {
+                                    "name": "monitor private-link-scope private-endpoint-connection reject",
+                                    "is_aaz": false,
+                                    "is_preview": true,
+                                    "parameters": [{
+                                        "name": "cmd",
+                                        "options": ["--cmd"],
+                                        "nargs": "?"
+                                    }, {
+                                        "name": "resource_group_name",
+                                        "options": ["--resource-group", "-g"],
+                                        "required": true,
+                                        "id_part": "resource_group"
+                                    }, {
+                                        "name": "scope_name",
+                                        "options": ["--scope-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "private_endpoint_connection_name",
+                                        "options": ["--private-endpoint-connection-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "description",
+                                        "options": ["--description"]
+                                    }]
+                                },
+                                "monitor private-link-scope private-endpoint-connection delete": {
+                                    "name": "monitor private-link-scope private-endpoint-connection delete",
+                                    "is_aaz": false,
+                                    "is_preview": true,
+                                    "parameters": [{
+                                        "name": "resource_group_name",
+                                        "options": ["--resource-group", "-g"],
+                                        "required": true,
+                                        "id_part": "resource_group"
+                                    }, {
+                                        "name": "scope_name",
+                                        "options": ["--scope-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "private_endpoint_connection_name",
+                                        "options": ["--private-endpoint-connection-name"],
+                                        "required": true
+                                    }, {
+                                        "name": "yes",
+                                        "options": ["--yes", "-y"],
+                                        "default": false
+                                    }]
+                                }
+                            },
+                            "sub_groups": {
+                                "monitor private-link-scope private-endpoint-connection cust": {
+                                    "name": "monitor private-link-scope private-endpoint-connection cust",
+                                    "commands": {
+                                        "monitor private-link-scope private-endpoint-connection cust show": {
+                                            "name": "monitor private-link-scope private-endpoint-connection cust show",
+                                            "parameters": []
+                                        }
+                                    },
+                                    "sub_groups": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

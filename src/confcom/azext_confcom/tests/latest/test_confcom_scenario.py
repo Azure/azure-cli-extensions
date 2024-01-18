@@ -5,7 +5,6 @@
 
 import os
 import unittest
-import pytest
 import json
 
 from azext_confcom.security_policy import (
@@ -20,15 +19,13 @@ from azext_confcom.template_util import case_insensitive_dict_get
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=1)
 class MountEnforcement(unittest.TestCase):
     custom_json = """
     {
         "version": "1.0",
         "containers": [
             {
-                "containerImage": "rust:1.52.1",
+                "containerImage": "alpine:3.16",
                 "environmentVariables": [
                     {
                         "name": "PATH",
@@ -51,7 +48,7 @@ class MountEnforcement(unittest.TestCase):
                 ]
             },
             {
-                "containerImage": "python:3.6.14-slim-buster",
+                "containerImage": "nginx:1.24",
                 "environmentVariables": [],
                 "command": ["echo", "hello"],
                 "workingDir": "/customized/absolute/path",
@@ -76,7 +73,7 @@ class MountEnforcement(unittest.TestCase):
             (
                 img
                 for img in self.aci_policy.get_images()
-                if isinstance(img, UserContainerImage) and img.base == "rust"
+                if isinstance(img, UserContainerImage) and img.base == "alpine"
             ),
             None,
         )
@@ -115,7 +112,7 @@ class MountEnforcement(unittest.TestCase):
             (
                 img
                 for img in self.aci_policy.get_images()
-                if isinstance(img, UserContainerImage) and img.base == "python"
+                if isinstance(img, UserContainerImage) and img.base == "nginx"
             ),
             None,
         )
@@ -151,8 +148,6 @@ class MountEnforcement(unittest.TestCase):
         )
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=2)
 class PolicyGenerating(unittest.TestCase):
     custom_json = """
       {
@@ -202,7 +197,7 @@ class PolicyGenerating(unittest.TestCase):
                     "strategy": "string"
                 },
                 {
-                    "name": "((?i)FABRIC)_.+",
+                    "name": "(?i)(FABRIC)_.+",
                     "value": ".+",
                     "strategy": "re2"
                 },
@@ -272,22 +267,98 @@ class PolicyGenerating(unittest.TestCase):
             cls.aci_policy = aci_policy
 
     def test_injected_sidecar_container_msi(self):
-        expected_sidecar_container_ser = "eyJjb250YWluZXJzIjp7ImVsZW1lbnRzIjp7IjAiOnsiYWxsb3dfZWxldmF0ZWQiOnRydWUsImFsbG93X3N0ZGlvX2FjY2VzcyI6dHJ1ZSwiY29tbWFuZCI6eyJlbGVtZW50cyI6eyIwIjoiL2Jpbi9zaCIsIjEiOiItYyIsIjIiOiJ1bnRpbCAuL21zaUF0bGFzQWRhcHRlcjsgZG8gZWNobyAkPyByZXN0YXJ0aW5nOyBkb25lIn0sImxlbmd0aCI6M30sImVudl9ydWxlcyI6eyJlbGVtZW50cyI6eyIwIjp7InBhdHRlcm4iOiJJREVOVElUWV9BUElfVkVSU0lPTj0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSwiMSI6eyJwYXR0ZXJuIjoiSURFTlRJVFlfSEVBREVSPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCIxMCI6eyJwYXR0ZXJuIjoiRmFicmljX1NlcnZpY2VOYW1lPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCIxMSI6eyJwYXR0ZXJuIjoiRmFicmljX0FwcGxpY2F0aW9uTmFtZT0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSwiMTIiOnsicGF0dGVybiI6IkZhYnJpY19Db2RlUGFja2FnZU5hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjEzIjp7InBhdHRlcm4iOiJGYWJyaWNfU2VydmljZURuc05hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjE0Ijp7InBhdHRlcm4iOiJBQ0lfTUlfREVGQVVMVD0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSwiMTUiOnsicGF0dGVybiI6IlRva2VuUHJveHlJcEFkZHJlc3NFbnZLZXlOYW1lPVtDb250YWluZXJUb0hvc3RBZGRyZXNzfEZhYnJpY19Ob2RlbFBPckZRRE5dIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCIxNiI6eyJwYXR0ZXJuIjoiQ29udGFpbmVyVG9Ib3N0QWRkcmVzcz0iLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5Ijoic3RyaW5nIn0sIjE3Ijp7InBhdHRlcm4iOiJGYWJyaWNfTmV0d29ya2luZ01vZGU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjE4Ijp7InBhdHRlcm4iOiJhenVyZWNvbnRhaW5lcmluc3RhbmNlX3Jlc3RhcnRlZF9ieT0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSwiMiI6eyJwYXR0ZXJuIjoiSURFTlRJVFlfU0VSVkVSX1RIVU1CUFJJTlQ9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjMiOnsicGF0dGVybiI6IkFDSV9NSV9DTElFTlRfSURfLis9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjQiOnsicGF0dGVybiI6IkFDSV9NSV9SRVNfSURfLis9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjUiOnsicGF0dGVybiI6IkhPU1ROQU1FPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCI2Ijp7InBhdHRlcm4iOiJURVJNPXh0ZXJtIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InN0cmluZyJ9LCI3Ijp7InBhdHRlcm4iOiJQQVRIPS91c3IvbG9jYWwvc2JpbjovdXNyL2xvY2FsL2JpbjovdXNyL3NiaW46L3Vzci9iaW46L3NiaW46L2JpbiIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJzdHJpbmcifSwiOCI6eyJwYXR0ZXJuIjoiKCg/aSlGQUJSSUMpXy4rPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCI5Ijp7InBhdHRlcm4iOiJGYWJyaWNfSWQrPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9fSwibGVuZ3RoIjoxOX0sImV4ZWNfcHJvY2Vzc2VzIjp7ImVsZW1lbnRzIjp7fSwibGVuZ3RoIjowfSwiaWQiOiJtY3IubWljcm9zb2Z0LmNvbS9hY2kvbXNpLWF0bGFzLWFkYXB0ZXI6bWFzdGVyXzIwMjAxMjAzLjEiLCJsYXllcnMiOnsiZWxlbWVudHMiOnsiMCI6IjYwNmZkNmJhZjVlYjFhNzFmZDI4NmFlYTI5NjcyYTA2YmZlNTVmMDAwN2RlZDkyZWU3MzE0MmEzNzU5MGVkMTkiLCIxIjoiOTBhZDJmNWIyYzQyNWE3YzQ1OGY5ZjVkMjFjZjA2NGMyMTVmMTRlNDA2ODAwOTY4ZjY0NGQyYWIwYjRkMDRkZiIsIjIiOiIxYzRiNjM2NWE3YjkzODM4N2RmZDgyMjg2MmNhNDFhZTU0OTBiNTQ5MGU0YzI2ZWI0YjVkYTk2YzY0MDk2MGNmIn0sImxlbmd0aCI6M30sIm1vdW50cyI6eyJlbGVtZW50cyI6e30sImxlbmd0aCI6MH0sInNpZ25hbHMiOnsiZWxlbWVudHMiOnt9LCJsZW5ndGgiOjB9LCJ3b3JraW5nX2RpciI6Ii9yb290LyJ9fSwibGVuZ3RoIjoxfX0="
         image = self.aci_policy.get_images()[0]
+        env_vars = [
+            {
+                "name": "IDENTITY_API_VERSION",
+                "value": ".+",
+            },
+            {
+                "name": "IDENTITY_HEADER",
+                "value": ".+",
+            },
+            {
+                "name": "IDENTITY_SERVER_THUMBPRINT",
+                "value": ".+",
+            },
+            {
+                "name": "ACI_MI_CLIENT_ID_.+",
+                "value": ".+",
+            },
+            {
+                "name": "ACI_MI_RES_ID_.+",
+                "value": ".+",
+            },
+            {
+                "name": "HOSTNAME",
+                "value": ".+",
+            },
+            {
+                "name": "TERM",
+                "value": "xterm",
+            },
+            {
+                "name": "PATH",
+                "value": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            },
+            {
+                "name": "(?i)(FABRIC)_.+",
+                "value": ".+",
+            },
+            {
+                "name": "Fabric_Id+",
+                "value": ".+",
+            },
+            {
+                "name": "Fabric_ServiceName",
+                "value": ".+",
+            },
+            {
+                "name": "Fabric_ApplicationName",
+                "value": ".+",
+            },
+            {
+                "name": "Fabric_CodePackageName",
+                "value": ".+",
+            },
+            {
+                "name": "Fabric_ServiceDnsName",
+                "value": ".+",
+            },
+            {
+                "name": "ACI_MI_DEFAULT",
+                "value": ".+",
+            },
+            {
+                "name": "TokenProxyIpAddressEnvKeyName",
+                "value": "[ContainerToHostAddress|Fabric_NodelPOrFQDN]",
+            },
+            {
+                "name": "ContainerToHostAddress",
+                "value": "",
+            },
+            {
+                "name": "Fabric_NetworkingMode",
+                "value": ".+",
+            },
+            {
+                "name": "azurecontainerinstance_restarted_by",
+                "value": ".+",
+            }
+        ]
+        command = ["/bin/sh", "-c", "until ./msiAtlasAdapter; do echo $? restarting; done"]
         self.assertEqual(image.base, "mcr.microsoft.com/aci/msi-atlas-adapter")
         self.assertIsNotNone(image)
-        
-        self.maxDiff = None
+
+        self.assertEqual(image._command, command)
+        for env_var in env_vars:
+            env_names = map(lambda x: x['pattern'], image._environmentRules + image._extraEnvironmentRules)
+            self.assertIn(env_var['name'] + "=" + env_var['value'], env_names)
+
         expected_workingdir = "/root/"
         self.assertEqual(image._workingDir, expected_workingdir)
-        self.assertEqual(
-            self.aci_policy.get_serialized_output(use_json=True),
-            expected_sidecar_container_ser,
-        )
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=12)
 class PolicyGeneratingDebugMode(unittest.TestCase):
     custom_json = """
       {
@@ -312,7 +383,7 @@ class PolicyGeneratingDebugMode(unittest.TestCase):
             aci_policy.populate_policy_content_for_all_images()
             cls.aci_policy = aci_policy
 
-    def test_logging_enabled(self):
+    def test_debug_flags(self):
 
         policy = self.aci_policy.get_serialized_output(
             output_type=OutputType.RAW, rego_boilerplate=True
@@ -322,15 +393,19 @@ class PolicyGeneratingDebugMode(unittest.TestCase):
         expected_logging_string = "allow_runtime_logging := true"
         expected_properties_access = "allow_properties_access := true"
         expected_dump_stacks = "allow_dump_stacks := true"
+        expected_env_var_dropping = "allow_environment_variable_dropping := true"
+        expected_capability_dropping = "allow_capability_dropping := true"
+        expected_unencrypted_scratch = "allow_unencrypted_scratch := false"
 
         # make sure all these are included in the policy
         self.assertTrue(expected_logging_string in policy)
         self.assertTrue(expected_properties_access in policy)
         self.assertTrue(expected_dump_stacks in policy)
+        self.assertTrue(expected_env_var_dropping in policy)
+        self.assertTrue(expected_capability_dropping in policy)
+        self.assertTrue(expected_unencrypted_scratch in policy)
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=11)
 class SidecarValidation(unittest.TestCase):
     custom_json = """
       {
@@ -400,13 +475,9 @@ class SidecarValidation(unittest.TestCase):
         self.assertTrue(
             json.loads(
                 self.aci_policy.get_serialized_output(
-                    use_json=True, output_type=OutputType.RAW
+                    output_type=OutputType.RAW, rego_boilerplate=False
                 )
-            )[config.POLICY_FIELD_CONTAINERS][config.POLICY_FIELD_CONTAINERS_ELEMENTS][
-                "0"
-            ][
-                config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS
-            ]
+            )[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS]
         )
 
     def test_incorrect_sidecar(self):
@@ -427,8 +498,6 @@ class SidecarValidation(unittest.TestCase):
         self.assertEqual(diff, expected_diff)
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=4)
 class CustomJsonParsing(unittest.TestCase):
     def test_customized_workingdir(self):
         custom_json = """
@@ -516,13 +585,13 @@ class CustomJsonParsing(unittest.TestCase):
             for i in range(len(expected_layers)):
                 self.assertEqual(layers[i], expected_layers[i])
 
-    def test_image_layers_rust(self):
+    def test_image_layers_nginx(self):
         custom_json = """
         {
             "version": "1.0",
             "containers": [
                 {
-                    "containerImage": "rust:1.52.1",
+                    "containerImage": "nginx:1.22",
                     "environmentVariables": [],
                     "command": ["echo", "hello"]
                 }
@@ -536,12 +605,12 @@ class CustomJsonParsing(unittest.TestCase):
             layers = aci_policy.get_images()[0]._layers
 
             expected_layers = [
-                "fe84c9d5bfddd07a2624d00333cf13c1a9c941f3a261f13ead44fc6a93bc0e7a",
-                "4dedae42847c704da891a28c25d32201a1ae440bce2aecccfa8e6f03b97a6a6c",
-                "41d64cdeb347bf236b4c13b7403b633ff11f1cf94dbc7cf881a44d6da88c5156",
-                "eb36921e1f82af46dfe248ef8f1b3afb6a5230a64181d960d10237a08cd73c79",
-                "e769d7487cc314d3ee748a4440805317c19262c7acd2fdbdb0d47d2e4613a15c",
-                "1b80f120dbd88e4355d6241b519c3e25290215c469516b49dece9cf07175a766",
+                "5250e7d2517bcae4d264c84d8e7c6da14607ce867e29a81bf4327ee6896218a3",
+                "b6d54ad6a7223dd687d308c8562aaa7dfef2f5a88ec701fb3f89e49312832b82",
+                "8608c5be3af25ed58b2291999fe76cc021ced0ea70b6387c4373c6551f4d6ddb",
+                "1e0878890d701c494c8aeade31d15eaaf9b9c382c27e2519727cb5d1e91df764",
+                "233b6e2f8931a4d67930ac602688acc16c930926fcadc9e31195440db0737791",
+                "1053a7714644b99537bc0e8058a7e4771d2fe679ef54097e128a813f3c80a9cf",
             ]
             self.assertEqual(len(layers), len(expected_layers))
             for i in range(len(expected_layers)):
@@ -553,7 +622,7 @@ class CustomJsonParsing(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
-                    "containerImage": "rust:1.52.1",
+                    "containerImage": "alpine:3.16",
                     "environmentVariables": [],
                     "command": ["echo", "hello"]
                 }
@@ -562,11 +631,31 @@ class CustomJsonParsing(unittest.TestCase):
         """
         with load_policy_from_str(custom_json) as aci_policy:
             image = aci_policy.pull_image(aci_policy.get_images()[0])
-            self.assertIsNotNone(image)
+            self.assertIsNotNone(image.id)
+
             self.assertEqual(
                 image.id,
-                "sha256:83ac22b6cf50c51a1d11b3220316be73271e59d30a65f33f4391dc4cfabdc856",
+                "sha256:e525c930fe751104ff24c356a7bcfad66ce4b92797780eb38dc2ff95d7a66fdc",
             )
+
+    def test_infrastructure_svn(self):
+        custom_json = """
+        {
+            "version": "1.0",
+            "containers": [
+                {
+                    "containerImage": "alpine:3.16",
+                    "environmentVariables": [],
+                    "command": ["echo", "hello"]
+                }
+            ]
+        }
+        """
+        with load_policy_from_str(custom_json) as aci_policy:
+            aci_policy.populate_policy_content_for_all_images()
+            output = aci_policy.get_serialized_output(OutputType.PRETTY_PRINT)
+
+            self.assertTrue('"0.2.3"' in output)
 
     def test_environment_variables_parsing(self):
         custom_json = """
@@ -642,14 +731,10 @@ class CustomJsonParsing(unittest.TestCase):
             aci_policy.populate_policy_content_for_all_images()
             self.assertTrue(
                 json.loads(
-                    aci_policy.get_serialized_output(use_json=True, output_type=OutputType.RAW)
-                )[config.POLICY_FIELD_CONTAINERS][
-                    config.POLICY_FIELD_CONTAINERS_ELEMENTS
-                ][
-                    "0"
-                ][
-                    config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS
-                ]
+                    aci_policy.get_serialized_output(
+                        output_type=OutputType.RAW, rego_boilerplate=False
+                    )
+                )[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS]
             )
 
     def test_stdio_access_updated(self):
@@ -671,19 +756,13 @@ class CustomJsonParsing(unittest.TestCase):
 
             self.assertFalse(
                 json.loads(
-                    aci_policy.get_serialized_output(use_json=True, output_type=OutputType.RAW)
-                )[config.POLICY_FIELD_CONTAINERS][
-                    config.POLICY_FIELD_CONTAINERS_ELEMENTS
-                ][
-                    "0"
-                ][
-                    config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS
-                ]
+                    aci_policy.get_serialized_output(
+                        output_type=OutputType.RAW, rego_boilerplate=False
+                    )
+                )[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS]
             )
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=5)
 class CustomJsonParsingIncorrect(unittest.TestCase):
     def test_get_layers_from_not_exists_image(self):
         # if an image does not exists in local container repo/daemon, an
@@ -711,7 +790,7 @@ class CustomJsonParsingIncorrect(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
-                    "containerImage": "rust:1.52.1",
+                    "containerImage": "alpine:3.16",
                     "environmentVariables": [],
                     "command": "echo hello",
                     "workingDir": "relative/string/path",
@@ -731,7 +810,7 @@ class CustomJsonParsingIncorrect(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
-                    "containerImage": "rust:1.52.1",
+                    "containerImage": "alpine:3.16",
                     "environmentVariables": [],
                     "command": "echo hello",
                     "workingDir": "relative/string/path"
@@ -750,7 +829,7 @@ class CustomJsonParsingIncorrect(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
-                    "containerImage": "rust:1.52.1",
+                    "containerImage": "alpine:3.16",
                     "environmentVariables": [],
                     "command": "echo hello",
                     "workingDir": ["hello"]
@@ -769,7 +848,7 @@ class CustomJsonParsingIncorrect(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
-                    "containerImage": "rust:1.52.1",
+                    "containerImage": "alpine:3.16",
                     "environmentVariables": [],
                     "command": "echo hello"
                 }

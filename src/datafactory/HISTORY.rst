@@ -2,6 +2,22 @@
 
 Release History
 ===============
+1.0.0
++++++
+* Support --enable-self-contained-interactive-authoring in integration-runtime self-hosted create
+
+0.10.0
++++++
+* Support new features in ADF
+
+0.9.0
++++++
+* Change publicnetworkaccess to public-network-access word
+
+0.8.0
++++++
+* Support publicnetworkaccess in datafactory_create and datafactory_update
+
 0.7.0
 +++++
 * az datafactory data-flow: Support create/update/list/show/delete data flows.

@@ -2,6 +2,53 @@
 Release History
 ===============
 
+1.0.0b1
+++++++
+Fix bug in win-run-driver.ps1 default values for invoking run command through az vm repair run.
+
+0.5.9
+++++++
+Adding default values in win-run-driver.ps1 script for repo_fork and branch_name.
+
+0.5.8
+++++++
+Fix az vm repair run --preview parameter to take in fork and branch name of User's repository.
+
+0.5.7
+++++++
+Remove VM-repair SUSE image check
+
+0.5.6
+++++++
+Renaming the Public IP resource.
+Fix the name of the resource, previously the name was always "yes". Now it follows the format repair-<VM>_PublicIP
+
+0.5.5
+++++++
+Adding ARM64 support.
+Fix for telemetry for repair-and-restore command.
+Repair VM fix for gen1 VM attaching disk on SCSI controller, preventing nested VM from booting (by Ryan McCallum)
+
+0.5.4
+++++++
+Adding repair-and-restore command to create a one command flow for vm-repair with fstab scripts.
+
+0.5.3
+++++++
+Removing check for EncryptionSettingsCollection.enabled is string 'false'.
+
+0.5.2
+++++++
+Fix bug in _fetch_encryption_settings, add check for EncryptionSettingsCollection.enabled is false.
+
+0.5.1
+++++++
+Updated exsiting privateIpAddress field to privateIPAddress and privateIpAllocationMethod to privateIPAllocationMethod.
+
+0.5.0
+++++++
+Support for hosting repair vm in existing resource group and fixing existing resource group logic 
+
 0.5.0
 ++++++
 Support for hosting repair vm in existing resource group and fixing existing resource group logic 

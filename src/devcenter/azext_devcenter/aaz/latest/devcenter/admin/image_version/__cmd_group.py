@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "devcenter admin image-version",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage image version with devcenter
+    """Manage image versions.
     """
     pass
 

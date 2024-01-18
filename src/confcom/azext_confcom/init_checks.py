@@ -51,11 +51,19 @@ def docker_permissions() -> str:
     docker_group = None
     # check if the user is in the docker group and if not an admin
     if is_linux() and not is_admin():
+        client = None
         try:
             docker_group = grp.getgrnam("docker")
+            client = docker.from_env()
+            # need any command that will show the docker daemon is
+            client.containers.list()
         except KeyError:
             return "The docker group was not found"
-
+        except docker.errors.DockerException as e:
+            return f"Docker error: {e.args[0]}"
+        finally:
+            if client:
+                client.close()
         if getpass.getuser() not in docker_group.gr_mem:
             return """The current user does not have permission to run Docker.
              Run 'sudo usermod -aG docker' to add them to the docker group."""

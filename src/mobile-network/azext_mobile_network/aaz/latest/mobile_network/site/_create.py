@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a mobile network site.
 
     :example: Create site
-        az mobile-network create -n mobile-network-name -g rg --identifier "{mcc:001,mnc:01}"
+        az mobile-network site create --mobile-network-name mobile-network-name -n site-name -g rg
     """
 
     _aaz_info = {

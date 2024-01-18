@@ -36,7 +36,6 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         # If user expects logs to be printed, do not redirect logs. In some ocasions output gets messed up.
         redirect_stderr = set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list) and \
             (delete_cert or op_info.delete_credentials)
-
         if redirect_stderr:
             ssh_arg_list = ['-v'] + ssh_arg_list
 
@@ -44,34 +43,55 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         if op_info.is_arc():
             env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(op_info.relay_info)
 
+        retry_attempt = 0
+        retry_attempts_allowed = 0
+        successful_connection = False
+        ssh_process = None
+        connection_duration = None
+
         # Get ssh client before starting the clean up process in case there is an error in getting client.
         command = [get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host(), "-l", op_info.local_user]
 
         command = command + op_info.build_args() + ssh_arg_list
-
-        connection_duration = time.time()
         logger.debug("Running ssh command %s", ' '.join(command))
 
-        try:
-            # pylint: disable=consider-using-with
-            if redirect_stderr:
-                ssh_process = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
-                _read_ssh_logs(ssh_process, op_info, delete_cert, delete_keys)
-            else:
-                ssh_process = subprocess.Popen(command, env=env, encoding='utf-8')
-                _wait_to_delete_credentials(ssh_process, op_info, delete_cert, delete_keys)
-        except OSError as e:
-            colorama.init()
-            raise azclierror.BadRequestError(f"Failed to run ssh command with error: {str(e)}.",
-                                             const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
+        while (retry_attempt <= retry_attempts_allowed and not successful_connection):
+            service_config_delay_error_logs = False
+            if retry_attempt == 1:
+                logger.warning("SSH connection failed, possibly caused by new service configuration setup. "
+                               "Retrying the connection in %d seconds.", const.RETRY_DELAY_IN_SECONDS)
+                time.sleep(const.RETRY_DELAY_IN_SECONDS)
+            connection_duration = time.time()
+            try:
+                # pylint: disable=consider-using-with
+                if redirect_stderr:
+                    ssh_process = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
+                    service_config_delay_error_logs = _check_ssh_logs_for_common_errors(ssh_process, op_info,
+                                                                                        delete_cert, delete_keys)
+                else:
+                    ssh_process = subprocess.Popen(command, env=env, encoding='utf-8')
+                    _wait_to_delete_credentials(ssh_process, op_info, delete_cert, delete_keys)
+            except OSError as e:
+                colorama.init()
+                raise azclierror.BadRequestError(f"Failed to run ssh command with error: {str(e)}.",
+                                                 const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
 
-        connection_duration = (time.time() - connection_duration) / 60
-        ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
-        if ssh_process.poll() == 0:
-            ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
-        telemetry.add_extension_event('ssh', ssh_connection_data)
+            connection_duration = (time.time() - connection_duration) / 60
+            if ssh_process and ssh_process.poll() == 0:
+                successful_connection = True
+            if op_info.new_service_config and \
+                    (service_config_delay_error_logs or (ssh_process.poll() == 255 and not redirect_stderr)):
+                retry_attempts_allowed = 1
+                if retry_attempt == 1:
+                    logger.warning("SSH connection failure could still be due to Service Configuration update. "
+                                   "Please re-run command.")
+            retry_attempt += 1
 
     finally:
+        ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
+        if successful_connection:
+            ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
+        telemetry.add_extension_event('ssh', ssh_connection_data)
         # Even if something fails between the creation of the credentials and the end of the ssh connection, we
         # want to make sure that all credentials are cleaned up.
         do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
@@ -92,11 +112,11 @@ def write_ssh_config(config_info, delete_keys, delete_cert):
         f.write('\n'.join(config_text))
 
 
-def _read_ssh_logs(ssh_sub, op_info, delete_cert, delete_keys):
+def _check_ssh_logs_for_common_errors(ssh_sub, op_info, delete_cert, delete_keys):
     log_list = []
     connection_established = False
     t0 = time.time()
-
+    service_config_delay_error = False
     next_line = ssh_sub.stderr.readline()
     while next_line:
         log_list.append(next_line)
@@ -106,6 +126,8 @@ def _read_ssh_logs(ssh_sub, op_info, delete_cert, delete_keys):
            not next_line.startswith("Authenticated "):
             sys.stderr.write(next_line)
             _check_for_known_errors(next_line, delete_cert, log_list)
+            if not service_config_delay_error:
+                service_config_delay_error = check_for_service_config_delay_error(next_line)
 
         if "debug1: Entering interactive session." in next_line:
             connection_established = True
@@ -113,13 +135,14 @@ def _read_ssh_logs(ssh_sub, op_info, delete_cert, delete_keys):
                        op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
 
         if not connection_established and \
-           time.time() - t0 > const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
+                time.time() - t0 > const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
             do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
                        op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
 
         next_line = ssh_sub.stderr.readline()
 
     ssh_sub.wait()
+    return service_config_delay_error
 
 
 def _wait_to_delete_credentials(ssh_sub, op_info, delete_cert, delete_keys):
@@ -243,6 +266,14 @@ def _check_for_known_errors(error_message, delete_cert, log_lines):
     if re.search(regex, error_message):
         logger.error("Please make sure SSH port is allowed using \"azcmagent config list\" in the target "
                      "Arc Server. Ensure SSHD is running on the target machine.\n")
+
+
+def check_for_service_config_delay_error(error_message):
+    service_config_delay_error = False
+    regex = ("{\"level\":\"fatal\",\"msg\":\"sshproxy: error connecting to the address: 404 Endpoint does not exist.*")
+    if re.search(regex, error_message):
+        service_config_delay_error = True
+    return service_config_delay_error
 
 
 def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
