@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 #!/bin/bash
 # LONG=resource-group-name:,elastic-san-name:,volume-group-name:,volume-name:,num-of-sessions:,enable-multi-path::
 # while getopts ":resource-group-name:elastic-san-name:volume-group-name:volume-name:num-of-sessions:enable-multi-path" opt; do
