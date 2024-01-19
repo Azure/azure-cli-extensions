@@ -66,12 +66,14 @@ def load_command_table(self, _):
         ValidateForRestore as BackupInstanceValidateRestore,
         RestoreTrigger as BackupInstanceRestoreTrigger,
         ValidateForCRR as CRRValidateRestore,
+        TriggerCRR as CRRTriggerRestore,
     )
     self.command_table['dataprotection backup-instance create'] = BackupInstanceCreate(loader=self)
     self.command_table['dataprotection backup-instance validate-for-restore'] = BackupInstanceValidateRestore(loader=self)
     self.command_table['dataprotection backup-instance restore trigger'] = BackupInstanceRestoreTrigger(loader=self)
 
     self.command_table['dataprotection cross-region-restore validate'] = CRRValidateRestore(loader=self)
+    self.command_table['dataprotection cross-region-restore trigger'] = CRRTriggerRestore(loader=self)
 
     from .aaz_operations.backup_policy import Create as BackupPolicyCreate
     self.command_table['dataprotection backup-policy create'] = BackupPolicyCreate(loader=self)
