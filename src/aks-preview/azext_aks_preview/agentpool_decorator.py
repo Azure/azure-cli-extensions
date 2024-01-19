@@ -418,6 +418,24 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return os_sku
 
+    def get_skip_gpu_driver_install(self) -> bool:
+        """Obtain the value of skip_gpu_driver_install.
+        :return: bool
+        """
+
+        # read the original value passed by the command
+        skip_gpu_driver_install = self.raw_param.get("skip_gpu_driver_install")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.gpu_profile is not None and
+                self.agentpool.gpu_profile.install_gpu_driver is not None
+            ):
+                skip_gpu_driver_install = not self.agentpool.gpu_profile.install_gpu_driver
+
+        return skip_gpu_driver_install
+
     def get_enable_secure_boot(self, enable_validation: bool = False) -> bool:
         """Obtain the value of enable_secure_boot.
         :return: bool
@@ -609,6 +627,16 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.artifact_streaming_profile.enabled = True
         return agentpool
 
+    def set_up_skip_gpu_driver_install(self, agentpool: AgentPool) -> AgentPool:
+        """Set up install gpu driver property for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_skip_gpu_driver_install():
+            if agentpool.gpu_profile is None:
+                agentpool.gpu_profile = self.models.AgentPoolGPUProfile()  # pylint: disable=no-member
+            agentpool.gpu_profile.install_gpu_driver = False
+        return agentpool
+
     def set_up_secure_boot(self, agentpool: AgentPool) -> AgentPool:
         """Set up secure boot property for the AgentPool object."""
         self._ensure_agentpool(agentpool)
@@ -660,6 +688,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_taints(agentpool)
         # set up artifact streaming
         agentpool = self.set_up_artifact_streaming(agentpool)
+        # set up skip_gpu_driver_install
+        agentpool = self.set_up_skip_gpu_driver_install(agentpool)
         # set up secure boot
         agentpool = self.set_up_secure_boot(agentpool)
         # set up vtpm

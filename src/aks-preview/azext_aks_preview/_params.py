@@ -1345,6 +1345,7 @@ def load_arguments(self, _):
             validator=validate_node_public_ip_tags,
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
+        c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1918,8 +1919,8 @@ def load_arguments(self, _):
             "source_resource_id",
             options_list=[
                 "--source-resource-id",
-                "-r",
                 c.deprecate(target="-s", redirect="--source-resource-id", hide=True),
+                c.deprecate(target="-r", redirect="--source-resource-id", hide=True),
             ],
             help="The source resource id of the binding",
         )
