@@ -50,56 +50,28 @@ class ContainerappEnvTelemetryPreviewSetDecorator(ContainerAppEnvUpdateDecorator
 
     def set_argument_app_insights_connection_string(self):
         if self.get_argument_app_insights_connection_string() and self.get_argument_app_insights_connection_string() is not None:
-            self.managed_env_def["properties"]["appInsightsConfiguration"] = AppInsightsConfiguration
-            self.managed_env_def["properties"]["appInsightsConfiguration"]["connectionString"] = self.get_argument_app_insights_connection_string()
-
+            safe_set(self.managed_env_def, "properties", "appInsightsConfiguration", "connectionString", value=self.get_argument_app_insights_connection_string())
 
     def set_argument_open_telemetry_include_system_telemetry(self):
         if self.get_argument_open_telemetry_include_system_telemetry() and self.get_argument_open_telemetry_include_system_telemetry() is not None:
-            if "openTelemetryConfiguration" not in self.managed_env_def["properties"]:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"] = OpenTelemetryConfiguration
-            self.managed_env_def["properties"]["openTelemetryConfiguration"]["includeSystemTelemetry"] = self.get_argument_open_telemetry_include_system_telemetry()
+            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "includeSystemTelemetry", value=self.get_argument_open_telemetry_include_system_telemetry())
     
     def set_argument_open_telemetry_dataDog_site(self):
         if self.get_argument_open_telemetry_dataDog_site() and self.get_argument_open_telemetry_dataDog_site() is not None:
-            if "openTelemetryConfiguration" not in self.managed_env_def["properties"]:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"] = OpenTelemetryConfiguration
-            if "destinationsConfiguration" not in self.managed_env_def["properties"]["openTelemetryConfiguration"] or self.managed_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"] is None:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"] = DestinationsConfiguration
-            if "dataDogConfiguration" not in self.managed_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"] or self.managed_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"]["dataDogConfiguration"] is None:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"]["dataDogConfiguration"] = DataDogConfiguration
-            self.managed_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"]["dataDogConfiguration"]["site"] = self.get_argument_open_telemetry_dataDog_site()
+            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site", value=self.get_argument_open_telemetry_dataDog_site())
     
     def set_argument_open_telemetry_dataDog_key(self):
         if self.get_argument_open_telemetry_dataDog_key() and self.get_argument_open_telemetry_dataDog_key() is not None:
-            if "openTelemetryConfiguration" not in self.managed_env_def["properties"] or self.managed_env_def["properties"]["openTelemetryConfiguration"] is None:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"] = OpenTelemetryConfiguration
-            if "destinationsConfiguration" not in self.managed_env_def["properties"]["openTelemetryConfiguration"] or self.managed_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"] is None:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"] = DestinationsConfiguration
-            if "dataDogConfiguration" not in self.managed_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"] or self.managed_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"]["dataDogConfiguration"] is None:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"]["dataDogConfiguration"] = DataDogConfiguration
-            self.managed_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"]["dataDogConfiguration"]["key"] = self.get_argument_open_telemetry_dataDog_key()
+            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "key", value=self.get_argument_open_telemetry_dataDog_key())
 
     def set_argument_open_telemetry_traces_destinations(self):
         if self.get_argument_open_telemetry_traces_destinations() and self.get_argument_open_telemetry_traces_destinations() is not None:
-            if "openTelemetryConfiguration" not in self.managed_env_def["properties"] or self.managed_env_def["properties"]["openTelemetryConfiguration"] is None:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"] = OpenTelemetryConfiguration
-            if "tracesConfiguration" not in self.managed_env_def["properties"]["openTelemetryConfiguration"] or self.managed_env_def["properties"]["openTelemetryConfiguration"]["tracesConfiguration"] is None:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"]["tracesConfiguration"] = TracesConfiguration
-            self.managed_env_def["properties"]["openTelemetryConfiguration"]["tracesConfiguration"]["destinations"] = self.get_argument_open_telemetry_traces_destinations()
+            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=self.get_argument_open_telemetry_traces_destinations())
 
     def set_argument_open_telemetry_logs_destinations(self):
         if self.get_argument_open_telemetry_logs_destinations() and self.get_argument_open_telemetry_logs_destinations() is not None:
-            if "openTelemetryConfiguration" not in self.managed_env_def["properties"] or self.managed_env_def["properties"]["openTelemetryConfiguration"] is None:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"] = OpenTelemetryConfiguration
-            if "logsConfiguration" not in self.managed_env_def["properties"]["openTelemetryConfiguration"] or self.managed_env_def["properties"]["openTelemetryConfiguration"]["logsConfiguration"] is None:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"]["logsConfiguration"] = LogsConfiguration
-            self.managed_env_def["properties"]["openTelemetryConfiguration"]["logsConfiguration"]["destinations"] = self.get_argument_open_telemetry_logs_destinations()
+            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=self.get_argument_open_telemetry_logs_destinations())              
 
     def set_argument_open_telemetry_metrics_destinations(self):
         if self.get_argument_open_telemetry_metrics_destinations() and self.get_argument_open_telemetry_metrics_destinations() is not None:
-            if "openTelemetryConfiguration" not in self.managed_env_def["properties"] or self.managed_env_def["properties"]["openTelemetryConfiguration"] is None:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"] = OpenTelemetryConfiguration
-            if "metricsConfiguration" not in self.managed_env_def["properties"]["openTelemetryConfiguration"] or self.managed_env_def["properties"]["openTelemetryConfiguration"]["metricsConfiguration"] is None:
-                self.managed_env_def["properties"]["openTelemetryConfiguration"]["metricsConfiguration"] = MetricsConfiguration
-            self.managed_env_def["properties"]["openTelemetryConfiguration"]["metricsConfiguration"]["destinations"] = self.get_argument_open_telemetry_metrics_destinations()
+            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=self.get_argument_open_telemetry_metrics_destinations())              

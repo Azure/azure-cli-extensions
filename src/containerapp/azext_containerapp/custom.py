@@ -1895,5 +1895,5 @@ def set_environment_telemetry(cmd,
     containerapp_env_telemetry_decorator.register_provider(CONTAINER_APPS_RP)
 
     containerapp_env_telemetry_decorator.construct_payload()
-    r = containerapp_env_telemetry_decorator.create()
+    r = containerapp_env_telemetry_decorator.update()
     r = containerapp_env_telemetry_decorator.post_process(r)
