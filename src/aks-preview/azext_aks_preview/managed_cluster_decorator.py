@@ -2075,6 +2075,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def _handle_upgrade_asm(self, new_profile: ServiceMeshProfile) -> Tuple[ServiceMeshProfile, bool]:
         mesh_upgrade_command = self.raw_param.get("mesh_upgrade_command", None)
+        updated = False
 
         # deal with mesh upgrade commands
         if mesh_upgrade_command is not None:
@@ -2114,7 +2115,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     new_profile.istio.revisions = []
                 new_profile.istio.revisions.append(requested_revision)
                 updated = True
-        updated = False
 
         return new_profile, updated
     
