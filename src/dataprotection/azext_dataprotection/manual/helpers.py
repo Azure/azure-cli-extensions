@@ -3,11 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import uuid
 import re
 import json
 from importlib import import_module
-from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from knack.log import get_logger
+from azure.cli.core.azclierror import (
+    RequiredArgumentMissingError,
+    InvalidArgumentValueError
+)
 
 critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContainers/protectedItems/delete",
                           "updateProtection": "/backupFabrics/protectionContainers/protectedItems/write",
@@ -18,6 +23,8 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
 
 operation_request_map = {"DisableMUA": "/deleteResourceGuardProxyRequests/default",
                          "DeleteBackupInstance": "/deleteBackupInstanceRequests/default"}
+
+logger = get_logger(__name__)
 
 
 def load_manifest(datasource_type):
