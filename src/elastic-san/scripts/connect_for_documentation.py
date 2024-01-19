@@ -162,6 +162,16 @@ def connect_volume(volume_name, target_iqn, target_portal_hostname, target_porta
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.communicate()
 
+    # enable data protection
+    command = "sudo iscsiadm -m node --targetname {} --portal {}:{} --op update -n node.conn[0].iscsi.HeaderDigest " \
+              "-v CRC32C".format(target_iqn, target_portal_hostname, target_portal_port).split(' ')
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p.communicate()
+    command = "sudo iscsiadm -m node --targetname {} --portal {}:{} --op update -n node.conn[0].iscsi.DataDigest " \
+              "-v CRC32C".format(target_iqn, target_portal_hostname, target_portal_port).split(' ')
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p.communicate()
+
 if __name__ == "__main__":
     # check if iSCSI initiator is installed
     check_iscsi()
