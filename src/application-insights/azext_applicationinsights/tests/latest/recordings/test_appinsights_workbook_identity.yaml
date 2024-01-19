@@ -1,0 +1,1373 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - AZURECLI/2.55.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001","name":"cli_test_appinsights_workbook_identity000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_appinsights_workbook_identity","date":"2024-01-02T11:53:40Z","module":"application-insights"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '442'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - AZURECLI/2.55.0 azsdk-python-azure-mgmt-msi/7.0.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004?api-version=2023-01-31
+  response:
+    body:
+      string: '{"location":"westus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004","name":"id000004","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"01d1fe77-2215-4d2f-bc2a-39002afb1e4a","clientId":"73c12689-2d5f-4527-87c9-6e65bbef0e1a"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '462'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:44 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - AZURECLI/2.55.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001","name":"cli_test_appinsights_workbook_identity000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_appinsights_workbook_identity","date":"2024-01-02T11:53:40Z","module":"application-insights"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '442'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - AZURECLI/2.55.0 azsdk-python-azure-mgmt-msi/7.0.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005?api-version=2023-01-31
+  response:
+    body:
+      string: '{"location":"westus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005","name":"id000005","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"47e75115-be44-4d7e-93a4-86b51a7437df","clientId":"0779774f-a876-4f3f-b978-e5e386978cce"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '462'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:47 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --display-name -n --category --kind --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001","name":"cli_test_appinsights_workbook_identity000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_appinsights_workbook_identity","date":"2024-01-02T11:53:40Z","module":"application-insights"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '442'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004":
+      {}}}, "kind": "shared", "location": "westus", "properties": {"category": "workbook",
+      "displayName": "workbook000002", "serializedData": "null"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '392'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --display-name -n --category --kind --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000000?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"\
+        userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004\"\
+        : {}\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000000\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000000\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000002\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500a200-0000-0200-0000-6593f94e0000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000002\",\r\n    \"serializedData\": \"null\"\
+        ,\r\n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:53:50.8531202Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"345221849e1a4a95b5592999db5dadca\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1086'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000000?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"\
+        userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004\"\
+        : {}\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000000\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000000\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000002\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500a200-0000-0200-0000-6593f94e0000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000002\",\r\n    \"serializedData\": null,\r\
+        \n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:53:50.8531202Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"345221849e1a4a95b5592999db5dadca\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1084'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"etag": "\"2500a200-0000-0200-0000-6593f94e0000\"", "identity": {"type":
+      "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004":
+      {}, "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005":
+      {}}}, "kind": "shared", "location": "westus", "properties": {"category": "workbook",
+      "displayName": "workbook000002", "serializedData": "null", "storageUri": null},
+      "tags": {"hidden-title": "workbook000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity assign
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '695'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000000?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"\
+        userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004\"\
+        : {},\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\"\
+        : {}\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000000\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000000\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000002\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500ab00-0000-0200-0000-6593f9510000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000002\",\r\n    \"serializedData\": \"null\"\
+        ,\r\n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:53:53.1218986Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"cfa06f70bfab4ff2b0b0b78d3835217c\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1280'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000000?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"\
+        userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004\"\
+        : {},\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\"\
+        : {}\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000000\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000000\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000002\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500ab00-0000-0200-0000-6593f9510000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000002\",\r\n    \"serializedData\": null,\r\
+        \n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:53:53.1218986Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"cfa06f70bfab4ff2b0b0b78d3835217c\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1278'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"etag": "\"2500ab00-0000-0200-0000-6593f9510000\"", "identity": {"type":
+      "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005":
+      {}}}, "kind": "shared", "location": "westus", "properties": {"category": "workbook",
+      "displayName": "workbook000002", "serializedData": "null", "storageUri": null},
+      "tags": {"hidden-title": "workbook000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '508'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000000?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"\
+        userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\"\
+        : {}\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000000\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000000\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000002\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500bf00-0000-0200-0000-6593f9530000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000002\",\r\n    \"serializedData\": \"null\"\
+        ,\r\n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:53:55.4778167Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"57699a44e77645249985adcc9894d07d\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1086'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000000?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"\
+        userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\"\
+        : {}\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000000\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000000\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000002\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500bf00-0000-0200-0000-6593f9530000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000002\",\r\n    \"serializedData\": null,\r\
+        \n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:53:55.4778167Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"57699a44e77645249985adcc9894d07d\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1084'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"etag": "\"2500bf00-0000-0200-0000-6593f9530000\"", "identity": {"type":
+      "None", "userAssignedIdentities": {}}, "kind": "shared", "location": "westus",
+      "properties": {"category": "workbook", "displayName": "workbook000002", "serializedData":
+      "null", "storageUri": null}, "tags": {"hidden-title": "workbook000002"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '315'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000000?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"None\",\r\n    \"userAssignedIdentities\"\
+        : {}\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000000\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000000\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000002\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500c700-0000-0200-0000-6593f9550000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000002\",\r\n    \"serializedData\": \"null\"\
+        ,\r\n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:53:57.8842806Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"d37a40c7dc0049e09bfa042091c9d8ba\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '879'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --display-name -n --category --kind
+      User-Agent:
+      - AZURECLI/2.55.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001","name":"cli_test_appinsights_workbook_identity000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_appinsights_workbook_identity","date":"2024-01-02T11:53:40Z","module":"application-insights"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '442'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:53:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"kind": "shared", "location": "westus", "properties": {"category": "workbook",
+      "displayName": "workbook000003", "serializedData": "null"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '139'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --display-name -n --category --kind
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000001?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000001\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000001\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000003\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500cd00-0000-0200-0000-6593f9580000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000003\",\r\n    \"serializedData\": \"null\"\
+        ,\r\n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:54:00.5930238Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"47ff824cd0714dfcb6895e1420530f7a\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '801'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:54:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000001?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000001\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000001\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000003\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500cd00-0000-0200-0000-6593f9580000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000003\",\r\n    \"serializedData\": null,\r\
+        \n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:54:00.5930238Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"47ff824cd0714dfcb6895e1420530f7a\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '799'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:54:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"etag": "\"2500cd00-0000-0200-0000-6593f9580000\"", "identity": {"type":
+      "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004":
+      {}}}, "kind": "shared", "location": "westus", "properties": {"category": "workbook",
+      "displayName": "workbook000003", "serializedData": "null", "storageUri": null},
+      "tags": {"hidden-title": "workbook000003"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity assign
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '508'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000001?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"\
+        userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004\"\
+        : {}\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000001\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000001\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000003\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500d400-0000-0200-0000-6593f95a0000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000003\",\r\n    \"serializedData\": \"null\"\
+        ,\r\n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:54:02.8685829Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"719dd5ba2e12451e8b47cf0fda492a45\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1086'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:54:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000001?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"\
+        userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004\"\
+        : {}\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000001\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000001\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000003\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500d400-0000-0200-0000-6593f95a0000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000003\",\r\n    \"serializedData\": null,\r\
+        \n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:54:02.8685829Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"719dd5ba2e12451e8b47cf0fda492a45\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1084'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:54:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"etag": "\"2500d400-0000-0200-0000-6593f95a0000\"", "identity": {"type":
+      "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004":
+      {}, "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005":
+      {}}}, "kind": "shared", "location": "westus", "properties": {"category": "workbook",
+      "displayName": "workbook000003", "serializedData": "null", "storageUri": null},
+      "tags": {"hidden-title": "workbook000003"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity assign
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '695'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000001?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"\
+        userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004\"\
+        : {},\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\"\
+        : {}\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000001\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000001\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000003\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500d700-0000-0200-0000-6593f95c0000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000003\",\r\n    \"serializedData\": \"null\"\
+        ,\r\n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:54:04.5404488Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"4e3cc985822745a5b950d91eaa0ce885\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1280'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:54:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000001?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"\
+        userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000004\"\
+        : {},\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\"\
+        : {}\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000001\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000001\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000003\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500d700-0000-0200-0000-6593f95c0000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000003\",\r\n    \"serializedData\": null,\r\
+        \n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:54:04.5404488Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"4e3cc985822745a5b950d91eaa0ce885\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1278'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:54:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"etag": "\"2500d700-0000-0200-0000-6593f95c0000\"", "identity": {"type":
+      "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005":
+      {}}}, "kind": "shared", "location": "westus", "properties": {"category": "workbook",
+      "displayName": "workbook000003", "serializedData": "null", "storageUri": null},
+      "tags": {"hidden-title": "workbook000003"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '508'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000001?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"\
+        userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\"\
+        : {}\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000001\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000001\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000003\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500dc00-0000-0200-0000-6593f95f0000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000003\",\r\n    \"serializedData\": \"null\"\
+        ,\r\n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:54:06.9529274Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"5807768610214887ae858c3f5809e132\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1086'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:54:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000001?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"\
+        userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\"\
+        : {}\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000001\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000001\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000003\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500dc00-0000-0200-0000-6593f95f0000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000003\",\r\n    \"serializedData\": null,\r\
+        \n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:54:06.9529274Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"5807768610214887ae858c3f5809e132\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1084'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:54:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"etag": "\"2500dc00-0000-0200-0000-6593f95f0000\"", "identity": {"type":
+      "None", "userAssignedIdentities": {}}, "kind": "shared", "location": "westus",
+      "properties": {"category": "workbook", "displayName": "workbook000003", "serializedData":
+      "null", "storageUri": null}, "tags": {"hidden-title": "workbook000003"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights workbook identity remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '315'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --user-assigned
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_workbook_identity000001/providers/Microsoft.Insights/workbooks/00000000-0000-0000-0000-000000000001?api-version=2023-06-01
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"None\",\r\n    \"userAssignedIdentities\"\
+        : {}\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_appinsights_workbook_identity000001/providers/microsoft.insights/workbooks/00000000-0000-0000-0000-000000000001\"\
+        ,\r\n  \"name\": \"00000000-0000-0000-0000-000000000001\",\r\n  \"type\":\
+        \ null,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-title\"\
+        : \"workbook000003\"\r\n  },\r\n  \"kind\": \"shared\",\r\n  \"etag\": \"\\\
+        \"2500e600-0000-0200-0000-6593f9620000\\\"\",\r\n  \"properties\": {\r\n \
+        \   \"displayName\": \"workbook000003\",\r\n    \"serializedData\": \"null\"\
+        ,\r\n    \"version\": null,\r\n    \"category\": \"workbook\",\r\n    \"userId\"\
+        : \"d44a2991-98c6-47c3-b59b-2b30d72cfcc2\",\r\n    \"sourceId\": null,\r\n\
+        \    \"timeModified\": \"2024-01-02T11:54:10.3401562Z\",\r\n    \"tags\":\
+        \ null,\r\n    \"storageUri\": null,\r\n    \"revision\": \"f09b5b58c63a4e1fabdfc331a5e1f6bc\"\
+        \r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '879'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 02 Jan 2024 11:54:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1
