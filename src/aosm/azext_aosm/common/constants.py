@@ -5,6 +5,7 @@
 """Constants used across aosm cli extension."""
 
 from enum import Enum
+from typing import Any, Dict
 
 # The types of definition that can be generated
 VNF = "vnf"
@@ -30,47 +31,66 @@ class SkipSteps(Enum):
     IMAGE_UPLOAD = IMAGE_UPLOAD
 
 
+class ManifestsExist(str, Enum):
+    ALL = "all"
+    NONE = "none"
+    SOME = "some"
+
+
 # Names of files used in the repo
-NF_TEMPLATE_JINJA2_SOURCE_TEMPLATE = "nf_template.bicep.j2"
-NF_DEFINITION_JSON_FILENAME = "nf_definition.json"
-NF_DEFINITION_OUTPUT_BICEP_PREFIX = "nfd-bicep-"
-NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE = "nsd_template.bicep.j2"
-NSD_BICEP_FILENAME = "nsd_definition.bicep"
-NSD_OUTPUT_BICEP_PREFIX = "nsd-bicep-templates"
-NSD_ARTIFACT_MANIFEST_BICEP_FILENAME = "artifact_manifest.bicep"
-NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE_FILENAME = (
-    "artifact_manifest_template.bicep"
-)
+# TODO: remove unused constants
+BASE_FOLDER_NAME = "base"
+ARTIFACT_LIST_FILENAME = "artifacts"
+MANIFEST_FOLDER_NAME = "artifactManifest"
+NF_DEFINITION_FOLDER_NAME = "nfDefinition"
+ALL_PARAMETERS_FILE_NAME = "all_deploy.parameters.json"
+CGS_FILENAME = "config_group_schema.json"
+CGS_NAME = "ConfigGroupSchema"
+DEPLOYMENT_PARAMETERS_FILENAME = "deploymentParameters.json"
+TEMPLATE_PARAMETERS_FILENAME = "templateParameters.json"
+VHD_PARAMETERS_FILENAME = "vhdParameters.json"
 
-VNF_DEFINITION_BICEP_TEMPLATE_FILENAME = "vnfdefinition.bicep"
-VNF_MANIFEST_BICEP_TEMPLATE_FILENAME = "vnfartifactmanifests.bicep"
+NSD_OUTPUT_FOLDER_FILENAME = "nsd-cli-output"
+NSD_INPUT_FILENAME = "nsd-input.jsonc"
+NSD_DEFINITION_TEMPLATE_FILENAME = "nsddefinition.bicep.j2"
+NSD_MANIFEST_TEMPLATE_FILENAME = "nsdartifactmanifest.bicep.j2"
+NSD_BASE_TEMPLATE_FILENAME = "nsdbase.bicep"
+NSD_TEMPLATE_FOLDER_NAME = "nsd"
+NSD_DEFINITION_FOLDER_NAME = "nsdDefinition"
 
-CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE_FILENAME = "cnfdefinition.bicep.j2"
-CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE_FILENAME = "cnfartifactmanifest.bicep.j2"
-CNF_DEFINITION_BICEP_TEMPLATE_FILENAME = "cnfdefinition.bicep"
-CNF_MANIFEST_BICEP_TEMPLATE_FILENAME = "cnfartifactmanifest.bicep"
+VNF_OUTPUT_FOLDER_FILENAME = "vnf-cli-output"
+VNF_INPUT_FILENAME = "vnf-input.jsonc"
+VNF_DEFINITION_TEMPLATE_FILENAME = "vnfdefinition.bicep.j2"
+VNF_MANIFEST_TEMPLATE_FILENAME = "vnfartifactmanifest.bicep.j2"
+VNF_BASE_TEMPLATE_FILENAME = "vnfbase.bicep"
+VNF_TEMPLATE_FOLDER_NAME = "vnf"
+
+CNF_OUTPUT_FOLDER_FILENAME = "cnf-cli-output"
+CNF_INPUT_FILENAME = "cnf-input.jsonc"
+CNF_DEFINITION_TEMPLATE_FILENAME = "cnfdefinition.bicep.j2"
+CNF_MANIFEST_TEMPLATE_FILENAME = "cnfartifactmanifest.bicep.j2"
+CNF_BASE_TEMPLATE_FILENAME = "cnfbase.bicep"
 CNF_VALUES_SCHEMA_FILENAME = "values.schema.json"
+CNF_TEMPLATE_FOLDER_NAME = "cnf"
 
+#################
+# OLD CONSTANTS #
+#################
 
 # Names of directories used in the repo
-CONFIG_MAPPINGS_DIR_NAME = "configMappings"
-SCHEMAS_DIR_NAME = "schemas"
-TEMPLATES_DIR_NAME = "templates"
+# CONFIG_MAPPINGS_DIR_NAME = "configMappings"
+# SCHEMAS_DIR_NAME = "schemas"
+# TEMPLATES_DIR_NAME = "templates"
 GENERATED_VALUES_MAPPINGS_DIR_NAME = "generatedValuesMappings"
 
 # Items used when building NFDs/NSDs
-DEPLOYMENT_PARAMETERS_FILENAME = "deploymentParameters.json"
 OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME = "optionalDeploymentParameters.txt"
-TEMPLATE_PARAMETERS_FILENAME = "templateParameters.json"
-VHD_PARAMETERS_FILENAME = "vhdParameters.json"
+
 OPTIONAL_DEPLOYMENT_PARAMETERS_HEADING = (
     "# The following parameters are optional as they have default values.\n"
     "# If you do not wish to expose them in the NFD, find and remove them from both\n"
     f"# {DEPLOYMENT_PARAMETERS_FILENAME} and {TEMPLATE_PARAMETERS_FILENAME} (and {VHD_PARAMETERS_FILENAME} if\n"
     "they are there)\n"
-    "# You can re-run the build command with the --order-params flag to order those\n"
-    "# files with the optional parameters at the end of the file, and with the \n"
-    "# --interactive flag to interactively choose y/n for each parameter to expose.\n\n"
 )
 
 # Deployment Schema
@@ -93,7 +113,7 @@ SCHEMA_PREFIX = {
 EXTRA_VHD_PARAMETERS = [
     "image_disk_size_GB",
     "image_hyper_v_generation",
-    "image_api_version"
+    "image_api_version",
 ]
 
 # For CNF NFD Generator
@@ -121,3 +141,10 @@ AOSM_FEATURE_NAMESPACE = "Microsoft.HybridNetwork"
 AOSM_REQUIRED_FEATURES = [
     "Allow-Publisher",
 ]
+
+BASE_SCHEMA: Dict[str, Any] = {
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {},
+    "required": [],
+}

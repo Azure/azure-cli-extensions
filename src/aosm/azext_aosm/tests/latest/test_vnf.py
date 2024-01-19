@@ -12,6 +12,7 @@ from tempfile import TemporaryDirectory
 from azext_aosm.custom import build_definition, generate_definition_config
 
 mock_vnf_folder = ((Path(__file__).parent) / "mock_vnf").resolve()
+vnf_output_directory = ((Path(__file__).parent) / "vnf_output").resolve()
 
 INPUT_WITH_SAS_VHD_PARAMS = {
     "imageName": "ubuntu-vmImage",
@@ -42,26 +43,29 @@ class TestVNF(unittest.TestCase):
             finally:
                 os.chdir(starting_directory)
 
-    def test_build(self):
-        """Test building an NFDV for a VNF."""
+    def test_build_with_filepath(self):
+        """Test building an NFDV for a VNF using a filepath."""
         starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
-            os.chdir(test_dir)
+            os.chdir(vnf_output_directory / "ubuntu_with_filepath")
 
             try:
                 build_definition(
-                    "vnf", str(mock_vnf_folder / "input_with_fp.json")
+                    "vnf", str(mock_vnf_folder / "input_with_filepath.json") # TODO: add force to ensure we overwrite
                 )
                 assert os.path.exists("nfd-bicep-ubuntu-template")
             finally:
                 os.chdir(starting_directory)
 
+    def test_build_with_sas_token(self):
+        """Test building an NFDV for a VNF using a filepath."""
+        starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
-            os.chdir(test_dir)
+            os.chdir(vnf_output_directory / "ubuntu_with_sas_token")
 
             try:
                 build_definition(
-                    "vnf", str(mock_vnf_folder / "input_with_sas.json")
+                    "vnf", str(mock_vnf_folder / "input_with_sas_token.json")
                 )
                 assert os.path.exists("nfd-bicep-ubuntu-template")
                 print(os.listdir("nfd-bicep-ubuntu-template"))
@@ -81,7 +85,7 @@ class TestVNF(unittest.TestCase):
             try:
                 build_definition(
                     "vnf",
-                    str(mock_vnf_folder / "input_with_fp.json"),
+                    str(mock_vnf_folder / "input_with_filepath.json"),
                     order_params=True,
                 )
                 assert os.path.exists("nfd-bicep-ubuntu-template")

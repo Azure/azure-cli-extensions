@@ -3,6 +3,10 @@
 Release History
 ===============
 
+Unreleased
+++++++++
+* Add `publisher` command group for management of publisher resources.
+
 1.0.0b4
 ++++++++
 * Fixed: Remove check for Allow-2023-09-01 feature flag that is no longer required (Bug #1063964)

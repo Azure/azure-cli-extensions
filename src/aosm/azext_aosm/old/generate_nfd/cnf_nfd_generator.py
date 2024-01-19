@@ -220,7 +220,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     ]
                 self._write_nfd_bicep_file()
                 self._write_schema_to_file()
-                self._write_manifest_bicep_file()
+                self._write_manifest_bicep_contents()
                 self._copy_to_output_directory()
                 print(
                     f"Generated NFD bicep template created in {self.output_directory}"
@@ -319,7 +319,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             "Cannot find top level values.yaml/.yml file in Helm package."
         )
 
-    def _write_manifest_bicep_file(self) -> None:
+    def _write_manifest_bicep_contents(self) -> None:
         """Write the bicep file for the Artifact Manifest to the temp directory."""
         assert self._tmp_dir
 
