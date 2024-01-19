@@ -204,7 +204,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         })
 
         self.cmd('az appservice plan create -g {resource_group} -n {plan}')
-        self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa} --functions-version 3 --runtime node', checks=[
+        self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa} --functions-version 4 --runtime node', checks=[
             self.check('state', 'Running'),
             self.check('name', function_name)
         ])
@@ -252,7 +252,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         })
 
         self.cmd('az appservice plan create -g {resource_group2} -n {plan}')
-        self.kwargs['functionapp_id'] = self.cmd('az functionapp create -g {resource_group2} -n {function_name} --plan {plan} -s {sa} --functions-version 3 --runtime node', checks=[
+        self.kwargs['functionapp_id'] = self.cmd('az functionapp create -g {resource_group2} -n {function_name} --plan {plan} -s {sa} --functions-version 4 --runtime node', checks=[
             self.check('state', 'Running'),
             self.check('name', function_name)
         ]).get_output_in_json()['id']

@@ -47,7 +47,7 @@ from azure.cli.command_modules.appservice.custom import (
     _convert_camel_to_snake_case,
     _get_content_share_name,
     get_app_service_plan_from_webapp)
-from azure.cli.command_modules.appservice._constants import LINUX_OS_NAME, FUNCTIONS_NO_V2_REGIONS
+from azure.cli.command_modules.appservice._constants import LINUX_OS_NAME
 from azure.cli.command_modules.appservice.utils import retryable_method, get_sku_tier
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
@@ -355,6 +355,7 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
         }
     }
 
+    msg = ''
     try:
         return sdk_no_wait(no_wait, KubeEnvironmentClient.create,
                            cmd=cmd, resource_group_name=resource_group_name,
@@ -491,7 +492,7 @@ def _check_custom_location_exists(cmd, name, resource_group):
         custom_location_client.custom_locations.get(resource_name=name, resource_group_name=resource_group)
     except E as e:
         custom_locations = [cl.id for cl in custom_location_client.custom_locations.list_by_subscription()]
-        logger.warning(f"\nPlease choose a custom location from your subscription: \n{custom_locations}\n")
+        logger.warning("\nPlease choose a custom location from your subscription: \n%s\n", custom_locations)
         raise e
 
 
@@ -973,7 +974,11 @@ def set_webapp(cmd, resource_group_name, name, slot=None, **kwargs):  # pylint: 
     instance = kwargs['parameters']
     client = web_client_factory(cmd.cli_ctx)
     updater = client.web_apps.begin_create_or_update_slot if slot else client.web_apps.begin_create_or_update
-    kwargs = dict(resource_group_name=resource_group_name, name=name, site_envelope=instance)
+    kwargs = {
+        'resource_group_name': resource_group_name,
+        'name': name,
+        'site_envelope': instance
+    }
     if slot:
         kwargs['slot'] = slot
 
@@ -984,7 +989,8 @@ def scale_webapp(cmd, resource_group_name, name, instance_count, slot=None):
     client = web_client_factory(cmd.cli_ctx)
     webapp = client.web_apps.get(resource_group_name, name)
     if not webapp.extended_location:
-        raise ValidationError("The web app {} is not on Arc enabled Kubernetes. Please use `az appservice plan update` to scale for non-arc enabled app service.".format(name))
+        raise ValidationError("The web app {} is not on Arc enabled Kubernetes. Please use `az appservice plan "
+                              "update` to scale for non-arc enabled app service.".format(name))
     return update_site_configs(cmd, resource_group_name, name,
                                number_of_workers=instance_count, slot=slot)
 
@@ -1022,9 +1028,8 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
                        custom_location=None, min_worker_count=None, max_worker_count=None):
     # pylint: disable=too-many-statements, too-many-branches
     if functions_version is None:
-        logger.warning("No functions version specified so defaulting to 3. In the future, specifying a version will "
-                       "be required. To create a 3.x function you would pass in the flag `--functions-version 3`")
-        functions_version = '3'
+        logger.warning("No functions version specified so defaulting to 4.")
+        functions_version = '4'
 
     if deployment_source_url and deployment_local_git:
         raise MutuallyExclusiveArgumentError('usage error: --deployment-source-url <url> | --deployment-local-git')
@@ -1038,7 +1043,7 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
     from azure.mgmt.web.models import Site
     SiteConfig, NameValuePair, SkuDescription = cmd.get_models('SiteConfig', 'NameValuePair', 'SkuDescription')
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
-    disable_app_insights = (disable_app_insights == "true")
+    disable_app_insights = disable_app_insights == "true"
 
     custom_location = _get_custom_location_id(cmd, custom_location, resource_group_name)
 
@@ -1093,10 +1098,6 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
         functionapp_def.server_farm_id = plan
         functionapp_def.location = location
 
-    if functions_version == '2' and functionapp_def.location in FUNCTIONS_NO_V2_REGIONS:
-        raise ValidationError("2.x functions are not supported in this region. To create a 3.x function, "
-                              "pass in the flag '--functions-version 3'")
-
     if is_linux and not runtime and (consumption_plan_location or not deployment_container_image_name):
         raise ArgumentUsageError(
             "usage error: --runtime RUNTIME required for linux functions apps without custom image.")
@@ -1108,7 +1109,7 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
     if not storage_account and not is_kube:
         raise ValidationError("--storage-account required for non-kubernetes function apps")
 
-    runtime_helper = _FunctionAppStackRuntimeHelper(cmd, linux=is_linux, windows=(not is_linux))
+    runtime_helper = _FunctionAppStackRuntimeHelper(cmd, linux=is_linux, windows=not is_linux)
     matched_runtime = runtime_helper.resolve("dotnet" if not runtime else runtime,
                                              runtime_version, functions_version, is_linux)
 
@@ -1389,7 +1390,7 @@ def config_source_control(cmd, resource_group_name, name, repo_url, repository_t
 
     source_control = SiteSourceControl(location=location, repo_url=repo_url, branch=branch,
                                        is_manual_integration=manual_integration,
-                                       is_mercurial=(repository_type != 'git'))
+                                       is_mercurial=repository_type != 'git')
 
     # SCC config can fail if previous commands caused SCMSite shutdown, so retry here.
     for i in range(5):
