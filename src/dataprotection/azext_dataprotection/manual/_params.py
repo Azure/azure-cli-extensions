@@ -47,6 +47,11 @@ from azext_dataprotection.manual.enums import (
 
 def load_arguments(self, _):
 
+    with self.argument_context('dataprotection backup-vault list-from-resourcegraph') as c:
+        c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
+        c.argument('resource_groups', type=str, nargs='+', help="List of resource groups.")
+        c.argument('vaults', type=str, nargs='+', help="List of vault names.")
+
     with self.argument_context('dataprotection backup-instance validate-for-backup') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
@@ -100,6 +105,8 @@ def load_arguments(self, _):
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
         c.argument('protection_status', arg_type=get_enum_type(get_protection_status_values()), nargs='+', help="specify protection status.")
         c.argument('datasource_id', type=str, nargs='+', help="specify datasource id filter to apply.")
+        c.argument('backup_instance_id', type=str, nargs='+', help="specify backup instance id filter to apply.")
+        c.argument('backup_instance_name', type=str, nargs='+', help="specify backup instance name filter to apply.")
 
     with self.argument_context('dataprotection backup-instance update-msi-permissions') as c:
         c.argument('operation', arg_type=get_enum_type(get_backup_operation_values()), help="List of possible operations")

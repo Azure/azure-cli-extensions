@@ -6,7 +6,7 @@
 import re
 import json
 from importlib import import_module
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContainers/protectedItems/delete",
@@ -84,6 +84,101 @@ def get_datasourceset_info(datasource_type, resource_id, resource_location):
         "resource_id": resource_id_return,
         "resource_location": resource_location
     }
+
+
+def get_backup_instance_name(datasource_type, datasourceset_info, datasource_info):
+    manifest = load_manifest(datasource_type)
+
+    guid = uuid.uuid1()
+    backup_instance_name = ""
+    if manifest["isProxyResource"]:
+        backup_instance_name = datasourceset_info["resource_name"] + "-" + datasource_info["resource_name"] + "-" + str(guid)
+    else:
+        backup_instance_name = datasource_info["resource_name"] + "-" + datasource_info["resource_name"] + "-" + str(guid)
+    
+    return backup_instance_name
+
+
+def get_friendly_name(datasource_type, friendly_name, datasourceset_info, datasource_info):
+    manifest = load_manifest(datasource_type)
+
+    if not manifest["friendlyNameRequired"] and friendly_name is not None:
+        logger.warning("--friendly-name is not a required parameter for the given DatasourceType, and the user input will be overridden")
+
+    # If friendly name is required, we use the user input/validate accordingly if it wasn't provided. If it isn't, we override user input if any
+    if manifest["friendlyNameRequired"]:
+        if friendly_name is None:
+            raise RequiredArgumentMissingError("friendly-name parameter is required for the given DatasourceType")
+        friendly_name = datasourceset_info["resource_name"] + "/" + friendly_name
+    elif manifest["isProxyResource"]:
+        friendly_name = datasourceset_info["resource_name"] + "/" + datasource_info["resource_name"]
+    else:
+        friendly_name = datasource_info["resource_name"]
+
+    return friendly_name
+
+
+# def get_blob_backupconfig(vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group):
+#     if vaulted_backup_containers:
+#         return {
+#             "object_type": "BlobBackupDatasourceParameters",
+#             "containers_list": vaulted_backup_containers
+#         }
+#     elif include_all_containers:
+#         if storage_account_name and storage_account_resource_group:
+#             from azure.cli.command_modules.storage.operations.blob import list_container_rm
+#             container_list_generator = list_container_rm(cmd, client, storage_account_resource_group, storage_account_name)
+#             containers_list = [container.name for container in list(container_list_generator)]
+#             # Verify and raise error if number of containers > 100
+#             # if len(containers_list) > 100:
+#             #     raise InvalidArgumentValueError('Storage account has more than 100 containers. Please select 100 containers or less for backup configuration.')
+#             return {
+#                 "object_type": "BlobBackupDatasourceParameters",
+#                 "containers_list": containers_list
+#             }
+#         else:
+#             raise RequiredArgumentMissingError('Please input --storage-account-name and --storage-account-resource-group parameters '
+#                                                 'for fetching all vaulted containers.')
+#     else:
+#         raise RequiredArgumentMissingError('Please provide --vaulted-backup-containers argument or --include-all-containers argument '
+#                                             'for given workload type.')
+
+
+def get_datasource_auth_credentials_info(secret_store_type, secret_store_uri):
+    datasource_auth_credentials_info = None
+
+    if secret_store_uri and secret_store_type:
+        datasource_auth_credentials_info = {
+            "secret_store_resource": {
+                "uri": secret_store_uri,
+                "value": None,
+                "secret_store_type": secret_store_type
+            },
+            "object_type": "SecretStoreBasedAuthCredentials"
+        }
+    elif secret_store_uri or secret_store_type:
+        raise RequiredArgumentMissingError("Either secret store uri or secret store type not provided.")
+
+    return datasource_auth_credentials_info
+
+
+def get_policy_parameters(datasource_id, snapshot_resource_group_name):
+    policy_parameters = {
+            "data_store_parameters_list": [
+                {
+                    "object_type": "AzureOperationalStoreParameters",
+                    "data_store_type": "OperationalStore",
+                    "resource_group_id": get_rg_id_from_arm_id(datasource_id)
+                }
+            ]
+        }
+
+    if snapshot_resource_group_name:
+        disk_sub_id = get_sub_id_from_arm_id(datasource_id)
+        policy_parameters["data_store_parameters_list"][0]["resource_group_id"] = (disk_sub_id + "/resourceGroups/"
+                                                                                   + snapshot_resource_group_name)
+
+    return policy_parameters
 
 
 def get_backup_frequency_string(frequency, count):

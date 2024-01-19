@@ -13,6 +13,10 @@ from ._exception_handler import exception_handler
 
 def load_command_table(self, _):
 
+    # Manual backup vault commands
+    with self.command_group('dataprotection backup-vault', exception_handler=exception_handler) as g:
+        g.custom_command('list-from-resourcegraph', 'dataprotection_backup_vault_list_from_resourcegraph', client_factory=cf_resource_graph_client)
+
     # Manual backup-instance commmands
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
         g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig")
@@ -61,10 +65,13 @@ def load_command_table(self, _):
         ValidateAndCreate as BackupInstanceCreate,
         ValidateForRestore as BackupInstanceValidateRestore,
         RestoreTrigger as BackupInstanceRestoreTrigger,
+        ValidateForCRR as CRRValidateRestore,
     )
     self.command_table['dataprotection backup-instance create'] = BackupInstanceCreate(loader=self)
     self.command_table['dataprotection backup-instance validate-for-restore'] = BackupInstanceValidateRestore(loader=self)
     self.command_table['dataprotection backup-instance restore trigger'] = BackupInstanceRestoreTrigger(loader=self)
+
+    self.command_table['dataprotection cross-region-restore validate'] = CRRValidateRestore(loader=self)
 
     from .aaz_operations.backup_policy import Create as BackupPolicyCreate
     self.command_table['dataprotection backup-policy create'] = BackupPolicyCreate(loader=self)
