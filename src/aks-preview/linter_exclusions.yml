@@ -222,6 +222,9 @@ aks nodepool add:
     enable_artifact_streaming:
       rule_exclusions:
         - option_length_too_long
+    skip_gpu_driver_install:
+      rule_exclusions:
+        - option_length_too_long
 aks nodepool update:
   parameters:
     enable_artifact_streaming:

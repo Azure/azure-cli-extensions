@@ -316,6 +316,41 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_2.attach_agentpool(agentpool_2)
         self.assertEqual(ctx_2.get_enable_artifact_streaming(), None)
 
+    def common_get_skip_gpu_driver_install(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"skip_gpu_driver_install": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_skip_gpu_driver_install(), None)
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.AgentPoolGPUProfile(
+                install_gpu_driver=False
+            )
+        )
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_skip_gpu_driver_install(), True)
+
+        # default
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"skip_gpu_driver_install": None}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_skip_gpu_driver_install(), None)
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            artifact_streaming_profile=self.models.AgentPoolGPUProfile(
+                install_gpu_driver=True
+            )
+        )
+        ctx_2.attach_agentpool(agentpool_2)
+        self.assertEqual(ctx_2.get_skip_gpu_driver_install(), None)
+
     def common_get_os_sku(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -435,6 +470,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_os_sku(self):
         self.common_get_os_sku()
 
+    def test_get_skip_gpu_driver_install(self):
+        self.common_get_skip_gpu_driver_install()
+
 
 class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
     AKSPreviewAgentPoolContextCommonTestCase
@@ -476,6 +514,9 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_os_sku(self):
         self.common_get_os_sku()
+
+    def test_get_enable_artifact_streaming(self):
+        self.common_get_enable_artifact_streaming()
 
 
 class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
@@ -633,6 +674,28 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
+    def common_set_up_skip_gpu_driver_install(self):
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"skip_gpu_driver_install": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_skip_gpu_driver_install(None)
+        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_skip_gpu_driver_install(agentpool_1)
+        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.AgentPoolGPUProfile(
+                install_gpu_driver=False
+            )
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
 
 class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
     AKSPreviewAgentPoolAddDecoratorCommonTestCase
@@ -663,6 +726,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
 
     def test_set_up_artifact_streaming(self):
         self.common_set_up_artifact_streaming()
+
+    def test_set_up_skip_gpu_driver_install(self):
+        self.common_set_up_skip_gpu_driver_install()
 
     def test_construct_agentpool_profile_preview(self):
         import inspect
@@ -763,6 +829,9 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
 
     def test_set_up_artifact_streaming(self):
         self.common_set_up_artifact_streaming()
+
+    def test_set_up_skip_gpu_driver_install(self):
+        self.common_set_up_skip_gpu_driver_install()
 
     def test_construct_agentpool_profile_preview(self):
         import inspect

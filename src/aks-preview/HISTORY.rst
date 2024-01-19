@@ -11,12 +11,16 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Add `--ip-families` to the `az aks update` command.
+
+1.0.0b2
++++++++
+* Add --skip-gpu-driver-install option to node pool property in `az aks nodepool add`.
 
 1.0.0b1
 +++++++
 * Add `--enable-addon-autoscaling` and `--disable-addon-autoscaling` to the `az aks update` command.
 * Add `--enable-addon-autoscaling` to the `az aks create` command.
+* Add `--ip-families` to the `az aks update` command.
 
 0.5.174
 +++++++
