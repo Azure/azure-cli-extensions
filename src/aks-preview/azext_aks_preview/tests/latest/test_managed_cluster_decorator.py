@@ -7651,8 +7651,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         from azure.cli.core.mock import DummyCli
         from azure.cli.core.commands import AzCliCommand
         from azure.cli.core import AzCommandsLoader
-        
-        command_kwargs={"operation_group": "vaults"}
+
+        command_kwargs = {"operation_group": "vaults"}
         cli_ctx = DummyCli()
         self.cmd = AzCliCommand(AzCommandsLoader(cli_ctx), "mock-cmd", None, kwargs=command_kwargs)
         dec_8 = AKSPreviewManagedClusterUpdateDecorator(
@@ -7694,7 +7694,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     config={
                         CONST_SECRET_ROTATION_ENABLED: "false",
                         CONST_ROTATION_POLL_INTERVAL: "2m",
-                        },
+                    },
                 )
             },
         )
