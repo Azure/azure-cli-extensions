@@ -61,6 +61,9 @@ from .daprcomponent_resiliency_decorator import (
     DaprComponentResiliencyPreviewListDecorator,
     DaprComponentResiliencyPreviewUpdateDecorator
 )
+from .containerapp_env_telemetry_decorator import (
+    ContainerappEnvTelemetryPreviewSetDecorator
+)
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from ._client_factory import handle_raw_exception
@@ -1870,3 +1873,27 @@ def init_dapr_components(cmd, resource_group_name, environment_name, statestore=
             "daprComponents": [statestore_component_id, pubsub_component_id]
         }
     }
+
+def set_environment_telemetry(cmd,
+                                 name,
+                                 resource_group_name,
+                                 app_insights_connection_string = None,
+                                 open_telemetry_traces_destinations = None,
+                                 open_telemetry_logs_destinations = None,
+                                 open_telemetry_metrics_destinations = None,
+                                 open_telemetry_include_system_telemetry = False,
+                                 open_telemetry_dataDog_site = None,
+                                 open_telemetry_dataDog_key = None):
+    raw_parameters = locals()
+    containerapp_env_telemetry_decorator = ContainerappEnvTelemetryPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_decorator.validate_arguments()
+    containerapp_env_telemetry_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_telemetry_decorator.construct_payload()
+    r = containerapp_env_telemetry_decorator.create()
+    r = containerapp_env_telemetry_decorator.post_process(r)
