@@ -12,6 +12,10 @@ Release History
 * `az logic integration-account`: Add new command `list-callback-url` to support listing callback url
 * `az logic integration-account workflow`: Add new command `generate-upgraded-definition` to support generating upgraded definition
 
+1.0.1
+++++++
+* `az logic workflow`: Fix the issue with `parameters` in `--definition` not working
+
 1.0.0
 ++++++
 * Add new command group `az logic workflow identity` to support managing identity
