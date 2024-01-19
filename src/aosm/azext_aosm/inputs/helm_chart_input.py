@@ -9,6 +9,7 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+import yaml
 import ruamel.yaml
 from ruamel.yaml.error import ReusedAnchorWarning
 import warnings
@@ -338,8 +339,8 @@ class HelmChartInput(BaseInput):
         for file in self._chart_dir.iterdir():
             if file.name.endswith(("values.yaml", "values.yml")):
                 with file.open(encoding="UTF-8") as f:
-                    yaml = ruamel.yaml.YAML(typ='safe', pure=True)
-                    content = yaml.load(f)
+                    ryaml = ruamel.yaml.YAML(typ='safe', pure=True)
+                    content = ryaml.load(f)
                 return content
 
         logger.error("No values.yaml file found in Helm chart '%s'", self.chart_path)
