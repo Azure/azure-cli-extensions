@@ -2073,57 +2073,118 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return None
 
-    # pylint: disable=too-many-branches,too-many-locals,too-many-statements
-    def update_azure_service_mesh_profile(self) -> ServiceMeshProfile:
-        """ Update azure service mesh profile.
-
-        This function clone the existing service mesh profile, then apply user supplied changes
-        like enable or disable mesh, enable or disable internal or external ingress gateway
-        then return the updated service mesh profile.
-
-        It does not overwrite the service mesh profile attribute of the managed cluster.
-
-        :return: updated service mesh profile
-        """
-        updated = False
-        new_profile = (
-            self.models.ServiceMeshProfile(mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED)  # pylint: disable=no-member
-            if self.mc.service_mesh_profile is None
-            else copy.deepcopy(self.mc.service_mesh_profile)
-        )
-
-        # enable/disable
-        enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
-        disable_asm = self.raw_param.get("disable_azure_service_mesh", False)
+    def _handle_upgrade_asm(self, new_profile: ServiceMeshProfile) -> Tuple[ServiceMeshProfile, bool]:
         mesh_upgrade_command = self.raw_param.get("mesh_upgrade_command", None)
 
-        if enable_asm and disable_asm:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot both enable and disable azure service mesh at the same time.",
-            )
-
-        if disable_asm:
+        # deal with mesh upgrade commands
+        if mesh_upgrade_command is not None:
             if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
                 raise ArgumentUsageError(
                     "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
                     "for more details on enabling Azure Service Mesh."
                 )
-            new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_DISABLED
-            updated = True
-        elif enable_asm:
-            if new_profile is not None and new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_ISTIO:
-                raise ArgumentUsageError(
-                    "Istio has already been enabled for this cluster, please refer to "
-                    "https://aka.ms/asm-aks-upgrade-docs for more details on updating the mesh profile."
-                )
             requested_revision = self.raw_param.get("revision", None)
-            new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
-            if new_profile.istio is None:
-                new_profile.istio = self.models.IstioServiceMesh()  # pylint: disable=no-member
-            if mesh_upgrade_command is None and requested_revision is not None:
-                new_profile.istio.revisions = [requested_revision]
+            if mesh_upgrade_command in (
+                CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+                CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
+            ):
+                if len(new_profile.istio.revisions) < 2:
+                    raise ArgumentUsageError('Azure Service Mesh upgrade is not in progress.')
+
+                sorted_revisons = self._sort_revisions(new_profile.istio.revisions)
+                if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE:
+                    revision_to_remove = sorted_revisons[0]
+                    revision_to_keep = sorted_revisons[-1]
+                else:
+                    revision_to_remove = sorted_revisons[-1]
+                    revision_to_keep = sorted_revisons[0]
+                msg = (
+                    f"This operation will remove Istio control plane for revision {revision_to_remove}. "
+                    f"Please ensure all data plane workloads have been rolled over to revision {revision_to_keep} "
+                    "so that they are still part of the mesh.\nAre you sure you want to proceed?"
+                )
+                if prompt_y_n(msg, default="y"):
+                    new_profile.istio.revisions.remove(revision_to_remove)
+                    updated = True
+            elif (
+                mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START and
+                requested_revision is not None
+            ):
+                if new_profile.istio.revisions is None:
+                    new_profile.istio.revisions = []
+                new_profile.istio.revisions.append(requested_revision)
+                updated = True
+        updated = False
+
+        return new_profile, updated
+    
+    def _handle_pluginca_asm(self, new_profile: ServiceMeshProfile) -> Tuple[ServiceMeshProfile, bool]:
+        updated = False
+        enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
+        
+        # deal with plugin ca
+        key_vault_id = self.raw_param.get("key_vault_id", None)
+        ca_cert_object_name = self.raw_param.get("ca_cert_object_name", None)
+        ca_key_object_name = self.raw_param.get("ca_key_object_name", None)
+        root_cert_object_name = self.raw_param.get("root_cert_object_name", None)
+        cert_chain_object_name = self.raw_param.get("cert_chain_object_name", None)
+
+        if any([key_vault_id, ca_cert_object_name, ca_key_object_name, root_cert_object_name, cert_chain_object_name]):
+            if key_vault_id is None:
+                raise InvalidArgumentValueError(
+                    '--key-vault-id is required to use Azure Service Mesh plugin CA feature.'
+                )
+            if ca_cert_object_name is None:
+                raise InvalidArgumentValueError(
+                    '--ca-cert-object-name is required to use Azure Service Mesh plugin CA feature.'
+                )
+            if ca_key_object_name is None:
+                raise InvalidArgumentValueError(
+                    '--ca-key-object-name is required to use Azure Service Mesh plugin CA feature.'
+                )
+            if root_cert_object_name is None:
+                raise InvalidArgumentValueError(
+                    '--root-cert-object-name is required to use Azure Service Mesh plugin CA feature.'
+                )
+            if cert_chain_object_name is None:
+                raise InvalidArgumentValueError(
+                    '--cert-chain-object-name is required to use Azure Service Mesh plugin CA feature.'
+                )
+
+        if key_vault_id is not None and (
+                not is_valid_resource_id(key_vault_id) or "providers/Microsoft.KeyVault/vaults" not in key_vault_id):
+            raise InvalidArgumentValueError(
+                key_vault_id + " is not a valid Azure Keyvault resource ID."
+            )
+
+        if enable_asm and all(
+            [
+                key_vault_id,
+                ca_cert_object_name,
+                ca_key_object_name,
+                root_cert_object_name,
+                cert_chain_object_name,
+            ]
+        ):
+            if new_profile.istio.certificate_authority is None:
+                new_profile.istio.certificate_authority = (
+                    self.models.IstioCertificateAuthority()  # pylint: disable=no-member
+                )
+            if new_profile.istio.certificate_authority.plugin is None:
+                new_profile.istio.certificate_authority.plugin = (
+                    self.models.IstioPluginCertificateAuthority()  # pylint: disable=no-member
+                )
+            new_profile.istio.certificate_authority.plugin.key_vault_id = key_vault_id
+            new_profile.istio.certificate_authority.plugin.cert_object_name = ca_cert_object_name
+            new_profile.istio.certificate_authority.plugin.key_object_name = ca_key_object_name
+            new_profile.istio.certificate_authority.plugin.root_cert_object_name = root_cert_object_name
+            new_profile.istio.certificate_authority.plugin.cert_chain_object_name = cert_chain_object_name
             updated = True
 
+        return new_profile, updated
+    
+    def _handle_gateways_asm(self, new_profile: ServiceMeshProfile) -> Tuple[ServiceMeshProfile, bool]:
+        updated = False
         enable_ingress_gateway = self.raw_param.get("enable_ingress_gateway", False)
         disable_ingress_gateway = self.raw_param.get("disable_ingress_gateway", False)
         ingress_gateway_type = self.raw_param.get("ingress_gateway_type", None)
@@ -2225,103 +2286,74 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     )
                 updated = True
 
-        # deal with plugin ca
-        key_vault_id = self.raw_param.get("key_vault_id", None)
-        ca_cert_object_name = self.raw_param.get("ca_cert_object_name", None)
-        ca_key_object_name = self.raw_param.get("ca_key_object_name", None)
-        root_cert_object_name = self.raw_param.get("root_cert_object_name", None)
-        cert_chain_object_name = self.raw_param.get("cert_chain_object_name", None)
+        return new_profile, updated
 
-        if any([key_vault_id, ca_cert_object_name, ca_key_object_name, root_cert_object_name, cert_chain_object_name]):
-            if key_vault_id is None:
-                raise InvalidArgumentValueError(
-                    '--key-vault-id is required to use Azure Service Mesh plugin CA feature.'
-                )
-            if ca_cert_object_name is None:
-                raise InvalidArgumentValueError(
-                    '--ca-cert-object-name is required to use Azure Service Mesh plugin CA feature.'
-                )
-            if ca_key_object_name is None:
-                raise InvalidArgumentValueError(
-                    '--ca-key-object-name is required to use Azure Service Mesh plugin CA feature.'
-                )
-            if root_cert_object_name is None:
-                raise InvalidArgumentValueError(
-                    '--root-cert-object-name is required to use Azure Service Mesh plugin CA feature.'
-                )
-            if cert_chain_object_name is None:
-                raise InvalidArgumentValueError(
-                    '--cert-chain-object-name is required to use Azure Service Mesh plugin CA feature.'
-                )
+    def _handle_enable_disable_asm(self, new_profile: ServiceMeshProfile) -> Tuple[ServiceMeshProfile, bool]:
+        updated = False
+        # enable/disable
+        enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
+        disable_asm = self.raw_param.get("disable_azure_service_mesh", False)
+        mesh_upgrade_command = self.raw_param.get("mesh_upgrade_command", None)
 
-        if key_vault_id is not None and (
-                not is_valid_resource_id(key_vault_id) or "providers/Microsoft.KeyVault/vaults" not in key_vault_id):
-            raise InvalidArgumentValueError(
-                key_vault_id + " is not a valid Azure Keyvault resource ID."
+        if enable_asm and disable_asm:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot both enable and disable azure service mesh at the same time.",
             )
 
-        if enable_asm and all(
-            [
-                key_vault_id,
-                ca_cert_object_name,
-                ca_key_object_name,
-                root_cert_object_name,
-                cert_chain_object_name,
-            ]
-        ):
-            if new_profile.istio.certificate_authority is None:
-                new_profile.istio.certificate_authority = (
-                    self.models.IstioCertificateAuthority()  # pylint: disable=no-member
-                )
-            if new_profile.istio.certificate_authority.plugin is None:
-                new_profile.istio.certificate_authority.plugin = (
-                    self.models.IstioPluginCertificateAuthority()  # pylint: disable=no-member
-                )
-            new_profile.istio.certificate_authority.plugin.key_vault_id = key_vault_id
-            new_profile.istio.certificate_authority.plugin.cert_object_name = ca_cert_object_name
-            new_profile.istio.certificate_authority.plugin.key_object_name = ca_key_object_name
-            new_profile.istio.certificate_authority.plugin.root_cert_object_name = root_cert_object_name
-            new_profile.istio.certificate_authority.plugin.cert_chain_object_name = cert_chain_object_name
-            updated = True
-
-        # deal with mesh upgrade commands
-        if mesh_upgrade_command is not None:
+        if disable_asm:
             if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
                 raise ArgumentUsageError(
                     "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
                     "for more details on enabling Azure Service Mesh."
                 )
-            requested_revision = self.raw_param.get("revision", None)
-            if mesh_upgrade_command in (
-                CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
-                CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
-            ):
-                if len(new_profile.istio.revisions) < 2:
-                    raise ArgumentUsageError('Azure Service Mesh upgrade is not in progress.')
-
-                sorted_revisons = self._sort_revisions(new_profile.istio.revisions)
-                if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE:
-                    revision_to_remove = sorted_revisons[0]
-                    revision_to_keep = sorted_revisons[-1]
-                else:
-                    revision_to_remove = sorted_revisons[-1]
-                    revision_to_keep = sorted_revisons[0]
-                msg = (
-                    f"This operation will remove Istio control plane for revision {revision_to_remove}. "
-                    f"Please ensure all data plane workloads have been rolled over to revision {revision_to_keep} "
-                    "so that they are still part of the mesh.\nAre you sure you want to proceed?"
+            new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_DISABLED
+            updated = True
+        elif enable_asm:
+            if new_profile is not None and new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_ISTIO:
+                raise ArgumentUsageError(
+                    "Istio has already been enabled for this cluster, please refer to "
+                    "https://aka.ms/asm-aks-upgrade-docs for more details on updating the mesh profile."
                 )
-                if prompt_y_n(msg, default="y"):
-                    new_profile.istio.revisions.remove(revision_to_remove)
-                    updated = True
-            elif (
-                mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START and
-                requested_revision is not None
-            ):
-                if new_profile.istio.revisions is None:
-                    new_profile.istio.revisions = []
-                new_profile.istio.revisions.append(requested_revision)
-                updated = True
+            requested_revision = self.raw_param.get("revision", None)
+            new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+            if new_profile.istio is None:
+                new_profile.istio = self.models.IstioServiceMesh()  # pylint: disable=no-member
+            if mesh_upgrade_command is None and requested_revision is not None:
+                new_profile.istio.revisions = [requested_revision]
+            updated = True
+
+        return new_profile, updated
+
+    # pylint: disable=too-many-branches,too-many-locals,too-many-statements
+    def update_azure_service_mesh_profile(self) -> ServiceMeshProfile:
+        """ Update azure service mesh profile.
+
+        This function clone the existing service mesh profile, then apply user supplied changes
+        like enable or disable mesh, enable or disable internal or external ingress gateway
+        then return the updated service mesh profile.
+
+        It does not overwrite the service mesh profile attribute of the managed cluster.
+
+        :return: updated service mesh profile
+        """
+        updated = False
+        new_profile = (
+            self.models.ServiceMeshProfile(mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED)  # pylint: disable=no-member
+            if self.mc.service_mesh_profile is None
+            else copy.deepcopy(self.mc.service_mesh_profile)
+        )
+
+        new_profile, updated_enable_disable_asm = self._handle_enable_disable_asm(new_profile)
+        updated |= updated_enable_disable_asm
+
+        new_profile, updated_gateways_asm = self._handle_gateways_asm(new_profile)
+        updated |= updated_gateways_asm
+
+        new_profile, updated_pluginca_asm = self._handle_pluginca_asm(new_profile)
+        updated |= updated_pluginca_asm
+
+        new_profile, updated_upgrade_asm = self._handle_upgrade_asm(new_profile)
+        updated |= updated_upgrade_asm
 
         if updated:
             return new_profile
