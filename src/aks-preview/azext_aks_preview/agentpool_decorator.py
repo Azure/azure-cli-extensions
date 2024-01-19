@@ -418,6 +418,67 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return os_sku
 
+    def get_enable_secure_boot(self, enable_validation: bool = False) -> bool:
+        """Obtain the value of enable_secure_boot.
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_secure_boot = self.raw_param.get("enable_secure_boot")
+
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            if self.agentpool and self.agentpool.secure_boot.enabled is not None:
+                enable_secure_boot = self.agentpool.secure_boot.enabled
+
+        # In create mode, try and read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.agentpool and self.agentpool.secure_boot.enabled is not None:
+                enable_secure_boot = self.agentpool.secure_boot.enabled
+
+        if enable_validation:
+            if enable_secure_boot and self.get_disable_secure_boot():
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify "--enable-secure-boot" and "--disable-secure-boot" at the same time'
+                )
+    
+        return enable_secure_boot
+
+    def get_disable_secure_boot(self, enable_validation: bool = False) -> bool:
+        """Obtain the value of disable_secure_boot.
+        :return: bool
+        """
+
+        return  self.raw_param.get("disable_secure_boot")
+
+    def get_enable_vtpm(self,  enable_validation: bool = False) -> bool:
+        """Obtain the value of enable_vtpm.
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_vtpm = self.raw_param.get("enable_vtpm")
+
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            if self.agentpool and self.agentpool.secure_boot.enabled is not None:
+                enable_secure_boot = self.agentpool.secure_boot.enabled
+
+        # In create mode, try and read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.agentpool and self.agentpool.vtpm.enabled is not None:
+                enable_vtpm = self.agentpool.vtpm.enabled
+
+        if enable_validation:
+            if enable_vtpm and self.get_disable_vtpm():
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify "--enable-vtpm" and "--disable-vtpm" at the same time'
+                )
+
+        return enable_vtpm
+
+    def get_vtpm(self, enable_validation: bool = False) -> bool:
+        """Obtain the value of disable_vtpm.
+        :return: bool
+        """
+
+        return  self.raw_param.get("disable_vtpm")
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -548,6 +609,32 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.artifact_streaming_profile.enabled = True
         return agentpool
 
+    def set_up_secure_boot(self, agentpool: AgentPool) -> AgentPool:
+        """Set up secure boot property for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_secure_boot(enable_validation=True):
+            if agentpool.secure_boot is None:
+                agentpool.secure_boot = self.models.EnableSecureBoot()  # pylint: disable=no-member
+
+        agentpool.secure_boot.enabled = True
+
+        # Default is disabled so no need to worry about that here
+        return agentpool
+
+    def set_up_vtpm(self, agentpool: AgentPool) -> AgentPool:
+        """Set up vtpm property for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_vtpm(enable_validation=True):
+            if agentpool.vtpm is None:
+                agentpool.vtpm = self.models.EnableVTPM()  # pylint: disable=no-member
+
+        agentpool.vtpm.enabled = True
+
+        # Default is disabled so no need to worry about that here
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -573,6 +660,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_taints(agentpool)
         # set up artifact streaming
         agentpool = self.set_up_artifact_streaming(agentpool)
+        # set up secure boot
+        agentpool = self.set_up_secure_boot(agentpool)
+        # set up vtpm
+        agentpool = self.set_up_vtpm(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
@@ -673,6 +764,42 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.artifact_streaming_profile.enabled = True
         return agentpool
 
+    def update_secure_boot(self, agentpool: AgentPool) -> AgentPool:
+        """Update secure boot property for the AgentPool object.
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_secure_boot(enable_validation=True):
+            if agentpool.enable_secure_boot is None:
+                agentpool.secure_boot = self.models.EnableSecureBoot()
+            agentpool.secure_boot.enabled = True
+
+        if self.context.get_disable_secure_boot(enable_validation=True):
+            if agentpool.secure_boot is None:
+                agentpool.secure_boot = self.models.EnableSecureBoot()
+            agentpool.secure_boot.enabled = False
+
+        return agentpool
+
+    def update_vtpm(self, agentpool: AgentPool) -> AgentPool:
+        """Update vtpm property for the AgentPool object.
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        if self.context.vtpm(enable_validation=True):
+            if agentpool.vtpm is None:
+                agentpool.vtpm = self.models.EnableVTPM()
+            agentpool.vtpm.enabled = True
+
+        if self.context.get_disable_vtpm(enable_validation=True):
+            if agentpool.vtpm is None:
+                agentpool.vtpm = self.models.EnableVTPM()
+            agentpool.vtpm.enabled = False
+
+        return agentpool
+
     def update_os_sku(self, agentpool: AgentPool) -> AgentPool:
         self._ensure_agentpool(agentpool)
 
@@ -700,6 +827,12 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update artifact streaming
         agentpool = self.update_artifact_streaming(agentpool)
+
+        # update secure boot
+        agentpool = self.update_secure_boot(agentpool)
+
+        # update vtpm
+        agentpool = self.update_vtpm(agentpool)
 
         # update os sku
         agentpool = self.update_os_sku(agentpool)

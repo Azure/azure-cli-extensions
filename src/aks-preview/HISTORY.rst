@@ -18,6 +18,13 @@ Pending
 * Add `--enable-addon-autoscaling` and `--disable-addon-autoscaling` to the `az aks update` command.
 * Add `--enable-addon-autoscaling` to the `az aks create` command.
 
+0.5.175
++++++++
+* Add `--enable-vtpm` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
+* Add `--disable-vtpm` to the `az aks nodepool update` command.
+* Add `--enable-secure-boot` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
+* Add `--disable-secure-boot` to the `az aks nodepool update` command.
+
 0.5.174
 +++++++
 * Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`.

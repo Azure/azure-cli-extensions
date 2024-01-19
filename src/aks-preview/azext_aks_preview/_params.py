@@ -813,6 +813,9 @@ def load_arguments(self, _):
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
             )
         )
+        # trusted launch
+        c.argument("enable_secure_boot", is_preview=True, action="store_true")
+        c.argument("enable_vtpm", is_preview=True, action="store_true")
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1188,6 +1191,11 @@ def load_arguments(self, _):
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
             )
         )
+        # trusted launch
+        c.argument("enable_secure_boot", is_preview=True, action="store_true")
+        c.argument("enable_vtpm", is_preview=True, action="store_true")
+        c.argument("disable_secure_boot", is_preview=True, action="store_true")
+        c.argument("disable_vtpm", is_preview=True, action="store_true")
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
