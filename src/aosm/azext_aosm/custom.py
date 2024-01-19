@@ -53,26 +53,26 @@ def onboard_nfd_publish(
         },
     )
     if definition_type == "cnf":
-        handler = OnboardingCNFCLIHandler(build_output_folder + '/' + ALL_PARAMETERS_FILE_NAME)
+        handler = OnboardingCNFCLIHandler(Path(build_output_folder,ALL_PARAMETERS_FILE_NAME))
         handler.publish(command_context=command_context)
     elif definition_type == "vnf":
-        handler = OnboardingVNFCLIHandler(build_output_folder + '/' + ALL_PARAMETERS_FILE_NAME)
+        handler = OnboardingVNFCLIHandler(Path(build_output_folder,ALL_PARAMETERS_FILE_NAME))
         handler.publish(command_context=command_context)
     else:
         raise UnrecognizedArgumentError("Invalid definition type")
 
 
-def onboard_nfd_delete(cmd: AzCliCommand, definition_type: str, config_file: str):
-    """Delete the NF definition."""
-    command_context = CommandContext(cmd.cli_ctx)
-    if definition_type == "cnf":
-        handler = OnboardingCNFCLIHandler(config_file)
-        handler.delete(command_context=command_context)
-    elif definition_type == "vnf":
-        handler = OnboardingVNFCLIHandler(config_file)
-        handler.delete(command_context=command_context)
-    else:
-        raise UnrecognizedArgumentError("Invalid definition type")
+# def onboard_nfd_delete(cmd: AzCliCommand, definition_type: str, config_file: str):
+#     """Delete the NF definition."""
+#     command_context = CommandContext(cmd.cli_ctx)
+#     if definition_type == "cnf":
+#         handler = OnboardingCNFCLIHandler(config_file)
+#         handler.delete(command_context=command_context)
+#     elif definition_type == "vnf":
+#         handler = OnboardingVNFCLIHandler(config_file)
+#         handler.delete(command_context=command_context)
+#     else:
+#         raise UnrecognizedArgumentError("Invalid definition type")
 
 
 def onboard_nsd_generate_config(output_file: str | None):
@@ -88,15 +88,22 @@ def onboard_nsd_build(config_file: Path, cmd: AzCliCommand):
     handler.build()
 
 
-def onboard_nsd_publish(cmd: AzCliCommand, output_folder_path: str):
-    """Publish the NSD definition."""
-    command_context = CommandContext(cmd.cli_ctx)
-    handler = OnboardingNSDCLIHandler(output_folder_path + '/' + ALL_PARAMETERS_FILE_NAME)
+def onboard_nsd_publish(cmd: AzCliCommand, build_output_folder: Path, no_subscription_permissions: bool = False,
+):
+    """Publish the NF definition."""
+    command_context = CommandContext(
+        cli_ctx=cmd.cli_ctx,
+        cli_options={
+            "no_subscription_permissions": no_subscription_permissions,
+            "definition_folder": Path(build_output_folder),
+        },
+    )
+    handler = OnboardingNSDCLIHandler(Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
     handler.publish(command_context=command_context)
 
 
-def onboard_nsd_delete(cmd: AzCliCommand, config_file: str):
-    """Delete the NSD definition."""
-    command_context = CommandContext(cmd.cli_ctx)
-    handler = OnboardingNSDCLIHandler(config_file)
-    handler.delete(command_context=command_context)
+# def onboard_nsd_delete(cmd: AzCliCommand, config_file: str):
+#     """Delete the NSD definition."""
+#     command_context = CommandContext(cmd.cli_ctx)
+#     handler = OnboardingNSDCLIHandler(config_file)
+#     handler.delete(command_context=command_context)
