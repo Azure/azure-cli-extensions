@@ -2117,11 +2117,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 updated = True
 
         return new_profile, updated
-    
+
     def _handle_pluginca_asm(self, new_profile: ServiceMeshProfile) -> Tuple[ServiceMeshProfile, bool]:
         updated = False
         enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
-        
+
         # deal with plugin ca
         key_vault_id = self.raw_param.get("key_vault_id", None)
         ca_cert_object_name = self.raw_param.get("ca_cert_object_name", None)
@@ -2182,58 +2182,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             updated = True
 
         return new_profile, updated
-    
-    def _handle_gateways_asm(self, new_profile: ServiceMeshProfile) -> Tuple[ServiceMeshProfile, bool]:
-        updated = False
-        enable_ingress_gateway = self.raw_param.get("enable_ingress_gateway", False)
-        disable_ingress_gateway = self.raw_param.get("disable_ingress_gateway", False)
-        ingress_gateway_type = self.raw_param.get("ingress_gateway_type", None)
 
+    def _handle_egress_gateways_asm(self, new_profile: ServiceMeshProfile) -> Tuple[ServiceMeshProfile, bool]:
+        updated = False
         enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
         disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
         egx_gtw_nodeselector = self.raw_param.get("egx_gtw_nodeselector", None)
-
-        if enable_ingress_gateway and disable_ingress_gateway:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot both enable and disable azure service mesh ingress gateway at the same time.",
-            )
-
-        # deal with ingress gateways
-        if enable_ingress_gateway or disable_ingress_gateway:
-            # if an ingress gateway is enabled, enable the mesh
-            if enable_ingress_gateway:
-                new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
-                updated = True
-
-            if not ingress_gateway_type:
-                raise RequiredArgumentMissingError("--ingress-gateway-type is required.")
-
-            # ensure necessary fields
-            if new_profile.istio.components is None:
-                new_profile.istio.components = self.models.IstioComponents()  # pylint: disable=no-member
-                updated = True
-            if new_profile.istio.components.ingress_gateways is None:
-                new_profile.istio.components.ingress_gateways = []
-                updated = True
-
-            # make update if the ingress gateway already exist
-            ingress_gateway_exists = False
-            for ingress in new_profile.istio.components.ingress_gateways:
-                if ingress.mode == ingress_gateway_type:
-                    ingress.enabled = enable_ingress_gateway
-                    ingress_gateway_exists = True
-                    updated = True
-                    break
-
-            # ingress gateway not exist, append
-            if not ingress_gateway_exists:
-                new_profile.istio.components.ingress_gateways.append(
-                    self.models.IstioIngressGateway(  # pylint: disable=no-member
-                        mode=ingress_gateway_type,
-                        enabled=enable_ingress_gateway,
-                    )
-                )
-                updated = True
 
         # deal with egress gateways
         if enable_egress_gateway and disable_egress_gateway:
@@ -2284,6 +2238,56 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                             enabled=enable_egress_gateway,
                         )
                     )
+                updated = True
+
+        return new_profile, updated
+
+    def _handle_ingress_gateways_asm(self, new_profile: ServiceMeshProfile) -> Tuple[ServiceMeshProfile, bool]:
+        updated = False
+        enable_ingress_gateway = self.raw_param.get("enable_ingress_gateway", False)
+        disable_ingress_gateway = self.raw_param.get("disable_ingress_gateway", False)
+        ingress_gateway_type = self.raw_param.get("ingress_gateway_type", None)
+
+        if enable_ingress_gateway and disable_ingress_gateway:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot both enable and disable azure service mesh ingress gateway at the same time.",
+            )
+
+        # deal with ingress gateways
+        if enable_ingress_gateway or disable_ingress_gateway:
+            # if an ingress gateway is enabled, enable the mesh
+            if enable_ingress_gateway:
+                new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+                updated = True
+
+            if not ingress_gateway_type:
+                raise RequiredArgumentMissingError("--ingress-gateway-type is required.")
+
+            # ensure necessary fields
+            if new_profile.istio.components is None:
+                new_profile.istio.components = self.models.IstioComponents()  # pylint: disable=no-member
+                updated = True
+            if new_profile.istio.components.ingress_gateways is None:
+                new_profile.istio.components.ingress_gateways = []
+                updated = True
+
+            # make update if the ingress gateway already exist
+            ingress_gateway_exists = False
+            for ingress in new_profile.istio.components.ingress_gateways:
+                if ingress.mode == ingress_gateway_type:
+                    ingress.enabled = enable_ingress_gateway
+                    ingress_gateway_exists = True
+                    updated = True
+                    break
+
+            # ingress gateway not exist, append
+            if not ingress_gateway_exists:
+                new_profile.istio.components.ingress_gateways.append(
+                    self.models.IstioIngressGateway(  # pylint: disable=no-member
+                        mode=ingress_gateway_type,
+                        enabled=enable_ingress_gateway,
+                    )
+                )
                 updated = True
 
         return new_profile, updated
@@ -2346,8 +2350,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         new_profile, updated_enable_disable_asm = self._handle_enable_disable_asm(new_profile)
         updated |= updated_enable_disable_asm
 
-        new_profile, updated_gateways_asm = self._handle_gateways_asm(new_profile)
-        updated |= updated_gateways_asm
+        new_profile, updated_ingress_gateways_asm = self._handle_ingress_gateways_asm(new_profile)
+        updated |= updated_ingress_gateways_asm
+
+        new_profile, updated_egress_gateways_asm = self._handle_egress_gateways_asm(new_profile)
+        updated |= updated_egress_gateways_asm
 
         new_profile, updated_pluginca_asm = self._handle_pluginca_asm(new_profile)
         updated |= updated_pluginca_asm
