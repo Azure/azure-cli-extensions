@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
+* Refactor azure service mesh related code to meet cli style requirements.
 
 1.0.0b2
 +++++++
