@@ -1214,8 +1214,8 @@ def _get_env_and_group_from_log_analytics(
                 resource_group.name = env_details["resource_group"]
 
 
-def _get_acr_from_image(cmd, app, registry_server_set=None):
-    if app.image is not None and "azurecr.io" in app.image and not registry_server_set:
+def _get_acr_from_image(cmd, app):
+    if app.image is not None and "azurecr.io" in app.image:
         app.registry_server = app.image.split("/")[
             0
         ]  # TODO what if this conflicts with registry_server param?
@@ -1334,7 +1334,7 @@ def _set_up_defaults(
     app: "ContainerApp",
     custom_location: "CustomLocation",
     extension: "Extension",
-    registry_server_set=None
+    is_registry_server_params_set=None
 ):
     # If no RG passed in and a singular app exists with the same name, get its env and rg
     _get_app_env_and_group(cmd, name, resource_group, env, location, custom_location)
@@ -1364,7 +1364,8 @@ def _set_up_defaults(
 
     _infer_existing_custom_location_or_extension(cmd, name, location, resource_group, env, custom_location, extension)
 
-    _get_acr_from_image(cmd, app, registry_server_set)
+    if not is_registry_server_params_set:
+        _get_acr_from_image(cmd, app)
 
 
 # Try to get existed connected environment

@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp up' : Fix registry not found error in subscription when registry server parameters are provided for ACR from another subscription
 
 0.3.46
 ++++++
