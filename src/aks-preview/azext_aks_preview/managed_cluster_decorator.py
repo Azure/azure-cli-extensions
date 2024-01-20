@@ -4359,9 +4359,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # attach keyvault id
         if keyvault_id:
-            if not enable_keyvault_secret_provider:
+            if enable_keyvault_secret_provider or (mc.addon_profiles and mc.addon_profiles.get(CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME).enabled):
+                self._attach_keyvault_id(mc, keyvault_id)
+            else:
                 raise CLIError("Please enable keyvault-secret-provider first.")
-            self._attach_keyvault_id(mc, keyvault_id)
 
         # modify DNS zone resource IDs
         if dns_zone_resource_ids:
