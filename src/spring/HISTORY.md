@@ -1,6 +1,10 @@
 Release History
 ===============
 
+1.19.2
+---
+* Add runtime version `Java_21`.
+
 1.19.1
 ---
 * Create workspace-based Application Insights instead, since classic Application Insights will be retired on 29 February 2024.

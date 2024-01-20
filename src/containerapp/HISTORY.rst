@@ -5,6 +5,8 @@ Release History
 upcoming
 ++++++
 * 'az containerapp up' : Fix registry not found error in subscription when registry server parameters are provided for ACR from another subscription
+* [Breaking Change]  'az containerapp service': deprecate command from Azure CLI version 2.56.1
+* 'az containerapp add-on' : support for add-on weaviate create and delete commands
 
 0.3.46
 ++++++
