@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b3
++++++
+* Add: Support for Import from apim command along with add examples for create service
+
 1.0.0b2
 ++++++
 * Remove: All workspace cli commands as it should not be exposed to customers just yet.

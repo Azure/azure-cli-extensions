@@ -591,3 +591,94 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         message = "Resource type 'myWorkbooks' of provider namespace 'Microsoft.Insights' was not found in global location for api version '2021-03-08'."
         with self.assertRaisesRegex(ResourceNotFoundError, message):
             self.cmd('monitor app-insights my-workbook list -g {rg} --category performance')
+
+    @ResourceGroupPreparer(name_prefix="cli_test_appinsights_workbook")
+    def test_appinsights_workbook(self, resource_group):
+        self.kwargs.update({
+            'workbook_name': self.create_random_name('workbook', 15)
+        })
+        self.cmd('monitor app-insights workbook create -g {rg} --display-name {workbook_name} -n 00000000-0000-0000-0000-000000000000 --category workbook --serialized-data mydata --kind shared', checks=[
+            self.check('category', 'workbook'),
+            self.check('displayName', '{workbook_name}'),
+            self.check('kind', 'shared'),
+            self.check('name', '00000000-0000-0000-0000-000000000000'),
+            self.check('serializedData', 'mydata')
+        ])
+        self.cmd('monitor app-insights workbook update -g {rg} -n 00000000-0000-0000-0000-000000000000 --tags {{tag:test}}', checks=[
+            self.check('category', 'workbook'),
+            self.check('displayName', '{workbook_name}'),
+            self.check('kind', 'shared'),
+            self.check('name', '00000000-0000-0000-0000-000000000000'),
+            self.check('tags.tag', 'test')
+        ])
+        self.cmd('monitor app-insights workbook show -g {rg} -n 00000000-0000-0000-0000-000000000000', checks=[
+            self.check('category', 'workbook'),
+            self.check('displayName', '{workbook_name}'),
+            self.check('kind', 'shared'),
+            self.check('name', '00000000-0000-0000-0000-000000000000'),
+            self.check('tags.tag', 'test')
+        ])
+        self.cmd('monitor app-insights workbook list -g {rg} --category workbook', checks=[
+            self.check('[0].category', 'workbook'),
+            self.check('[0].displayName', '{workbook_name}'),
+            self.check('[0].kind', 'shared'),
+            self.check('[0].name', '00000000-0000-0000-0000-000000000000'),
+            self.check('[0].tags.tag', 'test')
+        ])
+        self.cmd('monitor app-insights workbook delete -g {rg} -n 00000000-0000-0000-0000-000000000000 -y')
+
+    @ResourceGroupPreparer(name_prefix="cli_test_appinsights_workbook_identity")
+    def test_appinsights_workbook_identity(self, resource_group):
+        self.kwargs.update({
+            'workbook_name': self.create_random_name('workbook', 15),
+            'workbook_name2': self.create_random_name('workbook', 15),
+            'identity1': self.create_random_name('id', 10),
+            'identity2': self.create_random_name('id', 10)
+        })
+        identity1 = self.cmd('identity create --name {identity1} -g {rg}').get_output_in_json()
+        identity2 = self.cmd('identity create --name {identity2} -g {rg}').get_output_in_json()
+        self.kwargs.update({
+            'id1': identity1['id'],
+            'id2': identity2['id']
+        })
+        self.cmd('monitor app-insights workbook create -g {rg} --display-name {workbook_name} -n 00000000-0000-0000-0000-000000000000 --category workbook --kind shared --mi-user-assigned {id1}', checks=[
+            self.check('category', 'workbook'),
+            self.check('displayName', '{workbook_name}'),
+            self.check('kind', 'shared'),
+            self.check('name', '00000000-0000-0000-0000-000000000000'),
+            self.check('identity.type', 'UserAssigned'),
+            self.check('identity.userAssignedIdentities', {identity1['id']: {}})
+        ])
+        self.cmd('monitor app-insights workbook identity assign -g {rg} -n 00000000-0000-0000-0000-000000000000 --user-assigned {id2}', checks=[
+            self.check('type', 'UserAssigned'),
+            self.check('userAssignedIdentities', {identity1['id']: {}, identity2['id']: {}})
+        ])
+        self.cmd('monitor app-insights workbook identity remove -g {rg} -n 00000000-0000-0000-0000-000000000000 --user-assigned {id1}', checks=[
+            self.check('type', 'UserAssigned'),
+            self.check('userAssignedIdentities', {identity2['id']: {}})
+        ])
+        self.cmd('monitor app-insights workbook identity remove -g {rg} -n 00000000-0000-0000-0000-000000000000 --user-assigned {id2}', checks=[
+            self.check('type', None)
+        ])
+
+        self.cmd('monitor app-insights workbook create -g {rg} --display-name {workbook_name2} -n 00000000-0000-0000-0000-000000000001 --category workbook --kind shared', checks=[
+            self.check('category', 'workbook'),
+            self.check('displayName', '{workbook_name2}'),
+            self.check('kind', 'shared'),
+            self.check('name', '00000000-0000-0000-0000-000000000001')
+        ])
+        self.cmd('monitor app-insights workbook identity assign -g {rg} -n 00000000-0000-0000-0000-000000000001 --user-assigned {id1}', checks=[
+            self.check('type', 'UserAssigned'),
+            self.check('userAssignedIdentities', {identity1['id']: {}})
+        ])
+        self.cmd('monitor app-insights workbook identity assign -g {rg} -n 00000000-0000-0000-0000-000000000001 --user-assigned {id2}', checks=[
+            self.check('type', 'UserAssigned'),
+            self.check('userAssignedIdentities', {identity1['id']: {}, identity2['id']: {}})
+        ])
+        self.cmd('monitor app-insights workbook identity remove -g {rg} -n 00000000-0000-0000-0000-000000000001 --user-assigned {id1}', checks=[
+            self.check('type', 'UserAssigned'),
+            self.check('userAssignedIdentities', {identity2['id']: {}})
+        ])
+        self.cmd('monitor app-insights workbook identity remove -g {rg} -n 00000000-0000-0000-0000-000000000001 --user-assigned {id2}', checks=[
+            self.check('type', None)
+        ])
