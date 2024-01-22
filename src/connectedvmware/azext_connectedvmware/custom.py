@@ -792,9 +792,9 @@ def create_vm(
 ):
     try:
         assert resource_group_name is not None
-        assert type(resource_group_name) is str
+        assert isinstance(resource_group_name, str)
         assert resource_name is not None
-        assert type(resource_name) is str
+        assert isinstance(resource_name, str)
     except AssertionError as e:
         # We expect this codepath should not hit if the
         # process_missing_vm_resource_parameters validator is working correctly.
@@ -863,7 +863,7 @@ def create_vm(
                 tags=tags,
             )
             machine = machine_client.update(resource_group_name, resource_name, m)
-    except ResourceNotFoundError as e:
+    except ResourceNotFoundError:
         m = Machine(
             location=location,
             kind=vcenter.kind,
@@ -891,13 +891,13 @@ def create_vm(
                 *parts[3:],
             ]
         )
-    
+
     if machine.vm_uuid and not inventory_item_id:
         # existing Arc for servers machine. Figure out inventory id.
         machine_uuid_rev = reverseEndianLeftHalf(machine.vm_uuid).lower()
         # Force deserialization of SMBIOS UUID. This is required because autorest generated
         # SDK deserializes only the inventory properties common to all inventory types.
-        InventoryItem._attribute_map["smbiosUuid"] = {
+        InventoryItem._attribute_map["smbiosUuid"] = {  # pylint: disable=protected-access
             "key": "properties.smbiosUuid",
             "type": "str"
         }
@@ -907,13 +907,13 @@ def create_vm(
             if not hasattr(inv_item, "smbiosUuid"):
                 raise CLIInternalError(
                     f"unexpected internal error, "
-                    f"inventory item {inv_item.name} does not have smbiosUuid attribute." # type: ignore
+                    f"inventory item {inv_item.name} does not have smbiosUuid attribute."  # type: ignore
                 )
-            biosId = inv_item.smbiosUuid # type: ignore
+            biosId = inv_item.smbiosUuid  # type: ignore
             if biosId is None:
                 continue
             if biosId == machine_uuid_rev or biosId == machine.vm_uuid.lower():
-                inventory_item_id = inv_item.id # type: ignore
+                inventory_item_id = inv_item.id  # type: ignore
                 break
         # Explicitly remove inventory_items from memory.
         del inventory_items

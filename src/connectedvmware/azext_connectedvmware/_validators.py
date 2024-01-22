@@ -4,16 +4,18 @@
 # --------------------------------------------------------------------------------------------
 
 from operator import and_, xor
-from azure.cli.core.commands.client_factory import get_subscription_id
-from msrestazure.tools import is_valid_resource_id
 from azure.cli.core.azclierror import (
     ValidationError
 )
+from azure.cli.core.commands.client_factory import get_subscription_id
+from msrestazure.tools import is_valid_resource_id
+
 
 def process_missing_vm_resource_parameters(cmd, namespace):
     err_msg = (
-        f"Invalid machine id provided. "
-        f"Expected format: '/subscriptions/.../resourceGroups/.../providers/Microsoft.HybridCompute/machines/...'. "
+        "Invalid machine id provided. "
+        "Expected format: '/subscriptions/01234567-0123-0123-0123-0123456789ab"
+        "/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/machines/contoso-vm'."
     )
 
     def exists(val):
@@ -39,7 +41,7 @@ def process_missing_vm_resource_parameters(cmd, namespace):
     if not is_valid_resource_id(namespace.machine_id):
         raise ValidationError(err_msg)
     import re
-    machine_id_pattern = re.compile(r"^/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/Microsoft.HybridCompute/machines/([^/]+)$")
+    machine_id_pattern = re.compile(r"^/subscriptions/([^/]+)/resourceGroups/([^/]+)/providers/Microsoft.HybridCompute/machines/([^/]+)$")  # noqa: E501 pylint: disable=line-too-long
     match = machine_id_pattern.match(namespace.machine_id)
     if not match:
         raise ValidationError(err_msg)
