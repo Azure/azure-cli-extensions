@@ -76,6 +76,10 @@ class Create(AAZCommand):
             options=["--secondary-consent"],
             help="This property indicates secondary consents for the support ticket",
         )
+        _args_schema.service_id = AAZStrArg(
+            options=["--service-id"],
+            help="This is the resource Id of the Azure service resource associated with the support ticket.",
+        )
         _args_schema.severity = AAZStrArg(
             options=["--severity"],
             help="A value that indicates the urgency of the case, which in turn determines the response time according to the service level agreement of the technical support plan you have with Azure. Note: 'Highest critical impact', also known as the 'Emergency - Severe impact' level in the Azure portal is reserved only for our Premium customers.",
@@ -312,6 +316,7 @@ class Create(AAZCommand):
                 properties.set_prop("quotaTicketDetails", AAZObjectType)
                 properties.set_prop("require24X7Response", AAZBoolType, ".require_24_by_7_response")
                 properties.set_prop("secondaryConsent", AAZListType, ".secondary_consent")
+                properties.set_prop("serviceId", AAZStrType, ".service_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("severity", AAZStrType, ".severity", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("technicalTicketDetails", AAZObjectType)
                 properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
