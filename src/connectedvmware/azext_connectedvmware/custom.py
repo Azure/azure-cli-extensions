@@ -914,7 +914,7 @@ def create_vm(
             if biosId is None:
                 continue
             biosId = biosId.lower()
-            if biosId == machine_uuid_rev or biosId == machine.vm_uuid:
+            if biosId in (machine_uuid_rev, machine.vm_uuid):
                 inventory_item_id = inv_item.id  # type: ignore
                 break
         # Explicitly remove inventory_items from memory.
