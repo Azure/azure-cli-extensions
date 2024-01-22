@@ -17,6 +17,7 @@ from azure.cli.command_modules.serviceconnector._resource_config import (
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 resource_group = 'servicelinker-cli-test-group'
 
+
 @unittest.skip('Need environment prepared')
 class Serviceconnector_passwordlessScenarioTest(ScenarioTest):
 
@@ -52,7 +53,6 @@ class Serviceconnector_passwordlessScenarioTest(ScenarioTest):
         self.cmd('webapp connection delete --id {} --yes'.format(connection_id))
         self.cmd('sql db delete -y -g {target_resource_group} -s {server} -n {database}')
 
-
     def test_aad_spring_mysqlflexible(self):
         self.kwargs.update({
             'subscription': get_subscription_id(self.cli_ctx),
@@ -84,14 +84,12 @@ class Serviceconnector_passwordlessScenarioTest(ScenarioTest):
         # delete connection
         self.cmd('spring connection delete --id {} --yes'.format(connection_id))
 
-
         # create connection
         self.cmd('spring connection create mysql-flexible --connection {} --source-id {} --target-id {} '
                  '--client-type springboot --system-identity mysql-identity-id={}'.format(name, source_id, target_id, mysql_identity_id))
         # delete connection
         self.cmd('spring connection delete --id {} --yes'.format(connection_id))
         self.cmd('mysql flexible-server db delete -y -g {target_resource_group} --server-name {server} --database-name {database}')
-
 
     def test_aad_containerapp_postgresflexible(self):
         default_container_name = 'simple-hello-world-container'
@@ -132,7 +130,6 @@ class Serviceconnector_passwordlessScenarioTest(ScenarioTest):
         # self.cmd('containerapp connection delete --id {} --yes'.format(connection_id))
         # self.cmd('postgres flexible-server delete -y -g {target_resource_group} -n {server}')
 
-
     def test_aad_webapp_postgressingle(self):
         self.kwargs.update({
             'subscription': "d82d7763-8e12-4f39-a7b6-496a983ec2f4",
@@ -159,8 +156,7 @@ class Serviceconnector_passwordlessScenarioTest(ScenarioTest):
         # create
         self.cmd('webapp connection create postgres-flexible --connection {} --source-id {} --target-id {} '
                  '--system-identity --client-type springboot'.format(name, source_id, target_id))
-        configs = self.cmd('webapp connection list-configuration --id {}'.format(connection_id)).get_output_in_json();
-
+        configs = self.cmd('webapp connection list-configuration --id {}'.format(connection_id)).get_output_in_json()
 
     def test_local_postgresflexible_passwordless(self):
         self.kwargs.update({
@@ -214,7 +210,6 @@ class Serviceconnector_passwordlessScenarioTest(ScenarioTest):
         # delete connection
         self.cmd('connection delete --id {} --yes'.format(connection_id))
 
-
     def test_local_mysqlflexible_passwordless(self):
         self.kwargs.update({
             'subscription': get_subscription_id(self.cli_ctx),
@@ -264,7 +259,6 @@ class Serviceconnector_passwordlessScenarioTest(ScenarioTest):
         # delete connection
         self.cmd('connection delete --id {} --yes'.format(connection_id))
 
-
     def test_local_postgres_passwordless(self):
         self.kwargs.update({
             'subscription': get_subscription_id(self.cli_ctx),
@@ -313,7 +307,6 @@ class Serviceconnector_passwordlessScenarioTest(ScenarioTest):
 
         # delete connection
         self.cmd('connection delete --id {} --yes'.format(connection_id))
-
 
     def test_local_sql_passwordless(self):
         self.kwargs.update({
