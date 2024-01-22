@@ -1881,7 +1881,6 @@ def set_environment_telemetry(cmd,
                                  open_telemetry_traces_destinations = None,
                                  open_telemetry_logs_destinations = None,
                                  open_telemetry_metrics_destinations = None,
-                                 open_telemetry_include_system_telemetry = False,
                                  open_telemetry_dataDog_site = None,
                                  open_telemetry_dataDog_key = None):
     raw_parameters = locals()

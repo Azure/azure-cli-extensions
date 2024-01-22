@@ -517,7 +517,6 @@ AppInsightsConfiguration = {
 }
 
 OpenTelemetryConfiguration = {
-    "includeSystemTelemetry": False,
     "destinationsConfiguration": None,
     "tracesConfiguration": None,
     "logsConfiguration": None,

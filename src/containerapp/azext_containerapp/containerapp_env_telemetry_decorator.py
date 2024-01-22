@@ -41,7 +41,6 @@ class ContainerappEnvTelemetryPreviewSetDecorator(ContainerAppEnvUpdateDecorator
         super().construct_payload()
 
         self.set_argument_app_insights_connection_string()
-        self.set_argument_open_telemetry_include_system_telemetry()
         self.set_argument_open_telemetry_dataDog_site()
         self.set_argument_open_telemetry_dataDog_key()
         self.set_argument_open_telemetry_traces_destinations()
@@ -51,10 +50,6 @@ class ContainerappEnvTelemetryPreviewSetDecorator(ContainerAppEnvUpdateDecorator
     def set_argument_app_insights_connection_string(self):
         if self.get_argument_app_insights_connection_string() and self.get_argument_app_insights_connection_string() is not None:
             safe_set(self.managed_env_def, "properties", "appInsightsConfiguration", "connectionString", value=self.get_argument_app_insights_connection_string())
-
-    def set_argument_open_telemetry_include_system_telemetry(self):
-        if self.get_argument_open_telemetry_include_system_telemetry() and self.get_argument_open_telemetry_include_system_telemetry() is not None:
-            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "includeSystemTelemetry", value=self.get_argument_open_telemetry_include_system_telemetry())
     
     def set_argument_open_telemetry_dataDog_site(self):
         if self.get_argument_open_telemetry_dataDog_site() and self.get_argument_open_telemetry_dataDog_site() is not None:
