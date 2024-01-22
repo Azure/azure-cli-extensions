@@ -91,5 +91,17 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        self.cmd('spring application-configuration-service update -g {rg} -s {serviceName} --generation Gen2',
-                 checks=[self.check('properties.provisioningState', "Succeeded")])
+        self.cmd('spring application-configuration-service update -g {rg} -s {serviceName} '
+                 '--generation Gen2 --refresh-interval 10',
+                 checks=[
+                     self.check('properties.provisioningState', "Succeeded"),
+                     self.check('properties.generation', "Gen2"),
+                     self.check('properties.settings.refreshIntervalInSeconds', 10)])
+
+        self.cmd('spring application-configuration-service delete -g {rg} -s {serviceName} --yes')
+        self.cmd('spring application-configuration-service create -g {rg} -s {serviceName} '
+                 '--generation Gen1 --refresh-interval 20',
+                 checks=[
+                     self.check('properties.provisioningState', "Succeeded"),
+                     self.check('properties.generation', "Gen1"),
+                     self.check('properties.settings.refreshIntervalInSeconds', 20)])

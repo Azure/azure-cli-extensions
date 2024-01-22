@@ -352,6 +352,12 @@ def validate_acs_create(namespace):
             raise ArgumentUsageError("--application-configuration-service-generation can only be set when enable application configuration service.")
 
 
+def validate_refresh_interval(namespace):
+    if namespace.refresh_interval is not None:
+        if namespace.refresh_interval < 0:
+            raise ArgumentUsageError("--refresh-interval must be greater than or equal to 0.")
+
+
 def validate_gateway_update(cmd, namespace):
     _validate_gateway_response_cache(namespace)
     _validate_sso(namespace)
