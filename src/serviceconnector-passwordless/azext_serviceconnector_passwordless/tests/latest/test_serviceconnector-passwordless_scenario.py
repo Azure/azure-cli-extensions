@@ -119,7 +119,8 @@ class Serviceconnector_passwordlessScenarioTest(ScenarioTest):
         # create
         self.cmd('containerapp connection create postgres-flexible --connection {} --source-id {} --target-id {} '
                  '--system-identity --client-type springboot -c {}'.format(name, source_id, target_id, default_container_name))
-        configs = self.cmd('containerapp connection list-configuration --id {}'.format(connection_id)).get_output_in_json();
+        configs = self.cmd('containerapp connection list-configuration --id {}'.format(connection_id)
+                           ).get_output_in_json()
         # clean
         self.cmd('containerapp connection delete --id {} --yes'.format(connection_id))
         #
