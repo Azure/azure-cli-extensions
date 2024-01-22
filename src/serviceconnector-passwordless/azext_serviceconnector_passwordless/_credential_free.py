@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=no-member
+# pylint: disable=no-member, too-many-lines, anomalous-backslash-in-string, redefined-outer-name, no-else-raise, attribute-defined-outside-init
 
 import struct
 import sys
@@ -506,7 +506,7 @@ class SqlHandler(TargetHandler):
                 if not self.ip:
                     error_code = ''
                     error_res = re.search(
-                        '\((\d{5})\)', str(e))
+                        r'\((\d{5})\)', str(e))
                     if error_res:
                         error_code = error_res.group(1)
                     telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
@@ -524,7 +524,7 @@ class SqlHandler(TargetHandler):
                     "Please confirm local environment can connect to database and try again.")
                 error_code = ''
                 error_res = re.search(
-                    '\((\d{5})\)', str(e))
+                    r'\((\d{5})\)', str(e))
                 if error_res:
                     error_code = error_res.group(1)
                 telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
