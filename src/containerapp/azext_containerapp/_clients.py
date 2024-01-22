@@ -26,7 +26,8 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2023-11-02-preview"
+PREVIEW_API_VERSION = "2023-08-01-preview"
+PREVIEW_API_VERSION_2023_11_02 = "2023-11-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -36,7 +37,7 @@ HEADER_LOCATION = "location"
 
 
 class GitHubActionPreviewClient(GitHubActionClient):
-    api_version = PREVIEW_API_VERSION
+    api_version = PREVIEW_API_VERSION_2023_11_02
 
 
 # Clients for preview
@@ -729,7 +730,7 @@ class DaprComponentPreviewClient(DaprComponentClient):
 
 
 class BuilderClient():
-    api_version = PREVIEW_API_VERSION
+    api_version = PREVIEW_API_VERSION_2023_11_02
 
     @classmethod
     def list(cls, cmd, resource_group_name):
@@ -775,7 +776,7 @@ class BuilderClient():
 
 
 class BuildClient():
-    api_version = PREVIEW_API_VERSION
+    api_version = PREVIEW_API_VERSION_2023_11_02
 
     @classmethod
     def create(cls, cmd, builder_name, build_name, resource_group_name, location, build_env_vars, no_wait=False):
