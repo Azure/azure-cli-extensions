@@ -407,19 +407,19 @@ helps[
                --resource-group contoso-rg --location eastus --custom-location contoso-cl \
                --inventory-item 01234567-0123-0123-0123-0123456789ab --name contoso-vm
 
-      - name: Link a HCRP Machine to vCenter in another subscription.
+      - name: Link an HCRP Machine to a vCenter in another subscription.
         text: |-
                az connectedvmware vm create \
                --machine-id /subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/machines/contoso-vm \
                --vcenter /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
 
-      - name: Link a HCRP Machine to vCenter in another subscription.
+      - name: Link an HCRP Machine to a vCenter in another subscription.
         text: |-
                 az connectedvmware vm create \
                 --resource-group contoso-rg --location eastus --name hcrp-contoso-machine \
                 --vcenter /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
 
-      - name: Link a HCRP Machine to vCenter in the same subscription and resource group.
+      - name: Link an HCRP Machine to a vCenter in the same subscription and resource group.
         text: |-
                 az connectedvmware vm create \
                 --resource-group contoso-rg --location eastus --name hcrp-contoso-machine \
