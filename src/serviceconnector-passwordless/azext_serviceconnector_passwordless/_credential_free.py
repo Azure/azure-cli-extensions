@@ -694,7 +694,7 @@ class PostgresFlexHandler(TargetHandler):
         except AzureConnectionError as e:
             logger.warning(e)
             if 'password authentication failed' in str(e):
-                raise ValidationError('Please confirm current user as Microsoft Entra admin and try again.')
+                raise ValidationError('Please confirm current user as Microsoft Entra admin and try again.') from e
             # allow local access
             ip_address = self.ip or get_local_ip()
             if not ip_address:
