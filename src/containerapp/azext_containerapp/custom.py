@@ -659,7 +659,14 @@ def create_managed_environment(cmd,
                                mtls_enabled=None,
                                enable_dedicated_gpu=False,
                                no_wait=False,
-                               logs_dynamic_json_columns=False):
+                               logs_dynamic_json_columns=False,
+                               app_insights_connection_string = None,
+                               open_telemetry_traces_destinations = None,
+                               open_telemetry_logs_destinations = None,
+                               open_telemetry_metrics_destinations = None,
+                               open_telemetry_include_system_telemetry = False,
+                               open_telemetry_dataDog_site = None,
+                               open_telemetry_dataDog_key = None):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
