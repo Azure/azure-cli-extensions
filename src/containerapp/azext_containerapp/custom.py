@@ -102,7 +102,7 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
-                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST)
+                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST, JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA)
 
 logger = get_logger(__name__)
 
@@ -1880,7 +1880,7 @@ def list_java_components(cmd, environment_name, resource_group_name):
     return java_component_list_decorator.list()
 
 
-def show_java_component(cmd, java_component_name, environment_name, resource_group_name):
+def show_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type):
     raw_parameters = locals()
     java_component_show_decorator = JavaComponentPreviewShowDecorator(
         cmd=cmd,
@@ -1889,10 +1889,18 @@ def show_java_component(cmd, java_component_name, environment_name, resource_gro
         models=CONTAINER_APPS_SDK_MODELS
     )
 
-    return java_component_show_decorator.show()
+    result = java_component_show_decorator.show()
+
+    current_type = safe_get(result, "properties", "componentType")
+    if current_type and target_java_component_type != current_type.lower():
+        raise CLIInternalError(f"(JavaComponentNotFound) JavaComponent '{java_component_name}' was not found.")
+
+    return result
 
 
-def delete_java_component(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+def delete_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, no_wait=False):
+    show_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type)
+
     raw_parameters = locals()
     java_component_delete_decorator = JavaComponentPreviewDeleteDecorator(
         cmd=cmd,
@@ -1913,27 +1921,11 @@ def update_spring_cloud_config(cmd, java_component_name, environment_name, resou
 
 
 def show_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name):
-    raw_parameters = locals()
-    java_component_show_decorator = JavaComponentPreviewShowDecorator(
-        cmd=cmd,
-        client=JavaComponentPreviewClient,
-        raw_parameters=raw_parameters,
-        models=CONTAINER_APPS_SDK_MODELS
-    )
-
-    return java_component_show_decorator.show()
+    return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG)
 
 
 def delete_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
-    raw_parameters = locals()
-    java_component_delete_decorator = JavaComponentPreviewDeleteDecorator(
-        cmd=cmd,
-        client=JavaComponentPreviewClient,
-        raw_parameters=raw_parameters,
-        models=CONTAINER_APPS_SDK_MODELS
-    )
-
-    return java_component_delete_decorator.delete()
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG)
 
 
 def create_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
@@ -1945,24 +1937,8 @@ def update_spring_cloud_eureka(cmd, java_component_name, environment_name, resou
 
 
 def show_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name):
-    raw_parameters = locals()
-    java_component_show_decorator = JavaComponentPreviewShowDecorator(
-        cmd=cmd,
-        client=JavaComponentPreviewClient,
-        raw_parameters=raw_parameters,
-        models=CONTAINER_APPS_SDK_MODELS
-    )
-
-    return java_component_show_decorator.show()
+    return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA)
 
 
 def delete_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
-    raw_parameters = locals()
-    java_component_delete_decorator = JavaComponentPreviewDeleteDecorator(
-        cmd=cmd,
-        client=JavaComponentPreviewClient,
-        raw_parameters=raw_parameters,
-        models=CONTAINER_APPS_SDK_MODELS
-    )
-
-    return java_component_delete_decorator.delete()
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA)
