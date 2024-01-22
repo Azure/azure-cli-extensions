@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=no-member
 
 import struct
 import sys
@@ -147,7 +148,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
     return enable_mi_for_db_linker
 
 
-# pylint: disable=no-self-use, unused-argument, too-many-instance-attributes
+# pylint: disable=unused-argument, too-many-instance-attributes
 def getTargetHandler(cmd, target_id, target_type, auth_info, client_type, connection_name, skip_prompt):
     if target_type in {RESOURCE.Sql}:
         return SqlHandler(cmd, target_id, target_type, auth_info, connection_name, skip_prompt)
