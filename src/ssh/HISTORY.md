@@ -1,5 +1,9 @@
 Release History
 ===============
+2.0.3
+-----
+* [Bug Fix] Ensure that certificate validity value is always an integer when retrieving relay information for connecting to Arc Machines.
+
 2.0.2
 -----
 * [Bug Fix] Fix logic that checks for the OS of the target machine to avoid "cannot unpack non-iterable NoneType object" error
