@@ -894,7 +894,8 @@ def create_vm(
 
     if machine.vm_uuid and not inventory_item_id:
         # existing Arc for servers machine. Figure out inventory id.
-        machine_uuid_rev = reverseEndianLeftHalf(machine.vm_uuid).lower()
+        machine.vm_uuid = machine.vm_uuid.lower()
+        machine_uuid_rev = reverseEndianLeftHalf(machine.vm_uuid)
         # Force deserialization of SMBIOS UUID. This is required because autorest generated
         # SDK deserializes only the inventory properties common to all inventory types.
         InventoryItem._attribute_map["smbiosUuid"] = {  # pylint: disable=protected-access
@@ -912,13 +913,20 @@ def create_vm(
             biosId = inv_item.smbiosUuid  # type: ignore
             if biosId is None:
                 continue
-            if biosId == machine_uuid_rev or biosId == machine.vm_uuid.lower():
+            biosId = biosId.lower()
+            if biosId == machine_uuid_rev or biosId == machine.vm_uuid:
                 inventory_item_id = inv_item.id  # type: ignore
                 break
         # Explicitly remove inventory_items from memory.
         del inventory_items
 
     if not any([vm_template, inventory_item_id, datastore]):
+        if machine.vm_uuid:
+            # We were not able to find the inventory item in the vCenter corresponding to the machine.
+            raise RequiredArgumentMissingError(
+                "Could not find an inventory item in the vCenter corresponding to the machine. " +
+                "Please provide the inventory item id."
+            )
         raise RequiredArgumentMissingError(
             "either vm_template, inventory_item id or datastore must be provided."
         )
