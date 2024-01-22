@@ -1912,9 +1912,57 @@ def update_spring_cloud_config(cmd, java_component_name, environment_name, resou
     return "update_spring_cloud_config"
 
 
+def show_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name):
+    raw_parameters = locals()
+    java_component_show_decorator = JavaComponentPreviewShowDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return java_component_show_decorator.show()
+
+
+def delete_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    java_component_delete_decorator = JavaComponentPreviewDeleteDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return java_component_delete_decorator.delete()
+
+
 def create_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
     return "create_spring_cloud_eureka"
 
 
 def update_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
     return "update_spring_cloud_eureka"
+
+
+def show_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name):
+    raw_parameters = locals()
+    java_component_show_decorator = JavaComponentPreviewShowDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return java_component_show_decorator.show()
+
+
+def delete_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    java_component_delete_decorator = JavaComponentPreviewDeleteDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return java_component_delete_decorator.delete()
