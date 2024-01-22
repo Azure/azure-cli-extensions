@@ -33,7 +33,7 @@ def process_missing_vm_resource_parameters(cmd, namespace):
             "Please specify either (--machine-id) or (--resource-group-name and --resource-name) but not both."
         )
 
-    if not namespace.machine_id:
+    if not exists(namespace.machine_id):
         return
 
     if not is_valid_resource_id(namespace.machine_id):
