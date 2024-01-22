@@ -9,6 +9,7 @@ from azext_support._client_factory import (cf_communications,
                                            cf_support_tickets)
 from azext_support._validators import validate_tickets_create
 from azure.cli.core.commands import CliCommandType
+from azext_support.custom import TicketUpdate, TicketCreate
 
 
 def load_command_table(self, _):
@@ -51,3 +52,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_support_tickets_communications')
         g.custom_show_command('show', 'get_support_tickets_communications')
         g.custom_command('create', 'create_support_tickets_communications', supports_no_wait=False)
+     
+    self.command_table['support in-subscription tickets update'] = TicketUpdate(loader=self)
+    self.command_table['support in-subscription tickets create'] = TicketCreate(loader=self)

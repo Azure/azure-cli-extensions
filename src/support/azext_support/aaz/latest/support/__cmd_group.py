@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command_group(
+    "support",
+)
 class __CMDGroup(AAZCommandGroup):
     """Manage Azure support resource.
     """

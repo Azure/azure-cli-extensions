@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command_group(
+    "support in-subscription",
+)
 class __CMDGroup(AAZCommandGroup):
     """Manage Azure support resource within the selected subscription.
     """
