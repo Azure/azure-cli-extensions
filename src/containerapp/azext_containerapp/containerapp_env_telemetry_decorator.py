@@ -65,8 +65,8 @@ class ContainerappEnvTelemetryPreviewSetDecorator(ContainerAppEnvUpdateDecorator
 
     def set_argument_open_telemetry_logs_destinations(self):
         if self.get_argument_open_telemetry_logs_destinations() and self.get_argument_open_telemetry_logs_destinations() is not None:
-            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=self.get_argument_open_telemetry_logs_destinations())              
+            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=self.get_argument_open_telemetry_logs_destinations())
 
     def set_argument_open_telemetry_metrics_destinations(self):
         if self.get_argument_open_telemetry_metrics_destinations() and self.get_argument_open_telemetry_metrics_destinations() is not None:
-            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=self.get_argument_open_telemetry_metrics_destinations())              
+            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=self.get_argument_open_telemetry_metrics_destinations())
