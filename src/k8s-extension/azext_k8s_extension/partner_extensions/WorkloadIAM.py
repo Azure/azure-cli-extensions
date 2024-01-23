@@ -45,6 +45,15 @@ class WorkloadIAM(DefaultExtension):
             # TODO - Set this to 'stable' when the extension is ready
             release_train = 'preview'
 
+        # The name is used as a base to generate Kubernetes labels for config maps, pods, etc, and
+        # their names are limited to 63 characters (RFC-1123). Instead of calculating the exact
+        # number of characters that we can allow users to specify, it's better to restrict that even
+        # more so that we have extra space in case the name of a resource changes and it pushes the
+        # total string length over the limit.
+        if len(name) > 20:
+            raise InvalidArgumentValueError(
+                f"Name '{name}' is too long, it must be 20 characters long max.")
+
         scope = scope.lower()
         if scope is None:
             scope = 'cluster'
