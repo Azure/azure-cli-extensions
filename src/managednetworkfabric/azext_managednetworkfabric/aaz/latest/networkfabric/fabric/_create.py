@@ -18,10 +18,10 @@ class Create(AAZCommand):
     """Create a Network Fabric resource
 
     :example: Create a Network Fabric with option B Properties
-        az networkfabric fabric create --resource-group "example-rg" --location "westus3" --resource-name "example-fabric" --nf-sku "fab1" --nfc-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/example-NFC" --fabric-asn 20 --ipv4-prefix 10.1.0.0/19 --rack-count 2 --server-count-per-rack 5 --ts-config "{primaryIpv4Prefix:'172.31.0.0/30',secondaryIpv4Prefix:'172.31.0.20/30',username:'****',password:'*****',serialNumber:'1234'}" --managed-network-config "{infrastructureVpnConfiguration:{networkToNetworkInterconnectId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-nni',peeringOption:OptionB,optionBProperties:{routeTargets:{exportIpv4RouteTargets:['65046:10039'],exportIpv6RouteTargets:['65046:10039'],importIpv4RouteTargets:['65046:10039'],importIpv6RouteTargets:['65046:10039']}}},workloadVpnConfiguration:{networkToNetworkInterconnectId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-nni',peeringOption:OptionB,optionBProperties:{routeTargets:{exportIpv4RouteTargets:['65046:10039'],exportIpv6RouteTargets:['65046:10039'],importIpv4RouteTargets:['65046:10039'],importIpv6RouteTargets:['65046:10039']}}}}"
+        az networkfabric fabric create --resource-group "example-rg" --location "westus3" --resource-name "example-fabric" --nf-sku "fab1" --fabric-version "1.x.x" --nfc-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/example-NFC" --fabric-asn 20 --ipv4-prefix 10.1.0.0/19 --rack-count 2 --server-count-per-rack 5 --ts-config "{primaryIpv4Prefix:'172.31.0.0/30',secondaryIpv4Prefix:'172.31.0.20/30',username:'****',password:'*****',serialNumber:'1234'}" --managed-network-config "{infrastructureVpnConfiguration:{networkToNetworkInterconnectId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-nni',peeringOption:OptionB,optionBProperties:{routeTargets:{exportIpv4RouteTargets:['65046:10039'],exportIpv6RouteTargets:['65046:10039'],importIpv4RouteTargets:['65046:10039'],importIpv6RouteTargets:['65046:10039']}}},workloadVpnConfiguration:{networkToNetworkInterconnectId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-nni',peeringOption:OptionB,optionBProperties:{routeTargets:{exportIpv4RouteTargets:['65046:10039'],exportIpv6RouteTargets:['65046:10039'],importIpv4RouteTargets:['65046:10039'],importIpv6RouteTargets:['65046:10039']}}}}"
 
     :example: Create a Network Fabric with option A Properties
-        az networkfabric fabric create --resource-group "example-rg" --location "westus3" --resource-name "example-fabric" --nf-sku "fab1" --nfc-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/example-NFC" --fabric-asn 20 --ipv4-prefix "10.1.0.0/19" --rack-count 2 --server-count-per-rack 5 --ts-config "{primaryIpv4Prefix:'172.31.0.0/30',secondaryIpv4Prefix:'172.31.0.20/30',username:'****',password:'*****',serialNumber:1234}" --managed-network-config "{infrastructureVpnConfiguration:{networkToNetworkInterconnectId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-nni',peeringOption:OptionA,optionAProperties:{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},mtu:1500,vlanId:520,peerASN:65133,primaryIpv4Prefix:'172.31.0.0/31',secondaryIpv4Prefix:'172.31.0.20/31'}},workloadVpnConfiguration:{networkToNetworkInterconnectId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-nni',peeringOption:OptionA,optionAProperties:{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},mtu:1500,vlanId:520,peerASN:65133,primaryIpv4Prefix:'172.31.0.0/31',secondaryIpv4Prefix:'172.31.0.20/31',primaryIpv6Prefix:'3FFE:FFFF:0:CD30::a0/127',secondaryIpv6Prefix:'3FFE:FFFF:0:CD30::a0/127'}}}"
+        az networkfabric fabric create --resource-group "example-rg" --location "westus3" --resource-name "example-fabric" --nf-sku "fab1" --fabric-version "1.x.x" --nfc-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/example-NFC" --fabric-asn 20 --ipv4-prefix "10.1.0.0/19" --rack-count 2 --server-count-per-rack 5 --ts-config "{primaryIpv4Prefix:'172.31.0.0/30',secondaryIpv4Prefix:'172.31.0.20/30',username:'****',password:'*****',serialNumber:1234}" --managed-network-config "{infrastructureVpnConfiguration:{networkToNetworkInterconnectId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-nni',peeringOption:OptionA,optionAProperties:{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},mtu:1500,vlanId:520,peerASN:65133,primaryIpv4Prefix:'172.31.0.0/31',secondaryIpv4Prefix:'172.31.0.20/31'}},workloadVpnConfiguration:{networkToNetworkInterconnectId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-nni',peeringOption:OptionA,optionAProperties:{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},mtu:1500,vlanId:520,peerASN:65133,primaryIpv4Prefix:'172.31.0.0/31',secondaryIpv4Prefix:'172.31.0.20/31',primaryIpv6Prefix:'3FFE:FFFF:0:CD30::a0/127',secondaryIpv6Prefix:'3FFE:FFFF:0:CD30::a0/127'}}}"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
         az networkfabric fabric create --ts-config "??"
@@ -99,6 +99,14 @@ class Create(AAZCommand):
             fmt=AAZIntArgFormat(
                 maximum=4294967295,
                 minimum=1,
+            ),
+        )
+        _args_schema.fabric_version = AAZStrArg(
+            options=["--fabric-version"],
+            arg_group="Properties",
+            help="The version of Network Fabric.",
+            fmt=AAZStrArgFormat(
+                min_length=1,
             ),
         )
         _args_schema.ipv4_prefix = AAZStrArg(
@@ -196,6 +204,7 @@ class Create(AAZCommand):
         ts_config.primary_ipv6_prefix = AAZStrArg(
             options=["primary-ipv6-prefix"],
             help="IPv6 Address Prefix. Example: 3FFE:FFFF:0:CD30::a0/127.",
+            nullable=True,
         )
         ts_config.secondary_ipv4_prefix = AAZStrArg(
             options=["secondary-ipv4-prefix"],
@@ -205,6 +214,7 @@ class Create(AAZCommand):
         ts_config.secondary_ipv6_prefix = AAZStrArg(
             options=["secondary-ipv6-prefix"],
             help="Secondary IPv6 Address Prefix. Example: 3FFE:FFFF:0:CD30::a4/127.",
+            nullable=True,
         )
         ts_config.serial_number = AAZStrArg(
             options=["serial-number"],
@@ -285,6 +295,7 @@ class Create(AAZCommand):
         option_a_properties.primary_ipv6_prefix = AAZStrArg(
             options=["primary-ipv6-prefix"],
             help="IPv6 Address Prefix. Example: 3FFE:FFFF:0:CD30::a0/127.",
+            nullable=True,
         )
         option_a_properties.secondary_ipv4_prefix = AAZStrArg(
             options=["secondary-ipv4-prefix"],
@@ -293,6 +304,7 @@ class Create(AAZCommand):
         option_a_properties.secondary_ipv6_prefix = AAZStrArg(
             options=["secondary-ipv6-prefix"],
             help="Secondary IPv6 Address Prefix. Example: 3FFE:FFFF:0:CD30::a4/127.",
+            nullable=True,
         )
         option_a_properties.vlan_id = AAZIntArg(
             options=["vlan-id"],
@@ -499,6 +511,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("fabricASN", AAZIntType, ".fabric_asn", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("fabricVersion", AAZStrType, ".fabric_version")
                 properties.set_prop("ipv4Prefix", AAZStrType, ".ipv4_prefix", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("ipv6Prefix", AAZStrType, ".ipv6_prefix")
                 properties.set_prop("managementNetworkConfiguration", AAZObjectType, ".managed_network_config", typ_kwargs={"flags": {"required": True}})
@@ -517,9 +530,9 @@ class Create(AAZCommand):
             if terminal_server_configuration is not None:
                 terminal_server_configuration.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"required": True, "secret": True}})
                 terminal_server_configuration.set_prop("primaryIpv4Prefix", AAZStrType, ".primary_ipv4_prefix", typ_kwargs={"flags": {"required": True}})
-                terminal_server_configuration.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix")
+                terminal_server_configuration.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix", typ_kwargs={"nullable": True})
                 terminal_server_configuration.set_prop("secondaryIpv4Prefix", AAZStrType, ".secondary_ipv4_prefix", typ_kwargs={"flags": {"required": True}})
-                terminal_server_configuration.set_prop("secondaryIpv6Prefix", AAZStrType, ".secondary_ipv6_prefix")
+                terminal_server_configuration.set_prop("secondaryIpv6Prefix", AAZStrType, ".secondary_ipv6_prefix", typ_kwargs={"nullable": True})
                 terminal_server_configuration.set_prop("serialNumber", AAZStrType, ".serial_number")
                 terminal_server_configuration.set_prop("username", AAZStrType, ".username", typ_kwargs={"flags": {"required": True}})
 
@@ -584,7 +597,6 @@ class Create(AAZCommand):
             )
             properties.fabric_version = AAZStrType(
                 serialized_name="fabricVersion",
-                flags={"read_only": True},
             )
             properties.ipv4_prefix = AAZStrType(
                 serialized_name="ipv4Prefix",
@@ -674,6 +686,7 @@ class Create(AAZCommand):
             )
             terminal_server_configuration.primary_ipv6_prefix = AAZStrType(
                 serialized_name="primaryIpv6Prefix",
+                nullable=True,
             )
             terminal_server_configuration.secondary_ipv4_prefix = AAZStrType(
                 serialized_name="secondaryIpv4Prefix",
@@ -681,6 +694,7 @@ class Create(AAZCommand):
             )
             terminal_server_configuration.secondary_ipv6_prefix = AAZStrType(
                 serialized_name="secondaryIpv6Prefix",
+                nullable=True,
             )
             terminal_server_configuration.serial_number = AAZStrType(
                 serialized_name="serialNumber",
@@ -733,9 +747,9 @@ class _CreateHelper:
             option_a_properties.set_prop("mtu", AAZIntType, ".mtu")
             option_a_properties.set_prop("peerASN", AAZIntType, ".peer_asn", typ_kwargs={"flags": {"required": True}})
             option_a_properties.set_prop("primaryIpv4Prefix", AAZStrType, ".primary_ipv4_prefix")
-            option_a_properties.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix")
+            option_a_properties.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix", typ_kwargs={"nullable": True})
             option_a_properties.set_prop("secondaryIpv4Prefix", AAZStrType, ".secondary_ipv4_prefix")
-            option_a_properties.set_prop("secondaryIpv6Prefix", AAZStrType, ".secondary_ipv6_prefix")
+            option_a_properties.set_prop("secondaryIpv6Prefix", AAZStrType, ".secondary_ipv6_prefix", typ_kwargs={"nullable": True})
             option_a_properties.set_prop("vlanId", AAZIntType, ".vlan_id", typ_kwargs={"flags": {"required": True}})
 
         bfd_configuration = _builder.get(".optionAProperties.bfdConfiguration")
@@ -827,12 +841,14 @@ class _CreateHelper:
         )
         option_a_properties.primary_ipv6_prefix = AAZStrType(
             serialized_name="primaryIpv6Prefix",
+            nullable=True,
         )
         option_a_properties.secondary_ipv4_prefix = AAZStrType(
             serialized_name="secondaryIpv4Prefix",
         )
         option_a_properties.secondary_ipv6_prefix = AAZStrType(
             serialized_name="secondaryIpv6Prefix",
+            nullable=True,
         )
         option_a_properties.vlan_id = AAZIntType(
             serialized_name="vlanId",

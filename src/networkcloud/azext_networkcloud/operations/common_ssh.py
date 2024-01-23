@@ -107,11 +107,13 @@ class CustomSshOptions:
         return key_data
 
     @staticmethod
-    def build_ssh_arg_schema(args_schema, group):
+    # pylint: disable=unused-argument
+    def build_ssh_arg_schema(args_schema, is_update, group):
+        ssh_help = "The list of space-separated SSH public keys."
         args_schema.ssh_key_values = AAZListArg(
             options=["--ssh-key-values"],
             arg_group=group,
-            help="The list of space-separated SSH public keys.",
+            help=ssh_help,
         )
         args_schema.ssh_key_values.Element = AAZStrArg()
         args_schema.generate_ssh_keys = AAZBoolArg(
@@ -141,3 +143,14 @@ class CustomSshOptions:
         if has_value(args.ssh_key_values):
             ssh_keys += cls.add_ssh_key_action(list(args.ssh_key_values))
         return ssh_keys
+
+    @classmethod
+    def has_ssh_config(cls, args):
+        has_ssh_config = False
+        if has_value(args.generate_ssh_keys) and bool(args.generate_ssh_keys):
+            has_ssh_config = True
+        if has_value(args.ssh_dest_key_path):
+            has_ssh_config = True
+        if has_value(args.ssh_key_values):
+            has_ssh_config = True
+        return has_ssh_config

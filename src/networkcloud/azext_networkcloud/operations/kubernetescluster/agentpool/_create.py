@@ -35,7 +35,7 @@ class Create(_Create, CustomSshOptions):
 
         # Build agentpool Authentication args
         args_schema = CustomSshOptions.build_ssh_arg_schema(
-            args_schema, "AdministratorConfiguration"
+            args_schema, False, "AdministratorConfiguration"
         )
         # deregister the cli arguments which users should not interact with
         args_schema.ssh_public_keys._registered = False

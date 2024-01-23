@@ -3,11 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
-from abc import ABC
 from unittest import mock
 
 from azext_networkcloud import NetworkcloudCommandsLoader
 from azext_networkcloud.operations.kubernetescluster.agentpool._update import Update
+from azure.cli.core.aaz._base import AAZUndefined
 from azure.cli.core.mock import DummyCli
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
@@ -48,22 +48,43 @@ class TestKubernetesClusterAgentPoolUpdate(unittest.TestCase):
             keys.append(str(pub, "UTF-8"))
 
         # no ssh keys passed to agent pool
-        args.ssh_key_values = []
-        args.ssh_dest_key_path = []
-        args.generate_ssh_keys = []
-        args.ssh_public_keys = None
+        args.ssh_key_values = AAZUndefined
+        args.ssh_dest_key_path = AAZUndefined
+        args.generate_ssh_keys = AAZUndefined
+        args.ssh_public_keys = AAZUndefined
 
         self.cmd.ctx = mock.Mock()
         self.cmd.ctx.args = args
 
         # Call func
         self.cmd.pre_operations()
-        self.assertEqual(None, self.cmd.ctx.args.ssh_public_keys)
+        self.assertEqual(
+            None,
+            self.cmd.ctx.args.ssh_public_keys,
+            "no ssh keys passed to agent pool - none are expected after transformation",
+        )
+
+        # empty ssh key is passed to agent pool - expected empty array to the backend
+        args.ssh_key_values = [""]
+        args.ssh_dest_key_path = AAZUndefined
+        args.generate_ssh_keys = AAZUndefined
+        args.ssh_public_keys = []
+
+        self.cmd.ctx = mock.Mock()
+        self.cmd.ctx.args = args
+
+        # Call func
+        self.cmd.pre_operations()
+        self.assertEqual(
+            [],
+            self.cmd.ctx.args.ssh_public_keys,
+            "empty ssh key is passed to agent pool - expected empty array to the backend",
+        )
 
         # SSH keys passed to agent pool
         args.ssh_key_values = keys
-        args.ssh_dest_key_path = []
-        args.generate_ssh_keys = []
+        args.ssh_dest_key_path = AAZUndefined
+        args.generate_ssh_keys = AAZUndefined
         args.ssh_public_keys = None
 
         self.cmd.ctx = mock.Mock()
@@ -71,7 +92,11 @@ class TestKubernetesClusterAgentPoolUpdate(unittest.TestCase):
 
         # Call func
         self.cmd.pre_operations()
-        self.assertEqual(len(self.cmd.ctx.args.ssh_public_keys), 2)
+        self.assertEqual(
+            len(self.cmd.ctx.args.ssh_public_keys),
+            2,
+            "SSH keys passed to agent pool - expected 2 keys to the backend",
+        )
 
     @mock.patch("azure.cli.core.keys.generate_ssh_keys")
     @mock.patch("os.path.expanduser")
@@ -87,7 +112,3 @@ class TestKubernetesClusterAgentPoolUpdate(unittest.TestCase):
         TestCommonSsh.validate_get_ssh_keys_from_path(
             self, mock_isfile, mock_isdir, mock_listdir
         )
-
-    def test_vm_add_key_action(self):
-        """Test ssh key provided as input are correctly set in ssh-public-keys"""
-        TestCommonSsh.validate_add_key_action(self)

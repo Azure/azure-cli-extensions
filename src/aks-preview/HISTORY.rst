@@ -11,7 +11,23 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`. 
+* Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
+
+1.0.0b2
++++++++
+* Add --skip-gpu-driver-install option to node pool property in `az aks nodepool add`.
+
+1.0.0b1
++++++++
+* Add `--enable-addon-autoscaling` and `--disable-addon-autoscaling` to the `az aks update` command.
+* Add `--enable-addon-autoscaling` to the `az aks create` command.
+* Add `--ip-families` to the `az aks update` command.
+
+0.5.174
++++++++
+* Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`.
+* Fix for `az aks approuting update` command failing on granting keyvault permissions to managed identity.
+* Replace Workload Identity related functions with stable version.
 
 0.5.173
 +++++++
