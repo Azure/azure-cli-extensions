@@ -8,6 +8,7 @@ import tempfile
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
+
 class FleetHubfulScenarioTest(ScenarioTest):
 
     @classmethod
@@ -47,7 +48,7 @@ class FleetHubfulScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys()
         })
 
-        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub  --vm-size Standard_DS1 ' , checks=[
+        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub  --vm-size Standard_DS1 ', checks=[
             self.check('name', '{fleet_name}')
         ])
 

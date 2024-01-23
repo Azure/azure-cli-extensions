@@ -532,6 +532,7 @@ integration runtime" --name "exampleIntegrationRuntime" --resource-group "exampl
 |**--if-match**|string|ETag of the integration runtime entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
 |**--description**|string|Integration runtime description.|self_hosted_description|description|
 |**--linked-info**|object|The base definition of a linked integration runtime.|self_hosted_linked_info|linkedInfo|
+|**--enable-self-contained-interactive-authoring**|string|An alternative option to ensure interactive authoring function when your self-hosted integration runtime is unable to establish a connection with Azure Relay.|--enable_self_contained_interactive_authoring|enableSelfContainedInteractiveAuthoring|
 
 #### <a name="IntegrationRuntimesUpdate">Command `az datafactory integration-runtime update`</a>
 

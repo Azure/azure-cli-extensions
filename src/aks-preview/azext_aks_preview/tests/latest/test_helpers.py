@@ -117,6 +117,7 @@ class GetManagedClusterSnapShotTestCase(unittest.TestCase):
         ), self.assertRaises(BadRequestError):
             get_cluster_snapshot("mock_cli_ctx", "test_sub", "mock_rg", "mock_snapshot_name")
 
+
 class CheckManagedClusterTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW

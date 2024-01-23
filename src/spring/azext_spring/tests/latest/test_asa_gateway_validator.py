@@ -9,8 +9,8 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from ..._gateway_constant import (GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE,
                                   GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE, GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE)
 from ..._validators_enterprise import (_validate_gateway_response_cache, _validate_gateway_response_cache_exclusive,
-                            _validate_gateway_response_cache_scope, _validate_gateway_response_cache_size,
-                            _validate_gateway_response_cache_ttl)
+                                       _validate_gateway_response_cache_scope, _validate_gateway_response_cache_size,
+                                       _validate_gateway_response_cache_ttl)
 
 
 class TestGatewayValidator(unittest.TestCase):
@@ -28,17 +28,15 @@ class TestGatewayValidator(unittest.TestCase):
             ns = Namespace(response_cache_scope=valid_scope)
             self._test_valid_response_cache_scope(ns, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE)
 
-
     def _test_invalid_response_cache_scope(self, ns):
         with self.assertRaises(InvalidArgumentValueError) as context:
             _validate_gateway_response_cache_scope(ns)
-        self.assertEqual("The allowed values for '--response-cache-scope' are [Route, Instance]", str(context.exception))
-
+        self.assertEqual("The allowed values for '--response-cache-scope' are [Route, Instance]",
+                         str(context.exception))
 
     def _test_valid_response_cache_scope(self, ns, expectedScope):
         _validate_gateway_response_cache_scope(ns)
         self.assertEqual(expectedScope, ns.response_cache_scope)
-
 
     def test_response_cache_size(self):
         invalid_cache_size_list = ["-2", "0", ",", "00GB", "0MB", "-1MB", "09KB", "12345678901GB"]
@@ -65,7 +63,6 @@ class TestGatewayValidator(unittest.TestCase):
         _validate_gateway_response_cache_size(ns)
         self.assertTrue(ns.response_cache_size == GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE)
 
-
     def _test_invalid_response_cache_size(self, ns):
         with self.assertRaises(InvalidArgumentValueError) as context:
             _validate_gateway_response_cache_size(ns)
@@ -73,16 +70,14 @@ class TestGatewayValidator(unittest.TestCase):
             ns.response_cache_size, r"^[1-9][0-9]{0,9}(GB|MB|KB)$"
         ), str(context.exception))
 
-
     def _test_valid_response_cache_size(self, ns):
         _validate_gateway_response_cache_size(ns)
-
 
     def test_response_cache_ttl(self):
         invalid_cache_ttl_list = ["-2", "0", ",", "00h", "0m", "-1s", "09m", "12345678901s"]
         valid_cache_ttl_list = ["1234567890h", "1000h", "100h", "10h", "1h",
-                                 "1234567890m", "1000m", "100m", "10m", "1m",
-                                 "1234567890s", "1000s", "100s", "10s", "1s"]
+                                "1234567890m", "1000m", "100m", "10m", "1m",
+                                "1234567890s", "1000s", "100s", "10s", "1s"]
         for size in invalid_cache_ttl_list:
             ns = Namespace(response_cache_ttl=size)
             self._test_invalid_response_cache_ttl(ns)
@@ -103,7 +98,6 @@ class TestGatewayValidator(unittest.TestCase):
         _validate_gateway_response_cache_ttl(ns)
         self.assertTrue(ns.response_cache_ttl == GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE)
 
-
     def _test_invalid_response_cache_ttl(self, ns):
         with self.assertRaises(InvalidArgumentValueError) as context:
             _validate_gateway_response_cache_ttl(ns)
@@ -111,10 +105,8 @@ class TestGatewayValidator(unittest.TestCase):
             ns.response_cache_ttl, r"^[1-9][0-9]{0,9}(h|m|s)$"
         ), str(context.exception))
 
-
     def _test_valid_response_cache_ttl(self, ns):
         _validate_gateway_response_cache_ttl(ns)
-
 
     def test_validate_gateway_response_cache_exclusive(self):
         invalid_ns_list = [
@@ -144,11 +136,10 @@ class TestGatewayValidator(unittest.TestCase):
             with self.assertRaises(InvalidArgumentValueError) as context:
                 _validate_gateway_response_cache_exclusive(ns)
             self.assertEqual("Conflict detected: Parameters in ['--response-cache-scope', "
-                            "'--response-cache-scope', '--response-cache-ttl'] "
-                            "cannot be set together with '--enable-response-cache false'.", str(context.exception))
+                             "'--response-cache-scope', '--response-cache-ttl'] "
+                             "cannot be set together with '--enable-response-cache false'.", str(context.exception))
         for ns in valid_ns_list:
             _validate_gateway_response_cache_exclusive(ns)
-
 
     def test_validate_gateway_response_cache(self):
         valid_ns_list = [
@@ -188,4 +179,3 @@ class TestGatewayValidator(unittest.TestCase):
 
         for ns in valid_ns_list:
             _validate_gateway_response_cache(ns)
-

@@ -27,7 +27,7 @@ helps['fleet create'] = """
           text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --enable-hub --tags "TagKey=TagValue"
         - name: Create a fleet with a system assigned managed service identity.
           text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --enable-managed-identity
-        - name: Create a fleet with a user provided managed service identity.
+        - name: Create a fleet with a user assigned managed service identity.
           text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --enable-managed-identity --assign-identity "/subscription/00000000-0000-0000-0000-000000000000/resourcegroup/MyFleetResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity"
 """
 

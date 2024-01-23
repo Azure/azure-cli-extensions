@@ -115,6 +115,23 @@ class LogicManagementClientScenarioTest(ScenarioTest):
                  '-y',
                  checks=[])
 
+    @ResourceGroupPreparer(name_prefix='cli_test_logic_test-resource-group'[:9], key='rg')
+    def test_workflow_parameters(self, resource_group):
+        curr_dir = os.path.dirname(os.path.realpath(__file__))
+        self.kwargs.update({
+            'testWorkflow': self.create_random_name(prefix='cli_test_workflows'[:9], length=24),
+            'definition_path': os.path.join(curr_dir, 'workflow_connection.json'),
+            'definition_path_2': os.path.join(curr_dir, 'workflow_connection_update.json'),
+        })
+        self.cmd('az logic workflow create --resource-group "{rg}" --definition "{definition_path}" --name "{testWorkflow}"', checks=[
+            self.check('definition.triggers.Recurrence.evaluatedRecurrence.interval', 3),
+            self.exists('parameters')
+        ])
+        self.cmd('az logic workflow update --resource-group "{rg}" --definition "{definition_path_2}" --name "{testWorkflow}"', checks=[
+            self.check('definition.triggers.Recurrence.evaluatedRecurrence.interval', 4),
+            self.exists('parameters')
+        ])
+
     @ResourceGroupPreparer()
     def test_integration_account_map(self):
         curr_dir = os.path.dirname(os.path.realpath(__file__))
