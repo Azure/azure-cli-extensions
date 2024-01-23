@@ -867,9 +867,8 @@ def load_arguments(self, _):
             c.argument('generation', arg_type=get_enum_type(ConfigurationServiceGeneration), help='Generation of Application Configuration Service.')
             c.argument('refresh_interval', type=int,
                        validator=validate_refresh_interval,
-                       help='Number of the repository refresh interval (in seconds). '
-                            'The minimum allowable value is 0, which disables automatic refresh. For optimal '
-                            'performance, it is recommended to set this interval at a minimum of 60 seconds.')
+                       help='Specify the interval (in seconds) for refreshing the repository. '
+                            'Use 0 to turn off automatic refresh. An interval of at least 60 seconds is recommended.')
 
     for scope in ['add', 'update']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:

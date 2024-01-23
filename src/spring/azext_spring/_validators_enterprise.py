@@ -353,7 +353,10 @@ def validate_acs_create(namespace):
 
 
 def validate_refresh_interval(namespace):
-    if namespace.refresh_interval is not None:
+    if namespace.refresh_interval:
+        if not isinstance(namespace.refresh_interval, int):
+            raise InvalidArgumentValueError("--refresh-interval should be a number.")
+
         if namespace.refresh_interval < 0:
             raise ArgumentUsageError("--refresh-interval must be greater than or equal to 0.")
 
