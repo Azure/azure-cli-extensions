@@ -60,6 +60,7 @@ class ByosTest(ScenarioTest):
 
 class StartStopAscTest(ScenarioTest):
 
+    @record_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD_START_STOP['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD_START_STOP['spring'])
     def test_stop_and_start_service(self, resource_group, spring):
@@ -172,6 +173,7 @@ class SslTests(ScenarioTest):
 
 class FlushVirtualNetworkDnsSettingTest(ScenarioTest):
 
+    @record_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     def test_flush_virtualnetwork_dns_settings_service(self, resource_group, spring):
