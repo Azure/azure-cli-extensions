@@ -6,6 +6,8 @@ Release History
 Unreleased
 ++++++++
 * Add `publisher` command group for management of publisher resources.
+* Changed the name of the `path_to_mappings` parameter in the CNF input file to `default_values`
+* Added a `helm template` validation step to the `az aosm nfd build` command for the `cnf` definition type
 
 1.0.0b4
 ++++++++

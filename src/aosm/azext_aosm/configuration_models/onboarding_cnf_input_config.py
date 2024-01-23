@@ -9,8 +9,9 @@ from typing import List
 
 from azure.cli.core.azclierror import ValidationError
 
-from azext_aosm.configuration_models.onboarding_nfd_base_input_config import \
-    OnboardingNFDBaseInputConfig
+from azext_aosm.configuration_models.onboarding_nfd_base_input_config import (
+    OnboardingNFDBaseInputConfig,
+)
 
 
 @dataclass
@@ -42,9 +43,7 @@ class ImageSourceConfig:
     def validate(self):
         """Validate the image configuration."""
         if not self.source_registry:
-            raise ValidationError(
-                "Source registry must be set"
-            )
+            raise ValidationError("Source registry must be set")
 
 
 @dataclass
@@ -61,12 +60,12 @@ class HelmPackageConfig:
             )
         },
     )
-    path_to_mappings: str | None = field(
+    default_values: str | None = field(
         default="",
         metadata={
             "comment": (
-                "The file path (absolute or relative to input.json) of value mappings on the local disk where "
-                "chosen values are replaced with deploymentParameter placeholders.\n"
+                "The file path (absolute or relative to input.json) of YAML values file on the local disk which "
+                "will be used instead of the values.yaml file present in the helm chart.\n"
                 "Accepts .yaml or .yml. If left as a blank string, "
                 "a value mappings file is generated with every value mapped to a deployment parameter.\n"
                 "Use a blank string and --interactive on the build command to interactively choose which values to map."
@@ -97,7 +96,8 @@ class OnboardingCNFInputConfig(OnboardingNFDBaseInputConfig):
 
     # TODO: Add better comment for images as not a list
     images: ImageSourceConfig = field(
-        default_factory=ImageSourceConfig, metadata={"comment": "Source of images to be included in the CNF."}
+        default_factory=ImageSourceConfig,
+        metadata={"comment": "Source of images to be included in the CNF."},
     )
     helm_packages: List[HelmPackageConfig] = field(
         default_factory=lambda: [HelmPackageConfig()],

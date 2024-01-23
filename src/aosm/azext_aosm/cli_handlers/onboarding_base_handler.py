@@ -21,11 +21,13 @@ from azext_aosm.definition_folder.builder.definition_folder_builder import (
 )
 from azext_aosm.definition_folder.reader.definition_folder import DefinitionFolder
 from azext_aosm.common.command_context import CommandContext
-from azext_aosm.configuration_models.common_parameters_config import \
-    BaseCommonParametersConfig
+from azext_aosm.configuration_models.common_parameters_config import (
+    BaseCommonParametersConfig,
+)
 from azext_aosm.common.local_file_builder import LocalFileBuilder
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from azext_aosm.common.constants import DEPLOYMENT_PARAMETERS_FILENAME
+
 logger = get_logger(__name__)
 
 
@@ -36,9 +38,11 @@ class OnboardingBaseCLIHandler(ABC):
         self,
         provided_input_path: Optional[Path] = None,
         aosm_client: Optional[HybridNetworkManagementClient] = None,
+        skip: str = None,
     ):
         """Initialize the CLI handler."""
         self.aosm_client = aosm_client
+        self.skip = skip
         # If config file provided (for build, publish and delete)
         if provided_input_path:
             provided_input_path = Path(provided_input_path)
@@ -46,7 +50,7 @@ class OnboardingBaseCLIHandler(ABC):
             if provided_input_path.suffix == ".jsonc":
                 config_dict = self._read_input_config_from_file(provided_input_path)
                 self.config = self._get_input_config(config_dict)
-                # Validate config before getting processor list, 
+                # Validate config before getting processor list,
                 # in case error with input artifacts i.e helm package
                 self.config.validate()
                 self.processors = self._get_processor_list()
@@ -59,7 +63,6 @@ class OnboardingBaseCLIHandler(ABC):
         # If no config file provided (for generate-config)
         else:
             self.config = self._get_input_config()
-
         self.definition_folder_builder = DefinitionFolderBuilder(
             Path.cwd() / self.output_folder_file_name
         )
@@ -89,6 +92,7 @@ class OnboardingBaseCLIHandler(ABC):
 
     def build(self):
         """Build the definition."""
+        self.pre_validate_build()
         self.definition_folder_builder.add_element(self.build_base_bicep())
         self.definition_folder_builder.add_element(self.build_manifest_bicep())
         self.definition_folder_builder.add_element(self.build_artifact_list())
@@ -98,7 +102,9 @@ class OnboardingBaseCLIHandler(ABC):
 
     def publish(self, command_context: CommandContext):
         """Publish the definition contained in the specified definition folder."""
-        definition_folder = DefinitionFolder(command_context.cli_options["definition_folder"])
+        definition_folder = DefinitionFolder(
+            command_context.cli_options["definition_folder"]
+        )
         definition_folder.deploy(config=self.config, command_context=command_context)
 
     def delete(self, command_context: CommandContext):
@@ -108,6 +114,10 @@ class OnboardingBaseCLIHandler(ABC):
         #  - For each element (reversed):
         #    - Do element.delete()
         # TODO: Implement
+
+    def pre_validate_build(self):
+        """Perform all validations that need to be done before running the build command."""
+        pass
 
     @abstractmethod
     def build_base_bicep(self):
@@ -173,11 +183,7 @@ class OnboardingBaseCLIHandler(ABC):
         bicep_contents: str = template.render()
         return bicep_contents
 
-    def _render_definition_bicep_contents(
-        self,
-        template_path: Path,
-        params
-    ):
+    def _render_definition_bicep_contents(self, template_path: Path, params):
         """Write the definition bicep file from given template."""
         with open(template_path, "r", encoding="UTF-8") as f:
             template: Template = Template(

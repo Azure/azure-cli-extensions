@@ -8,23 +8,29 @@ import shutil
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+import subprocess
 from typing import Any, Dict, List, Optional, Tuple
-import yaml
+import warnings
+
 import ruamel.yaml
 from ruamel.yaml.error import ReusedAnchorWarning
-import warnings
-import genson
 
+import genson
+import yaml
 from knack.log import get_logger
 
-from azext_aosm.common.exceptions import (DefaultValuesNotFoundError,
-                                          MissingChartDependencyError,
-                                          SchemaGetOrGenerateError)
-from azext_aosm.common.utils import extract_tarfile
+from azext_aosm.common.exceptions import (
+    DefaultValuesNotFoundError,
+    MissingChartDependencyError,
+    SchemaGetOrGenerateError,
+)
+from azext_aosm.common.utils import extract_tarfile, check_tool_installed
 from azext_aosm.inputs.base_input import BaseInput
 
 logger = get_logger(__name__)
+yaml_processor = ruamel.yaml.YAML(typ="safe", pure=True)
 warnings.simplefilter("ignore", ReusedAnchorWarning)
+
 
 @dataclass
 class HelmChartMetadata:
@@ -71,6 +77,8 @@ class HelmChartInput(BaseInput):
     :type chart_path: Path
     :param default_config: The default configuration.
     :type default_config: Optional[Dict[str, Any]]
+    :param default_config_path: The path to the default configuration.
+    :type default_config_path: Optional[str]
     """
 
     def __init__(
@@ -79,6 +87,7 @@ class HelmChartInput(BaseInput):
         artifact_version: str,
         chart_path: Path,
         default_config: Optional[Dict[str, Any]] = None,
+        default_config_path: Optional[str] = None,
     ):
         super().__init__(artifact_name, artifact_version, default_config)
         self.chart_path = chart_path
@@ -89,10 +98,14 @@ class HelmChartInput(BaseInput):
             self._chart_dir = extract_tarfile(chart_path, self._temp_dir_path)
         self._validate()
         self.metadata = self._get_metadata()
+        self.helm_template = None
+        self.default_config_path = default_config_path
 
     @staticmethod
     def from_chart_path(
-        chart_path: Path, default_config: Optional[Dict[str, Any]]
+        chart_path: Path,
+        default_config: Optional[Dict[str, Any]],
+        default_config_path: Optional[str] = None,
     ) -> "HelmChartInput":
         """
         Creates a HelmChartInput object from a path to a Helm chart.
@@ -101,6 +114,8 @@ class HelmChartInput(BaseInput):
         :type chart_path: Path
         :param default_config: The default configuration.
         :type default_config: Optional[Dict[str, Any]]
+        :param default_config_path: The path to the default configuration.
+        :type default_config_path: Optional[str]
         :return: A HelmChartInput object.
         :rtype: HelmChartInput
         """
@@ -125,7 +140,61 @@ class HelmChartInput(BaseInput):
                 artifact_version=version,
                 chart_path=chart_path,
                 default_config=default_config,
+                default_config_path=default_config_path,
             )
+
+    def validate_template(self) -> None:
+        """
+        Perform validation on the Helm chart template by running `helm template` command.
+
+        :return: Error message if the `helm template` command fails.
+        """
+        logger.debug("Performing validation on Helm chart %s.", self.artifact_name)
+
+        check_tool_installed("helm")
+
+        if self.default_config_path:
+            cmd = [
+                "helm",
+                "template",
+                self.artifact_name,
+                self.chart_path,
+                "--values",
+                self.default_config_path,
+            ]
+        else:
+            cmd = [
+                "helm",
+                "template",
+                self.artifact_name,
+                self.chart_path,
+            ]
+
+        try:
+            result = subprocess.run(cmd, capture_output=True, check=True)
+            helm_template_output = result.stdout
+            self.helm_template = helm_template_output
+
+            logger.debug(
+                "Helm template output for Helm chart %s:\n%s",
+                self.artifact_name,
+                helm_template_output,
+            )
+            return ""
+        except subprocess.CalledProcessError as error:
+            # Return the error message without raising an error.
+            # The errors are going to be collected into a file by the caller of this function.
+            error_message = error.stderr.decode()
+
+            # Remove part of the message of the error. This is because this message will polute
+            # the error file. We are not running the helm command with the --debug flag,
+            # because during testing this flag did not produce any useful output
+            # (the invalid YAML was not printed out). If at a later date we find that this flag
+            # does produce a useful output, we can run the helm command with the --debug flag.
+            error_message = error_message.replace(
+                "\nUse --debug flag to render out invalid YAML", ""
+            )
+            return error_message
 
     def get_defaults(self) -> Dict[str, Any]:
         """
@@ -136,6 +205,7 @@ class HelmChartInput(BaseInput):
         :raises DefaultValuesNotFoundError: If no default values were found for the Helm chart.
         """
         logger.info("Getting default values for Helm chart input")
+
         try:
             default_config = self.default_config or self._read_values_yaml()
             logger.debug(
@@ -339,8 +409,7 @@ class HelmChartInput(BaseInput):
         for file in self._chart_dir.iterdir():
             if file.name.endswith(("values.yaml", "values.yml")):
                 with file.open(encoding="UTF-8") as f:
-                    ryaml = ruamel.yaml.YAML(typ='safe', pure=True)
-                    content = ryaml.load(f)
+                    content = yaml_processor.load(f)
                 return content
 
         logger.error("No values.yaml file found in Helm chart '%s'", self.chart_path)

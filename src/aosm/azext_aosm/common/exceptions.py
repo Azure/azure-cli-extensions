@@ -1,5 +1,12 @@
+from azure.cli.core.azclierror import UserFault
+
+
 class InvalidFileTypeError(Exception):
     """Raised when the file type is not supported by the parser"""
+
+
+class MissingDependency(UserFault):
+    """Raised when the required dependency is missing"""
 
 
 class MissingChartDependencyError(Exception):

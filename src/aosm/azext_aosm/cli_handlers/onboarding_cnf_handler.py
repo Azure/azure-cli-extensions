@@ -5,12 +5,14 @@
 from __future__ import annotations
 
 import json
-import ruamel.yaml
-from ruamel.yaml.error import ReusedAnchorWarning
 import warnings
 from pathlib import Path
+import ruamel.yaml
+from ruamel.yaml.error import ReusedAnchorWarning
 
-from azure.cli.core.azclierror import UnclassifiedUserFault
+from jinja2 import Template
+
+from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
 
 from azext_aosm.build_processors.helm_chart_processor import HelmChartProcessor
@@ -31,21 +33,26 @@ from azext_aosm.definition_folder.builder.bicep_builder import (
 from azext_aosm.definition_folder.builder.json_builder import (
     JSONDefinitionElementBuilder,
 )
-from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
-                                         BASE_FOLDER_NAME,
-                                         CNF_BASE_TEMPLATE_FILENAME,
-                                         CNF_TEMPLATE_FOLDER_NAME,
-                                         CNF_DEFINITION_TEMPLATE_FILENAME,
-                                         CNF_INPUT_FILENAME,
-                                         CNF_MANIFEST_TEMPLATE_FILENAME,
-                                         CNF_OUTPUT_FOLDER_FILENAME,
-                                         MANIFEST_FOLDER_NAME,
-                                         NF_DEFINITION_FOLDER_NAME,
-                                         DEPLOYMENT_PARAMETERS_FILENAME)
+from azext_aosm.common.constants import (
+    ARTIFACT_LIST_FILENAME,
+    BASE_FOLDER_NAME,
+    CNF_BASE_TEMPLATE_FILENAME,
+    CNF_TEMPLATE_FOLDER_NAME,
+    CNF_DEFINITION_TEMPLATE_FILENAME,
+    CNF_HELM_VALIDATION_ERRORS_TEMPLATE_FILENAME,
+    CNF_INPUT_FILENAME,
+    CNF_MANIFEST_TEMPLATE_FILENAME,
+    CNF_OUTPUT_FOLDER_FILENAME,
+    HELM_TEMPLATE,
+    MANIFEST_FOLDER_NAME,
+    NF_DEFINITION_FOLDER_NAME,
+    DEPLOYMENT_PARAMETERS_FILENAME,
+)
 
 from .onboarding_nfd_base_handler import OnboardingNFDBaseCLIHandler
 
 logger = get_logger(__name__)
+yaml_processor = ruamel.yaml.YAML(typ="safe", pure=True)
 warnings.simplefilter("ignore", ReusedAnchorWarning)
 
 
@@ -68,9 +75,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
             input_config = {}
         return OnboardingCNFInputConfig(**input_config)
 
-    def _get_params_config(
-        self, config_file: Path = None
-    ) -> CNFCommonParametersConfig:
+    def _get_params_config(self, config_file: Path = None) -> CNFCommonParametersConfig:
         """Get the configuration for the command."""
         with open(config_file, "r", encoding="utf-8") as _file:
             params_dict = json.load(_file)
@@ -82,19 +87,22 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
         processor_list = []
         # for each helm package, instantiate helm processor
         for helm_package in self.config.helm_packages:
-            if helm_package.path_to_mappings:
-                if Path(helm_package.path_to_mappings).exists():
-                    yaml = ruamel.yaml.YAML(typ='safe', pure=True)
-                    provided_config = yaml.load(open(helm_package.path_to_mappings))
+            if helm_package.default_values:
+                if Path(helm_package.default_values).exists():
+                    provided_config = yaml_processor.load(
+                        open(helm_package.default_values)
+                    )
                 else:
-                    raise UnclassifiedUserFault(
+                    raise FileNotFoundError(
                         "There is no file at the path provided for the mappings file."
                     )
             else:
                 provided_config = None
 
             helm_input = HelmChartInput.from_chart_path(
-                Path(helm_package.path_to_chart).absolute(), default_config=provided_config
+                Path(helm_package.path_to_chart).absolute(),
+                default_config=provided_config,
+                default_config_path=helm_package.default_values,
             )
             helm_processor = HelmChartProcessor(
                 helm_package.name,
@@ -104,6 +112,53 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
             )
             processor_list.append(helm_processor)
         return processor_list
+
+    def _validate_helm_template(self):
+        """Validate the helm packages."""
+        helm_chart_processors = self._get_processor_list()
+
+        validation_errors = {}
+
+        for helm_processor in helm_chart_processors:
+            validation_output = helm_processor.input_artifact.validate_template()
+
+            if validation_output:
+                validation_errors[
+                    helm_processor.input_artifact.artifact_name
+                ] = validation_output
+
+        if validation_errors:
+            # Create an error file using a j2 template
+            error_output_template_path = self._get_template_path(
+                CNF_TEMPLATE_FOLDER_NAME, CNF_HELM_VALIDATION_ERRORS_TEMPLATE_FILENAME
+            )
+
+            with open(
+                error_output_template_path,
+                "r",
+                encoding="utf-8",
+            ) as file:
+                error_output_template = Template(file.read())
+
+            rendered_error_output_template = error_output_template.render(
+                errors=validation_errors
+            )
+
+            logger.info(rendered_error_output_template)
+
+            error_message = (
+                "Could not validate all the provided Helm charts. "
+                "Please run the CLI command again with the --verbose flag "
+                "to see the validation errors."
+            )
+
+            raise ValidationError(error_message)
+
+    def pre_validate_build(self):
+        """Run all validation functions required before building the cnf."""
+        logger.debug("Pre-validating build")
+        if self.skip != HELM_TEMPLATE:
+            self._validate_helm_template()
 
     def build_base_bicep(self):
         """Build the base bicep file."""
@@ -203,11 +258,9 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
 
         params = {
             "acr_nf_applications": nf_application_list,
-            "deployment_parameters_file": DEPLOYMENT_PARAMETERS_FILENAME
+            "deployment_parameters_file": DEPLOYMENT_PARAMETERS_FILENAME,
         }
-        bicep_contents = self._render_definition_bicep_contents(
-            template_path, params
-        )
+        bicep_contents = self._render_definition_bicep_contents(template_path, params)
 
         # Create a bicep element + add its supporting mapping files
         bicep_file = BicepDefinitionElementBuilder(
@@ -233,7 +286,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
             "acrArtifactStoreName": self.config.acr_artifact_store_name,
             "acrManifestName": self.config.acr_artifact_store_name + "-manifest",
             "nfDefinitionGroup": self.config.nf_name,
-            "nfDefinitionVersion": self.config.version
+            "nfDefinitionVersion": self.config.version,
         }
 
         base_file = JSONDefinitionElementBuilder(

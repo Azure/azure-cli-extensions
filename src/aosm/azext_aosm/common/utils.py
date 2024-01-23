@@ -12,7 +12,7 @@ import shutil
 import subprocess
 import tempfile
 
-from azext_aosm.common.exceptions import InvalidFileTypeError
+from azext_aosm.common.exceptions import InvalidFileTypeError, MissingDependency
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -29,7 +29,10 @@ def convert_bicep_to_arm(bicep_template_path: Path) -> dict:
         bicep_filename = bicep_template_path.name
         arm_template_name = bicep_filename.replace(".bicep", ".json")
         arm_path = Path(tmpdir) / arm_template_name
-        logger.debug("Converting bicep template %s to ARM.", bicep_template_path,)
+        logger.debug(
+            "Converting bicep template %s to ARM.",
+            bicep_template_path,
+        )
 
         try:
             subprocess.run(
@@ -47,7 +50,9 @@ def convert_bicep_to_arm(bicep_template_path: Path) -> dict:
                 stderr=subprocess.PIPE,
             )
         except subprocess.CalledProcessError as error:
-            raise RuntimeError(f"Bicep to ARM template compilation failed.\n{error.stderr}")
+            raise RuntimeError(
+                f"Bicep to ARM template compilation failed.\n{error.stderr}"
+            )
 
         logger.debug("ARM template:\n%s", arm_path.read_text())
         arm_json = json.loads(arm_path.read_text())
@@ -89,3 +94,13 @@ def snake_case_to_camel_case(text):
     """Converts snake case to camel case."""
     components = text.split("_")
     return components[0] + "".join(x[0].upper() + x[1:] for x in components[1:])
+
+
+def check_tool_installed(tool_name: str) -> None:
+    """
+    Check whether a tool such as docker or helm is installed.
+
+    :param tool_name: name of the tool to check, e.g. docker
+    """
+    if shutil.which(tool_name) is None:
+        raise MissingDependency(f"You must install {tool_name} to use this command.")

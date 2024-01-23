@@ -1,0 +1,48 @@
+# Default values for nf-agent-cnf.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  # NFDV defines that AOSM overwrites image.repository with the Articfact Store ACR
+  repository: sunnyclipubsunnynfagentacr2dd56aed266.azurecr.io
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "879624"
+
+# NFDV defines that AOSM overwrites imagePullSecrets with whatever is needed for the Artifact Store ACR
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+nfagent:
+  namespace: sb-uowvjfivpyuow
+  identity: 041db2eb-36e0-42cd-ac13-03ae8e997cd1
+  topic: simpl
+  # name of pod identity - not using this any more
+  # podIdentity: mypeapod

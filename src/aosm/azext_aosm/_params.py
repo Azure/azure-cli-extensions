@@ -6,7 +6,14 @@
 from argcomplete.completers import FilesCompleter
 from azure.cli.core import AzCommandsLoader
 
-from .common.constants import CNF, VNF, BICEP_PUBLISH, ARTIFACT_UPLOAD, IMAGE_UPLOAD
+from .common.constants import (
+    CNF,
+    VNF,
+    BICEP_PUBLISH,
+    ARTIFACT_UPLOAD,
+    IMAGE_UPLOAD,
+    HELM_TEMPLATE,
+)
 
 
 def load_arguments(self: AzCommandsLoader, _):
@@ -17,7 +24,9 @@ def load_arguments(self: AzCommandsLoader, _):
     )
 
     definition_type = get_enum_type([VNF, CNF])
-    nf_skip_steps = get_enum_type([BICEP_PUBLISH, ARTIFACT_UPLOAD, IMAGE_UPLOAD])
+    nf_skip_steps = get_enum_type(
+        [BICEP_PUBLISH, ARTIFACT_UPLOAD, IMAGE_UPLOAD, HELM_TEMPLATE]
+    )
     ns_skip_steps = get_enum_type([BICEP_PUBLISH, ARTIFACT_UPLOAD])
 
     # Set the argument context so these options are only available when this specific command
@@ -53,10 +62,10 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=["--build-output-folder", "-b"],
             type=file_type,
             completer=FilesCompleter(allowednames="*.json"),
-            help=(
-                "Path to the folder to publish, created by the build command."
-            ),
+            help=("Path to the folder to publish, created by the build command."),
         )
+        # This will only ever output one string and will fail if more than one
+        # skip steps are provided. It might be good to change that.
         c.argument(
             "skip",
             arg_type=nf_skip_steps,
@@ -64,7 +73,8 @@ def load_arguments(self: AzCommandsLoader, _):
                 "Optional skip steps. 'bicep-publish' will skip deploying the bicep "
                 "template; 'artifact-upload' will skip uploading any artifacts; "
                 "'image-upload' will skip uploading the VHD image (for VNFs) or the "
-                "container images (for CNFs)."
+                "container images (for CNFs); 'helm-template' will skip templating the "
+                "helm charts (for CNFs)."
             ),
         )
         c.argument(

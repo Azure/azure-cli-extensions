@@ -23,12 +23,14 @@ class DeployableResourceTypes(str, Enum):
 BICEP_PUBLISH = "bicep-publish"
 ARTIFACT_UPLOAD = "artifact-upload"
 IMAGE_UPLOAD = "image-upload"
+HELM_TEMPLATE = "helm-template"
 
 
 class SkipSteps(Enum):
     BICEP_PUBLISH = BICEP_PUBLISH
     ARTIFACT_UPLOAD = ARTIFACT_UPLOAD
     IMAGE_UPLOAD = IMAGE_UPLOAD
+    HELM_TEMPLATE = HELM_TEMPLATE
 
 
 class ManifestsExist(str, Enum):
@@ -69,6 +71,7 @@ CNF_OUTPUT_FOLDER_FILENAME = "cnf-cli-output"
 CNF_INPUT_FILENAME = "cnf-input.jsonc"
 CNF_DEFINITION_TEMPLATE_FILENAME = "cnfdefinition.bicep.j2"
 CNF_MANIFEST_TEMPLATE_FILENAME = "cnfartifactmanifest.bicep.j2"
+CNF_HELM_VALIDATION_ERRORS_TEMPLATE_FILENAME = "cnfhelmtemplateerrors.txt.j2"
 CNF_BASE_TEMPLATE_FILENAME = "cnfbase.bicep"
 CNF_VALUES_SCHEMA_FILENAME = "values.schema.json"
 CNF_TEMPLATE_FOLDER_NAME = "cnf"

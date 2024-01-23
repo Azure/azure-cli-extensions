@@ -6,6 +6,7 @@
 from azure.cli.core import AzCommandsLoader
 
 from ._client_factory import cf_aosm  # pylint: disable=import-error
+
 # from azext_aosm._client_factory import cf_aosm
 
 
