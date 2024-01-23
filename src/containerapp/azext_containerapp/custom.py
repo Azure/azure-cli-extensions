@@ -1892,13 +1892,13 @@ def show_java_component(cmd, java_component_name, environment_name, resource_gro
     result = java_component_show_decorator.show()
 
     current_type = safe_get(result, "properties", "componentType")
-    if current_type and target_java_component_type != current_type.lower():
+    if current_type and target_java_component_type.lower() != current_type.lower():
         raise CLIInternalError(f"(JavaComponentNotFound) JavaComponent '{java_component_name}' was not found.")
 
     return result
 
 
-def delete_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, no_wait=False):
+def delete_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, no_wait):
     show_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type)
 
     raw_parameters = locals()
@@ -1912,12 +1912,36 @@ def delete_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_delete_decorator.delete()
 
 
+def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, yaml, no_wait, disable_warnings):
+    raw_parameters = locals()
+    java_component_create_decorator = JavaComponentPreviewCreateDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    java_component_create_decorator.construct_payload(target_java_component_type)
+    return java_component_create_decorator.create()
+
+
+def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, yaml, no_wait, disable_warnings):
+    raw_parameters = locals()
+    java_component_update_decorator = JavaComponentPreviewUpdateDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    java_component_update_decorator.construct_payload(target_java_component_type)
+    return java_component_update_decorator.update()
+
+
 def create_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
-    return "create_spring_cloud_config"
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, yaml, no_wait, disable_warnings)
 
 
 def update_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
-    return "update_spring_cloud_config"
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, yaml, no_wait, disable_warnings)
 
 
 def show_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name):
@@ -1925,15 +1949,15 @@ def show_spring_cloud_config(cmd, java_component_name, environment_name, resourc
 
 
 def delete_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
-    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG)
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, no_wait)
 
 
 def create_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
-    return "create_spring_cloud_eureka"
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, yaml, no_wait, disable_warnings)
 
 
 def update_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
-    return "update_spring_cloud_eureka"
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, yaml, no_wait, disable_warnings)
 
 
 def show_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name):
@@ -1941,4 +1965,4 @@ def show_spring_cloud_eureka(cmd, java_component_name, environment_name, resourc
 
 
 def delete_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
-    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA)
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, no_wait)

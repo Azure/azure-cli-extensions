@@ -119,5 +119,5 @@ LOGS_STRING = '[{"category":"ContainerAppConsoleLogs","categoryGroup":null,"enab
 DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAME = "containerapp-ext"
 DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE = "containerapp-ns"
 
-JAVA_COMPONENT_CONFIG = "springcloudconfig"
-JAVA_COMPONENT_EUREKA = "springcloudeureka"
+JAVA_COMPONENT_CONFIG = "SpringCloudConfig"
+JAVA_COMPONENT_EUREKA = "SpringCloudEureka"
