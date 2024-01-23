@@ -12,23 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation source-control sync-job stream show",
+    "automation source-control list",
 )
-class Show(AAZCommand):
-    """Get a sync job stream identified by stream id.
+class List(AAZCommand):
+    """List a list of source controls.
     """
 
     _aaz_info = {
         "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/sourcecontrols/{}/sourcecontrolsyncjobs/{}/streams/{}", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/sourcecontrols", "2023-11-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -45,34 +46,19 @@ class Show(AAZCommand):
             options=["--automation-account-name"],
             help="The name of the automation account.",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.source_control_name = AAZStrArg(
-            options=["--source-control-name"],
-            help="The source control name.",
-            required=True,
-            id_part="child_name_1",
-        )
-        _args_schema.sync_job_id = AAZUuidArg(
-            options=["--sync-job-id"],
-            help="The source control sync job id.",
-            required=True,
-            id_part="child_name_2",
-        )
-        _args_schema.stream_id = AAZStrArg(
-            options=["--stream-id"],
-            help="The id of the sync job stream.",
-            required=True,
-            id_part="child_name_3",
+        _args_schema.filter = AAZStrArg(
+            options=["--filter"],
+            help="The filter to apply on the operation.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SourceControlSyncJobStreamsGet(ctx=self.ctx)()
+        self.SourceControlListByAutomationAccount(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -84,10 +70,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class SourceControlSyncJobStreamsGet(AAZHttpOperation):
+    class SourceControlListByAutomationAccount(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -101,7 +88,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/sourceControls/{sourceControlName}/sourceControlSyncJobs/{sourceControlSyncJobId}/streams/{streamId}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/sourceControls",
                 **self.url_parameters
             )
 
@@ -125,18 +112,6 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "sourceControlName", self.ctx.args.source_control_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "sourceControlSyncJobId", self.ctx.args.sync_job_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "streamId", self.ctx.args.stream_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -146,6 +121,9 @@ class Show(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "$filter", self.ctx.args.filter,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2023-11-01",
                     required=True,
@@ -180,35 +158,58 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-
-            properties = cls._schema_on_200.properties
-            properties.source_control_sync_job_stream_id = AAZStrType(
-                serialized_name="sourceControlSyncJobStreamId",
-            )
-            properties.stream_text = AAZStrType(
-                serialized_name="streamText",
-            )
-            properties.stream_type = AAZStrType(
-                serialized_name="streamType",
-            )
-            properties.summary = AAZStrType()
-            properties.time = AAZStrType(
-                nullable=True,
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
-            properties.value = AAZObjectType()
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.auto_sync = AAZBoolType(
+                serialized_name="autoSync",
+            )
+            properties.branch = AAZStrType()
+            properties.creation_time = AAZStrType(
+                serialized_name="creationTime",
+            )
+            properties.description = AAZStrType()
+            properties.folder_path = AAZStrType(
+                serialized_name="folderPath",
+            )
+            properties.last_modified_time = AAZStrType(
+                serialized_name="lastModifiedTime",
+            )
+            properties.publish_runbook = AAZBoolType(
+                serialized_name="publishRunbook",
+            )
+            properties.repo_url = AAZStrType(
+                serialized_name="repoUrl",
+            )
+            properties.source_type = AAZStrType(
+                serialized_name="sourceType",
+            )
 
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Show"]
+__all__ = ["List"]

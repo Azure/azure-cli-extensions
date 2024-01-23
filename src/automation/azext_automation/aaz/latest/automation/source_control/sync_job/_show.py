@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation source-control sync-job stream show",
+    "automation source-control sync-job show",
 )
 class Show(AAZCommand):
-    """Get a sync job stream identified by stream id.
+    """Get the source control sync job identified by job id.
     """
 
     _aaz_info = {
         "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/sourcecontrols/{}/sourcecontrolsyncjobs/{}/streams/{}", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/sourcecontrols/{}/sourcecontrolsyncjobs/{}", "2023-11-01"],
         ]
     }
 
@@ -56,23 +56,17 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_1",
         )
-        _args_schema.sync_job_id = AAZUuidArg(
-            options=["--sync-job-id"],
+        _args_schema.source_control_sync_job_id = AAZUuidArg(
+            options=["-n", "--name", "--job-id", "--source-control-sync-job-id"],
             help="The source control sync job id.",
             required=True,
             id_part="child_name_2",
-        )
-        _args_schema.stream_id = AAZStrArg(
-            options=["--stream-id"],
-            help="The id of the sync job stream.",
-            required=True,
-            id_part="child_name_3",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SourceControlSyncJobStreamsGet(ctx=self.ctx)()
+        self.SourceControlSyncJobGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -87,7 +81,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SourceControlSyncJobStreamsGet(AAZHttpOperation):
+    class SourceControlSyncJobGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -101,7 +95,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/sourceControls/{sourceControlName}/sourceControlSyncJobs/{sourceControlSyncJobId}/streams/{streamId}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/sourceControls/{sourceControlName}/sourceControlSyncJobs/{sourceControlSyncJobId}",
                 **self.url_parameters
             )
 
@@ -129,11 +123,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "sourceControlSyncJobId", self.ctx.args.sync_job_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "streamId", self.ctx.args.stream_id,
+                    "sourceControlSyncJobId", self.ctx.args.source_control_sync_job_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -180,29 +170,36 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
+            _schema_on_200.id = AAZStrType()
             _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.source_control_sync_job_stream_id = AAZStrType(
-                serialized_name="sourceControlSyncJobStreamId",
+            properties.creation_time = AAZStrType(
+                serialized_name="creationTime",
+                flags={"read_only": True},
             )
-            properties.stream_text = AAZStrType(
-                serialized_name="streamText",
-            )
-            properties.stream_type = AAZStrType(
-                serialized_name="streamType",
-            )
-            properties.summary = AAZStrType()
-            properties.time = AAZStrType(
+            properties.end_time = AAZStrType(
+                serialized_name="endTime",
                 nullable=True,
                 flags={"read_only": True},
             )
-            properties.value = AAZObjectType()
+            properties.exception = AAZStrType()
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+            )
+            properties.source_control_sync_job_id = AAZStrType(
+                serialized_name="sourceControlSyncJobId",
+            )
+            properties.start_time = AAZStrType(
+                serialized_name="startTime",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            properties.sync_type = AAZStrType(
+                serialized_name="syncType",
+            )
 
             return cls._schema_on_200
 

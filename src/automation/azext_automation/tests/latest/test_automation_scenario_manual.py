@@ -5,6 +5,7 @@
 # --------------------------------------------------------------------------
 
 import os
+import time
 from unittest import mock
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import tempfile
@@ -417,3 +418,73 @@ class AutomationScenarioTest(ScenarioTest):
         ])
         self.cmd('automation runtime-environment package delete -g {rg} --automation-account-name {account} --runtime-environment-name {rt} --name {rt_package} -y')
         self.cmd('automation runtime-environment delete -g {rg} --automation-account-name {account} --name {rt} -y')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_automation_source_control_', location='westus2')
+    @AllowLargeResponse()
+    def test_automation_source_control(self, resource_group):
+        self.kwargs.update({
+            'sub': self.get_subscription_id(),
+            'account': self.create_random_name('account', 15),
+            'patch_body': '{\\"identity\\": {\\"type\\": \\"SystemAssigned\\"}}',
+            'sc': self.create_random_name('sourcecontrol', 20),
+            'job_id': 'ba7e6fcd-ea81-4adf-9bed-a38557110065',
+            'repo': 'https://github.com/ReaNAiveD/SwaggerAndCmdletsTests.git',
+            'branch': 'master',
+            'folder': '/',
+            'source': 'GitHub',
+            'gh_token': 'ghp_MOCKED_GITHUB_TOKEN',
+            'location': 'westus2',
+        })
+
+        account_id = self.cmd('automation account create -n {account} -g {rg}').get_output_in_json()['id']
+        self.kwargs['account_id'] = account_id
+        object_id = self.cmd(
+            'az rest -m PATCH '
+            '-u https://management.azure.com/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Automation/automationAccounts/{account}?api-version=2020-01-13-preview '
+            '--body "{patch_body}"', checks=[
+                self.check('identity.type', 'SystemAssigned')
+            ]).get_output_in_json()['identity']['principalId']
+        self.kwargs['object_id'] = object_id
+        # According to the prerequisites of source control https://learn.microsoft.com/en-us/azure/automation/source-control-integration#prerequisites,
+        # we need to Assign the user assigned or system-assigned managed identity to the Contributor role in the Automation account.
+        # self.cmd('role assignment create --assignee {object_id} --scope {account_id} --role Contributor')
+        self.cmd('automation source-control create -g {rg} --automation-account-name {account} --name {sc} --repo-url {repo} --branch {branch} --source-type {source} --folder-path {folder} --access-token {gh_token} --token-type PersonalAccessToken --publish-runbook false', checks=[
+            self.check('name', '{sc}'),
+            self.check('repoUrl', '{repo}'),
+            self.check('branch', '{branch}'),
+            self.check('folderPath', '{folder}'),
+            self.check('publishRunbook', False),
+            self.check('sourceType', '{source}'),
+        ])
+        self.cmd('automation source-control list -g {rg} --automation-account-name {account}', checks=[
+            self.check('length(@)', 1),
+        ])
+        self.cmd('automation source-control show -g {rg} --automation-account-name {account} --name {sc}', checks=[
+            self.check('name', '{sc}'),
+            self.check('repoUrl', '{repo}'),
+        ])
+        self.cmd('automation source-control update -g {rg} --automation-account-name {account} --name {sc} --access-token {gh_token} --token-type PersonalAccessToken --publish-runbook True', checks=[
+            self.check('publishRunbook', True),
+        ])
+
+        job = self.cmd('automation source-control sync-job create -g {rg} --automation-account-name {account} --source-control-name {sc} --job-id {job_id} --commit-id ""', checks=[
+            self.check('sourceControlSyncJobId', '{job_id}'),
+            self.check('provisioningState', 'Running'),
+            self.check('syncType', 'FullSync'),
+        ]).get_output_in_json()
+        self.cmd('automation source-control sync-job list -g {rg} --automation-account-name {account} --source-control-name {sc}', checks=[
+            self.check('length(@)', 1),
+        ])
+        while job['provisioningState'] == 'Running':
+            time.sleep(1)
+            job = self.cmd('automation source-control sync-job show -g {rg} --automation-account-name {account} --source-control-name {sc} --job-id {job_id}', checks=[
+                self.check('sourceControlSyncJobId', '{job_id}'),
+            ]).get_output_in_json()
+        self.assertEqual('Failed', job['provisioningState'])
+        streams = self.cmd('automation source-control sync-job stream list -g {rg} --automation-account-name {account} --source-control-name {sc} --sync-job-id {job_id}').get_output_in_json()
+        self.kwargs['stream_id'] = streams[0]['sourceControlSyncJobStreamId']
+        self.cmd('automation source-control sync-job stream show -g {rg} --automation-account-name {account} --source-control-name {sc} --sync-job-id {job_id} --stream-id {stream_id}', checks=[
+            self.check('streamType', 'Output'),
+            self.check('sourceControlSyncJobStreamId', '{stream_id}')
+        ])
+        self.cmd('automation source-control delete -g {rg} --automation-account-name {account} --name {sc} -y')

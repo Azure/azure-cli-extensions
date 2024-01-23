@@ -12,23 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation source-control sync-job stream show",
+    "automation source-control delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
-class Show(AAZCommand):
-    """Get a sync job stream identified by stream id.
+class Delete(AAZCommand):
+    """Delete the source control.
     """
 
     _aaz_info = {
         "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/sourcecontrols/{}/sourcecontrolsyncjobs/{}/streams/{}", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/sourcecontrols/{}", "2023-11-01"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
         self._execute_operations()
-        return self._output()
+        return None
 
     _args_schema = None
 
@@ -51,28 +52,16 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.source_control_name = AAZStrArg(
-            options=["--source-control-name"],
-            help="The source control name.",
+            options=["-n", "--name", "--source-control-name"],
+            help="The name of source control.",
             required=True,
             id_part="child_name_1",
-        )
-        _args_schema.sync_job_id = AAZUuidArg(
-            options=["--sync-job-id"],
-            help="The source control sync job id.",
-            required=True,
-            id_part="child_name_2",
-        )
-        _args_schema.stream_id = AAZStrArg(
-            options=["--stream-id"],
-            help="The id of the sync job stream.",
-            required=True,
-            id_part="child_name_3",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SourceControlSyncJobStreamsGet(ctx=self.ctx)()
+        self.SourceControlDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,11 +72,7 @@ class Show(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class SourceControlSyncJobStreamsGet(AAZHttpOperation):
+    class SourceControlDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -101,13 +86,13 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/sourceControls/{sourceControlName}/sourceControlSyncJobs/{sourceControlSyncJobId}/streams/{streamId}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/sourceControls/{sourceControlName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -129,14 +114,6 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "sourceControlSyncJobId", self.ctx.args.sync_job_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "streamId", self.ctx.args.stream_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -153,62 +130,12 @@ class Show(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
         def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.source_control_sync_job_stream_id = AAZStrType(
-                serialized_name="sourceControlSyncJobStreamId",
-            )
-            properties.stream_text = AAZStrType(
-                serialized_name="streamText",
-            )
-            properties.stream_type = AAZStrType(
-                serialized_name="streamType",
-            )
-            properties.summary = AAZStrType()
-            properties.time = AAZStrType(
-                nullable=True,
-                flags={"read_only": True},
-            )
-            properties.value = AAZObjectType()
-
-            return cls._schema_on_200
+            pass
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
-__all__ = ["Show"]
+__all__ = ["Delete"]
