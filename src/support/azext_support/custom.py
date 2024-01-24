@@ -234,6 +234,7 @@ class TicketCreate(_CreateTicket):
         args_schema.contact_language._required = True
         args_schema.contact_method._required = True
         args_schema.contact_timezone._required = True
+        
         return args_schema
     
     def pre_operations(self):
@@ -251,4 +252,4 @@ class TicketCreate(_CreateTicket):
             body = super().content
             service_name = parse_support_area_path(body["properties"]["problemClassificationId"])["service_name"]
             body["properties"]["serviceId"] = "/providers/Microsoft.Support/services/{0}".format(service_name)
-            return {}
+            return body
