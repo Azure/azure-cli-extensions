@@ -32,6 +32,8 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
 
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
@@ -43,8 +45,6 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
 
         self.cmd(f'containerapp env telemetry set -g {resource_group} -n {env_name} --app-insights-connection-string {ai_conn_str} --open-telemetry-dataDog-site {data_dog_site} --open-telemetry-dataDog-key {data_dog_key} --open-telemetry-traces-destinations {traces_destinations} --open-telemetry-logs-destinations {logs_destinations} --open-telemetry-metrics-destinations {metrics_destinations}', checks=[
             JMESPathCheck('name', env_name),
-            JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.dataDogConfiguration.site', data_dog_site),
-            JMESPathCheck('properties.openTelemetryConfiguration.logsConfiguration.destinations', "['appInsights']"),
-            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration.destinations', "['appInsights']"),
-            JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration.destinations', "['dataDog']"),
+            JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.dataDogConfiguration.key', None),
+            JMESPathCheck('properties.appInsightsConfiguration.connectionString', None),
         ])

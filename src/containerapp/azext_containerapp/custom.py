@@ -1896,3 +1896,5 @@ def set_environment_telemetry(cmd,
     containerapp_env_telemetry_decorator.construct_payload()
     r = containerapp_env_telemetry_decorator.update()
     r = containerapp_env_telemetry_decorator.post_process(r)
+    
+    return r
