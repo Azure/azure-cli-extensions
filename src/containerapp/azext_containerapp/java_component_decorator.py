@@ -43,7 +43,7 @@ class JavaComponentPreviewCreateDecorator(JavaComponentDecorator):
 
     def create(self):
         try:
-            r = self.client.create_or_update(
+            r = self.client.create(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                 environment_name=self.get_argument_environment(), name=self.get_argument_java_component_name(),
                 java_component_envelope=self.java_component_def, no_wait=self.get_argument_no_wait())
@@ -80,7 +80,7 @@ class JavaComponentPreviewUpdateDecorator(JavaComponentDecorator):
 
     def update(self):
         try:
-            r = self.client.create_or_update(
+            r = self.client.update(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                 environment_name=self.get_argument_environment(), name=self.get_argument_java_component_name(),
                 java_component_envelope=self.java_component_def, no_wait=self.get_argument_no_wait())
