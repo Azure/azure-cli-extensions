@@ -4,7 +4,8 @@ Release History
 ===============
 upcoming
 ++++++
-* [Breaking Change]  'az containerapp service': deprecate command from Azure CLI version 2.56.1
+* 'az containerapp add-on' : support for add-on milvus create and delete commands
+* [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.56.1
 * 'az containerapp add-on' : support for add-on weaviate create and delete commands
 
 0.3.46

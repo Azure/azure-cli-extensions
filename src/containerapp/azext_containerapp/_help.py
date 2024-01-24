@@ -378,6 +378,11 @@ helps['containerapp add-on weaviate'] = """
     short-summary: Commands to manage the weaviate add-on for the Container Apps environment.
 """
 
+helps['containerapp add-on milvus'] = """
+    type: group
+    short-summary: Commands to manage the milvus add-on for the Container Apps environment.
+"""
+
 helps['containerapp add-on redis create'] = """
     type: command
     short-summary: Command to create the redis add-on.
@@ -408,6 +413,11 @@ helps['containerapp add-on weaviate create'] = """
     short-summary: Command to create the weaviate add-on.
 """
 
+helps['containerapp add-on milvus create'] = """
+    type: command
+    short-summary: Command to create the milvus add-on.
+"""
+
 helps['containerapp add-on redis delete'] = """
     type: command
     short-summary: Command to delete the redis add-on.
@@ -436,6 +446,11 @@ helps['containerapp add-on qdrant delete'] = """
 helps['containerapp add-on weaviate delete'] = """
     type: command
     short-summary: Command to delete the weaviate service.
+"""
+
+helps['containerapp add-on milvus delete'] = """
+    type: command
+    short-summary: Command to delete the milvus service.
 """
 
 helps['containerapp env update'] = """
