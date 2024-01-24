@@ -18,7 +18,8 @@ from azure.cli.core.azclierror import (
     ValidationError,
     CLIError,
     CLIInternalError,
-    InvalidArgumentValueError)
+    InvalidArgumentValueError,
+    ResourceNotFoundError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
@@ -1893,7 +1894,7 @@ def show_java_component(cmd, java_component_name, environment_name, resource_gro
 
     current_type = safe_get(result, "properties", "componentType")
     if current_type and target_java_component_type.lower() != current_type.lower():
-        raise CLIInternalError(f"(JavaComponentNotFound) JavaComponent '{java_component_name}' was not found.")
+        raise ResourceNotFoundError(f"(JavaComponentNotFound) JavaComponent '{java_component_name}' was not found.")
 
     return result
 
