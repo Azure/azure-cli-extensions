@@ -222,6 +222,18 @@ class TicketCreate(_CreateTicket):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.contact_language.enum = AAZArgEnum(languages)
         args_schema.contact_timezone.enum = AAZArgEnum(timezones)
+        args_schema.diagnostic_consent._required = True
+        args_schema.title._required = True
+        args_schema.severity._required = True
+        args_schema.problem_classification._required = True
+        args_schema.description._required = True
+        args_schema.contact_country._required = True
+        args_schema.contact_email._required = True
+        args_schema.contact_first_name._required = True
+        args_schema.contact_last_name._required = True
+        args_schema.contact_language._required = True
+        args_schema.contact_method._required = True
+        args_schema.contact_timezone._required = True
         return args_schema
     
     def pre_operations(self):
@@ -239,4 +251,4 @@ class TicketCreate(_CreateTicket):
             body = super().content
             service_name = parse_support_area_path(body["properties"]["problemClassificationId"])["service_name"]
             body["properties"]["serviceId"] = "/providers/Microsoft.Support/services/{0}".format(service_name)
-            return body
+            return {}
