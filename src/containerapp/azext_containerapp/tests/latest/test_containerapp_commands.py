@@ -1113,7 +1113,8 @@ class ContainerappServiceBindingTests(ScenarioTest):
         mariadb_ca_name = 'mariadb'
         qdrant_ca_name = "qdrant"
         weaviate_ca_name = "weaviate"
-        ADDON_LIST = ["redis", "postgres", "kafka", "mariadb", "qdrant", "weaviate"]
+        milvus_ca_name = "milvus"
+        ADDON_LIST = ["redis", "postgres", "kafka", "mariadb", "qdrant", "weaviate", "milvus"]
 
         env_id = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
         env_rg = parse_resource_id(env_id).get('resource_group')
@@ -1136,6 +1137,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp add-on weaviate create -g {} -n {} --environment {}'.format(
             env_rg, weaviate_ca_name, env_name))
+        
+        self.cmd('containerapp add-on milvus create -g {} -n {} --environment {}'.format(
+            env_rg, milvus_ca_name, env_name))
 
         for addon in ADDON_LIST:
             self.cmd(f'containerapp show -g {env_rg} -n {addon}', checks=[
@@ -1152,7 +1156,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant weaviate'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant weaviate milvus'.format(
             env_rg, ca_name, image), checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
@@ -1160,7 +1164,8 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
             JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
             JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant"),
-            JMESPathCheck('properties.template.serviceBinds[5].name', "weaviate")
+            JMESPathCheck('properties.template.serviceBinds[5].name', "weaviate"),
+            JMESPathCheck('properties.template.serviceBinds[6].name', "milvus")
         ])
 
         self.cmd('containerapp add-on postgres delete -g {} -n {} --yes'.format(
@@ -1180,6 +1185,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp add-on weaviate delete -g {} -n {} --yes'.format(
             env_rg, weaviate_ca_name, env_name))
+        
+        self.cmd('containerapp add-on milvus delete -g {} -n {} --yes'.format(
+            env_rg, milvus_ca_name, env_name))
 
         self.cmd(f'containerapp delete -g {env_rg} -n {ca_name} --yes')
 
