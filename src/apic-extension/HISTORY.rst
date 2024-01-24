@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b4
++++++
+* Add: Support for Default Portal configuration commands
+
 1.0.0b3
 +++++
 * Add: Support for Import from apim command along with add examples for create service
