@@ -1,5 +1,14 @@
 Release History
 ===============
+
+1.19.2
+---
+* Add runtime version `Java_21`.
+
+1.19.1
+---
+* Create workspace-based Application Insights instead, since classic Application Insights will be retired on 29 February 2024.
+
 1.19.0
 ---
 * Add new commands for managed component log streaming `az spring component list`, `az spring component instance list` and `az spring component logs`.

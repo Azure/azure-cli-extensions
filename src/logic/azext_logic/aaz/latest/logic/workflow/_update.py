@@ -76,7 +76,6 @@ class Update(AAZCommand):
             options=["--definition"],
             help="The definition.",
             nullable=True,
-            blank={},
         )
         _args_schema.endpoints_configuration = AAZObjectArg(
             options=["--endpoints-configuration"],
@@ -91,6 +90,11 @@ class Update(AAZCommand):
         _args_schema.integration_service_environment = AAZObjectArg(
             options=["--integration-service-environment"],
             help="The integration service environment.",
+            nullable=True,
+        )
+        _args_schema.parameters = AAZFreeFormDictArg(
+            options=["--parameters"],
+            help="The parameters.",
             nullable=True,
         )
         _args_schema.state = AAZStrArg(
@@ -711,6 +715,7 @@ class Update(AAZCommand):
                 properties.set_prop("endpointsConfiguration", AAZObjectType, ".endpoints_configuration")
                 properties.set_prop("integrationAccount", AAZObjectType, ".integration_account")
                 properties.set_prop("integrationServiceEnvironment", AAZObjectType, ".integration_service_environment")
+                properties.set_prop("parameters", AAZFreeFormDictType, ".parameters")
                 properties.set_prop("state", AAZStrType, ".state")
 
             access_control = _builder.get(".properties.accessControl")
@@ -918,6 +923,10 @@ class Update(AAZCommand):
             integration_service_environment = _builder.get(".properties.integrationServiceEnvironment")
             if integration_service_environment is not None:
                 integration_service_environment.set_prop("id", AAZStrType, ".id")
+
+            parameters = _builder.get(".properties.parameters")
+            if parameters is not None:
+                parameters.set_anytype_elements(".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -1144,6 +1153,7 @@ class _UpdateHelper:
             serialized_name="integrationServiceEnvironment",
         )
         cls._build_schema_resource_reference_read(properties.integration_service_environment)
+        properties.parameters = AAZFreeFormDictType()
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
         )

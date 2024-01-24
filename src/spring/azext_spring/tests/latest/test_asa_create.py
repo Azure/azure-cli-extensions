@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
-from ...vendored_sdks.appplatform.v2023_11_01_preview import models
+from ...vendored_sdks.appplatform.v2024_01_01_preview import models
 from ...spring_instance import (spring_create)
 from ..._utils import (_get_sku_name)
 
@@ -71,7 +71,7 @@ class BasicTest(unittest.TestCase):
         self.created_resource = call_args[0][0][2]
 
 
-class TestSpringCloudCreateEnerprise(BasicTest):
+class TestSpringCloudCreateEnterprise(BasicTest):
     def test_asc_create_enterprise(self):
         self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), disable_app_insights=True)
         resource = self.created_resource
@@ -180,8 +180,18 @@ class TestSpringAppsCreateWithApplicationAccelerator(BasicTest):
         self.assertIsNone(self.dev_tool)
 
 
+def _workspaces_get_func(*args, **kwargs):
+    if args[1] == 'asc-with-existing-workspace':
+        workspace = mock.MagicMock()
+        workspace.id = 'workspace-id'
+        return workspace
+    else:
+        return None
+
+
 class TestSpringCloudCreateWithAI(BasicTest):
-    def _get_ai_client(ctx, type):
+    def _get_ai_client(ctx, type, api_version=None):
+        free_mock_client.workspaces.get.side_effect = _workspaces_get_func
         ai_create_resource = mock.MagicMock()
         ai_create_resource.connection_string = 'fake-connection'
         free_mock_client.components.create_or_update.return_value = ai_create_resource
@@ -217,6 +227,15 @@ class TestSpringCloudCreateWithAI(BasicTest):
                          self.monitoring_settings_resource.properties.app_insights_instrumentation_key)
         self.assertEqual(True, self.monitoring_settings_resource.properties.trace_enabled)
 
+    def test_asc_create_with_AI_and_existing_workspace(self):
+        self._execute('rg', 'asc-with-existing-workspace', sku=self._get_sku())
+        resource = self.created_resource
+        self.assertEqual('S0', resource.sku.name)
+        self.assertEqual('Standard', resource.sku.tier)
+        self.assertEqual(False, resource.properties.zone_redundant)
+        self.assertEqual('fake-connection', self.monitoring_settings_resource.properties.app_insights_instrumentation_key)
+        self.assertEqual(True, self.monitoring_settings_resource.properties.trace_enabled)
+
     def test_asc_create_with_AI_key(self):
         self._execute('rg', 'asc', sku=self._get_sku(), app_insights_key='my-key')
         resource = self.created_resource
@@ -237,8 +256,8 @@ class TestSpringCloudCreateWithAI(BasicTest):
         self.assertEqual(True, self.monitoring_settings_resource.properties.trace_enabled)
 
 
-class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
-    def _get_application_insights_client(ctx, type):
+class TestSpringCloudCreateEnterpriseWithApplicationInsights(BasicTest):
+    def _get_application_insights_client(ctx, type, api_version=None):
         application_insights_create_resource = mock.MagicMock()
         application_insights_create_resource.connection_string = 'fake-create-connection-string'
 
@@ -255,6 +274,7 @@ class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
         self.buildpack_binding_resource = None
 
     @mock.patch('azext_spring.buildpack_binding.get_mgmt_service_client', _get_application_insights_client)
+    @mock.patch('azext_spring.custom.get_mgmt_service_client', _get_application_insights_client)
     def _execute(self, resource_group, name, **kwargs):
         client = kwargs.pop('client', None) or _get_basic_mock_client()
         super()._execute(resource_group, name, client=client, **kwargs)

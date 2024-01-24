@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.2.0
+++++++++++++++++++
+* `az monitor app-insights`: Add new command group `workbook` to support managing workbook.
+
 1.1.0
 ++++++++++++++++++
 * `az monitor app-insights component`: Add new command group `favorite` to support managing favorite.

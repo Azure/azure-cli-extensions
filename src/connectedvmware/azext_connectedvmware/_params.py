@@ -13,6 +13,7 @@ from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group,
     validate_file_or_dict
 )
+from ._validators import process_missing_vm_resource_parameters
 from ._actions import VmNicAddAction, VmDiskAddAction
 
 
@@ -108,6 +109,16 @@ def load_arguments(self, _):
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
     with self.argument_context('connectedvmware vm create') as c:
+        c.argument(
+            'resource_name', resource_name, options_list=['--name', '-n'],
+            help="Name of the HCRP Machine resource.",
+        )
+        c.argument(
+            'machine_id',
+            help="ARM ID of the Microsoft.HybridCompute Machine resource which you want to link to vCenter",
+            options_list=['--machine-id', '-m'],
+            validator=process_missing_vm_resource_parameters
+        )
         c.argument(
             'vm_template', help="Name or ID of the vm template for deploying the vm.",
         )

@@ -28,6 +28,7 @@ class TestSkuDescription(object):
 
     __test__ = False
 
+
 class TestManagedApplicationDescription(object):
     def __init__(self, offer_id, publisher_id):
         self.offer_id = offer_id
@@ -35,17 +36,18 @@ class TestManagedApplicationDescription(object):
 
     __test__ = False
 
+
 class TestPropertyDescription(object):
     def __init__(self, managed_application, skus):
         self.managed_application = TestManagedApplicationDescription(None, None)
         self.skus = [TestSkuDescription(None, False)]
 
     __test__ = False
-    
+
+
 class TestProviderDescription:
     def __init__(self, id, properties):
-        id = str()
-        properties = TestPropertyDescription(TestManagedApplicationDescription(None, None), [TestSkuDescription(None, None)])
+        return
 
     __test__ = False
     id = None
@@ -58,7 +60,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     def test_workspace(self):
         # clear
-        self.cmd(f'az quantum workspace clear')
+        self.cmd('az quantum workspace clear')
 
         # initialize values
         test_location = get_test_workspace_location()
@@ -78,12 +80,12 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         ])
 
         # show
-        self.cmd(f'az quantum workspace show -o json', checks=[
+        self.cmd('az quantum workspace show -o json', checks=[
             self.check("name", test_workspace)
         ])
 
         # clear
-        self.cmd(f'az quantum workspace clear')
+        self.cmd('az quantum workspace clear')
 
     @live_only()
     def test_workspace_create_destroy(self):
@@ -98,75 +100,75 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         if all_providers_are_in_capabilities(test_provider_sku_list, get_test_capabilities()):
             # create
             self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
-            self.check("name", test_workspace_temp),
-            self.check("provisioningState", "Accepted")  # Status is accepted since we're not linking the storage account.
+                self.check("name", test_workspace_temp),
+                self.check("provisioningState", "Accepted")  # Status is accepted since we're not linking the storage account.
             ])
 
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-            self.check("name", test_workspace_temp),
-            self.check("provisioningState", "Deleting")
+                self.check("name", test_workspace_temp),
+                self.check("provisioningState", "Deleting")
             ])
 
             # Create workspace with "--skip-role-assignment" and "--skip-autoadd" parameters
             test_workspace_temp = get_test_workspace_random_name()
             self.cmd(f'az quantum workspace create --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
-            self.check("name", test_workspace_temp),
-            self.check("provisioningState", "Accepted")  # Status is accepted since we're not linking the storage account.
+                self.check("name", test_workspace_temp),
+                self.check("provisioningState", "Accepted")  # Status is accepted since we're not linking the storage account.
             ])
 
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-            self.check("name", test_workspace_temp),
-            self.check("provisioningState", "Deleting")
+                self.check("name", test_workspace_temp),
+                self.check("provisioningState", "Deleting")
             ])
 
             # Repeat without the "--skip-role-assignment" or "--skip-autoadd" parameters (Uses ARM template and adds C4A plans)
             test_workspace_temp = get_test_workspace_random_name()
             self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
-            self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
+                self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
             ])
 
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-            self.check("name", test_workspace_temp),
-            self.check("provisioningState", "Deleting")
+                self.check("name", test_workspace_temp),
+                self.check("provisioningState", "Deleting")
             ])
 
             # Create a workspace specifying "--skip-autoadd"
             test_workspace_temp = get_test_workspace_random_name()
             self.cmd(f'az quantum workspace create --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
-            self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
+                self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
             ])
 
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-            self.check("name", test_workspace_temp),
-            self.check("provisioningState", "Deleting")
+                self.check("name", test_workspace_temp),
+                self.check("provisioningState", "Deleting")
             ])
 
             # Create a workspace specifying a storage account that is not Standard_LRS
             test_workspace_temp = get_test_workspace_random_name()
             self.cmd(f'az quantum workspace create --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
-            self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
+                self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
             ])
 
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-            self.check("name", test_workspace_temp),
-            self.check("provisioningState", "Deleting")
+                self.check("name", test_workspace_temp),
+                self.check("provisioningState", "Deleting")
             ])
 
             # Create a workspace with a maximum length name, but make sure the deployment name was truncated to a valid length
             test_workspace_temp = get_test_workspace_random_long_name()
             self.cmd(f'az quantum workspace create --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
-            self.check("name", (DEPLOYMENT_NAME_PREFIX + test_workspace_temp)[:64]),
+                self.check("name", (DEPLOYMENT_NAME_PREFIX + test_workspace_temp)[:64]),
             ])
 
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-            self.check("name", test_workspace_temp),
-            self.check("provisioningState", "Deleting")
+                self.check("name", test_workspace_temp),
+                self.check("provisioningState", "Deleting")
             ])
         else:
             self.skipTest(f"Skipping test_workspace_create_destroy: One or more providers in '{test_provider_sku_list}' not found in AZURE_QUANTUM_CAPABILITIES")
@@ -184,15 +186,13 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         test_workspace_temp = get_test_workspace_random_name()
 
         # Attempt to create workspace, but omit the storage account parameter
-        issue_cmd_with_param_missing(self, f'az quantum workspace create -w {test_workspace_temp} -l {test_location} -g {test_resource_group} -r "microsoft-qc/learn-and-develop"',
-                            'az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" -a MyStorageAccountName To display a list of available providers and their SKUs, use the following command: az quantum offerings list -l MyLocation -o table\nCreate a new Azure Quantum workspace with a specific list of providers.')
-
+        issue_cmd_with_param_missing(self, f'az quantum workspace create -w {test_workspace_temp} -l {test_location} -g {test_resource_group} -r "microsoft-qc/learn-and-develop"', 'az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" -a MyStorageAccountName To display a list of available providers and their SKUs, use the following command: az quantum offerings list -l MyLocation -o table\nCreate a new Azure Quantum workspace with a specific list of providers.')
 
     @live_only()
     def test_version_check(self):
         # initialize values
         test_old_date = "2021-04-01"
-        test_today = str(datetime.today()).split(' ')[0] 
+        test_today = str(datetime.today()).split(' ')[0]
         test_old_reported_version = "0.1.0"
         test_current_reported_version = CLI_REPORTED_VERSION
         test_none_version = None
@@ -207,7 +207,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         # Temporary fix was:
         # assert message == f"\nVersion {test_old_reported_version} of the quantum extension is installed locally, but version {test_current_reported_version} is now available.\nYou can use 'az extension update -n quantum' to upgrade.\n"
 
-        # No message is generated if either version number is unavailable. 
+        # No message is generated if either version number is unavailable.
         message = check_version(test_config, test_none_version, test_today)
         assert message is None
 
@@ -219,21 +219,21 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
         # Invalid parameters should raise errors
         try:
-             _validate_storage_account('tier', 'Premium', SUPPORTED_STORAGE_SKU_TIERS)
-             assert False
+            _validate_storage_account('tier', 'Premium', SUPPORTED_STORAGE_SKU_TIERS)
+            assert False
         except InvalidArgumentValueError as e:
             assert str(e) == "Storage account tier 'Premium' is not supported.\nStorage account tier currently supported: Standard"
 
         try:
-             _validate_storage_account('kind', 'BlobStorage', SUPPORTED_STORAGE_KINDS)
-             assert False
+            _validate_storage_account('kind', 'BlobStorage', SUPPORTED_STORAGE_KINDS)
+            assert False
         except InvalidArgumentValueError as e:
             assert str(e) == "Storage account kind 'BlobStorage' is not supported.\nStorage account kinds currently supported: Storage, StorageV2"
 
     def test_autoadd_providers(self):
         test_managed_application = TestManagedApplicationDescription(None, None)
         test_skus = [TestSkuDescription(None, False)]
-        test_provider_properties = TestPropertyDescription(test_managed_application, test_skus) 
+        test_provider_properties = TestPropertyDescription(test_managed_application, test_skus)
         test_provider = TestProviderDescription("", test_provider_properties)
 
         # Populate providers_in_region with an auto_add provider:

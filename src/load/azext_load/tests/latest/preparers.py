@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os, time
+import os
+import time
 
 from azure.cli.testsdk.exceptions import CliTestError
 from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer
@@ -58,15 +59,15 @@ class LoadTestResourcePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
                 if self.subscription:
                     template += " --subscription {} ".format(self.subscription)
                 self.live_only_execute(
-                    self.cli_ctx, template.format(self.resource_group[1], name, self.location)
+                    self.cli_ctx,
+                    template.format(self.resource_group[1], name, self.location),
                 )
 
                 self.test_class_instance.kwargs[self.key] = name
-                return {self.parameter_name: name}        
+                return {self.parameter_name: name}
             except Exception:
-                retries = retries-1
+                retries = retries - 1
                 time.sleep(120)
-        
 
     def remove_resource(self, name, **_):
         if not self.dev_setting_name:
