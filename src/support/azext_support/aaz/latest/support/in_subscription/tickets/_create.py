@@ -16,6 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Creates a new support ticket for Quota increase, Technical, Billing, and Subscription Management issues for the specified subscription.
+
+    :example: Create a ticket for Billing related issues
+        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "BillingTicketDescription" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/BillingServiceNameGuid/problemClassifications/BillingProblemClassificationNameGuid" --severity "minimal" --ticket-name "BillingTestTicketName" --title "BillingTicketTitle"
+
+    :example: Create a ticket for Subscription Management related issues.
+        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "SubMgmtTicketDescription" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/SubMgmtServiceNameGuid/problemClassifications/SubMgmtProblemClassificationNameGuid" --severity "minimal" --ticket-name "SubMgmtTestTicketName" --title "SubMgmtTicketTitle"
+
+    :example: Create a ticket for Technical issue related to a specific resource
+        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --contact-additional-emails "xyz@contoso.com" "devs@contoso.com"--description "TechnicalTicketDescription" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/TechnicalServiceNameGuid/problemClassifications/TechnicalProblemClassificationNameGuid" --severity "minimal" --ticket-name "TechnicalTestTicketName" --title "TechnicalTicketTitle" --technical-resource "/subscriptions/SubscriptionGuid/resourceGroups/RgName/providers/Microsoft.Compute/virtualMachines/RName" --secondary-consent "[{type:VirtualMachineMemoryDump,user-consent:No}]"
     """
 
     _aaz_info = {
