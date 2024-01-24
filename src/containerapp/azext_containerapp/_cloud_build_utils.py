@@ -21,7 +21,8 @@ from ._clients import BuilderClient, BuildClient
 
 from ._utils import (
     log_in_file,
-    remove_ansi_characters
+    remove_ansi_characters,
+    parse_build_env_vars
 )
 
 
@@ -110,6 +111,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         # Build creation
         done_spinner = False
         thread = display_spinner("Starting the Container Apps Cloud Build agent")
+        build_env_vars = parse_build_env_vars(build_env_vars)
         build_create_json_content = BuildClient.create(cmd, builder_name, generated_build_name, resource_group_name, location, build_env_vars, True)
         build_name = build_create_json_content["name"]
         upload_endpoint = build_create_json_content["properties"]["uploadEndpoint"]

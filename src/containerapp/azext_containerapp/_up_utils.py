@@ -60,7 +60,7 @@ from ._utils import (
     get_pack_exec_path, _validate_custom_loc_and_location, _validate_connected_k8s_exists, get_custom_location,
     create_extension, create_custom_location, get_cluster_extension, validate_environment_location,
     list_environment_locations, get_randomized_name_with_dash, get_randomized_name, get_connected_k8s,
-    list_cluster_extensions, list_custom_location, parse_build_env_vars
+    list_cluster_extensions, list_custom_location
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -525,7 +525,6 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         try:
             resource_group_name = self.resource_group.name
-            build_env_vars = parse_build_env_vars(build_env_vars)
             return run_cloud_build(self.cmd, source, build_env_vars, location, resource_group_name, self.env.name, run_full_id, logs_file, logs_file_path)
         except Exception as exception:
             logs_file.close()

@@ -53,7 +53,7 @@ from ._models import (
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file)
-from ._utils import parse_service_bindings, check_unique_bindings, parse_build_env_vars
+from ._utils import parse_service_bindings, check_unique_bindings
 from ._validators import validate_create
 
 from ._constants import (HELLO_WORLD_IMAGE,
@@ -636,7 +636,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
         if source:
             app, env = self._construct_app_and_env_for_source_or_repo()
-            build_env_vars = parse_build_env_vars(self.get_argument_build_env_vars())
+            build_env_vars = self.get_argument_build_env_vars()
             dockerfile = "Dockerfile"
             # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
             app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=False, registry_server=self.get_argument_registry_server())
@@ -1014,7 +1014,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
         source = self.get_argument_source()
         artifact = self.get_argument_artifact()
-        build_env_vars = parse_build_env_vars(self.get_argument_build_env_vars())
+        build_env_vars = self.get_argument_build_env_vars()
         _validate_source_artifact_args(source, artifact)
         if artifact:
             # Artifact is mostly a convenience argument provided to use --source specifically with a single artifact file.
