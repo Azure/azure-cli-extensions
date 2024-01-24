@@ -30,7 +30,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         logs_destinations = "appInsights"
         metrics_destinations = "dataDog"
 
-        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, env_name))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
