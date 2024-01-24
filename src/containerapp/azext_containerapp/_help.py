@@ -1180,3 +1180,20 @@ helps['containerapp job create'] = """
               --image imageName \\
               --workload-profile-name my-wlp
 """
+# Container Apps Telemetry Commands
+helps['containerapp env telemetry'] = """
+    type: group
+    short-summary: Commands to manage Container Apps environments telemetry settings.
+"""
+
+helps['containerapp env telemetry set'] = """
+    type: command
+    short-summary: Update manage Container Apps environments telemetry settings.
+    examples:
+    - name: Update manage Container Apps environments open telemetry settings.
+      text: |
+          az containerapp env telemetry set -n MyContainerappEnvironment -g MyResourceGroup \\
+              --app-insights-connection-string connectionString --open-telemetry-dataDog-site datadogSite \\
+              --open-telemetry-dataDog-key datadogKey --open-telemetry-traces-destinations appInsights \\
+              --open-telemetry-logs-destinations appInsights --open-telemetry-metrics-destinations dataDog
+"""
