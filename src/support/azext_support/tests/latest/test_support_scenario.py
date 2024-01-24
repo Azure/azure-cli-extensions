@@ -144,7 +144,7 @@ class SupportScenarioTest(ScenarioTest):
         cmd = self._build_support_tickets_communications_show_cmd(test_ticket_name, test_communication_name)
         rsp = self.cmd(cmd).get_output_in_json()
         self._validate_support_tickets_communications_show_cmd(rsp, test_ticket_name, test_communication_name)
-
+        
         # List tickets
         cmd = self._build_support_tickets_list_cmd()
         rsp = self.cmd(cmd).get_output_in_json()
@@ -160,8 +160,13 @@ class SupportScenarioTest(ScenarioTest):
         rsp = self.cmd(cmd).get_output_in_json()
         self._validate_support_tickets_update_cmd2(rsp)
 
-        # Update status
+        # Update diagnostic consent
         cmd = self._build_support_tickets_update_cmd3(test_ticket_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_support_tickets_update_cmd3(rsp)
+
+        # Update status
+        cmd = self._build_support_tickets_update_cmd5(test_ticket_name)
         rsp = self.cmd(cmd).get_output_in_json()
         self._validate_support_tickets_update_cmd3(rsp)
 
@@ -172,7 +177,7 @@ class SupportScenarioTest(ScenarioTest):
 
     def _build_base_support_tickets_create_command(self, test_ticket_name):
         test_ticket_title = "test ticket from python cli test. Do not assign and close after a day."
-        cmd = "support tickets create --debug "
+        cmd = "support in-subscription tickets create --debug "
         cmd += "--description '{0}' ".format(test_ticket_title)
         cmd += "--severity 'minimal' "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
@@ -185,6 +190,7 @@ class SupportScenarioTest(ScenarioTest):
         cmd += "--contact-last-name 'Bar' "
         cmd += "--contact-method 'email' "
         cmd += "--contact-timezone 'Pacific Standard Time' "
+        cmd += "--diagnostic-consent 'No' "
 
         return cmd
 
@@ -243,7 +249,7 @@ class SupportScenarioTest(ScenarioTest):
         cmd = "support tickets communications create --debug "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--communication-name '{0}' ".format(test_communication_name)
-        cmd += "--communication-sender 'nichheda@microsoft.com' "
+        cmd += "--communication-sender 'aleenabrown@microsoft.com' "
         cmd += "--communication-subject 'test subject for communication posted from azure python cli' "
         cmd += "--communication-body 'test body for communication posted from azure python cli' "
 
@@ -292,8 +298,8 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(rsp["name"] == test_communication_name)
 
     def _build_support_tickets_list_cmd(self):
-        cmd = "support tickets list "
-        cmd += "--filters \"status eq 'Open'\" "
+        cmd = "support in-subscription tickets list --max-items 3 "
+        cmd += "--filter \"status eq 'Open'\" "
 
         return cmd
 
@@ -313,7 +319,7 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(ticket_returned is True)
 
     def _build_support_tickets_update_cmd1(self, test_ticket_name):
-        cmd = "support tickets update "
+        cmd = "support in-subscription tickets update "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--severity 'moderate' "
         cmd += "--contact-method 'phone' "
@@ -332,13 +338,15 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue("Phone" == rsp["contactDetails"]["preferredContactMethod"])
 
     def _build_support_tickets_update_cmd2(self, test_ticket_name):
-        cmd = "support tickets update "
+        cmd = "support in-subscription tickets update "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--severity 'minimal' "
         cmd += "--contact-method 'email' "
 
         return cmd
 
+
+        
     def _validate_support_tickets_update_cmd2(self, rsp):
         self.assertTrue(rsp is not None)
         self.assertTrue("type" in rsp)
@@ -347,15 +355,29 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue("Minimal" == rsp["severity"])
         self.assertTrue("contactDetails" in rsp)
         self.assertTrue("Email" == rsp["contactDetails"]["preferredContactMethod"])
-
+        
     def _build_support_tickets_update_cmd3(self, test_ticket_name):
-        cmd = "support tickets update "
+        cmd = "support in-subscription tickets update "
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--diagnostic-consent 'Yes'"
+        
+        return cmd
+        
+    def _validate_support_tickets_update_cmd3(self, rsp):
+        self.assertTrue(rsp is not None)
+        self.assertTrue("type" in rsp)
+        self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
+        self.assertTrue("advancedDiagnosticConsent" in rsp)
+        self.assertTrue("Yes" == rsp["advancedDiagnosticConsent"])
+
+    def _build_support_tickets_update_cmd5(self, test_ticket_name):
+        cmd = "support in-subscription tickets update "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--status 'closed' "
 
         return cmd
 
-    def _validate_support_tickets_update_cmd3(self, rsp):
+    def _validate_support_tickets_update_cmd5(self, rsp):
         self.assertTrue(rsp is not None)
         self.assertTrue("type" in rsp)
         self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
@@ -363,7 +385,7 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue("closed" == rsp["status"])
 
     def _build_support_tickets_show_cmd(self, test_ticket_name):
-        cmd = "support tickets show "
+        cmd = "support in-subscription tickets show "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
 
         return cmd
