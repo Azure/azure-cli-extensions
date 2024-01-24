@@ -241,8 +241,8 @@ class TicketCreate(_CreateTicket):
         from azext_support._validators import validate_tickets_create_new
         super().pre_operations()
         args = self.ctx.args
-        if hasattr(args, 'resource'):
-            validate_tickets_create_new(self.cli_ctx, str(args.problem_classification), str(args.ticket_name), str(args.resource))
+        if hasattr(args, 'technical_resource'):
+            validate_tickets_create_new(self.cli_ctx, str(args.problem_classification), str(args.ticket_name), str(args.technical_resource))
         else:
             validate_tickets_create_new(self.cli_ctx, str(args.problem_classification), str(args.ticket_name))
             
