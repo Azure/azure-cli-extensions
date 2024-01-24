@@ -232,3 +232,11 @@ class TicketCreate(_CreateTicket):
             validate_tickets_create_new(self.cli_ctx, str(args.problem_classification), str(args.ticket_name), str(args.resource))
         else:
             validate_tickets_create_new(self.cli_ctx, str(args.problem_classification), str(args.ticket_name))
+            
+    class SupportTicketsCreate(_CreateTicket.SupportTicketsCreate):
+        @property
+        def content(self):
+            body = super().content
+            service_name = parse_support_area_path(body["properties"]["problemClassificationId"])["service_name"]
+            body["properties"]["serviceId"] = "/providers/Microsoft.Support/services/{0}".format(service_name)
+            return body
