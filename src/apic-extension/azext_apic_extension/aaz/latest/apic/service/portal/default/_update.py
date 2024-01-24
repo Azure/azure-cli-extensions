@@ -219,11 +219,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.data_api_hostname = AAZStrType(
-                serialized_name="dataApiHostname",
-            )
+            _UpdateHelper._build_schema_portal_configuration_response_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -318,63 +314,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.authentication = AAZObjectType()
-            properties.data_api_host_name = AAZStrType(
-                serialized_name="dataApiHostName",
-            )
-            properties.enabled = AAZBoolType()
-            properties.portal_default_host_name = AAZStrType(
-                serialized_name="portalDefaultHostName",
-            )
-            properties.title = AAZStrType()
-
-            authentication = cls._schema_on_200.properties.authentication
-            authentication.client_id = AAZStrType(
-                serialized_name="clientId",
-            )
-            authentication.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _UpdateHelper._build_schema_portal_configuration_response_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -420,6 +360,83 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    _schema_portal_configuration_response_read = None
+
+    @classmethod
+    def _build_schema_portal_configuration_response_read(cls, _schema):
+        if cls._schema_portal_configuration_response_read is not None:
+            _schema.id = cls._schema_portal_configuration_response_read.id
+            _schema.name = cls._schema_portal_configuration_response_read.name
+            _schema.properties = cls._schema_portal_configuration_response_read.properties
+            _schema.system_data = cls._schema_portal_configuration_response_read.system_data
+            _schema.type = cls._schema_portal_configuration_response_read.type
+            return
+
+        cls._schema_portal_configuration_response_read = _schema_portal_configuration_response_read = AAZObjectType()
+
+        portal_configuration_response_read = _schema_portal_configuration_response_read
+        portal_configuration_response_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        portal_configuration_response_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        portal_configuration_response_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        portal_configuration_response_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        portal_configuration_response_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_portal_configuration_response_read.properties
+        properties.authentication = AAZObjectType()
+        properties.data_api_host_name = AAZStrType(
+            serialized_name="dataApiHostName",
+        )
+        properties.enabled = AAZBoolType()
+        properties.portal_default_host_name = AAZStrType(
+            serialized_name="portalDefaultHostName",
+        )
+        properties.title = AAZStrType()
+
+        authentication = _schema_portal_configuration_response_read.properties.authentication
+        authentication.client_id = AAZStrType(
+            serialized_name="clientId",
+        )
+        authentication.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
+
+        system_data = _schema_portal_configuration_response_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.id = cls._schema_portal_configuration_response_read.id
+        _schema.name = cls._schema_portal_configuration_response_read.name
+        _schema.properties = cls._schema_portal_configuration_response_read.properties
+        _schema.system_data = cls._schema_portal_configuration_response_read.system_data
+        _schema.type = cls._schema_portal_configuration_response_read.type
 
 
 __all__ = ["Update"]
