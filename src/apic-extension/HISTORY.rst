@@ -5,7 +5,7 @@ Release History
 
 1.0.0b4
 +++++
-* Add: Support for Default Portal configuration commands
+* Add: Support for Default Portal configuration and default hostname provisoning deprovisioning commands
 
 1.0.0b3
 +++++

@@ -12,8 +12,29 @@ import unittest
 class ApicExtensionScenario(ScenarioTest):
 
     @unittest.skip('Test account does not have permissions to create service or use APIM service')
+    def test_provision_unprovision_defaulthostnames(self):
+
+        self.kwargs.update({
+            'resource_group': 'api-center-test',
+            'service_name': 'contosoeuap101-cli'
+        })
+
+        # Provision default hostnames
+        self.cmd('az apic service create -g {resource_group} --service-name {service_name} --location eastus',
+                 checks=[self.check('name', self.kwargs['service_name'],
+                         self.check('dataApiHostName', '{service_name}.data.eastus.azure-apim.net'))])
+
+        # View service details
+        self.cmd('az apic service show -g {resource_group} --service-name {service_name}',
+                    checks=[self.check('name', self.kwargs['service_name'],
+                            self.check('dataApiHostName', '{service_name}.data.eastus.azure-apim.net'))])
+
+        # Unprovision default hostnames
+        self.cmd('az apic service delete -g {resource_group} --service-name {service_name} --yes')
+
+    @unittest.skip('Test account does not have permissions to create service or use APIM service')
     def test_portalconfiguration_default_crud(self):
-        
+
         authentication_details = '{"clientId":"91247fa2-f214-439f-ae71-512bc75d60db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}'
         self.kwargs.update({
             'resource_group': 'api-center-test',
