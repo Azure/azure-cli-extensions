@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic service portal",
 )
 class __CMDGroup(AAZCommandGroup):
-    """API Center Service Portal
+    """Commands to manage API Center Service Portal Configuration in API Center
     """
     pass
 
