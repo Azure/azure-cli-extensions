@@ -114,6 +114,8 @@ class OnboardingVNFInputConfig(OnboardingNFDBaseInputConfig):
             )
         },
     )
+    nfvi_type: str = field(default="AzureCore",
+                           metadata={"comment": "NFVI type. Defaults to AzureCore. Can be AzureCore or AzureOperatorNexus"})
 
     # TODO: Add better comments
     arm_templates: List[ArmTemplatePropertiesConfig] = field(
@@ -147,7 +149,8 @@ class OnboardingVNFInputConfig(OnboardingNFDBaseInputConfig):
     def validate(self):
         """Validate the configuration."""
         super().validate()
-
+        if not self.nfvi_type:
+            raise ValidationError("nfvi_type must be set")
         if not self.image_name_parameter:
             raise ValidationError("image_name_parameter must be set")
         if not self.arm_templates:

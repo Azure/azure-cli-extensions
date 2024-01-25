@@ -8,7 +8,7 @@ from typing import Dict, Any
 from knack.log import get_logger
 
 from azext_aosm.build_processors.arm_processor import (
-    AzureCoreArmBuildProcessor, BaseArmBuildProcessor)
+    AzureCoreArmBuildProcessor, BaseArmBuildProcessor, NexusArmBuildProcessor)
 from azext_aosm.build_processors.vhd_processor import VHDProcessor
 from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
                                          BASE_FOLDER_NAME,
@@ -87,9 +87,14 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
                 template_path=Path(arm_template.file_path).absolute(),
             )
             # TODO: generalise for nexus in nexus ready stories
-            processor_list.append(
-                AzureCoreArmBuildProcessor(arm_input.artifact_name, arm_input)
-            )
+            if self.config.nfvi_type == "AzureCore":
+                processor_list.append(
+                    AzureCoreArmBuildProcessor(arm_input.artifact_name, arm_input)
+                )
+            elif self.config.nfvi_type == "AzureOperatorNexus":
+                processor_list.append(
+                    NexusArmBuildProcessor(arm_input.artifact_name, arm_input)
+                )
 
         # Instantiate vhd processor
         if not self.config.vhd.artifact_name:
