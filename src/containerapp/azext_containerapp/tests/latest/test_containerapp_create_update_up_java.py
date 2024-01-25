@@ -15,7 +15,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerAppCreateTest(ScenarioTest):
 
-    @live_only()
+    
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_up_artifact_with_buildpack_java(self, resource_group):
         artifact_path = os.path.join(TEST_DIR, os.path.join("data", "artifact_built_using_buildpack", "sample.jar"))
@@ -26,7 +26,7 @@ class ContainerAppCreateTest(ScenarioTest):
                                           build_env_vars=build_env_vars, ingress=ingress, target_port=target_port,
                                           requires_acr_prerequisite=True)
 
-    @live_only()
+    
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_artifact_with_buildpack_java(self, resource_group):
         artifact_path = os.path.join(TEST_DIR, os.path.join("data", "artifact_built_using_buildpack", "sample.jar"))
@@ -37,7 +37,7 @@ class ContainerAppCreateTest(ScenarioTest):
                                                          artifact_path=artifact_path, build_env_vars=build_env_vars,
                                                          ingress=ingress, target_port=target_port)
 
-    @live_only()
+    
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_source_with_buildpack_java(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_buildpack_java"))
@@ -48,7 +48,7 @@ class ContainerAppCreateTest(ScenarioTest):
                                                          build_env_vars=build_env_vars, ingress=ingress,
                                                          target_port=target_port)
 
-    @live_only()
+    
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_up_source_with_buildpack_java(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_buildpack_java"))
