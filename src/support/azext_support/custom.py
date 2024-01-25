@@ -252,4 +252,7 @@ class TicketCreate(_CreateTicket):
             body = super().content
             service_name = parse_support_area_path(body["properties"]["problemClassificationId"])["service_name"]
             body["properties"]["serviceId"] = "/providers/Microsoft.Support/services/{0}".format(service_name)
+            if "problemStartTime" not in body["properties"]: 
+                start_time = datetime.utcnow().strftime(("%Y-%m-%dT%H:%M:%SZ"))
+                body["properties"]["problemStartTime"] = start_time
             return body
