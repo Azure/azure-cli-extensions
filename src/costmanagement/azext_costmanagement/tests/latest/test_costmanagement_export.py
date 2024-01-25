@@ -82,7 +82,7 @@ class CostManagementExportTest(ScenarioTest):
         self.assertEqual(data['definition']['type'], type)
         self.assertIsNone(data['schedule']['recurrence'])
         self.assertIsNone(data['schedule']['recurrencePeriod'])
-        self.assertEqual(data['schedule']['status'] , schedule_status)
+        self.assertEqual(data['schedule']['status'], schedule_status)
         self.assertIsNone(data['definition']['timePeriod'])
         self.assertEqual(data['definition']['timeframe'], timeframe)
 
@@ -242,7 +242,6 @@ class CostManagementExportTest(ScenarioTest):
             'operation_id': self.create_random_name('op', 15)
         })
 
-        operation_name = self.create_random_name('op', 15)
         from azure.core.exceptions import HttpResponseError
         with self.assertRaisesRegex(HttpResponseError, 'The request is invalid'):
             self.cmd('costmanagement show-operation-result --scope {scope} --operation-id {operation_id}')

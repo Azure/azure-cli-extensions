@@ -21,8 +21,7 @@ class CostManagementClientCommandsLoader(AzCommandsLoader):
         costmanagement_custom = CliCommandType(
             operations_tmpl='azext_costmanagement.custom#{}',
             client_factory=cf_costmanagement)
-        super(CostManagementClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                                 custom_command_type=costmanagement_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=costmanagement_custom)
 
     def load_command_table(self, args):
         from azext_costmanagement.generated.commands import load_command_table
