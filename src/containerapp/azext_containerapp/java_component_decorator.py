@@ -7,15 +7,12 @@
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
-from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
+from azure.cli.core.azclierror import ValidationError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._utils import clean_null_values
 from knack.log import get_logger
 
-from ._decorator_utils import load_yaml_file
-from ._models import (
-    JavaComponent as JavaComponentModel,
-    JavaComponentConfiguration as JavaComponentConfigurationModel)
+from ._models import JavaComponent as JavaComponentModel
 
 from ._client_factory import handle_raw_exception
 
@@ -25,6 +22,7 @@ logger = get_logger(__name__)
 class JavaComponentDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
+        self.java_component_def = JavaComponentModel
 
     def get_argument_configuration(self):
         return self.get_param("configuration")
@@ -35,11 +33,22 @@ class JavaComponentDecorator(BaseResource):
     def get_argument_java_component_name(self):
         return self.get_param("java_component_name")
 
+    def construct_payload(self, java_component_type):
+        self.java_component_def["properties"]["componentType"] = java_component_type
 
-class JavaComponentPreviewCreateDecorator(JavaComponentDecorator):
-    def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
-        super().__init__(cmd, client, raw_parameters, models)
-        self.java_component_def = JavaComponentModel
+        if self.get_argument_configuration() is not None:
+            configuration_list = []
+            for pair in self.get_argument_configuration():
+                key_val = pair.split('=', 1)
+                if len(key_val) != 2:
+                    raise ValidationError("Java configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
+                configuration_list.append({
+                    "propertyName": key_val[0],
+                    "value": key_val[1]
+                })
+            self.java_component_def["properties"]["configurations"] = configuration_list
+
+        self.java_component_def = clean_null_values(self.java_component_def)
 
     def create(self):
         try:
@@ -52,29 +61,6 @@ class JavaComponentPreviewCreateDecorator(JavaComponentDecorator):
         except Exception as e:
             handle_raw_exception(e)
 
-    def construct_payload(self, java_component_type):
-        self.java_component_def["properties"]["componentType"] = java_component_type
-
-        if self.get_argument_configuration():
-            configuration_list = []
-            for pair in self.get_argument_configuration():
-                key_val = pair.split('=', 1)
-                if len(key_val) != 2:
-                    raise ValidationError("Java configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
-                configuration_list.append({
-                    "propertyName": key_val[0],
-                    "value": key_val[1]
-                })
-            self.java_component_def["properties"]["configurations"] = configuration_list
-
-        self.java_component_def = clean_null_values(self.java_component_def)
-
-
-class JavaComponentPreviewUpdateDecorator(JavaComponentDecorator):
-    def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
-        super().__init__(cmd, client, raw_parameters, models)
-        self.java_component_def = JavaComponentModel
-
     def update(self):
         try:
             r = self.client.update(
@@ -86,28 +72,6 @@ class JavaComponentPreviewUpdateDecorator(JavaComponentDecorator):
         except Exception as e:
             handle_raw_exception(e)
 
-    def construct_payload(self, java_component_type):
-        self.java_component_def["properties"]["componentType"] = java_component_type
-
-        if self.get_argument_configuration():
-            configuration_list = []
-            for pair in self.get_argument_configuration():
-                key_val = pair.split('=', 1)
-                if len(key_val) != 2:
-                    raise ValidationError("Java configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
-                configuration_list.append({
-                    "propertyName": key_val[0],
-                    "value": key_val[1]
-                })
-            self.java_component_def["properties"]["configurations"] = configuration_list
-
-        self.java_component_def = clean_null_values(self.java_component_def)
-
-
-class JavaComponentPreviewShowDecorator(JavaComponentDecorator):
-    def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
-        super().__init__(cmd, client, raw_parameters, models)
-
     def show(self):
         try:
             r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
@@ -117,11 +81,6 @@ class JavaComponentPreviewShowDecorator(JavaComponentDecorator):
         except Exception as e:
             handle_raw_exception(e)
 
-
-class JavaComponentPreviewListDecorator(JavaComponentDecorator):
-    def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
-        super().__init__(cmd, client, raw_parameters, models)
-
     def list(self):
         try:
             r = self.client.list(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
@@ -130,11 +89,6 @@ class JavaComponentPreviewListDecorator(JavaComponentDecorator):
             return r
         except Exception as e:
             handle_raw_exception(e)
-
-
-class JavaComponentPreviewDeleteDecorator(JavaComponentDecorator):
-    def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
-        super().__init__(cmd, client, raw_parameters, models)
 
     def delete(self):
         try:

@@ -64,13 +64,7 @@ from .daprcomponent_resiliency_decorator import (
 )
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
-from .java_component_decorator import (
-    JavaComponentPreviewCreateDecorator,
-    JavaComponentPreviewUpdateDecorator,
-    JavaComponentPreviewShowDecorator,
-    JavaComponentPreviewListDecorator,
-    JavaComponentPreviewDeleteDecorator
-)
+from .java_component_decorator import JavaComponentDecorator
 from ._client_factory import handle_raw_exception
 from ._clients import (
     GitHubActionClient,
@@ -1871,26 +1865,24 @@ def init_dapr_components(cmd, resource_group_name, environment_name, statestore=
 
 def list_java_components(cmd, environment_name, resource_group_name):
     raw_parameters = locals()
-    java_component_list_decorator = JavaComponentPreviewListDecorator(
+    java_component_decorator = JavaComponentDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-
-    return java_component_list_decorator.list()
+    return java_component_decorator.list()
 
 
 def show_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type):
     raw_parameters = locals()
-    java_component_show_decorator = JavaComponentPreviewShowDecorator(
+    java_component_decorator = JavaComponentDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-
-    result = java_component_show_decorator.show()
+    result = java_component_decorator.show()
 
     current_type = safe_get(result, "properties", "componentType")
     if current_type and target_java_component_type.lower() != current_type.lower():
@@ -1903,38 +1895,37 @@ def delete_java_component(cmd, java_component_name, environment_name, resource_g
     show_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type)
 
     raw_parameters = locals()
-    java_component_delete_decorator = JavaComponentPreviewDeleteDecorator(
+    java_component_decorator = JavaComponentDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-
-    return java_component_delete_decorator.delete()
+    return java_component_decorator.delete()
 
 
 def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, no_wait, disable_warnings):
     raw_parameters = locals()
-    java_component_create_decorator = JavaComponentPreviewCreateDecorator(
+    java_component_decorator = JavaComponentDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    java_component_create_decorator.construct_payload(target_java_component_type)
-    return java_component_create_decorator.create()
+    java_component_decorator.construct_payload(target_java_component_type)
+    return java_component_decorator.create()
 
 
 def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, no_wait, disable_warnings):
     raw_parameters = locals()
-    java_component_update_decorator = JavaComponentPreviewUpdateDecorator(
+    java_component_decorator = JavaComponentDecorator(
         cmd=cmd,
         client=JavaComponentPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    java_component_update_decorator.construct_payload(target_java_component_type)
-    return java_component_update_decorator.update()
+    java_component_decorator.construct_payload(target_java_component_type)
+    return java_component_decorator.update()
 
 
 def create_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False, disable_warnings=True):
