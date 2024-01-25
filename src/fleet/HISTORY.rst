@@ -72,5 +72,4 @@ Release History
 
 1.0.3
 ++++++
-* Added `az fleet reconcile` & `az member reconcile` commands. 
-* Added support for converting a Fleet from hubless to hubful. See `az fleet update --help`.
+* Added `az fleet reconcile` & `az member reconcile` commands.
