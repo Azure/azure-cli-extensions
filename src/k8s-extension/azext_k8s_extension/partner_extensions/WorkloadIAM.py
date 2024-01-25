@@ -3,11 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import subprocess
+import os
 
 from knack.log import get_logger
 from knack.util import CLIError
 
+from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from ..vendored_sdks.models import (Extension, Scope, ScopeCluster)
@@ -43,6 +44,15 @@ class WorkloadIAM(DefaultExtension):
         if release_train is None:
             # TODO - Set this to 'stable' when the extension is ready
             release_train = 'preview'
+
+        # The name is used as a base to generate Kubernetes labels for config maps, pods, etc, and
+        # their names are limited to 63 characters (RFC-1123). Instead of calculating the exact
+        # number of characters that we can allow users to specify, it's better to restrict that even
+        # more so that we have extra space in case the name of a resource changes and it pushes the
+        # total string length over the limit.
+        if len(name) > 20:
+            raise InvalidArgumentValueError(
+                f"Name '{name}' is too long, it must be 20 characters long max.")
 
         scope = scope.lower()
         if scope is None:
@@ -117,36 +127,24 @@ class WorkloadIAM(DefaultExtension):
         Invoke the az command to obtain a join token.
         """
 
-        logger.info("Getting a join token from the control plane")
+        logger.debug("Getting a join token from the control plane")
 
         # Invoke az workload-iam command to obtain the join token
         cmd = [
-            "az", "workload-iam", "local-authority", "attestation-method", "create",
+            "workload-iam", "local-authority", "attestation-method", "create",
             "--td", trust_domain,
             "--la", local_authority,
             "--type", "joinTokenAttestationMethod",
             "--query", "singleUseToken",
             "--dn", "myJoinToken",
         ]
-        cmd_str = " ".join(cmd)
 
-        try:
-            # Note: We can't use get_default_cli() here because its invoke() method
-            # always prints the console output, which we want to avoid.
-            result = subprocess.run(cmd, capture_output=True, shell=True)
-        except Exception as e:
-            logger.error(f"Error while generating a join token: {cmd_str}")
-            raise e
-
-        if result.returncode != 0:
-            raise CLIError(f"Failed to generate a join token (exit code {result.returncode}): {cmd_str}")
-
-        try:
-            # Strip double quotes from the output
-            command_output = result.stdout.decode("utf-8")
-            token = command_output.strip("\r\n").strip("\"")
-        except Exception as e:
-            logger.error(f"Failed to parse output of join token command: {cmd_str}")
-            raise e
+        cli = get_default_cli()
+        cli.invoke(cmd, out_file=open(os.devnull, 'w'))  # Don't print output
+        if cli.result.result:
+            token = cli.result.result
+        elif cli.result.error:
+            cmd_str = "az " + " ".join(cmd)
+            raise CLIError(f"Error while generating a join token. Command: {cmd_str}")
 
         return token
