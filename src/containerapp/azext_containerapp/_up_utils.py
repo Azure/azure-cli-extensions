@@ -574,7 +574,8 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             # Pass the subscription ID and caller ID to the buildpack
             sub_id = get_subscription_id(self.cmd.cli_ctx)
             command.extend(['--env', f"BP_SUBSCRIPTION_ID={sub_id}"])
-            command.extend(['--env', f"CALLER_ID=cli"])
+            from azure.cli.core import __version__ as core_version
+            command.extend(['--env', f"CALLER_ID=AZURECLI/{core_version}"])
 
             # If the user specifies environment variables, pass it to the buildpack
             if build_env_vars:
