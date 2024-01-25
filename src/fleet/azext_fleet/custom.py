@@ -127,16 +127,9 @@ def update_fleet(cmd,
                  client,
                  resource_group_name,
                  name,
-                 tags=None,
-                 enable_hub=False,
-                 vm_size=None,
-                 dns_name_prefix=None,
-                 enable_private_cluster=False,
-                 enable_vnet_integration=False,
-                 apiserver_subnet_id=None,
-                 agent_subnet_id=None,
-                 enable_managed_identity=False,
+                 enable_managed_identity=None,
                  assign_identity=None,
+                 tags=None,
                  no_wait=False):
     fleet_patch_model = cmd.get_models(
         "FleetPatch",
@@ -165,59 +158,6 @@ def update_fleet(cmd,
             )
             managed_service_identity.type = "UserAssigned"
             managed_service_identity.user_assigned_identities = {assign_identity: user_assigned_identity_model()}
-
-    # Currently, patch does not support the HubProfile. Thus fleet update with --enable-hub, will do a PUT.
-    if enable_hub:
-        print("in enabled Hub")
-        existingFleet = client.get(resource_group_name, name)
-        print("got existing fleet")
-        
-        fleet_hub_profile_model = cmd.get_models(
-            "FleetHubProfile",
-            resource_type=CUSTOM_MGMT_FLEET,
-            operation_group="fleets"
-        )
-        api_server_access_profile_model = cmd.get_models(
-            "APIServerAccessProfile",
-            resource_type=CUSTOM_MGMT_FLEET,
-            operation_group="fleets"
-        )
-        agent_profile_model = cmd.get_models(
-            "AgentProfile",
-            resource_type=CUSTOM_MGMT_FLEET,
-            operation_group="fleets",
-            vm_size=vm_size
-        )
-        if dns_name_prefix is None:
-            subscription_id = get_subscription_id(cmd.cli_ctx)
-            # Use subscription id to provide uniqueness and prevent DNS name clashes
-            name_part = re.sub('[^A-Za-z0-9-]', '', name)[0:10]
-            if not name_part[0].isalpha():
-                name_part = (str('a') + name_part)[0:10]
-            resource_group_part = re.sub('[^A-Za-z0-9-]', '', resource_group_name)[0:16]
-            dns_name_prefix = f'{name_part}-{resource_group_part}-{subscription_id[0:6]}'
-
-        api_server_access_profile = api_server_access_profile_model(
-            enable_private_cluster=enable_private_cluster,
-            enable_vnet_integration=enable_vnet_integration,
-            subnet_id=apiserver_subnet_id
-        )
-        agent_profile = agent_profile_model(
-            subnet_id=agent_subnet_id
-        )
-        fleet_hub_profile = fleet_hub_profile_model(
-            dns_prefix=dns_name_prefix,
-            api_server_access_profile=api_server_access_profile,
-            agent_profile=agent_profile)
-        
-        existingFleet.hub_profile = fleet_hub_profile
-        existingFleet.identity = managed_service_identity
-        if tags is not None:
-            existingFleet.tags = tags
-
-        print("about to execute being_create_or_update")
-        return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, existingFleet, polling_interval=30)
-
 
     fleet_patch = fleet_patch_model(
         tags=tags,
