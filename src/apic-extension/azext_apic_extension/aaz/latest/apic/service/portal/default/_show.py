@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get portal configuration.
+
+    :example: Show APIC Default Portal Configuration
+        az apic service portal default update -g contoso-resources --service-name contoso
     """
 
     _aaz_info = {
@@ -173,6 +176,10 @@ class Show(AAZCommand):
 
             properties = cls._schema_on_200.properties
             properties.authentication = AAZObjectType()
+            properties.created = AAZStrType()
+            properties.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
             properties.data_api_host_name = AAZStrType(
                 serialized_name="dataApiHostName",
             )
@@ -181,10 +188,22 @@ class Show(AAZCommand):
                 serialized_name="portalDefaultHostName",
             )
             properties.title = AAZStrType()
+            properties.updated = AAZStrType()
+            properties.updated_by = AAZStrType(
+                serialized_name="updatedBy",
+            )
 
             authentication = cls._schema_on_200.properties.authentication
+            authentication.azure_ad_instance = AAZStrType(
+                serialized_name="azureAdInstance",
+                flags={"read_only": True},
+            )
             authentication.client_id = AAZStrType(
                 serialized_name="clientId",
+                flags={"required": True},
+            )
+            authentication.scopes = AAZStrType(
+                flags={"read_only": True},
             )
             authentication.tenant_id = AAZStrType(
                 serialized_name="tenantId",

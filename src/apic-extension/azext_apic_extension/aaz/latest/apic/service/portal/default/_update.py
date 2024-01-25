@@ -82,31 +82,38 @@ class Update(AAZCommand):
             options=["--authentication"],
             arg_group="Properties",
             help="Authentication configuration.",
-            nullable=True,
         )
-        _args_schema.is_published = AAZBoolArg(
-            options=["--is-published"],
+        _args_schema.enabled = AAZBoolArg(
+            options=["--enabled"],
             arg_group="Properties",
-            help="Indicates whether the portal is published.",
+            help="Flag indicating whether or not portal is enabled.",
             nullable=True,
         )
         _args_schema.title = AAZStrArg(
             options=["--title"],
             arg_group="Properties",
             help="Portal configuration Title.",
-            nullable=True,
+            fmt=AAZStrArgFormat(
+                max_length=50,
+            ),
         )
 
         authentication = cls._args_schema.authentication
         authentication.client_id = AAZStrArg(
             options=["client-id"],
             help="The Azure Active Directory application client id.",
-            nullable=True,
+            fmt=AAZStrArgFormat(
+                max_length=50,
+                min_length=1,
+            ),
         )
         authentication.tenant_id = AAZStrArg(
             options=["tenant-id"],
             help="The Azure Active Directory application Tenant id.",
             nullable=True,
+            fmt=AAZStrArgFormat(
+                max_length=50,
+            ),
         )
         return cls._args_schema
 
@@ -334,13 +341,13 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("authentication", AAZObjectType, ".authentication")
-                properties.set_prop("isPublished", AAZBoolType, ".is_published")
-                properties.set_prop("title", AAZStrType, ".title")
+                properties.set_prop("authentication", AAZObjectType, ".authentication", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("enabled", AAZBoolType, ".enabled")
+                properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
 
             authentication = _builder.get(".properties.authentication")
             if authentication is not None:
-                authentication.set_prop("clientId", AAZStrType, ".client_id")
+                authentication.set_prop("clientId", AAZStrType, ".client_id", typ_kwargs={"flags": {"required": True}})
                 authentication.set_prop("tenantId", AAZStrType, ".tenant_id")
 
             tags = _builder.get(".tags")
@@ -395,6 +402,10 @@ class _UpdateHelper:
 
         properties = _schema_portal_configuration_response_read.properties
         properties.authentication = AAZObjectType()
+        properties.created = AAZStrType()
+        properties.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
         properties.data_api_host_name = AAZStrType(
             serialized_name="dataApiHostName",
         )
@@ -403,10 +414,22 @@ class _UpdateHelper:
             serialized_name="portalDefaultHostName",
         )
         properties.title = AAZStrType()
+        properties.updated = AAZStrType()
+        properties.updated_by = AAZStrType(
+            serialized_name="updatedBy",
+        )
 
         authentication = _schema_portal_configuration_response_read.properties.authentication
+        authentication.azure_ad_instance = AAZStrType(
+            serialized_name="azureAdInstance",
+            flags={"read_only": True},
+        )
         authentication.client_id = AAZStrType(
             serialized_name="clientId",
+            flags={"required": True},
+        )
+        authentication.scopes = AAZStrType(
+            flags={"read_only": True},
         )
         authentication.tenant_id = AAZStrType(
             serialized_name="tenantId",
