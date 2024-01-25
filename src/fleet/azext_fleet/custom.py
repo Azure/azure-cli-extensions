@@ -151,11 +151,6 @@ def update_fleet(cmd,
 
     if enable_managed_identity is None:
         managed_service_identity = None
-        if enable_hub is True:
-            # Fleet PATCH & PUT are interwoven currently as PATCH fleet does not support the hubprofile.
-            # Ergo, if the user does not --enable-managed-identity, we must populate the model with the None MSI type.
-            # Whereas the PATCH would be a null as to not overwrite. 
-            managed_service_identity = fleet_managed_service_identity_model(type="None")
         if assign_identity is not None:
             raise CLIError("Cannot assign identity without enabling managed identity.")
     elif enable_managed_identity is False:
@@ -222,16 +217,8 @@ def update_fleet(cmd,
 
         print("about to execute being_create_or_update")
         return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, existingFleet, polling_interval=30)
-    else:
-        if dns_name_prefix is not None or \
-           enable_private_cluster or \
-           enable_vnet_integration or \
-           apiserver_subnet_id is not None or \
-           agent_subnet_id is not None:
-            raise CLIError(
-                "The parameters for private cluster, vnet & subnet integration are only valid if hub is enabled.")
 
-    # Non-hub-enabled fleet update commands are currently PATCH, that does not contain a HubProfile.
+
     fleet_patch = fleet_patch_model(
         tags=tags,
         identity=managed_service_identity
