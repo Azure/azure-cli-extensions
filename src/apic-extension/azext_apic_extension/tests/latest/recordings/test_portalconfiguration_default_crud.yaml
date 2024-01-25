@@ -11,7 +11,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g --service-name --title --is-published --authentication
+      - -g --service-name --title --enabled --authentication
       User-Agent:
       - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
@@ -27,26 +27,24 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 24 Jan 2024 21:42:38 GMT
+      - Thu, 25 Jan 2024 18:32:52 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-msedge-ref:
-      - 'Ref A: 228B1A5B12344DCA86906E44F400B328 Ref B: SN4AA2022304039 Ref C: 2024-01-24T21:42:38Z'
     status:
       code: 200
       message: OK
 - request:
     body: '{"location": "centralus", "properties": {"authentication": {"clientId":
       "91247fa2-f214-439f-ae71-512bc75d60db", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"},
-      "isPublished": false, "title": "ContosoEUAP"}}'
+      "enabled": false, "title": "ContosoEUAP"}}'
     headers:
       Accept:
       - application/json
@@ -57,47 +55,47 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '211'
+      - '207'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g --service-name --title --is-published --authentication
+      - -g --service-name --title --enabled --authentication
       User-Agent:
       - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/portals/default?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/portals","properties":{"portalDefaultHostName":"contosoeuap.portal.centraluseuap.azure-apicenter.ms","dataApiHostName":"contosoeuap.data.centraluseuap.azure-apicenter.ms","title":"ContosoEUAP","authentication":{"clientId":"91247fa2-f214-439f-ae71-512bc75d60db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"enabled":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/portals/default","name":"default","systemData":{"createdAt":"2024-01-24T21:40:14.3573244Z","lastModifiedAt":"2024-01-24T21:42:39.6044509Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/portals","properties":{"portalDefaultHostName":"contosoeuap.portal.centraluseuap.azure-apicenter.ms","dataApiHostName":"contosoeuap.data.centraluseuap.azure-apicenter.ms","title":"ContosoEUAP","authentication":{"clientId":"91247fa2-f214-439f-ae71-512bc75d60db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"enabled":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/portals/default","name":"default","systemData":{"createdAt":"2024-01-25T18:32:52.965166Z","lastModifiedAt":"2024-01-25T18:32:52.965166Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01
       cache-control:
       - no-cache
       content-length:
-      - '647'
+      - '645'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 24 Jan 2024 21:42:39 GMT
+      - Thu, 25 Jan 2024 18:32:52 GMT
       etag:
-      - 00004a25-0000-3300-0000-65b1844f0000
+      - 00004b48-0000-3300-0000-65b2a9540000
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
       vary:
-      - Accept-Encoding
-      x-cache:
-      - CONFIG_NOCACHE
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
-      x-msedge-ref:
-      - 'Ref A: 4D67BE4502E94E58B52411C596492104 Ref B: DM2AA1091214049 Ref C: 2024-01-24T21:42:39Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -122,34 +120,34 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/portals/default?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/portals","properties":{"portalDefaultHostName":"contosoeuap.portal.centraluseuap.azure-apicenter.ms","dataApiHostName":"contosoeuap.data.centraluseuap.azure-apicenter.ms","title":"ContosoEUAP","authentication":{"clientId":"91247fa2-f214-439f-ae71-512bc75d60db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"enabled":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/portals/default","name":"default","systemData":{"createdAt":"2024-01-24T21:40:14.3573244Z","lastModifiedAt":"2024-01-24T21:42:39.6044509Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/portals","properties":{"portalDefaultHostName":"contosoeuap.portal.centraluseuap.azure-apicenter.ms","dataApiHostName":"contosoeuap.data.centraluseuap.azure-apicenter.ms","title":"ContosoEUAP","authentication":{"clientId":"91247fa2-f214-439f-ae71-512bc75d60db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"enabled":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/portals/default","name":"default","systemData":{"createdAt":"2024-01-25T18:32:52.965166Z","lastModifiedAt":"2024-01-25T18:32:52.965166Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01
       cache-control:
       - no-cache
       content-length:
-      - '647'
+      - '645'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 24 Jan 2024 21:42:39 GMT
+      - Thu, 25 Jan 2024 18:32:53 GMT
       etag:
-      - 00004a25-0000-3300-0000-65b1844f0000
+      - 00004b48-0000-3300-0000-65b2a9540000
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
       vary:
-      - Accept-Encoding
-      x-cache:
-      - CONFIG_NOCACHE
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-msedge-ref:
-      - 'Ref A: B5B2ABEBA94F43398EAD4FFD1D3A5837 Ref B: DM2AA1091213053 Ref C: 2024-01-24T21:42:40Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -167,41 +165,41 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g --service-name --title --is-published --authentication
+      - -g --service-name --title --enabled --authentication
       User-Agent:
       - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/portals/default?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/portals","properties":{"portalDefaultHostName":"contosoeuap.portal.centraluseuap.azure-apicenter.ms","dataApiHostName":"contosoeuap.data.centraluseuap.azure-apicenter.ms","title":"ContosoEUAP","authentication":{"clientId":"91247fa2-f214-439f-ae71-512bc75d60db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"enabled":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/portals/default","name":"default","systemData":{"createdAt":"2024-01-24T21:40:14.3573244Z","lastModifiedAt":"2024-01-24T21:42:39.6044509Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/portals","properties":{"portalDefaultHostName":"contosoeuap.portal.centraluseuap.azure-apicenter.ms","dataApiHostName":"contosoeuap.data.centraluseuap.azure-apicenter.ms","title":"ContosoEUAP","authentication":{"clientId":"91247fa2-f214-439f-ae71-512bc75d60db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"enabled":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/portals/default","name":"default","systemData":{"createdAt":"2024-01-25T18:32:52.965166Z","lastModifiedAt":"2024-01-25T18:32:52.965166Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01
       cache-control:
       - no-cache
       content-length:
-      - '647'
+      - '645'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 24 Jan 2024 21:42:40 GMT
+      - Thu, 25 Jan 2024 18:32:53 GMT
       etag:
-      - 00004a25-0000-3300-0000-65b1844f0000
+      - 00004b48-0000-3300-0000-65b2a9540000
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
       vary:
-      - Accept-Encoding
-      x-cache:
-      - CONFIG_NOCACHE
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-msedge-ref:
-      - 'Ref A: 7DCBEF7D754F4BD3BC69162FE8D631A6 Ref B: SN4AA2022304019 Ref C: 2024-01-24T21:42:40Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -211,7 +209,7 @@ interactions:
     body: '{"properties": {"authentication": {"clientId": "91247fa2-f214-439f-ae71-512bc75d60db",
       "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "dataApiHostName": "contosoeuap.data.centraluseuap.azure-apicenter.ms",
       "enabled": false, "portalDefaultHostName": "contosoeuap.portal.centraluseuap.azure-apicenter.ms",
-      "title": "ContosoEUAP2", "isPublished": false}}'
+      "title": "ContosoEUAP2"}}'
     headers:
       Accept:
       - application/json
@@ -222,47 +220,47 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '357'
+      - '335'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g --service-name --title --is-published --authentication
+      - -g --service-name --title --enabled --authentication
       User-Agent:
       - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/portals/default?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/portals","properties":{"portalDefaultHostName":"contosoeuap.portal.centraluseuap.azure-apicenter.ms","dataApiHostName":"contosoeuap.data.centraluseuap.azure-apicenter.ms","title":"ContosoEUAP2","authentication":{"clientId":"91247fa2-f214-439f-ae71-512bc75d60db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"enabled":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/portals/default","name":"default","systemData":{"createdAt":"2024-01-24T21:40:14.3573244Z","lastModifiedAt":"2024-01-24T21:42:41.7029366Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/portals","properties":{"portalDefaultHostName":"contosoeuap.portal.centraluseuap.azure-apicenter.ms","dataApiHostName":"contosoeuap.data.centraluseuap.azure-apicenter.ms","title":"ContosoEUAP2","authentication":{"clientId":"91247fa2-f214-439f-ae71-512bc75d60db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"enabled":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/api-center-test/providers/Microsoft.ApiCenter/services/contosoeuap/portals/default","name":"default","systemData":{"createdAt":"2024-01-25T18:32:52.965166Z","lastModifiedAt":"2024-01-25T18:32:54.7932312Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01
       cache-control:
       - no-cache
       content-length:
-      - '648'
+      - '647'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 24 Jan 2024 21:42:41 GMT
+      - Thu, 25 Jan 2024 18:32:53 GMT
       etag:
-      - 00004b25-0000-3300-0000-65b184510000
+      - 00004c48-0000-3300-0000-65b2a9560000
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
       vary:
-      - Accept-Encoding
-      x-cache:
-      - CONFIG_NOCACHE
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
-      x-msedge-ref:
-      - 'Ref A: 32906C8A84F94EE4B3BE2164144E819F Ref B: SN4AA2022304019 Ref C: 2024-01-24T21:42:41Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -296,21 +294,19 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Wed, 24 Jan 2024 21:42:42 GMT
+      - Thu, 25 Jan 2024 18:32:55 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
-      x-msedge-ref:
-      - 'Ref A: 2AFA2FD62E3E42F398FF785941E63160 Ref B: SN4AA2022302023 Ref C: 2024-01-24T21:42:42Z'
       x-powered-by:
       - ASP.NET
     status:

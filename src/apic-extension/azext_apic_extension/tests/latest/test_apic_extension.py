@@ -43,7 +43,7 @@ class ApicExtensionScenario(ScenarioTest):
         })
 
         # Create default portal configuration
-        self.cmd('az apic service portal default create -g {resource_group} --service-name {service_name} --title ContosoEUAP --is-published false  --authentication "{authentication_details}"',
+        self.cmd('az apic service portal default create -g {resource_group} --service-name {service_name} --title ContosoEUAP --enabled false  --authentication "{authentication_details}"',
                  checks=[self.check('name', 'default'),
                          self.check('portalDefaultHostName', 'contosoeuap.portal.centraluseuap.azure-apicenter.ms'),
                          self.check('dataApiHostName', 'contosoeuap.data.centraluseuap.azure-apicenter.ms'),
@@ -57,7 +57,7 @@ class ApicExtensionScenario(ScenarioTest):
                          self.check('title', 'ContosoEUAP')])
 
         # Update default portal configuration
-        self.cmd('az apic service portal default update -g {resource_group} --service-name {service_name} --title ContosoEUAP2 --is-published false  --authentication "{authentication_details}"',
+        self.cmd('az apic service portal default update -g {resource_group} --service-name {service_name} --title ContosoEUAP2 --enabled false  --authentication "{authentication_details}"',
                  checks=[self.check('title', 'ContosoEUAP2')])
 
         # Delete default portal configuration
