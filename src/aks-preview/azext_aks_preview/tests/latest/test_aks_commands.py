@@ -3808,7 +3808,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
-
     # @AllowLargeResponse()
     # @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     # def test_aks_upgrade_node_image_only_cluster(self, resource_group, resource_group_location):
