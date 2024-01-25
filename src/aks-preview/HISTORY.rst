@@ -13,6 +13,13 @@ Pending
 +++++++
 * Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
 
+1.0.0b3
++++++++
+* Add `--enable-vtpm` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
+* Add `--disable-vtpm` to the `az aks nodepool update` command.
+* Add `--enable-secure-boot` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
+* Add `--disable-secure-boot` to the `az aks nodepool update` command.
+
 1.0.0b2
 +++++++
 * Add --skip-gpu-driver-install option to node pool property in `az aks nodepool add`.
@@ -22,13 +29,6 @@ Pending
 * Add `--enable-addon-autoscaling` and `--disable-addon-autoscaling` to the `az aks update` command.
 * Add `--enable-addon-autoscaling` to the `az aks create` command.
 * Add `--ip-families` to the `az aks update` command.
-
-0.5.175
-+++++++
-* Add `--enable-vtpm` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
-* Add `--disable-vtpm` to the `az aks nodepool update` command.
-* Add `--enable-secure-boot` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
-* Add `--disable-secure-boot` to the `az aks nodepool update` command.
 
 0.5.174
 +++++++

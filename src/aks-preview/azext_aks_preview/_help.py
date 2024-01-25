@@ -588,10 +588,10 @@ helps['aks create'] = f"""
           short-summary: Enable Application Routing addon.
         - name: --enable-secure-boot
           type: bool
-          short-summary: Enable Secure Boot on all node pools in the cluster.
+          short-summary: Enable Secure Boot on all node pools in the cluster. Must use VMSS agent pool type.
         - name: --enable-vtpm
           type: bool
-          short-summary: Enable vTPM on all node pools in the cluster.
+          short-summary: Enable vTPM on all node pools in the cluster. Must use VMSS agent pool type.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -1139,18 +1139,6 @@ helps['aks update'] = """
         - name: --node-provisioning-mode
           type: string
           short-summary: Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.
-        - name: --enable-secure-boot
-          type: bool
-          short-summary: Enable Secure Boot.
-        - name: --disble-secure-boot
-          type: bool
-          short-summary: Disable Secure Boot.
-        - name: --enable-vtpm
-          type: bool
-          short-summary: Enable vTPM.
-        - name: --disble-vtpm
-          type: bool
-          short-summary: Disable vTPM.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1725,6 +1713,18 @@ helps['aks nodepool add'] = """
         - name: --skip-gpu-driver-install
           type: bool
           short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
+        - name: --enable-secure-boot
+          type: bool
+          short-summary: Enable Secure Boot on agent node pool. Must use VMSS agent pool type.
+        - name: --disable-secure-boot
+          type: bool
+          short-summary: Disable Secure Boot on agent node pool.
+        - name: --enable-vtpm
+          type: bool
+          short-summary: Enable vTPM on agent node pool. Must use VMSS agent pool type.
+        - name: --disable-vtpm
+          type: bool
+          short-summary: Disable vTPM on agent node pool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1843,6 +1843,18 @@ helps['aks nodepool update'] = """
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool.
+        - name: --enable-secure-boot
+          type: bool
+          short-summary: Enable Secure Boot on an existing Trusted Launch enabled agent node pool. Must use VMSS agent pool type.
+        - name: --disable-secure-boot
+          type: bool
+          short-summary: Disable Secure Boot on on an existing Trusted Launch enabled agent node pool.
+        - name: --enable-vtpm
+          type: bool
+          short-summary: Enable vTPM on an existing Trusted Launch enabled agent node pool. Must use VMSS agent pool type.
+        - name: --disable-vtpm
+          type: bool
+          short-summary: Disable vTPM on an existing Trusted Launch enabled agent node pool.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster

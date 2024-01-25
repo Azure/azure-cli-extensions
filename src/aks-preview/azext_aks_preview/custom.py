@@ -802,11 +802,6 @@ def aks_update(
     storage_pool_option=None,
     azure_container_storage_nodepools=None,
     node_provisioning_mode=None,
-    # trusted launch
-    enable_secure_boot=False,
-    disable_secure_boot=False,
-    enable_vtpm=False,
-    disable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1185,6 +1180,11 @@ def aks_agentpool_add(
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     skip_gpu_driver_install=False,
+    # trusted launch
+    enable_secure_boot=False,
+    disable_secure_boot=False,
+    enable_vtpm=False,
+    disable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1238,6 +1238,11 @@ def aks_agentpool_update(
     asg_ids=None,
     enable_artifact_streaming=False,
     os_sku=None,
+     # trusted launch
+    enable_secure_boot=False,
+    disable_secure_boot=False,
+    enable_vtpm=False,
+    disable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

@@ -7303,6 +7303,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             dec_6.update_upgrade_settings(mc_6)
 
+    def test_enable_secure_boot(self):
+        
+
     def test_enable_disable_cost_analysis(self):
         # Should not update mc if unset
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(

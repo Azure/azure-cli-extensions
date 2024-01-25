@@ -814,8 +814,16 @@ def load_arguments(self, _):
             )
         )
         # trusted launch
-        c.argument("enable_secure_boot", is_preview=True, action="store_true")
-        c.argument("enable_vtpm", is_preview=True, action="store_true")
+        c.argument(
+            "enable_secure_boot", 
+            is_preview=True, 
+            action="store_true"
+        )
+        c.argument(
+            "enable_vtpm", 
+            is_preview=True, 
+            action="store_true"
+        )
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1191,11 +1199,6 @@ def load_arguments(self, _):
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
             )
         )
-        # trusted launch
-        c.argument("enable_secure_boot", is_preview=True, action="store_true")
-        c.argument("enable_vtpm", is_preview=True, action="store_true")
-        c.argument("disable_secure_boot", is_preview=True, action="store_true")
-        c.argument("disable_vtpm", is_preview=True, action="store_true")
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1346,6 +1349,27 @@ def load_arguments(self, _):
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
         c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
+        # trusted launch
+        c.argument(
+            "enable_secure_boot", 
+            is_preview=True, 
+            action="store_true"
+        )
+        c.argument(
+            "enable_vtpm", 
+            is_preview=True, 
+            action="store_true"
+        )
+        c.argument(
+            "disable_secure_boot", 
+            is_preview=True, 
+            action="store_true"
+        )
+        c.argument(
+            "disable_vtpm", 
+            is_preview=True, 
+            action="store_true"
+        )
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1400,6 +1424,27 @@ def load_arguments(self, _):
             "os_sku",
             arg_type=get_enum_type(node_os_skus_update),
             validator=validate_os_sku,
+        )
+        # trusted launch
+        c.argument(
+            "enable_secure_boot", 
+            is_preview=True, 
+            action="store_true"
+        )
+        c.argument(
+            "enable_vtpm", 
+            is_preview=True, 
+            action="store_true"
+        )
+        c.argument(
+            "disable_secure_boot", 
+            is_preview=True, 
+            action="store_true"
+        )
+        c.argument(
+            "disable_vtpm", 
+            is_preview=True, 
+            action="store_true"
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
