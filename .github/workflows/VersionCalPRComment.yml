@@ -1,25 +1,59 @@
 name: Comment PR new module release when pr committed and labeled/unlabeled
 
 on:
+  workflow_dispatch:
   pull_request_target:
-    types: [opened, labeled, unlabeled]
+      types: [opened, labeled, unlabeled]
 
 permissions:
   pull-requests: write
 
 jobs:
-  set-env:
+  cal-release-version:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - name: Setup azdev
+      - name: Setup default version hint
         env:
-          TITLE: ${{ github.event.pull_request.title }}
+          TITLE: "Suggested version: 1.0.0b1 for preview release and 1.0.0 for stable release"
         run: |
-          pr_title=$(echo "$TITLE" | grep -oP '[{\[][^}\]]+[}\]]' | sed 's/{\|}\|\[\|\]//g')
-          echo "pr_title=$pr_title" >> $GITHUB_ENV
-          echo "message=$(echo 'Suggested version: 1.0.0b1 for preview release and 1.0.0 for stable release')" >> $GITHUB_ENV
-      - name: comment on the pull request
-        uses: mshick/add-pr-comment@v2
+            echo "message=$(echo 'Suggested version: 1.0.0b1 for preview release and 1.0.0 for stable release')" >> $GITHUB_ENV
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
         with:
-          repo-token: ${{ secrets.CLI_BOT }}
-          message: "${{ env.message }}"
+          python-version: "3.10"
+      - uses: actions/checkout@master
+      - name: Show workdirectory after cli-extension checked
+        run: |
+          pwd
+          ls
+      - uses: actions/checkout@master
+        with:
+          repository: Azure/azure-cli
+          path: ./azure-cli
+      - name: Show workdirectory after cli cloned
+        run: |
+          pwd
+          ls
+      - name: Organize parent workdirectory after cli cloned
+        run: |
+          mv azure-cli ../
+          cd ../
+          pwd
+          ls
+      - name: Install azdev
+        run: |
+          cd ../
+          python -m pip install --upgrade pip
+          set -ev
+          python -m venv env
+          chmod +x env/bin/activate
+          source ./env/bin/activate
+          pip install azdev
+          azdev --version
+          azdev setup -c azure-cli -r azure-cli-extensions --debug
+          az --version
+          pip list -v
+      - name: Echo results
+        run: |
+           echo ${message}
