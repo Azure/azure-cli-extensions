@@ -3808,244 +3808,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17,
-        name_prefix="clitest",
-        location="eastus",
-        preserve_default_location=True,
-    )
-    def test_aks_create_with_enable_secure_boot(self, resource_group, resource_group_location):
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
-
-        aks_name = self.create_random_name('cliakstest', 16)
-        self.kwargs.update({
-            'resource_group': resource_group,
-            'name': aks_name,
-            'ssh_key_value': self.generate_ssh_keys(),
-            'location': resource_group_location,
-        })
-
-        # create
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity ' \
-                     '--enable-oidc-issuer --enable-workload-identity --enable-secure-boot ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('agentpoolProfiles[0].SecurityProfile.enableSecureBoot', True),
-        ])
-
-        # delete
-        self.cmd(
-            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
-    
-    def test_aks_nodepool_add_with_enable_secure_boot(self, resource_group, resource_group_location):
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
-        aks_name = self.create_random_name('cliakstest', 16)
-        self.kwargs.update({
-            'resource_group': resource_group,
-            'name': aks_name,
-            'dns_name_prefix': self.create_random_name('cliaksdns', 16),
-            'location': resource_group_location,
-            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
-            'nodepool2_name': 'np2',
-            'ssh_key_value': self.generate_ssh_keys()
-        })
-
-        # create
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
-                     '--ssh-key-value={ssh_key_value} ' \
-                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
-
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-        ])
-
-        # nodepool add
-        self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} "
-            "--enable-secure-boot --aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview",
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check(
-                    "agentpoolProfiles[1].SecurityProfile.enableSecureBoot", True
-                ),
-            ],
-        )
-
-        # delete
-        self.cmd(
-            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
-
-    def test_aks_nodepool_update_with_enable_disable_secure_boot(self, resource_group, resource_group_location):
-                # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
-
-        aks_name = self.create_random_name('cliakstest', 16)
-        self.kwargs.update({
-            'resource_group': resource_group,
-            'name': aks_name,
-            'ssh_key_value': self.generate_ssh_keys(),
-            'location': resource_group_location,
-        })
-
-        # create
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity ' \
-                     '--enable-oidc-issuer --enable-workload-identity '
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded')
-        ])
-
-        # nodepool add
-        self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} "
-            "--enable-secure-boot --aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview",
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check(
-                    "agentpoolProfiles[1].SecurityProfile.enableSecureBoot", True
-                ),
-            ],
-        )
-
-        # update to disable
-        self.cmd(
-            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} "
-            "--disable-secure-boot --aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview",
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check(
-                    "agentpoolProfiles[1].SecurityProfile.enableSecureBoot", False
-                ),
-            ],
-        )
-
-        # delete
-        self.cmd(
-            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
-
-    def test_aks_create_with_enable_vtpm(self, resource_group, resource_group_location):
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
-
-        aks_name = self.create_random_name('cliakstest', 16)
-        self.kwargs.update({
-            'resource_group': resource_group,
-            'name': aks_name,
-            'ssh_key_value': self.generate_ssh_keys(),
-            'location': resource_group_location,
-        })
-
-        # create
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity ' \
-                     '--enable-oidc-issuer --enable-workload-identity --enable-vtpm ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('agentpoolProfiles[0].SecurityProfile.enableVTPM', True),
-        ])
-
-        # delete
-        self.cmd(
-            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
-
-    def test_aks_nodepool_add_with_enable_vtpm(self, resource_group, resource_group_location):
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
-        aks_name = self.create_random_name('cliakstest', 16)
-        self.kwargs.update({
-            'resource_group': resource_group,
-            'name': aks_name,
-            'dns_name_prefix': self.create_random_name('cliaksdns', 16),
-            'location': resource_group_location,
-            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
-            'nodepool2_name': 'np2',
-            'ssh_key_value': self.generate_ssh_keys()
-        })
-
-        # create
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
-                     '--ssh-key-value={ssh_key_value} ' \
-                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
-
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-        ])
-
-        # nodepool add
-        self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} "
-            "--enable-vtpm --aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview",
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check(
-                    "agentpoolProfiles[1].SecurityProfile.enableVTPM", True
-                ),
-            ],
-        )
-
-        # delete
-        self.cmd(
-            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
-
-    def test_aks_nodepool_update_with_enable_disable_vtpm(self, resource_group, resource_group_location):
-        self.test_resources_count = 0
-        # kwargs for string formatting
-
-        aks_name = self.create_random_name('cliakstest', 16)
-        self.kwargs.update({
-            'resource_group': resource_group,
-            'name': aks_name,
-            'ssh_key_value': self.generate_ssh_keys(),
-            'location': resource_group_location,
-        })
-
-        # create
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity ' \
-                     '--enable-oidc-issuer --enable-workload-identity '
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded')
-        ])
-
-        # nodepool add
-        self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} "
-            "--enable-vtpm --aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview",
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check(
-                    "agentpoolProfiles[1].SecurityProfile.enableVTPM", True
-                ),
-            ],
-        )
-
-        # update to disable
-        self.cmd(
-            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} "
-            "--disable-vtpm --aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview",
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check(
-                    "agentpoolProfiles[1].SecurityProfile.enableVTPM", False
-                ),
-            ],
-        )
-
-        # delete
-        self.cmd(
-            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
-
 
     # @AllowLargeResponse()
     # @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -4350,6 +4112,144 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check(
                     "agentpoolProfiles[1].ArtifactStreamingProfile.enabled", True
+                ),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_enable_secure_boot_flow(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_pool_name = self.create_random_name("c", 6)
+        node_pool_name_second = self.create_random_name("c", 6)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "node_pool_name": node_pool_name,
+                "node_pool_name_second": node_pool_name_second,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # 1. create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--nodepool-name {node_pool_name} -c 1 "
+            "--ssh-key-value={ssh_key_value} "
+            "--enable-secure_boot"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].SecurityProfile.enableSecureBoot", "True"),
+            ],
+        )
+
+        # 2. add nodepool
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name_second} "
+            "--os-type Linux "
+            "--enable-secure-boot",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("SecurityProfile.enableSecureBoot", "True"),
+            ],
+        )
+
+        # update to disable
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            "--disable-secure-boot",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "agentpoolProfiles[1].SecurityProfile.enableSecureBoot", False
+                ),
+            ],
+        )
+
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_enable_vtpm_flow(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_pool_name = self.create_random_name("c", 6)
+        node_pool_name_second = self.create_random_name("c", 6)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "node_pool_name": node_pool_name,
+                "node_pool_name_second": node_pool_name_second,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity ' \
+                     '--enable-oidc-issuer --enable-workload-identity --enable-secure-boot ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
+
+        # 1. create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--nodepool-name {node_pool_name} -c 1 "
+            "--ssh-key-value={ssh_key_value} "
+            "--enable-vtpm"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].SecurityProfile.enableVTPM", "True"),
+            ],
+        )
+
+        # 2. add nodepool
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name_second} "
+            "--os-type Linux "
+            "--enable-vtpm",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("SecurityProfile.enableVTPM", "True"),
+            ],
+        )
+
+        # update to disable
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            "--disable-vtpm",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "agentpoolProfiles[1].SecurityProfile.enableVTPM", False
                 ),
             ],
         )
