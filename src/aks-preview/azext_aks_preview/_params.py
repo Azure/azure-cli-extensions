@@ -173,6 +173,7 @@ from azext_aks_preview._validators import (
     validate_artifact_streaming,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
+    CONST_STORAGE_POOL_TYPE_ALL,
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
@@ -305,6 +306,13 @@ storage_pool_types = [
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
+]
+
+disable_storage_pool_options = [
+    CONST_STORAGE_POOL_TYPE_AZURE_DISK,
+    CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
+    CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
+    CONST_STORAGE_POOL_TYPE_ALL,
 ]
 
 storage_pool_skus = [
@@ -1135,8 +1143,8 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_azure_container_storage",
-            action="store_true",
-            help="Flag to disable azure container storage",
+            arg_type=get_enum_type(disable_storage_pool_options),
+            help="disable azure container storage or any one of the storagepool types",
         )
         c.argument(
             "storage_pool_name",

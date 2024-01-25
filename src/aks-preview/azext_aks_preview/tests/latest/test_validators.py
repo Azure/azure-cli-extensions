@@ -711,14 +711,14 @@ class TestValidateMaintenanceWindow(unittest.TestCase):
         validators.validate_start_time(namespace)
 
 
-class TestValidateAzureContainerStorage(unittest.TestCase):
+class TestValidateEnableDisableAzureContainerStorage(unittest.TestCase):
     def test_conflicting_flags_for_enable_disable(self):
         err = (
             "Conflicting flags. Cannot set --enable-azure-container-storage "
             "and --disable-azure-container-storage together."
         )
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 True, True, None, None, None, None, None, None, None, False
             )
         self.assertEqual(str(cm.exception), err)
@@ -731,7 +731,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             "Aborting disabling of Azure Container Storage."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 None,
                 True,
                 None,
@@ -752,7 +752,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             "when --disable-azure-container-storage is set."
         )
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 None, True, storage_pool_name, None, None, None, None, None, None, True
             )
         self.assertEqual(str(cm.exception), err)
@@ -764,7 +764,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             "when --disable-azure-container-storage is set."
         )
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 None, True, None, None, storage_pool_sku, None, None, None, None, True
             )
         self.assertEqual(str(cm.exception), err)
@@ -776,7 +776,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             "when --disable-azure-container-storage is set."
         )
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 None, True, None, None, None, None, storage_pool_size, None, None, True
             )
         self.assertEqual(str(cm.exception), err)
@@ -788,7 +788,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             "when --disable-azure-container-storage is set."
         )
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 None,
                 True,
                 None,
@@ -809,13 +809,13 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             "when --disable-azure-container-storage is set."
         )
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 None, True, None, None, None, None, None, nodepool_list, None, True
             )
         self.assertEqual(str(cm.exception), err)
 
     def test_valid_disable(self):
-        acstor_validator.validate_azure_container_storage_params(
+        acstor_validator.validate_enable_disable_azure_container_storage_params(
             None, True, None, None, None, None, None, None, None, True
         )
 
@@ -827,7 +827,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             "Aborting installation of Azure Container Storage."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 True,
                 None,
                 None,
@@ -849,7 +849,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             "'-' or '.', and must start and end with an alphanumeric character."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 True, None, storage_pool_name, None, None, None, None, None, None, False
             )
         self.assertEqual(str(cm.exception), err)
@@ -860,7 +860,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         err = "Cannot set --storage-pool-sku when --enable-azure-container-storage is ephemeralDisk."
         with self.assertRaises(ArgumentUsageError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 True,
                 None,
                 storage_pool_name,
@@ -891,7 +891,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             )
         )
         with self.assertRaises(ArgumentUsageError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 True,
                 None,
                 storage_pool_name,
@@ -911,27 +911,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
         err = "Cannot set --storage-pool-option when --enable-azure-container-storage is not ephemeralDisk."
         with self.assertRaises(ArgumentUsageError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
-                True,
-                None,
-                storage_pool_name,
-                storage_pool_type,
-                None,
-                storage_pool_option,
-                None,
-                None,
-                None,
-                False,
-            )
-        self.assertEqual(str(cm.exception), err)
-
-    def test_enable_with_ssd_option_and_ephemeral_disk_pool(self):
-        storage_pool_name = "valid-name"
-        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_SSD
-        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
-        err = "--storage-pool-option Temp storage (SSD) currently not supported."
-        with self.assertRaises(ArgumentUsageError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 True,
                 None,
                 storage_pool_name,
@@ -950,7 +930,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_size = "5"
         err = "Value for --storage-pool-size should be defined with size followed by Gi or Ti e.g. 512Gi or 2Ti."
         with self.assertRaises(ArgumentUsageError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 True,
                 None,
                 storage_pool_name,
@@ -970,7 +950,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_ELASTIC_SAN
         err = "Value for --storage-pool-size must be at least 1Ti when --enable-azure-container-storage is elasticSan."
         with self.assertRaises(ArgumentUsageError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 True,
                 None,
                 storage_pool_name,
@@ -996,7 +976,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             "alphanumeric characters and must begin with a lowercase letter."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 True,
                 None,
                 storage_pool_name,
@@ -1023,7 +1003,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             "\nAborting installation of Azure Container Storage."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 True,
                 None,
                 storage_pool_name,
@@ -1050,7 +1030,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             "\nAborting installation of Azure Container Storage."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
-            acstor_validator.validate_azure_container_storage_params(
+            acstor_validator.validate_enable_disable_azure_container_storage_params(
                 True,
                 None,
                 storage_pool_name,
@@ -1071,7 +1051,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
         nodepool_list = "nodepool1,nodepool2"
         agentpools = ["nodepool1", "nodepool2"]
-        acstor_validator.validate_azure_container_storage_params(
+        acstor_validator.validate_enable_disable_azure_container_storage_params(
             True,
             None,
             storage_pool_name,
@@ -1091,7 +1071,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
         nodepool_list = "nodepool1"
         agentpools = ["nodepool1", "nodepool2"]
-        acstor_validator.validate_azure_container_storage_params(
+        acstor_validator.validate_enable_disable_azure_container_storage_params(
             True,
             None,
             storage_pool_name,
