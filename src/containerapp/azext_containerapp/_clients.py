@@ -883,11 +883,14 @@ class JavaComponentPreviewClient():
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(java_component_envelope))
 
         if no_wait:
-            return r.json()
+            return
         elif r.status_code == 202:
-            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
-            poll_status(cmd, operation_url)
-            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            operation_url = r.headers.get(HEADER_LOCATION)
+            response = poll_results(cmd, operation_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find the Java component")
+            else:
+                return response
 
         return r.json()
 
