@@ -20,13 +20,14 @@ from azure.cli.command_modules.containerapp._clients import (
     ContainerAppsJobClient,
     DaprComponentClient,
     ManagedEnvironmentClient,
-    WorkloadProfileClient)
+    WorkloadProfileClient,
+    StorageClient)
 
 from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2023-08-01-preview"
+PREVIEW_API_VERSION = "2023-11-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -297,6 +298,10 @@ class SubscriptionPreviewClient():
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
+
+
+class StoragePreviewClient(StorageClient):
+    api_version = PREVIEW_API_VERSION
 
 
 class ManagedEnvironmentPreviewClient(ManagedEnvironmentClient):

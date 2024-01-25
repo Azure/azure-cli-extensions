@@ -4,8 +4,10 @@ Release History
 ===============
 upcoming
 ++++++
-* [Breaking Change]  'az containerapp service': deprecate command from Azure CLI version 2.56.1
+* 'az containerapp add-on' : support for add-on milvus create and delete commands
+* [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.56.1
 * 'az containerapp add-on' : support for add-on weaviate create and delete commands
+* Upgrade api-version to 2023-11-02-preview
 * 'az containerapp env telemetry set': support update a environment telemetry configuration with --app-insights-connection-string, --open-telemetry-dataDog-site, --open-telemetry-dataDog-key, --open-telemetry-traces-destinations --open-telemetry-logs-destinations and --open-telemetry-metrics-destinations
 
 0.3.46
