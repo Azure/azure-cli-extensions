@@ -53,7 +53,7 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
     deployParameters: string(loadJsonContent('{{deployment_parameters_file}}'))
     networkFunctionType: 'VirtualNetworkFunction'
     networkFunctionTemplate: {
-      nfviType: 'AzureCore'
+      nfviType: '{{ nfvi_type }}'
       networkFunctionApplications: [
         {
           artifactType: 'VhdImageFile'

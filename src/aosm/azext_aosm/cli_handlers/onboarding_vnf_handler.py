@@ -191,6 +191,7 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
         schema_properties = {}
 
         for processor in self.processors:
+            # Generate NF Application
             nf_application = processor.generate_nf_application()
             logger.debug("Created nf application %s", nf_application.name)
 
@@ -202,7 +203,8 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
             if isinstance(processor, BaseArmBuildProcessor):
 
                 acr_nf_application_list.append(nf_application)
-
+                print(nf_application)
+                print(nf_application.deploy_parameters_mapping_rule_profile)
                 # Generate local file for template_parameters + add to supporting files list
                 params = (
                     nf_application.deploy_parameters_mapping_rule_profile.template_mapping_rule_profile.template_parameters
@@ -212,9 +214,9 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
                     "Created templatateParameters as supporting file for nfDefinition bicep"
                 )
             elif isinstance(processor, VHDProcessor):
-                # Generate NF Application
-                # nf_application = processor.generate_nf_application()
                 sa_nf_application_list.append(nf_application)
+                print(nf_application)
+                print(nf_application.deploy_parameters_mapping_rule_profile)
                 # Generate local file for vhd_parameters
                 params = (
                     nf_application.deploy_parameters_mapping_rule_profile.vhd_image_mapping_rule_profile.user_configuration
@@ -239,6 +241,7 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
         )
 
         params = {
+            "nfvi_type": self.config.nfvi_type,
             "acr_nf_applications": acr_nf_application_list,
             "sa_nf_application": sa_nf_application_list[0],
             "deployment_parameters_file": DEPLOYMENT_PARAMETERS_FILENAME,

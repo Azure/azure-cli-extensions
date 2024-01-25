@@ -15,6 +15,7 @@ from azext_aosm.common.local_file_builder import LocalFileBuilder
 from azext_aosm.inputs.arm_template_input import ArmTemplateInput
 from azext_aosm.vendored_sdks.models import (
     ArtifactType,
+    AzureOperatorNexusNetworkFunctionArmTemplateApplication,
     ApplicationEnablement, ArmResourceDefinitionResourceElementTemplate,
     ArmResourceDefinitionResourceElementTemplateDetails,
     ArmTemplateArtifactProfile, ArmTemplateMappingRuleProfile,
@@ -178,8 +179,8 @@ class NexusArmBuildProcessor(BaseArmBuildProcessor):
     # TODO: JORDAN check if we need Arm_template.value here?
     def generate_nfvi_specific_nf_application(
         self,
-    ) -> AzureOperatorNexusNetworkFunctionApplication:
-        return AzureOperatorNexusNetworkFunctionApplication(
+    ) -> AzureOperatorNexusNetworkFunctionArmTemplateApplication:
+        return AzureOperatorNexusNetworkFunctionArmTemplateApplication(
             name=self.name,
             depends_on_profile=DependsOnProfile(install_depends_on=[],
                                                 uninstall_depends_on=[], update_depends_on=[]),
