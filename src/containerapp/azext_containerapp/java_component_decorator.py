@@ -26,8 +26,8 @@ class JavaComponentDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
-    def get_argument_yaml(self):
-        return self.get_param("yaml")
+    def get_argument_configuration(self):
+        return self.get_param("configuration")
 
     def get_argument_environment(self):
         return self.get_param("environment_name")
@@ -55,19 +55,16 @@ class JavaComponentPreviewCreateDecorator(JavaComponentDecorator):
     def construct_payload(self, java_component_type):
         self.java_component_def["properties"]["componentType"] = java_component_type
 
-        if self.get_argument_yaml():
-            java_component_configurations = load_yaml_file(self.get_argument_yaml())
-
-            if type(java_component_configurations) != dict:  # pylint: disable=unidiomatic-typecheck
-                raise ValidationError('Invalid YAML provided. Please supply a valid YAML spec.')
-
+        if self.get_argument_configuration():
             configuration_list = []
-            for key, value in java_component_configurations.items():
-                configuration_def = JavaComponentConfigurationModel
-                configuration_def["propertyName"] = key
-                configuration_def["value"] = value
-                configuration_list.append(configuration_def)
-
+            for pair in self.get_argument_configuration():
+                key_val = pair.split('=', 1)
+                if len(key_val) != 2:
+                    raise ValidationError("Java configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
+                configuration_list.append({
+                    "propertyName": key_val[0],
+                    "value": key_val[1]
+                })
             self.java_component_def["properties"]["configurations"] = configuration_list
 
         self.java_component_def = clean_null_values(self.java_component_def)
@@ -92,19 +89,16 @@ class JavaComponentPreviewUpdateDecorator(JavaComponentDecorator):
     def construct_payload(self, java_component_type):
         self.java_component_def["properties"]["componentType"] = java_component_type
 
-        if self.get_argument_yaml():
-            java_component_configurations = load_yaml_file(self.get_argument_yaml())
-
-            if type(java_component_configurations) != dict:  # pylint: disable=unidiomatic-typecheck
-                raise ValidationError('Invalid YAML provided. Please supply a valid YAML spec.')
-
+        if self.get_argument_configuration():
             configuration_list = []
-            for key, value in java_component_configurations.items():
-                configuration_def = JavaComponentConfigurationModel
-                configuration_def["propertyName"] = key
-                configuration_def["value"] = value
-                configuration_list.append(configuration_def)
-
+            for pair in self.get_argument_configuration():
+                key_val = pair.split('=', 1)
+                if len(key_val) != 2:
+                    raise ValidationError("Java configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
+                configuration_list.append({
+                    "propertyName": key_val[0],
+                    "value": key_val[1]
+                })
             self.java_component_def["properties"]["configurations"] = configuration_list
 
         self.java_component_def = clean_null_values(self.java_component_def)

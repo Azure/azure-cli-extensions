@@ -1913,7 +1913,7 @@ def delete_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_delete_decorator.delete()
 
 
-def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, yaml, no_wait, disable_warnings):
+def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, no_wait, disable_warnings):
     raw_parameters = locals()
     java_component_create_decorator = JavaComponentPreviewCreateDecorator(
         cmd=cmd,
@@ -1925,7 +1925,7 @@ def create_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_create_decorator.create()
 
 
-def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, yaml, no_wait, disable_warnings):
+def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, no_wait, disable_warnings):
     raw_parameters = locals()
     java_component_update_decorator = JavaComponentPreviewUpdateDecorator(
         cmd=cmd,
@@ -1937,12 +1937,12 @@ def update_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_update_decorator.update()
 
 
-def create_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, yaml, no_wait, disable_warnings)
+def create_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False, disable_warnings=True):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait, disable_warnings)
 
 
-def update_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, yaml, no_wait, disable_warnings)
+def update_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False, disable_warnings=True):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait, disable_warnings)
 
 
 def show_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name):
@@ -1953,12 +1953,12 @@ def delete_spring_cloud_config(cmd, java_component_name, environment_name, resou
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, no_wait)
 
 
-def create_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, yaml, no_wait, disable_warnings)
+def create_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False, disable_warnings=True):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait, disable_warnings)
 
 
-def update_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, yaml=None, no_wait=False, disable_warnings=True):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, yaml, no_wait, disable_warnings)
+def update_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False, disable_warnings=True):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait, disable_warnings)
 
 
 def show_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name):

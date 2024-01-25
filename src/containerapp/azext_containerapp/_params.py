@@ -252,4 +252,4 @@ def load_arguments(self, _):
         c.argument('java_component_name', options_list=['--name', '-n'], help="The Java component name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of the Java component.')
+        c.argument('configuration', nargs="+", help="Java component configuration. Configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
