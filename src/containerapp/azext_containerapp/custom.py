@@ -1890,11 +1890,9 @@ def set_environment_telemetry(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_env_telemetry_decorator.validate_arguments()
     containerapp_env_telemetry_decorator.register_provider(CONTAINER_APPS_RP)
 
     containerapp_env_telemetry_decorator.construct_payload()
     r = containerapp_env_telemetry_decorator.update()
-    r = containerapp_env_telemetry_decorator.post_process(r)
     
     return r

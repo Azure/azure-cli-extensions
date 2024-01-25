@@ -2,20 +2,22 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set
+from azure.cli.command_modules.containerapp._utils import safe_set
 from knack.log import get_logger
+from knack.util import CLIError
+from ._client_factory import handle_raw_exception
+from azure.cli.command_modules.containerapp.base_resource import BaseResource
+from azure.cli.core.commands import AzCliCommand
+from typing import Any, Dict
 
-from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvUpdateDecorator
-from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
-from ._utils import safe_get
-from ._client_factory import handle_non_404_status_code_exception
-
-from ._models import AppInsightsConfiguration, OpenTelemetryConfiguration, DestinationsConfiguration, \
-    TracesConfiguration, LogsConfiguration, MetricsConfiguration, DataDogConfiguration
 
 logger = get_logger(__name__)
 
-class ContainerappEnvTelemetryPreviewSetDecorator(ContainerAppEnvUpdateDecorator):
+class ContainerappEnvTelemetryPreviewSetDecorator(BaseResource):
+    def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
+        super().__init__(cmd, client, raw_parameters, models)
+        self.managed_env_def = {}
+
     def get_argument_app_insights_connection_string(self):
         return self.get_param("app_insights_connection_string")
     
@@ -38,7 +40,13 @@ class ContainerappEnvTelemetryPreviewSetDecorator(ContainerAppEnvUpdateDecorator
         return self.get_param("open_telemetry_metrics_destinations")
 
     def construct_payload(self):
-        super().construct_payload()
+        try:
+            r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+        except CLIError as e:
+            handle_raw_exception(e)
+
+        # General setup
+        safe_set(self.managed_env_def, "location", value=r["location"])  # required for API
 
         self.set_argument_app_insights_connection_string()
         self.set_argument_open_telemetry_dataDog_site()
@@ -70,3 +78,10 @@ class ContainerappEnvTelemetryPreviewSetDecorator(ContainerAppEnvUpdateDecorator
     def set_argument_open_telemetry_metrics_destinations(self):
         if self.get_argument_open_telemetry_metrics_destinations() and self.get_argument_open_telemetry_metrics_destinations() is not None:
             safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=self.get_argument_open_telemetry_metrics_destinations())
+
+    def update(self):
+        try:
+            return self.client.update(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
+                                      name=self.get_argument_name(), managed_environment_envelope=self.managed_env_def, no_wait=self.get_argument_no_wait())
+        except Exception as e:
+            handle_raw_exception(e)
