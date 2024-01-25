@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get portal configuration.
 
     :example: Show APIC Default Portal Configuration
-        az apic service portal default update -g contoso-resources --service-name contoso
+        az apic service portal default show -g contoso-resources --service-name contoso
     """
 
     _aaz_info = {
