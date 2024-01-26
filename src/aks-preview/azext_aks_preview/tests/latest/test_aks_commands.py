@@ -12503,7 +12503,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         ).get_output_in_json()
         keyvault_id = keyvault["id"]
-
         self.kwargs.update({"keyvault_id": keyvault_id})
 
         create_cmd = (
@@ -12519,14 +12518,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # enable app routing with keyvault secrets provider addon enabled
         enable_app_routing_cmd = "aks approuting enable --enable-kv --attach-kv {keyvault_id} --resource-group={resource_group} --name={aks_name}"
-        mc = self.cmd(
+        self.cmd(
             enable_app_routing_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
                 self.check("addonProfiles.azureKeyvaultSecretsProvider.enabled", True),
             ],
-        ).get_output_in_json()
+        )
 
         # delete cluster
         delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
@@ -12585,8 +12584,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("ingressProfile.webAppRouting.enabled", True),
             ],
         ).get_output_in_json()
+        object_id = result["ingressProfile"]["webAppRouting"]["identity"]["objectId"]
+        self.kwargs.update({"object_id": object_id})
 
-        # update with enable_rbac_authroization flag in keyvault set to true
+        # update with enable_rbac_authorization flag in keyvault set to true
         update_cmd = (
             "aks approuting update --resource-group={resource_group} --name={aks_name} --enable-kv "
             "--attach-kv {keyvault_id}"
@@ -12597,26 +12598,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
+                self.check("addonProfiles.azureKeyvaultSecretsProvider.enabled", True),
             ],
         )
 
-        # create keyvault with rbac auth disabled
-        kv_name = self.create_random_name("cliakstestkv", 16)
-        self.kwargs.update({"kv_name": kv_name})
-        create_keyvault_cmd = "keyvault create --resource-group={resource_group} --location={location} --name={kv_name} --enable-rbac-authorization=false"
-        keyvault = self.cmd(
-            create_keyvault_cmd,
+        # update keyvault with rbac auth disabled
+        update_keyvault_cmd = "keyvault update --resource-group={resource_group} --name={kv_name} --enable-rbac-authorization=false"
+        self.cmd(
+            update_keyvault_cmd,
             checks=[
                 self.check("properties.provisioningState", "Succeeded"),
                 self.check("properties.enableRbacAuthorization", False),
                 self.check("name", kv_name),
             ],
-        ).get_output_in_json()
-        keyvault_id = keyvault["id"]
+        )
 
-        self.kwargs.update({"keyvault_id": keyvault_id})
-
-        # update with enable_rbac_authroization flag in keyvault set to false
+        # update with enable_rbac_authorization flag in keyvault set to false
         update_cmd = (
             "aks approuting update --resource-group={resource_group} --name={aks_name} "
             "--attach-kv {keyvault_id}"
@@ -12627,11 +12624,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
+                self.check("addonProfiles.azureKeyvaultSecretsProvider.enabled", True),
             ],
         )
 
         check_access_policy_cmd = "az keyvault show --resource-group={resource_group} --name={kv_name} --query \"properties.accessPolicies[?objectId=='{object_id}']\" -o json"
-        print(check_access_policy_cmd)
         self.cmd(
             check_access_policy_cmd,
             checks=[
@@ -12641,18 +12638,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("[0].permissions.keys", None),
                 self.check("[0].permissions.secrets", ["Get"]),
                 self.check("[0].permissions.storage", None),
-            ],
-        )
-
-        # update with --enable-kv flag
-        update_cmd = "aks approuting update --resource-group={resource_group} --name={aks_name} --enable-kv"
-
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("ingressProfile.webAppRouting.enabled", True),
-                self.check("addonProfiles.azureKeyvaultSecretsProvider.enabled", True),
             ],
         )
 
@@ -12725,6 +12710,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
+                self.check("addonProfiles.azureKeyvaultSecretsProvider.enabled", True),
             ],
         )
 
