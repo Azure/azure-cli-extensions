@@ -1356,17 +1356,7 @@ def load_arguments(self, _):
             action="store_true"
         )
         c.argument(
-            "disable_secure_boot", 
-            is_preview=True, 
-            action="store_true"
-        )
-        c.argument(
             "enable_vtpm", 
-            is_preview=True, 
-            action="store_true"
-        )
-        c.argument(
-            "disable_vtpm", 
             is_preview=True, 
             action="store_true"
         )
