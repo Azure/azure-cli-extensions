@@ -1716,15 +1716,9 @@ helps['aks nodepool add'] = """
         - name: --enable-secure-boot
           type: bool
           short-summary: Enable Secure Boot on agent node pool. Must use VMSS agent pool type.
-        - name: --disable-secure-boot
-          type: bool
-          short-summary: Disable Secure Boot on agent node pool.
         - name: --enable-vtpm
           type: bool
           short-summary: Enable vTPM on agent node pool. Must use VMSS agent pool type.
-        - name: --disable-vtpm
-          type: bool
-          short-summary: Disable vTPM on agent node pool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48

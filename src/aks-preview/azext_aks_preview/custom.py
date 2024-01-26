@@ -1182,9 +1182,7 @@ def aks_agentpool_add(
     skip_gpu_driver_install=False,
     # trusted launch
     enable_secure_boot=False,
-    disable_secure_boot=False,
     enable_vtpm=False,
-    disable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
