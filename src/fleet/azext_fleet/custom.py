@@ -211,7 +211,7 @@ def get_credentials(cmd,  # pylint: disable=unused-argument
         raise CLIError("Fail to find kubeconfig file.") from exc
 
 
-def reconcile_fleet(cmd, # pylint: disable=unused-argument
+def reconcile_fleet(cmd,  # pylint: disable=unused-argument
                     client,
                     resource_group_name,
                     name,
@@ -227,6 +227,7 @@ def reconcile_fleet(cmd, # pylint: disable=unused-argument
                        resource_group_name,
                        name,
                        fleet,
+                       if_match=fleet.e_tag,
                        polling_interval=poll_interval)
 
 
@@ -287,15 +288,21 @@ def delete_fleet_member(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
 
 
-def reconcile_fleet_member(cmd, # pylint: disable=unused-argument
-                    client,
-                    resource_group_name,
-                    name,
-                    fleet_name,
-                    no_wait=False):
+def reconcile_fleet_member(cmd,  # pylint: disable=unused-argument
+                           client,
+                           resource_group_name,
+                           name,
+                           fleet_name,
+                           no_wait=False):
 
     member = client.get(resource_group_name, fleet_name, name)
-    return sdk_no_wait(no_wait, client.begin_create, resource_group_name, fleet_name, name, member)
+    return sdk_no_wait(no_wait,
+                       client.begin_create,
+                       resource_group_name,
+                       fleet_name,
+                       name,
+                       member,
+                       if_match=member.e_tag)
 
 
 def create_update_run(cmd,
