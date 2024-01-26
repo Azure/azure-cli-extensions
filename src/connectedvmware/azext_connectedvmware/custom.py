@@ -5,7 +5,7 @@
 # pylint: disable= too-many-lines, too-many-locals, unused-argument, too-many-branches, too-many-statements
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
-from typing import Dict
+from typing import Dict, List
 from azure.cli.command_modules.acs._client_factory import get_resources_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (
@@ -16,7 +16,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
-from azure.mgmt.resourcegraph.models import QueryRequest
+from azure.mgmt.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse
 from msrestazure.tools import is_valid_resource_id
 
 from .pwinput import pwinput
@@ -821,56 +821,89 @@ def link_vm_to_vcenter(
         )
     
     logger = get_logger(__name__)
-    machine_client = cf_machine(cmd.cli_ctx)
-    arg_client = cf_resource_graph(cmd.cli_ctx, subscription_bound=True)
+    arg_client = cf_resource_graph(cmd.cli_ctx)
 
     vcenter_sub = vcenter_id.split("/")[2]
     resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
     vcenter = resources_client.get_by_id(vcenter_id, VCENTER_KIND_GET_API_VERSION)
-    logger.warn(f"Searching for machines in the vCenter {vcenter.name}...")
+    logger.info(f"Searching for machines in the vCenter {vcenter.name}...")
 
-    # https://github.com/wpbrown/azmeta-libs/blob/4495d2d55f052032fe11416f5c59e2f2e79c2d73/azmeta/src/azmeta/access/resource_graph.py#L4
-    # Use ARG instead of list call
+    query = f"""
+Resources
+| where type =~ 'Microsoft.HybridCompute/machines'
+| where kind =~ "{vcenter.kind}" or isempty(kind)
+| extend p=parse_json(properties)
+| extend u = tolower(tostring(p['vmUuid']))
+| where isnotempty(u)
+| where location =~ '{vcenter.location}'
+| extend vmUuidRev = strcat(
+    substring(u, 6, 2), substring(u, 4, 2), substring(u, 2, 2), substring(u, 0, 2), '-',
+    substring(u, 11, 2), substring(u, 9, 2), '-',
+    substring(u, 16, 2), substring(u, 14, 2), '-',
+    substring(u, 19))
+| project machineId=id, name, vmUuidRev
+| join kind=inner (
+ConnectedVMwareVsphereResources
+| where type =~ 'Microsoft.ConnectedVMwareVsphere/VCenters/InventoryItems' 
+| where kind =~ 'VirtualMachine'
+| where id startswith '{vcenter.id}/InventoryItems'
+| extend p=parse_json(properties)
+| extend biosId = tolower(tostring(p['smbiosUuid']))
+| extend managedResourceId=tolower(tostring(p['managedResourceId']))
+| project inventoryId=id, biosId, managedResourceId 
+) on $left.vmUuidRev == $right.biosId
+| project-away vmUuidRev
+"""
     
-    if rg_name is not None:
-        machines = machine_client.list_by_resource_group(rg_name)
-    else:
-        machines = machine_client.list_by_subscription()
-    biosid_to_machine_id: Dict[str, str] = {}
-    discovered = 0
-    for machine in machines: # type: ignore
-        discovered += 1
-        machine: Machine = machine
-        if machine.location != vcenter.location:
-            logger.warning(
-                f"[{discovered}] Skipping machine {machine.name} as it is in the location {machine.location} " +
-                f"which is different from the vCenter location {vcenter.location}."
-            )
+    # https://github.com/wpbrown/azmeta-libs/blob/4495d2d55f052032fe11416f5c59e2f2e79c2d73/azmeta/src/azmeta/access/resource_graph.py
+    skip_token = None
+    vm_list = []
+    while True:
+        query_options = QueryRequestOptions(skip_token=skip_token)
+        query_request = QueryRequest(
+            subscriptions=[vcenter_sub],
+            query=query,
+            options=query_options,
+        )
+        query_response = arg_client.resources(query_request)
+        if not isinstance(query_response.data, list):
+            query_response.data = [query_response.data]
+        vm_list.extend(query_response.data)
+        skip_token = query_response.skip_token
+        if skip_token is None:
+            break
+    logger.info(f"{len(vm_list)} machines will be attempted to be linked to the vCenter {vcenter.name}...")
+    failed = 0
+    for i, vm in enumerate(vm_list):
+        prefix = f"[{i+1}/{len(vm_list)}]"
+        machineId = vm["machineId"]
+        machineName = vm["name"]
+        inventoryId = vm["inventoryId"]
+        managedResourceId = vm["managedResourceId"]
+        if VMWARE_NAMESPACE in managedResourceId:
+            logger.info(f"{prefix} Machine {machineName} is already linked to managed resource {managedResourceId}.")
             continue
-        if machine.kind is not None and machine.kind.lower() != vcenter.kind.lower():
-            logger.warning(
-                f"[{discovered}] Skipping machine {machine.name} as it is of kind {machine.kind} " +
-                f"which is different from the vCenter kind {vcenter.kind}."
-            )
-            continue
-        if machine.vm_uuid is None:
-            logger.warning(
-                f"[{discovered}] Skipping machine {machine.name} as it does not have a vm_uuid."
-            )
-            continue
-        assert isinstance(machine.vm_uuid, str)
-        assert isinstance(machine.id, str)
-        machine.vm_uuid = machine.vm_uuid.lower()
-        machine_uuid_rev = reverseEndianLeftHalf(machine.vm_uuid)
-        biosid_to_machine_id[machine_uuid_rev] = machine.id
-
-    logger.info(f"Discovered {discovered} machines. Skipped {discovered - len(biosid_to_machine_id)} machines.")
-    logger.info(f"{len(biosid_to_machine_id)} machines will be searched for in the vCenter.")
-
-
-
-
-
+        logger.info(f"{prefix} Linking machine {machineName} to vCenter {vcenter.name}...")
+        vm = VirtualMachineInstance(
+            extended_location=ExtendedLocation(
+                type=EXTENDED_LOCATION_TYPE,
+                name=vcenter.extended_location.name,
+            ),
+            infrastructure_profile = InfrastructureProfile(
+                inventory_item_id=inventoryId,
+            ),
+        )
+        try:
+            vmRes = client.begin_create_or_update(
+                machineId, vm
+            ).result()
+        except Exception as e:
+            logger.warning(f"{prefix} Failed to link machine {machineName} to vCenter {vcenter.name}. Error: {e}")
+            failed += 1
+        # TODO: Remove this once we've verified
+        if i == 3:
+            break
+    logger.info(f"[{len(vm_list) - failed}/{len(vm_list)}] machines were successfully linked to the vCenter {vcenter.name}.")
 
 
 def create_vm(
