@@ -72,11 +72,15 @@ def create_and_verify_containerapp_up(
             ingress = None,
             target_port = None,
             app_name = None,
-            requires_acr_prerequisite = False):
+            requires_acr_prerequisite = False,
+            no_log_destination = False):
         # Ensure that the Container App environment is created
         if env_name is None:
            env_name = test_cls.create_random_name(prefix='env', length=24)
-           test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
+           env_create_cmd = f'containerapp env create -g {resource_group} -n {env_name}'
+           if no_log_destination:
+               env_create_cmd += f" --logs-destination none"
+           test_cls.cmd(env_create_cmd)
 
         if app_name is None:
             # Generate a name for the Container App
