@@ -72,4 +72,4 @@ Release History
 
 1.0.3
 ++++++
-* Added `az fleet reconcile` & `az member reconcile` commands.
+* Added `az fleet reconcile` & `az fleet member reconcile` commands.
