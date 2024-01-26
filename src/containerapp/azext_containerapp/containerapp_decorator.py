@@ -789,7 +789,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                                                                                             self.get_argument_service_bindings(),
                                                                                             self.get_argument_resource_group_name(),
                                                                                             self.get_argument_name(),
-                                                                                            self.containerapp_def,
+                                                                                            self.containerapp_def["properties"]["environmentId"],
                                                                                             self.get_argument_customized_keys())
             self.set_argument_service_connectors_def_list(service_connectors_def_list)
             unique_bindings = check_unique_bindings(self.cmd, service_connectors_def_list, service_bindings_def_list,
@@ -1109,7 +1109,12 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         if self.get_argument_service_bindings() is not None:
             linker_client = get_linker_client(self.cmd)
 
-            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd, self.get_argument_service_bindings(), self.get_argument_resource_group_name(), self.get_argument_name(), self.containerapp_def, self.get_argument_customized_keys())
+            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd,
+                                                                                            self.get_argument_service_bindings(),
+                                                                                            self.get_argument_resource_group_name(),
+                                                                                            self.get_argument_name(),
+                                                                                            self.containerapp_def["properties"]["environmentId"],
+                                                                                            self.get_argument_customized_keys())
             self.set_argument_service_connectors_def_list(service_connectors_def_list)
             service_bindings_used_map = {update_item["name"]: False for update_item in service_bindings_def_list}
 

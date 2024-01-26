@@ -153,7 +153,7 @@ def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def
         return True
 
 
-def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name, containerapp_def, customized_keys=None):
+def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name, environment_id, customized_keys=None):
     # Make it return both managed and dev bindings
     service_bindings_def_list = []
     service_connector_def_list = []
@@ -206,7 +206,7 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
         subscription_id = get_subscription_id(cmd.cli_ctx)
 
         # Add Java component into the resource_list
-        parsed_managed_env = parse_resource_id(containerapp_def["properties"]["environmentId"])
+        parsed_managed_env = parse_resource_id(environment_id)
         managed_env_name = parsed_managed_env['name']
         managed_env_rg = parsed_managed_env['resource_group']
 
