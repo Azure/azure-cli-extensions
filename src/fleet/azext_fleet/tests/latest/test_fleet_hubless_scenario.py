@@ -67,6 +67,11 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('tags.foo', 'doo')
         ])
 
+        self.cmd('fleet reconcile -g {rg} -n {fleet_name}', checks=[
+            self.check('name', '{fleet_name}'),
+            self.check('tags.foo','doo')
+        ])
+
         self.cmd('fleet show -g {rg} -n {fleet_name}', checks=[
             self.check('name', '{fleet_name}')
         ])
@@ -95,6 +100,14 @@ class FleetHublessScenarioTest(ScenarioTest):
 
         self.cmd('fleet member update -g {rg} --fleet-name {fleet_name} -n {member_name} --update-group group2', checks=[
             self.check('group', 'group2')
+        ])
+
+        self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member_name} --updated', checks=[self.is_empty()])
+        self.cmd('aks wait -g {rg} -n {member_name} --updated', checks=[self.is_empty()])
+
+        self.cmd('fleet member reconcile -g {rg} -f {fleet_name} -n {member_name}', checks=[
+            self.check('name', '{member_name}'),
+            self.check('group','group2')
         ])
 
         self.cmd('fleet member list -g {rg} --fleet-name {fleet_name}', checks=[
