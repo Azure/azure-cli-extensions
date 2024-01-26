@@ -70,7 +70,7 @@ class FleetHublessScenarioTest(ScenarioTest):
 
         self.cmd('fleet reconcile -g {rg} -n {fleet_name}', checks=[
             self.check('name', '{fleet_name}'),
-            self.check('tags.foo','doo')
+            self.check('tags.foo', 'doo')
         ])
 
         self.cmd('fleet show -g {rg} -n {fleet_name}', checks=[
@@ -108,7 +108,7 @@ class FleetHublessScenarioTest(ScenarioTest):
 
         self.cmd('fleet member reconcile -g {rg} -f {fleet_name} -n {member_name}', checks=[
             self.check('name', '{member_name}'),
-            self.check('group','group2')
+            self.check('group', 'group2')
         ])
 
         self.cmd('fleet member list -g {rg} --fleet-name {fleet_name}', checks=[
