@@ -12,22 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic service create",
+    "apic service portal default create",
 )
 class Create(AAZCommand):
-    """Create an instance of Azure API Center service.
+    """Create new or updates existing portal configuration.
 
-    :example: Create service Example 1
-        az apic create -g contoso-resources -s contoso -l centraluseuap
-
-    :example: Create Service Example 2
-        az apic create --resource-group contoso-resources --name contoso --locationcentraluseuap
+    :example: Create Default Portal Configuration
+        az apic service portal default create -g contoso-resources --service-name contoso --title "Contoso" --enabled false  --authentication'{"clientId":"00000000-0000-0000-0000-000000000000","tenantId":"00000000-0000-0000-0000-000000000000"}'
     """
 
     _aaz_info = {
         "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/portals/default", "2024-03-01"],
         ]
     }
 
@@ -51,8 +48,8 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--name", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-s", "--service", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
                 max_length=90,
@@ -63,14 +60,10 @@ class Create(AAZCommand):
         # define Arg Group "Payload"
 
         _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Payload",
-            help="Managed service identity (system assigned and/or user assigned identities)",
-        )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Payload",
             help="The geo-location where the resource lives",
+            required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
@@ -81,31 +74,53 @@ class Create(AAZCommand):
             help="Resource tags.",
         )
 
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
-            required=True,
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
-        )
-        identity.user_assigned_identities = AAZDictArg(
-            options=["user-assigned-identities"],
-            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
-        )
-
-        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectArg(
-            nullable=True,
-            blank={},
-        )
-
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.authentication = AAZObjectArg(
+            options=["--authentication"],
+            arg_group="Properties",
+            help="Authentication configuration.",
+        )
+        _args_schema.enabled = AAZBoolArg(
+            options=["--enabled"],
+            arg_group="Properties",
+            help="Flag indicating whether or not portal is enabled.",
+        )
+        _args_schema.title = AAZStrArg(
+            options=["--title"],
+            arg_group="Properties",
+            help="Portal configuration Title.",
+            fmt=AAZStrArgFormat(
+                max_length=50,
+            ),
+        )
+
+        authentication = cls._args_schema.authentication
+        authentication.client_id = AAZStrArg(
+            options=["client-id"],
+            help="The Azure Active Directory application client id.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                max_length=50,
+                min_length=1,
+            ),
+        )
+        authentication.tenant_id = AAZStrArg(
+            options=["tenant-id"],
+            help="The Azure Active Directory application Tenant id.",
+            fmt=AAZStrArgFormat(
+                max_length=50,
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ServicesCreateOrUpdate(ctx=self.ctx)()
+        self.PortalConfigurationCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -120,21 +135,21 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ServicesCreateOrUpdate(AAZHttpOperation):
+    class PortalConfigurationCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/portals/default",
                 **self.url_parameters
             )
 
@@ -191,20 +206,22 @@ class Create(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("authentication", AAZObjectType, ".authentication", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("enabled", AAZBoolType, ".enabled")
+                properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
 
-            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
-            if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
+            authentication = _builder.get(".properties.authentication")
+            if authentication is not None:
+                authentication.set_prop("clientId", AAZStrType, ".client_id", typ_kwargs={"flags": {"required": True}})
+                authentication.set_prop("tenantId", AAZStrType, ".tenant_id")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -212,88 +229,77 @@ class Create(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
+            cls._schema_on_200 = AAZObjectType()
 
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
-            _schema_on_200_201.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200_201.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200_201.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200_201.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
+            properties = cls._schema_on_200.properties
+            properties.authentication = AAZObjectType()
+            properties.created = AAZStrType()
+            properties.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            properties.data_api_host_name = AAZStrType(
+                serialized_name="dataApiHostName",
+            )
+            properties.enabled = AAZBoolType()
+            properties.portal_default_host_name = AAZStrType(
+                serialized_name="portalDefaultHostName",
+            )
+            properties.title = AAZStrType()
+            properties.updated = AAZStrType()
+            properties.updated_by = AAZStrType(
+                serialized_name="updatedBy",
+            )
+
+            authentication = cls._schema_on_200.properties.authentication
+            authentication.azure_ad_instance = AAZStrType(
+                serialized_name="azureAdInstance",
                 flags={"read_only": True},
             )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType(
+            authentication.client_id = AAZStrType(
+                serialized_name="clientId",
                 flags={"required": True},
             )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType(
-                nullable=True,
-            )
-
-            _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
+            authentication.scopes = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
+            authentication.tenant_id = AAZStrType(
+                serialized_name="tenantId",
             )
 
-            properties = cls._schema_on_200_201.properties
-            properties.data_api_hostname = AAZStrType(
-                serialized_name="dataApiHostname",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200_201.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -313,10 +319,7 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
 
 class _CreateHelper:

@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic service update",
+    "apic service portal default update",
 )
 class Update(AAZCommand):
-    """Update service
+    """Update new or updates existing portal configuration.
 
-    :example: Update service details
-        az apic update -g contoso-resources -s contoso
+    :example: Update Default Portal Configuration
+        az apic service portal default update -g contoso-resources --service-name contoso --title "Contoso" --enabled false  --authentication'{"clientId":"00000000-0000-0000-0000-000000000000","tenantId":"00000000-0000-0000-0000-000000000000"}'
     """
 
     _aaz_info = {
         "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/portals/default", "2024-03-01"],
         ]
     }
 
@@ -50,8 +50,8 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--name", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-s", "--service", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -63,12 +63,6 @@ class Update(AAZCommand):
         # define Arg Group "Payload"
 
         _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Payload",
-            help="Managed service identity (system assigned and/or user assigned identities)",
-            nullable=True,
-        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Payload",
@@ -76,38 +70,61 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
-        )
-        identity.user_assigned_identities = AAZDictArg(
-            options=["user-assigned-identities"],
-            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
-            nullable=True,
-        )
-
-        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectArg(
-            nullable=True,
-            blank={},
-        )
-
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg(
             nullable=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.authentication = AAZObjectArg(
+            options=["--authentication"],
+            arg_group="Properties",
+            help="Authentication configuration.",
+        )
+        _args_schema.enabled = AAZBoolArg(
+            options=["--enabled"],
+            arg_group="Properties",
+            help="Flag indicating whether or not portal is enabled.",
+            nullable=True,
+        )
+        _args_schema.title = AAZStrArg(
+            options=["--title"],
+            arg_group="Properties",
+            help="Portal configuration Title.",
+            fmt=AAZStrArgFormat(
+                max_length=50,
+            ),
+        )
+
+        authentication = cls._args_schema.authentication
+        authentication.client_id = AAZStrArg(
+            options=["client-id"],
+            help="The Azure Active Directory application client id.",
+            fmt=AAZStrArgFormat(
+                max_length=50,
+                min_length=1,
+            ),
+        )
+        authentication.tenant_id = AAZStrArg(
+            options=["tenant-id"],
+            help="The Azure Active Directory application Tenant id.",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                max_length=50,
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ServicesGet(ctx=self.ctx)()
+        self.PortalConfigurationGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        self.ServicesCreateOrUpdate(ctx=self.ctx)()
+        self.PortalConfigurationCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -130,7 +147,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ServicesGet(AAZHttpOperation):
+    class PortalConfigurationGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -144,7 +161,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/portals/default",
                 **self.url_parameters
             )
 
@@ -209,25 +226,25 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_service_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_portal_configuration_response_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class ServicesCreateOrUpdate(AAZHttpOperation):
+    class PortalConfigurationCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/portals/default",
                 **self.url_parameters
             )
 
@@ -288,25 +305,25 @@ class Update(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_service_read(cls._schema_on_200_201)
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_portal_configuration_response_read(cls._schema_on_200)
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
@@ -319,17 +336,19 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("authentication", AAZObjectType, ".authentication", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("enabled", AAZBoolType, ".enabled")
+                properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
 
-            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
-            if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
+            authentication = _builder.get(".properties.authentication")
+            if authentication is not None:
+                authentication.set_prop("clientId", AAZStrType, ".client_id", typ_kwargs={"flags": {"required": True}})
+                authentication.set_prop("tenantId", AAZStrType, ".tenant_id")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -349,88 +368,74 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_service_read = None
+    _schema_portal_configuration_response_read = None
 
     @classmethod
-    def _build_schema_service_read(cls, _schema):
-        if cls._schema_service_read is not None:
-            _schema.id = cls._schema_service_read.id
-            _schema.identity = cls._schema_service_read.identity
-            _schema.location = cls._schema_service_read.location
-            _schema.name = cls._schema_service_read.name
-            _schema.properties = cls._schema_service_read.properties
-            _schema.system_data = cls._schema_service_read.system_data
-            _schema.tags = cls._schema_service_read.tags
-            _schema.type = cls._schema_service_read.type
+    def _build_schema_portal_configuration_response_read(cls, _schema):
+        if cls._schema_portal_configuration_response_read is not None:
+            _schema.id = cls._schema_portal_configuration_response_read.id
+            _schema.name = cls._schema_portal_configuration_response_read.name
+            _schema.properties = cls._schema_portal_configuration_response_read.properties
+            _schema.system_data = cls._schema_portal_configuration_response_read.system_data
+            _schema.type = cls._schema_portal_configuration_response_read.type
             return
 
-        cls._schema_service_read = _schema_service_read = AAZObjectType()
+        cls._schema_portal_configuration_response_read = _schema_portal_configuration_response_read = AAZObjectType()
 
-        service_read = _schema_service_read
-        service_read.id = AAZStrType(
+        portal_configuration_response_read = _schema_portal_configuration_response_read
+        portal_configuration_response_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        service_read.identity = AAZObjectType()
-        service_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        service_read.name = AAZStrType(
+        portal_configuration_response_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        service_read.properties = AAZObjectType(
+        portal_configuration_response_read.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
-        service_read.system_data = AAZObjectType(
+        portal_configuration_response_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        service_read.tags = AAZDictType()
-        service_read.type = AAZStrType(
+        portal_configuration_response_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        identity = _schema_service_read.identity
-        identity.principal_id = AAZStrType(
-            serialized_name="principalId",
+        properties = _schema_portal_configuration_response_read.properties
+        properties.authentication = AAZObjectType()
+        properties.created = AAZStrType()
+        properties.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        properties.data_api_host_name = AAZStrType(
+            serialized_name="dataApiHostName",
+        )
+        properties.enabled = AAZBoolType()
+        properties.portal_default_host_name = AAZStrType(
+            serialized_name="portalDefaultHostName",
+        )
+        properties.title = AAZStrType()
+        properties.updated = AAZStrType()
+        properties.updated_by = AAZStrType(
+            serialized_name="updatedBy",
+        )
+
+        authentication = _schema_portal_configuration_response_read.properties.authentication
+        authentication.azure_ad_instance = AAZStrType(
+            serialized_name="azureAdInstance",
             flags={"read_only": True},
         )
-        identity.tenant_id = AAZStrType(
-            serialized_name="tenantId",
-            flags={"read_only": True},
-        )
-        identity.type = AAZStrType(
+        authentication.client_id = AAZStrType(
+            serialized_name="clientId",
             flags={"required": True},
         )
-        identity.user_assigned_identities = AAZDictType(
-            serialized_name="userAssignedIdentities",
-        )
-
-        user_assigned_identities = _schema_service_read.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectType(
-            nullable=True,
-        )
-
-        _element = _schema_service_read.identity.user_assigned_identities.Element
-        _element.client_id = AAZStrType(
-            serialized_name="clientId",
+        authentication.scopes = AAZStrType(
             flags={"read_only": True},
         )
-        _element.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
+        authentication.tenant_id = AAZStrType(
+            serialized_name="tenantId",
         )
 
-        properties = _schema_service_read.properties
-        properties.data_api_hostname = AAZStrType(
-            serialized_name="dataApiHostname",
-            flags={"read_only": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-
-        system_data = _schema_service_read.system_data
+        system_data = _schema_portal_configuration_response_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -450,17 +455,11 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        tags = _schema_service_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.id = cls._schema_service_read.id
-        _schema.identity = cls._schema_service_read.identity
-        _schema.location = cls._schema_service_read.location
-        _schema.name = cls._schema_service_read.name
-        _schema.properties = cls._schema_service_read.properties
-        _schema.system_data = cls._schema_service_read.system_data
-        _schema.tags = cls._schema_service_read.tags
-        _schema.type = cls._schema_service_read.type
+        _schema.id = cls._schema_portal_configuration_response_read.id
+        _schema.name = cls._schema_portal_configuration_response_read.name
+        _schema.properties = cls._schema_portal_configuration_response_read.properties
+        _schema.system_data = cls._schema_portal_configuration_response_read.system_data
+        _schema.type = cls._schema_portal_configuration_response_read.type
 
 
 __all__ = ["Update"]
