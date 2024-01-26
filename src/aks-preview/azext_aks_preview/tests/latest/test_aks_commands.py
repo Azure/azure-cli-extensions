@@ -12690,7 +12690,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={aks_name} --location={location} "
             "--ssh-key-value={ssh_key_value} --enable-app-routing --enable-addons monitoring"
         )
-        result = self.cmd(
+        self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
