@@ -12,6 +12,59 @@ import unittest
 class ApicExtensionScenario(ScenarioTest):
 
     @unittest.skip('Test account does not have permissions to create service or use APIM service')
+    def test_provision_unprovision_defaulthostnames(self):
+
+        self.kwargs.update({
+            'resource_group': 'api-center-test',
+            'service_name': 'contosoeuap101-cli'
+        })
+
+        # Provision default hostnames
+        self.cmd('az apic service create -g {resource_group} --service-name {service_name} --location eastus',
+                 checks=[self.check('name', self.kwargs['service_name'],
+                         self.check('dataApiHostName', '{service_name}.data.eastus.azure-apim.net'))])
+
+        # View service details
+        self.cmd('az apic service show -g {resource_group} --service-name {service_name}',
+                    checks=[self.check('name', self.kwargs['service_name'],
+                            self.check('dataApiHostName', '{service_name}.data.eastus.azure-apim.net'))])
+
+        # Unprovision default hostnames
+        self.cmd('az apic service delete -g {resource_group} --service-name {service_name} --yes')
+
+    @unittest.skip('Test account does not have permissions to create service or use APIM service')
+    def test_portalconfiguration_default_crud(self):
+
+        authentication_details = '{"clientId":"91247fa2-f214-439f-ae71-512bc75d60db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}'
+        self.kwargs.update({
+            'resource_group': 'api-center-test',
+            'service_name': 'contosoeuap',
+            'authentication_details': authentication_details
+        })
+
+        # Create default portal configuration
+        self.cmd('az apic service portal default create -g {resource_group} --service-name {service_name} --title ContosoEUAP --enabled false  --authentication "{authentication_details}"',
+                 checks=[self.check('name', 'default'),
+                         self.check('portalDefaultHostName', 'contosoeuap.portal.centraluseuap.azure-apicenter.ms'),
+                         self.check('dataApiHostName', 'contosoeuap.data.centraluseuap.azure-apicenter.ms'),
+                         self.check('title', 'ContosoEUAP')])
+
+        # Show default portal configuration
+        self.cmd('az apic service portal default show -g {resource_group} --service-name {service_name}',
+                 checks=[self.check('name', 'default'),
+                         self.check('portalDefaultHostName', 'contosoeuap.portal.centraluseuap.azure-apicenter.ms'),
+                         self.check('dataApiHostName', 'contosoeuap.data.centraluseuap.azure-apicenter.ms'),
+                         self.check('title', 'ContosoEUAP')])
+
+        # Update default portal configuration
+        self.cmd('az apic service portal default update -g {resource_group} --service-name {service_name} --title ContosoEUAP2 --enabled false  --authentication "{authentication_details}"',
+                 checks=[self.check('title', 'ContosoEUAP2')])
+
+        # Delete default portal configuration
+        self.cmd('az apic service portal default delete -g {resource_group} --service-name {service_name} --yes')
+
+
+    @unittest.skip('Test account does not have permissions to create service or use APIM service')
     def test_import_from_apim(self):
         
         self.kwargs.update({
@@ -28,7 +81,7 @@ class ApicExtensionScenario(ScenarioTest):
         with self.assertRaisesRegexp(HttpResponseError, 'Failed to obtain schema from APIM'):
             self.cmd('az apic service import-from-apim -g {resource_group} --service-name {service_name} --source-resource-ids "{resource_id_does_not_exist}"')
 
-        # Import from APIM - API does not exist
+        # Import from APIM - API exist
         import_resource_id_exists = '"/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/Api-Default-Central-US-EUAP/providers/Microsoft.ApiManagement/service/alzasloneuap06/apis/uspto"'
         self.kwargs.update({
             'resource_id_exists': import_resource_id_exists

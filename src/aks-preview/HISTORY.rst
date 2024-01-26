@@ -13,9 +13,13 @@ Pending
 +++++++
 * Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
 
-1.0.0b3
+1.0.0b4
 +++++++
 * Fix for `az aks approuting update` command not working when `monitoring` addon is enabled.
+
+1.0.0b3
++++++++
+* Change the format for az aks machine commands to separate the ipv4, ipv6 columns
 
 1.0.0b2
 +++++++
