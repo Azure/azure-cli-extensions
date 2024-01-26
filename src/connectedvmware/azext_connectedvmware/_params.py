@@ -108,6 +108,20 @@ def load_arguments(self, _):
     with self.argument_context('connectedvmware vm-template delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
+    with self.argument_context('connectedvmware vm link-to-vcenter') as c:
+        c.argument(
+            'rg_name', options_list=['--resource-group', '-g'],
+            help=(
+                "Name of the resource group which will be scanned for HCRP machines. "
+                "NOTE: The default group configured using 'az configure --defaults group=<name>' "
+                "is not used, and it must be specified explicitly."
+            )
+        )
+        c.argument(
+            'resource_name', resource_name, options_list=['--name', '-n'],
+            help="Name of the Microsoft.HybridCompute Machine resource.",
+        )
+
     with self.argument_context('connectedvmware vm create') as c:
         c.argument(
             'resource_name', resource_name, options_list=['--name', '-n'],

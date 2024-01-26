@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.mgmt.resourcegraph import ResourceGraphClient
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core import AzCli
 # Client factory for vmware clients.
@@ -100,3 +101,10 @@ def cf_machine_extension(cli_ctx: AzCli, *_):
     Client factory for machines.
     """
     return cf_hybridcompute(cli_ctx).machine_extensions
+
+
+def cf_resource_graph(cli_ctx: AzCli, subscription_bound=True, *_) -> ResourceGraphClient:
+    """
+    Client factory for resource graph.
+    """
+    return get_mgmt_service_client(cli_ctx, ResourceGraphClient, subscription_bound=subscription_bound)

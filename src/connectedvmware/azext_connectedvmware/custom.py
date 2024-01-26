@@ -5,6 +5,7 @@
 # pylint: disable= too-many-lines, too-many-locals, unused-argument, too-many-branches, too-many-statements
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
+from typing import Dict
 from azure.cli.command_modules.acs._client_factory import get_resources_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (
@@ -15,10 +16,11 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
+from azure.mgmt.resourcegraph.models import QueryRequest
 from msrestazure.tools import is_valid_resource_id
 
 from .pwinput import pwinput
-from .vmware_utils import get_resource_id
+from .vmware_utils import get_logger, get_resource_id
 from .vmware_constants import (
     VCENTER_KIND_GET_API_VERSION,
     MACHINES_RESOURCE_TYPE,
@@ -120,6 +122,7 @@ from ._client_factory import (
     cf_inventory_item,
     cf_machine,
     cf_virtual_machine_instance,
+    cf_resource_graph,
 )
 
 # region VCenters
@@ -765,6 +768,111 @@ def get_hcrp_machine_id(
     return machine_id
 
 
+def reverseEndianLeftHalf(biosId: str):
+    """
+    Reverses the left half of the biosId.
+    This is required because the biosId format is different in HCRP Machine and InventoryItem.
+    Machine: 12345678-1234-1234-1234-123456789ABC
+    InventoryItem: 78563412-3412-3412-1234-123456789abc
+    """
+    def _rev(part: str):
+        return "".join(reversed([part[i:i + 2] for i in range(0, len(part), 2)]))
+    parts = biosId.split("-")
+    return "-".join(
+        [
+            _rev(parts[0]),
+            _rev(parts[1]),
+            _rev(parts[2]),
+            *parts[3:],
+        ]
+    )
+
+
+def link_vm_to_vcenter(
+    cmd,
+    client: VirtualMachineInstancesOperations,
+    vcenter,
+    rg_name=None,
+    resource_name=None,
+    no_wait=False,
+):
+    vcenter_id = vcenter
+    if rg_name is None and resource_name is not None:
+        raise RequiredArgumentMissingError(
+            "resource_group_name is required when machine_name is provided."
+        )
+    if not is_valid_resource_id(vcenter_id):
+        if not rg_name:
+            raise RequiredArgumentMissingError(
+                "Cannot determine vCenter ID. " +
+                "Resource group name is required when vCenter name is specified."
+            )
+        vcenter_id = get_resource_id(
+            cmd, rg_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter)
+    assert vcenter_id is not None
+    if resource_name is not None:
+        return create_vm(
+            cmd,
+            client,
+            resource_group_name=rg_name,
+            resource_name=resource_name,
+            vcenter=vcenter,
+            no_wait=no_wait,
+        )
+    
+    logger = get_logger(__name__)
+    machine_client = cf_machine(cmd.cli_ctx)
+    arg_client = cf_resource_graph(cmd.cli_ctx, subscription_bound=True)
+
+    vcenter_sub = vcenter_id.split("/")[2]
+    resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
+    vcenter = resources_client.get_by_id(vcenter_id, VCENTER_KIND_GET_API_VERSION)
+    logger.warn(f"Searching for machines in the vCenter {vcenter.name}...")
+
+    # https://github.com/wpbrown/azmeta-libs/blob/4495d2d55f052032fe11416f5c59e2f2e79c2d73/azmeta/src/azmeta/access/resource_graph.py#L4
+    # Use ARG instead of list call
+    
+    if rg_name is not None:
+        machines = machine_client.list_by_resource_group(rg_name)
+    else:
+        machines = machine_client.list_by_subscription()
+    biosid_to_machine_id: Dict[str, str] = {}
+    discovered = 0
+    for machine in machines: # type: ignore
+        discovered += 1
+        machine: Machine = machine
+        if machine.location != vcenter.location:
+            logger.warning(
+                f"[{discovered}] Skipping machine {machine.name} as it is in the location {machine.location} " +
+                f"which is different from the vCenter location {vcenter.location}."
+            )
+            continue
+        if machine.kind is not None and machine.kind.lower() != vcenter.kind.lower():
+            logger.warning(
+                f"[{discovered}] Skipping machine {machine.name} as it is of kind {machine.kind} " +
+                f"which is different from the vCenter kind {vcenter.kind}."
+            )
+            continue
+        if machine.vm_uuid is None:
+            logger.warning(
+                f"[{discovered}] Skipping machine {machine.name} as it does not have a vm_uuid."
+            )
+            continue
+        assert isinstance(machine.vm_uuid, str)
+        assert isinstance(machine.id, str)
+        machine.vm_uuid = machine.vm_uuid.lower()
+        machine_uuid_rev = reverseEndianLeftHalf(machine.vm_uuid)
+        biosid_to_machine_id[machine_uuid_rev] = machine.id
+
+    logger.info(f"Discovered {discovered} machines. Skipped {discovered - len(biosid_to_machine_id)} machines.")
+    logger.info(f"{len(biosid_to_machine_id)} machines will be searched for in the vCenter.")
+
+
+
+
+
+
+
 def create_vm(
     cmd,
     client: VirtualMachineInstancesOperations,
@@ -872,25 +980,6 @@ def create_vm(
         machine = machine_client.create_or_update(resource_group_name, resource_name, m)
 
     assert machine.id is not None
-
-    def reverseEndianLeftHalf(biosId: str):
-        """
-        Reverses the left half of the biosId.
-        This is required because the biosId format is different in HCRP Machine and InventoryItem.
-        Machine: 12345678-1234-1234-1234-123456789ABC
-        InventoryItem: 78563412-3412-3412-1234-123456789abc
-        """
-        def _rev(part: str):
-            return "".join(reversed([part[i:i + 2] for i in range(0, len(part), 2)]))
-        parts = biosId.split("-")
-        return "-".join(
-            [
-                _rev(parts[0]),
-                _rev(parts[1]),
-                _rev(parts[2]),
-                *parts[3:],
-            ]
-        )
 
     if machine.vm_uuid and not inventory_item_id:
         # existing Arc for servers machine. Figure out inventory id.

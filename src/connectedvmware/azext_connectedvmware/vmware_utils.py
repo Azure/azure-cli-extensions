@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from typing import Optional, Dict, Set
+import logging
+from typing import Optional, Dict, Set, Union
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIInternalError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
@@ -188,3 +189,46 @@ def create_dictionary_from_arg_string(values, option_string=None):
                 f'usage error: {option_string} KEY=VALUE [KEY=VALUE ...]'
             ) from item_no_exist
     return params_dict
+
+
+class ColoredFormatter(logging.Formatter):
+    default_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+    def __init__(self, format: str=default_format):
+        grey = "\x1b[38;20m"
+        yellow = "\x1b[33;20m"
+        red = "\x1b[31;20m"
+        bold_red = "\x1b[31;1m"
+        reset = "\x1b[0m"
+        self.FORMATS = {
+            logging.DEBUG: grey + format + reset,
+            logging.INFO: grey + format + reset,
+            logging.WARNING: yellow + format + reset,
+            logging.ERROR: red + format + reset,
+            logging.CRITICAL: bold_red + format + reset
+        }
+
+    def format(self, record):
+        log_fmt = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(fmt=log_fmt, datefmt='%Y-%m-%dT%H:%M:%S')
+        return formatter.format(record)
+
+
+def get_logger(name: str, file_path: Union[str, None] = None):
+    logger = logging.getLogger(__name__)
+    if file_path is not None:
+        fh = logging.FileHandler(file_path)
+        fh.setFormatter(
+            logging.Formatter(
+                fmt='%(asctime)s %(levelname)-8s %(name)-12s.%(lineno)-5d %(message)s',
+                datefmt='%Y-%m-%dT%H:%M:%S',
+        ))
+        fh.setLevel(logging.DEBUG)
+        logger.addHandler(fh)
+    sh = logging.StreamHandler()
+    sh.setFormatter(
+        ColoredFormatter('%(asctime)s %(levelname)-8s %(message)s')
+    )
+    sh.setLevel(logging.INFO)
+    logger.addHandler(sh)
+    logger.setLevel(logging.DEBUG)
+    return logger
