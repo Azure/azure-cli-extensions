@@ -10,6 +10,7 @@ This checklist is used to make sure that common guidelines for a pull request ar
 
 - [ ] Have you run `azdev style <YOUR_EXT>` locally? (`pip install azdev` required)
 - [ ] Have you run `python scripts/ci/test_index.py -q` locally? (`pip install wheel==0.30.0` required)
+- [ ] My extension version conforms to the [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)
 
 For new extensions:
 

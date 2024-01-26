@@ -2,6 +2,15 @@
 
 Release History
 ===============
+0.3.4
+++++++
+* Adding support for "az load test" in AzureUSGovernment cloud.
+
+0.3.3
+++++++
+* Fix for 'az load test update' command when using --load-test-config-file option failing due to accessing undefined object.
+* Added support to update test run display in "az load test-run update" command by providing --display-name argument.
+
 0.3.2
 ++++++
 * Added null support for argument --certificate and --subnet in commands "az load update" and "az load create" to remove those properties from test.

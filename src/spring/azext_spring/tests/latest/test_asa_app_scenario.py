@@ -25,6 +25,12 @@ class AppDeploy(ScenarioTest):
             recording_processors=[SpringTestEndpointReplacer()]
         )
 
+    def test_replacer(self):
+        original_string = '"primaryKey":"xxxxxxxxx"abcdefg'
+        expected_string = '"primaryKey":"fake"abcdefg'
+        actual_string = SpringTestEndpointReplacer()._replace(original_string)
+        self.assertEqual(expected_string, actual_string)
+
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
