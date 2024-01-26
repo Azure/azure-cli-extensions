@@ -1,0 +1,25 @@
+name: Comment PR new module release when pr committed and labeled/unlabeled
+
+on:
+  pull_request_target:
+    types: [opened, labeled, unlabeled]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  set-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup azdev
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pr_title=$(echo "$TITLE" | grep -oP '[{\[][^}\]]+[}\]]' | sed 's/{\|}\|\[\|\]//g')
+          echo "pr_title=$pr_title" >> $GITHUB_ENV
+          echo "message=$(echo 'Suggested version: 1.0.0b1 for preview release and 1.0.0 for stable release')" >> $GITHUB_ENV
+      - name: comment on the pull request
+        uses: mshick/add-pr-comment@v2
+        with:
+          repo-token: ${{ secrets.CLI_BOT }}
+          message: "${{ env.message }}"
