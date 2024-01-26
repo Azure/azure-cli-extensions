@@ -60,7 +60,6 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('name', '{fleet_name}')
         ])
 
-        print(1)
         self.cmd('fleet wait -g {rg} --fleet-name {fleet_name} --created', checks=[self.is_empty()])
 
         self.cmd('fleet update -g {rg} -n {fleet_name} --tags foo=doo', checks=[
