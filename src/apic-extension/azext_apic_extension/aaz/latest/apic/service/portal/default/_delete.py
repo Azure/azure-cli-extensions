@@ -12,27 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic service import-from-apim",
+    "apic service portal default delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
-class ImportFromApim(AAZCommand):
-    """Imports from APIM instance.
+class Delete(AAZCommand):
+    """Delete specified PortalConfiguration.
 
-    :example: Import From APIM
-        az apic service import-from-apim -g api-center-test --service-name contosoeuap --source-resource-ids '/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/servicegroup/providers/Microsoft.ApiManagement/service/contoso/apis/contosoapi
+    :example: Delete Default Portal Configuration
+        az apic service portal default delete -g contoso-resources --service-name contoso
     """
 
     _aaz_info = {
         "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/importfromapim", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/portals/default", "2024-03-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -58,22 +58,11 @@ class ImportFromApim(AAZCommand):
                 min_length=1,
             ),
         )
-
-        # define Arg Group "Payload"
-
-        _args_schema = cls._args_schema
-        _args_schema.source_resource_ids = AAZListArg(
-            options=["--source-resource-ids"],
-            arg_group="Payload",
-        )
-
-        source_resource_ids = cls._args_schema.source_resource_ids
-        source_resource_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ImportFromAPIM(ctx=self.ctx)()
+        self.PortalConfigurationDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -84,43 +73,29 @@ class ImportFromApim(AAZCommand):
     def post_operations(self):
         pass
 
-    class ImportFromAPIM(AAZHttpOperation):
+    class PortalConfigurationDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
+            if session.http_response.status_code in [204]:
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/importFromApim",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/portals/default",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -154,36 +129,15 @@ class ImportFromApim(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-            }
-            return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("sourceResourceIds", AAZListType, ".source_resource_ids")
-
-            source_resource_ids = _builder.get(".sourceResourceIds")
-            if source_resource_ids is not None:
-                source_resource_ids.set_elements(AAZStrType, ".")
-
-            return self.serialize_content(_content_value)
-
         def on_200(self, session):
             pass
 
+        def on_204(self, session):
+            pass
 
-class _ImportFromApimHelper:
-    """Helper class for ImportFromApim"""
+
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
-__all__ = ["ImportFromApim"]
+__all__ = ["Delete"]

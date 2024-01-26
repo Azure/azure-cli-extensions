@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "apic api",
+    "apic service portal",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Commands to manage APIs in API Center
+    """Commands to manage API Center Service Portal Configuration in API Center
     """
     pass
 

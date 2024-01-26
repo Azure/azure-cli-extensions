@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic service show",
+    "apic service portal default show",
 )
 class Show(AAZCommand):
-    """Show service details
+    """Get portal configuration.
 
-    :example: Show service details
-        az apic service show -g contoso-resources -s contoso
+    :example: Show APIC Default Portal Configuration
+        az apic service portal default show -g contoso-resources --service-name contoso
     """
 
     _aaz_info = {
         "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/portals/default", "2024-03-01"],
         ]
     }
 
@@ -48,8 +48,8 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--name", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-s", "--service", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -61,7 +61,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ServicesGet(ctx=self.ctx)()
+        self.PortalConfigurationGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +76,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ServicesGet(AAZHttpOperation):
+    class PortalConfigurationGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +90,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/portals/default",
                 **self.url_parameters
             )
 
@@ -160,10 +160,6 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -174,50 +170,43 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
+            properties = cls._schema_on_200.properties
+            properties.authentication = AAZObjectType()
+            properties.created = AAZStrType()
+            properties.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            properties.data_api_host_name = AAZStrType(
+                serialized_name="dataApiHostName",
+            )
+            properties.enabled = AAZBoolType()
+            properties.portal_default_host_name = AAZStrType(
+                serialized_name="portalDefaultHostName",
+            )
+            properties.title = AAZStrType()
+            properties.updated = AAZStrType()
+            properties.updated_by = AAZStrType(
+                serialized_name="updatedBy",
+            )
+
+            authentication = cls._schema_on_200.properties.authentication
+            authentication.azure_ad_instance = AAZStrType(
+                serialized_name="azureAdInstance",
                 flags={"read_only": True},
             )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType(
+            authentication.client_id = AAZStrType(
+                serialized_name="clientId",
                 flags={"required": True},
             )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType(
-                nullable=True,
-            )
-
-            _element = cls._schema_on_200.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
+            authentication.scopes = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.data_api_hostname = AAZStrType(
-                serialized_name="dataApiHostname",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
+            authentication.tenant_id = AAZStrType(
+                serialized_name="tenantId",
             )
 
             system_data = cls._schema_on_200.system_data
@@ -239,9 +228,6 @@ class Show(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
