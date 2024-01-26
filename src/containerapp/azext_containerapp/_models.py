@@ -524,3 +524,15 @@ ExtendedLocation = {
     "name": None,
     "type": None
 }
+
+JavaComponent = {
+    "properties": {
+        "componentType": None,
+        "configurations": None  # list of JavaComponentConfiguration
+    }
+}
+
+JavaComponentConfiguration = {
+    "propertyName": None,
+    "value": None
+}
