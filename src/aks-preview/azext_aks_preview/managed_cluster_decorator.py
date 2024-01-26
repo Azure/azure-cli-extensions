@@ -4385,7 +4385,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 CONST_ROTATION_POLL_INTERVAL: "2m",
             }
 
-
     # pylint: disable=too-many-nested-blocks
     def _update_dns_zone_resource_ids(self, mc: ManagedCluster, dns_zone_resource_ids) -> None:
         """Helper function to update dns zone resource ids in app routing addon.

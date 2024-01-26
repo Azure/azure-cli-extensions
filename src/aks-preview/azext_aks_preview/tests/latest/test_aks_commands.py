@@ -12541,7 +12541,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        #delete role assignment
+        # delete role assignment
         delete_role_assignment_cmd = 'role assignment delete --scope {keyvault_id} --assignee {object_id} --role "Key Vault Secrets User" --output json'
         self.cmd(
             delete_role_assignment_cmd, [self.is_empty()])
@@ -12631,7 +12631,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        #delete role assignment
+        # delete role assignment
         delete_role_assignment_cmd = 'role assignment delete --scope {keyvault_id} --assignee {object_id} --role "Key Vault Secrets User" --output json'
         self.cmd(
             delete_role_assignment_cmd, [self.is_empty()])
@@ -12706,7 +12706,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_approuting_update_with_monitoring_addon_enabled(self, resource_group, resource_group_location):
         """This test case exercises updating app routing addon in an AKS cluster with monitoring addon enabled."""
 
-         # reset the count so in replay mode the random names will start with 0
+        # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
 
         aks_name = self.create_random_name("cliakstest", 16)
@@ -12778,15 +12778,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        #delete role assignment
+        # delete role assignment
         delete_role_assignment_cmd = 'role assignment delete --scope {keyvault_id} --assignee {object_id} --role "Key Vault Secrets User" --output json'
         self.cmd(delete_role_assignment_cmd, [self.is_empty()])
 
         # delete cluster
         delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
         self.cmd(delete_cmd, checks=[self.is_empty()])
-
-
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
