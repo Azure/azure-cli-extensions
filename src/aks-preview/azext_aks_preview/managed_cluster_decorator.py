@@ -2174,6 +2174,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 new_profile.istio.certificate_authority.plugin = (
                     self.models.IstioPluginCertificateAuthority()  # pylint: disable=no-member
                 )
+            new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
             new_profile.istio.certificate_authority.plugin.key_vault_id = key_vault_id
             new_profile.istio.certificate_authority.plugin.cert_object_name = ca_cert_object_name
             new_profile.istio.certificate_authority.plugin.key_object_name = ca_key_object_name
