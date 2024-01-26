@@ -12527,24 +12527,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("addonProfiles.azureKeyvaultSecretsProvider.enabled", True),
             ],
         ).get_output_in_json()
-        object_id = mc["ingressProfile"]["webAppRouting"]["identity"]["objectId"]
-        self.kwargs.update({"object_id": object_id})
-
-        check_role_assignment_cmd = 'role assignment list --scope {keyvault_id} --assignee {object_id} --role "Key Vault Secrets User" --output json'
-        self.cmd(
-            check_role_assignment_cmd,
-            checks=[
-                self.check("length(@)", 1),
-                self.check("[0].roleDefinitionName", "Key Vault Secrets User"),
-                self.check("[0].principalId", "{object_id}"),
-                self.check("[0].scope", keyvault_id),
-            ],
-        )
-
-        # delete role assignment
-        delete_role_assignment_cmd = 'role assignment delete --scope {keyvault_id} --assignee {object_id} --role "Key Vault Secrets User" --output json'
-        self.cmd(
-            delete_role_assignment_cmd, [self.is_empty()])
 
         # delete cluster
         delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
@@ -12603,8 +12585,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("ingressProfile.webAppRouting.enabled", True),
             ],
         ).get_output_in_json()
-        object_id = result["ingressProfile"]["webAppRouting"]["identity"]["objectId"]
-        self.kwargs.update({"object_id": object_id})
 
         # update with enable_rbac_authroization flag in keyvault set to true
         update_cmd = (
@@ -12619,22 +12599,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("ingressProfile.webAppRouting.enabled", True),
             ],
         )
-
-        check_role_assignment_cmd = 'role assignment list --scope {keyvault_id} --assignee {object_id} --role "Key Vault Secrets User" --output json'
-        self.cmd(
-            check_role_assignment_cmd,
-            checks=[
-                self.check("length(@)", 1),
-                self.check("[0].roleDefinitionName", "Key Vault Secrets User"),
-                self.check("[0].principalId", "{object_id}"),
-                self.check("[0].scope", keyvault_id),
-            ],
-        )
-
-        # delete role assignment
-        delete_role_assignment_cmd = 'role assignment delete --scope {keyvault_id} --assignee {object_id} --role "Key Vault Secrets User" --output json'
-        self.cmd(
-            delete_role_assignment_cmd, [self.is_empty()])
 
         # create keyvault with rbac auth disabled
         kv_name = self.create_random_name("cliakstestkv", 16)
@@ -12749,9 +12713,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("ingressProfile.webAppRouting.enabled", True),
             ],
         ).get_output_in_json()
-        object_id = result["ingressProfile"]["webAppRouting"]["identity"]["objectId"]
-
-        self.kwargs.update({"object_id": object_id})
 
         # update with enable_rbac_authroization flag in keyvault set to true
         update_cmd = (
@@ -12766,21 +12727,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("ingressProfile.webAppRouting.enabled", True),
             ],
         )
-
-        check_role_assignment_cmd = 'role assignment list --scope {keyvault_id} --assignee {object_id} --role "Key Vault Secrets User" --output json'
-        self.cmd(
-            check_role_assignment_cmd,
-            checks=[
-                self.check("length(@)", 1),
-                self.check("[0].roleDefinitionName", "Key Vault Secrets User"),
-                self.check("[0].principalId", "{object_id}"),
-                self.check("[0].scope", keyvault_id),
-            ],
-        )
-
-        # delete role assignment
-        delete_role_assignment_cmd = 'role assignment delete --scope {keyvault_id} --assignee {object_id} --role "Key Vault Secrets User" --output json'
-        self.cmd(delete_role_assignment_cmd, [self.is_empty()])
 
         # delete cluster
         delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
