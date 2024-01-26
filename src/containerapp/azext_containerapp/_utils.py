@@ -90,7 +90,7 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
             elif service["type"] == "Microsoft.App/managedEnvironments/javaComponents":
                 service_bind = {
                     "serviceId": service["id"],
-                    "name": service["name"]
+                    "name": binding_name
                 }
                 service_bindings_def_list.append(service_bind)
             else:
