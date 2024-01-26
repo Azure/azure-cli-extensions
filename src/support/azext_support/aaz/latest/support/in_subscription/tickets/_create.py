@@ -31,6 +31,9 @@ class Create(AAZCommand):
 
     :example: Create a ticket for Generic Quota increase for any Azure Service.
         az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "QuotaTicketDescription" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/GenericProblemClassificationNameGuid" --severity "minimal" --ticket-name "QuotaTestTicketName" --title "QuotaTicketTitle"
+
+    :example: Create a ticket to request Quota increase for Pools for a Batch account.
+        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "QuotaTicketDescription" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/BatchQuotaProblemClassificationNameGuid" --severity "minimal" --ticket-name "QuotaTestTicketName" --title "QuotaTicketTitle"  --quota-change-version "1.0" --quota-change-requests [0].region="WESTUS" --quota-change-requests [0].payload="'{\`"AccountName\`": \`"test\`", \`"NewLimit\`": 102, \`"Type\`": \`"Pools\`"}'"
     """
 
     _aaz_info = {
