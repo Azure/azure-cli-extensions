@@ -854,6 +854,8 @@ ConnectedVMwareVsphereResources
 ) on $left.vmUuidRev == $right.biosId
 | project-away vmUuidRev
 """
+    print(query)
+    from time import sleep; sleep(10)
     
     # https://github.com/wpbrown/azmeta-libs/blob/4495d2d55f052032fe11416f5c59e2f2e79c2d73/azmeta/src/azmeta/access/resource_graph.py
     skip_token = None
