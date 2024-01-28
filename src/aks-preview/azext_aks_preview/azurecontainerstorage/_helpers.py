@@ -205,18 +205,18 @@ def get_extension_installed_and_cluster_configs(cmd, resource_group, cluster_nam
         if is_extension_installed:
             config_settings = extension.configuration_settings
             if config_settings is not None:
-                is_azureDisk_enabled = bool(config_settings.get("cli.storagePool.azureDisk.enabled", "False"))
-                is_elasticSan_enabled = bool(config_settings.get("cli.storagePool.elasticSan.enabled", "False"))
-                is_ephemeralDisk_enabled = bool(config_settings.get("cli.storagePool.ephemeralDisk.enabled", "False"))
-                storagepool_type_val = config_settings.get("cli.storagePool.type", None)
-                cpu_value = config_settings.get("cli.resources.ioEngine.cpu", None)
+                is_azureDisk_enabled = bool(config_settings.get("global.cli.storagePool.azureDisk.enabled", "False"))
+                is_elasticSan_enabled = bool(config_settings.get("global.cli.storagePool.elasticSan.enabled", "False"))
+                is_ephemeralDisk_enabled = bool(config_settings.get("global.cli.storagePool.ephemeralDisk.enabled", "False"))
+                storagepool_type_val = config_settings.get("global.cli.storagePool.type", None)
+                cpu_value = config_settings.get("global.cli.resources.ioEngine.cpu", None)
                 if storagepool_type_val is not None:
                     if storagepool_type_val == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
                         is_azureDisk_enabled = True
                     elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
                         is_elasticSan_enabled = True
                     elif storagepool_type_val == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-                        ephemeral_disk_type = config_settings.get("cli.storagePool.ephemeralDisk.diskType", CONST_STORAGE_POOL_OPTION_NVME)
+                        ephemeral_disk_type = config_settings.get("global.cli.storagePool.ephemeralDisk.diskType", CONST_STORAGE_POOL_OPTION_NVME)
                         if ephemeral_disk_type == CONST_STORAGE_POOL_OPTION_NVME:
                             is_ephemeralDisk_nvme_enabled = True
                         elif ephemeral_disk_type == CONST_STORAGE_POOL_OPTION_SSD:
@@ -459,10 +459,10 @@ def _generate_k8s_extension_resource_args(
     hugepages_value_str = str(hugepages_value) + "Gi"
 
     resource_args = [
-        {"cli.resources.num_hugepages": hugepages_number},
-        {"cli.resources.ioEngine.cpu": str(core_value)},
-        {"cli.resources.ioEngine.memory": memory_value_str},
-        {"cli.resources.ioEngine.hugepages2Mi": hugepages_value_str},
+        {"global.cli.resources.num_hugepages": hugepages_number},
+        {"global.cli.resources.ioEngine.cpu": str(core_value)},
+        {"global.cli.resources.ioEngine.memory": memory_value_str},
+        {"global.cli.resources.ioEngine.hugepages2Mi": hugepages_value_str},
     ]
 
     return resource_args

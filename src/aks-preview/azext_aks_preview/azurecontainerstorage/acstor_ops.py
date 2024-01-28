@@ -98,34 +98,34 @@ def perform_enable_azure_container_storage(
                              False
 
     if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-        config_settings.append({"cli.storagePool.ephemeralDisk.diskType": storage_pool_option.lower()})
+        config_settings.append({"global.cli.storagePool.ephemeralDisk.diskType": storage_pool_option.lower()})
         ephemeral_disk_enabled = True
     else:
         if storage_pool_sku is None:
             storage_pool_sku = CONST_STORAGE_POOL_SKU_PREMIUM_LRS
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
-            config_settings.append({"cli.storagePool.elasticSan.sku": storage_pool_sku})
+            config_settings.append({"global.cli.storagePool.elasticSan.sku": storage_pool_sku})
             elastic_san_enabled = True
         elif storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
-            config_settings.append({"cli.storagePool.azureDisk.sku": storage_pool_sku})
+            config_settings.append({"global.cli.storagePool.azureDisk.sku": storage_pool_sku})
             azure_disk_enabled = True
 
     config_settings.extend(
         [
-            {"cli.storagePool.create": True},
-            {"cli.storagePool.name": storage_pool_name},
-            {"cli.storagePool.size": storage_pool_size},
-            {"cli.storagePool.type": storage_pool_type},
-            {"cli.storagePool.azureDisk.enabled": azure_disk_enabled},
-            {"cli.storagePool.elasticSan.enabled": elastic_san_enabled},
-            {"cli.storagePool.ephemeralDisk.enabled": ephemeral_disk_enabled},
+            {"global.cli.storagePool.create": True},
+            {"global.cli.storagePool.name": storage_pool_name},
+            {"global.cli.storagePool.size": storage_pool_size},
+            {"global.cli.storagePool.type": storage_pool_type},
+            {"global.cli.storagePool.azureDisk.enabled": azure_disk_enabled},
+            {"global.cli.storagePool.elasticSan.enabled": elastic_san_enabled},
+            {"global.cli.storagePool.ephemeralDisk.enabled": ephemeral_disk_enabled},
             # Always set cli.storagePool.disable.type to empty
             # and cli.storagePool.disable.validation to False
             # during enable operation so that any older disable
             # operation doesn't interfere with the current state.
-            {"cli.storagePool.disable.validation": False},
-            {"cli.storagePool.disable.type": ""},
-            {"cli.storagePool.disable.active": False},
+            {"global.cli.storagePool.disable.validation": False},
+            {"global.cli.storagePool.disable.type": ""},
+            {"global.cli.storagePool.disable.active": False},
         ]
     )
 
@@ -230,8 +230,8 @@ def perform_disable_azure_container_storage(
     # Step 1: Perform validation if accepted by user
     if perform_validation:
         config_settings = [
-            {"cli.storagePool.disable.validation": True},
-            {"cli.storagePool.disable.type": storage_pool_type},
+            {"global.cli.storagePool.disable.validation": True},
+            {"global.cli.storagePool.disable.type": storage_pool_type},
         ]
 
         try:
@@ -259,8 +259,8 @@ def perform_disable_azure_container_storage(
                 no_wait_delete_op = True
         except Exception as ex:  # pylint: disable=broad-except
             config_settings = [
-                {"cli.storagePool.disable.validation": False},
-                {"cli.storagePool.disable.type": ""},
+                {"global.cli.storagePool.disable.validation": False},
+                {"global.cli.storagePool.disable.type": ""},
             ]
 
             err_msg = "Validation failed. " \
@@ -326,16 +326,16 @@ def perform_disable_azure_container_storage(
     else:
         # Here we start disabling a particular type of storagepool.
         config_settings = [
-            {"cli.storagePool.disable.validation": False},
-            {"cli.storagePool.disable.type": storage_pool_type},
-            {"cli.storagePool.disable.active": True},
+            {"global.cli.storagePool.disable.validation": False},
+            {"global.cli.storagePool.disable.type": storage_pool_type},
+            {"global.cli.storagePool.disable.active": True},
         ]
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
-            config_settings.append({"cli.storagePool.azureDisk.enabled": False})
+            config_settings.append({"global.cli.storagePool.azureDisk.enabled": False})
         elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
-            config_settings.append({"cli.storagePool.elasticSan.enabled": False})
+            config_settings.append({"global.cli.storagePool.elasticSan.enabled": False})
         elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-            config_settings.append({"cli.storagePool.ephemeralDisk.enabled": False})
+            config_settings.append({"global.cli.storagePool.ephemeralDisk.enabled": False})
         # Define the new resource values for ioEngine and hugepages.
         resource_args = get_desired_resource_value_args(
             storage_pool_type,
@@ -354,9 +354,9 @@ def perform_disable_azure_container_storage(
         # process is completed. This config variable
         # will be used after the disabling operation is completed.
         update_settings = [
-            {"cli.storagePool.disable.validation": False},
-            {"cli.storagePool.disable.type": ""},
-            {"cli.storagePool.disable.active": False},
+            {"global.cli.storagePool.disable.validation": False},
+            {"global.cli.storagePool.disable.type": ""},
+            {"global.cli.storagePool.disable.active": False},
         ]
         try:
             disable_op_result = k8s_extension_custom_mod.update_k8s_extension(
@@ -391,11 +391,11 @@ def perform_disable_azure_container_storage(
             update_settings.extend(resource_args)
             # Also, unset the type of storagepool which was supposed to disabled.
             if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
-                update_settings.append({"cli.storagePool.azureDisk.enabled": True})
+                update_settings.append({"global.cli.storagePool.azureDisk.enabled": True})
             elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
-                update_settings.append({"cli.storagePool.elasticSan.enabled": True})
+                update_settings.append({"global.cli.storagePool.elasticSan.enabled": True})
             elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-                update_settings.append({"cli.storagePool.ephemeralDisk.enabled": True})
+                update_settings.append({"global.cli.storagePool.ephemeralDisk.enabled": True})
             disable_op_failure = True
 
         # Since we are just reseting the cluster state,
