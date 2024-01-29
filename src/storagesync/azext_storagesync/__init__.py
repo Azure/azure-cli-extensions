@@ -16,8 +16,7 @@ class MicrosoftStorageSyncCommandsLoader(AzCommandsLoader):
         storagesync_custom = CliCommandType(
             operations_tmpl='azext_storagesync.custom#{}',
             client_factory=cf_storagesync)
-        super(MicrosoftStorageSyncCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                                 custom_command_type=storagesync_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=storagesync_custom)
 
     def load_command_table(self, args):
         from azext_storagesync.commands import load_command_table
