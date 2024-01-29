@@ -2299,7 +2299,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         machine_list = self.cmd(list_cmd).get_output_in_json()
         assert len(machine_list) == 2
-        aks_machine_list_table_format(machine_list)
+        print(aks_machine_list_table_format(machine_list))
 
         machine_name = machine_list[0]["name"]
         self.kwargs.update(
@@ -2318,6 +2318,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         machine_show = self.cmd(show_cmd).get_output_in_json()
         assert machine_show["name"] == machine_name
+        print(machine_show)
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -11087,12 +11088,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_vms_agentpool_type(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("n", 6)
         nodepool_name_1 = self.create_random_name("n", 6)
+        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
+        # setting vm type to VirtualMachines requires 1.28.x or higher
+        _, k8s_version = self._get_versions(resource_group_location)
 
         self.kwargs.update(
             {
@@ -11102,6 +11106,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "ssh_key_value": self.generate_ssh_keys(),
                 "node_pool_name": nodepool_name,
                 "node_vm_size": "standard_d2a_v4",
+                "k8s_version": k8s_version,
             }
         )
 
@@ -11115,6 +11120,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--node-count=1 "
             "--node-vm-size={node_vm_size} "
             '--vm-set-type="VirtualMachines" '
+            "-k {k8s_version} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
             checks=[
                 self.check("provisioningState", "Succeeded"),
@@ -11206,7 +11212,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--resource-group={resource_group} ' \
             '--cluster-name={name} ' \
             '-n testbinding ' \
-            '-r {sid} ' \
+            '--source-resource-id {sid} ' \
             '--roles Microsoft.MachineLearningServices/workspaces/mlworkload'
         self.cmd(create_binding_cmd)
         self.cmd(list_binding_cmd, checks=[
@@ -11789,22 +11795,23 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_create_with_premium_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
-        # kwargs for string formatting
-
         aks_name = self.create_random_name("cliakstest", 16)
+        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
+        k8s_version, _ = self._get_versions(resource_group_location)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "location": resource_group_location,
+                "k8s_version": k8s_version,
             }
         )
 
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --tier premium --k8s-support-plan AKSLongTermSupport -k 1.27"
+            "--ssh-key-value={ssh_key_value} --tier premium --k8s-support-plan AKSLongTermSupport -k {k8s_version}"
         )
         self.cmd(
             create_cmd,
@@ -11830,8 +11837,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_update_with_premium_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
-        # kwargs for string formatting
-
+        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
+        k8s_version, _ = self._get_versions(resource_group_location)
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
             {
@@ -11839,13 +11846,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "location": resource_group_location,
+                "k8s_version": k8s_version,
             }
         )
 
         # create a free tier
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-count=1 --tier free -k 1.27"
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier free -k {k8s_version}"
         )
         self.cmd(
             create_cmd,

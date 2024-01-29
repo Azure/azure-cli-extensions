@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0
+++++++
+* Support function app
+
 0.3.13
 ++++++
 * AAD rebranding and make some improvements

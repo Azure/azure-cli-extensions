@@ -36,7 +36,7 @@ def run_cli_cmd(cmd, retry=0, interval=0, should_retry_func=None):
     except CLIInternalError as e:
         error_code = 'Unknown'
         error_res = re.search(
-            '\(([a-zA-Z]+)\)', str(e))
+            r'\(([a-zA-Z]+)\)', str(e))
         if error_res:
             error_code = error_res.group(1)
         telemetry.set_exception(
