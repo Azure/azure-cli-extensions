@@ -3705,13 +3705,12 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         old_profile = self.models.ServiceMeshProfile(
                 mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-                istio=self.models.IstioServiceMesh(),
-            ) 
+                istio=self.models.IstioServiceMesh(),) 
         new_profile, updated = ctx_0._handle_enable_disable_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
                 mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-18"])
-            ))
+        ))
 
     def test_handle_ingress_gateways_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -3728,8 +3727,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         old_profile = self.models.ServiceMeshProfile(
                 mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-                istio=self.models.IstioServiceMesh(),
-            ) 
+                istio=self.models.IstioServiceMesh(),)
         new_profile, updated = ctx_0._handle_ingress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
@@ -3744,7 +3742,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                         ]
                     )
                 ),
-            ))
+        ))
 
     def test_handle_egress_gateways_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -3761,8 +3759,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         old_profile = self.models.ServiceMeshProfile(
                 mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-                istio=self.models.IstioServiceMesh(),
-            ) 
+                istio=self.models.IstioServiceMesh(),) 
         new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
@@ -3776,7 +3773,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                         ]
                     )
                 ),
-            ))
+        ))
 
     def test_handle_pluginca_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -3796,8 +3793,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         old_profile = self.models.ServiceMeshProfile(
                 mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-                istio=self.models.IstioServiceMesh(),
-            ) 
+                istio=self.models.IstioServiceMesh(),) 
         new_profile, updated = ctx_0._handle_pluginca_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
@@ -3813,7 +3809,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                         )
                     )
                 ),
-            ))
+        ))
 
     def test_handle_upgrade_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -3828,8 +3824,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.UPDATE,
         )
         old_profile = self.models.ServiceMeshProfile(
-                mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-17"])
-            ) 
+                mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-17"]))
         new_profile, updated = ctx_0._handle_upgrade_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
