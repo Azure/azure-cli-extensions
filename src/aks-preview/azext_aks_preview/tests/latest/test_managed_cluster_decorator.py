@@ -3709,7 +3709,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         new_profile, updated = ctx_0._handle_enable_disable_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-                mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-18"])
+            mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-18"])
         ))
 
     def test_handle_ingress_gateways_asm(self):
@@ -3731,17 +3731,17 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         new_profile, updated = ctx_0._handle_ingress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-                mode="Istio",
-                istio=self.models.IstioServiceMesh(
-                    components=self.models.IstioComponents(
-                        ingress_gateways=[
-                            self.models.IstioIngressGateway(
-                                mode="Internal",
-                                enabled=True,
-                            )
-                        ]
-                    )
-                ),
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                components=self.models.IstioComponents(
+                    ingress_gateways=[
+                        self.models.IstioIngressGateway(
+                            mode="Internal",
+                            enabled=True,
+                        )
+                    ]
+                )
+            ),
         ))
 
     def test_handle_egress_gateways_asm(self):
@@ -3763,16 +3763,16 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-                mode="Istio",
-                istio=self.models.IstioServiceMesh(
-                    components=self.models.IstioComponents(
-                        egress_gateways=[
-                            self.models.IstioEgressGateway(
-                                enabled=True, nodeSelector={"istio": "egress"}
-                            )
-                        ]
-                    )
-                ),
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                components=self.models.IstioComponents(
+                    egress_gateways=[
+                        self.models.IstioEgressGateway(
+                            enabled=True, nodeSelector={"istio": "egress"}
+                        )
+                    ]
+                )
+            ),
         ))
 
     def test_handle_pluginca_asm(self):
@@ -3793,22 +3793,22 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         old_profile = self.models.ServiceMeshProfile(
             mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-            istio=self.models.IstioServiceMesh(),) 
+            istio=self.models.IstioServiceMesh(),)
         new_profile, updated = ctx_0._handle_pluginca_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-                mode="Istio",
-                istio=self.models.IstioServiceMesh(
-                    certificate_authority=self.models.IstioCertificateAuthority(
-                        plugin=self.models.IstioPluginCertificateAuthority(
-                            key_vault_id="/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
-                            cert_object_name="my-ca-cert",
-                            key_object_name="my-ca-key",
-                            root_cert_object_name="my-root-cert",
-                            cert_chain_object_name="my-cert-chain",
-                        )
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                certificate_authority=self.models.IstioCertificateAuthority(
+                    plugin=self.models.IstioPluginCertificateAuthority(
+                        key_vault_id="/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+                        cert_object_name="my-ca-cert",
+                        key_object_name="my-ca-key",
+                        root_cert_object_name="my-root-cert",
+                        cert_chain_object_name="my-cert-chain",
                     )
-                ),
+                )
+            ),
         ))
 
     def test_handle_upgrade_asm(self):
@@ -3828,8 +3828,8 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         new_profile, updated = ctx_0._handle_upgrade_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-                mode="Istio", 
-                istio=self.models.IstioServiceMesh(revisions=["asm-1-17", "asm-1-18"]),))
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(revisions=["asm-1-17", "asm-1-18"]),))
 
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
