@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.3.14
+1.0.0
 ++++++
 * Support function app
 
