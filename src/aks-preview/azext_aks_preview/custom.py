@@ -3150,7 +3150,7 @@ def _aks_approuting_update(
     )
 
     try:
-        mc = aks_update_decorator.update_mc_profile_preview()
+        mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_app_routing_profile(mc)
     except DecoratorEarlyExitException:
         return None
