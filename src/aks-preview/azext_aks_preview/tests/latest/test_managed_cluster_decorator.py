@@ -3696,7 +3696,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.cmd,
             AKSManagedClusterParamDict(
                 {
-                    "enable_azure_service_mesh": True, 
+                    "enable_azure_service_mesh": True,
                     "revision": "asm-1-18"
                 }
             ),
@@ -3704,8 +3704,8 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.UPDATE,
         )
         old_profile = self.models.ServiceMeshProfile(
-                mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-                istio=self.models.IstioServiceMesh(),) 
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+            istio=self.models.IstioServiceMesh(),)
         new_profile, updated = ctx_0._handle_enable_disable_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
@@ -3726,12 +3726,12 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.UPDATE,
         )
         old_profile = self.models.ServiceMeshProfile(
-                mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-                istio=self.models.IstioServiceMesh(),)
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+            istio=self.models.IstioServiceMesh(),)
         new_profile, updated = ctx_0._handle_ingress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-                mode="Istio", 
+                mode="Istio",
                 istio=self.models.IstioServiceMesh(
                     components=self.models.IstioComponents(
                         ingress_gateways=[
@@ -3758,12 +3758,12 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.UPDATE,
         )
         old_profile = self.models.ServiceMeshProfile(
-                mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-                istio=self.models.IstioServiceMesh(),) 
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+            istio=self.models.IstioServiceMesh(),)
         new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-                mode="Istio", 
+                mode="Istio",
                 istio=self.models.IstioServiceMesh(
                     components=self.models.IstioComponents(
                         egress_gateways=[
@@ -3792,12 +3792,12 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.UPDATE,
         )
         old_profile = self.models.ServiceMeshProfile(
-                mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-                istio=self.models.IstioServiceMesh(),) 
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+            istio=self.models.IstioServiceMesh(),) 
         new_profile, updated = ctx_0._handle_pluginca_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-                mode="Istio", 
+                mode="Istio",
                 istio=self.models.IstioServiceMesh(
                     certificate_authority=self.models.IstioCertificateAuthority(
                         plugin=self.models.IstioPluginCertificateAuthority(
@@ -3824,13 +3824,12 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.UPDATE,
         )
         old_profile = self.models.ServiceMeshProfile(
-                mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-17"]))
+            mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-17"]))
         new_profile, updated = ctx_0._handle_upgrade_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
                 mode="Istio", 
-                istio=self.models.IstioServiceMesh(revisions=["asm-1-17", "asm-1-18"]),
-            ))
+                istio=self.models.IstioServiceMesh(revisions=["asm-1-17", "asm-1-18"]),))
 
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
