@@ -42,7 +42,7 @@ class ListSku(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.dedicated_capacity_name = AAZStrArg(
-            options=["--dedicated-capacity-name"],
+            options=["-n", "--name", "--dedicated-capacity-name"],
             help="The name of the Dedicated capacity. It must be at least 3 characters in length, and no more than 63.",
             required=True,
             id_part="name",
