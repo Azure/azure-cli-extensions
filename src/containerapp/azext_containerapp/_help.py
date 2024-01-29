@@ -1222,7 +1222,7 @@ helps['containerapp env java-component spring-cloud-config create'] = """
     examples:
     - name: Create a Spring Cloud Config.
       text: |
-          az containerapp env java-component spring-cloud-config create -g MyResourceGroup
+          az containerapp env java-component spring-cloud-config create -g MyResourceGroup \\
               --n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
@@ -1234,7 +1234,7 @@ helps['containerapp env java-component spring-cloud-config delete'] = """
     examples:
     - name: Delete a Spring Cloud Config.
       text: |
-          az containerapp env java-component spring-cloud-config delete -g MyResourceGroup
+          az containerapp env java-component spring-cloud-config delete -g MyResourceGroup \\
               --n MyJavaComponentName \\
               --environment MyEnvironment
 """
@@ -1245,7 +1245,7 @@ helps['containerapp env java-component spring-cloud-config show'] = """
     examples:
     - name: Show a Spring Cloud Config.
       text: |
-          az containerapp env java-component spring-cloud-config show -g MyResourceGroup
+          az containerapp env java-component spring-cloud-config show -g MyResourceGroup \\
               --n MyJavaComponentName \\
               --environment MyEnvironment
 """
@@ -1256,13 +1256,13 @@ helps['containerapp env java-component spring-cloud-config update'] = """
     examples:
     - name: Delete all configurations of the Spring Cloud Config.
       text: |
-          az containerapp env java-component spring-cloud-config update -g MyResourceGroup
+          az containerapp env java-component spring-cloud-config update -g MyResourceGroup \\
               --n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration
     - name: Update a Spring Cloud Config with custom configurations.
       text: |
-          az containerapp env java-component spring-cloud-config update -g MyResourceGroup
+          az containerapp env java-component spring-cloud-config update -g MyResourceGroup \\
               --n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
@@ -1279,12 +1279,12 @@ helps['containerapp env java-component spring-cloud-eureka create'] = """
     examples:
     - name: Create a Spring Cloud Eureka with default configuration.
       text: |
-          az containerapp env java-component spring-cloud-eureka create -g MyResourceGroup
+          az containerapp env java-component spring-cloud-eureka create -g MyResourceGroup \\
               --n MyJavaComponentName \\
               --environment MyEnvironment
     - name: Create a Spring Cloud Eureka with custom configurations.
       text: |
-          az containerapp env java-component spring-cloud-eureka create -g MyResourceGroup
+          az containerapp env java-component spring-cloud-eureka create -g MyResourceGroup \\
               --n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
@@ -1296,7 +1296,7 @@ helps['containerapp env java-component spring-cloud-eureka delete'] = """
     examples:
     - name: Delete a Spring Cloud Eureka.
       text: |
-          az containerapp env java-component spring-cloud-eureka delete -g MyResourceGroup
+          az containerapp env java-component spring-cloud-eureka delete -g MyResourceGroup \\
               --n MyJavaComponentName \\
               --environment MyEnvironment
 """
@@ -1307,7 +1307,7 @@ helps['containerapp env java-component spring-cloud-eureka show'] = """
     examples:
     - name: Show a Spring Cloud Eureka.
       text: |
-          az containerapp env java-component spring-cloud-eureka show -g MyResourceGroup
+          az containerapp env java-component spring-cloud-eureka show -g MyResourceGroup \\
               --n MyJavaComponentName \\
               --environment MyEnvironment
 """
@@ -1318,13 +1318,13 @@ helps['containerapp env java-component spring-cloud-eureka update'] = """
     examples:
     - name: Delete all configurations of the Spring Cloud Eureka.
       text: |
-          az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup
+          az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
               --n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration
     - name: Update a Spring Cloud Eureka with custom configurations.
       text: |
-          az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup
+          az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
               --n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
