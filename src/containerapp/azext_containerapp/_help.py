@@ -1223,7 +1223,7 @@ helps['containerapp env java-component spring-cloud-config create'] = """
     - name: Create a Spring Cloud Config.
       text: |
           az containerapp env java-component spring-cloud-config create -g MyResourceGroup \\
-              --n MyJavaComponentName \\
+              -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
 """
@@ -1235,7 +1235,7 @@ helps['containerapp env java-component spring-cloud-config delete'] = """
     - name: Delete a Spring Cloud Config.
       text: |
           az containerapp env java-component spring-cloud-config delete -g MyResourceGroup \\
-              --n MyJavaComponentName \\
+              -n MyJavaComponentName \\
               --environment MyEnvironment
 """
 
@@ -1246,7 +1246,7 @@ helps['containerapp env java-component spring-cloud-config show'] = """
     - name: Show a Spring Cloud Config.
       text: |
           az containerapp env java-component spring-cloud-config show -g MyResourceGroup \\
-              --n MyJavaComponentName \\
+              -n MyJavaComponentName \\
               --environment MyEnvironment
 """
 
@@ -1257,13 +1257,13 @@ helps['containerapp env java-component spring-cloud-config update'] = """
     - name: Delete all configurations of the Spring Cloud Config.
       text: |
           az containerapp env java-component spring-cloud-config update -g MyResourceGroup \\
-              --n MyJavaComponentName \\
+              -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration
     - name: Update a Spring Cloud Config with custom configurations.
       text: |
           az containerapp env java-component spring-cloud-config update -g MyResourceGroup \\
-              --n MyJavaComponentName \\
+              -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
 """
@@ -1280,12 +1280,12 @@ helps['containerapp env java-component spring-cloud-eureka create'] = """
     - name: Create a Spring Cloud Eureka with default configuration.
       text: |
           az containerapp env java-component spring-cloud-eureka create -g MyResourceGroup \\
-              --n MyJavaComponentName \\
+              -n MyJavaComponentName \\
               --environment MyEnvironment
     - name: Create a Spring Cloud Eureka with custom configurations.
       text: |
           az containerapp env java-component spring-cloud-eureka create -g MyResourceGroup \\
-              --n MyJavaComponentName \\
+              -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
 """
@@ -1297,7 +1297,7 @@ helps['containerapp env java-component spring-cloud-eureka delete'] = """
     - name: Delete a Spring Cloud Eureka.
       text: |
           az containerapp env java-component spring-cloud-eureka delete -g MyResourceGroup \\
-              --n MyJavaComponentName \\
+              -n MyJavaComponentName \\
               --environment MyEnvironment
 """
 
@@ -1308,7 +1308,7 @@ helps['containerapp env java-component spring-cloud-eureka show'] = """
     - name: Show a Spring Cloud Eureka.
       text: |
           az containerapp env java-component spring-cloud-eureka show -g MyResourceGroup \\
-              --n MyJavaComponentName \\
+              -n MyJavaComponentName \\
               --environment MyEnvironment
 """
 
@@ -1319,13 +1319,13 @@ helps['containerapp env java-component spring-cloud-eureka update'] = """
     - name: Delete all configurations of the Spring Cloud Eureka.
       text: |
           az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
-              --n MyJavaComponentName \\
+              -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration
     - name: Update a Spring Cloud Eureka with custom configurations.
       text: |
           az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
-              --n MyJavaComponentName \\
+              -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
 """
