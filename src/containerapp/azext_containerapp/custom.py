@@ -438,7 +438,8 @@ def create_containerapp(cmd,
                         context_path=None,
                         service_principal_client_id=None,
                         service_principal_client_secret=None,
-                        service_principal_tenant_id=None):
+                        service_principal_tenant_id=None,
+                        max_inactive_revisions=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -495,7 +496,8 @@ def update_containerapp_logic(cmd,
                               secret_volume_mount=None,
                               source=None,
                               artifact=None,
-                              build_env_vars=None):
+                              build_env_vars=None,
+                              max_inactive_revisions=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -545,7 +547,8 @@ def update_containerapp(cmd,
                         secret_volume_mount=None,
                         source=None,
                         artifact=None,
-                        build_env_vars=None):
+                        build_env_vars=None,
+                        max_inactive_revisions=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -580,7 +583,8 @@ def update_containerapp(cmd,
                                      secret_volume_mount=secret_volume_mount,
                                      source=source,
                                      artifact=artifact,
-                                     build_env_vars=build_env_vars)
+                                     build_env_vars=build_env_vars,
+                                     max_inactive_revisions=max_inactive_revisions)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
