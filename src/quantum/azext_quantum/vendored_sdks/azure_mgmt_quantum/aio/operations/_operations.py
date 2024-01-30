@@ -7,7 +7,6 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from io import IOBase
-import sys
 from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
@@ -29,6 +28,7 @@ from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
+from ... import models as _models
 from ...operations._operations import (
     build_offerings_list_request,
     build_operations_list_request,
@@ -43,11 +43,6 @@ from ...operations._operations import (
     build_workspaces_update_tags_request,
 )
 
-if sys.version_info >= (3, 9):
-    from collections.abc import MutableMapping
-else:
-    from typing import MutableMapping  # type: ignore  # pylint: disable=ungrouped-imports
-JSON = MutableMapping[str, Any]  # pylint: disable=unsubscriptable-object
 T = TypeVar("T")
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
@@ -62,6 +57,8 @@ class WorkspacesOperations:
         :attr:`workspaces` attribute.
     """
 
+    models = _models
+
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
         self._client = input_args.pop(0) if input_args else kwargs.pop("client")
@@ -70,8 +67,7 @@ class WorkspacesOperations:
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace_async
-    async def get(self, resource_group_name: str, workspace_name: str, **kwargs: Any) -> JSON:
-        # pylint: disable=line-too-long
+    async def get(self, resource_group_name: str, workspace_name: str, **kwargs: Any) -> _models.QuantumWorkspace:
         """Returns the Workspace resource associated with the given name.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -79,77 +75,9 @@ class WorkspacesOperations:
         :type resource_group_name: str
         :param workspace_name: The name of the quantum workspace resource. Required.
         :type workspace_name: str
-        :return: JSON object
-        :rtype: JSON
+        :return: QuantumWorkspace
+        :rtype: ~azure.mgmt.quantum.models.QuantumWorkspace
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # response body for status code(s): 200
-                response == {
-                    "location": "str",  # The geo-location where the resource lives. Required.
-                    "id": "str",  # Optional. Fully qualified resource ID for the resource. E.g.
-                      "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-                    "identity": {
-                        "principalId": "str",  # Optional. The principal ID of resource
-                          identity.
-                        "tenantId": "str",  # Optional. The tenant ID of resource.
-                        "type": "str"  # Optional. The identity type. Known values are:
-                          "SystemAssigned" and "None".
-                    },
-                    "name": "str",  # Optional. The name of the resource.
-                    "properties": {
-                        "apiKeyEnabled": bool,  # Optional. Indicator of enablement of the
-                          Quantum workspace Api keys.
-                        "endpointUri": "str",  # Optional. The URI of the workspace endpoint.
-                        "providers": [
-                            {
-                                "applicationName": "str",  # Optional. The provider's
-                                  marketplace application display name.
-                                "instanceUri": "str",  # Optional. A Uri identifying
-                                  the specific instance of this provider.
-                                "providerId": "str",  # Optional. Unique id of this
-                                  provider.
-                                "providerSku": "str",  # Optional. The sku associated
-                                  with pricing information for this provider.
-                                "provisioningState": "str",  # Optional. Provisioning
-                                  status field. Known values are: "Succeeded", "Launching", "Updating",
-                                  "Deleting", "Deleted", and "Failed".
-                                "resourceUsageId": "str"  # Optional. Id to track
-                                  resource usage for the provider.
-                            }
-                        ],
-                        "provisioningState": "str",  # Optional. Provisioning status field.
-                          Known values are: "Succeeded", "ProviderLaunching", "ProviderUpdating",
-                          "ProviderDeleting", "ProviderProvisioning", and "Failed".
-                        "storageAccount": "str",  # Optional. ARM Resource Id of the storage
-                          account associated with this workspace.
-                        "usable": "str"  # Optional. Whether the current workspace is ready
-                          to accept Jobs. Known values are: "Yes", "No", and "Partial".
-                    },
-                    "systemData": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The timestamp of
-                          resource creation (UTC).
-                        "createdBy": "str",  # Optional. The identity that created the
-                          resource.
-                        "createdByType": "str",  # Optional. The type of identity that
-                          created the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                        "lastModifiedAt": "2020-02-20 00:00:00",  # Optional. The timestamp
-                          of resource last modification (UTC).
-                        "lastModifiedBy": "str",  # Optional. The identity that last modified
-                          the resource.
-                        "lastModifiedByType": "str"  # Optional. The type of identity that
-                          last modified the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                    },
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    },
-                    "type": "str"  # Optional. The type of the resource. E.g.
-                      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts".
-                }
         """
         error_map = {
             401: ClientAuthenticationError,
@@ -162,7 +90,7 @@ class WorkspacesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[JSON] = kwargs.pop("cls", None)
+        cls: ClsType[_models.QuantumWorkspace] = kwargs.pop("cls", None)
 
         _request = build_workspaces_get_request(
             resource_group_name=resource_group_name,
@@ -185,21 +113,23 @@ class WorkspacesOperations:
             if _stream:
                 await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.content:
-            deserialized = response.json()
-        else:
-            deserialized = None
+        deserialized = self._deserialize("QuantumWorkspace", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return cast(JSON, deserialized)  # type: ignore
+        return deserialized  # type: ignore
 
     async def _create_or_update_initial(
-        self, resource_group_name: str, workspace_name: str, quantum_workspace: Union[JSON, IO[bytes]], **kwargs: Any
-    ) -> JSON:
+        self,
+        resource_group_name: str,
+        workspace_name: str,
+        quantum_workspace: Union[_models.QuantumWorkspace, IO[bytes]],
+        **kwargs: Any
+    ) -> _models.QuantumWorkspace:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -212,7 +142,7 @@ class WorkspacesOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[JSON] = kwargs.pop("cls", None)
+        cls: ClsType[_models.QuantumWorkspace] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -220,7 +150,7 @@ class WorkspacesOperations:
         if isinstance(quantum_workspace, (IOBase, bytes)):
             _content = quantum_workspace
         else:
-            _json = quantum_workspace
+            _json = self._serialize.body(quantum_workspace, "QuantumWorkspace")
 
         _request = build_workspaces_create_or_update_request(
             resource_group_name=resource_group_name,
@@ -246,36 +176,30 @@ class WorkspacesOperations:
             if _stream:
                 await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            if response.content:
-                deserialized = response.json()
-            else:
-                deserialized = None
+            deserialized = self._deserialize("QuantumWorkspace", pipeline_response)
 
         if response.status_code == 201:
-            if response.content:
-                deserialized = response.json()
-            else:
-                deserialized = None
+            deserialized = self._deserialize("QuantumWorkspace", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return cast(JSON, deserialized)  # type: ignore
+        return deserialized  # type: ignore
 
     @overload
     async def begin_create_or_update(
         self,
         resource_group_name: str,
         workspace_name: str,
-        quantum_workspace: JSON,
+        quantum_workspace: _models.QuantumWorkspace,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[JSON]:
-        # pylint: disable=line-too-long
+    ) -> AsyncLROPoller[_models.QuantumWorkspace]:
         """Creates or updates a workspace resource.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -284,146 +208,13 @@ class WorkspacesOperations:
         :param workspace_name: The name of the quantum workspace resource. Required.
         :type workspace_name: str
         :param quantum_workspace: Workspace details. Required.
-        :type quantum_workspace: JSON
+        :type quantum_workspace: ~azure.mgmt.quantum.models.QuantumWorkspace
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns JSON object
-        :rtype: ~azure.core.polling.AsyncLROPoller[JSON]
+        :return: An instance of AsyncLROPoller that returns QuantumWorkspace
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.quantum.models.QuantumWorkspace]
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # JSON input template you can fill out and use as your body input.
-                quantum_workspace = {
-                    "location": "str",  # The geo-location where the resource lives. Required.
-                    "id": "str",  # Optional. Fully qualified resource ID for the resource. E.g.
-                      "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-                    "identity": {
-                        "principalId": "str",  # Optional. The principal ID of resource
-                          identity.
-                        "tenantId": "str",  # Optional. The tenant ID of resource.
-                        "type": "str"  # Optional. The identity type. Known values are:
-                          "SystemAssigned" and "None".
-                    },
-                    "name": "str",  # Optional. The name of the resource.
-                    "properties": {
-                        "apiKeyEnabled": bool,  # Optional. Indicator of enablement of the
-                          Quantum workspace Api keys.
-                        "endpointUri": "str",  # Optional. The URI of the workspace endpoint.
-                        "providers": [
-                            {
-                                "applicationName": "str",  # Optional. The provider's
-                                  marketplace application display name.
-                                "instanceUri": "str",  # Optional. A Uri identifying
-                                  the specific instance of this provider.
-                                "providerId": "str",  # Optional. Unique id of this
-                                  provider.
-                                "providerSku": "str",  # Optional. The sku associated
-                                  with pricing information for this provider.
-                                "provisioningState": "str",  # Optional. Provisioning
-                                  status field. Known values are: "Succeeded", "Launching", "Updating",
-                                  "Deleting", "Deleted", and "Failed".
-                                "resourceUsageId": "str"  # Optional. Id to track
-                                  resource usage for the provider.
-                            }
-                        ],
-                        "provisioningState": "str",  # Optional. Provisioning status field.
-                          Known values are: "Succeeded", "ProviderLaunching", "ProviderUpdating",
-                          "ProviderDeleting", "ProviderProvisioning", and "Failed".
-                        "storageAccount": "str",  # Optional. ARM Resource Id of the storage
-                          account associated with this workspace.
-                        "usable": "str"  # Optional. Whether the current workspace is ready
-                          to accept Jobs. Known values are: "Yes", "No", and "Partial".
-                    },
-                    "systemData": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The timestamp of
-                          resource creation (UTC).
-                        "createdBy": "str",  # Optional. The identity that created the
-                          resource.
-                        "createdByType": "str",  # Optional. The type of identity that
-                          created the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                        "lastModifiedAt": "2020-02-20 00:00:00",  # Optional. The timestamp
-                          of resource last modification (UTC).
-                        "lastModifiedBy": "str",  # Optional. The identity that last modified
-                          the resource.
-                        "lastModifiedByType": "str"  # Optional. The type of identity that
-                          last modified the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                    },
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    },
-                    "type": "str"  # Optional. The type of the resource. E.g.
-                      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts".
-                }
-
-                # response body for status code(s): 200, 201
-                response == {
-                    "location": "str",  # The geo-location where the resource lives. Required.
-                    "id": "str",  # Optional. Fully qualified resource ID for the resource. E.g.
-                      "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-                    "identity": {
-                        "principalId": "str",  # Optional. The principal ID of resource
-                          identity.
-                        "tenantId": "str",  # Optional. The tenant ID of resource.
-                        "type": "str"  # Optional. The identity type. Known values are:
-                          "SystemAssigned" and "None".
-                    },
-                    "name": "str",  # Optional. The name of the resource.
-                    "properties": {
-                        "apiKeyEnabled": bool,  # Optional. Indicator of enablement of the
-                          Quantum workspace Api keys.
-                        "endpointUri": "str",  # Optional. The URI of the workspace endpoint.
-                        "providers": [
-                            {
-                                "applicationName": "str",  # Optional. The provider's
-                                  marketplace application display name.
-                                "instanceUri": "str",  # Optional. A Uri identifying
-                                  the specific instance of this provider.
-                                "providerId": "str",  # Optional. Unique id of this
-                                  provider.
-                                "providerSku": "str",  # Optional. The sku associated
-                                  with pricing information for this provider.
-                                "provisioningState": "str",  # Optional. Provisioning
-                                  status field. Known values are: "Succeeded", "Launching", "Updating",
-                                  "Deleting", "Deleted", and "Failed".
-                                "resourceUsageId": "str"  # Optional. Id to track
-                                  resource usage for the provider.
-                            }
-                        ],
-                        "provisioningState": "str",  # Optional. Provisioning status field.
-                          Known values are: "Succeeded", "ProviderLaunching", "ProviderUpdating",
-                          "ProviderDeleting", "ProviderProvisioning", and "Failed".
-                        "storageAccount": "str",  # Optional. ARM Resource Id of the storage
-                          account associated with this workspace.
-                        "usable": "str"  # Optional. Whether the current workspace is ready
-                          to accept Jobs. Known values are: "Yes", "No", and "Partial".
-                    },
-                    "systemData": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The timestamp of
-                          resource creation (UTC).
-                        "createdBy": "str",  # Optional. The identity that created the
-                          resource.
-                        "createdByType": "str",  # Optional. The type of identity that
-                          created the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                        "lastModifiedAt": "2020-02-20 00:00:00",  # Optional. The timestamp
-                          of resource last modification (UTC).
-                        "lastModifiedBy": "str",  # Optional. The identity that last modified
-                          the resource.
-                        "lastModifiedByType": "str"  # Optional. The type of identity that
-                          last modified the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                    },
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    },
-                    "type": "str"  # Optional. The type of the resource. E.g.
-                      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts".
-                }
         """
 
     @overload
@@ -435,8 +226,7 @@ class WorkspacesOperations:
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[JSON]:
-        # pylint: disable=line-too-long
+    ) -> AsyncLROPoller[_models.QuantumWorkspace]:
         """Creates or updates a workspace resource.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -449,84 +239,19 @@ class WorkspacesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns JSON object
-        :rtype: ~azure.core.polling.AsyncLROPoller[JSON]
+        :return: An instance of AsyncLROPoller that returns QuantumWorkspace
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.quantum.models.QuantumWorkspace]
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # response body for status code(s): 200, 201
-                response == {
-                    "location": "str",  # The geo-location where the resource lives. Required.
-                    "id": "str",  # Optional. Fully qualified resource ID for the resource. E.g.
-                      "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-                    "identity": {
-                        "principalId": "str",  # Optional. The principal ID of resource
-                          identity.
-                        "tenantId": "str",  # Optional. The tenant ID of resource.
-                        "type": "str"  # Optional. The identity type. Known values are:
-                          "SystemAssigned" and "None".
-                    },
-                    "name": "str",  # Optional. The name of the resource.
-                    "properties": {
-                        "apiKeyEnabled": bool,  # Optional. Indicator of enablement of the
-                          Quantum workspace Api keys.
-                        "endpointUri": "str",  # Optional. The URI of the workspace endpoint.
-                        "providers": [
-                            {
-                                "applicationName": "str",  # Optional. The provider's
-                                  marketplace application display name.
-                                "instanceUri": "str",  # Optional. A Uri identifying
-                                  the specific instance of this provider.
-                                "providerId": "str",  # Optional. Unique id of this
-                                  provider.
-                                "providerSku": "str",  # Optional. The sku associated
-                                  with pricing information for this provider.
-                                "provisioningState": "str",  # Optional. Provisioning
-                                  status field. Known values are: "Succeeded", "Launching", "Updating",
-                                  "Deleting", "Deleted", and "Failed".
-                                "resourceUsageId": "str"  # Optional. Id to track
-                                  resource usage for the provider.
-                            }
-                        ],
-                        "provisioningState": "str",  # Optional. Provisioning status field.
-                          Known values are: "Succeeded", "ProviderLaunching", "ProviderUpdating",
-                          "ProviderDeleting", "ProviderProvisioning", and "Failed".
-                        "storageAccount": "str",  # Optional. ARM Resource Id of the storage
-                          account associated with this workspace.
-                        "usable": "str"  # Optional. Whether the current workspace is ready
-                          to accept Jobs. Known values are: "Yes", "No", and "Partial".
-                    },
-                    "systemData": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The timestamp of
-                          resource creation (UTC).
-                        "createdBy": "str",  # Optional. The identity that created the
-                          resource.
-                        "createdByType": "str",  # Optional. The type of identity that
-                          created the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                        "lastModifiedAt": "2020-02-20 00:00:00",  # Optional. The timestamp
-                          of resource last modification (UTC).
-                        "lastModifiedBy": "str",  # Optional. The identity that last modified
-                          the resource.
-                        "lastModifiedByType": "str"  # Optional. The type of identity that
-                          last modified the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                    },
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    },
-                    "type": "str"  # Optional. The type of the resource. E.g.
-                      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts".
-                }
         """
 
     @distributed_trace_async
     async def begin_create_or_update(
-        self, resource_group_name: str, workspace_name: str, quantum_workspace: Union[JSON, IO[bytes]], **kwargs: Any
-    ) -> AsyncLROPoller[JSON]:
-        # pylint: disable=line-too-long
+        self,
+        resource_group_name: str,
+        workspace_name: str,
+        quantum_workspace: Union[_models.QuantumWorkspace, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.QuantumWorkspace]:
         """Creates or updates a workspace resource.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -534,154 +259,21 @@ class WorkspacesOperations:
         :type resource_group_name: str
         :param workspace_name: The name of the quantum workspace resource. Required.
         :type workspace_name: str
-        :param quantum_workspace: Workspace details. Is either a JSON type or a IO[bytes] type.
-         Required.
-        :type quantum_workspace: JSON or IO[bytes]
+        :param quantum_workspace: Workspace details. Is either a QuantumWorkspace type or a IO[bytes]
+         type. Required.
+        :type quantum_workspace: ~azure.mgmt.quantum.models.QuantumWorkspace or IO[bytes]
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns JSON object
-        :rtype: ~azure.core.polling.AsyncLROPoller[JSON]
+        :return: An instance of AsyncLROPoller that returns QuantumWorkspace
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.quantum.models.QuantumWorkspace]
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # JSON input template you can fill out and use as your body input.
-                quantum_workspace = {
-                    "location": "str",  # The geo-location where the resource lives. Required.
-                    "id": "str",  # Optional. Fully qualified resource ID for the resource. E.g.
-                      "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-                    "identity": {
-                        "principalId": "str",  # Optional. The principal ID of resource
-                          identity.
-                        "tenantId": "str",  # Optional. The tenant ID of resource.
-                        "type": "str"  # Optional. The identity type. Known values are:
-                          "SystemAssigned" and "None".
-                    },
-                    "name": "str",  # Optional. The name of the resource.
-                    "properties": {
-                        "apiKeyEnabled": bool,  # Optional. Indicator of enablement of the
-                          Quantum workspace Api keys.
-                        "endpointUri": "str",  # Optional. The URI of the workspace endpoint.
-                        "providers": [
-                            {
-                                "applicationName": "str",  # Optional. The provider's
-                                  marketplace application display name.
-                                "instanceUri": "str",  # Optional. A Uri identifying
-                                  the specific instance of this provider.
-                                "providerId": "str",  # Optional. Unique id of this
-                                  provider.
-                                "providerSku": "str",  # Optional. The sku associated
-                                  with pricing information for this provider.
-                                "provisioningState": "str",  # Optional. Provisioning
-                                  status field. Known values are: "Succeeded", "Launching", "Updating",
-                                  "Deleting", "Deleted", and "Failed".
-                                "resourceUsageId": "str"  # Optional. Id to track
-                                  resource usage for the provider.
-                            }
-                        ],
-                        "provisioningState": "str",  # Optional. Provisioning status field.
-                          Known values are: "Succeeded", "ProviderLaunching", "ProviderUpdating",
-                          "ProviderDeleting", "ProviderProvisioning", and "Failed".
-                        "storageAccount": "str",  # Optional. ARM Resource Id of the storage
-                          account associated with this workspace.
-                        "usable": "str"  # Optional. Whether the current workspace is ready
-                          to accept Jobs. Known values are: "Yes", "No", and "Partial".
-                    },
-                    "systemData": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The timestamp of
-                          resource creation (UTC).
-                        "createdBy": "str",  # Optional. The identity that created the
-                          resource.
-                        "createdByType": "str",  # Optional. The type of identity that
-                          created the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                        "lastModifiedAt": "2020-02-20 00:00:00",  # Optional. The timestamp
-                          of resource last modification (UTC).
-                        "lastModifiedBy": "str",  # Optional. The identity that last modified
-                          the resource.
-                        "lastModifiedByType": "str"  # Optional. The type of identity that
-                          last modified the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                    },
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    },
-                    "type": "str"  # Optional. The type of the resource. E.g.
-                      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts".
-                }
-
-                # response body for status code(s): 200, 201
-                response == {
-                    "location": "str",  # The geo-location where the resource lives. Required.
-                    "id": "str",  # Optional. Fully qualified resource ID for the resource. E.g.
-                      "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-                    "identity": {
-                        "principalId": "str",  # Optional. The principal ID of resource
-                          identity.
-                        "tenantId": "str",  # Optional. The tenant ID of resource.
-                        "type": "str"  # Optional. The identity type. Known values are:
-                          "SystemAssigned" and "None".
-                    },
-                    "name": "str",  # Optional. The name of the resource.
-                    "properties": {
-                        "apiKeyEnabled": bool,  # Optional. Indicator of enablement of the
-                          Quantum workspace Api keys.
-                        "endpointUri": "str",  # Optional. The URI of the workspace endpoint.
-                        "providers": [
-                            {
-                                "applicationName": "str",  # Optional. The provider's
-                                  marketplace application display name.
-                                "instanceUri": "str",  # Optional. A Uri identifying
-                                  the specific instance of this provider.
-                                "providerId": "str",  # Optional. Unique id of this
-                                  provider.
-                                "providerSku": "str",  # Optional. The sku associated
-                                  with pricing information for this provider.
-                                "provisioningState": "str",  # Optional. Provisioning
-                                  status field. Known values are: "Succeeded", "Launching", "Updating",
-                                  "Deleting", "Deleted", and "Failed".
-                                "resourceUsageId": "str"  # Optional. Id to track
-                                  resource usage for the provider.
-                            }
-                        ],
-                        "provisioningState": "str",  # Optional. Provisioning status field.
-                          Known values are: "Succeeded", "ProviderLaunching", "ProviderUpdating",
-                          "ProviderDeleting", "ProviderProvisioning", and "Failed".
-                        "storageAccount": "str",  # Optional. ARM Resource Id of the storage
-                          account associated with this workspace.
-                        "usable": "str"  # Optional. Whether the current workspace is ready
-                          to accept Jobs. Known values are: "Yes", "No", and "Partial".
-                    },
-                    "systemData": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The timestamp of
-                          resource creation (UTC).
-                        "createdBy": "str",  # Optional. The identity that created the
-                          resource.
-                        "createdByType": "str",  # Optional. The type of identity that
-                          created the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                        "lastModifiedAt": "2020-02-20 00:00:00",  # Optional. The timestamp
-                          of resource last modification (UTC).
-                        "lastModifiedBy": "str",  # Optional. The identity that last modified
-                          the resource.
-                        "lastModifiedByType": "str"  # Optional. The type of identity that
-                          last modified the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                    },
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    },
-                    "type": "str"  # Optional. The type of the resource. E.g.
-                      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts".
-                }
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[JSON] = kwargs.pop("cls", None)
+        cls: ClsType[_models.QuantumWorkspace] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -699,11 +291,7 @@ class WorkspacesOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            response = pipeline_response.http_response
-            if response.content:
-                deserialized = response.json()
-            else:
-                deserialized = None
+            deserialized = self._deserialize("QuantumWorkspace", pipeline_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -718,25 +306,26 @@ class WorkspacesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[JSON].from_continuation_token(
+            return AsyncLROPoller[_models.QuantumWorkspace].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[JSON](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.QuantumWorkspace](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @overload
     async def update_tags(
         self,
         resource_group_name: str,
         workspace_name: str,
-        workspace_tags: JSON,
+        workspace_tags: _models.TagsObject,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> JSON:
-        # pylint: disable=line-too-long
+    ) -> _models.QuantumWorkspace:
         """Updates an existing workspace's tags.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -745,88 +334,13 @@ class WorkspacesOperations:
         :param workspace_name: The name of the quantum workspace resource. Required.
         :type workspace_name: str
         :param workspace_tags: Parameters supplied to update tags. Required.
-        :type workspace_tags: JSON
+        :type workspace_tags: ~azure.mgmt.quantum.models.TagsObject
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: JSON object
-        :rtype: JSON
+        :return: QuantumWorkspace
+        :rtype: ~azure.mgmt.quantum.models.QuantumWorkspace
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # JSON input template you can fill out and use as your body input.
-                workspace_tags = {
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    }
-                }
-
-                # response body for status code(s): 200
-                response == {
-                    "location": "str",  # The geo-location where the resource lives. Required.
-                    "id": "str",  # Optional. Fully qualified resource ID for the resource. E.g.
-                      "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-                    "identity": {
-                        "principalId": "str",  # Optional. The principal ID of resource
-                          identity.
-                        "tenantId": "str",  # Optional. The tenant ID of resource.
-                        "type": "str"  # Optional. The identity type. Known values are:
-                          "SystemAssigned" and "None".
-                    },
-                    "name": "str",  # Optional. The name of the resource.
-                    "properties": {
-                        "apiKeyEnabled": bool,  # Optional. Indicator of enablement of the
-                          Quantum workspace Api keys.
-                        "endpointUri": "str",  # Optional. The URI of the workspace endpoint.
-                        "providers": [
-                            {
-                                "applicationName": "str",  # Optional. The provider's
-                                  marketplace application display name.
-                                "instanceUri": "str",  # Optional. A Uri identifying
-                                  the specific instance of this provider.
-                                "providerId": "str",  # Optional. Unique id of this
-                                  provider.
-                                "providerSku": "str",  # Optional. The sku associated
-                                  with pricing information for this provider.
-                                "provisioningState": "str",  # Optional. Provisioning
-                                  status field. Known values are: "Succeeded", "Launching", "Updating",
-                                  "Deleting", "Deleted", and "Failed".
-                                "resourceUsageId": "str"  # Optional. Id to track
-                                  resource usage for the provider.
-                            }
-                        ],
-                        "provisioningState": "str",  # Optional. Provisioning status field.
-                          Known values are: "Succeeded", "ProviderLaunching", "ProviderUpdating",
-                          "ProviderDeleting", "ProviderProvisioning", and "Failed".
-                        "storageAccount": "str",  # Optional. ARM Resource Id of the storage
-                          account associated with this workspace.
-                        "usable": "str"  # Optional. Whether the current workspace is ready
-                          to accept Jobs. Known values are: "Yes", "No", and "Partial".
-                    },
-                    "systemData": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The timestamp of
-                          resource creation (UTC).
-                        "createdBy": "str",  # Optional. The identity that created the
-                          resource.
-                        "createdByType": "str",  # Optional. The type of identity that
-                          created the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                        "lastModifiedAt": "2020-02-20 00:00:00",  # Optional. The timestamp
-                          of resource last modification (UTC).
-                        "lastModifiedBy": "str",  # Optional. The identity that last modified
-                          the resource.
-                        "lastModifiedByType": "str"  # Optional. The type of identity that
-                          last modified the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                    },
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    },
-                    "type": "str"  # Optional. The type of the resource. E.g.
-                      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts".
-                }
         """
 
     @overload
@@ -838,8 +352,7 @@ class WorkspacesOperations:
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> JSON:
-        # pylint: disable=line-too-long
+    ) -> _models.QuantumWorkspace:
         """Updates an existing workspace's tags.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -852,84 +365,19 @@ class WorkspacesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: JSON object
-        :rtype: JSON
+        :return: QuantumWorkspace
+        :rtype: ~azure.mgmt.quantum.models.QuantumWorkspace
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # response body for status code(s): 200
-                response == {
-                    "location": "str",  # The geo-location where the resource lives. Required.
-                    "id": "str",  # Optional. Fully qualified resource ID for the resource. E.g.
-                      "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-                    "identity": {
-                        "principalId": "str",  # Optional. The principal ID of resource
-                          identity.
-                        "tenantId": "str",  # Optional. The tenant ID of resource.
-                        "type": "str"  # Optional. The identity type. Known values are:
-                          "SystemAssigned" and "None".
-                    },
-                    "name": "str",  # Optional. The name of the resource.
-                    "properties": {
-                        "apiKeyEnabled": bool,  # Optional. Indicator of enablement of the
-                          Quantum workspace Api keys.
-                        "endpointUri": "str",  # Optional. The URI of the workspace endpoint.
-                        "providers": [
-                            {
-                                "applicationName": "str",  # Optional. The provider's
-                                  marketplace application display name.
-                                "instanceUri": "str",  # Optional. A Uri identifying
-                                  the specific instance of this provider.
-                                "providerId": "str",  # Optional. Unique id of this
-                                  provider.
-                                "providerSku": "str",  # Optional. The sku associated
-                                  with pricing information for this provider.
-                                "provisioningState": "str",  # Optional. Provisioning
-                                  status field. Known values are: "Succeeded", "Launching", "Updating",
-                                  "Deleting", "Deleted", and "Failed".
-                                "resourceUsageId": "str"  # Optional. Id to track
-                                  resource usage for the provider.
-                            }
-                        ],
-                        "provisioningState": "str",  # Optional. Provisioning status field.
-                          Known values are: "Succeeded", "ProviderLaunching", "ProviderUpdating",
-                          "ProviderDeleting", "ProviderProvisioning", and "Failed".
-                        "storageAccount": "str",  # Optional. ARM Resource Id of the storage
-                          account associated with this workspace.
-                        "usable": "str"  # Optional. Whether the current workspace is ready
-                          to accept Jobs. Known values are: "Yes", "No", and "Partial".
-                    },
-                    "systemData": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The timestamp of
-                          resource creation (UTC).
-                        "createdBy": "str",  # Optional. The identity that created the
-                          resource.
-                        "createdByType": "str",  # Optional. The type of identity that
-                          created the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                        "lastModifiedAt": "2020-02-20 00:00:00",  # Optional. The timestamp
-                          of resource last modification (UTC).
-                        "lastModifiedBy": "str",  # Optional. The identity that last modified
-                          the resource.
-                        "lastModifiedByType": "str"  # Optional. The type of identity that
-                          last modified the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                    },
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    },
-                    "type": "str"  # Optional. The type of the resource. E.g.
-                      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts".
-                }
         """
 
     @distributed_trace_async
     async def update_tags(
-        self, resource_group_name: str, workspace_name: str, workspace_tags: Union[JSON, IO[bytes]], **kwargs: Any
-    ) -> JSON:
-        # pylint: disable=line-too-long
+        self,
+        resource_group_name: str,
+        workspace_name: str,
+        workspace_tags: Union[_models.TagsObject, IO[bytes]],
+        **kwargs: Any
+    ) -> _models.QuantumWorkspace:
         """Updates an existing workspace's tags.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -937,90 +385,15 @@ class WorkspacesOperations:
         :type resource_group_name: str
         :param workspace_name: The name of the quantum workspace resource. Required.
         :type workspace_name: str
-        :param workspace_tags: Parameters supplied to update tags. Is either a JSON type or a IO[bytes]
-         type. Required.
-        :type workspace_tags: JSON or IO[bytes]
+        :param workspace_tags: Parameters supplied to update tags. Is either a TagsObject type or a
+         IO[bytes] type. Required.
+        :type workspace_tags: ~azure.mgmt.quantum.models.TagsObject or IO[bytes]
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
         :paramtype content_type: str
-        :return: JSON object
-        :rtype: JSON
+        :return: QuantumWorkspace
+        :rtype: ~azure.mgmt.quantum.models.QuantumWorkspace
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # JSON input template you can fill out and use as your body input.
-                workspace_tags = {
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    }
-                }
-
-                # response body for status code(s): 200
-                response == {
-                    "location": "str",  # The geo-location where the resource lives. Required.
-                    "id": "str",  # Optional. Fully qualified resource ID for the resource. E.g.
-                      "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-                    "identity": {
-                        "principalId": "str",  # Optional. The principal ID of resource
-                          identity.
-                        "tenantId": "str",  # Optional. The tenant ID of resource.
-                        "type": "str"  # Optional. The identity type. Known values are:
-                          "SystemAssigned" and "None".
-                    },
-                    "name": "str",  # Optional. The name of the resource.
-                    "properties": {
-                        "apiKeyEnabled": bool,  # Optional. Indicator of enablement of the
-                          Quantum workspace Api keys.
-                        "endpointUri": "str",  # Optional. The URI of the workspace endpoint.
-                        "providers": [
-                            {
-                                "applicationName": "str",  # Optional. The provider's
-                                  marketplace application display name.
-                                "instanceUri": "str",  # Optional. A Uri identifying
-                                  the specific instance of this provider.
-                                "providerId": "str",  # Optional. Unique id of this
-                                  provider.
-                                "providerSku": "str",  # Optional. The sku associated
-                                  with pricing information for this provider.
-                                "provisioningState": "str",  # Optional. Provisioning
-                                  status field. Known values are: "Succeeded", "Launching", "Updating",
-                                  "Deleting", "Deleted", and "Failed".
-                                "resourceUsageId": "str"  # Optional. Id to track
-                                  resource usage for the provider.
-                            }
-                        ],
-                        "provisioningState": "str",  # Optional. Provisioning status field.
-                          Known values are: "Succeeded", "ProviderLaunching", "ProviderUpdating",
-                          "ProviderDeleting", "ProviderProvisioning", and "Failed".
-                        "storageAccount": "str",  # Optional. ARM Resource Id of the storage
-                          account associated with this workspace.
-                        "usable": "str"  # Optional. Whether the current workspace is ready
-                          to accept Jobs. Known values are: "Yes", "No", and "Partial".
-                    },
-                    "systemData": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The timestamp of
-                          resource creation (UTC).
-                        "createdBy": "str",  # Optional. The identity that created the
-                          resource.
-                        "createdByType": "str",  # Optional. The type of identity that
-                          created the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                        "lastModifiedAt": "2020-02-20 00:00:00",  # Optional. The timestamp
-                          of resource last modification (UTC).
-                        "lastModifiedBy": "str",  # Optional. The identity that last modified
-                          the resource.
-                        "lastModifiedByType": "str"  # Optional. The type of identity that
-                          last modified the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                    },
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    },
-                    "type": "str"  # Optional. The type of the resource. E.g.
-                      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts".
-                }
         """
         error_map = {
             401: ClientAuthenticationError,
@@ -1034,7 +407,7 @@ class WorkspacesOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[JSON] = kwargs.pop("cls", None)
+        cls: ClsType[_models.QuantumWorkspace] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -1042,7 +415,7 @@ class WorkspacesOperations:
         if isinstance(workspace_tags, (IOBase, bytes)):
             _content = workspace_tags
         else:
-            _json = workspace_tags
+            _json = self._serialize.body(workspace_tags, "TagsObject")
 
         _request = build_workspaces_update_tags_request(
             resource_group_name=resource_group_name,
@@ -1068,17 +441,15 @@ class WorkspacesOperations:
             if _stream:
                 await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.content:
-            deserialized = response.json()
-        else:
-            deserialized = None
+        deserialized = self._deserialize("QuantumWorkspace", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return cast(JSON, deserialized)  # type: ignore
+        return deserialized  # type: ignore
 
     async def _delete_initial(  # pylint: disable=inconsistent-return-statements
         self, resource_group_name: str, workspace_name: str, **kwargs: Any
@@ -1117,7 +488,8 @@ class WorkspacesOperations:
             if _stream:
                 await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})  # type: ignore
@@ -1175,86 +547,17 @@ class WorkspacesOperations:
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     @distributed_trace
-    def list_by_subscription(self, **kwargs: Any) -> AsyncIterable[JSON]:
-        # pylint: disable=line-too-long
+    def list_by_subscription(self, **kwargs: Any) -> AsyncIterable["_models.QuantumWorkspace"]:
         """Gets the list of Workspaces within a Subscription.
 
-        :return: An iterator like instance of JSON object
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[JSON]
+        :return: An iterator like instance of QuantumWorkspace
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.quantum.models.QuantumWorkspace]
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # response body for status code(s): 200
-                response == {
-                    "location": "str",  # The geo-location where the resource lives. Required.
-                    "id": "str",  # Optional. Fully qualified resource ID for the resource. E.g.
-                      "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-                    "identity": {
-                        "principalId": "str",  # Optional. The principal ID of resource
-                          identity.
-                        "tenantId": "str",  # Optional. The tenant ID of resource.
-                        "type": "str"  # Optional. The identity type. Known values are:
-                          "SystemAssigned" and "None".
-                    },
-                    "name": "str",  # Optional. The name of the resource.
-                    "properties": {
-                        "apiKeyEnabled": bool,  # Optional. Indicator of enablement of the
-                          Quantum workspace Api keys.
-                        "endpointUri": "str",  # Optional. The URI of the workspace endpoint.
-                        "providers": [
-                            {
-                                "applicationName": "str",  # Optional. The provider's
-                                  marketplace application display name.
-                                "instanceUri": "str",  # Optional. A Uri identifying
-                                  the specific instance of this provider.
-                                "providerId": "str",  # Optional. Unique id of this
-                                  provider.
-                                "providerSku": "str",  # Optional. The sku associated
-                                  with pricing information for this provider.
-                                "provisioningState": "str",  # Optional. Provisioning
-                                  status field. Known values are: "Succeeded", "Launching", "Updating",
-                                  "Deleting", "Deleted", and "Failed".
-                                "resourceUsageId": "str"  # Optional. Id to track
-                                  resource usage for the provider.
-                            }
-                        ],
-                        "provisioningState": "str",  # Optional. Provisioning status field.
-                          Known values are: "Succeeded", "ProviderLaunching", "ProviderUpdating",
-                          "ProviderDeleting", "ProviderProvisioning", and "Failed".
-                        "storageAccount": "str",  # Optional. ARM Resource Id of the storage
-                          account associated with this workspace.
-                        "usable": "str"  # Optional. Whether the current workspace is ready
-                          to accept Jobs. Known values are: "Yes", "No", and "Partial".
-                    },
-                    "systemData": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The timestamp of
-                          resource creation (UTC).
-                        "createdBy": "str",  # Optional. The identity that created the
-                          resource.
-                        "createdByType": "str",  # Optional. The type of identity that
-                          created the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                        "lastModifiedAt": "2020-02-20 00:00:00",  # Optional. The timestamp
-                          of resource last modification (UTC).
-                        "lastModifiedBy": "str",  # Optional. The identity that last modified
-                          the resource.
-                        "lastModifiedByType": "str"  # Optional. The type of identity that
-                          last modified the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                    },
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    },
-                    "type": "str"  # Optional. The type of the resource. E.g.
-                      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts".
-                }
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[JSON] = kwargs.pop("cls", None)
+        cls: ClsType[_models._models.WorkspaceListResult] = kwargs.pop("cls", None)  # pylint: disable=protected-access
 
         error_map = {
             401: ClientAuthenticationError,
@@ -1293,11 +596,13 @@ class WorkspacesOperations:
             return _request
 
         async def extract_data(pipeline_response):
-            deserialized = pipeline_response.http_response.json()
-            list_of_elem = deserialized["value"]
+            deserialized = self._deserialize(
+                _models._models.WorkspaceListResult, pipeline_response  # pylint: disable=protected-access
+            )
+            list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)
@@ -1312,96 +617,30 @@ class WorkspacesOperations:
                 if _stream:
                     await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return AsyncItemPaged(get_next, extract_data)
 
     @distributed_trace
-    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> AsyncIterable[JSON]:
-        # pylint: disable=line-too-long
+    def list_by_resource_group(
+        self, resource_group_name: str, **kwargs: Any
+    ) -> AsyncIterable["_models.QuantumWorkspace"]:
         """Gets the list of Workspaces within a resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :return: An iterator like instance of JSON object
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[JSON]
+        :return: An iterator like instance of QuantumWorkspace
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.quantum.models.QuantumWorkspace]
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # response body for status code(s): 200
-                response == {
-                    "location": "str",  # The geo-location where the resource lives. Required.
-                    "id": "str",  # Optional. Fully qualified resource ID for the resource. E.g.
-                      "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-                    "identity": {
-                        "principalId": "str",  # Optional. The principal ID of resource
-                          identity.
-                        "tenantId": "str",  # Optional. The tenant ID of resource.
-                        "type": "str"  # Optional. The identity type. Known values are:
-                          "SystemAssigned" and "None".
-                    },
-                    "name": "str",  # Optional. The name of the resource.
-                    "properties": {
-                        "apiKeyEnabled": bool,  # Optional. Indicator of enablement of the
-                          Quantum workspace Api keys.
-                        "endpointUri": "str",  # Optional. The URI of the workspace endpoint.
-                        "providers": [
-                            {
-                                "applicationName": "str",  # Optional. The provider's
-                                  marketplace application display name.
-                                "instanceUri": "str",  # Optional. A Uri identifying
-                                  the specific instance of this provider.
-                                "providerId": "str",  # Optional. Unique id of this
-                                  provider.
-                                "providerSku": "str",  # Optional. The sku associated
-                                  with pricing information for this provider.
-                                "provisioningState": "str",  # Optional. Provisioning
-                                  status field. Known values are: "Succeeded", "Launching", "Updating",
-                                  "Deleting", "Deleted", and "Failed".
-                                "resourceUsageId": "str"  # Optional. Id to track
-                                  resource usage for the provider.
-                            }
-                        ],
-                        "provisioningState": "str",  # Optional. Provisioning status field.
-                          Known values are: "Succeeded", "ProviderLaunching", "ProviderUpdating",
-                          "ProviderDeleting", "ProviderProvisioning", and "Failed".
-                        "storageAccount": "str",  # Optional. ARM Resource Id of the storage
-                          account associated with this workspace.
-                        "usable": "str"  # Optional. Whether the current workspace is ready
-                          to accept Jobs. Known values are: "Yes", "No", and "Partial".
-                    },
-                    "systemData": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The timestamp of
-                          resource creation (UTC).
-                        "createdBy": "str",  # Optional. The identity that created the
-                          resource.
-                        "createdByType": "str",  # Optional. The type of identity that
-                          created the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                        "lastModifiedAt": "2020-02-20 00:00:00",  # Optional. The timestamp
-                          of resource last modification (UTC).
-                        "lastModifiedBy": "str",  # Optional. The identity that last modified
-                          the resource.
-                        "lastModifiedByType": "str"  # Optional. The type of identity that
-                          last modified the resource. Known values are: "User", "Application",
-                          "ManagedIdentity", and "Key".
-                    },
-                    "tags": {
-                        "str": "str"  # Optional. Resource tags.
-                    },
-                    "type": "str"  # Optional. The type of the resource. E.g.
-                      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts".
-                }
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[JSON] = kwargs.pop("cls", None)
+        cls: ClsType[_models._models.WorkspaceListResult] = kwargs.pop("cls", None)  # pylint: disable=protected-access
 
         error_map = {
             401: ClientAuthenticationError,
@@ -1441,11 +680,13 @@ class WorkspacesOperations:
             return _request
 
         async def extract_data(pipeline_response):
-            deserialized = pipeline_response.http_response.json()
-            list_of_elem = deserialized["value"]
+            deserialized = self._deserialize(
+                _models._models.WorkspaceListResult, pipeline_response  # pylint: disable=protected-access
+            )
+            list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)
@@ -1460,7 +701,8 @@ class WorkspacesOperations:
                 if _stream:
                     await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -1477,6 +719,8 @@ class OfferingsOperations:
         :attr:`offerings` attribute.
     """
 
+    models = _models
+
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
         self._client = input_args.pop(0) if input_args else kwargs.pop("client")
@@ -1485,137 +729,19 @@ class OfferingsOperations:
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list(self, location_name: str, **kwargs: Any) -> AsyncIterable[JSON]:
-        # pylint: disable=line-too-long
+    def list(self, location_name: str, **kwargs: Any) -> AsyncIterable["_models.ProviderDescription"]:
         """Returns the list of all provider offerings available for the given location.
 
         :param location_name: Location. Required.
         :type location_name: str
-        :return: An iterator like instance of JSON object
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[JSON]
+        :return: An iterator like instance of ProviderDescription
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.quantum.models.ProviderDescription]
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # response body for status code(s): 200
-                response == {
-                    "id": "str",  # Optional. Unique provider's id.
-                    "name": "str",  # Optional. Provider's display name.
-                    "properties": {
-                        "aad": {
-                            "applicationId": "str",  # Optional. Provider's application
-                              id.
-                            "tenantId": "str"  # Optional. Provider's tenant id.
-                        },
-                        "company": "str",  # Optional. Company name.
-                        "defaultEndpoint": "str",  # Optional. Provider's default endpoint.
-                        "description": "str",  # Optional. A description about this provider.
-                        "managedApplication": {
-                            "offerId": "str",  # Optional. Provider's offer id.
-                            "publisherId": "str"  # Optional. Provider's publisher id.
-                        },
-                        "pricingDimensions": [
-                            {
-                                "id": "str",  # Optional. Unique id of this pricing
-                                  dimension.
-                                "name": "str"  # Optional. The display name of this
-                                  pricing dimension.
-                            }
-                        ],
-                        "providerType": "str",  # Optional. Provider type.
-                        "quotaDimensions": [
-                            {
-                                "description": "str",  # Optional. A description
-                                  about this quota dimension.
-                                "id": "str",  # Optional. Unique id of this
-                                  dimension.
-                                "name": "str",  # Optional. The display name of this
-                                  quota dimension.
-                                "period": "str",  # Optional. The reset period of
-                                  this quota dimension.
-                                "quota": 0.0,  # Optional. The max limit of this
-                                  dimension.
-                                "scope": "str",  # Optional. The scope of this quota
-                                  dimension.
-                                "unit": "str",  # Optional. The standard unit of
-                                  measurement used for this quota dimension.
-                                "unitPlural": "str"  # Optional. The standard unit of
-                                  measurement used for this quota dimension in plural form.
-                            }
-                        ],
-                        "skus": [
-                            {
-                                "autoAdd": bool,  # Optional. Flag to indicate
-                                  whether the sku should be automatically added during workspace
-                                  creation.
-                                "description": "str",  # Optional. Description about
-                                  this sku.
-                                "id": "str",  # Optional. Unique sku id.
-                                "name": "str",  # Optional. Display name of this sku.
-                                "pricingDetails": [
-                                    {
-                                        "id": "str",  # Optional. Unique id
-                                          for this pricing information.
-                                        "value": "str"  # Optional. The unit
-                                          cost of this sku.
-                                    }
-                                ],
-                                "quotaDimensions": [
-                                    {
-                                        "description": "str",  # Optional. A
-                                          description about this quota dimension.
-                                        "id": "str",  # Optional. Unique id
-                                          of this dimension.
-                                        "name": "str",  # Optional. The
-                                          display name of this quota dimension.
-                                        "period": "str",  # Optional. The
-                                          reset period of this quota dimension.
-                                        "quota": 0.0,  # Optional. The max
-                                          limit of this dimension.
-                                        "scope": "str",  # Optional. The
-                                          scope of this quota dimension.
-                                        "unit": "str",  # Optional. The
-                                          standard unit of measurement used for this quota dimension.
-                                        "unitPlural": "str"  # Optional. The
-                                          standard unit of measurement used for this quota dimension in
-                                          plural form.
-                                    }
-                                ],
-                                "restrictedAccessUri": "str",  # Optional. Uri to
-                                  subscribe to the restricted access sku.
-                                "targets": [
-                                    "str"  # Optional. The list of targets
-                                      available for this sku.
-                                ],
-                                "version": "str"  # Optional. Display name of this
-                                  sku.
-                            }
-                        ],
-                        "targets": [
-                            {
-                                "acceptedContentEncodings": [
-                                    "str"  # Optional. List of content encodings
-                                      accepted by this target.
-                                ],
-                                "acceptedDataFormats": [
-                                    "str"  # Optional. List of data formats
-                                      accepted by this target.
-                                ],
-                                "description": "str",  # Optional. A description
-                                  about this target.
-                                "id": "str",  # Optional. Unique target id.
-                                "name": "str"  # Optional. Display name of this
-                                  target.
-                            }
-                        ]
-                    }
-                }
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[JSON] = kwargs.pop("cls", None)
+        cls: ClsType[_models._models.OfferingsListResult] = kwargs.pop("cls", None)  # pylint: disable=protected-access
 
         error_map = {
             401: ClientAuthenticationError,
@@ -1655,11 +781,13 @@ class OfferingsOperations:
             return _request
 
         async def extract_data(pipeline_response):
-            deserialized = pipeline_response.http_response.json()
-            list_of_elem = deserialized["value"]
+            deserialized = self._deserialize(
+                _models._models.OfferingsListResult, pipeline_response  # pylint: disable=protected-access
+            )
+            list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)
@@ -1674,7 +802,8 @@ class OfferingsOperations:
                 if _stream:
                     await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -1691,6 +820,8 @@ class Operations:
         :attr:`operations` attribute.
     """
 
+    models = _models
+
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
         self._client = input_args.pop(0) if input_args else kwargs.pop("client")
@@ -1699,33 +830,17 @@ class Operations:
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list(self, **kwargs: Any) -> AsyncIterable[JSON]:
+    def list(self, **kwargs: Any) -> AsyncIterable["_models.Operation"]:
         """Returns list of operations.
 
-        :return: An iterator like instance of JSON object
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[JSON]
+        :return: An iterator like instance of Operation
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.quantum.models.Operation]
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # response body for status code(s): 200
-                response == {
-                    "display": {
-                        "description": "str",  # Optional. Description of the operation.
-                        "operation": "str",  # Optional. Operation name.
-                        "provider": "str",  # Optional. Provider name.
-                        "resource": "str"  # Optional. Resource name.
-                    },
-                    "isDataAction": bool,  # Optional. Indicates whether the operation is a data
-                      action.
-                    "name": "str"  # Optional. Name of the operation.
-                }
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[JSON] = kwargs.pop("cls", None)
+        cls: ClsType[_models._models.OperationsList] = kwargs.pop("cls", None)  # pylint: disable=protected-access
 
         error_map = {
             401: ClientAuthenticationError,
@@ -1763,11 +878,13 @@ class Operations:
             return _request
 
         async def extract_data(pipeline_response):
-            deserialized = pipeline_response.http_response.json()
-            list_of_elem = deserialized["value"]
+            deserialized = self._deserialize(
+                _models._models.OperationsList, pipeline_response  # pylint: disable=protected-access
+            )
+            list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)
@@ -1782,7 +899,8 @@ class Operations:
                 if _stream:
                     await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -1799,6 +917,8 @@ class WorkspaceOperations:
         :attr:`workspace` attribute.
     """
 
+    models = _models
+
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
         self._client = input_args.pop(0) if input_args else kwargs.pop("client")
@@ -1810,43 +930,24 @@ class WorkspaceOperations:
     async def check_name_availability(
         self,
         location_name: str,
-        check_name_availability_parameters: JSON,
+        check_name_availability_parameters: _models.CheckNameAvailabilityParameters,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> JSON:
-        # pylint: disable=line-too-long
+    ) -> _models.CheckNameAvailabilityResult:
         """Check the availability of the resource name.
 
         :param location_name: Location. Required.
         :type location_name: str
         :param check_name_availability_parameters: The name and type of the resource. Required.
-        :type check_name_availability_parameters: JSON
+        :type check_name_availability_parameters:
+         ~azure.mgmt.quantum.models.CheckNameAvailabilityParameters
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: JSON object
-        :rtype: JSON
+        :return: CheckNameAvailabilityResult
+        :rtype: ~azure.mgmt.quantum.models.CheckNameAvailabilityResult
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # JSON input template you can fill out and use as your body input.
-                check_name_availability_parameters = {
-                    "name": "str",  # Optional. Name for checking availability.
-                    "type": "Microsoft.Quantum/Workspaces"  # Optional. Default value is
-                      "Microsoft.Quantum/Workspaces". The resource type of Quantum Workspace.
-                }
-
-                # response body for status code(s): 200
-                response == {
-                    "message": "str",  # Optional. The detailed info regarding the reason
-                      associated with the Namespace.
-                    "nameAvailable": bool,  # Optional. Indicator of availability of the Quantum
-                      Workspace resource name.
-                    "reason": "str"  # Optional. The reason of unavailability.
-                }
         """
 
     @overload
@@ -1857,7 +958,7 @@ class WorkspaceOperations:
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> JSON:
+    ) -> _models.CheckNameAvailabilityResult:
         """Check the availability of the resource name.
 
         :param location_name: Location. Required.
@@ -1867,60 +968,32 @@ class WorkspaceOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: JSON object
-        :rtype: JSON
+        :return: CheckNameAvailabilityResult
+        :rtype: ~azure.mgmt.quantum.models.CheckNameAvailabilityResult
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # response body for status code(s): 200
-                response == {
-                    "message": "str",  # Optional. The detailed info regarding the reason
-                      associated with the Namespace.
-                    "nameAvailable": bool,  # Optional. Indicator of availability of the Quantum
-                      Workspace resource name.
-                    "reason": "str"  # Optional. The reason of unavailability.
-                }
         """
 
     @distributed_trace_async
     async def check_name_availability(
-        self, location_name: str, check_name_availability_parameters: Union[JSON, IO[bytes]], **kwargs: Any
-    ) -> JSON:
-        # pylint: disable=line-too-long
+        self,
+        location_name: str,
+        check_name_availability_parameters: Union[_models.CheckNameAvailabilityParameters, IO[bytes]],
+        **kwargs: Any
+    ) -> _models.CheckNameAvailabilityResult:
         """Check the availability of the resource name.
 
         :param location_name: Location. Required.
         :type location_name: str
-        :param check_name_availability_parameters: The name and type of the resource. Is either a JSON
-         type or a IO[bytes] type. Required.
-        :type check_name_availability_parameters: JSON or IO[bytes]
+        :param check_name_availability_parameters: The name and type of the resource. Is either a
+         CheckNameAvailabilityParameters type or a IO[bytes] type. Required.
+        :type check_name_availability_parameters:
+         ~azure.mgmt.quantum.models.CheckNameAvailabilityParameters or IO[bytes]
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
         :paramtype content_type: str
-        :return: JSON object
-        :rtype: JSON
+        :return: CheckNameAvailabilityResult
+        :rtype: ~azure.mgmt.quantum.models.CheckNameAvailabilityResult
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # JSON input template you can fill out and use as your body input.
-                check_name_availability_parameters = {
-                    "name": "str",  # Optional. Name for checking availability.
-                    "type": "Microsoft.Quantum/Workspaces"  # Optional. Default value is
-                      "Microsoft.Quantum/Workspaces". The resource type of Quantum Workspace.
-                }
-
-                # response body for status code(s): 200
-                response == {
-                    "message": "str",  # Optional. The detailed info regarding the reason
-                      associated with the Namespace.
-                    "nameAvailable": bool,  # Optional. Indicator of availability of the Quantum
-                      Workspace resource name.
-                    "reason": "str"  # Optional. The reason of unavailability.
-                }
         """
         error_map = {
             401: ClientAuthenticationError,
@@ -1934,7 +1007,7 @@ class WorkspaceOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[JSON] = kwargs.pop("cls", None)
+        cls: ClsType[_models.CheckNameAvailabilityResult] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -1942,7 +1015,7 @@ class WorkspaceOperations:
         if isinstance(check_name_availability_parameters, (IOBase, bytes)):
             _content = check_name_availability_parameters
         else:
-            _json = check_name_availability_parameters
+            _json = self._serialize.body(check_name_availability_parameters, "CheckNameAvailabilityParameters")
 
         _request = build_workspace_check_name_availability_request(
             location_name=location_name,
@@ -1967,20 +1040,18 @@ class WorkspaceOperations:
             if _stream:
                 await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.content:
-            deserialized = response.json()
-        else:
-            deserialized = None
+        deserialized = self._deserialize("CheckNameAvailabilityResult", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return cast(JSON, deserialized)  # type: ignore
+        return deserialized  # type: ignore
 
     @distributed_trace_async
-    async def list_keys(self, resource_group_name: str, workspace_name: str, **kwargs: Any) -> JSON:
+    async def list_keys(self, resource_group_name: str, workspace_name: str, **kwargs: Any) -> _models.ListKeysResult:
         """Get the keys to use with the Quantum APIs. A key is used to authenticate and authorize access
         to the Quantum REST APIs. Only one key is needed at a time; two are given to provide seamless
         key regeneration.
@@ -1990,32 +1061,9 @@ class WorkspaceOperations:
         :type resource_group_name: str
         :param workspace_name: The name of the quantum workspace resource. Required.
         :type workspace_name: str
-        :return: JSON object
-        :rtype: JSON
+        :return: ListKeysResult
+        :rtype: ~azure.mgmt.quantum.models.ListKeysResult
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # response body for status code(s): 200
-                response == {
-                    "apiKeyEnabled": bool,  # Optional. Indicator of enablement of the Quantum
-                      workspace Api keys.
-                    "primaryConnectionString": "str",  # Optional. The connection string of the
-                      primary api key.
-                    "primaryKey": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The creation time of
-                          the api key.
-                        "key": "str"  # Optional. The Api key.
-                    },
-                    "secondaryConnectionString": "str",  # Optional. The connection string of the
-                      secondary api key.
-                    "secondaryKey": {
-                        "createdAt": "2020-02-20 00:00:00",  # Optional. The creation time of
-                          the api key.
-                        "key": "str"  # Optional. The Api key.
-                    }
-                }
         """
         error_map = {
             401: ClientAuthenticationError,
@@ -2028,7 +1076,7 @@ class WorkspaceOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[JSON] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ListKeysResult] = kwargs.pop("cls", None)
 
         _request = build_workspace_list_keys_request(
             resource_group_name=resource_group_name,
@@ -2051,24 +1099,22 @@ class WorkspaceOperations:
             if _stream:
                 await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.content:
-            deserialized = response.json()
-        else:
-            deserialized = None
+        deserialized = self._deserialize("ListKeysResult", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return cast(JSON, deserialized)  # type: ignore
+        return deserialized  # type: ignore
 
     @overload
     async def regenerate_keys(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name: str,
         workspace_name: str,
-        key_specification: JSON,
+        key_specification: _models.APIKeys,
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -2082,23 +1128,13 @@ class WorkspaceOperations:
         :param workspace_name: The name of the quantum workspace resource. Required.
         :type workspace_name: str
         :param key_specification: Which key to regenerate:  primary or secondary. Required.
-        :type key_specification: JSON
+        :type key_specification: ~azure.mgmt.quantum.models.APIKeys
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
         :return: None
         :rtype: None
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # JSON input template you can fill out and use as your body input.
-                key_specification = {
-                    "keys": [
-                        "str"  # Optional. A list of api key names.
-                    ]
-                }
         """
 
     @overload
@@ -2131,7 +1167,11 @@ class WorkspaceOperations:
 
     @distributed_trace_async
     async def regenerate_keys(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, workspace_name: str, key_specification: Union[JSON, IO[bytes]], **kwargs: Any
+        self,
+        resource_group_name: str,
+        workspace_name: str,
+        key_specification: Union[_models.APIKeys, IO[bytes]],
+        **kwargs: Any
     ) -> None:
         """Regenerate either the primary or secondary key for use with the Quantum APIs. The old key will
         stop working immediately.
@@ -2141,25 +1181,15 @@ class WorkspaceOperations:
         :type resource_group_name: str
         :param workspace_name: The name of the quantum workspace resource. Required.
         :type workspace_name: str
-        :param key_specification: Which key to regenerate:  primary or secondary. Is either a JSON type
-         or a IO[bytes] type. Required.
-        :type key_specification: JSON or IO[bytes]
+        :param key_specification: Which key to regenerate:  primary or secondary. Is either a APIKeys
+         type or a IO[bytes] type. Required.
+        :type key_specification: ~azure.mgmt.quantum.models.APIKeys or IO[bytes]
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
         :paramtype content_type: str
         :return: None
         :rtype: None
         :raises ~azure.core.exceptions.HttpResponseError:
-
-        Example:
-            .. code-block:: python
-
-                # JSON input template you can fill out and use as your body input.
-                key_specification = {
-                    "keys": [
-                        "str"  # Optional. A list of api key names.
-                    ]
-                }
         """
         error_map = {
             401: ClientAuthenticationError,
@@ -2181,7 +1211,7 @@ class WorkspaceOperations:
         if isinstance(key_specification, (IOBase, bytes)):
             _content = key_specification
         else:
-            _json = key_specification
+            _json = self._serialize.body(key_specification, "APIKeys")
 
         _request = build_workspace_regenerate_keys_request(
             resource_group_name=resource_group_name,
@@ -2207,7 +1237,8 @@ class WorkspaceOperations:
             if _stream:
                 await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})  # type: ignore

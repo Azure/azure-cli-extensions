@@ -14,6 +14,7 @@ from azure.core.rest import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core import AsyncARMPipelineClient
 from azure.mgmt.core.policies import AsyncARMAutoResourceProviderRegistrationPolicy
 
+from .. import models as _models
 from .._serialization import Deserializer, Serializer
 from ._configuration import AzureQuantumManagementClientConfiguration
 from .operations import OfferingsOperations, Operations, WorkspaceOperations, WorkspacesOperations
@@ -77,8 +78,10 @@ class AzureQuantumManagementClient:  # pylint: disable=client-accepts-api-versio
             ]
         self._client: AsyncARMPipelineClient = AsyncARMPipelineClient(base_url=endpoint, policies=_policies, **kwargs)
 
-        self._serialize = Serializer()
-        self._deserialize = Deserializer()
+        client_models = {k: v for k, v in _models._models.__dict__.items() if isinstance(v, type)}
+        client_models.update({k: v for k, v in _models.__dict__.items() if isinstance(v, type)})
+        self._serialize = Serializer(client_models)
+        self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
         self.workspaces = WorkspacesOperations(self._client, self._config, self._serialize, self._deserialize)
         self.offerings = OfferingsOperations(self._client, self._config, self._serialize, self._deserialize)
