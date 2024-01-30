@@ -43,6 +43,10 @@ from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
     update_load_balancer_profile as _update_load_balancer_profile,
 )
+from azext_aks_preview._natgateway import create_nat_gateway_profile
+from azext_aks_preview._natgateway import (
+    update_nat_gateway_profile as _update_nat_gateway_profile
+)
 from azext_aks_preview._podidentity import (
     _fill_defaults_for_pod_identity_profile,
     _is_pod_identity_addon_enabled,
@@ -2739,6 +2743,13 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 models=self.models.load_balancer_models,
             )
 
+        if self.context.get_nat_gateway_managed_outbound_ip_count() is not None:
+            network_profile.nat_gateway_profile = create_nat_gateway_profile(
+                self.context.get_nat_gateway_managed_outbound_ip_count(),
+                self.context.get_nat_gateway_idle_timeout(),
+                models=self.models.nat_gateway_models,
+            )
+
         network_profile.network_plugin_mode = self.context.get_network_plugin_mode()
 
         if self.context.get_enable_cilium_dataplane():
@@ -3574,6 +3585,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             (self.context.get_nodepool_labels(), None),
             (self.context.get_nodepool_taints(), None),
             (self.context.raw_param.get("upgrade_settings"), None),
+            (self.context.get_load_balancer_managed_outbound_ip_count(), None),
+            (self.context.get_load_balancer_managed_outbound_ipv6_count(), None),
+            (self.context.get_load_balancer_outbound_ports(), None),
+            (self.context.get_nat_gateway_managed_outbound_ip_count(), None),
         ]
 
     def check_raw_parameters(self):
@@ -3601,7 +3616,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if pair[0] != pair[1]:
                 is_different_from_special_default = True
                 break
-
         if is_changed or is_different_from_special_default:
             return
 
@@ -3899,6 +3913,29 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 backend_pool_type=self.context.get_load_balancer_backend_pool_type(),
                 profile=mc.network_profile.load_balancer_profile,
                 models=self.models.load_balancer_models,
+            )
+        return mc
+
+    def update_nat_gateway_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update nat gateway profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if not mc.network_profile:
+            raise UnknownError(
+                "Unexpectedly get an empty network profile in the process of updating nat gateway profile."
+            )
+        outbound_type = self.context.get_outbound_type()
+        if outbound_type and outbound_type != CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY:
+            mc.network_profile.nat_gateway_profile = None
+        else:
+            mc.network_profile.nat_gateway_profile = _update_nat_gateway_profile(
+                self.context.get_nat_gateway_managed_outbound_ip_count(),
+                self.context.get_nat_gateway_idle_timeout(),
+                mc.network_profile.nat_gateway_profile,
+                models=self.models.nat_gateway_models,
             )
         return mc
 
@@ -4742,6 +4779,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_outbound_type_in_network_profile(mc)
         # update loadbalancer profile
         mc = self.update_load_balancer_profile(mc)
+        # update natgateway profile
+        mc = self.update_nat_gateway_profile(mc)
         # update kube proxy config
         mc = self.update_kube_proxy_config(mc)
         # update custom ca trust certificates
