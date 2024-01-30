@@ -2299,7 +2299,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         machine_list = self.cmd(list_cmd).get_output_in_json()
         assert len(machine_list) == 2
-        aks_machine_list_table_format(machine_list)
+        print(aks_machine_list_table_format(machine_list))
 
         machine_name = machine_list[0]["name"]
         self.kwargs.update(
@@ -2318,6 +2318,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         machine_show = self.cmd(show_cmd).get_output_in_json()
         assert machine_show["name"] == machine_name
+        print(machine_show)
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -3750,6 +3751,63 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete the snapshot
         delete_snapshot_cmd = "aks snapshot delete --resource-group {resource_group} --name {snapshot_name} --yes --no-wait"
         self.cmd(delete_snapshot_cmd, checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus",
+        preserve_default_location=True,
+    )
+    def test_aks_skip_gpu_driver_install(self, resource_group, resource_group_location):
+        print(resource_group_location)
+        create_version, upgrade_version = self._get_versions(resource_group_location)
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("c", 6)
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "nodepool_name": nodepool_name,
+                "k8s_version": upgrade_version,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "windows_admin_username": "azureuser1",
+                "windows_admin_password": "replace-Password1234$",
+            }
+        )
+
+        # create an aks cluster
+        create_cmd = (
+            "aks create --resource-group {resource_group} --name {name} --location {location} "
+            "--node-count 2 "
+            "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
+            "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
+            "-k {k8s_version} "
+            "--ssh-key-value={ssh_key_value} -o json"
+        )
+        self.cmd(
+            create_cmd, checks=[self.check("provisioningState", "Succeeded")]
+        )
+
+        # create nodepool from the cluster without gpu install
+        create_nodepool_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --os-type windows --node-count 1 "
+            "--skip-gpu-driver-install "
+            "-k {k8s_version} -o json"
+        )
+        self.cmd(
+            create_nodepool_cmd,
+            checks=[self.check("provisioningState", "Succeeded"),
+                    self.check('gpuProfile.installGpuDriver', False)],
+        )
+
+        # delete the original AKS cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
 
     # @AllowLargeResponse()
     # @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -11030,12 +11088,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_vms_agentpool_type(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("n", 6)
         nodepool_name_1 = self.create_random_name("n", 6)
+        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
+        # setting vm type to VirtualMachines requires 1.28.x or higher
+        _, k8s_version = self._get_versions(resource_group_location)
 
         self.kwargs.update(
             {
@@ -11045,6 +11106,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "ssh_key_value": self.generate_ssh_keys(),
                 "node_pool_name": nodepool_name,
                 "node_vm_size": "standard_d2a_v4",
+                "k8s_version": k8s_version,
             }
         )
 
@@ -11058,6 +11120,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--node-count=1 "
             "--node-vm-size={node_vm_size} "
             '--vm-set-type="VirtualMachines" '
+            "-k {k8s_version} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
             checks=[
                 self.check("provisioningState", "Succeeded"),
@@ -11105,121 +11168,85 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(role["rules"]) > 0
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
-    )
-    def test_aks_trustedaccess_rolebinding(
-        self, resource_group, resource_group_location
-    ):
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_trustedaccess_rolebinding(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         # kwargs for string formatting
-        aks_name = self.create_random_name("cliakstest", 16)
+        aks_name = self.create_random_name('cliakstest', 16)
 
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "location": resource_group_location,
-                "resource_type": "Microsoft.ContainerService/ManagedClusters",
-                "vm_size": "Standard_D4s_v3",
-                "node_count": 1,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'vm_size': 'Standard_D4s_v3',
+            'node_count': 1,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
 
-        create_cmd = " ".join(
-            [
-                "aks",
-                "create",
-                "--resource-group={resource_group}",
-                "--name={name}",
-                "--location={location}",
-                "--node-vm-size {vm_size}",
-                "--node-count {node_count}",
-                "--ssh-key-value={ssh_key_value}",
-                "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedAccessPreview",
-            ]
-        )
-        self.cmd(
-            create_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-            ],
-        )
+        create_cmd = ' '.join([
+            'aks', 'create', '--resource-group={resource_group}', '--name={name}', '--location={location}',
+            '--node-vm-size {vm_size}',
+            '--node-count {node_count}',
+            '--ssh-key-value={ssh_key_value}'
+        ])
 
-        binding_name = "testbinding"
-        node_rg_cmd = (
-            'aks list -g {resource_group} --query "[0].nodeResourceGroup" -o tsv'
-        )
-        node_rg = self.cmd(node_rg_cmd).output.strip()
-        self.kwargs.update({"node_rg": node_rg, "binding_name": binding_name})
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
-        vmss_cmd = 'vmss list -g {node_rg} --query "[0].id" -o tsv'
-        vmss_id = self.cmd(vmss_cmd).output.strip()
-        self.kwargs.update({"vmss_id": vmss_id})
+        list_binding_cmd = 'aks trustedaccess rolebinding list ' \
+            '--cluster-name={name} ' \
+            '--resource-group={resource_group}'
+        self.cmd(list_binding_cmd, checks=[
+            self.is_empty(),
+        ])
 
-        # test create rolebinding
-        create_ta_binding_cmd = " ".join(
-            [
-                "aks",
-                "trustedaccess",
-                "rolebinding",
-                "create",
-                "-g {resource_group}",
-                "--cluster-name {name}",
-                "-n {binding_name}",
-                "-s {vmss_id}",
-                "--roles Microsoft.Compute/virtualMachineScaleSets/test-node-reader,Microsoft.Compute/virtualMachineScaleSets/test-admin",
-            ]
-        )
-        binding = self.cmd(
-            create_ta_binding_cmd,
-            checks=[
-                self.check("name", binding_name),
-                self.check(
-                    "type",
-                    "Microsoft.ContainerService/managedClusters/trustedAccessRoleBindings",
-                ),
-                self.check("sourceResourceId", vmss_id),
-            ],
-        ).get_output_in_json()
-        assert len(binding["roles"]) == 2
-        time.sleep(20)  # wait for binding creation
+        subscription_id = self.get_subscription_id()
+        sid = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.MachineLearningServices/workspaces/fake_workspace'.format(subscription_id, resource_group)
+        self.kwargs.update({
+            'sid': sid
+        })
+        create_binding_cmd = 'aks trustedaccess rolebinding create ' \
+            '--resource-group={resource_group} ' \
+            '--cluster-name={name} ' \
+            '-n testbinding ' \
+            '--source-resource-id {sid} ' \
+            '--roles Microsoft.MachineLearningServices/workspaces/mlworkload'
+        self.cmd(create_binding_cmd)
+        self.cmd(list_binding_cmd, checks=[
+            self.check('[0].type', 'Microsoft.ContainerService/managedClusters/trustedAccessRoleBindings'),
+            self.check('[0].name', 'testbinding'),
+        ])
 
-        # test list rolebinding
-        list_binding_cmd = "aks trustedaccess rolebinding list --cluster-name {name} -g {resource_group}"
-        listed_bindings = self.cmd(list_binding_cmd).get_output_in_json()
-        assert len(listed_bindings) == 1
+        get_binding_cmd = 'aks trustedaccess rolebinding show ' \
+            '-n testbinding ' \
+            '--resource-group={resource_group} ' \
+            '--cluster-name={name}'
+        self.cmd(get_binding_cmd, checks=[
+            self.check('type', 'Microsoft.ContainerService/managedClusters/trustedAccessRoleBindings'),
+            self.check('name', 'testbinding'),
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
-        # test get rolebinding
-        get_binding_cmd = "aks trustedaccess rolebinding show --cluster-name {name} -g {resource_group} -n {binding_name}"
-        got_binding = self.cmd(get_binding_cmd).get_output_in_json()
-        assert got_binding["name"] == binding_name
-        assert len(got_binding["roles"]) == 2
-        assert got_binding["sourceResourceId"] == vmss_id
-        assert (
-            got_binding["type"]
-            == "Microsoft.ContainerService/managedClusters/trustedAccessRoleBindings"
-        )
+        update_binding_cmd = 'aks trustedaccess rolebinding update ' \
+            '--cluster-name={name} ' \
+            '-n testbinding ' \
+            '--resource-group={resource_group} ' \
+            '--roles Microsoft.MachineLearningServices/workspaces/mlworkload'
+        self.cmd(update_binding_cmd, checks=[
+            self.check('roles[0]', 'Microsoft.MachineLearningServices/workspaces/mlworkload'),
+        ])
 
-        # test update rolebinding
-        update_binding_cmd = "aks trustedaccess rolebinding update -g {resource_group} --cluster-name {name} -n {binding_name} \
-            --roles Microsoft.Compute/virtualMachineScaleSets/test-node-reader"
-        updated_binding = self.cmd(update_binding_cmd).get_output_in_json()
-        assert updated_binding["name"] == binding_name
-        assert len(updated_binding["roles"]) == 1
-        assert (
-            updated_binding["roles"][0]
-            == "Microsoft.Compute/virtualMachineScaleSets/test-node-reader"
-        )
-
-        # test delete rolebinding
-        delete_binding_cmd = "aks trustedaccess rolebinding delete -g {resource_group} --cluster-name {name} -n {binding_name} -y"
+        delete_binding_cmd = 'aks trustedaccess rolebinding delete ' \
+            '--cluster-name={name} ' \
+            '-n testbinding ' \
+            '--resource-group={resource_group} -y'
         self.cmd(delete_binding_cmd)
-        time.sleep(20)  # wait for binding deleting
-        listed_bindings = self.cmd(list_binding_cmd).get_output_in_json()
-        assert len(listed_bindings) == 0
+        self.cmd(list_binding_cmd, checks=[
+            self.is_empty(),
+        ])
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -11768,22 +11795,23 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_create_with_premium_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
-        # kwargs for string formatting
-
         aks_name = self.create_random_name("cliakstest", 16)
+        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
+        k8s_version, _ = self._get_versions(resource_group_location)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "location": resource_group_location,
+                "k8s_version": k8s_version,
             }
         )
 
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --tier premium --k8s-support-plan AKSLongTermSupport -k 1.27"
+            "--ssh-key-value={ssh_key_value} --tier premium --k8s-support-plan AKSLongTermSupport -k {k8s_version}"
         )
         self.cmd(
             create_cmd,
@@ -11809,8 +11837,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_update_with_premium_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
-        # kwargs for string formatting
-
+        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
+        k8s_version, _ = self._get_versions(resource_group_location)
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
             {
@@ -11818,13 +11846,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "location": resource_group_location,
+                "k8s_version": k8s_version,
             }
         )
 
         # create a free tier
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-count=1 --tier free -k 1.27"
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier free -k {k8s_version}"
         )
         self.cmd(
             create_cmd,
@@ -12435,14 +12464,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
         self.cmd(delete_cmd, checks=[self.is_empty()])
 
-    @AllowLargeResponse()
+    @AllowLargeResponse(8192)
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
         preserve_default_location=True,
     )
-    def test_aks_approuting_enable_with_keyvault_secrets_provider_addon(
+    def test_aks_approuting_enable_with_keyvault_secrets_provider_addon_and_keyvault_id(
         self, resource_group, resource_group_location
     ):
         """This test case exercises enabling app routing addon in an AKS cluster along with keyvault secrets provider addon."""
@@ -12452,14 +12481,29 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create cluster
         aks_name = self.create_random_name("cliakstest", 16)
+        kv_name = self.create_random_name("cliakstestkv", 16)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "aks_name": aks_name,
+                "kv_name": kv_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
             }
         )
+
+        # create keyvault with rbac auth enabled
+        create_keyvault_cmd = "keyvault create --resource-group={resource_group} --location={location} --name={kv_name} --enable-rbac-authorization=true"
+        keyvault = self.cmd(
+            create_keyvault_cmd,
+            checks=[
+                self.check("properties.provisioningState", "Succeeded"),
+                self.check("properties.enableRbacAuthorization", True),
+                self.check("name", kv_name),
+            ],
+        ).get_output_in_json()
+        keyvault_id = keyvault["id"]
+        self.kwargs.update({"keyvault_id": keyvault_id})
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={aks_name} --location={location} "
@@ -12473,7 +12517,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # enable app routing with keyvault secrets provider addon enabled
-        enable_app_routing_cmd = "aks approuting enable --enable-kv --resource-group={resource_group} --name={aks_name}"
+        enable_app_routing_cmd = "aks approuting enable --enable-kv --attach-kv {keyvault_id} --resource-group={resource_group} --name={aks_name}"
         self.cmd(
             enable_app_routing_cmd,
             checks=[
@@ -12488,7 +12532,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(delete_cmd, checks=[self.is_empty()])
 
     @live_only()
-    @AllowLargeResponse()
+    @AllowLargeResponse(8192)
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
@@ -12541,12 +12585,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         ).get_output_in_json()
         object_id = result["ingressProfile"]["webAppRouting"]["identity"]["objectId"]
-
         self.kwargs.update({"object_id": object_id})
 
-        # update with enable_rbac_authroization flag in keyvault set to true
+        # update with enable_rbac_authorization flag in keyvault set to true
         update_cmd = (
-            "aks approuting update --resource-group={resource_group} --name={aks_name} "
+            "aks approuting update --resource-group={resource_group} --name={aks_name} --enable-kv "
             "--attach-kv {keyvault_id}"
         )
 
@@ -12555,37 +12598,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
+                self.check("addonProfiles.azureKeyvaultSecretsProvider.enabled", True),
             ],
         )
 
-        check_role_assignment_cmd = 'role assignment list --scope {keyvault_id} --assignee {object_id} --role "Key Vault Secrets User" --output json'
+        # update keyvault with rbac auth disabled
+        update_keyvault_cmd = "keyvault update --resource-group={resource_group} --name={kv_name} --enable-rbac-authorization=false"
         self.cmd(
-            check_role_assignment_cmd,
-            checks=[
-                self.check("length(@)", 1),
-                self.check("[0].roleDefinitionName", "Key Vault Secrets User"),
-                self.check("[0].principalId", "{object_id}"),
-                self.check("[0].scope", keyvault_id),
-            ],
-        )
-
-        # create keyvault with rbac auth disabled
-        kv_name = self.create_random_name("cliakstestkv", 16)
-        self.kwargs.update({"kv_name": kv_name})
-        create_keyvault_cmd = "keyvault create --resource-group={resource_group} --location={location} --name={kv_name} --enable-rbac-authorization=false"
-        keyvault = self.cmd(
-            create_keyvault_cmd,
+            update_keyvault_cmd,
             checks=[
                 self.check("properties.provisioningState", "Succeeded"),
                 self.check("properties.enableRbacAuthorization", False),
                 self.check("name", kv_name),
             ],
-        ).get_output_in_json()
-        keyvault_id = keyvault["id"]
+        )
 
-        self.kwargs.update({"keyvault_id": keyvault_id})
-
-        # update with enable_rbac_authroization flag in keyvault set to false
+        # update with enable_rbac_authorization flag in keyvault set to false
         update_cmd = (
             "aks approuting update --resource-group={resource_group} --name={aks_name} "
             "--attach-kv {keyvault_id}"
@@ -12596,11 +12624,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
+                self.check("addonProfiles.azureKeyvaultSecretsProvider.enabled", True),
             ],
         )
 
         check_access_policy_cmd = "az keyvault show --resource-group={resource_group} --name={kv_name} --query \"properties.accessPolicies[?objectId=='{object_id}']\" -o json"
-        print(check_access_policy_cmd)
         self.cmd(
             check_access_policy_cmd,
             checks=[
@@ -12613,8 +12641,70 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        # update with --enable-kv flag
-        update_cmd = "aks approuting update --resource-group={resource_group} --name={aks_name} --enable-kv"
+        # delete cluster
+        delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
+        self.cmd(delete_cmd, checks=[self.is_empty()])
+
+    @live_only()
+    @AllowLargeResponse(8192)
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus",
+        preserve_default_location=True,
+    )
+    def test_aks_approuting_update_with_monitoring_addon_enabled(self, resource_group, resource_group_location):
+        """This test case exercises updating app routing addon in an AKS cluster with monitoring addon enabled."""
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        kv_name = self.create_random_name("cliakstestkv", 16)
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "aks_name": aks_name,
+                "kv_name": kv_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create keyvault with rbac auth enabled
+        create_keyvault_cmd = "keyvault create --resource-group={resource_group} --location={location} --name={kv_name} --enable-rbac-authorization=true"
+        keyvault = self.cmd(
+            create_keyvault_cmd,
+            checks=[
+                self.check("properties.provisioningState", "Succeeded"),
+                self.check("properties.enableRbacAuthorization", True),
+                self.check("name", kv_name),
+            ],
+        ).get_output_in_json()
+        keyvault_id = keyvault["id"]
+
+        self.kwargs.update({"keyvault_id": keyvault_id})
+
+        # create cluster with app routing and monitoring addon enabled
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --enable-app-routing --enable-addons monitoring"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("addonProfiles.omsagent.enabled", True),
+                self.check("ingressProfile.webAppRouting.enabled", True),
+            ],
+        ).get_output_in_json()
+
+        # update with enable_rbac_authroization flag in keyvault set to true
+        update_cmd = (
+            "aks approuting update --resource-group={resource_group} --name={aks_name} --enable-kv "
+            "--attach-kv {keyvault_id}"
+        )
 
         self.cmd(
             update_cmd,
