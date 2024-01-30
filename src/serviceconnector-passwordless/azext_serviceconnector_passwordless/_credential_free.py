@@ -929,7 +929,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
 
 
 def getSourceHandler(source_id, source_type):
-    if source_type in {RESOURCE.WebApp}:
+    if source_type in {RESOURCE.WebApp, RESOURCE.FunctionApp}:
         return WebappHandler(source_id, source_type)
     if source_type in {RESOURCE.ContainerApp}:
         return ContainerappHandler(source_id, source_type)
