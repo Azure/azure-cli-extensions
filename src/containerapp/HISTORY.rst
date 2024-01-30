@@ -8,6 +8,7 @@ upcoming
 * [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.56.1
 * 'az containerapp add-on' : support for add-on weaviate create and delete commands
 * Upgrade api-version to 2023-11-02-preview
+* 'az containerapp create/update/up': support --build-env-vars to set environment variables for build
 
 0.3.46
 ++++++
