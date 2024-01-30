@@ -88,7 +88,7 @@ SecretVolumeItem = {
 
 Volume = {
     "name": None,
-    "storageType": "EmptyDir",  # AzureFile, EmptyDir or Secret
+    "storageType": "EmptyDir",  # AzureFile, EmptyDir, Secret or NfsAzureFile
     "storageName": None,   # None for EmptyDir or Secret, otherwise name of storage resource
     "secrets": None,  # [SecretVolumeItem]
     "mountOptions": None,
@@ -451,9 +451,23 @@ ContainerAppCustomDomain = {
     "certificateId": None
 }
 
+ManagedEnvironmentStorageProperties = {
+    "location": None,
+    "properties": {
+        "azureFile": None,
+        "nfsAzureFile": None,
+    }
+}
+
 AzureFileProperties = {
     "accountName": None,
     "accountKey": None,
+    "accessMode": None,
+    "shareName": None
+}
+
+NfsAzureFileProperties = {
+    "server": None,
     "accessMode": None,
     "shareName": None
 }

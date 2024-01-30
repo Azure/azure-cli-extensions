@@ -25,6 +25,27 @@ from unittest.mock import patch
 
 class TestWorkloadIAM(unittest.TestCase):
 
+    def test_workload_iam_create_with_instance_name_too_long(self):
+        """
+        Test that the checks fail when the user provides an instance name that is too long.
+        """
+
+        instance_name = "workload-iam-extra-long-instance-name"
+
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            workload_iam = WorkloadIAM()
+            workload_iam.Create(cmd=None, client=None, resource_group_name=None,
+                cluster_name=None, name=instance_name, cluster_type=None, cluster_rp=None,
+                extension_type=None, scope='cluster', auto_upgrade_minor_version=None,
+                release_train='dev', version='0.1.0', target_namespace=None,
+                release_namespace=None, configuration_settings=None,
+                configuration_protected_settings=None, configuration_settings_file=None,
+                configuration_protected_settings_file=None, plan_name=None, plan_publisher=None,
+                plan_product=None)
+
+        self.assertEqual(str(context.exception),
+            f"Name '{instance_name}' is too long, it must be 20 characters long max.")
+
     def test_workload_iam_create_without_join_token_success(self):
         """
         Test that, when the user doesn't provide a join token, the Create() method calls
@@ -271,13 +292,20 @@ class TestWorkloadIAM(unittest.TestCase):
         mock_local_authority_name = 'any_local_authority_name'
         mock_join_token = 'any_join_token'
 
-        class MockResult():
+        class MockCLI():
             def __init__(self):
-                self.returncode = 0
-                self.stdout = ('\"' + mock_join_token + '\"').encode('utf-8')
+                pass
 
-        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.subprocess.run',
-                   return_value=MockResult()):
+            def invoke(self, cmd, out_file):
+                class MockResult():
+                    def __init__(self):
+                        self.result = mock_join_token
+                        self.error = None
+
+                self.result = MockResult()
+
+        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.get_default_cli',
+                   return_value=MockCLI()):
             # Test & assert
             workload_iam = WorkloadIAM()
             join_token = workload_iam.get_join_token(mock_trust_domain_name, mock_local_authority_name)
@@ -294,7 +322,6 @@ class TestWorkloadIAM(unittest.TestCase):
         mock_trust_domain_name = 'any_trust_domain_name.com'
         mock_local_authority_name = 'any_local_authority_name'
         mock_join_token = 'any_join_token'
-        mock_exit_code = 1
 
         cmd = [
             "az", "workload-iam", "local-authority", "attestation-method", "create",
@@ -305,15 +332,23 @@ class TestWorkloadIAM(unittest.TestCase):
             "--dn", "myJoinToken",
         ]
 
-        class MockResult():
+        class MockCLI():
             def __init__(self):
-                self.returncode = mock_exit_code
+                pass
 
-        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.subprocess.run',
-                   return_value=MockResult()):
+            def invoke(self, cmd, out_file):
+                class MockResult():
+                    def __init__(self):
+                        self.result = None
+                        self.error = True
+
+                self.result = MockResult()
+
+        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.get_default_cli',
+                   return_value=MockCLI()):
             # Test & assert
             workload_iam = WorkloadIAM()
             cmd_str = " ".join(cmd)
             self.assertRaisesRegex(CLIError,
-                f"Failed to generate a join token \(exit code {mock_exit_code}\): {cmd_str}",
+                f"Error while generating a join token. Command: {cmd_str}",
                 workload_iam.get_join_token, mock_trust_domain_name, mock_local_authority_name)

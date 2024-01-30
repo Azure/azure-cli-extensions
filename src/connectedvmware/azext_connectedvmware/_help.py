@@ -392,7 +392,7 @@ helps[
     'connectedvmware vm create'
 ] = """
     type: command
-    short-summary: "Create vm in vcenter from existing vm template"
+    short-summary: "Create VMInstance resource"
     examples:
       - name: Create vm
         text: |-
@@ -400,6 +400,30 @@ helps[
                --location "location name" --inventory-item "name or id of the inventory item" \
                --name "virtual machine name" --resource-group "resource group name" \
                --vcenter "name or id of the vcenter"
+
+      - name: Enable an exiting VM to azure.
+        text: |-
+               az connectedvmware vm create --subscription contoso-sub \
+               --resource-group contoso-rg --location eastus --custom-location contoso-cl \
+               --inventory-item 01234567-0123-0123-0123-0123456789ab --name contoso-vm
+
+      - name: Link an HCRP Machine to a vCenter in another subscription using the machine id.
+        text: |-
+               az connectedvmware vm create \
+               --machine-id /subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/machines/contoso-vm \
+               --vcenter /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+
+      - name: Link an HCRP Machine to a vCenter in another subscription using the machine name.
+        text: |-
+                az connectedvmware vm create \
+                --resource-group contoso-rg --location eastus --name hcrp-contoso-machine \
+                --vcenter /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+
+      - name: Link an HCRP Machine to a vCenter in the same subscription and resource group.
+        text: |-
+                az connectedvmware vm create \
+                --resource-group contoso-rg --location eastus --name hcrp-contoso-machine \
+                --vcenter contoso-vcenter
 """
 
 helps[
