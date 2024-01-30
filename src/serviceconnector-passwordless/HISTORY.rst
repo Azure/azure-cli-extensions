@@ -4,7 +4,7 @@ Release History
 ===============
 1.0.1
 ++++++
-* Release new version and make some improvements
+* Release new version and make some improvements to fix non-json output issue
 
 1.0.0
 ++++++
