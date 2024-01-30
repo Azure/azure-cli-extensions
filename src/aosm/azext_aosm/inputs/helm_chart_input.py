@@ -104,7 +104,7 @@ class HelmChartInput(BaseInput):
     @staticmethod
     def from_chart_path(
         chart_path: Path,
-        default_config: Optional[Dict[str, Any]],
+        default_config: Optional[Dict[str, Any]] = None,
         default_config_path: Optional[str] = None,
     ) -> "HelmChartInput":
         """
@@ -173,7 +173,7 @@ class HelmChartInput(BaseInput):
         try:
             result = subprocess.run(cmd, capture_output=True, check=True)
             helm_template_output = result.stdout
-            self.helm_template = helm_template_output
+            self.helm_template = helm_template_output.decode()
 
             logger.debug(
                 "Helm template output for Helm chart %s:\n%s",

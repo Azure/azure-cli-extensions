@@ -163,12 +163,26 @@ class LocalFileACRArtifact(BaseACRArtifact):
             try:
                 oras_client.push(files=[self.file_path], target=target)
                 break
-            except ValueError:
+            except ValueError as error:
                 if retries < 20:
-                    logger.info("Retrying pushing local artifact to ACR. Retries so far: %s", retries)
+                    logger.info(
+                        "Retrying pushing local artifact to ACR. Retries so far: %s",
+                        retries,
+                    )
                     retries += 1
                     sleep(3)
                     continue
+
+                logger.error(
+                    "Failed to upload %s to %s. Check if this image exists in the"
+                    " source registry %s.",
+                    self.file_path,
+                    target,
+                    target_acr,
+                )
+                logger.debug(error, exc_info=True)
+                raise error
+
         logger.info("LocalFileACRArtifact uploaded %s to %s", self.file_path, target)
 
 
@@ -543,10 +557,9 @@ class LocalFileStorageAccountArtifact(BaseStorageAccountArtifact):
                 blob_type=BlobType.PAGEBLOB,
                 progress_hook=self._vhd_upload_progress_callback,
             )
+
         logger.info(
-            "Successfully uploaded %s to %s",
-            artifact_config.file_path,
-            self.artifact_client.account_name,
+            "Successfully uploaded %s to %s", self.file_path, blob_client.container_name
         )
 
     def _vhd_upload_progress_callback(

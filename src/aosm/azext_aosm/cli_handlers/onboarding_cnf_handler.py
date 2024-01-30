@@ -115,11 +115,9 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
 
     def _validate_helm_template(self):
         """Validate the helm packages."""
-        helm_chart_processors = self._get_processor_list()
-
         validation_errors = {}
 
-        for helm_processor in helm_chart_processors:
+        for helm_processor in self.processors:
             validation_output = helm_processor.input_artifact.validate_template()
 
             if validation_output:
