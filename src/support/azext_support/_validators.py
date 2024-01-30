@@ -34,6 +34,11 @@ def validate_tickets_create(cmd, namespace):
         _validate_resource_name(cmd, namespace.technical_resource)
     _validate_ticket_name(cmd, namespace.ticket_name)
 
+def validate_tickets_create_new(cli_ctx, problem_classification, ticket_name, technical_resource=None):
+    _validate_problem_classification_name(problem_classification)
+    if is_technical_ticket(parse_support_area_path(problem_classification)["service_name"]):
+        _validate_resource_name_new(cli_ctx, technical_resource)
+    _check_name_availability_subscription(cli_ctx, ticket_name, "Microsoft.Support/supportTickets")
 
 def validate_communication_create(cmd, namespace):
     _validate_communication_name(cmd, namespace.ticket_name, namespace.communication_name)
@@ -77,6 +82,23 @@ def _validate_resource_name(cmd, resource_id):
         raise CLIError(base_error_msg + "Subscription id {0} is invalid.".format(subid))
 
     session_subid = get_subscription_id(cmd.cli_ctx)
+    if subid != session_subid:
+        raise CLIError("{0} {1} does not match with {2}".format(base_error_msg, subid, session_subid))
+    
+def _validate_resource_name_new(cli_ctx, resource_id):
+    if resource_id is None:
+        return
+
+    base_error_msg = "Technical resource argument {0} is invalid.".format(resource_id)
+    if not is_valid_resource_id(resource_id):
+        raise CLIError(base_error_msg)
+
+    parsed_resource = parse_resource_id(resource_id)
+    subid = parsed_resource["subscription"]
+    if not _is_guid(subid):
+        raise CLIError(base_error_msg + "Subscription id {0} is invalid.".format(subid))
+
+    session_subid = get_subscription_id(cli_ctx)
     if subid != session_subid:
         raise CLIError("{0} {1} does not match with {2}".format(base_error_msg, subid, session_subid))
 
