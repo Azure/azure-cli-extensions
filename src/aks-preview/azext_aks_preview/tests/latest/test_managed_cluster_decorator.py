@@ -3733,7 +3733,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         new_profile, updated = ctx_0._handle_ingress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio", 
+            mode="Istio",
             istio=self.models.IstioServiceMesh(
                 components=self.models.IstioComponents(
                     ingress_gateways=[
@@ -3766,7 +3766,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
         self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio", 
+            mode="Istio",
             istio=self.models.IstioServiceMesh(
                 components=self.models.IstioComponents(
                     egress_gateways=[
