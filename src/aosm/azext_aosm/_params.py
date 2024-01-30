@@ -91,6 +91,12 @@ def load_arguments(self: AzCommandsLoader, _):
                 "Requires Docker to be installed locally."
             ),
         )
+        c.argument(
+            "nexus",
+            options_list=["--nexus"],
+            required=False,
+            help="Flag to specify if the VNF is a Nexus VNF.",
+        )
 
     with self.argument_context("aosm nsd") as c:
         c.argument(

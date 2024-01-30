@@ -7,6 +7,8 @@ from __future__ import annotations
 from pathlib import Path
 from azext_aosm.cli_handlers.onboarding_cnf_handler import OnboardingCNFCLIHandler
 from azext_aosm.cli_handlers.onboarding_vnf_handler import OnboardingVNFCLIHandler
+from azext_aosm.cli_handlers.onboarding_core_vnf_handler import OnboardingCoreVNFCLIHandler
+from azext_aosm.cli_handlers.onboarding_nexus_vnf_handler import OnboardingNexusVNFCLIHandler
 from azext_aosm.cli_handlers.onboarding_nsd_handler import OnboardingNSDCLIHandler
 from azext_aosm.common.command_context import CommandContext
 from azext_aosm.common.constants import ALL_PARAMETERS_FILE_NAME, CNF, VNF
@@ -14,25 +16,35 @@ from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import UnrecognizedArgumentError
 
 
-def onboard_nfd_generate_config(definition_type: str, output_file: str | None):
+def onboard_nfd_generate_config(definition_type: str, output_file: str | None, nexus: bool = False):
     """Generate config file for onboarding NFs."""
     if definition_type == CNF:
         handler = OnboardingCNFCLIHandler()
         handler.generate_config(output_file)
     elif definition_type == VNF:
-        handler = OnboardingVNFCLIHandler()
+        if nexus:
+            handler = OnboardingNexusVNFCLIHandler()
+        else:
+            print("Generating config file for Core VNF")
+            handler = OnboardingCoreVNFCLIHandler()
+
         handler.generate_config(output_file)
     else:
         raise UnrecognizedArgumentError("Invalid definition type")
 
 
-def onboard_nfd_build(definition_type: str, config_file: Path, skip: str = None):
+def onboard_nfd_build(definition_type: str, config_file: Path, skip: str = None, nexus: bool = False):
     """Build the NF definition."""
     if definition_type == CNF:
         handler = OnboardingCNFCLIHandler(Path(config_file), skip=skip)
         handler.build()
     elif definition_type == VNF:
-        handler = OnboardingVNFCLIHandler(Path(config_file))
+        if nexus:
+            handler = OnboardingNexusVNFCLIHandler(Path(config_file))
+        else:
+            print("Generating config file for Core VNF")
+            handler = OnboardingCoreVNFCLIHandler(Path(config_file))
+
         handler.build()
     else:
         raise UnrecognizedArgumentError("Invalid definition type")
