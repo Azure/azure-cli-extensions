@@ -15,6 +15,7 @@ from knack.log import get_logger
 
 from .aaz.latest.support.in_subscription.tickets import Update as _Update
 from .aaz.latest.support.in_subscription.tickets import Create as _CreateTicket
+from .aaz.latest.support.in_subscription.communication import Create as _CreateCommunication
 
 def list_support_tickets(cmd, client, filters=None):
     if filters is None:
@@ -256,3 +257,10 @@ class TicketCreate(_CreateTicket):
                 start_time = datetime.utcnow().strftime(("%Y-%m-%dT%H:%M:%SZ"))
                 body["properties"]["problemStartTime"] = start_time
             return body
+
+class CommunicationCreate(_CreateCommunication):
+    def pre_operations(self):
+        from azext_support._validators import _check_name_availability_subscription
+        super().pre_operations()
+        args = self.ctx.args
+        _check_name_availability_subscription(self.cli_ctx, str(args.communication_name), "Microsoft.Support/communications")

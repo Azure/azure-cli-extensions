@@ -246,12 +246,12 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(rsp["require24X7Response"] is False)
 
     def _build_support_tickets_communications_create_cmd(self, test_ticket_name, test_communication_name):
-        cmd = "support tickets communications create --debug "
-        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+        cmd = "support in-subscription communication create --debug "
+        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--communication-name '{0}' ".format(test_communication_name)
-        cmd += "--communication-sender 'aleenabrown@microsoft.com' "
-        cmd += "--communication-subject 'test subject for communication posted from azure python cli' "
-        cmd += "--communication-body 'test body for communication posted from azure python cli' "
+        cmd += "--sender 'rushar@microsoft.com' "
+        cmd += "--subject 'test subject for communication posted from azure python cli' "
+        cmd += "--body 'test body for communication posted from azure python cli' "
 
         return cmd
 
@@ -263,8 +263,8 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(rsp["name"] == test_communication_name)
 
     def _build_support_tickets_communications_list_cmd(self, test_ticket_name):
-        cmd = "support tickets communications list "
-        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+        cmd = "support in-subscription communication list "
+        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
 
         return cmd
 
@@ -284,8 +284,8 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(communication_returned is True)
 
     def _build_support_tickets_communications_show_cmd(self, test_ticket_name, test_communication_name):
-        cmd = "support tickets communications show "
-        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+        cmd = "support in-subscription communication show "
+        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--communication-name '{0}' ".format(test_communication_name)
 
         return cmd
