@@ -13,7 +13,7 @@ if ($init)
 		$logFile = (Resolve-Path "./$logFileName").Path
 		if($repo_fork -eq $null)
 		{
-			$repo_fork = 'Azure/repair-script-library'
+			$repo_fork = 'Azure'
 		}
 		if($repo_branch -eq $null)
 		{

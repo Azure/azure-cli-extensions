@@ -22,7 +22,7 @@ class AddUserAssignedIdentityAuthInfo(argparse.Action):
         action = self.get_action(values, option_string, namespace.command)
         namespace.user_identity_auth_info = action
 
-    def get_action(self, values, option_string, command_name):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string, command_name):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -59,7 +59,7 @@ class AddSystemAssignedIdentityAuthInfo(argparse.Action):
         action = self.get_action(values, option_string, namespace.command)
         namespace.system_identity_auth_info = action
 
-    def get_action(self, values, option_string, command_name):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string, command_name):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -87,7 +87,7 @@ class AddUserAccountAuthInfo(argparse.Action):
         action = self.get_action(values, option_string, namespace.command)
         namespace.user_account_auth_info = action
 
-    def get_action(self, values, option_string, command_name):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string, command_name):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -117,7 +117,7 @@ class AddServicePrincipalAuthInfo(argparse.Action):
         action = self.get_action(values, option_string, namespace.command)
         namespace.service_principal_auth_info_secret = action
 
-    def get_action(self, values, option_string, command_name):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string, command_name):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):

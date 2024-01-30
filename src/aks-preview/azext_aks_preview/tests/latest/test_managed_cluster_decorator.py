@@ -6,6 +6,7 @@
 import datetime
 import importlib
 import unittest
+from unittest import mock
 from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
@@ -4616,6 +4617,44 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
+    def test_set_up_addon_autoscaling(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_addon_autoscaling(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_addon_autoscaling": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_addon_autoscaling(mc_2)
+        workload_auto_scaler_profile = (
+            self.models.ManagedClusterWorkloadAutoScalerProfile()
+        )
+        workload_auto_scaler_profile.vertical_pod_autoscaler = (
+            self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
+                enabled=True,
+                addon_autoscaling="Enabled"
+            )
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=workload_auto_scaler_profile
+        )
+
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
     def test_set_up_azure_service_mesh(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -4826,7 +4865,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        self.assertIsNone(dec_3.check_raw_parameters())
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
+            return_value=True,
+        ):
+            self.assertIsNone(dec_3.check_raw_parameters())
 
     def test_update_load_balancer_profile(self):
         # default value in `aks_update`
@@ -5534,6 +5577,75 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
+
+        # test update ip families
+        dec_8 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "ip_families": "ipv4,ipv6"
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                ip_families=["ipv4"]
+            ),
+        )
+
+        dec_8.context.attach_mc(mc_8)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_8.update_network_profile(None)
+        dec_mc_8 = dec_8.update_network_profile(mc_8)
+
+        ground_truth_mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                ip_families=["ipv4", "ipv6"]
+            ),
+        )
+
+        self.assertEqual(dec_mc_8, ground_truth_mc_8)
+
+        # test ip_families aren't updated when updating other fields
+        dec_9 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "network_plugin_mode": "overlay"
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                ip_families=["ipv6", "ipv4"]
+            ),
+        )
+
+        dec_9.context.attach_mc(mc_9)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_9.update_network_profile(None)
+        dec_mc_9 = dec_9.update_network_profile(mc_9)
+
+        ground_truth_mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                ip_families=["ipv6", "ipv4"]
+            ),
+        )
+
+        self.assertEqual(dec_mc_9, ground_truth_mc_9)
 
     def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -7224,6 +7336,97 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             dec_6.update_metrics_profile(mc_6)
 
+    def test_update_addon_autoscaling(self):
+        # Should not update mc if unset
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_addon_autoscaling(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Should error if both set
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_addon_autoscaling": True, "disable_addon_autoscaling": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_1.update_addon_autoscaling(mc_1)
+
+        # enable addon autoscaling should set addon_autoscaling to Enabled
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_addon_autoscaling": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_addon_autoscaling(mc_2)
+        workload_auto_scaler_profile = (
+            self.models.ManagedClusterWorkloadAutoScalerProfile()
+        )
+        workload_auto_scaler_profile.vertical_pod_autoscaler = (
+            self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
+                enabled=True,
+                addon_autoscaling="Enabled"
+            )
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=workload_auto_scaler_profile
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # disable addon autoscaling should set addon_autoscaling to Disabled
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_addon_autoscaling": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_addon_autoscaling(mc_3)
+        workload_auto_scaler_profile = (
+            self.models.ManagedClusterWorkloadAutoScalerProfile()
+        )
+        workload_auto_scaler_profile.vertical_pod_autoscaler = (
+            self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
+                enabled=False,
+                addon_autoscaling="Disabled"
+            )
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=workload_auto_scaler_profile
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+    def _mock_get_keyvault_client(cli_ctx, subscription_id=None):
+        free_mock_client = mock.MagicMock()
+        return free_mock_client
+
+    @mock.patch('azext_aks_preview._client_factory.get_keyvault_client', _mock_get_keyvault_client)
     def test_update_app_routing_profile(self):
         # enable app routing
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -7443,6 +7646,65 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
+
+        # update app routing with key vault
+        from azure.cli.core.mock import DummyCli
+        from azure.cli.core.commands import AzCliCommand
+        from azure.cli.core import AzCommandsLoader
+
+        command_kwargs = {"operation_group": "vaults"}
+        cli_ctx = DummyCli()
+        self.cmd = AzCliCommand(AzCommandsLoader(cli_ctx), "mock-cmd", None, kwargs=command_kwargs)
+        dec_8 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_kv": True, "keyvault_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                )
+            ),
+            addon_profiles={
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=False,
+                )
+            }
+        )
+        mc_8.ingress_profile.web_app_routing.identity = self.models.UserAssignedIdentity(
+            resource_id="test_resource_id",
+            client_id="test_client_id",
+            object_id="test_object_id",
+        )
+        dec_8.context.attach_mc(mc_8)
+        dec_mc_8 = dec_8.update_app_routing_profile(mc_8)
+        ground_truth_mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_SECRET_ROTATION_ENABLED: "false",
+                        CONST_ROTATION_POLL_INTERVAL: "2m",
+                    },
+                )
+            },
+        )
+        ground_truth_mc_8.ingress_profile.web_app_routing.identity = self.models.UserAssignedIdentity(
+            resource_id="test_resource_id",
+            client_id="test_client_id",
+            object_id="test_object_id",
+        )
+
+        self.assertEqual(dec_mc_8, ground_truth_mc_8)
 
     def test_update_mc_profile_preview(self):
         import inspect

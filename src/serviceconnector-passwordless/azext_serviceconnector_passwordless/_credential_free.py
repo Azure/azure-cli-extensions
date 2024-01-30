@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=no-member, too-many-lines, anomalous-backslash-in-string, redefined-outer-name, no-else-raise, attribute-defined-outside-init
 
 import struct
 import sys
@@ -147,7 +148,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
     return enable_mi_for_db_linker
 
 
-# pylint: disable=no-self-use, unused-argument, too-many-instance-attributes
+# pylint: disable=unused-argument, too-many-instance-attributes
 def getTargetHandler(cmd, target_id, target_type, auth_info, client_type, connection_name, skip_prompt):
     if target_type in {RESOURCE.Sql}:
         return SqlHandler(cmd, target_id, target_type, auth_info, connection_name, skip_prompt)
@@ -693,7 +694,7 @@ class PostgresFlexHandler(TargetHandler):
         except AzureConnectionError as e:
             logger.warning(e)
             if 'password authentication failed' in str(e):
-                raise ValidationError('Please confirm current user as Microsoft Entra admin and try again.')
+                raise ValidationError('Please confirm current user as Microsoft Entra admin and try again.') from e
             # allow local access
             ip_address = self.ip or get_local_ip()
             if not ip_address:

@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.0.1
+* Fix broken dataflow update command
+
 1.0.0
 +++++
 * Support --enable-self-contained-interactive-authoring in integration-runtime self-hosted create

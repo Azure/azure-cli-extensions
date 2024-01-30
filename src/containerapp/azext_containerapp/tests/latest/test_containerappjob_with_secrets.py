@@ -18,6 +18,9 @@ from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     # test for CRUD operations on Container App Job resource with trigger type as manual
