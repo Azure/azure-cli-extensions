@@ -1899,6 +1899,7 @@ properties:
                 - name: secret1
                   value: 1
                 activeRevisionsMode: Multiple
+                maxInactiveRevisions: 10
                 ingress:
                   external: true
                   allowInsecure: false
@@ -1954,6 +1955,7 @@ properties:
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("properties.configuration.maxInactiveRevisions", "10"),
             JMESPathCheck("length(properties.configuration.secrets)", 1),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
@@ -2370,6 +2372,9 @@ class ContainerappOtherPropertyTests(ScenarioTest):
 
         maxInactiveRevisions = 50
         self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.5 --memory 1Gi --max-inactive-revisions {maxInactiveRevisions}')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.configuration.maxInactiveRevisions", maxInactiveRevisions)])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.25 --memory 0.5Gi')
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.configuration.maxInactiveRevisions", maxInactiveRevisions)])
 
         
