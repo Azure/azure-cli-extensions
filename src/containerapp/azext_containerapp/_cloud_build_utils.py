@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-locals, missing-timeout, too-many-statements, consider-using-with, too-many-branches
 
-import shutil
 from threading import Thread
 import os
 import re
@@ -153,8 +152,8 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         finally:
             # Close the file now that it was uploaded.
             source_file.close()
-            # if the source file is tar.gz, delete the temp file
-            if file_extension == ".tar.gz":
+            # if customer uploaded source file is a folder, delete the temp compressed file
+            if os.path.isdir(source):
                 os.unlink(source_file_path)
         if not response_file_upload.ok:
             raise ValidationError(f"Error when uploading the file, request exited with {response_file_upload.status_code}")
