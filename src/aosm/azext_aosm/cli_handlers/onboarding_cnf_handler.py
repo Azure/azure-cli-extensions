@@ -152,9 +152,16 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
 
             raise ValidationError(error_message)
 
+    def _validate_helm_values(self):
+        for helm_processor in self.processors:
+            helm_processor.input_artifact.validate_values()
+
     def pre_validate_build(self):
         """Run all validation functions required before building the cnf."""
         logger.debug("Pre-validating build")
+
+        self._validate_helm_values()
+
         if self.skip != HELM_TEMPLATE:
             self._validate_helm_template()
 

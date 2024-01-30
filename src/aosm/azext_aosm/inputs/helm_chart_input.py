@@ -196,30 +196,37 @@ class HelmChartInput(BaseInput):
             )
             return error_message
 
+    def validate_values(self) -> None:
+        """
+        Confirm that the values.yaml file exists in the Helm chart directory
+        or that the default values are provided.
+
+        :raises DefaultValuesNotFoundError: If the values.yaml and default values do not exist.
+        """
+
+        default_config = self.default_config or self._read_values_yaml()
+
+        if not default_config:
+            logger.error("No values found for Helm chart '%s'", self.chart_path)
+            raise DefaultValuesNotFoundError(
+                "ERROR: No default values found for the Helm chart"
+                f" '{self.chart_path}'. Please provide default values"
+                " or add a values.yaml file to the Helm chart."
+            )
+
     def get_defaults(self) -> Dict[str, Any]:
         """
         Retrieves the default values for the Helm chart.
 
         :return: The default values for the Helm chart.
         :rtype: Dict[str, Any]
-        :raises DefaultValuesNotFoundError: If no default values were found for the Helm chart.
         """
-        logger.info("Getting default values for Helm chart input")
-
-        try:
-            default_config = self.default_config or self._read_values_yaml()
-            logger.debug(
-                "Default values for Helm chart input: %s",
-                json.dumps(default_config, indent=4),
-            )
-            return copy.deepcopy(default_config)
-        except FileNotFoundError as error:
-            logger.error("No default values found for Helm chart '%s'", self.chart_path)
-            raise DefaultValuesNotFoundError(
-                "ERROR: No default values found for the Helm chart"
-                f" '{self.chart_path}'. Please provide default values"
-                " or add a values.yaml file to the Helm chart."
-            ) from error
+        default_config = self.default_config or self._read_values_yaml()
+        logger.debug(
+            "Default values for Helm chart input: %s",
+            json.dumps(default_config, indent=4),
+        )
+        return copy.deepcopy(default_config)
 
     def get_schema(self) -> Dict[str, Any]:
         """
@@ -244,10 +251,10 @@ class HelmChartInput(BaseInput):
                         schema = json.load(schema_file)
 
             if not schema:
-                # Otherwise, generate a schema from the default values in values.yaml.
-                logger.debug("Generating schema from values.yaml")
+                # Otherwise, generate a schema from the default values or values in values.yaml.
+                logger.debug("Generating schema from default values")
                 built_schema = genson.Schema()
-                built_schema.add_object(self._read_values_yaml())
+                built_schema.add_object(self.get_defaults())
                 schema = built_schema.to_dict()
 
             logger.debug(
@@ -411,12 +418,6 @@ class HelmChartInput(BaseInput):
                 with file.open(encoding="UTF-8") as f:
                     content = yaml_processor.load(f)
                 return content
-
-        logger.error("No values.yaml file found in Helm chart '%s'", self.chart_path)
-        raise FileNotFoundError(
-            f"ERROR: No values file was found in the Helm chart"
-            f" '{self.chart_path}'."
-        )
 
     def __del__(self):
         shutil.rmtree(self._temp_dir_path)
