@@ -131,7 +131,7 @@ class DaprComponentResiliencyDecorator(BaseResource):
                 or self.get_argument_in_circuit_breaker_consecutive_errors() or self.get_argument_out_circuit_breaker_consecutive_errors()
                 or self.get_argument_in_circuit_breaker_timeout() or self.get_argument_out_circuit_breaker_timeout()
                 # these arguments accept 0 as value, so we need to distinguish between unassigned and 0
-                or (self.get_argument_in_circuit_breaker_interval() != None) or (self.get_argument_out_circuit_breaker_interval() != None)):
+                or (self.get_argument_in_circuit_breaker_interval() is not None) or (self.get_argument_out_circuit_breaker_interval() is not None)):
             not self.get_argument_disable_warnings() and logger.warning(
                 'Additional flags were passed along with --yaml. These flags will be ignored, and the configuration '
                 'defined in the yaml will be used instead')
@@ -340,12 +340,12 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
                 safe_set(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "consecutiveErrors", value=self.get_argument_in_circuit_breaker_consecutive_errors())
             elif safe_get(component_resiliency_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "consecutiveErrors"):
                 safe_set(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "consecutiveErrors", value=safe_get(component_resiliency_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "consecutiveErrors"))
-            
+
             if self.get_argument_in_circuit_breaker_interval() is not None:
                 safe_set(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "intervalInSeconds", value=self.get_argument_in_circuit_breaker_interval())
             elif safe_get(component_resiliency_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "intervalInSeconds"):
                 safe_set(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "intervalInSeconds", value=safe_get(component_resiliency_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "intervalInSeconds"))
-            
+
             if self.get_argument_in_circuit_breaker_timeout() is not None:
                 safe_set(self.component_resiliency_patch_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds", value=self.get_argument_in_circuit_breaker_timeout())
             elif safe_get(component_resiliency_def, "properties", "inboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds"):
@@ -380,12 +380,12 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
                 safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "consecutiveErrors", value=self.get_argument_out_circuit_breaker_consecutive_errors())
             elif safe_get(component_resiliency_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "consecutiveErrors"):
                 safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "consecutiveErrors", value=safe_get(component_resiliency_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "consecutiveErrors"))
-            
+
             if self.get_argument_out_circuit_breaker_interval() is not None:
                 safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "intervalInSeconds", value=self.get_argument_out_circuit_breaker_interval())
             elif safe_get(component_resiliency_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "intervalInSeconds"):
                 safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "intervalInSeconds", value=safe_get(component_resiliency_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "intervalInSeconds"))
-            
+
             if self.get_argument_out_circuit_breaker_timeout() is not None:
                 safe_set(self.component_resiliency_patch_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds", value=self.get_argument_out_circuit_breaker_timeout())
             elif safe_get(component_resiliency_def, "properties", "outboundPolicy", "circuitBreakerPolicy", "timeoutInSeconds"):
