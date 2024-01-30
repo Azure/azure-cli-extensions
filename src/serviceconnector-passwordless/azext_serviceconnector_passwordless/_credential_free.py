@@ -929,7 +929,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
 
 
 def getSourceHandler(source_id, source_type):
-    if source_type in {RESOURCE.WebApp}:
+    if source_type in {RESOURCE.WebApp, RESOURCE.FunctionApp}:
         return WebappHandler(source_id, source_type)
     if source_type in {RESOURCE.ContainerApp}:
         return ContainerappHandler(source_id, source_type)
@@ -1020,15 +1020,15 @@ class WebappHandler(SourceHandler):
             logger.warning('Enabling WebApp System Identity...')
             if self.slot_name is None:
                 run_cli_cmd(
-                    'az webapp identity assign --ids {}'.format(self.source_id))
+                    'az webapp identity assign --ids "{}"'.format(self.source_id))
 
                 identity = run_cli_cmd(
-                    'az webapp identity show --ids {}'.format(self.source_id), 15, 5, output_is_none)
+                    'az webapp identity show --ids "{}"'.format(self.source_id), 15, 5, output_is_none)
             else:
                 run_cli_cmd(
-                    'az webapp identity assign --ids {} --slot {}'.format(self.source_id, self.slot_name))
+                    'az webapp identity assign --ids "{}" --slot "{}"'.format(self.source_id, self.slot_name))
                 identity = run_cli_cmd(
-                    'az webapp identity show --ids {} --slot {}'.format(self.source_id, self.slot_name), 15, 5, output_is_none)
+                    'az webapp identity show --ids "{}" --slot "{}"'.format(self.source_id, self.slot_name), 15, 5, output_is_none)
 
         if identity is None:
             ex = CLIInternalError(
