@@ -7,6 +7,7 @@ import copy
 import datetime
 import importlib
 import unittest
+from unittest import mock
 from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
@@ -7563,6 +7564,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
+    def _mock_get_keyvault_client(cli_ctx, subscription_id=None):
+        free_mock_client = mock.MagicMock()
+        return free_mock_client
+
+    @mock.patch('azext_aks_preview._client_factory.get_keyvault_client', _mock_get_keyvault_client)
     def test_update_app_routing_profile(self):
         # enable app routing
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -7782,6 +7788,65 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
+
+        # update app routing with key vault
+        from azure.cli.core.mock import DummyCli
+        from azure.cli.core.commands import AzCliCommand
+        from azure.cli.core import AzCommandsLoader
+
+        command_kwargs = {"operation_group": "vaults"}
+        cli_ctx = DummyCli()
+        self.cmd = AzCliCommand(AzCommandsLoader(cli_ctx), "mock-cmd", None, kwargs=command_kwargs)
+        dec_8 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_kv": True, "keyvault_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                )
+            ),
+            addon_profiles={
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=False,
+                )
+            }
+        )
+        mc_8.ingress_profile.web_app_routing.identity = self.models.UserAssignedIdentity(
+            resource_id="test_resource_id",
+            client_id="test_client_id",
+            object_id="test_object_id",
+        )
+        dec_8.context.attach_mc(mc_8)
+        dec_mc_8 = dec_8.update_app_routing_profile(mc_8)
+        ground_truth_mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_SECRET_ROTATION_ENABLED: "false",
+                        CONST_ROTATION_POLL_INTERVAL: "2m",
+                    },
+                )
+            },
+        )
+        ground_truth_mc_8.ingress_profile.web_app_routing.identity = self.models.UserAssignedIdentity(
+            resource_id="test_resource_id",
+            client_id="test_client_id",
+            object_id="test_object_id",
+        )
+
+        self.assertEqual(dec_mc_8, ground_truth_mc_8)
 
     def test_update_mc_profile_preview(self):
         import inspect
