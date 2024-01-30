@@ -81,7 +81,7 @@ def onboard_nfd_publish(
 
 def onboard_nsd_generate_config(output_file: str | None):
     """Generate config file for onboarding NSD."""
-    handler = OnboardingNSDCLIHandler(output_file)
+    handler = OnboardingNSDCLIHandler()
     handler.generate_config(output_file)
 
 

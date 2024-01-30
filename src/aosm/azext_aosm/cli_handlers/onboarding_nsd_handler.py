@@ -90,12 +90,19 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
                     AzureCoreArmBuildProcessor(arm_input.artifact_name, arm_input)
                 )
             elif resource_element.resource_element_type == "NF":
-                # TODO: change artifact name and version to the nfd name and version or justify why it was this in the first place               
+                # TODO: change artifact name and version to the nfd name and version or justify why it was this in the first place
+                # AC4 note: I couldn't find a reference in the old code, but this
+                # does ring a bell. Was it so the artifact manifest didn't get broken with changes to NF versions? I.e., you could make an NF version change in CGV, and the artifact manifest, which is immutable, would still be valid?
+                # I am concerned that if we have multiple NFs we will have clashing artifact names.
+                # I'm not changing the behaviour right now as it's too high risk, but we should look again here.
                 nfdv_object = self._get_nfdv(resource_element.properties)
                 nfd_input = NFDInput(
+                    # This would be the alternative if we swap from nsd name/version to nfd.
+                    # artifact_name=resource_element.properties.name,
+                    # artifact_version=resource_element.properties.version,
                     artifact_name=self.config.nsd_name,
                     artifact_version=self.config.nsd_version,
-                    default_config=None,
+                    default_config={"location": self.config.location},
                     network_function_definition=nfdv_object,
                     arm_template_output_path=Path(
                         NSD_OUTPUT_FOLDER_FILENAME,
@@ -242,8 +249,8 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
             "publisherResourceGroupName": self.config.publisher_resource_group_name,
             "acrArtifactStoreName": self.config.acr_artifact_store_name,
             "acrManifestName": self.config.acr_artifact_store_name + "-manifest",
-            "nsDesignGroup":self.config.nsd_name,
-            "nsDesignVersion" : self.config.nsd_version,
+            "nsDesignGroup": self.config.nsd_name,
+            "nsDesignVersion": self.config.nsd_version,
             "nfviSiteName": self.nfvi_site_name
         }
         base_file = JSONDefinitionElementBuilder(

@@ -58,7 +58,7 @@ class ArmTemplateInput(BaseInput):
         :return: A dictionary containing the schema.
         :rtype: Dict[str, Any]
         """
-        logger.info("Getting schema for ARM template input")
+        logger.debug("Getting schema for ARM template input %s.", self.artifact_name)
         arm_template_schema = copy.deepcopy(BASE_SCHEMA)
         with open(self.template_path, "r", encoding="utf-8") as _file:
             data = json.load(_file)

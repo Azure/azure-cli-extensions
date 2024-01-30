@@ -94,7 +94,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
                     )
                 else:
                     raise FileNotFoundError(
-                        "There is no file at the path provided for the mappings file."
+                        f"ERROR: The default values file '{helm_package.default_values}' does not exist"
                     )
             else:
                 provided_config = None

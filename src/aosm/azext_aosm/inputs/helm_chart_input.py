@@ -110,7 +110,7 @@ class HelmChartInput(BaseInput):
         """
         Creates a HelmChartInput object from a path to a Helm chart.
 
-        :param chart_path: The path to the Helm chart. This should eith be a path to a folder or a tar file.
+        :param chart_path: The path to the Helm chart. This should either be a path to a folder or a tar file.
         :type chart_path: Path
         :param default_config: The default configuration.
         :type default_config: Optional[Dict[str, Any]]
@@ -119,29 +119,31 @@ class HelmChartInput(BaseInput):
         :return: A HelmChartInput object.
         :rtype: HelmChartInput
         """
-        logger.info("Creating Helm chart input from chart path")
+        logger.debug("Creating Helm chart input from chart path '%s'", chart_path)
         temp_dir = Path(tempfile.mkdtemp())
-        # TODO: raise useful error if no path given?
-        if chart_path.exists():
-            logger.debug("Unpacking Helm chart to %s", temp_dir)
-            if chart_path.is_dir():
-                unpacked_chart_path = Path(chart_path)
-            else:
-                unpacked_chart_path = extract_tarfile(chart_path, temp_dir)
-
-            name, version = HelmChartInput._get_name_and_version(unpacked_chart_path)
-
-            shutil.rmtree(temp_dir)
-
-            logger.debug("Deleted temporary directory %s", temp_dir)
-
-            return HelmChartInput(
-                artifact_name=name,
-                artifact_version=version,
-                chart_path=chart_path,
-                default_config=default_config,
-                default_config_path=default_config_path,
+        if not chart_path.exists():
+            raise FileNotFoundError(
+                f"ERROR: The Helm chart '{chart_path}' does not exist."
             )
+        logger.debug("Unpacking Helm chart to %s", temp_dir)
+        if chart_path.is_dir():
+            unpacked_chart_path = Path(chart_path)
+        else:
+            unpacked_chart_path = extract_tarfile(chart_path, temp_dir)
+
+        name, version = HelmChartInput._get_name_and_version(unpacked_chart_path)
+
+        shutil.rmtree(temp_dir)
+
+        logger.debug("Deleted temporary directory %s", temp_dir)
+
+        return HelmChartInput(
+            artifact_name=name,
+            artifact_version=version,
+            chart_path=chart_path,
+            default_config=default_config,
+            default_config_path=default_config_path,
+        )
 
     def validate_template(self) -> None:
         """
@@ -203,6 +205,7 @@ class HelmChartInput(BaseInput):
 
         :raises DefaultValuesNotFoundError: If the values.yaml and default values do not exist.
         """
+        logger.debug("Getting default values for Helm chart %s", self.artifact_name)
 
         default_config = self.default_config or self._read_values_yaml()
 
@@ -240,7 +243,7 @@ class HelmChartInput(BaseInput):
         :rtype: Dict[str, Any]
         :raises SchemaGetOrGenerateError: If an error occurred while trying to generate or retrieve the schema.
         """
-        logger.info("Getting schema for Helm chart input")
+        logger.info("Getting schema for Helm chart input %s.", self.artifact_name)
         try:
             schema = None
             # Use the schema provided in the chart if there is one.
@@ -278,7 +281,7 @@ class HelmChartInput(BaseInput):
         :rtype: List[HelmChartInput]
         :raises MissingChartDependencyError: If a dependency chart is missing.
         """
-        logger.info("Getting dependency charts for Helm chart input")
+        logger.debug("Getting dependency charts for Helm chart input, '%s'", self.artifact_name)
         # All dependency charts should be located in the charts directory.
         dependency_chart_dir = Path(self._chart_dir, "charts")
 
@@ -320,7 +323,7 @@ class HelmChartInput(BaseInput):
         :return: The templates for the Helm chart.
         :rtype: List[HelmChartTemplate]
         """
-        logger.info("Getting templates for Helm chart input")
+        logger.debug("Getting templates for Helm chart input %s", self.artifact_name)
 
         # Template files are located in the templates directory.
         template_dir = Path(self._chart_dir, "templates")

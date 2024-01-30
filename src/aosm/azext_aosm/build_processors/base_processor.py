@@ -200,4 +200,6 @@ class BaseInputProcessor(ABC):
                 default_subschema_values = values[subschema_name] or {}
                 values[subschema_name] = self.generate_values_mappings(subschema, default_subschema_values, is_ret)
 
+        logger.debug("Output of generate_values_mappings for %s: %s", self.name, json.dumps(values, indent=4))
+
         return values

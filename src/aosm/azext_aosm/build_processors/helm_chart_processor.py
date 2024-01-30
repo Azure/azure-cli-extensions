@@ -68,7 +68,7 @@ class HelmChartProcessor(BaseInputProcessor):
         :return: A list of artifacts for the artifact manifest.
         :rtype: List[ManifestArtifactFormat]
         """
-        logger.info("Getting artifact manifest list for Helm chart input.")
+        logger.debug("Getting artifact manifest list for Helm chart input %s.", self.name)
         artifact_manifest_list = []
         artifact_manifest_list.append(
             ManifestArtifactFormat(
@@ -99,7 +99,7 @@ class HelmChartProcessor(BaseInputProcessor):
         :return: A tuple containing the list of artifacts and the list of local file builders.
         :rtype: Tuple[List[BaseACRArtifact], List[LocalFileBuilder]]
         """
-        logger.info("Getting artifact details for Helm chart input.")
+        logger.debug("Getting artifact details for Helm chart input %s.", self.name)
         artifact_details: List[BaseArtifact] = []
 
         # We only support local file artifacts for Helm charts
@@ -141,7 +141,7 @@ class HelmChartProcessor(BaseInputProcessor):
         :return: The generated Azure Arc Kubernetes Helm application.
         :rtype: AzureArcKubernetesHelmApplication
         """
-        logger.info("Generating NF application for Helm chart input.")
+        logger.debug("Generating NF application for Helm chart input %s.", self.name)
         artifact_profile = self._generate_artifact_profile()
         # We want to remove the registry values paths and image pull secrets values paths from the values mappings
         # as these values are supplied by NFM when it installs the chart.

@@ -45,7 +45,7 @@ class VHDProcessor(BaseInputProcessor):
         :return: A list of artifacts for the artifact manifest.
         :rtype: List[ManifestArtifactFormat]
         """
-        logger.info("Getting artifact manifest list for VHD input.")
+        logger.debug("Getting artifact manifest list for VHD input %s.", self.name)
         return [
             ManifestArtifactFormat(
                 artifact_name=self.input_artifact.artifact_name,

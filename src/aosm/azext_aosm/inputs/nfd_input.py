@@ -52,6 +52,7 @@ class NFDInput(BaseInput):
         :rtype: Dict[str, Any]
         """
         if self.network_function_definition.id:
+            logger.debug("network_function_definition.id for NFD input: %s", self.network_function_definition.id)
             split_id = self.network_function_definition.id.split("/")
             publisher_name: str = split_id[8]
             nfdg_name: str = split_id[10]
@@ -61,6 +62,7 @@ class NFDInput(BaseInput):
 
         base_defaults = {
             "configObject": {
+                "location": self.default_config["location"],
                 "publisherName": publisher_name,
                 "nfdgName": nfdg_name,
                 "publisherResourceGroup": publisher_resource_group,
@@ -87,11 +89,12 @@ class NFDInput(BaseInput):
         :rtype: Dict[str, Any]
         :raises ValueError: If no deployment parameters schema is found on the network function definition version.
         """
-        logger.info("Getting schema for NFD Input")
+        logger.debug("Getting schema for NFD Input %s.", self.artifact_name)
         schema_properties = {
             "configObject": {
                 "type": "object",
                 "properties": {
+                    "location": {"type": "string"},
                     "publisherName": {"type": "string"},
                     "nfdgName": {"type": "string"},
                     "nfdvName": {"type": "string"},
@@ -104,6 +107,7 @@ class NFDInput(BaseInput):
                     "managedIdentityId": {"type": "string"},
                 },
                 "required": [
+                    "location",
                     "publisherName",
                     "nfdgName",
                     "nfdvName",

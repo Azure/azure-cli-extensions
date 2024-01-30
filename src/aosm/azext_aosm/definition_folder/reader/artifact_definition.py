@@ -31,6 +31,8 @@ class ArtifactDefinitionElement(BaseDefinitionElement):
         artifact_list = json.loads((path / "artifacts.json").read_text())
         self.artifacts = [self.create_artifact_object(artifact) for artifact in artifact_list]
 
+    # TODO: add what types are expected, and check they are those types
+    # For filepaths, we must convert to paths again
     def create_artifact_object(self, artifact: dict) -> BaseArtifact:
         """
         Use reflection (via the inspect module) to identify the artifact class's required fields
