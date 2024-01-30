@@ -16,7 +16,7 @@ from azext_aosm.vendored_sdks.azure_storagev2.blob.v2022_11_02 import BlobClient
 from azext_aosm.vendored_sdks.models import ManifestArtifactFormat
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from azext_aosm.common.command_context import CommandContext
-from azext_aosm.configuration_models.common_parameters_config import BaseCommonParametersConfig, VNFCommonParametersConfig
+from azext_aosm.configuration_models.common_parameters_config import BaseCommonParametersConfig, NFDCommonParametersConfig
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from knack.util import CLIError
 from knack.log import get_logger
@@ -490,11 +490,11 @@ class BaseStorageAccountArtifact(BaseArtifact):
     """Abstract base class for storage account artifacts."""
 
     @abstractmethod
-    def upload(self, config: VNFCommonParametersConfig, command_context: CommandContext):
+    def upload(self, config: NFDCommonParametersConfig, command_context: CommandContext):
         """Upload the artifact."""
         pass
 
-    def _get_blob_client(self, config: VNFCommonParametersConfig, command_context: CommandContext) -> BlobClient:
+    def _get_blob_client(self, config: NFDCommonParametersConfig, command_context: CommandContext) -> BlobClient:
         container_basename = self.artifact_name.replace("-", "")
         container_name = f"{container_basename}-{self.artifact_version}"
         # For AOSM to work VHD blobs must have the suffix .vhd
@@ -530,8 +530,8 @@ class LocalFileStorageAccountArtifact(BaseStorageAccountArtifact):
 
         super().__init__(artifact_name, artifact_type, artifact_version)
         self.file_path = str(file_path)  # TODO: Jordan cast this to str here, `str(file_path)`, check output file isn't broken, and/or is it used as a Path elsewhere?
-
-    def upload(self, config: VNFCommonParametersConfig, command_context: CommandContext):
+    # TODO: test that making this nfdconfig is ok
+    def upload(self, config: NFDCommonParametersConfig, command_context: CommandContext):
         """Upload the artifact."""
         logger.debug("LocalFileStorageAccountArtifact config: %s", config)
         blob_client = self._get_blob_client(config=config, command_context=command_context)
@@ -581,7 +581,7 @@ class BlobStorageAccountArtifact(BaseStorageAccountArtifact):
         super().__init__(artifact_manifest)
         self.blob_sas_uri = blob_sas_uri
 
-    def upload(self, config: VNFCommonParametersConfig, command_context: CommandContext):
+    def upload(self, config: NFDCommonParametersConfig, command_context: CommandContext):
         """Upload the artifact."""
 
         logger.info("Copy from SAS URL to blob store")

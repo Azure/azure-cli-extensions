@@ -29,7 +29,7 @@ from azext_aosm.configuration_models.onboarding_vnf_input_config import (
     OnboardingVNFInputConfig,
 )
 from azext_aosm.configuration_models.common_parameters_config import (
-    VNFCommonParametersConfig,
+    NexusVNFCommonParametersConfig,
 )
 from azext_aosm.definition_folder.builder.artifact_builder import (
     ArtifactDefinitionElementBuilder,
@@ -68,13 +68,13 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
 
     def _get_params_config(
         self, config_file: dict = None
-    ) -> VNFCommonParametersConfig:
+    ) -> NexusVNFCommonParametersConfig:
         """Get the configuration for the command."""
         with open(config_file, "r", encoding="utf-8") as _file:
             params_dict = json.load(_file)
         if params_dict is None:
             params_dict = {}
-        return VNFCommonParametersConfig(**params_dict)
+        return NexusVNFCommonParametersConfig(**params_dict)
 
     def _get_processor_list(self):
         processor_list = []
@@ -265,7 +265,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             "publisherResourceGroupName": self.config.publisher_resource_group_name,
             "acrArtifactStoreName": self.config.acr_artifact_store_name,
             # "saArtifactStoreName": self.config.blob_artifact_store_name,
-            "acrManifestName":  self.config.acr_artifact_store_name + "-manifest",
+            "acrManifestName": self.config.acr_artifact_store_name + "-manifest",
             # "saManifestName": self.config.blob_artifact_store_name + "-manifest",
             "nfDefinitionGroup": self.config.nf_name,
             "nfDefinitionVersion": self.config.version

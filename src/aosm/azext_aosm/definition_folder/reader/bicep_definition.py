@@ -13,7 +13,7 @@ from azure.mgmt.resource.resources.models import DeploymentExtended
 from azext_aosm.common.command_context import CommandContext
 from azext_aosm.common.utils import convert_bicep_to_arm
 from azext_aosm.configuration_models.common_parameters_config import \
-    BaseCommonParametersConfig, VNFCommonParametersConfig
+    BaseCommonParametersConfig, CoreVNFCommonParametersConfig
 from azext_aosm.definition_folder.reader.base_definition import \
     BaseDefinitionElement
 from azext_aosm.common.constants import ManifestsExist
@@ -129,8 +129,8 @@ class BicepDefinitionElement(BaseDefinitionElement):
             acr_manifest_exists = True
         except azure_exceptions.ResourceNotFoundError:
             acr_manifest_exists = False
-
-        if isinstance(config, VNFCommonParametersConfig):
+        # TODO: test config type change works
+        if isinstance(config, CoreVNFCommonParametersConfig):
             try:
                 command_context.aosm_client.artifact_manifests.get(
                     resource_group_name=config.publisherResourceGroupName,

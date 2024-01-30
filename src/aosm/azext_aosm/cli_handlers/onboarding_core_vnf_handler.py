@@ -8,7 +8,7 @@ from typing import Dict, Any
 from knack.log import get_logger
 
 from azext_aosm.build_processors.arm_processor import (
-    AzureCoreArmBuildProcessor, BaseArmBuildProcessor, NexusArmBuildProcessor)
+    AzureCoreArmBuildProcessor, BaseArmBuildProcessor)
 from azext_aosm.build_processors.vhd_processor import VHDProcessor
 from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
                                          BASE_FOLDER_NAME,
@@ -28,7 +28,7 @@ from azext_aosm.configuration_models.onboarding_vnf_input_config import (
     OnboardingVNFInputConfig,
 )
 from azext_aosm.configuration_models.common_parameters_config import (
-    VNFCommonParametersConfig,
+    CoreVNFCommonParametersConfig,
 )
 from azext_aosm.definition_folder.builder.artifact_builder import (
     ArtifactDefinitionElementBuilder,
@@ -50,16 +50,6 @@ logger = get_logger(__name__)
 class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
     """CLI handler for publishing NFDs."""
 
-    @property
-    def default_config_file_name(self) -> str:
-        """Get the default configuration file name."""
-        return VNF_INPUT_FILENAME
-
-    @property
-    def output_folder_file_name(self) -> str:
-        """Get the output folder file name."""
-        return VNF_OUTPUT_FOLDER_FILENAME
-
     def _get_input_config(self, input_config: Dict[str, Any] = None) -> OnboardingVNFInputConfig:
         """Get the configuration for the command."""
         if input_config is None:
@@ -68,13 +58,13 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
 
     def _get_params_config(
         self, config_file: dict = None
-    ) -> VNFCommonParametersConfig:
+    ) -> CoreVNFCommonParametersConfig:
         """Get the configuration for the command."""
         with open(config_file, "r", encoding="utf-8") as _file:
             params_dict = json.load(_file)
         if params_dict is None:
             params_dict = {}
-        return VNFCommonParametersConfig(**params_dict)
+        return CoreVNFCommonParametersConfig(**params_dict)
 
     def _get_processor_list(self):
         print("in get processor")
@@ -108,18 +98,18 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         processor_list.append(vhd_processor)
         return processor_list
 
-    def build_base_bicep(self):
-        """Build the base bicep file."""
-        # Build manifest bicep contents, with j2 template
-        template_path = self._get_template_path(
-            VNF_TEMPLATE_FOLDER_NAME, VNF_BASE_TEMPLATE_FILENAME
-        )
-        bicep_contents = self._render_base_bicep_contents(template_path)
-        # Create Bicep element with manifest contents
-        bicep_file = BicepDefinitionElementBuilder(
-            Path(VNF_OUTPUT_FOLDER_FILENAME, BASE_FOLDER_NAME), bicep_contents
-        )
-        return bicep_file
+    # def build_base_bicep(self):
+    #     """Build the base bicep file."""
+    #     # Build manifest bicep contents, with j2 template
+    #     template_path = self._get_template_path(
+    #         VNF_TEMPLATE_FOLDER_NAME, VNF_BASE_TEMPLATE_FILENAME
+    #     )
+    #     bicep_contents = self._render_base_bicep_contents(template_path)
+    #     # Create Bicep element with manifest contents
+    #     bicep_file = BicepDefinitionElementBuilder(
+    #         Path(VNF_OUTPUT_FOLDER_FILENAME, BASE_FOLDER_NAME), bicep_contents
+    #     )
+    #     return bicep_file
 
     def build_manifest_bicep(self):
         """Build the manifest bicep file."""
@@ -199,8 +189,6 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             if isinstance(processor, BaseArmBuildProcessor):
 
                 acr_nf_application_list.append(nf_application)
-                print(nf_application)
-                print(nf_application.deploy_parameters_mapping_rule_profile)
                 # Generate local file for template_parameters + add to supporting files list
                 params = (
                     nf_application.deploy_parameters_mapping_rule_profile.template_mapping_rule_profile.template_parameters
@@ -266,13 +254,14 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         return bicep_file
 
     def build_all_parameters_json(self):
+        """Create object for all_parameters.json"""
         params_content = {
             "location": self.config.location,
             "publisherName": self.config.publisher_name,
             "publisherResourceGroupName": self.config.publisher_resource_group_name,
             "acrArtifactStoreName": self.config.acr_artifact_store_name,
             "saArtifactStoreName": self.config.blob_artifact_store_name,
-            "acrManifestName":  self.config.acr_artifact_store_name + "-manifest",
+            "acrManifestName": self.config.acr_artifact_store_name + "-manifest",
             "saManifestName": self.config.blob_artifact_store_name + "-manifest",
             "nfDefinitionGroup": self.config.nf_name,
             "nfDefinitionVersion": self.config.version
@@ -283,6 +272,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         return base_file
 
     def _get_default_config(self, vhd):
+        """Get default VHD config for Azure Core VNF."""
         default_config = {}
         if vhd.image_disk_size_GB:
             default_config.update({"image_disk_size_GB": vhd.image_disk_size_GB})
