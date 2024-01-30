@@ -18,7 +18,6 @@ from azure.cli.core.azclierror import (
 from ._archive_utils import archive_source_code
 
 from ._clients import BuilderClient, BuildClient
-import mimetypes
 
 from ._utils import (
     log_in_file,
