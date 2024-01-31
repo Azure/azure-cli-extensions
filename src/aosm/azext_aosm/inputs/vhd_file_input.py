@@ -65,7 +65,7 @@ class VHDFileInput(BaseInput):
         :return: A dictionary containing the schema.
         :rtype: Dict[str, Any]
         """
-        logger.info("Getting schema for VHD file input")
+        logger.debug("Getting schema for VHD file input %s.", self.artifact_name)
         vhd_properties = {
             "imageName": {"type": "string"},
             "azureDeployLocation": {"type": "string"},

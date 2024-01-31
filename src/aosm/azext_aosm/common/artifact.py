@@ -17,10 +17,12 @@ from azext_aosm.vendored_sdks.models import ManifestArtifactFormat
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from azext_aosm.common.command_context import CommandContext
 from azext_aosm.configuration_models.common_parameters_config import BaseCommonParametersConfig, NFDCommonParametersConfig
-from azext_aosm.vendored_sdks import HybridNetworkManagementClient
+from azext_aosm.common.utils import convert_bicep_to_arm
 from knack.util import CLIError
 from knack.log import get_logger
 from oras.client import OrasClient
+
+
 
 logger = get_logger(__name__)
 
@@ -144,13 +146,36 @@ class LocalFileACRArtifact(BaseACRArtifact):
 
     def __init__(self, artifact_name, artifact_type, artifact_version, file_path: Path):
         super().__init__(artifact_name, artifact_type, artifact_version)
-        self.file_path = str(file_path)  # TODO: Jordan cast this to str here, check output file isn't broken, and/or is it used as a Path elsewhere?
+        self.file_path = file_path
 
-    # TODO (WIBNI): check if the artifact name ends in .bicep and if so use utils.convert_bicep_to_arm()
-    # This way we can support in-place Bicep artifacts in the folder.
     def upload(self, config: BaseCommonParametersConfig, command_context: CommandContext):
         """Upload the artifact."""
         logger.debug("LocalFileACRArtifact config: %s", config)
+
+        # TODO: remove, this is temporary until we fix in artifact reader
+        self.file_path = Path(self.file_path)
+        # For NSDs, we provide paths relative to the artifacts folder, resolve them to absolute paths
+        if not self.file_path.is_absolute():
+            output_folder_path = command_context.cli_options["definition_folder"]
+            resolved_file_path = output_folder_path.resolve()
+            upload_file_path = resolved_file_path / self.file_path
+            print("nfp", output_folder_path)
+            print("rfp", resolved_file_path)
+            print("ufp", upload_file_path)
+            self.file_path = upload_file_path
+
+        # self.file_path = Path(self.file_path).resolve()
+        print("fp", self.file_path)
+
+        if self.file_path.suffix == ".bicep":
+            # Uploading the nf_template as part of the NSD will use this code path
+            # This does mean we can never have a bicep file as an artifact, but that should be OK
+            logger.debug("Converting self.file_path to ARM")
+            arm_template = convert_bicep_to_arm(self.file_path)
+            self.file_path = self.file_path.with_suffix(".json")
+            json.dump(arm_template, self.file_path.open("w"))
+            logger.debug("Converted bicep file to ARM as: %s", self.file_path)
+
         manifest_credentials = self._manifest_credentials(config=config, aosm_client=command_context.aosm_client)
         oras_client = self._get_oras_client(manifest_credentials=manifest_credentials)
         target_acr = self._get_acr(oras_client)
@@ -163,12 +188,26 @@ class LocalFileACRArtifact(BaseACRArtifact):
             try:
                 oras_client.push(files=[self.file_path], target=target)
                 break
-            except ValueError:
+            except ValueError as error:
                 if retries < 20:
-                    logger.info("Retrying pushing local artifact to ACR. Retries so far: %s", retries)
+                    logger.info(
+                        "Retrying pushing local artifact to ACR. Retries so far: %s",
+                        retries,
+                    )
                     retries += 1
                     sleep(3)
                     continue
+
+                logger.error(
+                    "Failed to upload %s to %s. Check if this image exists in the"
+                    " source registry %s.",
+                    self.file_path,
+                    target,
+                    target_acr,
+                )
+                logger.debug(error, exc_info=True)
+                raise error
+
         logger.info("LocalFileACRArtifact uploaded %s to %s", self.file_path, target)
 
 
@@ -543,10 +582,9 @@ class LocalFileStorageAccountArtifact(BaseStorageAccountArtifact):
                 blob_type=BlobType.PAGEBLOB,
                 progress_hook=self._vhd_upload_progress_callback,
             )
+
         logger.info(
-            "Successfully uploaded %s to %s",
-            artifact_config.file_path,
-            self.artifact_client.account_name,
+            "Successfully uploaded %s to %s", self.file_path, blob_client.container_name
         )
 
     def _vhd_upload_progress_callback(

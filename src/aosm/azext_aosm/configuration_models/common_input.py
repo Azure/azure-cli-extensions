@@ -14,18 +14,17 @@ class ArmTemplatePropertiesConfig:
     """ARM template configuration."""
 
     artifact_name: str = field(
-        default="", metadata={"comment": "Name of the artifact."}
+        default="", metadata={"comment": "Name of the artifact. Used as internal reference only."}
     )
     version: str = field(
-        default="", metadata={"comment": "Version of the artifact in A.B.C format."}
+        default="", metadata={"comment": "Version of the artifact in 1.1.1 format."}
     )
     file_path: str = field(
         default="",
         metadata={
             "comment": (
-                "File path of the artifact you wish to upload from your local disk.\n"
-                "Relative paths are relative to the configuration file. "
-                "On Windows escape any backslash with another backslash."
+                "File path (absolute or relative to this configuration file) of the artifact you wish to upload from your local disk.\n"
+                "Use Linux slash (/) file separator even if running on Windows."
             )
         },
     )
@@ -39,7 +38,7 @@ class ArmTemplatePropertiesConfig:
         if "." not in self.version or "-" in self.version:
             raise ValidationError(
                 "Config validation error. ARM template artifact version should be in"
-                " format A.B.C"
+                " format 1.1.1"
             )
         if not self.file_path:
             raise ValidationError("Artifact file path must be set")

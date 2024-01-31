@@ -17,5 +17,5 @@ class SchemaGetOrGenerateError(Exception):
     """Raised when the schema cannot be generated or retrieved"""
 
 
-class DefaultValuesNotFoundError(Exception):
+class DefaultValuesNotFoundError(UserFault):
     """Raised when the default values file cannot be found"""

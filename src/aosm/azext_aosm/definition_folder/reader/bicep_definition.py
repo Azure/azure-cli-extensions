@@ -183,7 +183,7 @@ class BicepDefinitionElement(BaseDefinitionElement):
                 # If none of the manifests exist, we can just go ahead and deploy the template
                 # as normal.
 
-        logger.info("Converting bicep to ARM for %s. This can take a few seconds.", self.path.name)
+        logger.info("Converting bicep to ARM for '%s' template. This can take a few seconds.", self.path.name)
         arm_json = convert_bicep_to_arm(self.path / "deploy.bicep")
         logger.info("Deploying ARM template for %s" % self.path.name)
 

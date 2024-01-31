@@ -94,7 +94,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
                     )
                 else:
                     raise FileNotFoundError(
-                        "There is no file at the path provided for the mappings file."
+                        f"ERROR: The default values file '{helm_package.default_values}' does not exist"
                     )
             else:
                 provided_config = None
@@ -115,11 +115,9 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
 
     def _validate_helm_template(self):
         """Validate the helm packages."""
-        helm_chart_processors = self._get_processor_list()
-
         validation_errors = {}
 
-        for helm_processor in helm_chart_processors:
+        for helm_processor in self.processors:
             validation_output = helm_processor.input_artifact.validate_template()
 
             if validation_output:
@@ -154,9 +152,16 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
 
             raise ValidationError(error_message)
 
+    def _validate_helm_values(self):
+        for helm_processor in self.processors:
+            helm_processor.input_artifact.validate_values()
+
     def pre_validate_build(self):
         """Run all validation functions required before building the cnf."""
         logger.debug("Pre-validating build")
+
+        self._validate_helm_values()
+
         if self.skip != HELM_TEMPLATE:
             self._validate_helm_template()
 

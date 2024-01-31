@@ -104,13 +104,13 @@ class HelmChartInput(BaseInput):
     @staticmethod
     def from_chart_path(
         chart_path: Path,
-        default_config: Optional[Dict[str, Any]],
+        default_config: Optional[Dict[str, Any]] = None,
         default_config_path: Optional[str] = None,
     ) -> "HelmChartInput":
         """
         Creates a HelmChartInput object from a path to a Helm chart.
 
-        :param chart_path: The path to the Helm chart. This should eith be a path to a folder or a tar file.
+        :param chart_path: The path to the Helm chart. This should either be a path to a folder or a tar file.
         :type chart_path: Path
         :param default_config: The default configuration.
         :type default_config: Optional[Dict[str, Any]]
@@ -119,29 +119,31 @@ class HelmChartInput(BaseInput):
         :return: A HelmChartInput object.
         :rtype: HelmChartInput
         """
-        logger.info("Creating Helm chart input from chart path")
+        logger.debug("Creating Helm chart input from chart path '%s'", chart_path)
         temp_dir = Path(tempfile.mkdtemp())
-        # TODO: raise useful error if no path given?
-        if chart_path.exists():
-            logger.debug("Unpacking Helm chart to %s", temp_dir)
-            if chart_path.is_dir():
-                unpacked_chart_path = Path(chart_path)
-            else:
-                unpacked_chart_path = extract_tarfile(chart_path, temp_dir)
-
-            name, version = HelmChartInput._get_name_and_version(unpacked_chart_path)
-
-            shutil.rmtree(temp_dir)
-
-            logger.debug("Deleted temporary directory %s", temp_dir)
-
-            return HelmChartInput(
-                artifact_name=name,
-                artifact_version=version,
-                chart_path=chart_path,
-                default_config=default_config,
-                default_config_path=default_config_path,
+        if not chart_path.exists():
+            raise FileNotFoundError(
+                f"ERROR: The Helm chart '{chart_path}' does not exist."
             )
+        logger.debug("Unpacking Helm chart to %s", temp_dir)
+        if chart_path.is_dir():
+            unpacked_chart_path = Path(chart_path)
+        else:
+            unpacked_chart_path = extract_tarfile(chart_path, temp_dir)
+
+        name, version = HelmChartInput._get_name_and_version(unpacked_chart_path)
+
+        shutil.rmtree(temp_dir)
+
+        logger.debug("Deleted temporary directory %s", temp_dir)
+
+        return HelmChartInput(
+            artifact_name=name,
+            artifact_version=version,
+            chart_path=chart_path,
+            default_config=default_config,
+            default_config_path=default_config_path,
+        )
 
     def validate_template(self) -> None:
         """
@@ -173,7 +175,7 @@ class HelmChartInput(BaseInput):
         try:
             result = subprocess.run(cmd, capture_output=True, check=True)
             helm_template_output = result.stdout
-            self.helm_template = helm_template_output
+            self.helm_template = helm_template_output.decode()
 
             logger.debug(
                 "Helm template output for Helm chart %s:\n%s",
@@ -196,30 +198,38 @@ class HelmChartInput(BaseInput):
             )
             return error_message
 
+    def validate_values(self) -> None:
+        """
+        Confirm that the values.yaml file exists in the Helm chart directory
+        or that the default values are provided.
+
+        :raises DefaultValuesNotFoundError: If the values.yaml and default values do not exist.
+        """
+        logger.debug("Getting default values for Helm chart %s", self.artifact_name)
+
+        default_config = self.default_config or self._read_values_yaml()
+
+        if not default_config:
+            logger.error("No values found for Helm chart '%s'", self.chart_path)
+            raise DefaultValuesNotFoundError(
+                "ERROR: No default values found for the Helm chart"
+                f" '{self.chart_path}'. Please provide default values"
+                " or add a values.yaml file to the Helm chart."
+            )
+
     def get_defaults(self) -> Dict[str, Any]:
         """
         Retrieves the default values for the Helm chart.
 
         :return: The default values for the Helm chart.
         :rtype: Dict[str, Any]
-        :raises DefaultValuesNotFoundError: If no default values were found for the Helm chart.
         """
-        logger.info("Getting default values for Helm chart input")
-
-        try:
-            default_config = self.default_config or self._read_values_yaml()
-            logger.debug(
-                "Default values for Helm chart input: %s",
-                json.dumps(default_config, indent=4),
-            )
-            return copy.deepcopy(default_config)
-        except FileNotFoundError as error:
-            logger.error("No default values found for Helm chart '%s'", self.chart_path)
-            raise DefaultValuesNotFoundError(
-                "ERROR: No default values found for the Helm chart"
-                f" '{self.chart_path}'. Please provide default values"
-                " or add a values.yaml file to the Helm chart."
-            ) from error
+        default_config = self.default_config or self._read_values_yaml()
+        logger.debug(
+            "Default values for Helm chart input: %s",
+            json.dumps(default_config, indent=4),
+        )
+        return copy.deepcopy(default_config)
 
     def get_schema(self) -> Dict[str, Any]:
         """
@@ -233,7 +243,7 @@ class HelmChartInput(BaseInput):
         :rtype: Dict[str, Any]
         :raises SchemaGetOrGenerateError: If an error occurred while trying to generate or retrieve the schema.
         """
-        logger.info("Getting schema for Helm chart input")
+        logger.info("Getting schema for Helm chart input %s.", self.artifact_name)
         try:
             schema = None
             # Use the schema provided in the chart if there is one.
@@ -244,10 +254,10 @@ class HelmChartInput(BaseInput):
                         schema = json.load(schema_file)
 
             if not schema:
-                # Otherwise, generate a schema from the default values in values.yaml.
-                logger.debug("Generating schema from values.yaml")
+                # Otherwise, generate a schema from the default values or values in values.yaml.
+                logger.debug("Generating schema from default values")
                 built_schema = genson.Schema()
-                built_schema.add_object(self._read_values_yaml())
+                built_schema.add_object(self.get_defaults())
                 schema = built_schema.to_dict()
 
             logger.debug(
@@ -271,7 +281,7 @@ class HelmChartInput(BaseInput):
         :rtype: List[HelmChartInput]
         :raises MissingChartDependencyError: If a dependency chart is missing.
         """
-        logger.info("Getting dependency charts for Helm chart input")
+        logger.debug("Getting dependency charts for Helm chart input, '%s'", self.artifact_name)
         # All dependency charts should be located in the charts directory.
         dependency_chart_dir = Path(self._chart_dir, "charts")
 
@@ -313,7 +323,7 @@ class HelmChartInput(BaseInput):
         :return: The templates for the Helm chart.
         :rtype: List[HelmChartTemplate]
         """
-        logger.info("Getting templates for Helm chart input")
+        logger.debug("Getting templates for Helm chart input %s", self.artifact_name)
 
         # Template files are located in the templates directory.
         template_dir = Path(self._chart_dir, "templates")
@@ -411,12 +421,6 @@ class HelmChartInput(BaseInput):
                 with file.open(encoding="UTF-8") as f:
                     content = yaml_processor.load(f)
                 return content
-
-        logger.error("No values.yaml file found in Helm chart '%s'", self.chart_path)
-        raise FileNotFoundError(
-            f"ERROR: No values file was found in the Helm chart"
-            f" '{self.chart_path}'."
-        )
 
     def __del__(self):
         shutil.rmtree(self._temp_dir_path)

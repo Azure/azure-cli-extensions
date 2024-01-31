@@ -10,16 +10,26 @@ from typing import Any, Dict, List, Set, Tuple
 from knack.log import get_logger
 
 from azext_aosm.build_processors.base_processor import BaseInputProcessor
-from azext_aosm.common.artifact import (BaseArtifact, LocalFileACRArtifact,
-                                        RemoteACRArtifact)
+from azext_aosm.common.artifact import (
+    BaseArtifact,
+    LocalFileACRArtifact,
+    RemoteACRArtifact,
+)
 from azext_aosm.common.local_file_builder import LocalFileBuilder
 from azext_aosm.inputs.helm_chart_input import HelmChartInput
 from azext_aosm.vendored_sdks.models import (
-    ApplicationEnablement, ArtifactType, AzureArcKubernetesArtifactProfile,
+    ApplicationEnablement,
+    ArtifactType,
+    AzureArcKubernetesArtifactProfile,
     AzureArcKubernetesDeployMappingRuleProfile,
-    AzureArcKubernetesHelmApplication, DependsOnProfile, HelmArtifactProfile,
-    HelmMappingRuleProfile, ManifestArtifactFormat, ReferencedResource,
-    ResourceElementTemplate)
+    AzureArcKubernetesHelmApplication,
+    DependsOnProfile,
+    HelmArtifactProfile,
+    HelmMappingRuleProfile,
+    ManifestArtifactFormat,
+    ReferencedResource,
+    ResourceElementTemplate,
+)
 
 logger = get_logger(__name__)
 
@@ -58,7 +68,7 @@ class HelmChartProcessor(BaseInputProcessor):
         :return: A list of artifacts for the artifact manifest.
         :rtype: List[ManifestArtifactFormat]
         """
-        logger.info("Getting artifact manifest list for Helm chart input.")
+        logger.debug("Getting artifact manifest list for Helm chart input %s.", self.name)
         artifact_manifest_list = []
         artifact_manifest_list.append(
             ManifestArtifactFormat(
@@ -89,7 +99,7 @@ class HelmChartProcessor(BaseInputProcessor):
         :return: A tuple containing the list of artifacts and the list of local file builders.
         :rtype: Tuple[List[BaseACRArtifact], List[LocalFileBuilder]]
         """
-        logger.info("Getting artifact details for Helm chart input.")
+        logger.debug("Getting artifact details for Helm chart input %s.", self.name)
         artifact_details: List[BaseArtifact] = []
 
         # We only support local file artifacts for Helm charts
@@ -131,7 +141,7 @@ class HelmChartProcessor(BaseInputProcessor):
         :return: The generated Azure Arc Kubernetes Helm application.
         :rtype: AzureArcKubernetesHelmApplication
         """
-        logger.info("Generating NF application for Helm chart input.")
+        logger.debug("Generating NF application for Helm chart input %s.", self.name)
         artifact_profile = self._generate_artifact_profile()
         # We want to remove the registry values paths and image pull secrets values paths from the values mappings
         # as these values are supplied by NFM when it installs the chart.
@@ -150,24 +160,25 @@ class HelmChartProcessor(BaseInputProcessor):
         return AzureArcKubernetesHelmApplication(
             name=self.name,
             # Current implementation is set all depends on profiles to empty lists
-            depends_on_profile=DependsOnProfile(install_depends_on=[],
-                                                uninstall_depends_on=[], update_depends_on=[]),
+            depends_on_profile=DependsOnProfile(
+                install_depends_on=[], uninstall_depends_on=[], update_depends_on=[]
+            ),
             artifact_profile=artifact_profile,
             deploy_parameters_mapping_rule_profile=mapping_rule_profile,
         )
 
-    def _find_chart_images(self) -> List[Tuple[str, str]]:
+    def _find_chart_images(self) -> Set[Tuple[str, str]]:
         """
         Find the images used by the Helm chart.
 
         :return: A list of tuples containing the image name and version.
-        :rtype: List[Tuple[str, str]]
+        :rtype: Set[Tuple[str, str]]
         """
         logger.debug("Finding images used by Helm chart %s", self.name)
         image_lines: Set[str] = set()
         self._find_image_lines(self.input_artifact, image_lines)
 
-        images: List[Tuple[str, str]] = []
+        images: Set[Tuple[str, str]] = set()
         for line in image_lines:
             name_and_tag = re.search(IMAGE_NAME_AND_VERSION_REGEX, line)
             if name_and_tag and len(name_and_tag.groups()) == 2:
@@ -179,7 +190,7 @@ class HelmChartProcessor(BaseInputProcessor):
                     image_tag,
                     self.name,
                 )
-                images.append((image_name, image_tag))
+                images.add((image_name, image_tag))
             else:
                 logger.warning(
                     "Could not parse image name and tag in line %s in Helm chart %s",
@@ -198,19 +209,20 @@ class HelmChartProcessor(BaseInputProcessor):
         """
         logger.debug("Finding image lines in Helm chart %s", chart.artifact_name)
         # Find the image lines in the current chart
-        for template in chart.get_templates():
-            for line in template.data:
-                if "image:" in line:
-                    logger.debug(
-                        "Found image line %s in Helm chart %s",
-                        line,
-                        chart.artifact_name,
-                    )
-                    image_lines.add(line.replace("image:", "").strip())
 
-        # Recursively search the dependency charts for image lines
-        for dep in chart.get_dependencies():
-            self._find_image_lines(dep, image_lines)
+        template_lines = []
+
+        if chart.helm_template is not None:
+            template_lines = chart.helm_template.split("\n")
+
+        for line in template_lines:
+            if "image:" in line:
+                logger.debug(
+                    "Found image line %s in Helm chart %s",
+                    line,
+                    chart.artifact_name,
+                )
+                image_lines.add(line.replace("image:", "").strip())
 
     def _generate_artifact_profile(self) -> AzureArcKubernetesArtifactProfile:
         """
