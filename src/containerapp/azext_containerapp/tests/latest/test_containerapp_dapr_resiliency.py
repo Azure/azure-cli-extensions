@@ -30,7 +30,7 @@ class ContainerappResiliencyTests(ScenarioTest):
         bad_capp = "bad-capp"
         resil_policy_count = 1
         
-        create_containerapp_env(self, env_name, resource_group, location=TEST_LOCATION)
+        create_containerapp_env(self, env_name, resource_group)
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
         self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
