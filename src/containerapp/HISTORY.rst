@@ -9,6 +9,9 @@ upcoming
 * 'az containerapp add-on' : support for add-on weaviate create and delete commands
 * Upgrade api-version to 2023-11-02-preview
 * 'az containerapp create/update/up': support --build-env-vars to set environment variables for build
+* 'az containerapp env java-component': support list Java components
+* 'az containerapp env java-component spring-cloud-config': support create/update/show/delete Spring Cloud Config
+* 'az containerapp env java-component spring-cloud-eureka': support create/update/show/delete Spring Cloud Eureka
 
 0.3.46
 ++++++
