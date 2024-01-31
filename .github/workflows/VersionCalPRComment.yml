@@ -56,7 +56,8 @@ jobs:
             do
               echo changed module: ${mod}
             done
-      - uses: actions/checkout@master
+      - name: Checkout CLI main repo 
+        uses: actions/checkout@master
         with:
            repository: Azure/azure-cli
            path: ./azure-cli
