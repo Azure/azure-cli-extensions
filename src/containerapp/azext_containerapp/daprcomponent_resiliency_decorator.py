@@ -114,12 +114,17 @@ class DaprComponentResiliencyDecorator(BaseResource):
             if not argument_value:
                 if first_validation_error is None:
                     first_validation_error = ValidationError(f"--{param_name} is required {condition_message}")
+                    if argument_group_in_use:
+                        raise first_validation_error
             else:
                 argument_group_in_use = True
+                if first_validation_error is not None:
+                    raise first_validation_error
         for argument_name in optional_argument_names:
             argument_value = getattr(self, f"get_argument_{argument_name}")()
             if argument_value:
                 argument_group_in_use = True
+                break
         if argument_group_in_use and first_validation_error is not None:
             raise first_validation_error
 
