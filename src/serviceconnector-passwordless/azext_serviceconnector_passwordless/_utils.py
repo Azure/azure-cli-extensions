@@ -30,8 +30,10 @@ def should_load_source(source):
     return should_load_source_base(source)
 
 
-def run_cli_cmd(cmd, retry=0, interval=0, should_retry_func=None):
+def run_cli_cmd(cmd, retry=0, interval=0, should_retry_func=None, should_return_json=True):
     try:
+        if should_return_json:
+            return run_cli_cmd_base(cmd + ' -o json', retry, interval, should_retry_func)
         return run_cli_cmd_base(cmd, retry, interval, should_retry_func)
     except CLIInternalError as e:
         error_code = 'Unknown'

@@ -65,7 +65,7 @@ from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from ._client_factory import handle_raw_exception
 from ._clients import (
-    GitHubActionClient,
+    GitHubActionPreviewClient,
     ContainerAppPreviewClient,
     AuthPreviewClient,
     SubscriptionPreviewClient,
@@ -87,7 +87,7 @@ from ._models import (
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     AzureFileProperties as AzureFilePropertiesModel)
 
-from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running
+from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running, parse_build_env_vars
 
 from ._constants import (CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
@@ -443,13 +443,15 @@ def create_containerapp(cmd,
                         environment_type="managed",
                         source=None,
                         artifact=None,
+                        build_env_vars=None,
                         repo=None,
                         token=None,
                         branch=None,
                         context_path=None,
                         service_principal_client_id=None,
                         service_principal_client_secret=None,
-                        service_principal_tenant_id=None):
+                        service_principal_tenant_id=None,
+                        max_inactive_revisions=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -505,7 +507,9 @@ def update_containerapp_logic(cmd,
                               registry_pass=None,
                               secret_volume_mount=None,
                               source=None,
-                              artifact=None):
+                              artifact=None,
+                              build_env_vars=None,
+                              max_inactive_revisions=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -554,7 +558,9 @@ def update_containerapp(cmd,
                         no_wait=False,
                         secret_volume_mount=None,
                         source=None,
-                        artifact=None):
+                        artifact=None,
+                        build_env_vars=None,
+                        max_inactive_revisions=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -588,7 +594,9 @@ def update_containerapp(cmd,
                                      no_wait=no_wait,
                                      secret_volume_mount=secret_volume_mount,
                                      source=source,
-                                     artifact=artifact)
+                                     artifact=artifact,
+                                     build_env_vars=build_env_vars,
+                                     max_inactive_revisions=max_inactive_revisions)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -878,6 +886,7 @@ def create_or_update_github_action(cmd,
                                    login_with_github=False,
                                    image=None,
                                    context_path=None,
+                                   build_env_vars=None,
                                    service_principal_client_id=None,
                                    service_principal_client_secret=None,
                                    service_principal_tenant_id=None,
@@ -901,7 +910,7 @@ def create_or_update_github_action(cmd,
     source_control_info = None
 
     try:
-        source_control_info = GitHubActionClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        source_control_info = GitHubActionPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
 
     except Exception as ex:
         if not service_principal_client_id or not service_principal_client_secret or not service_principal_tenant_id:
@@ -910,7 +919,7 @@ def create_or_update_github_action(cmd,
 
     # Need to trigger the workflow manually if it already exists (performing an update)
     try:
-        workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+        workflow_name = GitHubActionPreviewClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
         if workflow_name is not None:
             if trigger_existing_workflow:
                 trigger_workflow(token, repo, workflow_name, branch)
@@ -953,6 +962,7 @@ def create_or_update_github_action(cmd,
     github_action_configuration["registryInfo"] = registry_info
     github_action_configuration["azureCredentials"] = azure_credentials
     github_action_configuration["contextPath"] = context_path
+    github_action_configuration["buildEnvironmentVariables"] = parse_build_env_vars(build_env_vars)
     github_action_configuration["image"] = image
 
     source_control_info["properties"]["githubActionConfiguration"] = github_action_configuration
@@ -961,7 +971,7 @@ def create_or_update_github_action(cmd,
 
     try:
         logger.warning("Creating Github action...")
-        r = GitHubActionClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
+        r = GitHubActionPreviewClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
         if not no_wait:
             WORKFLOW_POLL_RETRY = 6
             WORKFLOW_POLL_SLEEP = 10
@@ -969,7 +979,7 @@ def create_or_update_github_action(cmd,
             # Poll for the workflow file just created (may take up to 30s)
             for _ in range(0, WORKFLOW_POLL_RETRY):
                 time.sleep(WORKFLOW_POLL_SLEEP)
-                workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+                workflow_name = GitHubActionPreviewClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
                 if workflow_name is not None:
                     await_github_action(token, repo, workflow_name)
                     return r
@@ -1041,6 +1051,7 @@ def containerapp_up(cmd,
                     image=None,
                     source=None,
                     artifact=None,
+                    build_env_vars=None,
                     ingress=None,
                     target_port=None,
                     registry_user=None,
@@ -1068,7 +1079,7 @@ def containerapp_up(cmd,
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
-    _validate_up_args(cmd, source, artifact, image, repo, registry_server)
+    _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, registry_server)
     _validate_custom_location_connected_cluster_args(cmd,
                                                      env=environment,
                                                      resource_group_name=resource_group_name,
@@ -1124,14 +1135,14 @@ def containerapp_up(cmd,
 
     used_default_container_registry = False
     if source:
-        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=True, registry_server=registry_server)
+        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=True, registry_server=registry_server)
     else:
         app.create_acr_if_needed()
 
     app.create(no_registry=bool(repo or used_default_container_registry))
     if repo:
         _create_github_action(app, env, service_principal_client_id, service_principal_client_secret,
-                              service_principal_tenant_id, branch, token, repo, context_path)
+                              service_principal_tenant_id, branch, token, repo, context_path, build_env_vars)
         cache_github_token(cmd, token, repo)
 
     if browse:

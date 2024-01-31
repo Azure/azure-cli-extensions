@@ -429,7 +429,8 @@ GitHubActionConfiguration = {
     "publishType": None,  # str
     "os": None,  # str
     "runtimeStack": None,  # str
-    "runtimeVersion": None  # str
+    "runtimeVersion": None,  # str
+    "buildEnvironmentVariables": None  # [EnvironmentVar]
 }
 
 RegistryInfo = {
