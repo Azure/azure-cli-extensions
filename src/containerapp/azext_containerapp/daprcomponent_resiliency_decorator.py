@@ -106,6 +106,24 @@ class DaprComponentResiliencyDecorator(BaseResource):
         if argument_value is not None and argument_value < 0:
             raise ValidationError(f"--{param_name} must not be negative")
 
+    def validate_required_argument_group(self, required_argument_names, required_param_names, optional_argument_names, condition_message):
+        first_validation_error = None
+        argument_group_in_use = False
+        for argument_name, param_name in zip(required_argument_names, required_param_names):
+            argument_value = getattr(self, f"get_argument_{argument_name}")()
+            if not argument_value:
+                if first_validation_error is None:
+                    first_validation_error = ValidationError(f"--{param_name} is required {condition_message}")
+            else:
+                argument_group_in_use = True
+        for argument_name in optional_argument_names:
+            argument_value = getattr(self, f"get_argument_{argument_name}")()
+            if argument_value:
+                argument_group_in_use = True
+        if argument_group_in_use and first_validation_error is not None:
+            raise first_validation_error
+
+
     def validate_arguments(self):
         self.validate_positive_argument("in_timeout_response_in_seconds", "in-timeout")
         self.validate_positive_argument("out_timeout_response_in_seconds", "out-timeout")
@@ -117,10 +135,18 @@ class DaprComponentResiliencyDecorator(BaseResource):
         self.validate_positive_argument("out_http_retry_interval_in_milliseconds", "out-http-interval")
         self.validate_positive_argument("in_circuit_breaker_consecutive_errors", "in-cb-sequential-errors")
         self.validate_positive_argument("out_circuit_breaker_consecutive_errors", "out-cb-sequential-errors")
-        self.validate_positive_argument("in_circuit_breaker_timeout", "in-cb-interval")
-        self.validate_positive_argument("out_circuit_breaker_timeout", "out-cb-interval")
-        self.validate_not_negative_argument("in_circuit_breaker_interval", "in-cb-timeout")
-        self.validate_not_negative_argument("out_circuit_breaker_interval", "out-cb-timeout")
+        self.validate_positive_argument("in_circuit_breaker_timeout", "in-cb-timeout")
+        self.validate_positive_argument("out_circuit_breaker_timeout", "out-cb-timeout")
+        self.validate_not_negative_argument("in_circuit_breaker_interval", "in-cb-interval")
+        self.validate_not_negative_argument("out_circuit_breaker_interval", "out-cb-interval")
+        self.validate_required_argument_group(required_argument_names=["in_circuit_breaker_consecutive_errors", "in_circuit_breaker_timeout"],
+                                              required_param_names=["in-cb-sequential-errors", "in-cb-timeout"],
+                                              optional_argument_names=["in_circuit_breaker_interval"],
+                                              condition_message="when providing an inbound dapr component circuit breaker policy.")
+        self.validate_required_argument_group(required_argument_names=["out_circuit_breaker_consecutive_errors", "out_circuit_breaker_timeout"],
+                                              required_param_names=["out-cb-sequential-errors", "out-cb-timeout"],
+                                              optional_argument_names=["out_circuit_breaker_interval"],
+                                              condition_message="when providing an outbound dapr component circuit breaker policy.")
 
     def set_up_component_resiliency_yaml(self, file_name):
         component_resiliency_def = DaprComponentResiliencyModel

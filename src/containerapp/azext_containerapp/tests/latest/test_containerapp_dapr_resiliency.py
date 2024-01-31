@@ -238,8 +238,14 @@ class DaprComponentResiliencyTests(ScenarioTest):
         #Incorrect environment name (create)
         self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retries 5'.format(resil_name, dapr_comp_name, bad_env, resource_group), expect_failure=True)
 
+        #Create dapr component resiliency using flags with missing conditional required flags
+        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retries 5 --in-cb-timeout 1'.format(resil_name, dapr_comp_name, env_name, resource_group), expect_failure=True)
+
+        #Create dapr component resiliency using flags with missing conditional required flags
+        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retries 5 --out-cb-interval 1'.format(resil_name, dapr_comp_name, env_name, resource_group), expect_failure=True)
+
         #Create dapr component resiliency using flags
-        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retries 5'.format(resil_name, dapr_comp_name, env_name, resource_group))
+        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retries 5 --in-cb-timeout 5 --in-cb-sequential-errors 3'.format(resil_name, dapr_comp_name, env_name, resource_group))
 
         #Show dapr component resiliency
         self.cmd('containerapp env dapr-component resiliency show -n {} --dapr-component-name {} --environment {} -g {}'.format(resil_name, dapr_comp_name, env_name, resource_group), checks=[
@@ -247,6 +253,8 @@ class DaprComponentResiliencyTests(ScenarioTest):
             JMESPathCheck("properties.inboundPolicy.httpRetryPolicy.retryBackOff.initialDelayInMilliseconds", "1000"),
             JMESPathCheck("properties.inboundPolicy.httpRetryPolicy.retryBackOff.maxIntervalInMilliseconds", "10000"),
             JMESPathCheck("properties.inboundPolicy.timeoutPolicy.responseTimeoutInSeconds", "15"),
+            JMESPathCheck("properties.inboundPolicy.circuitBreakerPolicy.consecutiveErrors", "3"),
+            JMESPathCheck("properties.inboundPolicy.circuitBreakerPolicy.timeoutInSeconds", "5"),
         ])
 
         #Update dapr component resiliency using flags
@@ -258,6 +266,8 @@ class DaprComponentResiliencyTests(ScenarioTest):
             JMESPathCheck("properties.inboundPolicy.httpRetryPolicy.retryBackOff.maxIntervalInMilliseconds", "10000"),
             JMESPathCheck("properties.inboundPolicy.timeoutPolicy.responseTimeoutInSeconds", "15"),
             JMESPathCheck("properties.outboundPolicy.timeoutPolicy.responseTimeoutInSeconds", "45"),
+            JMESPathCheck("properties.inboundPolicy.circuitBreakerPolicy.consecutiveErrors", "3"),
+            JMESPathCheck("properties.inboundPolicy.circuitBreakerPolicy.timeoutInSeconds", "5"),
         ])
 
         #Incorrect resource group (update)
@@ -277,6 +287,8 @@ class DaprComponentResiliencyTests(ScenarioTest):
             JMESPathCheck("[0].properties.inboundPolicy.httpRetryPolicy.retryBackOff.maxIntervalInMilliseconds", "10000"),
             JMESPathCheck("[0].properties.inboundPolicy.timeoutPolicy.responseTimeoutInSeconds", "15"),
             JMESPathCheck("[0].properties.outboundPolicy.timeoutPolicy.responseTimeoutInSeconds", "45"),
+            JMESPathCheck("[0].properties.inboundPolicy.circuitBreakerPolicy.consecutiveErrors", "3"),
+            JMESPathCheck("[0].properties.inboundPolicy.circuitBreakerPolicy.timeoutInSeconds", "5"),
         ])
 
         #Incorrect resource group (list)
@@ -361,4 +373,3 @@ outboundPolicy:
             JMESPathCheck("properties.outboundPolicy.httpRetryPolicy.retryBackOff.maxIntervalInMilliseconds", "250"),
         ])
         clean_up_test_file(resil_file_name)
-        
