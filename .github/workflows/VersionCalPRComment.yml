@@ -14,7 +14,6 @@ jobs:
   version-cal:
     if:  startsWith(github.head_ref, 'auto-version')
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
       - name: Set Init Version Message
         run: |
