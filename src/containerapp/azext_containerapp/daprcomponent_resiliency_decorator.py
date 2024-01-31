@@ -138,18 +138,18 @@ class DaprComponentResiliencyDecorator(BaseResource):
         self.validate_positive_argument("out_http_retry_delay_in_milliseconds", "out-http-delay")
         self.validate_positive_argument("in_http_retry_interval_in_milliseconds", "in-http-interval")
         self.validate_positive_argument("out_http_retry_interval_in_milliseconds", "out-http-interval")
-        self.validate_positive_argument("in_circuit_breaker_consecutive_errors", "in-cb-sequential-errors")
-        self.validate_positive_argument("out_circuit_breaker_consecutive_errors", "out-cb-sequential-errors")
+        self.validate_positive_argument("in_circuit_breaker_consecutive_errors", "in-cb-sequential-err")
+        self.validate_positive_argument("out_circuit_breaker_consecutive_errors", "out-cb-sequential-err")
         self.validate_positive_argument("in_circuit_breaker_timeout", "in-cb-timeout")
         self.validate_positive_argument("out_circuit_breaker_timeout", "out-cb-timeout")
         self.validate_not_negative_argument("in_circuit_breaker_interval", "in-cb-interval")
         self.validate_not_negative_argument("out_circuit_breaker_interval", "out-cb-interval")
         self.validate_required_argument_group(required_argument_names=["in_circuit_breaker_consecutive_errors", "in_circuit_breaker_timeout"],
-                                              required_param_names=["in-cb-sequential-errors", "in-cb-timeout"],
+                                              required_param_names=["in-cb-sequential-err", "in-cb-timeout"],
                                               optional_argument_names=["in_circuit_breaker_interval"],
                                               condition_message="when providing an inbound dapr component circuit breaker policy.")
         self.validate_required_argument_group(required_argument_names=["out_circuit_breaker_consecutive_errors", "out_circuit_breaker_timeout"],
-                                              required_param_names=["out-cb-sequential-errors", "out-cb-timeout"],
+                                              required_param_names=["out-cb-sequential-err", "out-cb-timeout"],
                                               optional_argument_names=["out_circuit_breaker_interval"],
                                               condition_message="when providing an outbound dapr component circuit breaker policy.")
 
