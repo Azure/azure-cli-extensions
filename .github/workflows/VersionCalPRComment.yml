@@ -2,7 +2,7 @@ name: Comment PR new module release when pr committed and labeled/unlabeled
 
 on: 
   workflow_dispatch:
-  pull_request:
+  pull_request_target:
       types: [opened, labeled, unlabeled, synchronize]
 
 permissions:
