@@ -124,7 +124,7 @@ jobs:
            ls ./${diff_meta_path}/
            python scripts/ci/release_version_cal.py
            # echo "commit_message=$(cat ${output_file})" >> $GITHUB_ENV
-      - name: comment on the pull request
+      - name: Comment on the pull request
         uses: mshick/add-pr-comment@v2
         with:
            message-path: |
