@@ -27,7 +27,7 @@ class JavaComponentDecorator(BaseResource):
     def get_argument_configuration(self):
         return self.get_param("configuration")
 
-    def get_argument_environment(self):
+    def get_argument_environment_name(self):
         return self.get_param("environment_name")
 
     def get_argument_java_component_name(self):
