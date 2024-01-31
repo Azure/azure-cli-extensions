@@ -1935,7 +1935,7 @@ def create_java_component(cmd, java_component_name, environment_name, resource_g
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    java_component_decorator.construct_payload(target_java_component_type)
+    java_component_decorator.construct_payload()
     return java_component_decorator.create()
 
 
@@ -1947,7 +1947,7 @@ def update_java_component(cmd, java_component_name, environment_name, resource_g
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    java_component_decorator.construct_payload(target_java_component_type)
+    java_component_decorator.construct_payload()
     return java_component_decorator.update()
 
 

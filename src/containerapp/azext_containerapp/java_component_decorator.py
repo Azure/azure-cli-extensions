@@ -33,8 +33,11 @@ class JavaComponentDecorator(BaseResource):
     def get_argument_java_component_name(self):
         return self.get_param("java_component_name")
 
-    def construct_payload(self, java_component_type):
-        self.java_component_def["properties"]["componentType"] = java_component_type
+    def get_argument_target_java_component_type(self):
+        return self.get_param("target_java_component_type")
+
+    def construct_payload(self):
+        self.java_component_def["properties"]["componentType"] = self.get_argument_target_java_component_type()
 
         if self.get_argument_configuration() is not None:
             configuration_list = []
