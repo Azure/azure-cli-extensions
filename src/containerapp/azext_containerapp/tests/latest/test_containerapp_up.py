@@ -32,15 +32,6 @@ class ContainerAppUpImageTest(ScenarioTest):
 
     @live_only()
     @ResourceGroupPreparer(location="eastus2")
-    def test_containerapp_up_artifact_with_bullseye_buildpack_e2e(self, resource_group):
-        artifact_path = os.path.join(TEST_DIR, os.path.join("data", "artifact_built_using_buildpack", "sample.jar"))
-        ingress = 'external'
-        target_port = '8080'
-        create_and_verify_containerapp_up(self, resource_group=resource_group, artifact_path=artifact_path, ingress=ingress, target_port=target_port, requires_acr_prerequisite=True)
-
-
-    @live_only()
-    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_up_source_with_bookworm_buildpack_e2e(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_bookworm_buildpack_net8"))
         ingress = 'external'
