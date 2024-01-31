@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "code-signing",
-    is_experimental=True,
+    "codesigning",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage code signing account
+    """Manage Azure Code Signing resources
     """
     pass
 

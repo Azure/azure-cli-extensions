@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "code-signing certificate-profile show",
-    is_experimental=True,
+    "codesigning show",
+    is_preview=True,
 )
 class Show(AAZCommand):
-    """Get details of a certificate profile
+    """Get a Code Signing Account
     """
 
     _aaz_info = {
-        "version": "2023-04-30-preview",
+        "version": "2024-02-05-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}/certificateprofiles/{}", "2023-04-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}", "2024-02-05-preview"],
         ]
     }
 
@@ -43,21 +43,12 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
-            options=["--account-name"],
+            options=["-n", "--name", "--account-name"],
             help="Code Signing account name",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
-            ),
-        )
-        _args_schema.profile_name = AAZStrArg(
-            options=["-n", "--name", "--profile-name"],
-            help="Certificate profile name",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^(?=.{5,100}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -67,7 +58,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CertificateProfileGet(ctx=self.ctx)()
+        self.CodeSigningAccountsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,7 +73,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class CertificateProfileGet(AAZHttpOperation):
+    class CodeSigningAccountsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -96,7 +87,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles/{profileName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}",
                 **self.url_parameters
             )
 
@@ -116,10 +107,6 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "profileName", self.ctx.args.profile_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
@@ -134,7 +121,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-30-preview",
+                    "api-version", "2024-02-05-preview",
                     required=True,
                 ),
             }
@@ -170,118 +157,38 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.certificates = AAZListType(
+            properties.account_uri = AAZStrType(
+                serialized_name="accountUri",
                 flags={"read_only": True},
-            )
-            properties.city = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.common_name = AAZStrType(
-                serialized_name="commonName",
-                flags={"required": True},
-            )
-            properties.country = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.enhanced_key_usage = AAZStrType(
-                serialized_name="enhancedKeyUsage",
-                flags={"read_only": True},
-            )
-            properties.identity_validation_id = AAZStrType(
-                serialized_name="identityValidationId",
-                flags={"read_only": True},
-            )
-            properties.include_city = AAZBoolType(
-                serialized_name="includeCity",
-            )
-            properties.include_country = AAZBoolType(
-                serialized_name="includeCountry",
-            )
-            properties.include_postal_code = AAZBoolType(
-                serialized_name="includePostalCode",
-            )
-            properties.include_state = AAZBoolType(
-                serialized_name="includeState",
-            )
-            properties.include_street_address = AAZBoolType(
-                serialized_name="includeStreetAddress",
-            )
-            properties.organization = AAZStrType(
-                flags={"required": True},
-            )
-            properties.organization_unit = AAZStrType(
-                serialized_name="organizationUnit",
-            )
-            properties.postal_code = AAZStrType(
-                serialized_name="postalCode",
-                flags={"read_only": True},
-            )
-            properties.profile_type = AAZStrType(
-                serialized_name="profileType",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
-            properties.rotation_policy = AAZStrType(
-                serialized_name="rotationPolicy",
+            properties.sku = AAZObjectType()
+
+            sku = cls._schema_on_200.properties.sku
+            sku.name = AAZStrType(
                 flags={"required": True},
-            )
-            properties.state = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.status = AAZStrType()
-            properties.street_address = AAZStrType(
-                serialized_name="streetAddress",
-                flags={"read_only": True},
-            )
-
-            certificates = cls._schema_on_200.properties.certificates
-            certificates.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.certificates.Element
-            _element.created_date = AAZStrType(
-                serialized_name="createdDate",
-            )
-            _element.expiry_date = AAZStrType(
-                serialized_name="expiryDate",
-            )
-            _element.revocations = AAZListType()
-            _element.serial_number = AAZStrType(
-                serialized_name="serialNumber",
-            )
-            _element.status = AAZStrType()
-            _element.subject_name = AAZStrType(
-                serialized_name="subjectName",
-            )
-            _element.thumbprint = AAZStrType()
-
-            revocations = cls._schema_on_200.properties.certificates.Element.revocations
-            revocations.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.certificates.Element.revocations.Element
-            _element.reason = AAZStrType()
-            _element.remarks = AAZStrType()
-            _element.requested_at = AAZStrType(
-                serialized_name="requestedAt",
-            )
-            _element.revoked_at = AAZStrType(
-                serialized_name="revokedAt",
             )
 
             system_data = cls._schema_on_200.system_data
@@ -303,6 +210,9 @@ class Show(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

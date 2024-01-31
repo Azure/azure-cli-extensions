@@ -16,9 +16,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-30-preview",
+        "version": "2024-02-05-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}/certificateprofiles/{}", "2023-04-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}/certificateprofiles/{}", "2024-02-05-preview"],
         ]
     }
 
@@ -62,78 +62,16 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.common_name = AAZStrArg(
-            options=["--common-name"],
-            arg_group="Properties",
-            help="Used as CN in the subject name of the certificate",
-        )
-        _args_schema.include_city = AAZBoolArg(
-            options=["--include-city"],
-            arg_group="Properties",
-            help="Whether to include in the public trust or private trust certificate subject name",
-            nullable=True,
-        )
-        _args_schema.include_country = AAZBoolArg(
-            options=["--include-country"],
-            arg_group="Properties",
-            help="Whether to include in the public trust or private trust certificate subject name",
-            nullable=True,
-        )
-        _args_schema.include_postal_code = AAZBoolArg(
-            options=["--include-postal-code"],
-            arg_group="Properties",
-            help="Whether to include in the public trust certificate subject name",
-            nullable=True,
-        )
-        _args_schema.include_state = AAZBoolArg(
-            options=["--include-state"],
-            arg_group="Properties",
-            help="Whether to include in the public trust or private trust certificate subject name",
-            nullable=True,
-        )
-        _args_schema.include_street_address = AAZBoolArg(
-            options=["--include-street-address"],
-            arg_group="Properties",
-            help="Whether to include in the public trust certificate subject name",
-            nullable=True,
-        )
-        _args_schema.organization = AAZStrArg(
-            options=["--organization"],
-            arg_group="Properties",
-            help="Used as O in the subject name of the certificate",
-        )
-        _args_schema.organization_unit = AAZStrArg(
-            options=["--organization-unit"],
-            arg_group="Properties",
-            help="Used as OU in the subject name of the private trust certificate",
-            nullable=True,
-        )
-        _args_schema.profile_type = AAZStrArg(
-            options=["--profile-type"],
-            arg_group="Properties",
-            help="Profile type of the certificate",
-            enum={"PrivateTrust": "PrivateTrust", "PrivateTrustCIPolicy": "PrivateTrustCIPolicy", "PublicTrust": "PublicTrust", "PublicTrustTest": "PublicTrustTest", "VBSEnclave": "VBSEnclave"},
-        )
-        _args_schema.rotation_policy = AAZStrArg(
-            options=["--rotation-policy"],
-            arg_group="Properties",
-            help="Rotation policy of the certificate",
-            enum={"3 Days": "3 Days", "30 Days": "30 Days"},
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CertificateProfileGet(ctx=self.ctx)()
+        self.CertificateProfilesGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.CertificateProfileCreate(ctx=self.ctx)()
+        yield self.CertificateProfilesCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -156,7 +94,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class CertificateProfileGet(AAZHttpOperation):
+    class CertificateProfilesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -208,7 +146,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-30-preview",
+                    "api-version", "2024-02-05-preview",
                     required=True,
                 ),
             }
@@ -243,7 +181,7 @@ class Update(AAZCommand):
 
             return cls._schema_on_200
 
-    class CertificateProfileCreate(AAZHttpOperation):
+    class CertificateProfilesCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -311,7 +249,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-30-preview",
+                    "api-version", "2024-02-05-preview",
                     required=True,
                 ),
             }
@@ -369,20 +307,6 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("commonName", AAZStrType, ".common_name", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("includeCity", AAZBoolType, ".include_city")
-                properties.set_prop("includeCountry", AAZBoolType, ".include_country")
-                properties.set_prop("includePostalCode", AAZBoolType, ".include_postal_code")
-                properties.set_prop("includeState", AAZBoolType, ".include_state")
-                properties.set_prop("includeStreetAddress", AAZBoolType, ".include_street_address")
-                properties.set_prop("organization", AAZStrType, ".organization", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("organizationUnit", AAZStrType, ".organization_unit")
-                properties.set_prop("profileType", AAZStrType, ".profile_type", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("rotationPolicy", AAZStrType, ".rotation_policy", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 
@@ -420,7 +344,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         certificate_profile_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
+            flags={"client_flatten": True},
         )
         certificate_profile_read.system_data = AAZObjectType(
             serialized_name="systemData",
@@ -483,10 +407,7 @@ class _UpdateHelper:
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
-        )
-        properties.rotation_policy = AAZStrType(
-            serialized_name="rotationPolicy",
-            flags={"required": True},
+            flags={"read_only": True},
         )
         properties.state = AAZStrType(
             flags={"read_only": True},
@@ -507,7 +428,9 @@ class _UpdateHelper:
         _element.expiry_date = AAZStrType(
             serialized_name="expiryDate",
         )
-        _element.revocations = AAZListType()
+        _element.revocation = AAZObjectType(
+            flags={"client_flatten": True},
+        )
         _element.serial_number = AAZStrType(
             serialized_name="serialNumber",
         )
@@ -517,17 +440,20 @@ class _UpdateHelper:
         )
         _element.thumbprint = AAZStrType()
 
-        revocations = _schema_certificate_profile_read.properties.certificates.Element.revocations
-        revocations.Element = AAZObjectType()
-
-        _element = _schema_certificate_profile_read.properties.certificates.Element.revocations.Element
-        _element.reason = AAZStrType()
-        _element.remarks = AAZStrType()
-        _element.requested_at = AAZStrType(
+        revocation = _schema_certificate_profile_read.properties.certificates.Element.revocation
+        revocation.effective_at = AAZStrType(
+            serialized_name="effectiveAt",
+        )
+        revocation.failure_reason = AAZStrType(
+            serialized_name="failureReason",
+        )
+        revocation.reason = AAZStrType()
+        revocation.remarks = AAZStrType()
+        revocation.requested_at = AAZStrType(
             serialized_name="requestedAt",
         )
-        _element.revoked_at = AAZStrType(
-            serialized_name="revokedAt",
+        revocation.status = AAZStrType(
+            flags={"read_only": True},
         )
 
         system_data = _schema_certificate_profile_read.system_data

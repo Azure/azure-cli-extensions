@@ -12,15 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "code-signing wait",
+    "codesigning check-name-availability",
+    is_preview=True,
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class CheckNameAvailability(AAZCommand):
+    """Checks that the code signing account name is valid and is not already in use.
     """
 
     _aaz_info = {
+        "version": "2024-02-05-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}", "2023-04-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.codesigning/checknameavailability", "2024-02-05-preview"],
         ]
     }
 
@@ -39,24 +41,20 @@ class Wait(AAZWaitCommand):
 
         # define Arg Group ""
 
+        # define Arg Group "Body"
+
         _args_schema = cls._args_schema
-        _args_schema.account_name = AAZStrArg(
-            options=["-n", "--name", "--account-name"],
-            help="Code Signing account name",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
-            ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.name = AAZStrArg(
+            options=["--name"],
+            arg_group="Body",
+            help="Code signing account name.",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CodeSigningAccountGet(ctx=self.ctx)()
+        self.CodeSigningAccountsCheckNameAvailability(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -68,10 +66,10 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class CodeSigningAccountGet(AAZHttpOperation):
+    class CodeSigningAccountsCheckNameAvailability(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -85,13 +83,13 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.CodeSigning/checkNameAvailability",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -100,14 +98,6 @@ class Wait(AAZWaitCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "accountName", self.ctx.args.account_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -119,7 +109,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-30-preview",
+                    "api-version", "2024-02-05-preview",
                     required=True,
                 ),
             }
@@ -129,10 +119,24 @@ class Wait(AAZWaitCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -152,64 +156,20 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.message = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
+            _schema_on_200.name_available = AAZBoolType(
+                serialized_name="nameAvailable",
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.account_uri = AAZStrType(
-                serialized_name="accountUri",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _schema_on_200.reason = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _CheckNameAvailabilityHelper:
+    """Helper class for CheckNameAvailability"""
 
 
-__all__ = ["Wait"]
+__all__ = ["CheckNameAvailability"]

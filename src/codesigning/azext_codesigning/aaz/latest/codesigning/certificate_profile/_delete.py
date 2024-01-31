@@ -12,18 +12,18 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "code-signing delete",
-    is_experimental=True,
+    "codesigning certificate-profile delete",
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete Code Signing Account
+    """Delete a Certificate Profile
     """
 
     _aaz_info = {
-        "version": "2023-04-30-preview",
+        "version": "2024-02-05-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}", "2023-04-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}/certificateprofiles/{}", "2024-02-05-preview"],
         ]
     }
 
@@ -45,12 +45,21 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
-            options=["-n", "--name", "--account-name"],
+            options=["--account-name"],
             help="Code Signing account name",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
+            ),
+        )
+        _args_schema.profile_name = AAZStrArg(
+            options=["-n", "--name", "--profile-name"],
+            help="Certificate profile name",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^(?=.{5,100}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -60,7 +69,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.CodeSigningAccountDelete(ctx=self.ctx)()
+        yield self.CertificateProfilesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,7 +80,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class CodeSigningAccountDelete(AAZHttpOperation):
+    class CertificateProfilesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -81,18 +90,9 @@ class Delete(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    None,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [204]:
@@ -101,7 +101,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_204,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -110,7 +110,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles/{profileName}",
                 **self.url_parameters
             )
 
@@ -130,6 +130,10 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "profileName", self.ctx.args.profile_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
@@ -144,14 +148,11 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-30-preview",
+                    "api-version", "2024-02-05-preview",
                     required=True,
                 ),
             }
             return parameters
-
-        def on_200(self, session):
-            pass
 
         def on_204(self, session):
             pass

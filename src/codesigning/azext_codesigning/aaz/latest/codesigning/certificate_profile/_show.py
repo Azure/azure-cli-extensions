@@ -12,23 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "code-signing certificate-profile list",
-    is_experimental=True,
+    "codesigning certificate-profile show",
+    is_preview=True,
 )
-class List(AAZCommand):
-    """List certificate profiles within a code signing account
+class Show(AAZCommand):
+    """Get details of a certificate profile
     """
 
     _aaz_info = {
-        "version": "2023-04-30-preview",
+        "version": "2024-02-05-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}/certificateprofiles", "2023-04-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}/certificateprofiles/{}", "2024-02-05-preview"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,8 +46,18 @@ class List(AAZCommand):
             options=["--account-name"],
             help="Code Signing account name",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
+            ),
+        )
+        _args_schema.profile_name = AAZStrArg(
+            options=["-n", "--name", "--profile-name"],
+            help="Certificate profile name",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^(?=.{5,100}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -56,7 +67,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CertificateProfileListByCodeSigningAccount(ctx=self.ctx)()
+        self.CertificateProfilesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -68,11 +79,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class CertificateProfileListByCodeSigningAccount(AAZHttpOperation):
+    class CertificateProfilesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -86,7 +96,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles/{profileName}",
                 **self.url_parameters
             )
 
@@ -106,6 +116,10 @@ class List(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "profileName", self.ctx.args.profile_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
@@ -120,7 +134,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-30-preview",
+                    "api-version", "2024-02-05-preview",
                     required=True,
                 ),
             }
@@ -153,33 +167,24 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
             )
-            _element.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.certificates = AAZListType(
                 flags={"read_only": True},
             )
@@ -232,10 +237,7 @@ class List(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-            )
-            properties.rotation_policy = AAZStrType(
-                serialized_name="rotationPolicy",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.state = AAZStrType(
                 flags={"read_only": True},
@@ -246,17 +248,19 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            certificates = cls._schema_on_200.value.Element.properties.certificates
+            certificates = cls._schema_on_200.properties.certificates
             certificates.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.certificates.Element
+            _element = cls._schema_on_200.properties.certificates.Element
             _element.created_date = AAZStrType(
                 serialized_name="createdDate",
             )
             _element.expiry_date = AAZStrType(
                 serialized_name="expiryDate",
             )
-            _element.revocations = AAZListType()
+            _element.revocation = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.serial_number = AAZStrType(
                 serialized_name="serialNumber",
             )
@@ -266,20 +270,23 @@ class List(AAZCommand):
             )
             _element.thumbprint = AAZStrType()
 
-            revocations = cls._schema_on_200.value.Element.properties.certificates.Element.revocations
-            revocations.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.certificates.Element.revocations.Element
-            _element.reason = AAZStrType()
-            _element.remarks = AAZStrType()
-            _element.requested_at = AAZStrType(
+            revocation = cls._schema_on_200.properties.certificates.Element.revocation
+            revocation.effective_at = AAZStrType(
+                serialized_name="effectiveAt",
+            )
+            revocation.failure_reason = AAZStrType(
+                serialized_name="failureReason",
+            )
+            revocation.reason = AAZStrType()
+            revocation.remarks = AAZStrType()
+            revocation.requested_at = AAZStrType(
                 serialized_name="requestedAt",
             )
-            _element.revoked_at = AAZStrType(
-                serialized_name="revokedAt",
+            revocation.status = AAZStrType(
+                flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -302,8 +309,8 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["List"]
+__all__ = ["Show"]

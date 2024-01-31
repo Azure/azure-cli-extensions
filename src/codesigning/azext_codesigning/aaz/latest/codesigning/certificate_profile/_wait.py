@@ -12,25 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "code-signing certificate-profile create",
-    is_experimental=True,
+    "codesigning certificate-profile wait",
 )
-class Create(AAZCommand):
-    """Create a certificate profile
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2023-04-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}/certificateprofiles/{}", "2023-04-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}/certificateprofiles/{}", "2024-02-05-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -47,6 +44,7 @@ class Create(AAZCommand):
             options=["--account-name"],
             help="Code Signing account name",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
             ),
@@ -55,6 +53,7 @@ class Create(AAZCommand):
             options=["-n", "--name", "--profile-name"],
             help="Certificate profile name",
             required=True,
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{5,100}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
             ),
@@ -62,77 +61,11 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.common_name = AAZStrArg(
-            options=["--common-name"],
-            arg_group="Properties",
-            help="Used as CN in the subject name of the certificate",
-            required=True,
-        )
-        _args_schema.include_city = AAZBoolArg(
-            options=["--include-city"],
-            arg_group="Properties",
-            help="Whether to include in the public trust or private trust certificate subject name",
-            default=False,
-        )
-        _args_schema.include_country = AAZBoolArg(
-            options=["--include-country"],
-            arg_group="Properties",
-            help="Whether to include in the public trust or private trust certificate subject name",
-            default=False,
-        )
-        _args_schema.include_postal_code = AAZBoolArg(
-            options=["--include-postal-code"],
-            arg_group="Properties",
-            help="Whether to include in the public trust certificate subject name",
-            default=False,
-        )
-        _args_schema.include_state = AAZBoolArg(
-            options=["--include-state"],
-            arg_group="Properties",
-            help="Whether to include in the public trust or private trust certificate subject name",
-            default=False,
-        )
-        _args_schema.include_street_address = AAZBoolArg(
-            options=["--include-street-address"],
-            arg_group="Properties",
-            help="Whether to include in the public trust certificate subject name",
-            default=False,
-        )
-        _args_schema.organization = AAZStrArg(
-            options=["--organization"],
-            arg_group="Properties",
-            help="Used as O in the subject name of the certificate",
-            required=True,
-        )
-        _args_schema.organization_unit = AAZStrArg(
-            options=["--organization-unit"],
-            arg_group="Properties",
-            help="Used as OU in the subject name of the private trust certificate",
-        )
-        _args_schema.profile_type = AAZStrArg(
-            options=["--profile-type"],
-            arg_group="Properties",
-            help="Profile type of the certificate",
-            required=True,
-            enum={"PrivateTrust": "PrivateTrust", "PrivateTrustCIPolicy": "PrivateTrustCIPolicy", "PublicTrust": "PublicTrust", "PublicTrustTest": "PublicTrustTest", "VBSEnclave": "VBSEnclave"},
-        )
-        _args_schema.rotation_policy = AAZStrArg(
-            options=["--rotation-policy"],
-            arg_group="Properties",
-            help="Rotation policy of the certificate",
-            required=True,
-            default="3 Days",
-            enum={"3 Days": "3 Days", "30 Days": "30 Days"},
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.CertificateProfileCreate(ctx=self.ctx)()
+        self.CertificateProfilesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -144,33 +77,17 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class CertificateProfileCreate(AAZHttpOperation):
+    class CertificateProfilesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
@@ -183,7 +100,7 @@ class Create(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "GET"
 
         @property
         def error_format(self):
@@ -215,7 +132,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-30-preview",
+                    "api-version", "2024-02-05-preview",
                     required=True,
                 ),
             }
@@ -225,74 +142,47 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
 
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("commonName", AAZStrType, ".common_name", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("includeCity", AAZBoolType, ".include_city")
-                properties.set_prop("includeCountry", AAZBoolType, ".include_country")
-                properties.set_prop("includePostalCode", AAZBoolType, ".include_postal_code")
-                properties.set_prop("includeState", AAZBoolType, ".include_state")
-                properties.set_prop("includeStreetAddress", AAZBoolType, ".include_street_address")
-                properties.set_prop("organization", AAZStrType, ".organization", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("organizationUnit", AAZStrType, ".organization_unit")
-                properties.set_prop("profileType", AAZStrType, ".profile_type", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("rotationPolicy", AAZStrType, ".rotation_policy", typ_kwargs={"flags": {"required": True}})
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
+            cls._schema_on_200 = AAZObjectType()
 
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
             )
-            _schema_on_200_201.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200_201.properties
+            properties = cls._schema_on_200.properties
             properties.certificates = AAZListType(
                 flags={"read_only": True},
             )
@@ -345,10 +235,7 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-            )
-            properties.rotation_policy = AAZStrType(
-                serialized_name="rotationPolicy",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.state = AAZStrType(
                 flags={"read_only": True},
@@ -359,17 +246,19 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            certificates = cls._schema_on_200_201.properties.certificates
+            certificates = cls._schema_on_200.properties.certificates
             certificates.Element = AAZObjectType()
 
-            _element = cls._schema_on_200_201.properties.certificates.Element
+            _element = cls._schema_on_200.properties.certificates.Element
             _element.created_date = AAZStrType(
                 serialized_name="createdDate",
             )
             _element.expiry_date = AAZStrType(
                 serialized_name="expiryDate",
             )
-            _element.revocations = AAZListType()
+            _element.revocation = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.serial_number = AAZStrType(
                 serialized_name="serialNumber",
             )
@@ -379,20 +268,23 @@ class Create(AAZCommand):
             )
             _element.thumbprint = AAZStrType()
 
-            revocations = cls._schema_on_200_201.properties.certificates.Element.revocations
-            revocations.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.certificates.Element.revocations.Element
-            _element.reason = AAZStrType()
-            _element.remarks = AAZStrType()
-            _element.requested_at = AAZStrType(
+            revocation = cls._schema_on_200.properties.certificates.Element.revocation
+            revocation.effective_at = AAZStrType(
+                serialized_name="effectiveAt",
+            )
+            revocation.failure_reason = AAZStrType(
+                serialized_name="failureReason",
+            )
+            revocation.reason = AAZStrType()
+            revocation.remarks = AAZStrType()
+            revocation.requested_at = AAZStrType(
                 serialized_name="requestedAt",
             )
-            _element.revoked_at = AAZStrType(
-                serialized_name="revokedAt",
+            revocation.status = AAZStrType(
+                flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200_201.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -412,11 +304,11 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["Create"]
+__all__ = ["Wait"]

@@ -8,17 +8,11 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "code-signing certificate-profile",
-    is_experimental=True,
-)
-class __CMDGroup(AAZCommandGroup):
-    """Manage certificate profiles
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._create import *
+from ._delete import *
+from ._list import *
+from ._revoke_certificate import *
+from ._show import *
+from ._update import *
+from ._wait import *

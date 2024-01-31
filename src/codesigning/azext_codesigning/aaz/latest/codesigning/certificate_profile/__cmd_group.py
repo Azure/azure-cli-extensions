@@ -8,10 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._create import *
-from ._delete import *
-from ._list import *
-from ._show import *
-from ._update import *
-from ._wait import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "codesigning certificate-profile",
+    is_preview=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manages certificate profiles under a code signing account
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

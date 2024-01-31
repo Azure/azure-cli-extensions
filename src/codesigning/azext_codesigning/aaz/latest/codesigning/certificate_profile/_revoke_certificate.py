@@ -12,26 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "code-signing certificate-profile delete",
-    is_experimental=True,
-    confirmation="Are you sure you want to perform this operation?",
+    "codesigning certificate-profile revoke-certificate",
+    is_preview=True,
 )
-class Delete(AAZCommand):
-    """Delete a Certificate Profile
+class RevokeCertificate(AAZCommand):
+    """Revoke certificate
     """
 
     _aaz_info = {
-        "version": "2023-04-30-preview",
+        "version": "2024-02-05-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}/certificateprofiles/{}", "2023-04-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}/certificateprofiles/{}/revokecertificate", "2024-02-05-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -54,7 +52,7 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.profile_name = AAZStrArg(
-            options=["-n", "--name", "--profile-name"],
+            options=["--profile-name"],
             help="Certificate profile name",
             required=True,
             id_part="child_name_1",
@@ -65,11 +63,44 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.effective_at = AAZDateTimeArg(
+            options=["--effective-at"],
+            arg_group="Body",
+            help="The timestamp when the revocation is effective",
+            required=True,
+        )
+        _args_schema.reason = AAZStrArg(
+            options=["--reason"],
+            arg_group="Body",
+            help="Reason for revocation",
+            required=True,
+        )
+        _args_schema.remarks = AAZStrArg(
+            options=["--remarks"],
+            arg_group="Body",
+            help="Remarks for the revocation",
+        )
+        _args_schema.serial_number = AAZStrArg(
+            options=["--serial-number"],
+            arg_group="Body",
+            help="Serial number of the certificate",
+            required=True,
+        )
+        _args_schema.thumbprint = AAZStrArg(
+            options=["--thumbprint"],
+            arg_group="Body",
+            help="Thumbprint of the certificate",
+            required=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.CertificateProfileDelete(ctx=self.ctx)()
+        self.CertificateProfilesRevokeCertificate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -80,52 +111,27 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class CertificateProfileDelete(AAZHttpOperation):
+    class CertificateProfilesRevokeCertificate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles/{profileName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles/{profileName}/revokeCertificate",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -157,21 +163,42 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-30-preview",
+                    "api-version", "2024-02-05-preview",
                     required=True,
                 ),
             }
             return parameters
 
-        def on_200(self, session):
-            pass
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+            }
+            return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("effectiveAt", AAZStrType, ".effective_at", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("reason", AAZStrType, ".reason", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("remarks", AAZStrType, ".remarks")
+            _builder.set_prop("serialNumber", AAZStrType, ".serial_number", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("thumbprint", AAZStrType, ".thumbprint", typ_kwargs={"flags": {"required": True}})
+
+            return self.serialize_content(_content_value)
 
         def on_204(self, session):
             pass
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _RevokeCertificateHelper:
+    """Helper class for RevokeCertificate"""
 
 
-__all__ = ["Delete"]
+__all__ = ["RevokeCertificate"]

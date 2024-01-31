@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "code-signing update",
-    is_experimental=True,
+    "codesigning update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Code Signing Account
     """
 
     _aaz_info = {
-        "version": "2023-04-30-preview",
+        "version": "2024-02-05-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}", "2023-04-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.codesigning/codesigningaccounts/{}", "2024-02-05-preview"],
         ]
     }
 
@@ -58,12 +58,12 @@ class Update(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "CodeSigningAccount"
+        # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="CodeSigningAccount",
+            arg_group="Resource",
             help="Resource tags.",
             nullable=True,
         )
@@ -76,12 +76,12 @@ class Update(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CodeSigningAccountGet(ctx=self.ctx)()
+        self.CodeSigningAccountsGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.CodeSigningAccountCreate(ctx=self.ctx)()
+        yield self.CodeSigningAccountsCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -104,7 +104,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class CodeSigningAccountGet(AAZHttpOperation):
+    class CodeSigningAccountsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -152,7 +152,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-30-preview",
+                    "api-version", "2024-02-05-preview",
                     required=True,
                 ),
             }
@@ -187,7 +187,7 @@ class Update(AAZCommand):
 
             return cls._schema_on_200
 
-    class CodeSigningAccountCreate(AAZHttpOperation):
+    class CodeSigningAccountsCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -251,7 +251,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-30-preview",
+                    "api-version", "2024-02-05-preview",
                     required=True,
                 ),
             }
@@ -374,6 +374,13 @@ class _UpdateHelper:
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.sku = AAZObjectType()
+
+        sku = _schema_code_signing_account_read.properties.sku
+        sku.name = AAZStrType(
+            flags={"required": True},
         )
 
         system_data = _schema_code_signing_account_read.system_data
