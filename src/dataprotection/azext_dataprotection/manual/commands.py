@@ -25,6 +25,7 @@ def load_command_table(self, _):
         g.custom_command('list-from-resourcegraph', 'dataprotection_backup_instance_list_from_resourcegraph', client_factory=cf_resource_graph_client)
         g.custom_command('update-msi-permissions', 'dataprotection_backup_instance_update_msi_permissions')
         g.custom_command('update-policy', "dataprotection_backup_instance_update_policy", supports_no_wait=True)
+        g.custom_command('validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True)
 
     # Migrated to AAZ, using a function based override approach. Function-based override uses AAZ arg schema to validate input
     # but is less manageable. Needs manual management of params and help. Find a way to use class-based override without compromising
@@ -63,13 +64,13 @@ def load_command_table(self, _):
 
     from .aaz_operations.backup_instance import (
         ValidateAndCreate as BackupInstanceCreate,
-        ValidateForRestore as BackupInstanceValidateRestore,
+        # ValidateForRestore as BackupInstanceValidateRestore,
         RestoreTrigger as BackupInstanceRestoreTrigger,
         ValidateForCRR as CRRValidateRestore,
         TriggerCRR as CRRTriggerRestore,
     )
     self.command_table['dataprotection backup-instance create'] = BackupInstanceCreate(loader=self)
-    self.command_table['dataprotection backup-instance validate-for-restore'] = BackupInstanceValidateRestore(loader=self)
+    # self.command_table['dataprotection backup-instance validate-for-restore'] = BackupInstanceValidateRestore(loader=self)
     self.command_table['dataprotection backup-instance restore trigger'] = BackupInstanceRestoreTrigger(loader=self)
 
     self.command_table['dataprotection cross-region-restore validate'] = CRRValidateRestore(loader=self)

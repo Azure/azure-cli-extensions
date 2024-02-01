@@ -175,11 +175,13 @@ class ValidateForCRR(_ValidateForCRR):
         _args_schema.source_backup_instance_id = AAZStrArg(
             options=["--source-backup-instance-id"],
             arg_group="CrossRegionRestoreDetails",
+            help="The full ARM ID of the source backup instance",
             required=True,
         )
         _args_schema.source_region = AAZStrArg(
             options=["--source-region"],
             arg_group="CrossRegionRestoreDetails",
+            help="The region that the source backup instance is present in",
             required=True,
         )
 
@@ -231,11 +233,13 @@ class TriggerCRR(_TriggerCRR):
         _args_schema.source_backup_instance_id = AAZStrArg(
             options=["--source-backup-instance-id"],
             arg_group="CrossRegionRestoreDetails",
+            help="The full ARM ID of the source backup instance",
             required=True,
         )
         _args_schema.source_region = AAZStrArg(
             options=["--source-region"],
             arg_group="CrossRegionRestoreDetails",
+            help="The region that the source backup instance is present in",
             required=True,
         )
 

@@ -19,8 +19,9 @@ def get_backup_instance_query(datasource_type, resource_groups, vaults, protecti
     query += "| extend protectionState = properties.currentProtectionState"
     query += "| extend datasourceId = properties.dataSourceInfo.resourceID"
 
-    manifest = helper.load_manifest(datasource_type)
-    query = add_filter_to_query(query, "properties.dataSourceInfo.datasourceType", manifest["datasourceType"])
+    if datasource_type:
+        manifest = helper.load_manifest(datasource_type)
+        query = add_filter_to_query(query, "properties.dataSourceInfo.datasourceType", manifest["datasourceType"])
     query = add_filter_to_query(query, "resourceGroup", resource_groups)
     query = add_filter_to_query(query, "vaultName", vaults)
     query = add_filter_to_query(query, "protectionState", protection_status)
@@ -49,8 +50,9 @@ def get_backup_job_query(datasource_type, resource_groups, vaults, start_time, e
     query += ", type =~ 'microsoft.dataprotection/backupVaults/backupJobs', properties.operationCategory, 'Invalid')"
     query += "| extend datasourceId = properties.dataSourceId"
 
-    manifest = helper.load_manifest(datasource_type)
-    query = add_filter_to_query(query, "properties.dataSourceType", manifest["datasourceType"])
+    if datasource_type:
+        manifest = helper.load_manifest(datasource_type)
+        query = add_filter_to_query(query, "properties.dataSourceType", manifest["datasourceType"])
     query = add_filter_to_query(query, "resourceGroup", resource_groups)
     query = add_filter_to_query(query, "vaultName", vaults)
     query = add_filter_to_query(query, "operation", operation)

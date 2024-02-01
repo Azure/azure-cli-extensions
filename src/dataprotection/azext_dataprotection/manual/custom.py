@@ -174,7 +174,7 @@ def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault
     })
 
 
-def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_type, resource_groups=None, vaults=None,
+def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_type=None, resource_groups=None, vaults=None,
                                                            subscriptions=None, protection_status=None, datasource_id=None,
                                                            backup_instance_id=None, backup_instance_name=None):
     if subscriptions is None:
@@ -501,7 +501,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
     return role_assignments_arr
 
 
-def dataprotection_job_list_from_resourcegraph(client, datasource_type, resource_groups=None, vaults=None,
+def dataprotection_job_list_from_resourcegraph(client, datasource_type=None, resource_groups=None, vaults=None,
                                                subscriptions=None, start_time=None, end_time=None,
                                                status=None, operation=None, datasource_id=None):
     if subscriptions is None:
@@ -724,6 +724,36 @@ def dataprotection_backup_policy_tag_remove_in_policy(name, policy):
             break
 
     return policy
+
+
+def dataprotection_backup_instance_validate_for_restore(cmd, vault_name, resource_group_name, backup_instance_name,
+                                                        restore_request_object, use_secondary_region=None):
+    from .aaz_operations.backup_instance import (
+        ValidateForCRR as CRRValidateRestore,
+        ValidateForRestore as BackupInstanceValidateRestore,
+    )
+
+    if use_secondary_region:
+        source_backup_instance = helper.get_backup_instance_from_resourcegraph(cmd, resource_group_name, vault_name,
+                                                                               backup_instance_name)
+        source_backup_instance_id = source_backup_instance['id']
+        source_location = source_backup_instance['properties']['backupInstanceExtendedProperties']['protectedPrimaryRegion']
+        target_location = source_backup_instance['properties']['backupInstanceExtendedProperties']['protectedSecondaryRegion']
+
+        return CRRValidateRestore(cli_ctx=cmd.cli_ctx)(command_args={
+            "resource_group": resource_group_name,
+            "location": target_location,
+            "source_backup_instance_id": source_backup_instance_id,
+            "source_region": source_location,
+            "restore_request_object": restore_request_object
+        })
+
+    return BackupInstanceValidateRestore(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+        "backup_instance_name": backup_instance_name,
+        "restore_request_object": restore_request_object
+    })
 
 
 def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, excluded_resource_types=None,

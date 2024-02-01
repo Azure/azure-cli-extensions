@@ -11,8 +11,10 @@ from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
-    InvalidArgumentValueError
+    InvalidArgumentValueError,
+    CLIInternalError,
 )
+from azext_dataprotection.manual.custom import dataprotection_backup_instance_list_from_resourcegraph
 
 critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContainers/protectedItems/delete",
                           "updateProtection": "/backupFabrics/protectionContainers/protectedItems/write",
@@ -496,3 +498,20 @@ def validate_recovery_point_datetime_format(aaz_str):
         raise InvalidArgumentValueError(
             f"Input '{date_str}' not valid datetime. Valid example: 2017-12-31T05:30:00"
         ) from ValueError
+
+
+def get_backup_instance_from_resourcegraph(cmd, resource_group_name, vault_name, backup_instance_name):
+    from azext_dataprotection.manual._client_factory import cf_resource_graph_client as client
+    subscription_id = cmd.cli_ctx.data['subscription_id']
+    arg_client = client(cmd.cli_ctx, None)
+    backup_instance_list = dataprotection_backup_instance_list_from_resourcegraph(arg_client, None, resource_group_name,
+                                                                        vault_name, [subscription_id,], None, None,
+                                                                        None, backup_instance_name)
+    if len(backup_instance_list) > 1:
+        raise CLIInternalError("More than one backup instance was found in the vault"
+                               ", please check the backup instance name parameter")
+    
+    if len(backup_instance_list) == 0:
+        raise CLIInternalError("No backup instances were found")
+    
+    return backup_instance_list[0]
