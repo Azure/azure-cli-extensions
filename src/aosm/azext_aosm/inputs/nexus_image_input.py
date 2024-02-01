@@ -36,12 +36,13 @@ class NexusImageFileInput(BaseInput):
         artifact_name: str,
         artifact_version: str,
         # file_path: Optional[Path] = None,
-        # blob_sas_uri: Optional[str] = None,
+        source_acr_registry: str,
         default_config: Optional[Dict[str, Any]] = None,
     ):
         super().__init__(artifact_name, artifact_version, default_config)
         # self.file_path = file_path
         # self.blob_sas_uri = blob_sas_uri
+        self.source_acr_registry = source_acr_registry
 
     def get_defaults(self) -> Dict[str, Any]:
         """
@@ -51,12 +52,12 @@ class NexusImageFileInput(BaseInput):
         :rtype: Dict[str, Any]
         """
         # logger.info("Getting default values for VHD file input")
-        # default_config = self.default_config or {}
+        default_config = self.default_config or {}
         # logger.debug(
         #     "Default values for VHD file Input: %s",
         #     json.dumps(default_config, indent=4),
         # )
-        # return copy.deepcopy(default_config)
+        return copy.deepcopy(default_config)
 
     def get_schema(self) -> Dict[str, Any]:
         """
@@ -76,9 +77,9 @@ class NexusImageFileInput(BaseInput):
         # }
         # vhd_required = ["imageName"]
 
-        # schema = copy.deepcopy(BASE_SCHEMA)
+        schema = copy.deepcopy(BASE_SCHEMA)
         # schema["properties"].update(vhd_properties)
         # schema["required"] += vhd_required
 
         # logger.debug("Schema for VHD file input: %s", json.dumps(schema, indent=4))
-        # return copy.deepcopy(schema)
+        return copy.deepcopy(schema)

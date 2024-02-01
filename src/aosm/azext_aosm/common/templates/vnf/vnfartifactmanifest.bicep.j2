@@ -6,12 +6,16 @@ param location string
 param publisherName string
 @description('Name of an existing ACR-backed Artifact Store, deployed under the publisher.')
 param acrArtifactStoreName string
+{%- if sa_artifacts %}
 @description('Name of an existing Storage Account-backed Artifact Store, deployed under the publisher.')
 param saArtifactStoreName string
+{%- endif %}
 @description('Name of the manifest to deploy for the ACR-backed Artifact Store')
 param acrManifestName string
+{%- if sa_artifacts %}
 @description('Name of the manifest to deploy for the Storage Account-backed Artifact Store')
 param saManifestName string
+{%- endif %}
 
 // The publisher resource is the top level AOSM resource under which all other designer resources
 // are created.
@@ -27,12 +31,14 @@ resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@202
   name: acrArtifactStoreName
 }
 
+{%- if sa_artifacts %}
 // The storage account is the resource in which the VHD images are stored.
 // If using publish command, this is created from deploying the vnfbase.bicep
 resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
   parent: publisher
   name: saArtifactStoreName
 }
+{%- endif %}
 
 resource acrArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2023-09-01' = {
   parent: acrArtifactStore
@@ -51,6 +57,7 @@ resource acrArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/
   }
 }
 
+{%- if sa_artifacts %}
 resource saArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2023-09-01' = {
   parent: saArtifactStore
   name: saManifestName
@@ -67,3 +74,5 @@ resource saArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/a
     ]
   }
 }
+{%- endif %}
+

@@ -24,9 +24,9 @@ from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
                                          VHD_PARAMETERS_FILENAME,
                                          TEMPLATE_PARAMETERS_FILENAME)
 from azext_aosm.common.local_file_builder import LocalFileBuilder
-from azext_aosm.configuration_models.onboarding_vnf_input_config import (
-    OnboardingVNFInputConfig,
-)
+# from azext_aosm.configuration_models.onboarding_vnf_input_config import (
+#     OnboardingVNFInputConfig,
+# )
 # from azext_aosm.configuration_models.common_parameters_config import (
 #     VNFCommonParametersConfig,
 # )

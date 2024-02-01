@@ -91,9 +91,8 @@ class VhdImageConfig:
                 "One of file_path or sas_blob_url must be set for vhd."
             )
 
-
 @dataclass
-class OnboardingVNFInputConfig(OnboardingNFDBaseInputConfig):
+class OnboardingCoreVNFInputConfig(OnboardingNFDBaseInputConfig):
     """Input configuration for onboarding VNFs."""
 
     blob_artifact_store_name: str | None = field(
@@ -114,8 +113,6 @@ class OnboardingVNFInputConfig(OnboardingNFDBaseInputConfig):
             )
         },
     )
-    nfvi_type: str = field(default="AzureCore",
-                           metadata={"comment": "NFVI type. Defaults to AzureCore. Can be AzureCore or AzureOperatorNexus"})
 
     # TODO: Add better comments
     arm_templates: List[ArmTemplatePropertiesConfig] = field(
@@ -149,8 +146,6 @@ class OnboardingVNFInputConfig(OnboardingNFDBaseInputConfig):
     def validate(self):
         """Validate the configuration."""
         super().validate()
-        if not self.nfvi_type:
-            raise ValidationError("nfvi_type must be set")
         if not self.image_name_parameter:
             raise ValidationError("image_name_parameter must be set")
         if not self.arm_templates:
@@ -162,3 +157,63 @@ class OnboardingVNFInputConfig(OnboardingNFDBaseInputConfig):
         for arm_template in self.arm_templates:
             arm_template.validate()
         self.vhd.validate()
+
+
+@dataclass
+class OnboardingNexusVNFInputConfig(OnboardingNFDBaseInputConfig):
+    """Input configuration for onboarding VNFs."""
+
+    image_name_parameter: str = field(
+        default="",
+        metadata={
+            "comment": (
+                "The parameter name in the VM ARM template which "
+                "specifies the name of the image to use for the VM."
+            )
+        },
+    )
+
+    arm_templates: List[ArmTemplatePropertiesConfig] = field(
+        default_factory=lambda: [ArmTemplatePropertiesConfig()],
+        metadata={"comment": "ARM template configuration. The ARM templates given here would deploy a VM if run. They will be used to generate the VNF."},
+    )
+
+    images: List[str] = field(
+        default_factory=lambda: [],
+        metadata={
+            "comment": (
+                "List of images to be pulled from the acr registry.\n"
+                "You must provide the source acr registry, the image name and the version.\n"
+                "For example: 'sourceacr.azurecr.io/imagename:imageversion'."
+            )
+        },
+    )
+
+    def __post_init__(self):
+        arm_list = []
+        for arm_template in self.arm_templates:
+            if arm_template and isinstance(arm_template, dict):
+                arm_list.append(ArmTemplatePropertiesConfig(**arm_template))
+            else:
+                arm_list.append(arm_template)
+        self.arm_templates = arm_list
+
+    @property
+    def sa_manifest_name(self) -> str:
+        """Return the Storage account manifest name from the NFD name."""
+        sanitized_nf_name = self.nf_name.lower().replace("_", "-")
+        return f"{sanitized_nf_name}-sa-manifest-{self.version.replace('.', '-')}"
+
+    def validate(self):
+        """Validate the configuration."""
+        super().validate()
+        if not self.image_name_parameter:
+            raise ValidationError("image_name_parameter must be set")
+        if not self.arm_templates:
+            raise ValidationError("arm_template must be set")
+        if not self.images:
+            raise ValidationError("You must include at least one image")
+        if not self.arm_templates:
+            raise ValidationError("You must include at least one arm template")
+        for arm_template in self.arm_templates:
+            arm_template.validate()

@@ -25,7 +25,7 @@ from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
                                          TEMPLATE_PARAMETERS_FILENAME)
 from azext_aosm.common.local_file_builder import LocalFileBuilder
 from azext_aosm.configuration_models.onboarding_vnf_input_config import (
-    OnboardingVNFInputConfig,
+    OnboardingCoreVNFInputConfig,
 )
 from azext_aosm.configuration_models.common_parameters_config import (
     CoreVNFCommonParametersConfig,
@@ -50,11 +50,11 @@ logger = get_logger(__name__)
 class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
     """CLI handler for publishing NFDs."""
 
-    def _get_input_config(self, input_config: Dict[str, Any] = None) -> OnboardingVNFInputConfig:
+    def _get_input_config(self, input_config: Dict[str, Any] = None) -> OnboardingCoreVNFInputConfig:
         """Get the configuration for the command."""
         if input_config is None:
             input_config = {}
-        return OnboardingVNFInputConfig(**input_config)
+        return OnboardingCoreVNFInputConfig(**input_config)
 
     def _get_params_config(
         self, config_file: dict = None
@@ -200,7 +200,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             elif isinstance(processor, VHDProcessor):
                 sa_nf_application_list.append(nf_application)
                 print(nf_application)
-                print(nf_application.deploy_parameters_mapping_rule_profile)
+                print(nf_application.deploy_parameters_mapping_rule_profile.application_enablement.value)
                 # Generate local file for vhd_parameters
                 params = (
                     nf_application.deploy_parameters_mapping_rule_profile.vhd_image_mapping_rule_profile.user_configuration
@@ -225,9 +225,10 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         )
 
         params = {
-            "nfvi_type": self.config.nfvi_type,
+            "nfvi_type": 'AzureCore',
             "acr_nf_applications": acr_nf_application_list,
-            "sa_nf_application": sa_nf_application_list[0],
+            "sa_nf_applications": sa_nf_application_list,
+            "nexus_image_nf_applications": [],
             "deployment_parameters_file": DEPLOYMENT_PARAMETERS_FILENAME,
             "vhd_parameters_file": VHD_PARAMETERS_FILENAME,
             "template_parameters_file": TEMPLATE_PARAMETERS_FILENAME

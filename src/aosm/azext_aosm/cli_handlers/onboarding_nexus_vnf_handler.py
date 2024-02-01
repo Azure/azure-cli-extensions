@@ -22,11 +22,11 @@ from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
                                          VNF_MANIFEST_TEMPLATE_FILENAME,
                                          VNF_OUTPUT_FOLDER_FILENAME,
                                          DEPLOYMENT_PARAMETERS_FILENAME,
-                                         VHD_PARAMETERS_FILENAME,
+                                         NEXUS_IMAGE_PARAMETERS_FILENAME,
                                          TEMPLATE_PARAMETERS_FILENAME)
 from azext_aosm.common.local_file_builder import LocalFileBuilder
 from azext_aosm.configuration_models.onboarding_vnf_input_config import (
-    OnboardingVNFInputConfig,
+    OnboardingNexusVNFInputConfig,
 )
 from azext_aosm.configuration_models.common_parameters_config import (
     NexusVNFCommonParametersConfig,
@@ -41,7 +41,7 @@ from azext_aosm.definition_folder.builder.json_builder import (
     JSONDefinitionElementBuilder,
 )
 from azext_aosm.inputs.arm_template_input import ArmTemplateInput
-from azext_aosm.inputs.vhd_file_input import VHDFileInput
+from azext_aosm.inputs.nexus_image_input import NexusImageFileInput
 
 from .onboarding_vnf_handler import OnboardingVNFCLIHandler
 logger = get_logger(__name__)
@@ -60,11 +60,11 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         """Get the output folder file name."""
         return VNF_OUTPUT_FOLDER_FILENAME
 
-    def _get_input_config(self, input_config: Dict[str, Any] = None) -> OnboardingVNFInputConfig:
+    def _get_input_config(self, input_config: Dict[str, Any] = None) -> OnboardingNexusVNFInputConfig:
         """Get the configuration for the command."""
         if input_config is None:
             input_config = {}
-        return OnboardingVNFInputConfig(**input_config)
+        return OnboardingNexusVNFInputConfig(**input_config)
 
     def _get_params_config(
         self, config_file: dict = None
@@ -90,22 +90,19 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             processor_list.append(
                 NexusArmBuildProcessor(arm_input.artifact_name, arm_input)
             )
-        
         # TODO: add artifact for image file, after making config
-        # # Instantiate vhd processor
-        # if not self.config.vhd.artifact_name:
-        #     self.config.vhd.artifact_name = self.config.nf_name + "-vhd"
-        # vhd_processor = VHDProcessor(
-        #     name=self.config.vhd.artifact_name,
-        #     input_artifact=VHDFileInput(
-        #         artifact_name=self.config.vhd.artifact_name,
-        #         artifact_version=self.config.vhd.version,
-        #         default_config=self._get_default_config(self.config.vhd),
-        #         file_path=Path(self.config.vhd.file_path).absolute(),
-        #         blob_sas_uri=self.config.vhd.blob_sas_url,
-        #     ),
-        # )
-        # processor_list.append(vhd_processor)
+        for image in self.config.images:
+            (source_acr_registry, name, version) = self._split_image_path(image)
+            image_input = NexusImageFileInput(
+                artifact_name=name,
+                artifact_version=version,
+                default_config=None,
+                source_acr_registry=source_acr_registry,
+            )
+            processor_list.append(
+                NexusImageProcessor(image_input.artifact_name, image_input)
+            )
+
         return processor_list
 
     def build_base_bicep(self):
@@ -129,6 +126,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
 
         for processor in self.processors:
             acr_artifact_list.extend(processor.get_artifact_manifest_list())
+            print("ACRLSIT", acr_artifact_list)
             logger.debug(
                 "Created list of artifacts from arm template(s) and image files(s) provided: %s",
                 acr_artifact_list,
@@ -172,8 +170,8 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
     def build_resource_bicep(self):
         """Build the resource bicep file."""
         logger.info("Creating artifacts list for artifacts.json")
-        acr_nf_application_list = []
-        sa_nf_application_list = []
+        arm_nf_application_list = []
+        image_nf_application_list = []
         supporting_files = []
         schema_properties = {}
 
@@ -190,7 +188,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             # For each arm template, generate nf application
             if isinstance(processor, BaseArmBuildProcessor):
 
-                acr_nf_application_list.append(nf_application)
+                arm_nf_application_list.append(nf_application)
                 print(nf_application)
                 print(nf_application.deploy_parameters_mapping_rule_profile)
                 # Generate local file for template_parameters + add to supporting files list
@@ -201,16 +199,16 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
                 logger.info(
                     "Created templatateParameters as supporting file for nfDefinition bicep"
                 )
-            # elif isinstance(processor, NexusImageProcessor):
+            elif isinstance(processor, NexusImageProcessor):
                 # TODO: fix this
-                # sa_nf_application_list.append(nf_application)
-                # print(nf_application)
-                # print(nf_application.deploy_parameters_mapping_rule_profile)
-                # # Generate local file for vhd_parameters
-                # params = (
-                #     nf_application.deploy_parameters_mapping_rule_profile.vhd_image_mapping_rule_profile.user_configuration
-                # )
-                # template_name = VHD_PARAMETERS_FILENAME
+                image_nf_application_list.append(nf_application)
+                print(nf_application)
+                print(nf_application.deploy_parameters_mapping_rule_profile.image_mapping_rule_profile)
+                # Generate local file for vhd_parameters
+                params = (
+                    nf_application.deploy_parameters_mapping_rule_profile.image_mapping_rule_profile.user_configuration
+                )
+                template_name = NEXUS_IMAGE_PARAMETERS_FILENAME
             else:
                 raise TypeError(f"Type: {type(processor)} is not valid")
 
@@ -230,12 +228,13 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         )
 
         params = {
-            "nfvi_type": self.config.nfvi_type,
-            "acr_nf_applications": acr_nf_application_list,
-            "sa_nf_application": sa_nf_application_list[0],
+            "nfvi_type": 'AzureOperatorNexus',
+            "acr_nf_applications": arm_nf_application_list,
+            "sa_nf_applications": [],
+            "nexus_image_nf_applications": image_nf_application_list,
             "deployment_parameters_file": DEPLOYMENT_PARAMETERS_FILENAME,
-            "vhd_parameters_file": VHD_PARAMETERS_FILENAME,
-            "template_parameters_file": TEMPLATE_PARAMETERS_FILENAME
+            "template_parameters_file": TEMPLATE_PARAMETERS_FILENAME,
+            "image_parameters_file": NEXUS_IMAGE_PARAMETERS_FILENAME
         }
         bicep_contents = self._render_definition_bicep_contents(
             template_path, params
@@ -275,17 +274,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         )
         return base_file
 
-    # def _get_default_config(self, vhd):
-    #     default_config = {}
-    #     if vhd.image_disk_size_GB:
-    #         default_config.update({"image_disk_size_GB": vhd.image_disk_size_GB})
-    #     if vhd.image_hyper_v_generation:
-    #         default_config.update(
-    #             {"image_hyper_v_generation": vhd.image_hyper_v_generation}
-    #         )
-    #     else:
-    #         # Default to V1 if not specified
-    #         default_config.update({"image_hyper_v_generation": "V1"})
-    #     if vhd.image_api_version:
-    #         default_config.update({"image_api_version": vhd.image_api_version})
-    #     return default_config
+    def _split_image_path(self, image):
+        (source_acr_registry, name_and_version) = image.split("/", 2)
+        (name, version) = name_and_version.split(":", 2)
+        return (source_acr_registry, name, version)

@@ -51,6 +51,7 @@ CGS_NAME = "ConfigGroupSchema"
 DEPLOYMENT_PARAMETERS_FILENAME = "deploymentParameters.json"
 TEMPLATE_PARAMETERS_FILENAME = "templateParameters.json"
 VHD_PARAMETERS_FILENAME = "vhdParameters.json"
+NEXUS_IMAGE_PARAMETERS_FILENAME = "imageParameters.json"
 
 NSD_OUTPUT_FOLDER_FILENAME = "nsd-cli-output"
 NSD_INPUT_FILENAME = "nsd-input.jsonc"

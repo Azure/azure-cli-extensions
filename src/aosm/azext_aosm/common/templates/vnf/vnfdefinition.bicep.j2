@@ -55,14 +55,15 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
     networkFunctionTemplate: {
       nfviType: '{{ nfvi_type }}'
       networkFunctionApplications: [
+        {%- for configuration in sa_nf_applications %}
         {
           artifactType: 'VhdImageFile'
-          name: '{{ sa_nf_application.artifact_profile.vhd_artifact_profile.vhd_name }}'
+          name: '{{ configuration.artifact_profile.vhd_artifact_profile.vhd_name }}'
           dependsOnProfile: null
           artifactProfile: {
             vhdArtifactProfile: {
-              vhdName: '{{ sa_nf_application.artifact_profile.vhd_artifact_profile.vhd_name }}'
-              vhdVersion: '{{ sa_nf_application.artifact_profile.vhd_artifact_profile.vhd_version }}'
+              vhdName: '{{ configuration.artifact_profile.vhd_artifact_profile.vhd_name }}'
+              vhdVersion: '{{ configuration.artifact_profile.vhd_artifact_profile.vhd_version }}'
             }
             artifactStore: {
               id: saArtifactStore.id
@@ -73,10 +74,10 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
             vhdImageMappingRuleProfile: {
               userConfiguration: string(loadJsonContent('{{vhd_parameters_file}}'))
             }
-            // ??
-            applicationEnablement: 'Unknown'
+            applicationEnablement: '{{ configuration.deploy_parameters_mapping_rule_profile.application_enablement.value }}'
           }
         }
+      {%- endfor %}
       {%- for configuration in acr_nf_applications %}
         {
           artifactType: 'ArmTemplate'
@@ -95,7 +96,29 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
             templateMappingRuleProfile: {
               templateParameters: string(loadJsonContent('{{template_parameters_file}}'))
             }
-            applicationEnablement: 'Unknown'
+            applicationEnablement: '{{ configuration.deploy_parameters_mapping_rule_profile.application_enablement.value }}'
+          }
+        }
+      {%- endfor %}
+      {%- for configuration in nexus_image_nf_applications %}
+        {
+          artifactType: 'ImageFile'
+          name: '{{ configuration.name }}'
+          dependsOnProfile: null
+          artifactProfile: {
+            imageArtifactProfile: {
+              imageName: '{{ configuration.artifact_profile.image_artifact_profile.image_name }}'
+              imageVersion: '{{ configuration.artifact_profile.image_artifact_profile.image_version }}'
+            }
+            artifactStore: {
+              id: acrArtifactStore.id
+            }
+          }
+          deployParametersMappingRuleProfile: {
+            imageMappingRuleProfile: {
+              userConfiguration: string(loadJsonContent('{{image_parameters_file}}'))
+            }
+            applicationEnablement: '{{ configuration.deploy_parameters_mapping_rule_profile.application_enablement.value }}'
           }
         }
       {%- endfor %}
