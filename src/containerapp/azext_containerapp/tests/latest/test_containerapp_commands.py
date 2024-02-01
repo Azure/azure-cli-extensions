@@ -754,14 +754,14 @@ class ContainerappServiceBindingTests(ScenarioTest):
         env_rg = parse_resource_id(env_id).get('resource_group')
         env_name = parse_resource_id(env_id).get('name')
 
-        self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
+        self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded")
         ])
 
-        self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(env_rg, postgres_ca_name, env_name), checks=[
+        self.cmd('containerapp add-on postgres create -g {} -n {} --environment {}'.format(env_rg, postgres_ca_name, env_name), checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded")
         ])
-        self.cmd('containerapp service kafka create -g {} -n {} --environment {}'.format(env_rg, kafka_ca_name, env_name), checks=[
+        self.cmd('containerapp add-on kafka create -g {} -n {} --environment {}'.format(env_rg, kafka_ca_name, env_name), checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded")
         ])
 
@@ -803,18 +803,18 @@ class ContainerappServiceBindingTests(ScenarioTest):
     def test_containerapp_dev_service_binding_customized_keys_yaml_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         ca_name = self.create_random_name(prefix='containerapp1', length=24)
-        redis_ca_name = 'redis-yaml'
+        redis_ca_name = 'redis-yaml2'
         postgres_ca_name = 'postgres-yaml'
 
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
         env_rg = parse_resource_id(env_id).get('resource_group')
         env_name = parse_resource_id(env_id).get('name')
 
-        redis_resource_id = self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
+        redis_resource_id = self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded")
         ]).get_output_in_json()["id"]
 
-        postgres_resource_id = self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(env_rg, postgres_ca_name, env_name)).get_output_in_json()["id"]
+        postgres_resource_id = self.cmd('containerapp add-on postgres create -g {} -n {} --environment {}'.format(env_rg, postgres_ca_name, env_name)).get_output_in_json()["id"]
         # test create
         containerapp_yaml_text = f"""
                                 location: {TEST_LOCATION}
@@ -931,8 +931,8 @@ class ContainerappServiceBindingTests(ScenarioTest):
                 JMESPathCheck('properties.template.serviceBinds[1].customizedKeys', None),
             ])
 
-        self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(env_rg, redis_ca_name), expect_failure=False)
-        self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(env_rg, postgres_ca_name), expect_failure=False)
+        self.cmd('containerapp add-on redis delete -g {} -n {} --yes'.format(env_rg, redis_ca_name), expect_failure=False)
+        self.cmd('containerapp add-on postgres delete -g {} -n {} --yes'.format(env_rg, postgres_ca_name), expect_failure=False)
         self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name, resource_group), expect_failure=False)
         clean_up_test_file(containerapp_file_name)
 
@@ -952,11 +952,11 @@ class ContainerappServiceBindingTests(ScenarioTest):
         env_rg = parse_resource_id(env_id).get('resource_group')
         env_name = parse_resource_id(env_id).get('name')
 
-        redis_resource_id = self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
+        redis_resource_id = self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded")
         ]).get_output_in_json()["id"]
 
-        self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(env_rg, postgres_ca_name, env_name))
+        self.cmd('containerapp add-on postgres create -g {} -n {} --environment {}'.format(env_rg, postgres_ca_name, env_name))
         self.cmd(
             'containerapp create -n {} -g  {} --environment {} --bind {},clientType=dotnet,resourcegroup={} {},clientType=none,resourcegroup={}'.format(
                 ca_name, resource_group, env_id, redis_ca_name, env_rg, postgres_ca_name, env_rg), expect_failure=False, checks=[
@@ -1020,8 +1020,8 @@ class ContainerappServiceBindingTests(ScenarioTest):
             ca_name2, resource_group, redis_ca_name), checks=[
             JMESPathCheck('properties.template.serviceBinds', None),
         ])
-        self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(env_rg, redis_ca_name))
-        self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(env_rg, postgres_ca_name))
+        self.cmd('containerapp add-on redis delete -g {} -n {} --yes'.format(env_rg, redis_ca_name))
+        self.cmd('containerapp add-on postgres delete -g {} -n {} --yes'.format(env_rg, postgres_ca_name))
         self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name2, resource_group), expect_failure=False)
 
     @AllowLargeResponse(8192)
@@ -1044,19 +1044,19 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         create_containerapp_env(self, env_name, resource_group)
 
-        self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(
+        self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(
             resource_group, redis_ca_name, env_name))
 
-        self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(
+        self.cmd('containerapp add-on postgres create -g {} -n {} --environment {}'.format(
             resource_group, postgres_ca_name, env_name))
 
-        self.cmd('containerapp service kafka create -g {} -n {} --environment {}'.format(
+        self.cmd('containerapp add-on kafka create -g {} -n {} --environment {}'.format(
             resource_group, kafka_ca_name, env_name))
 
-        self.cmd('containerapp service mariadb create -g {} -n {} --environment {}'.format(
+        self.cmd('containerapp add-on mariadb create -g {} -n {} --environment {}'.format(
             resource_group, mariadb_ca_name, env_name))
 
-        self.cmd('containerapp service qdrant create -g {} -n {} --environment {}'.format(
+        self.cmd('containerapp add-on qdrant create -g {} -n {} --environment {}'.format(
             resource_group, qdrant_ca_name, env_name))
 
         self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
@@ -1079,24 +1079,24 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant")
         ])
 
-        self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(
+        self.cmd('containerapp add-on postgres delete -g {} -n {} --yes'.format(
             resource_group, postgres_ca_name, env_name))
 
-        self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(
+        self.cmd('containerapp add-on redis delete -g {} -n {} --yes'.format(
             resource_group, redis_ca_name, env_name))
 
-        self.cmd('containerapp service kafka delete -g {} -n {} --yes'.format(
+        self.cmd('containerapp add-on kafka delete -g {} -n {} --yes'.format(
             resource_group, kafka_ca_name, env_name))
 
-        self.cmd('containerapp service mariadb delete -g {} -n {} --yes'.format(
+        self.cmd('containerapp add-on mariadb delete -g {} -n {} --yes'.format(
             resource_group, mariadb_ca_name, env_name))
 
-        self.cmd('containerapp service qdrant delete -g {} -n {} --yes'.format(
+        self.cmd('containerapp add-on qdrant delete -g {} -n {} --yes'.format(
             resource_group, qdrant_ca_name, env_name))
 
         self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes')
 
-        self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
+        self.cmd('containerapp add-on list -g {} --environment {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
 
