@@ -505,8 +505,8 @@ def get_backup_instance_from_resourcegraph(cmd, resource_group_name, vault_name,
     subscription_id = cmd.cli_ctx.data['subscription_id']
     arg_client = client(cmd.cli_ctx, None)
     backup_instance_list = dataprotection_backup_instance_list_from_resourcegraph(arg_client, None, resource_group_name,
-                                                                        vault_name, [subscription_id,], None, None,
-                                                                        None, backup_instance_name)
+                                                                                  vault_name, [subscription_id,], None,
+                                                                                  None, None, backup_instance_name)
     if len(backup_instance_list) > 1:
         raise CLIInternalError("More than one backup instance was found in the vault"
                                ", please check the backup instance name parameter")

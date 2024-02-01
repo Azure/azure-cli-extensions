@@ -49,6 +49,15 @@ vault_name_type = CLIArgumentType(help='Name of the backup vault.', options_list
 
 def load_arguments(self, _):
 
+    with self.argument_context('dataprotection recovery-point list') as c:
+        c.argument('backup_instance_name', type=str, help="Backup instance name.")
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', vault_name_type, id_part='name')
+        c.argument('start_time', type=str, help="Specify the start date time in UTC (yyyy-mm-ddTHH:MM:SS)")
+        c.argument('end_time', type=str, help="Specify the end date time in UTC (yyyy-mm-ddTHH:MM:SS)")
+        c.argument('use_secondary_region', arg_type=get_three_state_flag(),
+                   help='Use this flag to fetch recovery points from the secondary region')
+
     with self.argument_context('dataprotection backup-vault list-from-resourcegraph') as c:
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
         c.argument('resource_groups', type=str, nargs='+', help="List of resource groups.")

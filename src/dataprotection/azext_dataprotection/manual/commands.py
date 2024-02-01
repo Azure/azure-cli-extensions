@@ -61,6 +61,9 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler) as g:
         g.custom_command('list-protected-operations', 'dataprotection_resource_guard_list_protected_operations')
+    
+    with self.command_group('dataprotection recovery-point', exception_handler=exception_handler) as g:
+        g.custom_command('list', 'dataprotection_recovery_point_list')
 
     from .aaz_operations.backup_instance import (
         ValidateAndCreate as BackupInstanceCreate,
@@ -79,8 +82,8 @@ def load_command_table(self, _):
     from .aaz_operations.backup_policy import Create as BackupPolicyCreate
     self.command_table['dataprotection backup-policy create'] = BackupPolicyCreate(loader=self)
 
-    from .aaz_operations.recovery_point import List as RecoveryPointList
-    self.command_table['dataprotection recovery-point list'] = RecoveryPointList(loader=self)
+    # from .aaz_operations.recovery_point import List as RecoveryPointList
+    # self.command_table['dataprotection recovery-point list'] = RecoveryPointList(loader=self)
 
     from .aaz_operations.resource_guard import Update as ResourceGuardUpdate
     self.command_table['dataprotection resource-guard update'] = ResourceGuardUpdate(loader=self)

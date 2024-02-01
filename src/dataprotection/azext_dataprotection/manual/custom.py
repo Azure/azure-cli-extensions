@@ -726,6 +726,37 @@ def dataprotection_backup_policy_tag_remove_in_policy(name, policy):
     return policy
 
 
+def dataprotection_recovery_point_list(cmd, backup_instance_name, resource_group_name, vault_name,
+                                       start_time=None, end_time=None, use_secondary_region=None):
+    from .aaz_operations.recovery_point import List as RecoveryPointList
+    from azext_dataprotection.aaz.latest.dataprotection.cross_region_restore import FetchSecondaryRecoveryPoints
+
+    if use_secondary_region:
+        source_backup_instance = helper.get_backup_instance_from_resourcegraph(cmd, resource_group_name, vault_name,
+                                                                               backup_instance_name)
+        source_backup_instance_id = source_backup_instance['id']
+        source_location = source_backup_instance['properties']['backupInstanceExtendedProperties']['protectedPrimaryRegion']
+        target_location = source_backup_instance['properties']['backupInstanceExtendedProperties']['protectedSecondaryRegion']
+
+        if start_time or end_time:
+            logger.warning("start-time and end-time filters will not work with use-secondary-region option")
+
+        return FetchSecondaryRecoveryPoints(cli_ctx=cmd.cli_ctx)(command_args={
+            "resource_group": resource_group_name,
+            "location": target_location,
+            "source_backup_instance_id": source_backup_instance_id,
+            "source_region": source_location
+        })
+    
+    return RecoveryPointList(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+        "backup_instance_name": backup_instance_name,
+        "start_time": start_time,
+        "end_time": end_time
+    })
+
+
 def dataprotection_backup_instance_validate_for_restore(cmd, vault_name, resource_group_name, backup_instance_name,
                                                         restore_request_object, use_secondary_region=None):
     from .aaz_operations.backup_instance import (
