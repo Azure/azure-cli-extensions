@@ -58,6 +58,16 @@ class Create(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "CrossRegionRestoreSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.cross_region_restore_state = AAZStrArg(
+            options=["--cross-region-restore-state"],
+            arg_group="CrossRegionRestoreSettings",
+            help="Set the CrossRegionRestore state. Once enabled, it cannot be set to disabled.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
         # define Arg Group "FeatureSettings"
 
         _args_schema = cls._args_schema
@@ -115,11 +125,6 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.replicated_regions = AAZListArg(
-            options=["--replicated-regions"],
-            arg_group="Properties",
-            help="List of replicated regions for Backup Vault",
-        )
         _args_schema.storage_setting = AAZListArg(
             options=["--storage-setting"],
             singular_options=["--storage-settings"],
@@ -127,9 +132,6 @@ class Create(AAZCommand):
             help={"short-summary": "Storage Settings. Usage: --storage-setting \"[{type:'LocallyRedundant',datastore-type:'VaultStore'}]\"", "long-summary": "Multiple actions can be specified by using more than one --storage-setting argument.\nThe \"--storage-settings\" parameter exists for backwards compatibility. The updated command is --storage-setting.\nUsage for --storage-settings: --storage-settings type=XX datastore-type=XX."},
             required=True,
         )
-
-        replicated_regions = cls._args_schema.replicated_regions
-        replicated_regions.Element = AAZStrArg()
 
         storage_setting = cls._args_schema.storage_setting
         storage_setting.Element = AAZObjectArg()
@@ -294,13 +296,17 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("featureSettings", AAZObjectType)
                 properties.set_prop("monitoringSettings", AAZObjectType)
-                properties.set_prop("replicatedRegions", AAZListType, ".replicated_regions")
                 properties.set_prop("securitySettings", AAZObjectType)
                 properties.set_prop("storageSettings", AAZListType, ".storage_setting", typ_kwargs={"flags": {"required": True}})
 
             feature_settings = _builder.get(".properties.featureSettings")
             if feature_settings is not None:
+                feature_settings.set_prop("crossRegionRestoreSettings", AAZObjectType)
                 feature_settings.set_prop("crossSubscriptionRestoreSettings", AAZObjectType)
+
+            cross_region_restore_settings = _builder.get(".properties.featureSettings.crossRegionRestoreSettings")
+            if cross_region_restore_settings is not None:
+                cross_region_restore_settings.set_prop("state", AAZStrType, ".cross_region_restore_state")
 
             cross_subscription_restore_settings = _builder.get(".properties.featureSettings.crossSubscriptionRestoreSettings")
             if cross_subscription_restore_settings is not None:
@@ -313,10 +319,6 @@ class Create(AAZCommand):
             azure_monitor_alert_settings = _builder.get(".properties.monitoringSettings.azureMonitorAlertSettings")
             if azure_monitor_alert_settings is not None:
                 azure_monitor_alert_settings.set_prop("alertsForAllJobFailures", AAZStrType, ".azure_monitor_alerts_for_job_failures")
-
-            replicated_regions = _builder.get(".properties.replicatedRegions")
-            if replicated_regions is not None:
-                replicated_regions.set_elements(AAZStrType, ".")
 
             security_settings = _builder.get(".properties.securitySettings")
             if security_settings is not None:
