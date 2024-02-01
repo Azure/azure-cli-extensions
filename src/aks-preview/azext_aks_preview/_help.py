@@ -588,7 +588,7 @@ helps['aks create'] = f"""
           short-summary: Enable Application Routing addon.
         - name: --enable-ai-toolchain-operator
           type: bool
-          short-summary:  enable AI toolchain operator to the cluster.
+          short-summary: Enable AI toolchain operator to the cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
