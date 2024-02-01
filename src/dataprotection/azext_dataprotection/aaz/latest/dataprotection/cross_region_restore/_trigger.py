@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "dataprotection cross-region-restore trigger",
-    is_experimental=True,
-)
 class Trigger(AAZCommand):
     """Triggers Cross Region Restore for BackupInstance.
     """

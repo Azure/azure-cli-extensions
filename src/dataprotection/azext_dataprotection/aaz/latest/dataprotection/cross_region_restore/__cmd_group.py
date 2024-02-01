@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command_group(
-    "dataprotection cross-region-restore",
-    is_experimental=True,
-)
 class __CMDGroup(AAZCommandGroup):
     """Hidden command group to manage cross region restores in dataprotection
     """

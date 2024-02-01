@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "dataprotection cross-region-restore fetch-secondary-recovery-points",
-    is_experimental=True,
-)
 class FetchSecondaryRecoveryPoints(AAZCommand):
     """Returns a list of Secondary Recovery Points for a DataSource in a vault, that can be used for Cross Region Restore.
     """

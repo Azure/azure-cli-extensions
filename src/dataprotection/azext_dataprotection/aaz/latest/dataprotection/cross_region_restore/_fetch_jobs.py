@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "dataprotection cross-region-restore fetch-jobs",
-    is_experimental=True,
-)
 class FetchJobs(AAZCommand):
     """Fetches list of Cross Region Restore job belonging to the vault
     """

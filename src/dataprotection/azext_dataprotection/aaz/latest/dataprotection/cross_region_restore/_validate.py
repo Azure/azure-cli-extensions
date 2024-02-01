@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "dataprotection cross-region-restore validate",
-    is_experimental=True,
-)
 class Validate(AAZCommand):
     """Validates whether Cross Region Restore can be triggered for DataSource.
     """
