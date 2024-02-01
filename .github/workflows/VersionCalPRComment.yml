@@ -1,7 +1,6 @@
 name: Generate Release Version and Comment PR
 
-on: 
-  workflow_dispatch:
+on:
   pull_request_target:
       types: [opened, labeled, unlabeled, synchronize]
       paths:
