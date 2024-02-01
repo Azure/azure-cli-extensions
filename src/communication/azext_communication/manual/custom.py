@@ -391,7 +391,7 @@ def communication_email_send(client,
                                                             for recipient in recipients_bcc[0].split(',')]
             },
             "replyTo": None if reply_to is None else [{"address": reply_to}],
-            "attachments": None if attachments_list is None else [json.loads(attachment)
+            "attachments": [] if attachments_list is None else [json.loads(attachment)
                                                                   for attachment in attachments_list],
             "senderAddress": sender,
             "userEngagementTrackingDisabled": disable_tracking,
