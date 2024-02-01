@@ -63,11 +63,15 @@ def get_next_version_segment_tag():
         return None
 
 
+def add_suggest_header(comment_message):
+    comment_message.append("## :warning: Suggestions")
+
+
 def gen_comment_message(mod, next_version, comment_message):
-    comment_message.append("### module: {0}".format(mod))
-    comment_message.append(" :warning: suggested next version number in setup.py: {0}".format(next_version.get("version", "-")))
+    comment_message.append("### Module: {0}".format(mod))
+    comment_message.append(" - Update version to `{0}` in setup.py".format(next_version.get("version", "-")))
     if next_version.get("has_preview_tag", False):
-        comment_message.append(' :warning: azext_{0}/azext_metadata.json: "azext.isPreview": true,'.format(mod))
+        comment_message.append(' - Set `azext.isPreview` to `true` in azext_{0}/azext_metadata.json'.format(mod))
 
 
 def add_label_hint_message(comment_message):
@@ -97,6 +101,7 @@ def main():
     print("next_version_pre_tag: ", next_version_pre_tag)
     print("next_version_segment_tag: ", next_version_segment_tag)
     comment_message = []
+    add_suggest_header(comment_message)
     for mod in changed_module_list:
         base_meta_file = os.path.join(cli_ext_path, base_meta_path, "az_" + mod + "_meta.json")
         diff_meta_file = os.path.join(cli_ext_path, diff_meta_path, "az_" + mod + "_meta.json")
