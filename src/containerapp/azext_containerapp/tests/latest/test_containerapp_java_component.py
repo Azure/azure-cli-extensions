@@ -26,8 +26,21 @@ class ContainerappJavaComponentTests(ScenarioTest):
     def test_containerapp_java_component(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='aca-env-java', length=24)
+        env_name = self.create_random_name(prefix='aca-java-env', length=24)
         create_containerapp_env(self, env_name, resource_group)
+
+        # List Java Components
+        # Create Config
+        # Create Eureka
+        # List Java Components
+        # Update Config
+        # Update Eureka
+        # Show Config
+        # Show Eureka
+        # Delete Config
+        # Delete Eureka
+        # List Java Components
+
 
         # self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
         #     JMESPathCheck('properties.provisioningState', "Succeeded")
