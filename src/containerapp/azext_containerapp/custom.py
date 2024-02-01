@@ -1939,9 +1939,7 @@ def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=
 
     # check user identity is already assigned
     if assign_user_identities:
-        try:
-            managed_env_def["identity"]["userAssignedIdentities"]
-        except:
+        if "userAssignedIdentities" not in managed_env_def["identity"]:
             managed_env_def["identity"]["userAssignedIdentities"] = {}
 
         subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -1949,9 +1947,6 @@ def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=
         for r in assign_user_identities:
             r = _ensure_identity_resource_id(subscription_id, resource_group_name, r).replace("resourceGroup", "resourcegroup")
             isExisting = False
-
-            if not managed_env_def["identity"].get("userAssignedIdentities"):
-                managed_env_def["identity"]["userAssignedIdentities"] = {}
 
             for old_user_identity in managed_env_def["identity"]["userAssignedIdentities"]:
                 if old_user_identity.lower() == r.lower():
