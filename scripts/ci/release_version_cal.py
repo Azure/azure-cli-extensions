@@ -65,9 +65,9 @@ def get_next_version_segment_tag():
 
 def gen_comment_message(mod, next_version, comment_message):
     comment_message.append("### module: {0}".format(mod))
-    comment_message.append(" - suggested next version number in setup.py: {0}".format(next_version.get("version", "-")))
+    comment_message.append(" :warning: suggested next version number in setup.py: {0}".format(next_version.get("version", "-")))
     if next_version.get("has_preview_tag", False):
-        comment_message.append(' - azext_{0}/azext_metadata.json: "azext.isPreview": true,'.format(mod))
+        comment_message.append(' :warning: azext_{0}/azext_metadata.json: "azext.isPreview": true,'.format(mod))
 
 
 def add_label_hint_message(comment_message):
