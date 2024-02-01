@@ -96,6 +96,8 @@ def main():
     print("output_file: ", output_file)
     print("changed_module_list: ", changed_module_list)
     print("pr_label_list: ", pr_label_list)
+    if len(changed_module_list) == 0:
+        return
     next_version_pre_tag = get_next_version_pre_tag()
     next_version_segment_tag = get_next_version_segment_tag()
     print("next_version_pre_tag: ", next_version_pre_tag)
