@@ -14,7 +14,10 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     CLIInternalError,
 )
-from azext_dataprotection.manual.custom import dataprotection_backup_instance_list_from_resourcegraph
+from azext_dataprotection.manual.custom import (
+    dataprotection_backup_instance_list_from_resourcegraph,
+    dataprotection_backup_vault_list_from_resourcegraph
+)
 
 critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContainers/protectedItems/delete",
                           "updateProtection": "/backupFabrics/protectionContainers/protectedItems/write",
@@ -25,6 +28,78 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
 
 operation_request_map = {"DisableMUA": "/deleteResourceGuardProxyRequests/default",
                          "DeleteBackupInstance": "/deleteBackupInstanceRequests/default"}
+
+secondary_region_map = {
+    "australiacentral": "australiacentral2",
+    "australiacentral2": "australiacentral",
+    "australiaeast": "australiasoutheast",
+    "australiasoutheast": "australiaeast",
+    "brazilsouth": "southcentralus",
+    "brazilsoutheast": "brazilsouth",
+    "canadacentral": "canadaeast",
+    "canadaeast": "canadacentral",
+    "centralindia": "southindia",
+    "centralus": "eastus2",
+    "centraluseuap": "eastus2euap",
+    "chinaeast": "chinanorth",
+    "chinaeast2": "chinanorth2",
+    "chinaeast3": "chinanorth3",
+    "chinanorth": "chinaeast",
+    "chinanorth2": "chinaeast2",
+    "chinanorth3": "chinaeast3",
+    "eastasia": "southeastasia",
+    "eastus": "westus",
+    "eastus2": "centralus",
+    "eastus2euap": "centraluseuap",
+    "francecentral": "francesouth",
+    "francesouth": "francecentral",
+    "germanycentral": "germanynortheast",
+    "germanynorth": "germanywestcentral",
+    "germanynortheast": "germanycentral",
+    "germanywestcentral": "germanynorth",
+    "japaneast": "japanwest",
+    "japanwest": "japaneast",
+    "jioindiacentral": "jioindiawest",
+    "jioindiawest": "jioindiacentral",
+    "koreacentral": "koreasouth",
+    "koreasouth": "koreacentral",
+    "malaysiasouth": "japanwest",
+    "northcentralus": "southcentralus",
+    "northeurope": "westeurope",
+    "norwayeast": "norwaywest",
+    "norwaywest": "norwayeast",
+    "southafricanorth": "southafricawest",
+    "southafricawest": "southafricanorth",
+    "southcentralus": "northcentralus",
+    "southeastasia": "eastasia",
+    "southindia": "centralindia",
+    "swedencentral": "swedensouth",
+    "swedensouth": "swedencentral",
+    "switzerlandnorth": "switzerlandwest",
+    "switzerlandwest": "switzerlandnorth",
+    "taiwannorth": "taiwannorthwest",
+    "taiwannorthwest": "taiwannorth",
+    "uaecentral": "uaenorth",
+    "uaenorth": "uaecentral",
+    "uksouth": "ukwest",
+    "ukwest": "uksouth",
+    "usdodcentral": "usdodeast",
+    "usdodeast": "usdodcentral",
+    "usgovarizona": "usgovtexas",
+    "usgoviowa": "usgovvirginia",
+    "usgovtexas": "usgovarizona",
+    "usgovvirginia": "usgovtexas",
+    "usnateast": "usnatwest",
+    "usnatwest": "usnateast",
+    "usseceast": "ussecwest",
+    "ussecwest": "usseceast",
+    "westcentralus": "westus2",
+    "westeurope": "northeurope",
+    "westindia": "southindia",
+    "westus": "eastus",
+    "westus2": "westcentralus",
+    "westus3": "eastus"
+}
 
 logger = get_logger(__name__)
 
@@ -515,3 +590,22 @@ def get_backup_instance_from_resourcegraph(cmd, resource_group_name, vault_name,
         raise CLIInternalError("No backup instances were found")
     
     return backup_instance_list[0]
+
+
+def get_backup_vault_from_resourcegraph(cmd, resource_group_name, vault_name):
+    from azext_dataprotection.manual._client_factory import cf_resource_graph_client as client
+    subscription_id = cmd.cli_ctx.data['subscription_id']
+    arg_client = client(cmd.cli_ctx, None)
+
+    backup_vault_list = dataprotection_backup_vault_list_from_resourcegraph(arg_client, resource_group_name,
+                                                                            vault_name, [subscription_id, ])
+
+    if len(backup_vault_list) > 1:
+        raise CLIInternalError("More than one backup vault with the name was found under the resource group,"
+                               " please check the backup vault name parameter")
+
+    if len(backup_vault_list) == 0:
+        raise CLIInternalError("No backup vault was found")
+
+    return backup_vault_list[0]
+    

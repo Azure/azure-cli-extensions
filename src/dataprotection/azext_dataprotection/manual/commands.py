@@ -37,6 +37,7 @@ def load_command_table(self, _):
         g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
         g.custom_command('initialize-for-data-recovery-as-files', 'restore_initialize_for_data_recovery_as_files')
         g.custom_command('initialize-for-item-recovery', 'restore_initialize_for_item_recovery')
+        g.custom_command('trigger', 'dataprotection_backup_instance_restore_trigger')
 
     with self.command_group('dataprotection backup-policy', exception_handler=exception_handler) as g:
         g.custom_command('get-default-policy-template', "dataprotection_backup_policy_get_default_policy_template")
@@ -58,6 +59,7 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection job') as g:
         g.custom_command('list-from-resourcegraph', "dataprotection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)
+        g.custom_command('list', "dataprotection_job_list", exception_handler=exception_handler)
 
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler) as g:
         g.custom_command('list-protected-operations', 'dataprotection_resource_guard_list_protected_operations')
@@ -68,13 +70,13 @@ def load_command_table(self, _):
     from .aaz_operations.backup_instance import (
         ValidateAndCreate as BackupInstanceCreate,
         # ValidateForRestore as BackupInstanceValidateRestore,
-        RestoreTrigger as BackupInstanceRestoreTrigger,
+        # RestoreTrigger as BackupInstanceRestoreTrigger,
         ValidateForCRR as CRRValidateRestore,
         TriggerCRR as CRRTriggerRestore,
     )
     self.command_table['dataprotection backup-instance create'] = BackupInstanceCreate(loader=self)
     # self.command_table['dataprotection backup-instance validate-for-restore'] = BackupInstanceValidateRestore(loader=self)
-    self.command_table['dataprotection backup-instance restore trigger'] = BackupInstanceRestoreTrigger(loader=self)
+    # self.command_table['dataprotection backup-instance restore trigger'] = BackupInstanceRestoreTrigger(loader=self)
 
     self.command_table['dataprotection cross-region-restore validate'] = CRRValidateRestore(loader=self)
     self.command_table['dataprotection cross-region-restore trigger'] = CRRTriggerRestore(loader=self)

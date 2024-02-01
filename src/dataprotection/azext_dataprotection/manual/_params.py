@@ -133,6 +133,12 @@ def load_arguments(self, _):
         c.argument('restore_request_object', type=validate_file_or_dict, help='Request body for operation "Restore" Expected value: '
                    'json-string/@json-file. Required when --operation is Restore')
 
+    with self.argument_context('dataprotection job list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', vault_name_type)
+        c.argument('use_secondary_region', arg_type=get_three_state_flag(),
+                   help='Use this flag fetch list of jobs from secondary region')
+
     with self.argument_context('dataprotection job list-from-resourcegraph') as c:
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
         c.argument('resource_groups', type=str, nargs='+', help="List of resource groups.")
@@ -251,6 +257,15 @@ def load_arguments(self, _):
         c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService.")
 
     with self.argument_context('dataprotection backup-instance validate-for-restore') as c:
+        c.argument('backup_instance_name', options_list=['--backup-instance-name', '--name', '-n'], type=str, help="Backup instance name.")
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', vault_name_type, id_part='name')
+        c.argument('restore_request_object', type=validate_file_or_dict, help='Request body for operation. Expected value: '
+                   'json-string/@json-file.')
+        c.argument('use_secondary_region', arg_type=get_three_state_flag(),
+                   help='Use this flag to restore from a recoverypoint in secondary region.')
+
+    with self.argument_context('dataprotection backup-instance restore trigger') as c:
         c.argument('backup_instance_name', options_list=['--backup-instance-name', '--name', '-n'], type=str, help="Backup instance name.")
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vault_name', vault_name_type, id_part='name')
