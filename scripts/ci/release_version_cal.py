@@ -105,6 +105,7 @@ def main():
     print("pr_label_list: ", pr_label_list)
     comment_message = []
     if len(changed_module_list) == 0:
+        comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
         save_comment_message(cli_ext_path, output_file, comment_message)
         return
     next_version_pre_tag = get_next_version_pre_tag()
