@@ -1,7 +1,6 @@
 name: Generate Release Version and Comment PR
 
-on: 
-  workflow_dispatch:
+on:
   pull_request_target:
       types: [opened, labeled, unlabeled, synchronize]
       paths:
@@ -12,7 +11,7 @@ permissions:
 
 jobs:
   version-cal:
-    if:  startsWith(github.head_ref, 'auto-version')
+    if: contains(github.event.pull_request.labels.*.name, 'auto-cal-version')
     runs-on: ubuntu-latest
     steps:
       - name: Set Init Version Message
@@ -94,6 +93,7 @@ jobs:
            source ./env/bin/activate
            echo github.event.pull_request.base.ref: ${{ github.event.pull_request.base.ref }}
            git checkout ${{ github.event.pull_request.base.ref }}
+           mkdir ${base_meta_path}
            for mod in `cat changed_modules`
            do
               echo **************************
@@ -106,6 +106,7 @@ jobs:
            done
            echo github.event.pull_request.head.ref: ${{ github.event.pull_request.head.ref }}
            git checkout ${{ github.event.pull_request.head.ref }}
+           mkdir ${diff_meta_path}
            for mod in `cat changed_modules`
            do
               echo **************************
