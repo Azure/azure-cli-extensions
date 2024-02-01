@@ -4,7 +4,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=line-too-long
 import os
 from packaging.version import parse
 
@@ -77,6 +77,7 @@ def add_label_hint_message(comment_message):
     comment_message.append(" - Major/minor/patch/pre increment of version number is calculated by pull request "
                            "code changes automatically. "
                            "If needed, please add `major`/`minor`/`patch`/`pre` label to adjust it.")
+    comment_message.append(" - For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
 
 
 def main():
