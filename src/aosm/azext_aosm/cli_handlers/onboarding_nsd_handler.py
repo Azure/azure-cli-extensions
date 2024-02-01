@@ -144,9 +144,11 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
         template_path = self._get_template_path(
             NSD_TEMPLATE_FOLDER_NAME, NSD_MANIFEST_TEMPLATE_FILENAME
         )
-        bicep_contents = self._render_manifest_bicep_contents(
-            template_path, artifact_list
-        )
+        params = {
+            "acr_artifacts": artifact_list,
+            "sa_artifacts": []
+        }
+        bicep_contents = self._render_bicep_contents_from_j2(template_path, params)
 
         bicep_file = BicepDefinitionElementBuilder(
             Path(NSD_OUTPUT_FOLDER_FILENAME, MANIFEST_FOLDER_NAME), bicep_contents
@@ -222,7 +224,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
             "template_parameters_file": TEMPLATE_PARAMETERS_FILENAME,
         }
 
-        bicep_contents = self._render_definition_bicep_contents(
+        bicep_contents = self._render_bicep_contents_from_j2(
             template_path, params
         )
         # Generate the nsd bicep file

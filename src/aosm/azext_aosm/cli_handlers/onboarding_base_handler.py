@@ -183,7 +183,7 @@ class OnboardingBaseCLIHandler(ABC):
         bicep_contents: str = template.render()
         return bicep_contents
 
-    def _render_definition_bicep_contents(self, template_path: Path, params):
+    def _render_bicep_contents_from_j2(self, template_path: Path, params):
         """Write the definition bicep file from given template."""
         with open(template_path, "r", encoding="UTF-8") as f:
             template: Template = Template(
@@ -192,27 +192,6 @@ class OnboardingBaseCLIHandler(ABC):
             )
 
         bicep_contents: str = template.render(params)
-        return bicep_contents
-
-    def _render_manifest_bicep_contents(
-        self,
-        template_path: Path,
-        acr_artifact_list: list,
-        sa_artifact_list: list = None,
-    ):
-        """Write the manifest bicep file from given template.
-
-        Returns bicep content as string
-        """
-        with open(template_path, "r", encoding="UTF-8") as f:
-            template: Template = Template(
-                f.read(),
-                undefined=StrictUndefined,
-            )
-
-        bicep_contents: str = template.render(
-            acr_artifacts=acr_artifact_list, sa_artifacts=sa_artifact_list
-        )
         return bicep_contents
 
     def _get_template_path(self, definition_type: str, template_name: str) -> Path:

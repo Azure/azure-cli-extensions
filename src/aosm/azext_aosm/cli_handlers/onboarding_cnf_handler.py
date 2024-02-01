@@ -197,9 +197,13 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
         template_path = self._get_template_path(
             CNF_TEMPLATE_FOLDER_NAME, CNF_MANIFEST_TEMPLATE_FILENAME
         )
-        bicep_contents = self._render_manifest_bicep_contents(
-            template_path, artifact_list
-        )
+        
+        params = {
+            "acr_artifacts": artifact_list,
+            "sa_artifacts": []
+        }
+        bicep_contents = self._render_bicep_contents_from_j2(template_path, params)
+
         # Create Bicep element with manifest contents
         bicep_file = BicepDefinitionElementBuilder(
             Path(CNF_OUTPUT_FOLDER_FILENAME, MANIFEST_FOLDER_NAME), bicep_contents
@@ -265,7 +269,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
             "acr_nf_applications": nf_application_list,
             "deployment_parameters_file": DEPLOYMENT_PARAMETERS_FILENAME,
         }
-        bicep_contents = self._render_definition_bicep_contents(template_path, params)
+        bicep_contents = self._render_bicep_contents_from_j2(template_path, params)
 
         # Create a bicep element + add its supporting mapping files
         bicep_file = BicepDefinitionElementBuilder(

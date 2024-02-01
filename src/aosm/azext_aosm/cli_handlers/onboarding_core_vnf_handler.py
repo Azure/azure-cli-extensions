@@ -136,9 +136,12 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         template_path = self._get_template_path(
             VNF_TEMPLATE_FOLDER_NAME, VNF_MANIFEST_TEMPLATE_FILENAME
         )
-        bicep_contents = self._render_manifest_bicep_contents(
-            template_path, acr_artifact_list, sa_artifact_list
-        )
+        params = {
+            "acr_artifacts": acr_artifact_list,
+            "sa_artifacts": sa_artifact_list,
+        }
+        bicep_contents = self._render_bicep_contents_from_j2(template_path, params)
+
         # Create Bicep element with manifest contents
         bicep_file = BicepDefinitionElementBuilder(
             Path(VNF_OUTPUT_FOLDER_FILENAME, MANIFEST_FOLDER_NAME),
@@ -233,7 +236,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             "vhd_parameters_file": VHD_PARAMETERS_FILENAME,
             "template_parameters_file": TEMPLATE_PARAMETERS_FILENAME
         }
-        bicep_contents = self._render_definition_bicep_contents(
+        bicep_contents = self._render_bicep_contents_from_j2(
             template_path, params
         )
 
