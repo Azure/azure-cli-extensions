@@ -126,6 +126,7 @@ jobs:
       - name: Comment on the pull request
         uses: mshick/add-pr-comment@v2
         with:
+           repo-token: ${{ secrets.AZCLIBOT_PAT }}
            message-path: |
             version_update.txt
            message-failure: |
