@@ -2,12 +2,14 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set
+from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set, _ensure_identity_resource_id
 from knack.log import get_logger
 
 from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvCreateDecorator, \
     ContainerAppEnvUpdateDecorator
+from azure.cli.command_modules.containerapp._models import ManagedServiceIdentity
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
+from azure.cli.core.commands.client_factory import get_subscription_id
 from ._utils import safe_get
 from ._client_factory import handle_non_404_status_code_exception
 
@@ -23,6 +25,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
         self.set_up_infrastructure_resource_group()
         self.set_up_dynamic_json_columns()
+        self.set_up_managed_identity()
 
     def validate_arguments(self):
         super().validate_arguments()
@@ -43,6 +46,32 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
     def set_up_infrastructure_resource_group(self):
         if self.get_argument_enable_workload_profiles() and self.get_argument_infrastructure_subnet_resource_id() is not None:
             self.managed_env_def["properties"]["InfrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
+    
+    def set_up_managed_identity(self):
+        identity_def = ManagedServiceIdentity
+        identity_def["type"] = "None"
+
+        assign_system_identity = self.get_argument_system_assigned()
+        if self.get_argument_user_assigned():
+            assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
+        else:
+            assign_user_identities = []
+
+        if assign_system_identity and assign_user_identities:
+            identity_def["type"] = "SystemAssigned, UserAssigned"
+        elif assign_system_identity:
+            identity_def["type"] = "SystemAssigned"
+        elif assign_user_identities:
+            identity_def["type"] = "UserAssigned"
+
+        if assign_user_identities:
+            identity_def["userAssignedIdentities"] = {}
+            subscription_id = get_subscription_id(self.cmd.cli_ctx)
+
+            for r in assign_user_identities:
+                r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
+                identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+        self.managed_env_def["identity"] = identity_def
 
     def set_up_workload_profiles(self):
         if self.get_argument_enable_workload_profiles():
@@ -78,6 +107,12 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
     def get_argument_logs_dynamic_json_columns(self):
         return self.get_param("logs_dynamic_json_columns")
+
+    def get_argument_system_assigned(self):
+        return self.get_param("system_assigned")
+
+    def get_argument_user_assigned(self):
+        return self.get_param("user_assigned")
 
 
 class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
