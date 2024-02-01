@@ -50,13 +50,13 @@ def load_command_table(self, _):
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('init', 'init_dapr_components', is_preview=True)
 
-    with self.command_group('containerapp service', deprecate_info=self.deprecate(redirect='containerapp add-on', expiration='2.58.1', hide=True), is_preview=True) as g:
+    with self.command_group('containerapp service', deprecate_info=self.deprecate(redirect='containerapp add-on', expiration='2.59.0', hide=True), is_preview=True) as g:
         g.custom_command('list', 'list_all_services')
 
     with self.command_group('containerapp add-on', is_preview=True) as g:
         g.custom_command('list', 'list_all_services')
 
-    with self.command_group('containerapp service redis', deprecate_info=self.deprecate(redirect='containerapp add-on redis', expiration='2.58.1', hide=True)) as g:
+    with self.command_group('containerapp service redis', deprecate_info=self.deprecate(redirect='containerapp add-on redis', expiration='2.59.0', hide=True)) as g:
         g.custom_command('create', 'create_redis_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_redis_service', confirmation=True, supports_no_wait=True)
 
@@ -64,7 +64,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_redis_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_redis_service', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp service postgres', deprecate_info=self.deprecate(redirect='containerapp add-on postgres', expiration='2.58.1', hide=True)) as g:
+    with self.command_group('containerapp service postgres', deprecate_info=self.deprecate(redirect='containerapp add-on postgres', expiration='2.59.0', hide=True)) as g:
         g.custom_command('create', 'create_postgres_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_postgres_service', confirmation=True, supports_no_wait=True)
 
