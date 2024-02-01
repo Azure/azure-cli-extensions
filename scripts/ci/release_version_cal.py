@@ -84,6 +84,12 @@ def add_label_hint_message(comment_message):
     comment_message.append(" - For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
 
 
+def save_comment_message(cli_ext_path, file_name, comment_message):
+    with open(os.path.join(cli_ext_path, file_name), "w") as f:
+        for line in comment_message:
+            f.write(line + "\n")
+
+
 def main():
     print("Start calculate release version ...\n")
     cli_ext_path = get_ext_repo_paths()[0]
@@ -96,13 +102,14 @@ def main():
     print("output_file: ", output_file)
     print("changed_module_list: ", changed_module_list)
     print("pr_label_list: ", pr_label_list)
+    comment_message = []
     if len(changed_module_list) == 0:
+        save_comment_message(cli_ext_path, output_file, comment_message)
         return
     next_version_pre_tag = get_next_version_pre_tag()
     next_version_segment_tag = get_next_version_segment_tag()
     print("next_version_pre_tag: ", next_version_pre_tag)
     print("next_version_segment_tag: ", next_version_segment_tag)
-    comment_message = []
     add_suggest_header(comment_message)
     for mod in changed_module_list:
         base_meta_file = os.path.join(cli_ext_path, base_meta_path, "az_" + mod + "_meta.json")
@@ -132,9 +139,7 @@ def main():
         gen_comment_message(mod, next_version, comment_message)
     add_label_hint_message(comment_message)
     print(comment_message)
-    with open(os.path.join(cli_ext_path, output_file), "w") as f:
-        for line in comment_message:
-            f.write(line + "\n")
+    save_comment_message(cli_ext_path, output_file, comment_message)
 
 
 if __name__ == '__main__':
