@@ -233,6 +233,10 @@ helps['containerapp env create'] = """
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
               --location eastus2 --enable-workload-profiles false
+    - name: Create an environment with system assigned and user assigned identity.
+      text: |
+          az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
+              --location eastus2 --mi-system-assigned --mi-user-assigned MyUserIdentityResourceId
 """
 
 helps['containerapp service'] = """

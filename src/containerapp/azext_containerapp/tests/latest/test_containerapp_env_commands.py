@@ -9,7 +9,7 @@ import yaml
 from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists, live_only, StorageAccountPreparer)
 
 from .common import TEST_LOCATION, STAGE_LOCATION
 
@@ -43,10 +43,13 @@ class ContainerappEnvIdentityTests(ScenarioTest):
 
         self.cmd('containerapp env identity show -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('type', 'SystemAssigned, UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
         ])
 
         self.cmd('containerapp env identity remove --user-assigned {} -g {} -n {}'.format(user_identity_name1, resource_group, env_name), checks=[
             JMESPathCheck('type', 'SystemAssigned, UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
         ])
 
         self.cmd('containerapp env identity remove --system-assigned --user-assigned {} -g {} -n {}'.format(user_identity_name2, resource_group, env_name), checks=[
@@ -55,10 +58,14 @@ class ContainerappEnvIdentityTests(ScenarioTest):
 
         self.cmd('containerapp env identity assign --system-assigned --user-assigned {} {} -g {} -n {}'.format(user_identity_name1, user_identity_name2, resource_group, env_name), checks=[
             JMESPathCheck('type', 'SystemAssigned, UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
         ])
 
         self.cmd('containerapp env identity remove --system-assigned -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('type', 'UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
         ])
 
         self.cmd('containerapp env identity assign --system-assigned -g {} -n {}'.format(resource_group, env_name), checks=[
@@ -132,6 +139,8 @@ class ContainerappEnvIdentityTests(ScenarioTest):
 
         self.cmd('containerapp env identity show -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('type', 'UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
         ])
 
         self.cmd('containerapp env identity assign --system-assigned -g {} -n {}'.format(resource_group, env_name), checks=[
@@ -140,6 +149,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         
         self.cmd('containerapp env identity remove --user-assigned {} -g {} -n {}'.format(user_identity_name1, resource_group, env_name), checks=[
             JMESPathCheck('type', 'SystemAssigned, UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
         ])
         
         self.cmd('containerapp env identity remove --user-assigned {} -g {} -n {}'.format(user_identity_name2, resource_group, env_name), checks=[
@@ -156,10 +166,12 @@ class ContainerappEnvIdentityTests(ScenarioTest):
 
         self.cmd('containerapp env identity assign --user-assigned {} -g {} -n {}'.format(user_identity_name1, resource_group, env_name), checks=[
             JMESPathCheck('type', 'UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"')
         ])
 
         self.cmd('containerapp env identity show -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('type', 'UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"')
         ])
 
 class ContainerappEnvScenarioTest(ScenarioTest):
