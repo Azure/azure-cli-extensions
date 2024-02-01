@@ -57,7 +57,7 @@ class JavaComponentDecorator(BaseResource):
         try:
             r = self.client.create(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                environment_name=self.get_argument_environment(), name=self.get_argument_java_component_name(),
+                environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name(),
                 java_component_envelope=self.java_component_def, no_wait=self.get_argument_no_wait())
             r = clean_null_values(r)
             return r
@@ -68,7 +68,7 @@ class JavaComponentDecorator(BaseResource):
         try:
             r = self.client.update(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                environment_name=self.get_argument_environment(), name=self.get_argument_java_component_name(),
+                environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name(),
                 java_component_envelope=self.java_component_def, no_wait=self.get_argument_no_wait())
             r = clean_null_values(r)
             return r
@@ -78,7 +78,7 @@ class JavaComponentDecorator(BaseResource):
     def show(self):
         try:
             r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                 environment_name=self.get_argument_environment(), name=self.get_argument_java_component_name())
+                                 environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name())
             r = clean_null_values(r)
             return r
         except Exception as e:
@@ -87,7 +87,7 @@ class JavaComponentDecorator(BaseResource):
     def list(self):
         try:
             r = self.client.list(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                 environment_name=self.get_argument_environment())
+                                 environment_name=self.get_argument_environment_name())
             r = clean_null_values(r)
             return r
         except Exception as e:
@@ -96,7 +96,7 @@ class JavaComponentDecorator(BaseResource):
     def delete(self):
         try:
             return self.client.delete(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                      environment_name=self.get_argument_environment(), name=self.get_argument_java_component_name(),
+                                      environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name(),
                                       no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
