@@ -24,7 +24,8 @@ class AzureMigrateV2CommandsLoader(AzCommandsLoader):
         offazure_custom = CliCommandType(
             operations_tmpl='azext_offazure.custom#{}',
             client_factory=cf_offazure_cl)
-        super().__init__(cli_ctx=cli_ctx, custom_command_type=offazure_custom)
+        parent = super(AzureMigrateV2CommandsLoader, self)
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=offazure_custom)
 
     def load_command_table(self, args):
         from azext_offazure.generated.commands import load_command_table
