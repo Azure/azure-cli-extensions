@@ -19,11 +19,11 @@ jobs:
         run: |
           echo "message=$(echo 'Suggested init version: 1.0.0b1 for preview release and 1.0.0 for stable release')" >> $GITHUB_ENV
       - name: Set up Python 3.10
-        uses: actions/setup-python@master
+        uses: actions/setup-python@v3
         with:
            python-version: "3.10"
       - name: Checkout CLI extension repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@master
         with:
           fetch-depth: 0 # checkout all branches
           ref: ${{github.event.pull_request.head.ref}}
