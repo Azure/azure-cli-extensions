@@ -11,7 +11,6 @@ from azext_applicationinsights._help import helps  # pylint: disable=unused-impo
 class ApplicationInsightsCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
-
         from azure.cli.core.commands import CliCommandType
         from azext_applicationinsights._client_factory import applicationinsights_data_plane_client
         applicationinsights_custom = CliCommandType(
@@ -27,7 +26,6 @@ class ApplicationInsightsCommandsLoader(AzCommandsLoader):
     def load_command_table(self, args):
         from azext_applicationinsights.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
-
         try:
             from . import aaz
         except ImportError:

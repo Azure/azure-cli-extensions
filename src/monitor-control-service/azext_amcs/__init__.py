@@ -25,7 +25,6 @@ class MonitorClientCommandsLoader(AzCommandsLoader):
 
     def load_command_table(self, args):
         from azure.cli.core.aaz import load_aaz_command_table
-        
         try:
             from . import aaz
         except ImportError:
