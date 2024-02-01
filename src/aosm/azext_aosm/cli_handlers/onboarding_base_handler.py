@@ -49,7 +49,10 @@ class OnboardingBaseCLIHandler(ABC):
             # If config file is the input.jsonc for build command
             if provided_input_path.suffix == ".jsonc":
                 config_dict = self._read_input_config_from_file(provided_input_path)
-                self.config = self._get_input_config(config_dict)
+                try:
+                    self.config = self._get_input_config(config_dict)
+                except Exception as e:
+                    raise UnclassifiedUserFault(f"The input file provided contains an incorrect input.\nPlease fix the problem parameter: - {e}") from e
                 # Validate config before getting processor list,
                 # in case error with input artifacts i.e helm package
                 self.config.validate()
