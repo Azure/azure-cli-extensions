@@ -13081,8 +13081,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update nodepool
         update_nodepool_cmd = 'aks nodepool update --resource-group={resource_group} --cluster-name={name} ' \
-                            '--name=nodepool1 --ssh-access localuser --yes ' \
-                            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableSSHPreview'
+                              '--name=nodepool1 --ssh-access localuser --yes ' \
+                              '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableSSHPreview'
         self.cmd(update_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.sshAccess', 'LocalUser'),
@@ -13090,8 +13090,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create new nodepool
         add_nodepool_cmd = 'aks nodepool add -g {resource_group} --cluster-name {name} -n nodepool2 ' \
-                     '--ssh-access localuser ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableSSHPreview'
+                           '--ssh-access localuser ' \
+                           '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableSSHPreview'
         self.cmd(add_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.sshAccess', 'LocalUser'),
@@ -13106,7 +13106,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('agentPoolProfiles[0].securityProfile.sshAccess', 'Disabled'),
             self.check('agentPoolProfiles[1].securityProfile.sshAccess', 'Disabled'),
         ])
-
 
         # delete
         self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
