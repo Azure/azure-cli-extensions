@@ -62,7 +62,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cross_region_restore_state = AAZStrArg(
-            options=["--cross-region-restore-state"],
+            options=["--crr-state", "--cross-region-restore-state"],
             arg_group="CrossRegionRestoreSettings",
             help="Set the CrossRegionRestore state. Once enabled, it cannot be set to disabled.",
             nullable=True,
