@@ -65,7 +65,8 @@ VNF_OUTPUT_FOLDER_FILENAME = "vnf-cli-output"
 VNF_INPUT_FILENAME = "vnf-input.jsonc"
 VNF_DEFINITION_TEMPLATE_FILENAME = "vnfdefinition.bicep.j2"
 VNF_MANIFEST_TEMPLATE_FILENAME = "vnfartifactmanifest.bicep.j2"
-VNF_BASE_TEMPLATE_FILENAME = "vnfbase.bicep"
+VNF_CORE_BASE_TEMPLATE_FILENAME = "vnfbase.bicep"
+VNF_NEXUS_BASE_TEMPLATE_FILENAME = "vnfnexusbase.bicep"
 VNF_TEMPLATE_FOLDER_NAME = "vnf"
 
 CNF_OUTPUT_FOLDER_FILENAME = "cnf-cli-output"
@@ -76,6 +77,9 @@ CNF_HELM_VALIDATION_ERRORS_TEMPLATE_FILENAME = "cnfhelmtemplateerrors.txt.j2"
 CNF_BASE_TEMPLATE_FILENAME = "cnfbase.bicep"
 CNF_VALUES_SCHEMA_FILENAME = "values.schema.json"
 CNF_TEMPLATE_FOLDER_NAME = "cnf"
+
+
+SEMVER_REGEX = r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
 
 #################
 # OLD CONSTANTS #

@@ -6,8 +6,10 @@ param location string
 param publisherName string
 @description('Name of an existing ACR-backed Artifact Store, deployed under the publisher.')
 param acrArtifactStoreName string
+{%- if sa_nf_applications %}
 @description('Name of an existing Storage Account-backed Artifact Store, deployed under the publisher.')
 param saArtifactStoreName string
+{%- endif %}
 @description('Name of an existing Network Function Definition Group')
 param nfDefinitionGroup string
 @description('The version of the NFDV you want to deploy, in format A.B.C')
@@ -27,12 +29,14 @@ resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@202
   name: acrArtifactStoreName
 }
 
+{%- if sa_nf_applications %}
 // The storage account is the resource in which the VHD images are stored.
 // If using publish command, this is created from deploying the vnfbase.bicep
 resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
   parent: publisher
   name: saArtifactStoreName
 }
+{%- endif %}
 
 // The NFD Group is the parent resource under which all NFD versions will be created.
 // If using publish command, this is created from deploying the vnfbase.bicep

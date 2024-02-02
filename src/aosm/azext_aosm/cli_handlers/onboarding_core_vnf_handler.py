@@ -14,7 +14,7 @@ from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
                                          BASE_FOLDER_NAME,
                                          MANIFEST_FOLDER_NAME,
                                          NF_DEFINITION_FOLDER_NAME,
-                                         VNF_BASE_TEMPLATE_FILENAME,
+                                         VNF_CORE_BASE_TEMPLATE_FILENAME,
                                          VNF_TEMPLATE_FOLDER_NAME,
                                          VNF_DEFINITION_TEMPLATE_FILENAME,
                                          VNF_INPUT_FILENAME,
@@ -98,18 +98,18 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         processor_list.append(vhd_processor)
         return processor_list
 
-    # def build_base_bicep(self):
-    #     """Build the base bicep file."""
-    #     # Build manifest bicep contents, with j2 template
-    #     template_path = self._get_template_path(
-    #         VNF_TEMPLATE_FOLDER_NAME, VNF_BASE_TEMPLATE_FILENAME
-    #     )
-    #     bicep_contents = self._render_base_bicep_contents(template_path)
-    #     # Create Bicep element with manifest contents
-    #     bicep_file = BicepDefinitionElementBuilder(
-    #         Path(VNF_OUTPUT_FOLDER_FILENAME, BASE_FOLDER_NAME), bicep_contents
-    #     )
-    #     return bicep_file
+    def build_base_bicep(self):
+        """Build the base bicep file."""
+        # Build manifest bicep contents, with j2 template
+        template_path = self._get_template_path(
+            VNF_TEMPLATE_FOLDER_NAME, VNF_CORE_BASE_TEMPLATE_FILENAME
+        )
+        bicep_contents = self._render_base_bicep_contents(template_path)
+        # Create Bicep element with manifest contents
+        bicep_file = BicepDefinitionElementBuilder(
+            Path(VNF_OUTPUT_FOLDER_FILENAME, BASE_FOLDER_NAME), bicep_contents
+        )
+        return bicep_file
 
     def build_manifest_bicep(self):
         """Build the manifest bicep file."""

@@ -3,19 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import json
+import re
 from pathlib import Path
 from typing import Dict, Any
 from knack.log import get_logger
 
-from azext_aosm.build_processors.arm_processor import (
-    AzureCoreArmBuildProcessor, BaseArmBuildProcessor, NexusArmBuildProcessor)
-# from azext_aosm.build_processors.vhd_processor import VHDProcessor
+from azext_aosm.build_processors.arm_processor import NexusArmBuildProcessor
 from azext_aosm.build_processors.nexus_image_processor import NexusImageProcessor
 from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
                                          BASE_FOLDER_NAME,
                                          MANIFEST_FOLDER_NAME,
                                          NF_DEFINITION_FOLDER_NAME,
-                                         VNF_BASE_TEMPLATE_FILENAME,
                                          VNF_TEMPLATE_FOLDER_NAME,
                                          VNF_DEFINITION_TEMPLATE_FILENAME,
                                          VNF_INPUT_FILENAME,
@@ -23,7 +21,9 @@ from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
                                          VNF_OUTPUT_FOLDER_FILENAME,
                                          DEPLOYMENT_PARAMETERS_FILENAME,
                                          NEXUS_IMAGE_PARAMETERS_FILENAME,
-                                         TEMPLATE_PARAMETERS_FILENAME)
+                                         TEMPLATE_PARAMETERS_FILENAME,
+                                         VNF_NEXUS_BASE_TEMPLATE_FILENAME,
+                                         SEMVER_REGEX)
 from azext_aosm.common.local_file_builder import LocalFileBuilder
 from azext_aosm.configuration_models.onboarding_vnf_input_config import (
     OnboardingNexusVNFInputConfig,
@@ -42,8 +42,8 @@ from azext_aosm.definition_folder.builder.json_builder import (
 )
 from azext_aosm.inputs.arm_template_input import ArmTemplateInput
 from azext_aosm.inputs.nexus_image_input import NexusImageFileInput
-
 from .onboarding_vnf_handler import OnboardingVNFCLIHandler
+
 logger = get_logger(__name__)
 
 
@@ -60,7 +60,9 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         """Get the output folder file name."""
         return VNF_OUTPUT_FOLDER_FILENAME
 
-    def _get_input_config(self, input_config: Dict[str, Any] = None) -> OnboardingNexusVNFInputConfig:
+    def _get_input_config(
+        self, input_config: Dict[str, Any] = None
+    ) -> OnboardingNexusVNFInputConfig:
         """Get the configuration for the command."""
         if input_config is None:
             input_config = {}
@@ -86,13 +88,16 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
                 default_config=None,
                 template_path=Path(arm_template.file_path).absolute(),
             )
-            # TODO: test azure core vnf still works
             processor_list.append(
                 NexusArmBuildProcessor(arm_input.artifact_name, arm_input)
             )
-        # TODO: add artifact for image file, after making config
+        # For each image, instantiate image processor
         for image in self.config.images:
             (source_acr_registry, name, version) = self._split_image_path(image)
+
+            # TEMP FIX FOR INVALID VERSIONS
+            version = self._create_semver_compatible_version(version)
+
             image_input = NexusImageFileInput(
                 artifact_name=name,
                 artifact_version=version,
@@ -109,7 +114,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         """Build the base bicep file."""
         # Build manifest bicep contents, with j2 template
         template_path = self._get_template_path(
-            VNF_TEMPLATE_FOLDER_NAME, VNF_BASE_TEMPLATE_FILENAME
+            VNF_TEMPLATE_FOLDER_NAME, VNF_NEXUS_BASE_TEMPLATE_FILENAME
         )
         bicep_contents = self._render_base_bicep_contents(template_path)
         # Create Bicep element with manifest contents
@@ -191,7 +196,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             schema_properties.update(params_schema)
 
             # For each arm template, generate nf application
-            if isinstance(processor, BaseArmBuildProcessor):
+            if isinstance(processor, NexusArmBuildProcessor):
 
                 arm_nf_application_list.append(nf_application)
                 print(nf_application)
@@ -263,14 +268,13 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         return bicep_file
 
     def build_all_parameters_json(self):
+        """Build the all parameters json file."""
         params_content = {
             "location": self.config.location,
             "publisherName": self.config.publisher_name,
             "publisherResourceGroupName": self.config.publisher_resource_group_name,
             "acrArtifactStoreName": self.config.acr_artifact_store_name,
-            # "saArtifactStoreName": self.config.blob_artifact_store_name,
             "acrManifestName": self.config.acr_artifact_store_name + "-manifest",
-            # "saManifestName": self.config.blob_artifact_store_name + "-manifest",
             "nfDefinitionGroup": self.config.nf_name,
             "nfDefinitionVersion": self.config.version
         }
@@ -280,6 +284,15 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         return base_file
 
     def _split_image_path(self, image):
+        """Split the image path into source acr registry, name and version."""
         (source_acr_registry, name_and_version) = image.split("/", 2)
         (name, version) = name_and_version.split(":", 2)
         return (source_acr_registry, name, version)
+
+    def _create_semver_compatible_version(self, version):
+        """Create a semver compatible version."""
+        if re.search(SEMVER_REGEX, version):
+            return version
+        else:
+            print(f"Invalid version {version}, using 1.0.0 as default")
+            return '1.0.0'
