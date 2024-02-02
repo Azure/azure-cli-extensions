@@ -50,6 +50,7 @@ from azext_aosm.common.constants import (
 )
 
 from .onboarding_nfd_base_handler import OnboardingNFDBaseCLIHandler
+from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
 
 logger = get_logger(__name__)
 yaml_processor = ruamel.yaml.YAML(typ="safe", pure=True)
@@ -127,7 +128,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
 
         if validation_errors:
             # Create an error file using a j2 template
-            error_output_template_path = self._get_template_path(
+            error_output_template_path = get_template_path(
                 CNF_TEMPLATE_FOLDER_NAME, CNF_HELM_VALIDATION_ERRORS_TEMPLATE_FILENAME
             )
 
@@ -168,10 +169,10 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
     def build_base_bicep(self):
         """Build the base bicep file."""
         # Build manifest bicep contents, with j2 template
-        template_path = self._get_template_path(
+        template_path = get_template_path(
             CNF_TEMPLATE_FOLDER_NAME, CNF_BASE_TEMPLATE_FILENAME
         )
-        bicep_contents = self._render_base_bicep_contents(template_path)
+        bicep_contents = render_bicep_contents_from_j2(template_path, {})
         # Create Bicep element with base contents
         bicep_file = BicepDefinitionElementBuilder(
             Path(CNF_OUTPUT_FOLDER_FILENAME, BASE_FOLDER_NAME), bicep_contents
@@ -194,15 +195,15 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
             artifact_list,
         )
         # Build manifest bicep contents, with j2 template
-        template_path = self._get_template_path(
+        template_path = get_template_path(
             CNF_TEMPLATE_FOLDER_NAME, CNF_MANIFEST_TEMPLATE_FILENAME
         )
-        
+
         params = {
             "acr_artifacts": artifact_list,
             "sa_artifacts": []
         }
-        bicep_contents = self._render_bicep_contents_from_j2(template_path, params)
+        bicep_contents = render_bicep_contents_from_j2(template_path, params)
 
         # Create Bicep element with manifest contents
         bicep_file = BicepDefinitionElementBuilder(
@@ -261,7 +262,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
             mappings_files.append(mapping_file)
 
         # Create bicep contents using cnf defintion j2 template
-        template_path = self._get_template_path(
+        template_path = get_template_path(
             CNF_TEMPLATE_FOLDER_NAME, CNF_DEFINITION_TEMPLATE_FILENAME
         )
 
@@ -269,7 +270,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
             "acr_nf_applications": nf_application_list,
             "deployment_parameters_file": DEPLOYMENT_PARAMETERS_FILENAME,
         }
-        bicep_contents = self._render_bicep_contents_from_j2(template_path, params)
+        bicep_contents = render_bicep_contents_from_j2(template_path, params)
 
         # Create a bicep element + add its supporting mapping files
         bicep_file = BicepDefinitionElementBuilder(

@@ -43,6 +43,7 @@ from azext_aosm.definition_folder.builder.json_builder import (
 from azext_aosm.inputs.arm_template_input import ArmTemplateInput
 from azext_aosm.inputs.nexus_image_input import NexusImageFileInput
 from .onboarding_vnf_handler import OnboardingVNFCLIHandler
+from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
 
 logger = get_logger(__name__)
 
@@ -113,10 +114,10 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
     def build_base_bicep(self):
         """Build the base bicep file."""
         # Build manifest bicep contents, with j2 template
-        template_path = self._get_template_path(
+        template_path = get_template_path(
             VNF_TEMPLATE_FOLDER_NAME, VNF_NEXUS_BASE_TEMPLATE_FILENAME
         )
-        bicep_contents = self._render_base_bicep_contents(template_path)
+        bicep_contents = render_bicep_contents_from_j2(template_path, {})
         # Create Bicep element with manifest contents
         bicep_file = BicepDefinitionElementBuilder(
             Path(VNF_OUTPUT_FOLDER_FILENAME, BASE_FOLDER_NAME), bicep_contents
@@ -138,14 +139,14 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             )
 
         # Build manifest bicep contents, with j2 template
-        template_path = self._get_template_path(
+        template_path = get_template_path(
             VNF_TEMPLATE_FOLDER_NAME, VNF_MANIFEST_TEMPLATE_FILENAME
         )
         params = {
             "acr_artifacts": acr_artifact_list,
             "sa_artifacts": []
         }
-        bicep_contents = self._render_bicep_contents_from_j2(
+        bicep_contents = render_bicep_contents_from_j2(
             template_path, params
         )
 
@@ -233,7 +234,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             supporting_files.append(parameters_file)
 
         # Create bicep contents using vnf defintion j2 template
-        template_path = self._get_template_path(
+        template_path = get_template_path(
             VNF_TEMPLATE_FOLDER_NAME, VNF_DEFINITION_TEMPLATE_FILENAME
         )
 
@@ -246,7 +247,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             "template_parameters_file": TEMPLATE_PARAMETERS_FILENAME,
             "image_parameters_file": NEXUS_IMAGE_PARAMETERS_FILENAME
         }
-        bicep_contents = self._render_bicep_contents_from_j2(
+        bicep_contents = render_bicep_contents_from_j2(
             template_path, params
         )
 

@@ -8,7 +8,7 @@ from typing import Dict, Any
 from knack.log import get_logger
 
 from azext_aosm.build_processors.arm_processor import (
-    AzureCoreArmBuildProcessor, BaseArmBuildProcessor)
+    AzureCoreArmBuildProcessor)
 from azext_aosm.build_processors.vhd_processor import VHDProcessor
 from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
                                          BASE_FOLDER_NAME,
@@ -41,7 +41,7 @@ from azext_aosm.definition_folder.builder.json_builder import (
 )
 from azext_aosm.inputs.arm_template_input import ArmTemplateInput
 from azext_aosm.inputs.vhd_file_input import VHDFileInput
-
+from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
 # from .onboarding_nfd_base_handler import OnboardingNFDBaseCLIHandler
 from .onboarding_vnf_handler import OnboardingVNFCLIHandler
 logger = get_logger(__name__)
@@ -101,10 +101,10 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
     def build_base_bicep(self):
         """Build the base bicep file."""
         # Build manifest bicep contents, with j2 template
-        template_path = self._get_template_path(
+        template_path = get_template_path(
             VNF_TEMPLATE_FOLDER_NAME, VNF_CORE_BASE_TEMPLATE_FILENAME
         )
-        bicep_contents = self._render_base_bicep_contents(template_path)
+        bicep_contents = render_bicep_contents_from_j2(template_path, {})
         # Create Bicep element with manifest contents
         bicep_file = BicepDefinitionElementBuilder(
             Path(VNF_OUTPUT_FOLDER_FILENAME, BASE_FOLDER_NAME), bicep_contents
@@ -118,7 +118,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         logger.info("Creating artifact manifest bicep")
 
         for processor in self.processors:
-            if isinstance(processor, BaseArmBuildProcessor):
+            if isinstance(processor, AzureCoreArmBuildProcessor):
                 acr_artifact_list.extend(processor.get_artifact_manifest_list())
                 logger.debug(
                     "Created list of artifacts from %s arm template(s) provided: %s",
@@ -133,14 +133,14 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
                 )
 
         # Build manifest bicep contents, with j2 template
-        template_path = self._get_template_path(
+        template_path = get_template_path(
             VNF_TEMPLATE_FOLDER_NAME, VNF_MANIFEST_TEMPLATE_FILENAME
         )
         params = {
             "acr_artifacts": acr_artifact_list,
             "sa_artifacts": sa_artifact_list,
         }
-        bicep_contents = self._render_bicep_contents_from_j2(template_path, params)
+        bicep_contents = render_bicep_contents_from_j2(template_path, params)
 
         # Create Bicep element with manifest contents
         bicep_file = BicepDefinitionElementBuilder(
@@ -189,7 +189,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             schema_properties.update(params_schema)
 
             # For each arm template, generate nf application
-            if isinstance(processor, BaseArmBuildProcessor):
+            if isinstance(processor, AzureCoreArmBuildProcessor):
 
                 acr_nf_application_list.append(nf_application)
                 # Generate local file for template_parameters + add to supporting files list
@@ -223,7 +223,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             supporting_files.append(parameters_file)
 
         # Create bicep contents using vnf defintion j2 template
-        template_path = self._get_template_path(
+        template_path = get_template_path(
             VNF_TEMPLATE_FOLDER_NAME, VNF_DEFINITION_TEMPLATE_FILENAME
         )
 
@@ -236,7 +236,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             "vhd_parameters_file": VHD_PARAMETERS_FILENAME,
             "template_parameters_file": TEMPLATE_PARAMETERS_FILENAME
         }
-        bicep_contents = self._render_bicep_contents_from_j2(
+        bicep_contents = render_bicep_contents_from_j2(
             template_path, params
         )
 
@@ -258,7 +258,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         return bicep_file
 
     def build_all_parameters_json(self):
-        """Create object for all_parameters.json"""
+        """Create object for all_parameters.json."""
         params_content = {
             "location": self.config.location,
             "publisherName": self.config.publisher_name,

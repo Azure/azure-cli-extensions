@@ -6,6 +6,7 @@
 import os
 import tarfile
 from pathlib import Path
+from jinja2 import StrictUndefined, Template
 from typing import Any, Dict, Iterable
 import json
 import shutil
@@ -59,10 +60,27 @@ def convert_bicep_to_arm(bicep_template_path: Path) -> dict:
 
     return arm_json
 
+def render_bicep_contents_from_j2(template_path: Path, params):
+    """Write the definition bicep file from given template."""
+    with open(template_path, "r", encoding="UTF-8") as f:
+        template: Template = Template(
+            f.read(),
+            undefined=StrictUndefined,
+        )
 
-def create_bicep_from_template():
-    # Take j2 template, take params, return bicep file
-    return NotImplementedError
+    bicep_contents: str = template.render(params)
+    return bicep_contents
+
+
+def get_template_path(definition_type: str, template_name: str) -> Path:
+    """Get the path to a template."""
+    return (
+        Path(__file__).parent.parent
+        / "common"
+        / "templates"
+        / definition_type
+        / template_name
+    )
 
 
 def extract_tarfile(file_path: Path, target_dir: Path) -> Path:

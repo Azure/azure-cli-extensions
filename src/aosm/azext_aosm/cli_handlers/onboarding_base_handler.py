@@ -189,26 +189,6 @@ class OnboardingBaseCLIHandler(ABC):
         bicep_contents: str = template.render()
         return bicep_contents
 
-    def _render_bicep_contents_from_j2(self, template_path: Path, params):
-        """Write the definition bicep file from given template."""
-        with open(template_path, "r", encoding="UTF-8") as f:
-            template: Template = Template(
-                f.read(),
-                undefined=StrictUndefined,
-            )
-
-        bicep_contents: str = template.render(params)
-        return bicep_contents
-
-    def _get_template_path(self, definition_type: str, template_name: str) -> Path:
-        """Get the path to a template."""
-        return (
-            Path(__file__).parent.parent
-            / "common"
-            / "templates"
-            / definition_type
-            / template_name
-        )
 
     def _serialize(self, dataclass, indent_count=1):
         """
