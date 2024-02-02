@@ -826,7 +826,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         """
         self._ensure_agentpool(agentpool)
 
-        if self.context.vtpm(enable_validation=True):
+        if self.context.get_enable_vtpm(enable_validation=True):
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.enable_vtpm = True

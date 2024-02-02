@@ -4126,7 +4126,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
-    def test_aks_enable_secure_boot_flow(self, resource_group, resource_group_location):
+    def test_aks_create_update_secure_boot_flow(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         node_pool_name = self.create_random_name("c", 6)
         node_pool_name_second = self.create_random_name("c", 6)
@@ -4151,7 +4151,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("agentPoolProfiles[0].SecurityProfile.enableSecureBoot", "True"),
+                self.check("agentPoolProfiles[0].securityProfile.enableSecureBoot", "True"),
             ],
         )
 
@@ -4165,7 +4165,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--enable-secure-boot",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("SecurityProfile.enableSecureBoot", "True"),
+                self.check("securityProfile.enableSecureBoot", "True"),
             ],
         )
 
@@ -4176,7 +4176,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check(
-                    "agentpoolProfiles[1].SecurityProfile.enableSecureBoot", False
+                    "agentpoolProfiles[1].securityProfile.enableSecureBoot", False
                 ),
             ],
         )
@@ -4193,7 +4193,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
-    def test_aks_enable_vtpm_flow(self, resource_group, resource_group_location):
+    def test_aks_create_update_vtpm_flow(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         node_pool_name = self.create_random_name("c", 6)
         node_pool_name_second = self.create_random_name("c", 6)
@@ -4223,7 +4223,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("agentPoolProfiles[0].SecurityProfile.enableVTPM", "True"),
+                self.check("agentPoolProfiles[0].securityProfile.enableVTPM", "True"),
             ],
         )
 
@@ -4237,7 +4237,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--enable-vtpm",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("SecurityProfile.enableVTPM", "True"),
+                self.check("securityProfile.enableVTPM", "True"),
             ],
         )
 
@@ -4248,7 +4248,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check(
-                    "agentpoolProfiles[1].SecurityProfile.enableVTPM", False
+                    "agentpoolProfiles[1].securityProfile.enableVTPM", False
                 ),
             ],
         )
