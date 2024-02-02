@@ -816,13 +816,13 @@ def load_arguments(self, _):
         )
         # trusted launch
         c.argument(
-            "enable_secure_boot", 
-            is_preview=True, 
+            "enable_secure_boot",
+            is_preview=True,
             action="store_true"
         )
         c.argument(
-            "enable_vtpm", 
-            is_preview=True, 
+            "enable_vtpm",
+            is_preview=True,
             action="store_true"
         )
 

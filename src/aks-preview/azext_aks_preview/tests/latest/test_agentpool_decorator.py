@@ -473,6 +473,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.UPDATE,
             self.agentpool_decorator_mode,
         )
+        ctx_3.attach_agentpool(agentpool_2)
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_3.get_enable_secure_boot()
 
@@ -485,7 +486,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.UPDATE,
             self.agentpool_decorator_mode,
         )
-        self.assertEqual(ctx_1.get_disable_custom_ca_trust(), True)
+        self.assertEqual(ctx_1.get_disable_secure_boot(), True)
         agentpool_1 = self.create_initialized_agentpool_instance(
             security_profile=self.models.AgentPoolSecurityProfile(
                 enable_secure_boot=True
@@ -504,6 +505,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.UPDATE,
             self.agentpool_decorator_mode,
         )
+        ctx_2.attach_agentpool(agentpool_1)
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_2.get_disable_secure_boot()
     
@@ -552,6 +554,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.UPDATE,
             self.agentpool_decorator_mode,
         )
+        ctx_3.attach_agentpool(agentpool_2)
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_3.get_enable_vtpm()
 
@@ -564,14 +567,14 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.UPDATE,
             self.agentpool_decorator_mode,
         )
-        self.assertEqual(ctx_1.get_disable_custom_ca_trust(), True)
+        self.assertEqual(ctx_1.get_disable_vtpm(), True)
         agentpool_1 = self.create_initialized_agentpool_instance(
             security_profile=self.models.AgentPoolSecurityProfile(
                 enable_vtpm=True
             )
         )
         ctx_1.attach_agentpool(agentpool_1)
-        self.assertEqual(ctx_1.get_disable_custom_ca_trust(), True)
+        self.assertEqual(ctx_1.get_disable_vtpm(), True)
 
         # custom
         ctx_2 = AKSPreviewAgentPoolContext(
@@ -583,6 +586,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.UPDATE,
             self.agentpool_decorator_mode,
         )
+        ctx_2.attach_agentpool(agentpool_1)
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_2.get_disable_vtpm()
 

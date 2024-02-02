@@ -643,7 +643,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         if self.context.get_enable_secure_boot(enable_validation=True):
             if agentpool.security_profile is None:
-                agentpool.secure_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+                agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
 
             agentpool.security_profile.enable_secure_boot = True
 
