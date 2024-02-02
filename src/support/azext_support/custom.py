@@ -323,10 +323,11 @@ def upload_files_no_subscription(cmd, file_path, file_workspace_name):
         resp_upload = Upload(cli_ctx = cmd.cli_ctx)(command_args=upload_input)
         print("DONE")
 
-def upload_files_in_subscription(cmd, file_path, file_workspace_name):
+def upload_files_in_subscription(cmd, file_path, file_workspace_name, subscription_id = None):
     from .aaz.latest.support.in_subscription.file import Create as Create_Sub
     from .aaz.latest.support.in_subscription.file import Upload as Upload_Sub
 
+    print(cmd.cli_ctx)
     ##costants for file upload
     max_chunk_size= 2621440
 
@@ -344,12 +345,19 @@ def upload_files_in_subscription(cmd, file_path, file_workspace_name):
     chunk_size = min(max_chunk_size, file_size)
     number_of_chunks = math.ceil(file_size / chunk_size)
 
-    create_input  = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "file_size": file_size,"chunk_size" : chunk_size, "number_of_chunks" : number_of_chunks }
+    print(bool(subscription_id))
+    if (subscription_id):
+        create_input  = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "file_size": file_size,"chunk_size" : chunk_size, "number_of_chunks" : number_of_chunks, "subscription" : subscription_id}
+    else:
+        create_input  = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "file_size": file_size,"chunk_size" : chunk_size, "number_of_chunks" : number_of_chunks }
     resp_create = Create_Sub(cli_ctx = cmd.cli_ctx)(command_args=create_input)
 
     for chunk_index in range(number_of_chunks):
         chunk_content = content[chunk_index * chunk_size: (chunk_index + 1) * chunk_size]
         string_encoded_content = encode_string_content(chunk_content)
-        upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content, "--file-name": full_file_name, "--file-workspace-name": file_workspace_name }
+        if (subscription_id):
+            upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content, "--file-name": full_file_name, "--file-workspace-name": file_workspace_name, "subscription" : subscription_id  }
+        else: 
+            upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content, "--file-name": full_file_name, "--file-workspace-name": file_workspace_name }
         resp_upload = Upload_Sub(cli_ctx = cmd.cli_ctx)(command_args=upload_input)
 
