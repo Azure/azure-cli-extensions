@@ -260,7 +260,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            guardrails_profile=self.models.GuardrailsProfile(
+            guardrails_profile=self.models.SafeguardsProfile(
                 level="Warning", excluded_namespaces=None, version=""
             ),
         )
@@ -285,7 +285,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            guardrails_profile=self.models.GuardrailsProfile(
+            guardrails_profile=self.models.SafeguardsProfile(
                 version="v1.0.0", level=None, excluded_namespaces=None
             ),
         )
@@ -310,7 +310,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            guardrails_profile=self.models.GuardrailsProfile(
+            guardrails_profile=self.models.SafeguardsProfile(
                 excluded_namespaces=["ns1", "ns2"], level=None, version=None
             ),
         )
@@ -3848,7 +3848,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.client = MockClient()
 
     def test_set_up_guardrails_profile(self):
-        # Base case - no options specified, GuardrailsProfile should be None
+        # Base case - no options specified, SafeguardsProfile should be None
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
         )
@@ -3859,7 +3859,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         gt_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, gt_mc_1)
 
-        # Make sure GuardrailsProfile is filled out appropriately
+        # Make sure SafeguardsProfile is filled out appropriately
         dec_2 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
@@ -3875,7 +3875,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.set_up_guardrails_profile(mc_2)
         gt_mc_2 = self.models.ManagedCluster(location="test_location")
-        gt_mc_2.guardrails_profile = self.models.GuardrailsProfile(
+        gt_mc_2.safeguards_profile = self.models.SafeguardsProfile(
             level="Warning", version="v1.0.0", excluded_namespaces=["ns1", "ns2"]
         )
         self.assertEqual(dec_mc_2, gt_mc_2)
@@ -7794,7 +7794,39 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
 
-        # update app routing with key vault
+    def test_enable_disable_ai_toolchain_operator(self):
+        # Should not update mc if unset
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_ai_toolchain_operator(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Should error if both set
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_ai_toolchain_operator": True, "enable_ai_toolchain_operator": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_6.update_ai_toolchain_operator(mc_6)
+
+            # update app routing with key vault
         from azure.cli.core.mock import DummyCli
         from azure.cli.core.commands import AzCliCommand
         from azure.cli.core import AzCommandsLoader
