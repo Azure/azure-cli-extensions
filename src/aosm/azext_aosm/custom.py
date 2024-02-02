@@ -25,7 +25,6 @@ def onboard_nfd_generate_config(definition_type: str, output_file: str | None, n
         if nexus:
             handler = OnboardingNexusVNFCLIHandler()
         else:
-            print("Generating config file for Core VNF")
             handler = OnboardingCoreVNFCLIHandler()
 
         handler.generate_config(output_file)
@@ -42,7 +41,6 @@ def onboard_nfd_build(definition_type: str, config_file: Path, skip: str = None,
         if nexus:
             handler = OnboardingNexusVNFCLIHandler(Path(config_file))
         else:
-            print("Generating config file for Core VNF")
             handler = OnboardingCoreVNFCLIHandler(Path(config_file))
 
         handler.build()
@@ -55,6 +53,7 @@ def onboard_nfd_publish(
     definition_type: str,
     build_output_folder: Path,
     no_subscription_permissions: bool = False,
+    nexus: bool = False
 ):
     """Publish the NF definition."""
     command_context = CommandContext(
@@ -70,9 +69,10 @@ def onboard_nfd_publish(
         )
         handler.publish(command_context=command_context)
     elif definition_type == VNF:
-        handler = OnboardingVNFCLIHandler(
-            Path(build_output_folder, ALL_PARAMETERS_FILE_NAME)
-        )
+        if nexus:
+            handler = OnboardingNexusVNFCLIHandler(Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
+        else:
+            handler = OnboardingCoreVNFCLIHandler(Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
         handler.publish(command_context=command_context)
     else:
         raise UnrecognizedArgumentError("Invalid definition type")

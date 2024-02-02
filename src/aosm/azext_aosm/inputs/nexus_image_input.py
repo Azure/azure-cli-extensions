@@ -35,51 +35,28 @@ class NexusImageFileInput(BaseInput):
         self,
         artifact_name: str,
         artifact_version: str,
-        # file_path: Optional[Path] = None,
         source_acr_registry: str,
         default_config: Optional[Dict[str, Any]] = None,
     ):
         super().__init__(artifact_name, artifact_version, default_config)
-        # self.file_path = file_path
-        # self.blob_sas_uri = blob_sas_uri
         self.source_acr_registry = source_acr_registry
 
     def get_defaults(self) -> Dict[str, Any]:
         """
         Gets the default values for configuring the input.
 
-        :return: A dictionary containing the default values.
+        For Nexus images, there are no defaults.
+        :return: An empty dictionary.
         :rtype: Dict[str, Any]
         """
-        # logger.info("Getting default values for VHD file input")
-        default_config = self.default_config or {}
-        # logger.debug(
-        #     "Default values for VHD file Input: %s",
-        #     json.dumps(default_config, indent=4),
-        # )
-        return copy.deepcopy(default_config)
+        return {}
 
     def get_schema(self) -> Dict[str, Any]:
         """
-        Gets the schema for the VHD file input.
+        Gets the schema for the file input.
 
-        :return: A dictionary containing the schema.
+        For Nexus images, there is no schema.
+        :return: An empty dictionary.
         :rtype: Dict[str, Any]
         """
-        # logger.info("Getting schema for VHD file input")
-        # vhd_properties = {
-        #     "imageName": {"type": "string"},
-        #     "azureDeployLocation": {"type": "string"},
-        #     "imageDiskSizeGB": {"type": "integer"},
-        #     "imageOsState": {"type": "string"},
-        #     "imageHyperVGeneration": {"type": "string"},
-        #     "apiVersion": {"type": "string"},
-        # }
-        # vhd_required = ["imageName"]
-
-        schema = copy.deepcopy(BASE_SCHEMA)
-        # schema["properties"].update(vhd_properties)
-        # schema["required"] += vhd_required
-
-        # logger.debug("Schema for VHD file input: %s", json.dumps(schema, indent=4))
-        return copy.deepcopy(schema)
+        return {}

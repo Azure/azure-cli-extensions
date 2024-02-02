@@ -52,14 +52,17 @@ class OnboardingBaseCLIHandler(ABC):
                 try:
                     self.config = self._get_input_config(config_dict)
                 except Exception as e:
-                    raise UnclassifiedUserFault(f"The input file provided contains an incorrect input.\nPlease fix the problem parameter: - {e}") from e
+                    raise UnclassifiedUserFault(f"The input file provided contains an incorrect input.\nPlease fix the problem parameter:\n{e}") from e
                 # Validate config before getting processor list,
                 # in case error with input artifacts i.e helm package
                 self.config.validate()
                 self.processors = self._get_processor_list()
             # If config file is the all parameters json file for publish/delete
             elif provided_input_path.suffix == ".json":
-                self.config = self._get_params_config(provided_input_path)
+                try:
+                    self.config = self._get_params_config(provided_input_path)
+                except Exception as e:
+                    raise UnclassifiedUserFault(f"The all_deploy.parameters.json in the folder provided contains an incorrect input.\nPlease check if you have provided the correct folder for the definition/design type:\n{e}") from e
             else:
                 raise UnclassifiedUserFault("Invalid input")
                 # TODO: Change this to work with publish?
