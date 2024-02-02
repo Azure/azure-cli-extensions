@@ -86,6 +86,14 @@ helps['fleet get-credentials'] = """
           text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName -f ~/mykubeconfigfile.txt
 """
 
+helps['fleet reconcile'] = """
+    type: command
+    short-summary: Reconciles a fleet.
+    examples:
+        - name: Reconcile a fleet.
+          text: az fleet reconcile -g MyFleetResourceGroup -n MyFleetName
+"""
+
 helps['fleet wait'] = """
 type: command
 short-summary: Wait for a fleet resource to reach a desired state.
@@ -146,6 +154,14 @@ helps['fleet member delete'] = """
     examples:
         - name: Delete a specific fleet member.
           text: az fleet member delete -g MyFleetResourceGroup -f MyFleetName -n NameOfMember
+"""
+
+helps['fleet member reconcile'] = """
+    type: command
+    short-summary: Reconciles a member.
+    examples:
+        - name: Reconcile a member.
+          text: az fleet member reconcile -g MyFleetResourceGroup -f MyFleetName -n NameOfMember
 """
 
 helps['fleet member wait'] = """
