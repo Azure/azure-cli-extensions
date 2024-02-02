@@ -7,9 +7,9 @@ from knack.log import get_logger
 
 from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvCreateDecorator, \
     ContainerAppEnvUpdateDecorator
-from azure.cli.command_modules.containerapp._models import ManagedServiceIdentity
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
+from ._models import ManagedServiceIdentity
 from ._utils import safe_get
 from ._client_factory import handle_non_404_status_code_exception
 
