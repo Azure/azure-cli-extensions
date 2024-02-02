@@ -6,8 +6,10 @@
 from azext_support._client_factory import (cf_communications,
                                            cf_problem_classifications,
                                            cf_services, cf_support,
-                                           cf_support_tickets)
+                                           cf_support_tickets,
+                                           cf_files)
 from azext_support._validators import validate_tickets_create
+from azext_support._validators import _check_name_availability_no_subscription
 from azure.cli.core.commands import CliCommandType
 
 
@@ -27,6 +29,9 @@ def load_command_table(self, _):
     support_communications = CliCommandType(
         operations_tmpl='azext_support.vendored_sdks.operations#CommunicationsOperations.{}',
         client_factory=cf_communications)
+    support_files = CliCommandType(
+		operations_tmpl='azext_support.vendored_sdks.operations#FilesOperations.{}',
+		client_factory=cf_files)
 
     self.command_group('support', support, client_factory=cf_support)
 
@@ -51,3 +56,9 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_support_tickets_communications')
         g.custom_show_command('show', 'get_support_tickets_communications')
         g.custom_command('create', 'create_support_tickets_communications', supports_no_wait=False)
+    
+    with self.command_group('support no-subscription file') as g:
+        g.custom_command('upload', 'upload_files_no_subscription')
+
+    with self.command_group('support in-subscription file') as g:
+        g.custom_command('upload', 'upload_files_in_subscription')
