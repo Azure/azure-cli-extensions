@@ -215,6 +215,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
 
         params = {
             "nsdv_description": self.config.nsdv_description,
+            "nfvi_type": self.config.nfvi_type,
             "cgs_name": CGS_NAME,
             "nfvi_site_name": self.nfvi_site_name,
             "nf_rets": ret_list,

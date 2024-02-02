@@ -175,6 +175,15 @@ class OnboardingNSDInputConfig(OnboardingBaseInputConfig):
             "comment": "Optional. Description of the Network Service Design Version (NSDV)."
         },
     )
+    nfvi_type: str = field(
+        default="AzureCore",
+        metadata={
+            "comment": (
+                "Type of NFVI (for nfvisFromSite). Defaults to 'AzureCore'.\n"
+                "Valid values are 'AzureCore', 'AzureOperatorNexus' or 'AzureArcKubernetes."
+            )
+        },
+    )
 
     # # TODO: Add detailed comment for this
     resource_element_templates: "list[NetworkFunctionConfig | ArmTemplateConfig]" = (
@@ -196,7 +205,11 @@ class OnboardingNSDInputConfig(OnboardingBaseInputConfig):
             raise ValidationError("nsd_name must be set")
         if not self.nsd_version:
             raise ValidationError("nsd_version must be set")
-
+        print("here", self.nfvi_type)
+        if self.nfvi_type not in ["AzureCore", "AzureOperatorNexus", "AzureArcKubernetes"]:
+            raise ValidationError(
+                "nfvi_type must be either 'AzureCore', 'AzureOperatorNexus' or 'AzureArcKubernetes'"
+            )
         # Validate each RET
         for configuration in self.resource_element_templates:
             configuration.validate()
