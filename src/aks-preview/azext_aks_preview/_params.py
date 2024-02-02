@@ -1354,13 +1354,13 @@ def load_arguments(self, _):
         c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
         # trusted launch
         c.argument(
-            "enable_secure_boot", 
-            is_preview=True, 
+            "enable_secure_boot",
+            is_preview=True,
             action="store_true"
         )
         c.argument(
-            "enable_vtpm", 
-            is_preview=True, 
+            "enable_vtpm",
+            is_preview=True,
             action="store_true"
         )
 
@@ -1420,23 +1420,23 @@ def load_arguments(self, _):
         )
         # trusted launch
         c.argument(
-            "enable_secure_boot", 
-            is_preview=True, 
+            "enable_secure_boot",
+            is_preview=True,
             action="store_true"
         )
         c.argument(
-            "disable_secure_boot", 
-            is_preview=True, 
+            "disable_secure_boot",
+            is_preview=True,
             action="store_true"
         )
         c.argument(
-            "enable_vtpm", 
-            is_preview=True, 
+            "enable_vtpm",
+            is_preview=True,
             action="store_true"
         )
         c.argument(
-            "disable_vtpm", 
-            is_preview=True, 
+            "disable_vtpm",
+            is_preview=True,
             action="store_true"
         )
 

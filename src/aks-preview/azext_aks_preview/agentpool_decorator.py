@@ -446,7 +446,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # In create mode, try and read the property value corresponding to the parameter from the `agentpool` object
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
-                self.agentpool and 
+                self.agentpool and
                 self.agentpool.security_profile is not None and
                 self.agentpool.security_profile.enable_secure_boot is not None
             ):
@@ -465,7 +465,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         :return: bool
         """
 
-        return  self.raw_param.get("disable_secure_boot")
+        return self.raw_param.get("disable_secure_boot")
 
     def get_enable_vtpm(self, enable_validation: bool = False) -> bool:
         """Obtain the value of enable_vtpm.
@@ -477,7 +477,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # In create mode, try and read the property value corresponding to the parameter from the `agentpool` object
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
-                self.agentpool and 
+                self.agentpool and
                 self.agentpool.security_profile is not None and
                 self.agentpool.security_profile.enable_vtpm is not None
             ):
@@ -496,7 +496,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         :return: bool
         """
 
-        return  self.raw_param.get("disable_vtpm")
+        return self.raw_param.get("disable_vtpm")
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
