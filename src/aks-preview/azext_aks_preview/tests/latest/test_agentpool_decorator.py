@@ -475,7 +475,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         ctx_3.attach_agentpool(agentpool_2)
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_3.get_enable_secure_boot()
+            ctx_3.update_secure_boot(agentpool_2)
 
     def common_get_disable_secure_boot(self):
         # default
@@ -507,7 +507,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         ctx_2.attach_agentpool(agentpool_1)
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_2.get_disable_secure_boot()
+            ctx_2.update_secure_boot(agentpool_1)
     
     def common_get_enable_vtpm(self):
         # default
@@ -556,7 +556,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         ctx_3.attach_agentpool(agentpool_2)
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_3.get_enable_vtpm()
+            ctx_3.update_vtpm(agentpool_2)
 
     def common_get_disable_vtpm(self):
         # default
@@ -588,7 +588,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         ctx_2.attach_agentpool(agentpool_1)
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_2.get_disable_vtpm()
+            ctx_2.update_vtpm(agentpool_1)
 
 class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     AKSPreviewAgentPoolContextCommonTestCase
@@ -1333,8 +1333,9 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
             self.resource_type,
             self.agentpool_decorator_mode,
         )
+        dec_3.context.attach_agentpool(agentpool_2)
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            dec_3.update_secure_boot(None)
+            dec_3.update_secure_boot(agentpool_2)
 
     def common_update_vtpm(self):
         dec_1 = AKSPreviewAgentPoolUpdateDecorator(
@@ -1393,8 +1394,9 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
             self.resource_type,
             self.agentpool_decorator_mode,
         )
+        dec_3.context.attach_agentpool(agentpool_2)
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            dec_3.update_vtpm(None)
+            dec_3.update_vtpm(agentpool_2)
 
 
 class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
