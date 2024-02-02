@@ -606,6 +606,8 @@ def aks_create(
     enable_windows_recording_rules=False,
     # metrics profile
     enable_cost_analysis=False,
+    # AI toolchain operator
+    enable_ai_toolchain_operator=False,
     # azure container storage
     enable_azure_container_storage=None,
     storage_pool_name=None,
@@ -793,6 +795,9 @@ def aks_update(
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
+    # AI toolchain operator
+    enable_ai_toolchain_operator=False,
+    disable_ai_toolchain_operator=False,
     # azure container storage
     enable_azure_container_storage=None,
     disable_azure_container_storage=False,
@@ -2997,7 +3002,7 @@ def _aks_mesh_update(
     )
 
     try:
-        mc = aks_update_decorator.update_mc_profile_default()
+        mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_azure_service_mesh_profile(mc)
     except DecoratorEarlyExitException:
         return None
@@ -3161,76 +3166,9 @@ def _aks_approuting_update(
     )
 
     try:
-        mc = aks_update_decorator.update_mc_profile_preview()
+        mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_app_routing_profile(mc)
     except DecoratorEarlyExitException:
         return None
 
-    poller = aks_update_decorator.update_mc(mc)
-    if keyvault_id:
-        return _keyvault_update(poller, cmd, keyvault_id=keyvault_id)
-    return poller
-
-
-def _keyvault_update(
-        poller,
-        cmd,
-        keyvault_id=None
-):
-
-    from msrestazure.tools import is_valid_resource_id, parse_resource_id
-    from azure.cli.command_modules.keyvault.custom import set_policy
-    from azext_aks_preview._client_factory import get_keyvault_client
-    from azext_aks_preview._roleassignments import add_role_assignment
-
-    while not poller.done():
-        poller.wait()
-
-    # Get the final result
-    mc = poller.result()
-
-    # check keyvault authorization sytem
-    if keyvault_id:
-        if not is_valid_resource_id(keyvault_id):
-            raise InvalidArgumentValueError("Please provide a valid keyvault ID")
-
-        if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
-            cmd.command_kwargs['operation_group'] = 'vaults'
-            keyvault_params = parse_resource_id(keyvault_id)
-            keyvault_subscription = keyvault_params['subscription']
-            keyvault_name = keyvault_params['name']
-            keyvault_rg = keyvault_params['resource_group']
-            keyvault_client = get_keyvault_client(cmd.cli_ctx, subscription_id=keyvault_subscription)
-            keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
-            managed_identity_object_id = mc.ingress_profile.web_app_routing.identity.object_id
-            is_service_principal = False
-
-            try:
-                if keyvault.properties.enable_rbac_authorization:
-                    if not add_role_assignment(
-                        cmd,
-                        "Key Vault Secrets User",
-                        managed_identity_object_id,
-                        is_service_principal,
-                        scope=keyvault_id,
-                    ):
-                        logger.warning(
-                            "Could not create a role assignment for App Routing. "
-                            "Are you an Owner on this subscription?"
-                        )
-                else:
-                    keyvault = set_policy(
-                        cmd,
-                        keyvault_client,
-                        keyvault_rg,
-                        keyvault_name,
-                        object_id=managed_identity_object_id,
-                        secret_permissions=["Get"],
-                        certificate_permissions=["Get"],
-                    )
-            except Exception as ex:
-                raise CLIError('Error in granting keyvault permissions to managed identity.\n') from ex
-        else:
-            raise CLIError('App Routing is not enabled.\n')
-
-    return mc
+    return aks_update_decorator.update_mc(mc)

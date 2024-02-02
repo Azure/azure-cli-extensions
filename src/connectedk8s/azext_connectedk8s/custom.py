@@ -29,6 +29,7 @@ from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.prompting import NoTTYException
+from azure.cli.command_modules.role import graph_client_factory
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core._profile import Profile
@@ -40,10 +41,8 @@ from kubernetes import client as kube_client, config
 from Crypto.IO import PEM
 from Crypto.PublicKey import RSA
 from Crypto.Util import asn1
-from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import resource_providers_client
-from azext_connectedk8s._client_factory import get_graph_client_service_principals
 from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2022_10_01, cf_connected_cluster_prev_2023_11_01
 from azext_connectedk8s._client_factory import cf_connectedmachine
 import azext_connectedk8s._constants as consts
@@ -2257,14 +2256,13 @@ def check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id):
 
 def get_custom_locations_oid(cmd, cl_oid):
     try:
-        sp_graph_client = get_graph_client_service_principals(cmd.cli_ctx)
-        sub_filters = []
-        sub_filters.append("appId eq '{}'".format("bc313c14-388c-4e7d-a58e-70017303ee3b"))  # Lookup using well-known first-party application id
-        result = list(sp_graph_client.list(filter=(' and '.join(sub_filters))))
-        if len(result) != 0:
-            if cl_oid is not None and cl_oid != result[0].object_id:
-                logger.debug("The 'Custom-locations' OID passed is different from the actual OID({}) of the Custom Locations RP app. Proceeding with the correct one...".format(result[0].object_id))
-            return result[0].object_id  # Using the fetched OID
+        graph_client = graph_client_factory(cmd.cli_ctx)
+        app_id = "bc313c14-388c-4e7d-a58e-70017303ee3b"
+        app_object = graph_client.service_principal_list(filter="appId eq '{}'".format(app_id))
+        if len(app_object) != 0:
+            if cl_oid is not None and cl_oid != app_object[0]['id']:
+                logger.debug("The 'Custom-locations' OID passed is different from the actual OID({}) of the Custom Locations RP app. Proceeding with the correct one...".format(app_object[0]['id']))
+            return app_object[0]['id']  # Using the fetched OID
 
         if cl_oid is None:
             logger.warning("Failed to enable Custom Locations feature on the cluster. Unable to fetch Object ID of Azure AD application used by Azure Arc service. Try enabling the feature by passing the --custom-locations-oid parameter directly. Learn more at https://aka.ms/CustomLocationsObjectID")
