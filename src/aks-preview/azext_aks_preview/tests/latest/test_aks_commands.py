@@ -2344,8 +2344,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("guardrailsProfile.level", "Warning"),
-                self.check("guardrailsProfile.version", "v1.0.0"),
+                self.check("safeguardsProfile.level", "Warning"),
+                self.check("safeguardsProfile.version", "v1.0.0"),
             ],
         )
 
@@ -2380,9 +2380,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("guardrailsProfile.level", "Warning"),
-                self.check("guardrailsProfile.version", "v1.0.0"),
-                self.check("guardrailsProfile.excludedNamespaces[0]", "test-ns1"),
+                self.check("safeguardsProfile.level", "Warning"),
+                self.check("safeguardsProfile.version", "v1.0.0"),
+                self.check("safeguardsProfile.excludedNamespaces[0]", "test-ns1"),
             ],
         )
 
