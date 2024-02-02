@@ -3746,7 +3746,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             ),
         ))
 
-        # ASM was never enabled on the cluster 
+        # ASM was never enabled on the cluster
         old_profile = self.models.ServiceMeshProfile(
             mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
         )
@@ -3766,7 +3766,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             ),
         ))
 
-    # ASM was never enabled on the cluster
     def test_handle_egress_gateways_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -3798,7 +3797,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 )
             ),
         ))
-
+        # ASM was never enabled on the cluster
         old_profile = self.models.ServiceMeshProfile(
             mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
         )
