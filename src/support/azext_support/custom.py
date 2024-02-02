@@ -345,7 +345,6 @@ def upload_files_in_subscription(cmd, file_path, file_workspace_name, subscripti
     chunk_size = min(max_chunk_size, file_size)
     number_of_chunks = math.ceil(file_size / chunk_size)
 
-    print(bool(subscription_id))
     if (subscription_id):
         create_input  = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "file_size": file_size,"chunk_size" : chunk_size, "number_of_chunks" : number_of_chunks, "subscription" : subscription_id}
     else:
