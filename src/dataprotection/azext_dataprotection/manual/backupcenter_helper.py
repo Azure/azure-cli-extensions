@@ -32,11 +32,12 @@ def get_backup_instance_query(datasource_type, resource_groups, vaults, protecti
     return query
 
 
-def get_backup_vault_query(resource_groups, vaults):
+def get_backup_vault_query(resource_groups, vaults, vault_id):
     query = "resources | where type =~ 'microsoft.dataprotection/backupvaults'"
 
     query = add_filter_to_query(query, "resourceGroup", resource_groups)
     query = add_filter_to_query(query, "name", vaults)
+    query = add_filter_to_query(query, "id", vault_id)
 
     return query
 

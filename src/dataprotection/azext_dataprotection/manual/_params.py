@@ -62,6 +62,7 @@ def load_arguments(self, _):
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
         c.argument('resource_groups', type=str, nargs='+', help="List of resource groups.")
         c.argument('vaults', type=str, nargs='+', help="List of vault names.")
+        c.argument('vault_id', type=str, nargs='+', help="Specify vault id filter to apply.")
 
     with self.argument_context('dataprotection backup-instance validate-for-backup') as c:
         c.argument('resource_group_name', resource_group_name_type)

@@ -190,10 +190,11 @@ def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_ty
     return response.data
 
 
-def dataprotection_backup_vault_list_from_resourcegraph(client, resource_groups=None, vaults=None, subscriptions=None):
+def dataprotection_backup_vault_list_from_resourcegraph(client, resource_groups=None, vaults=None,
+                                                        subscriptions=None, vault_id=None):
     if subscriptions is None:
         subscriptions = [backupcenter_helper.get_selected_subscription()]
-    query = backupcenter_helper.get_backup_vault_query(resource_groups, vaults)
+    query = backupcenter_helper.get_backup_vault_query(resource_groups, vaults, vault_id)
 
     request_options = QueryRequestOptions(
         top=1000,
