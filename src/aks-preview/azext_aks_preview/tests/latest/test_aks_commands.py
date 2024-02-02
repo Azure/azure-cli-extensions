@@ -4210,10 +4210,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity ' \
-                     '--enable-oidc-issuer --enable-workload-identity --enable-secure-boot ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                    '--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity ' \
+                    '--enable-oidc-issuer --enable-workload-identity --enable-secure-boot ' \
+                    '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
 
         # 1. create
         create_cmd = (

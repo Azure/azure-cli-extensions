@@ -428,7 +428,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_5.attach_agentpool(agentpool_5)
         self.assertEqual(ctx_5.get_os_sku(), None)
 
-     def common_get_enable_secure_boot(self):
+    def common_get_enable_secure_boot(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
             self.cmd,
@@ -507,7 +507,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_2.get_disable_secure_boot()
     
-     def common_get_enable_vtpm(self):
+    def common_get_enable_vtpm(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
             self.cmd,
@@ -1272,7 +1272,7 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         self.assertEqual(dec_agentpool_2, grond_truth_agentpool_2)
 
     def common_update_secure_boot(self):
-       dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
             self.cmd,
             self.client,
             {"enable_secure_boot": True, "disable_secure_boot": False},
