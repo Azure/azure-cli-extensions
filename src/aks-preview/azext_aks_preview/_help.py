@@ -1904,7 +1904,7 @@ helps['aks nodepool delete-machines'] = """
           short-summary: Space-separated list of machine names from the agent pool to be deleted.
     examples:
         - name: Delete specific machines in an agent pool
-          text: az aks nodepool delete-machines -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster --machine-names machine1 machine2
+          text: az aks nodepool delete-machines -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster --machine-names machine1
 """
 
 helps['aks machine'] = """

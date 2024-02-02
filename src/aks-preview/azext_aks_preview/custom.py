@@ -1550,7 +1550,6 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
                          cluster_name,
                          nodepool_name,
                          machine_names,
-                         aks_custom_headers=None,
                          no_wait=False):
     agentpool_exists = False
     instances = client.list(resource_group_name, cluster_name)
@@ -1578,7 +1577,6 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
     )
 
     machines=AgentPoolDeleteMachinesParameter(machine_names=machine_names)
-    headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(
         no_wait,
         client.begin_delete_machines,
@@ -1586,7 +1584,6 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
         cluster_name,
         nodepool_name,
         machines,
-        headers=headers,
     )
 
 
