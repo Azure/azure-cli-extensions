@@ -321,7 +321,7 @@ def upload_files_no_subscription(cmd, file_path, file_workspace_name):
         string_encoded_content = encode_string_content(chunk_content)
         upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content, "--file-name": full_file_name, "--file-workspace-name": file_workspace_name }
         resp_upload = Upload(cli_ctx = cmd.cli_ctx)(command_args=upload_input)
-        print("DONE")
+        print("File {} has been succesfully uploaded!".format(full_file_name))
 
 def upload_files_in_subscription(cmd, file_path, file_workspace_name, subscription_id = None):
     from .aaz.latest.support.in_subscription.file import Create as Create_Sub
@@ -360,4 +360,5 @@ def upload_files_in_subscription(cmd, file_path, file_workspace_name, subscripti
         else: 
             upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content, "--file-name": full_file_name, "--file-workspace-name": file_workspace_name }
         resp_upload = Upload_Sub(cli_ctx = cmd.cli_ctx)(command_args=upload_input)
+        print("File {} has been succesfully uploaded!".format(full_file_name))
 
