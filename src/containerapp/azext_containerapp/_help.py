@@ -98,6 +98,61 @@ helps['containerapp env dapr-component resiliency list'] = """
            --dapr-component-name MyDaprComponentName --environment MyEnvironment
 """
 
+# Identity Commands
+helps['containerapp env identity'] = """
+    type: group
+    short-summary: Commands to manage environment managed identities.
+"""
+
+helps['containerapp env identity assign'] = """
+    type: command
+    short-summary: Assign managed identity to a managed environment.
+    long-summary: Managed identities can be user-assigned or system-assigned.
+    examples:
+    - name: Assign system identity.
+      text: |
+          az containerapp env identity assign -n my-env -g MyResourceGroup --system-assigned
+    - name: Assign user identity.
+      text: |
+          az containerapp env identity assign -n my-env -g MyResourceGroup --user-assigned myUserIdentityName
+    - name: Assign user identity (from a different resource group than the managed environment).
+      text: |
+          az containerapp env identity assign -n my-env -g MyResourceGroup --user-assigned myUserIdentityResourceId
+    - name: Assign system and user identity.
+      text: |
+          az containerapp env identity assign -n my-env -g MyResourceGroup --system-assigned --user-assigned myUserIdentityResourceId
+"""
+
+helps['containerapp env identity remove'] = """
+    type: command
+    short-summary: Remove a managed identity from a managed environment.
+    examples:
+    - name: Remove system identity.
+      text: |
+          az containerapp env identity remove -n my-env -g MyResourceGroup --system-assigned
+    - name: Remove user identity.
+      text: |
+          az containerapp env identity remove -n my-env -g MyResourceGroup --user-assigned myUserIdentityName
+    - name: Remove system and user identity (from a different resource group than the containerapp).
+      text: |
+          az containerapp env identity remove -n my-env -g MyResourceGroup --system-assigned --user-assigned myUserIdentityResourceId
+    - name: Remove all user identities.
+      text: |
+          az containerapp env identity remove -n my-env -g MyResourceGroup --user-assigned
+    - name: Remove system identity and all user identities.
+      text: |
+          az containerapp env identity remove -n my-env -g MyResourceGroup --system-assigned --user-assigned
+"""
+
+helps['containerapp env identity show'] = """
+    type: command
+    short-summary: Show managed identities of a managed environment.
+    examples:
+    - name: Show managed identities.
+      text: |
+          az containerapp env identity show -n my-env -g MyResourceGroup
+"""
+
 helps['containerapp up'] = """
     type: command
     short-summary: Create or update a container app as well as any associated resources (ACR, resource group, container apps environment, GitHub Actions, etc.)
@@ -178,6 +233,10 @@ helps['containerapp env create'] = """
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
               --location eastus2 --enable-workload-profiles false
+    - name: Create an environment with system assigned and user assigned identity.
+      text: |
+          az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
+              --location eastus2 --mi-system-assigned --mi-user-assigned MyUserIdentityResourceId
 """
 
 helps['containerapp service'] = """

@@ -50,6 +50,11 @@ def load_command_table(self, _):
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('init', 'init_dapr_components', is_preview=True)
 
+    with self.command_group('containerapp env identity',is_preview=True) as g:
+        g.custom_command('assign', 'assign_env_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('remove', 'remove_env_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_show_command('show', 'show_env_managed_identity')
+
     with self.command_group('containerapp service', deprecate_info=self.deprecate(redirect='containerapp add-on', expiration='2.59.0', hide=True), is_preview=True) as g:
         g.custom_command('list', 'list_all_services')
 
