@@ -59,3 +59,9 @@ def load_command_table(self, _):
     self.command_table['support in-subscription tickets create'] = TicketCreate(loader=self)
     self.command_table['support in-subscription communication create'] = CommunicationCreate(loader=self)
     self.command_table['support no-subscription communication create'] = CommunicationNoSubscriptionCreate(loader=self)
+    
+    with self.command_group('support no-subscription file') as g:
+        g.custom_command('upload', 'upload_files_no_subscription')
+
+    with self.command_group('support in-subscription file') as g:
+        g.custom_command('upload', 'upload_files_in_subscription')

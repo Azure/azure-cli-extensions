@@ -25,3 +25,6 @@ def cf_support_tickets(cli_ctx, *_):
 
 def cf_communications(cli_ctx, *_):
     return cf_support(cli_ctx).communications
+
+def cf_files(cli_ctx, *_):
+	return cf_support(cli_ctx).files

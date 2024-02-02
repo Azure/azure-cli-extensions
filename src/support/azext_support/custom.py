@@ -7,6 +7,12 @@
 # pylint: disable=too-many-locals
 
 import json
+import base64
+import os
+import requests
+import math
+from azext_support._validators import *
+
 from datetime import date, datetime, timedelta
 
 from azext_support._utils import (get_bearer_token, is_quota_ticket,
@@ -272,3 +278,78 @@ class CommunicationNoSubscriptionCreate(_CreateNoSubscriptionCommunication):
         super().pre_operations()
         args = self.ctx.args
         _check_name_availability_no_subscription(self.cli_ctx, str(args.communication_name), "Microsoft.Support/communications")
+
+def encode_string_content(chunk_content):
+    return str(base64.b64encode(chunk_content).decode('utf-8'))
+
+def get_file_content(file_path):
+    with open(file_path, 'rb') as file:
+        content_bytes = file.read()
+    return content_bytes
+
+def get_file_name_info(file_path):
+    directory, full_file_name = os.path.split(file_path)
+    file_name_without_extension, file_extension = os.path.splitext(full_file_name)
+    return full_file_name, file_name_without_extension, file_extension
+
+def upload_files_no_subscription(cmd, file_path, file_workspace_name):
+    from .aaz.latest.support.no_subscription.file import Create
+    from .aaz.latest.support.no_subscription.file import Upload
+
+    ##costants for file upload
+    max_chunk_size= 2621440
+
+    validate_file_path(file_path)
+
+    full_file_name, file_extension, file_name_without_extension = get_file_name_info(file_path)
+    content = get_file_content(file_path)
+
+    validate_file_extension(file_extension)
+    validate_file_name(file_name_without_extension)
+    
+    file_size = len(content)
+    validate_file_size(file_size)
+    
+    chunk_size = min(max_chunk_size, file_size)
+    number_of_chunks = math.ceil(file_size / chunk_size)
+
+    create_input  = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "file_size": file_size,"chunk_size" : chunk_size, "number_of_chunks" : number_of_chunks }
+    resp_create = Create(cli_ctx = cmd.cli_ctx)(command_args=create_input)
+    
+    for chunk_index in range(number_of_chunks):
+        chunk_content = content[chunk_index * chunk_size: (chunk_index + 1) * chunk_size]
+        string_encoded_content = encode_string_content(chunk_content)
+        upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content, "--file-name": full_file_name, "--file-workspace-name": file_workspace_name }
+        resp_upload = Upload(cli_ctx = cmd.cli_ctx)(command_args=upload_input)
+        print("DONE")
+
+def upload_files_in_subscription(cmd, file_path, file_workspace_name):
+    from .aaz.latest.support.in_subscription.file import Create as Create_Sub
+    from .aaz.latest.support.in_subscription.file import Upload as Upload_Sub
+
+    ##costants for file upload
+    max_chunk_size= 2621440
+
+    validate_file_path(file_path)
+
+    full_file_name, file_extension, file_name_without_extension = get_file_name_info(file_path)
+    content = get_file_content(file_path)
+
+    validate_file_extension(file_extension)
+    validate_file_name(file_name_without_extension)
+    
+    file_size = len(content)
+    validate_file_size(file_size)
+    
+    chunk_size = min(max_chunk_size, file_size)
+    number_of_chunks = math.ceil(file_size / chunk_size)
+
+    create_input  = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "file_size": file_size,"chunk_size" : chunk_size, "number_of_chunks" : number_of_chunks }
+    resp_create = Create_Sub(cli_ctx = cmd.cli_ctx)(command_args=create_input)
+
+    for chunk_index in range(number_of_chunks):
+        chunk_content = content[chunk_index * chunk_size: (chunk_index + 1) * chunk_size]
+        string_encoded_content = encode_string_content(chunk_content)
+        upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content, "--file-name": full_file_name, "--file-workspace-name": file_workspace_name }
+        resp_upload = Upload_Sub(cli_ctx = cmd.cli_ctx)(command_args=upload_input)
+

@@ -151,3 +151,21 @@ def load_communications_argument(self, _):
         c.argument('communication_body', help='Text of the communication.', required=True)
         c.argument('communication_subject', help='Subject of the communication.', required=True)
         c.argument('communication_sender', help='Email address of the sender.')
+
+def load_file_workspace_argument(self, _):
+
+    with self.argument_context('support in-subscription file upload') as c:
+        c.argument('file_workspace_name', help='Name of the file workspace.', required=True)
+        c.argument('file_path', help = 'Path of the file you want to uploaded', required=True)
+        c.argument('subscription', help='Specified subscription for the file workspace', required=True)
+
+
+    with self.argument_context('support no-subscription file upload') as c:
+        c.argument('file_workspace_name', help='Name of the file workspace.', required=True)
+        c.argument('file_path', help = 'Path of the file you want to uploaded', required=True)
+
+
+
+    
+
+

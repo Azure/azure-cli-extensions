@@ -12,6 +12,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
+import os
 
 logger = get_logger(__name__)
 
@@ -129,11 +130,13 @@ def _check_name_availability_subscription_ticket(cli_ctx, ticket_name, resource_
 
 def _check_name_availability_no_subscription(cli_ctx, resource_name, resource_type):
     from .aaz.latest.support.no_subscription import CheckNameAvailability
+    print(resource_name, resource_type)
     check_name_availability_input = {"name": resource_name, "type": resource_type}
     resp = CheckNameAvailability(cli_ctx=cli_ctx)(command_args=check_name_availability_input)
+    print(resp)
+    print(resp["message"])
     if not resp["nameAvailable"]:
         raise CLIError(resp["message"])
-
 
 def _check_name_availability_no_subscription_ticket(cli_ctx, ticket_name, resource_name, resource_type):
     from .aaz.latest.support.no_subscription.tickets import CheckNameAvailability
@@ -141,3 +144,25 @@ def _check_name_availability_no_subscription_ticket(cli_ctx, ticket_name, resour
     resp = CheckNameAvailability(cli_ctx=cli_ctx)(command_args=check_name_availability_input)
     if not resp["nameAvailable"]:
         raise CLIError(resp["message"])
+
+def validate_file_path(file_path):
+    if not os.path.exists(file_path):
+        raise CLIError("File does not exist!")
+    
+def validate_file_name(file_name):
+    max_file_name_length = 110
+    if len(file_name) > max_file_name_length:
+        raise CLIError("File name should not be more than 110 characters.")
+    
+def validate_file_size(file_size):
+    max_file_size = 5242880
+    min_file_size = 1
+    if (file_size > max_file_size) or (file_size < min_file_size):
+        raise CLIError("The file must be between 1 and 5242880 bytes")
+
+def validate_file_extension(file_extension):
+    unsupported_file_extensions = [".bat", ".cmd", ".exe", ".ps1", ".js", ".vbs", ".com", ".lnk", ".reg",
+    ".bin", ".cpl", ".inf", ".ins", ".isu", ".job", ".jse", ".lnk", ".msi", ".msp", ".paf", ".pif", ".rgs", 
+    ".scr", ".sct", ".svg", ".vbe", ".vb", ".ws", ".wsf", ".wsh", ".htm", ".html"]
+    if file_extension in unsupported_file_extensions:
+        raise CLIError("The file extension is not supported.")
