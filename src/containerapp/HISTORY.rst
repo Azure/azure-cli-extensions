@@ -10,8 +10,8 @@ upcoming
 * Upgrade api-version to 2023-11-02-preview
 * 'az containerapp create/update/up': support --build-env-vars to set environment variables for build
 * 'az containerapp create/update': support --max-inactive-revisions
-* 'az containerapp env create' : support --mi-system-assigned and --mi-user-assigned for environment create commands
-* 'az containerapp env identity' : support for container app environment assign/remove/show commands
+* 'az containerapp env create': support --mi-system-assigned and --mi-user-assigned for environment create commands
+* 'az containerapp env identity': support for container app environment assign/remove/show commands
 
 0.3.46
 ++++++
