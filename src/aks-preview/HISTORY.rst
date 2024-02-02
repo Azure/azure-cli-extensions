@@ -13,7 +13,7 @@ Pending
 +++++++
 * Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
 * Refactor azure service mesh related code to meet cli style requirements.
-* Implicitly enable istio when ingress gateway is enabled for Azure Service Mesh.
+* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
 
 1.0.0b4
 +++++++
