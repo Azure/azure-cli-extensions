@@ -10,6 +10,7 @@ from knack.log import get_logger
 
 from azext_aosm.build_processors.arm_processor import NexusArmBuildProcessor
 from azext_aosm.build_processors.nexus_image_processor import NexusImageProcessor
+from azext_aosm.build_processors.base_processor import BaseInputProcessor
 from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
                                          BASE_FOLDER_NAME,
                                          MANIFEST_FOLDER_NAME,
@@ -79,7 +80,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             params_dict = {}
         return NexusVNFCommonParametersConfig(**params_dict)
 
-    def _get_processor_list(self):
+    def _get_processor_list(self) -> [BaseInputProcessor]:
         processor_list = []
         # for each arm template, instantiate arm processor
         for arm_template in self.config.arm_templates:
@@ -111,7 +112,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
 
         return processor_list
 
-    def build_base_bicep(self):
+    def build_base_bicep(self) -> BicepDefinitionElementBuilder:
         """Build the base bicep file."""
         # Build manifest bicep contents, with j2 template
         template_path = get_template_path(
@@ -124,7 +125,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         )
         return bicep_file
 
-    def build_manifest_bicep(self):
+    def build_manifest_bicep(self) -> BicepDefinitionElementBuilder:
         """Build the manifest bicep file."""
         acr_artifact_list = []
 
@@ -132,7 +133,6 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
 
         for processor in self.processors:
             acr_artifact_list.extend(processor.get_artifact_manifest_list())
-            print("ACRLSIT", acr_artifact_list)
             logger.debug(
                 "Created list of artifacts from arm template(s) and image files(s) provided: %s",
                 acr_artifact_list,
@@ -159,7 +159,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         logger.info("Created artifact manifest bicep element")
         return bicep_file
 
-    def build_artifact_list(self):
+    def build_artifact_list(self) -> ArtifactDefinitionElementBuilder:
         """Build the artifact list."""
         logger.info("Creating artifacts list for artifacts.json")
         artifact_list = []
@@ -178,7 +178,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             Path(VNF_OUTPUT_FOLDER_FILENAME, ARTIFACT_LIST_FILENAME), artifact_list
         )
 
-    def build_resource_bicep(self):
+    def build_resource_bicep(self) -> BicepDefinitionElementBuilder:
         """Build the resource bicep file."""
         logger.info("Creating artifacts list for artifacts.json")
         arm_nf_application_list = []
@@ -186,7 +186,6 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         supporting_files = []
         schema_properties = {}
 
-        # TODO: fx this for nexus
         for processor in self.processors:
             # Generate NF Application
             nf_application = processor.generate_nf_application()
@@ -200,8 +199,6 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             if isinstance(processor, NexusArmBuildProcessor):
 
                 arm_nf_application_list.append(nf_application)
-                print(nf_application)
-                print(nf_application.deploy_parameters_mapping_rule_profile)
                 # Generate local file for template_parameters + add to supporting files list
                 params = (
                     nf_application.deploy_parameters_mapping_rule_profile.template_mapping_rule_profile.template_parameters
@@ -213,8 +210,6 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             elif isinstance(processor, NexusImageProcessor):
                 # TODO: fix this
                 image_nf_application_list.append(nf_application)
-                print(nf_application)
-                print(nf_application.deploy_parameters_mapping_rule_profile.image_mapping_rule_profile)
                 # Generate local file for vhd_parameters
                 params = (
                     nf_application.deploy_parameters_mapping_rule_profile.image_mapping_rule_profile.user_configuration
@@ -268,7 +263,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         )
         return bicep_file
 
-    def build_all_parameters_json(self):
+    def build_all_parameters_json(self) -> JSONDefinitionElementBuilder:
         """Build the all parameters json file."""
         params_content = {
             "location": self.config.location,
@@ -284,13 +279,13 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         )
         return base_file
 
-    def _split_image_path(self, image):
+    def _split_image_path(self, image) -> (str, str, str):
         """Split the image path into source acr registry, name and version."""
         (source_acr_registry, name_and_version) = image.split("/", 2)
         (name, version) = name_and_version.split(":", 2)
         return (source_acr_registry, name, version)
 
-    def _create_semver_compatible_version(self, version):
+    def _create_semver_compatible_version(self, version) -> str:
         """Create a semver compatible version."""
         if re.search(SEMVER_REGEX, version):
             return version

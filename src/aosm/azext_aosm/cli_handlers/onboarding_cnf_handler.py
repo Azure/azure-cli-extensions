@@ -166,7 +166,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
         if self.skip != HELM_TEMPLATE:
             self._validate_helm_template()
 
-    def build_base_bicep(self):
+    def build_base_bicep(self) -> BicepDefinitionElementBuilder:
         """Build the base bicep file."""
         # Build manifest bicep contents, with j2 template
         template_path = get_template_path(
@@ -179,7 +179,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
         )
         return bicep_file
 
-    def build_manifest_bicep(self):
+    def build_manifest_bicep(self) -> BicepDefinitionElementBuilder:
         """Build the manifest bicep file."""
         artifact_list = []
         logger.info("Creating artifact manifest bicep")
@@ -212,7 +212,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
 
         return bicep_file
 
-    def build_artifact_list(self):
+    def build_artifact_list(self) -> ArtifactDefinitionElementBuilder:
         """Build the artifact list."""
         artifact_list = []
         # For each helm package, get list of artifacts and combine
@@ -231,7 +231,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
             Path(CNF_OUTPUT_FOLDER_FILENAME, ARTIFACT_LIST_FILENAME), artifact_list
         )
 
-    def build_resource_bicep(self):
+    def build_resource_bicep(self) -> BicepDefinitionElementBuilder:
         """Build the resource bicep file."""
         logger.info("Creating artifacts list for artifacts.json")
         nf_application_list = []
@@ -287,7 +287,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
         )
         return bicep_file
 
-    def build_all_parameters_json(self):
+    def build_all_parameters_json(self) -> JSONDefinitionElementBuilder:
         """Build the all parameters json file."""
         params_content = {
             "location": self.config.location,

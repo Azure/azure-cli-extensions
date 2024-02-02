@@ -60,6 +60,7 @@ def convert_bicep_to_arm(bicep_template_path: Path) -> dict:
 
     return arm_json
 
+
 def render_bicep_contents_from_j2(template_path: Path, params):
     """Write the definition bicep file from given template."""
     with open(template_path, "r", encoding="UTF-8") as f:

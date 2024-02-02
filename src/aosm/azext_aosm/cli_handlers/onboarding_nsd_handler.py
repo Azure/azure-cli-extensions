@@ -73,7 +73,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
             params_dict = {}
         return NSDCommonParametersConfig(**params_dict)
 
-    def _get_processor_list(self):
+    def _get_processor_list(self) -> list:
         processor_list = []
         # for each resource element template, instantiate processor
         for resource_element in self.config.resource_element_templates:
@@ -118,7 +118,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
                 raise ValueError(f"Invalid resource element type: {resource_element.resource_element_type}")
         return processor_list
 
-    def build_base_bicep(self):
+    def build_base_bicep(self) -> BicepDefinitionElementBuilder:
         """Build the base bicep file."""
         # Build base bicep contents, with bicep template
         template_path = get_template_path(
@@ -131,7 +131,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
         )
         return bicep_file
 
-    def build_manifest_bicep(self):
+    def build_manifest_bicep(self) -> BicepDefinitionElementBuilder:
         """Build the manifest bicep file."""
         artifact_list = []
         for processor in self.processors:
@@ -154,7 +154,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
         )
         return bicep_file
 
-    def build_artifact_list(self):
+    def build_artifact_list(self) -> ArtifactDefinitionElementBuilder:
         """Build the artifact list."""
         # Build artifact list for ArmTemplates
         artifact_list = []
@@ -174,7 +174,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
 
         return artifact_file
 
-    def build_resource_bicep(self):
+    def build_resource_bicep(self) -> BicepDefinitionElementBuilder:
         """Build the resource bicep file."""
         bicep_contents = {}
         schema_properties = {}
@@ -242,7 +242,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
 
         return bicep_file
 
-    def build_all_parameters_json(self):
+    def build_all_parameters_json(self) -> JSONDefinitionElementBuilder:
         """Build all parameters json."""
         params_content = {
             "location": self.config.location,
