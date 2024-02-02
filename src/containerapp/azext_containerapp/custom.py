@@ -1926,8 +1926,6 @@ def show_java_component(cmd, java_component_name, environment_name, resource_gro
 
 
 def delete_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, no_wait):
-    show_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type)
-
     raw_parameters = locals()
     java_component_decorator = JavaComponentDecorator(
         cmd=cmd,
@@ -1935,6 +1933,16 @@ def delete_java_component(cmd, java_component_name, environment_name, resource_g
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
+
+    try:
+        result = java_component_decorator.show()
+    except CLIInternalError as e:
+        return
+
+    current_type = safe_get(result, "properties", "componentType")
+    if current_type and target_java_component_type.lower() != current_type.lower():
+        raise ResourceNotFoundError(f"(JavaComponentNotFound) JavaComponent '{java_component_name}' was not found.")
+
     return java_component_decorator.delete()
 
 
