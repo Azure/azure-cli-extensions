@@ -1544,6 +1544,51 @@ def aks_agentpool_operation_abort(cmd,   # pylint: disable=unused-argument
         headers=headers,
     )
 
+def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
+                         client,
+                         resource_group_name,
+                         cluster_name,
+                         nodepool_name,
+                         machine_names,
+                         aks_custom_headers=None,
+                         no_wait=False):
+    agentpool_exists = False
+    instances = client.list(resource_group_name, cluster_name)
+    for agentpool_profile in instances:
+        if agentpool_profile.name.lower() == nodepool_name.lower():
+            agentpool_exists = True
+            break
+
+    if not agentpool_exists:
+        raise CLIError(
+            f"Node pool {nodepool_name} doesnt exist, "
+            "use 'aks nodepool list' to get current node pool list"
+        )
+    
+    if len(machine_names) == 0:
+                raise CLIError(
+            f"Machine names doesn't provide, "
+            "use 'aks machine list' to get current machine list"
+        )
+
+    AgentPoolDeleteMachinesParameter=cmd.get_models(
+        "AgentPoolDeleteMachinesParameter",
+         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+         operation_group="agent_pools",
+    )
+
+    machines=AgentPoolDeleteMachinesParameter(machine_names=machine_names)
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete_machines,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        machines,
+        headers=headers,
+    )
+
 
 def aks_operation_abort(cmd,   # pylint: disable=unused-argument
                         client,
