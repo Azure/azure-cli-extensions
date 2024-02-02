@@ -24,10 +24,8 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import read_file_content
-from knack.log import (
-    get_logger,
-    prompt_y_n,
-)
+from knack.log import get_logger
+from knack.prompting import prompt_y_n
 
 from azext_aks_preview._client_factory import cf_agent_pools
 from azext_aks_preview._consts import (
