@@ -67,6 +67,7 @@ class ContainerappEnvStorageDecorator(BaseResource):
             self.managed_environment_storage_def["properties"]["nfsAzureFile"] = storage_def
 
     def validate_arguments(self):
+        import json
         if not self.storage_type or self.storage_type.lower() == AZURE_FILE_STORAGE_TYPE:
             if len(self.azure_file_share_name) == 0 or len(self.azure_file_account_name) == 0 or len(
                     self.azure_file_account_key) == 0 or len(self.access_mode) == 0:
@@ -83,18 +84,19 @@ class ContainerappEnvStorageDecorator(BaseResource):
             if len(self.server) < 3:
                 raise ValidationError("Server must be longer than 2 characters.")
 
-        r = None
-
         try:
             r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                 name=self.get_argument_name(), storage_name=self.get_argument_storage_name())
-        except:
-            pass
-
-        if r:
-            logger.warning(
-                'Only AzureFile account keys can be updated. In order to change the AzureFile share name or account'
-                ' name or NfsAzureFile server, please delete this storage and create a new one.')
+                                 env_name=self.get_argument_name(), name=self.get_argument_storage_name())
+            if r:
+                logger.warning(
+                    'Only AzureFile account keys can be updated. In order to change the AzureFile share name or account'
+                    ' name or NfsAzureFile server, please delete this storage and create a new one.')
+        except Exception as e:
+            string_err = str(e)
+            if "ManagedEnvironmentStorageNotFound" in string_err:
+                pass
+            else:
+                handle_raw_exception(e)
 
     def create_or_update(self):
         try:

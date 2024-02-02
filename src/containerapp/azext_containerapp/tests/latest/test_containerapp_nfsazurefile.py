@@ -73,14 +73,14 @@ class ContainerAppMountNfsAzureFileTest(ScenarioTest):
             JMESPathCheck('properties.nfsAzureFile.server', f'{storage}.file.core.windows.net'),
             JMESPathCheck('properties.nfsAzureFile.shareName', f'/{storage}/{share}'),
             JMESPathCheck('properties.nfsAzureFile.accessMode', 'ReadWrite'),
-        ]).get_output_in_json()
+        ])
 
         self.cmd('containerapp env storage list -n {} -g {}'.format(env, resource_group), checks=[
             JMESPathCheck('[0].name', share),
             JMESPathCheck('[0].properties.nfsAzureFile.server', f'{storage}.file.core.windows.net'),
             JMESPathCheck('[0].properties.nfsAzureFile.shareName', f'/{storage}/{share}'),
             JMESPathCheck('[0].properties.nfsAzureFile.accessMode', 'ReadWrite'),
-        ]).get_output_in_json()
+        ])
 
         containerapp_yaml_text = f"""
                     location: {TEST_LOCATION}
