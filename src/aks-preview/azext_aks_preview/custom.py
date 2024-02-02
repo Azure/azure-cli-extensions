@@ -606,6 +606,8 @@ def aks_create(
     enable_windows_recording_rules=False,
     # metrics profile
     enable_cost_analysis=False,
+    # AI toolchain operator
+    enable_ai_toolchain_operator=False,
     # azure container storage
     enable_azure_container_storage=None,
     storage_pool_name=None,
@@ -790,6 +792,9 @@ def aks_update(
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
+    # AI toolchain operator
+    enable_ai_toolchain_operator=False,
+    disable_ai_toolchain_operator=False,
     # azure container storage
     enable_azure_container_storage=None,
     disable_azure_container_storage=False,

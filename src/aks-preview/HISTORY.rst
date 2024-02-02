@@ -11,6 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+1.0.0b5
++++++++
+* Add `--enable-ai-toolchain-operator` to `az aks create` and `az aks update`.
+* Add `--disable-ai-toolchain-operator` to the `az aks update` command.
+
 * Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
 * Refactor azure service mesh related code to meet cli style requirements.
 * Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
