@@ -100,6 +100,18 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
 
 
     @AllowLargeResponse()
+    def test_dataprotection_backup_vault_list_from_resource_graph(test):
+        test.kwargs.update({
+            'vaultId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete',
+            'vaultName': 'clitest-bkp-vault-persistent-bi-donotdelete'
+        })
+        test.cmd('az dataprotection backup-vault list-from-resourcegraph --vault-id "{vaultId}"', checks=[
+            test.greater_than('length([])', 0),
+            test.exists("[?name == '{vaultName}']")
+        ])
+
+
+    @AllowLargeResponse()
     def test_dataprotection_backup_instance_softdelete(test):
         test.kwargs.update({
             'diskName': 'clitest-disk-sd-donotdelete',
