@@ -24,7 +24,10 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import read_file_content
-from knack.log import get_logger
+from knack.log import (
+    get_logger,
+    prompt_y_n,
+)
 
 from azext_aks_preview._client_factory import cf_agent_pools
 from azext_aks_preview._consts import (
@@ -34,7 +37,6 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINES,
 )
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
-from knack.prompting import prompt_y_n
 
 logger = get_logger(__name__)
 
@@ -592,7 +594,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         ssh_access = self.context.get_ssh_access()
         if ssh_access is not None:
             if agentpool.security_profile is None:
-                agentpool.security_profile = self.models.AgentPoolSecurityProfile()
+                agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.ssh_access = ssh_access
         return agentpool
 
@@ -749,15 +751,15 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         ssh_access = self.context.get_ssh_access()
         if ssh_access is not None:
             if agentpool.security_profile is None:
-                agentpool.security_profile = self.models.AgentPoolSecurityProfile()
+                agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             current_ssh_access = agentpool.security_profile.ssh_access
             # already set to the same value, directly return
             if current_ssh_access.lower() == ssh_access.lower():
                 return agentpool
 
             msg = (
-                "You're going to update agentpool {} ssh access to '{}' "
-                "This change will take effect after you upgrade the nodepool. Proceed?".format(agentpool.name, ssh_access)
+                f"You're going to update agentpool {agentpool.name} ssh access to '{ssh_access}' "
+                "This change will take effect after you upgrade the nodepool. Proceed?"
             )
             if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
                 raise DecoratorEarlyExitException()

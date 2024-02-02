@@ -109,7 +109,6 @@ from azext_aks_preview._consts import (
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
-    CONST_SSH_ACCESS_DISABLED,
     CONST_SSH_ACCESS_LOCALUSER,
 )
 from azext_aks_preview._validators import (
@@ -174,16 +173,6 @@ from azext_aks_preview._validators import (
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
     validate_ssh_access,
-)
-from azure.cli.core.commands.parameters import (
-    edge_zone_type,
-    file_type,
-    get_enum_type,
-    get_resource_name_completion_list,
-    get_three_state_flag,
-    name_type,
-    tags_type,
-    zones_type,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,

@@ -3237,7 +3237,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if ssh_access is not None:
             for agent_pool_profile in mc.agent_pool_profiles:
                 if agent_pool_profile.security_profile is None:
-                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()
+                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
                 agent_pool_profile.security_profile.ssh_access = ssh_access
         return mc
 
@@ -4581,14 +4581,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         ssh_access = self.context.get_ssh_access()
         if ssh_access is not None:
             msg = (
-                "You're going to update ALL agentpool ssh access to '{}' "
-                "This change will take effect after you upgrade the nodepool. Proceed?".format(ssh_access)
+                f"You're going to update ALL agentpool ssh access to '{ssh_access}' "
+                "This change will take effect after you upgrade the nodepool. Proceed?"
             )
             if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
                 raise DecoratorEarlyExitException()
             for agent_pool_profile in mc.agent_pool_profiles:
                 if agent_pool_profile.security_profile is None:
-                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()
+                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
                 agent_pool_profile.security_profile.ssh_access = ssh_access
         return mc
 
