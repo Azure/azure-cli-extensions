@@ -13,6 +13,7 @@ upcoming
 * 'az containerapp env java-component': support list Java components
 * 'az containerapp env java-component spring-cloud-config': support create/update/show/delete Spring Cloud Config
 * 'az containerapp env java-component spring-cloud-eureka': support create/update/show/delete Spring Cloud Eureka
+* 'az containerapp create/update': support bind Java component with --bind
 
 0.3.46
 ++++++
