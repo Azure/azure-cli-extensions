@@ -72,17 +72,17 @@ class ContainerappEnvStorageDecorator(BaseResource):
             if len(self.azure_file_share_name) == 0 or len(self.azure_file_account_name) == 0 or len(
                     self.azure_file_account_key) == 0 or len(self.access_mode) == 0:
                 raise RequiredArgumentMissingError(
-                    "Storage account name, key, share name and access_mode must be provided for AzureFile storage type")
+                    "--azure-file-share-name/--file-share/-f, --azure-file-account-key/--storage-account-key/-k, and --access-mode must be provided for AzureFile storage type")
             if len(self.azure_file_share_name) < 3:
-                raise ValidationError("File share name must be longer than 2 characters.")
+                raise ValidationError("File share name with --azure-file-share-name/--file-share/-f must be longer than 2 characters.")
             if len(self.azure_file_account_name) < 3:
-                raise ValidationError("Account name must be longer than 2 characters.")
+                raise ValidationError("Account name with --azure-file-account-name/--account-name/-a must be longer than 2 characters.")
         elif self.storage_type.lower() == NFS_AZURE_FILE_STORAGE_TYPE:
-            if len(self.server) == 0 or len(self.access_mode) == 0:
+            if len(self.server) == 0 or len(self.access_mode) == 0 or len(self.azure_file_share_name) == 0:
                 raise RequiredArgumentMissingError(
-                    "Server, share name and access_mode must be provided for NfsAzureFile storage type")
+                    "--server, --file-share/-f and --access-mode must be provided for NfsAzureFile storage type")
             if len(self.server) < 3:
-                raise ValidationError("Server must be longer than 2 characters.")
+                raise ValidationError("Server with --server must be longer than 2 characters.")
 
         try:
             r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
