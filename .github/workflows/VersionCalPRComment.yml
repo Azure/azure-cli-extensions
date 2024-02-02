@@ -127,6 +127,7 @@ jobs:
         uses: mshick/add-pr-comment@v2
         with:
            repo-token: ${{ secrets.AZCLIBOT_PAT }}
+           message-id: versioncommentbot
            message-path: |
             version_update.txt
            message-failure: |

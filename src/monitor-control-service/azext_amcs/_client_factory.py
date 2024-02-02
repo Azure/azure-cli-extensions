@@ -12,7 +12,6 @@
 def cf_monitor_control_service_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_amcs.vendored_sdks.amcs import MonitorClient
-
     return get_mgmt_service_client(cli_ctx, MonitorClient)
 
 
