@@ -3416,6 +3416,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete machines
         machine_name1 = machine_list[0]["name"]
         machine_name2 = machine_list[2]["name"]
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "location": resource_group_location,
+                "name": aks_name,
+                "nodepool_name": nodepool_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "machine_name1": machine_name1,
+                "machine_name2": machine_name2,
+            }
+        )
         self.cmd(
             "aks nodepool delete-machines --resource-group={resource_group} --cluster-name={name} --nodepool-name={nodepool_name} --machine-names {machine_name1} {machine_name2}",
             checks=[self.check("provisioningState", "Succeeded")],
