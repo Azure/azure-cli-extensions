@@ -11,13 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Vendor new SDK and bump API version to 2023-11-02-preview.
 
 1.0.0b5
 +++++++
 * Add `--enable-ai-toolchain-operator` to `az aks create` and `az aks update`.
 * Add `--disable-ai-toolchain-operator` to the `az aks update` command.
-
-* Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
 * Refactor azure service mesh related code to meet cli style requirements.
 * Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
 
@@ -28,6 +27,7 @@ Pending
 1.0.0b3
 +++++++
 * Change the format for az aks machine commands to separate the ipv4, ipv6 columns
+* Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
 
 1.0.0b2
 +++++++
