@@ -56,7 +56,6 @@ class NexusImageProcessor(BaseInputProcessor):
             )
         ]
 
-    # TODO: figure out what artifact type this can be
     def get_artifact_details(
         self,
     ) -> Tuple[List[BaseArtifact], List[LocalFileBuilder]]:
@@ -115,7 +114,6 @@ class NexusImageProcessor(BaseInputProcessor):
         :rtype: AzureOperatorNexusImageArtifactProfile
         """
         logger.debug("Generating artifact profile for Nexus image input.")
-        # TODO: JORDAN check what inputs this takes
         artifact_profile = ImageArtifactProfile(
             image_name=self.input_artifact.artifact_name,
             image_version=self.input_artifact.artifact_version,

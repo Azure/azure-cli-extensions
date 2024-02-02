@@ -208,7 +208,6 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
                     "Created templatateParameters as supporting file for nfDefinition bicep"
                 )
             elif isinstance(processor, NexusImageProcessor):
-                # TODO: fix this
                 image_nf_application_list.append(nf_application)
                 # Generate local file for vhd_parameters
                 params = (

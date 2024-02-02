@@ -65,7 +65,6 @@ class OnboardingBaseCLIHandler(ABC):
                     raise UnclassifiedUserFault(f"The all_deploy.parameters.json in the folder provided contains an incorrect input.\nPlease check if you have provided the correct folder for the definition/design type:\n{e}") from e
             else:
                 raise UnclassifiedUserFault("Invalid input")
-                # TODO: Change this to work with publish?
         # If no config file provided (for generate-config)
         else:
             self.config = self._get_input_config()

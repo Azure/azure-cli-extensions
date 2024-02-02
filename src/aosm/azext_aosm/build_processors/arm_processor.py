@@ -176,7 +176,6 @@ class NexusArmBuildProcessor(BaseArmBuildProcessor):
     """
     This class represents a processor for generating ARM templates specific to Nexus.
     """
-    # TODO: JORDAN check if we need Arm_template.value here?
     def generate_nfvi_specific_nf_application(
         self,
     ) -> AzureOperatorNexusNetworkFunctionArmTemplateApplication:
