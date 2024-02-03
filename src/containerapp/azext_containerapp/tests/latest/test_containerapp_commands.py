@@ -740,10 +740,10 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_service_binding_none_client_type(self, resource_group):
-        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use francecentral as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "francecentral"
         self.cmd('configure --defaults location={}'.format(location))
         ca_name = self.create_random_name(prefix='containerapp1', length=24)
         redis_ca_name = 'redis'
@@ -801,10 +801,10 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_add_on_binding_none_client_type(self, resource_group):
-        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use francecentral as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "francecentral"
         self.cmd('configure --defaults location={}'.format(location))
         ca_name = self.create_random_name(prefix='containerapp1', length=24)
         redis_ca_name = 'redis'
@@ -1138,10 +1138,10 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_service_binding_customized_keys_e2e(self, resource_group):
-        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use francecentral as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "francecentral"
         self.cmd('configure --defaults location={}'.format(location))
         ca_name = self.create_random_name(prefix='containerapp1', length=24)
         redis_ca_name = 'redis'
@@ -1226,10 +1226,10 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dev_add_on_binding_customized_keys_e2e(self, resource_group):
-        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use francecentral as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "francecentral"
         self.cmd('configure --defaults location={}'.format(location))
         ca_name = self.create_random_name(prefix='containerapp1', length=24)
         redis_ca_name = 'redis'
@@ -1583,10 +1583,10 @@ class ContainerappServiceBindingTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_managed_service_binding_e2e(self, resource_group):
-        # `mysql flexible-server create`: type 'locations/checkNameAvailability' is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # `mysql flexible-server create`: type 'locations/checkNameAvailability' is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use francecentral as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "francecentral"
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
