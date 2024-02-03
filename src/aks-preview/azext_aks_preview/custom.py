@@ -1563,6 +1563,9 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
             f"Node pool {nodepool_name} doesnt exist, "
             "use 'aks nodepool list' to get current node pool list"
         )
+    print("Type:", type(machine_names))
+    print("Type:", type(machine_names))
+    print("Value:", machine_names)
     
     if len(machine_names) == 0:
                 raise CLIError(
