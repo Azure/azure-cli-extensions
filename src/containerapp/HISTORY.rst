@@ -9,7 +9,7 @@ upcoming
 * 'az containerapp add-on' : support for add-on weaviate create and delete commands
 * Upgrade api-version to 2023-11-02-preview
 * 'az containerapp create/update/up': support --build-env-vars to set environment variables for build
-* 'az containerapp create/update/up': don't compress jar/war/zip file before upload source code
+* 'az containerapp create/update/up': don't compress jar/war/zip file before upload source code; update source to cloud builder to 20240124.1
 
 0.3.46
 ++++++
