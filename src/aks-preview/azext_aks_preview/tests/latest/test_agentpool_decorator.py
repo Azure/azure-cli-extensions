@@ -587,7 +587,7 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
 
     def test_get_enable_vtpm(self):
         self.common_get_enable_vtpm()
-    
+
     def test_get_disable_vtpm(self):
         self.common_get_disable_vtpm()
 
@@ -1295,7 +1295,7 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         # fail on passing the wrong agentpool object
         with self.assertRaises(CLIInternalError):
             dec_1.update_vtpm(None)
-  
+
         agentpool_1 = self.create_initialized_agentpool_instance(
             security_profile=self.models.AgentPoolSecurityProfile(
                 enable_vtpm=False

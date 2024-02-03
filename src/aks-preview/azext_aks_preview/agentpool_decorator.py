@@ -460,7 +460,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         return enable_secure_boot
 
-    def get_disable_secure_boot(self, enable_validation: bool = False) -> bool:
+    def get_disable_secure_boot(self) -> bool:
         """Obtain the value of disable_secure_boot.
         :return: bool
         """
@@ -491,7 +491,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         return enable_vtpm
 
-    def get_disable_vtpm(self, enable_validation: bool = False) -> bool:
+    def get_disable_vtpm(self) -> bool:
         """Obtain the value of disable_vtpm.
         :return: bool
         """
