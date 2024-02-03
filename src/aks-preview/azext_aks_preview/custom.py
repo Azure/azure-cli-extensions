@@ -1241,7 +1241,7 @@ def aks_agentpool_update(
     asg_ids=None,
     enable_artifact_streaming=False,
     os_sku=None,
-     # trusted launch
+    # trusted launch
     enable_secure_boot=False,
     disable_secure_boot=False,
     enable_vtpm=False,

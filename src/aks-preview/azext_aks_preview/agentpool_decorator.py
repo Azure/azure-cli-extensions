@@ -457,7 +457,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 raise MutuallyExclusiveArgumentError(
                     'Cannot specify "--enable-secure-boot" and "--disable-secure-boot" at the same time'
                 )
-    
+
         return enable_secure_boot
 
     def get_disable_secure_boot(self, enable_validation: bool = False) -> bool:
@@ -497,6 +497,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
 
         return self.raw_param.get("disable_vtpm")
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(

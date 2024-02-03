@@ -4145,10 +4145,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # 1. create
         create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--nodepool-name {node_pool_name} -c 1 "
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--nodepool-name {node_pool_name} -c 1 --enable-managed-identity "
             "--ssh-key-value={ssh_key_value} "
-            "--enable-secure_boot"
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
+            "--enable-secure-boot"
         )
         self.cmd(
             create_cmd,
@@ -4184,7 +4185,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-
         # delete
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
@@ -4210,16 +4210,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                    '--ssh-key-value={ssh_key_value} --node-count=1 --enable-managed-identity ' \
-                    '--enable-oidc-issuer --enable-workload-identity --enable-secure-boot ' \
-                    '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
-
         # 1. create
         create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--nodepool-name {node_pool_name} -c 1 "
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--nodepool-name {node_pool_name} -c 1 --enable-managed-identity "
             "--ssh-key-value={ssh_key_value} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
             "--enable-vtpm"
         )
         self.cmd(

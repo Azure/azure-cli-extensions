@@ -480,7 +480,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         ctx_1.attach_agentpool(agentpool_1)
         self.assertEqual(ctx_1.get_disable_secure_boot(), True)
-    
+
     def common_get_enable_vtpm(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -534,6 +534,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_1.attach_agentpool(agentpool_1)
         self.assertEqual(ctx_1.get_disable_vtpm(), True)
 
+
 class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     AKSPreviewAgentPoolContextCommonTestCase
 ):
@@ -580,7 +581,7 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
 
     def test_get_enable_secure_boot(self):
         self.common_get_enable_secure_boot()
-    
+
     def test_get_disable_secure_boot(self):
         self.common_get_disable_secure_boot()
 
@@ -640,7 +641,7 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_disable_secure_boot(self):
         self.common_get_disable_secure_boot()
-        
+
     def test_get_enable_vtpm(self):
         self.common_get_enable_vtpm()
 
@@ -866,6 +867,7 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
+
 class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
     AKSPreviewAgentPoolAddDecoratorCommonTestCase
 ):
@@ -901,7 +903,7 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
 
     def test_set_up_secure_boot(self):
         self.common_set_up_secure_boot()
-    
+
     def test_set_up_vtpm(self):
         self.common_set_up_vtpm()
 
@@ -1215,7 +1217,7 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         grond_truth_agentpool_2 = self.create_initialized_agentpool_instance(
             artifact_streaming_profile=self.models.AgentPoolArtifactStreamingProfile(
                 enabled=True
-            ) 
+            )
         )
         self.assertEqual(dec_agentpool_2, grond_truth_agentpool_2)
 
@@ -1270,7 +1272,7 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
 
-         # Should error if both set
+        # Should error if both set
         dec_3 = AKSPreviewAgentPoolUpdateDecorator(
             self.cmd,
             self.client,
@@ -1293,7 +1295,7 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         # fail on passing the wrong agentpool object
         with self.assertRaises(CLIInternalError):
             dec_1.update_vtpm(None)
-            
+  
         agentpool_1 = self.create_initialized_agentpool_instance(
             security_profile=self.models.AgentPoolSecurityProfile(
                 enable_vtpm=False
