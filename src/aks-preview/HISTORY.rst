@@ -11,10 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Vendor new SDK and bump API version to 2023-11-02-preview.
 
 1.0.0b6
 +++++++
+* Vendor new SDK and bump API version to 2023-11-02-preview.
 * Add `--ssh-access` to the `az aks create` command.
 * Add `--ssh-access` to the `az aks update` command.
 * Add `--ssh-access` to the `az aks nodepool add` command.
