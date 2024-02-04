@@ -13,6 +13,13 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-11-02-preview.
 
+1.0.0b6
++++++++
+* Add `--ssh-access` to the `az aks create` command.
+* Add `--ssh-access` to the `az aks update` command.
+* Add `--ssh-access` to the `az aks nodepool add` command.
+* Add `--ssh-access` to the `az aks nodepool update` command.
+
 1.0.0b5
 +++++++
 * Add `--enable-ai-toolchain-operator` to `az aks create` and `az aks update`.
@@ -54,13 +61,6 @@ Pending
 * Vendor new SDK and bump API version to 2023-10-02-preview.
 * Update the enum for `--os-sku` in command `az aks nodepool update` to only accept the expected Ubuntu and AzureLinux OSSKUs.
 * Update description `az aks update` and remove description about outbound ip limit.
-
-0.5.172
-+++++++
-* Add `--ssh-access` to the `az aks create` command.
-* Add `--ssh-access` to the `az aks update` command.
-* Add `--ssh-access` to the `az aks nodepool add` command.
-* Add `--ssh-access` to the `az aks nodepool update` command.
 
 0.5.171
 +++++++
