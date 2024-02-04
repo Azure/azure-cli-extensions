@@ -9,7 +9,6 @@ from typing import Any, Dict
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import ValidationError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
-from azure.cli.command_modules.containerapp._utils import clean_null_values
 from knack.log import get_logger
 
 from ._models import JavaComponent as JavaComponentModel
@@ -51,52 +50,45 @@ class JavaComponentDecorator(BaseResource):
                 })
             self.java_component_def["properties"]["configurations"] = configuration_list
 
-        self.java_component_def = clean_null_values(self.java_component_def)
-
     def create(self):
         try:
-            r = self.client.create(
+            return self.client.create(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                 environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name(),
                 java_component_envelope=self.java_component_def, no_wait=self.get_argument_no_wait())
-            r = clean_null_values(r)
-            return r
         except Exception as e:
             handle_raw_exception(e)
 
     def update(self):
         try:
-            r = self.client.update(
+            return self.client.update(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                 environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name(),
                 java_component_envelope=self.java_component_def, no_wait=self.get_argument_no_wait())
-            r = clean_null_values(r)
-            return r
         except Exception as e:
             handle_raw_exception(e)
 
     def show(self):
         try:
-            r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                 environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name())
-            r = clean_null_values(r)
-            return r
+            return self.client.show(
+                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
+                environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name())
         except Exception as e:
             handle_raw_exception(e)
 
     def list(self):
         try:
-            r = self.client.list(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                 environment_name=self.get_argument_environment_name())
-            r = clean_null_values(r)
-            return r
+            return self.client.list(
+                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
+                environment_name=self.get_argument_environment_name())
         except Exception as e:
             handle_raw_exception(e)
 
     def delete(self):
         try:
-            return self.client.delete(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                      environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name(),
-                                      no_wait=self.get_argument_no_wait())
+            return self.client.delete(
+                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
+                environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name(),
+                no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
