@@ -7,7 +7,6 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
-from azure.cli.core.commands import CliCommandType
 
 
 def load_command_table(self, _):

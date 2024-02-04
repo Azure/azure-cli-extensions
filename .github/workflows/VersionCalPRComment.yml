@@ -1,0 +1,134 @@
+name: Generate Release Version and Comment PR
+
+on:
+  pull_request_target:
+      types: [opened, labeled, unlabeled, synchronize]
+      paths:
+        - '**.py'
+
+permissions:
+  pull-requests: write
+
+jobs:
+  version-cal:
+    if: contains(github.event.pull_request.labels.*.name, 'auto-cal-version')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Init Version Message
+        run: |
+          echo "message=$(echo 'Suggested init version: 1.0.0b1 for preview release and 1.0.0 for stable release')" >> $GITHUB_ENV
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+           python-version: "3.10"
+      - name: Checkout CLI extension repo
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 0 # checkout all branches
+          ref: ${{github.event.pull_request.head.ref}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}  # checkout pull request branch
+      - name: Show workdirectory after site cloned
+        run: |
+           pwd
+           ls
+      - name: Get Diff Files
+        run: |
+            echo github.event.pull_request.base.sha: ${{github.event.pull_request.base.sha}}
+            echo github.event.pull_request.base.ref: ${{ github.event.pull_request.base.ref }}
+            echo github.event.pull_request.head.sha: ${{ github.event.pull_request.head.sha }}
+            echo github.event.pull_request.head.ref: ${{ github.event.pull_request.head.ref }}
+            echo github.event.pull_request.head.repo.full_name: ${{ github.event.pull_request.head.repo.full_name }}
+            echo github.sha: ${{github.sha}}
+            git --version
+            git log --oneline | head -n 30
+            echo git branch -a
+            git branch -a
+            git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} > changed_files
+            cat changed_files
+            cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq > changed_modules
+            echo "changed_module_list=$(cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq | xargs)" >> $GITHUB_ENV
+      - name: Display Diff Modules
+        run: |
+            for mod in `cat changed_modules`
+            do
+              echo changed module: ${mod}
+            done
+      - name: Checkout CLI main repo 
+        uses: actions/checkout@master
+        with:
+           repository: Azure/azure-cli
+           path: ./azure-cli
+      - name: Show workdirectory after cli cloned
+        run: |
+           pwd
+           ls
+      - name: Move the main repo to the same level as the extension repo
+        run: |
+           mv azure-cli ../
+           cd ../
+           pwd
+           ls
+      - name: Install azdev
+        run: | 
+           python -m pip install --upgrade pip
+           set -ev
+           python -m venv env
+           chmod +x env/bin/activate
+           source ./env/bin/activate
+           pip install azdev
+           azdev --version
+           cd ../
+           azdev setup -c azure-cli -r azure-cli-extensions --debug
+           az --version
+           pip list -v
+      - name: Gen Base and Diff Metadata
+        id: get_comment_message
+        env:
+          pr_label_list: ${{ toJson(github.event.pull_request.labels.*.name) }}
+          base_meta_path: "./base_meta/"
+          diff_meta_path: "./diff_meta/"
+          output_file: "version_update.txt"
+        run: |
+           chmod +x env/bin/activate
+           source ./env/bin/activate
+           echo github.event.pull_request.base.ref: ${{ github.event.pull_request.base.ref }}
+           git checkout ${{ github.event.pull_request.base.ref }}
+           mkdir ${base_meta_path}
+           for mod in `cat changed_modules`
+           do
+              echo **************************
+              echo changed module: ${mod}
+              azdev extension add ${mod}
+              azdev command-change meta-export ${mod} --meta-output-path ./${base_meta_path}/
+              azdev extension remove ${mod}
+              echo **************************
+              echo -e "\n\n\n\n\n"
+           done
+           echo github.event.pull_request.head.ref: ${{ github.event.pull_request.head.ref }}
+           git checkout ${{ github.event.pull_request.head.ref }}
+           mkdir ${diff_meta_path}
+           for mod in `cat changed_modules`
+           do
+              echo **************************
+              echo changed module: ${mod}
+              azdev extension add ${mod}
+              azdev command-change meta-export ${mod} --meta-output-path ./${diff_meta_path}/
+              azdev extension remove ${mod}
+              echo **************************
+              echo -e "\n\n\n\n\n"
+           done
+           echo ls base_meta_path:
+           ls ./${base_meta_path}/
+           echo ls diff_meta_path
+           ls ./${diff_meta_path}/
+           python scripts/ci/release_version_cal.py
+           # echo "commit_message=$(cat ${output_file})" >> $GITHUB_ENV
+      - name: Comment on the pull request
+        uses: mshick/add-pr-comment@v2
+        with:
+           repo-token: ${{ secrets.AZCLIBOT_PAT }}
+           message-id: versioncommentbot
+           message-path: |
+            version_update.txt
+           message-failure: |
+            Please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md) to update release versions.
