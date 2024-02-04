@@ -15,6 +15,7 @@ from azure.cli.core import telemetry as telemetry_core
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
+    ResourceNotFoundError,
     ValidationError,
     CLIError,
     CLIInternalError,
@@ -36,7 +37,7 @@ from azure.cli.command_modules.containerapp._utils import (_validate_subscriptio
                                                            generate_randomized_cert_name, load_cert_file,
                                                            generate_randomized_managed_cert_name,
                                                            check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                                                           trigger_workflow,
+                                                           trigger_workflow, set_managed_identity, _ensure_identity_resource_id,
                                                            AppType)
 
 from knack.log import get_logger
@@ -438,7 +439,8 @@ def create_containerapp(cmd,
                         context_path=None,
                         service_principal_client_id=None,
                         service_principal_client_secret=None,
-                        service_principal_tenant_id=None):
+                        service_principal_tenant_id=None,
+                        max_inactive_revisions=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -495,7 +497,8 @@ def update_containerapp_logic(cmd,
                               secret_volume_mount=None,
                               source=None,
                               artifact=None,
-                              build_env_vars=None):
+                              build_env_vars=None,
+                              max_inactive_revisions=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -545,7 +548,8 @@ def update_containerapp(cmd,
                         secret_volume_mount=None,
                         source=None,
                         artifact=None,
-                        build_env_vars=None):
+                        build_env_vars=None,
+                        max_inactive_revisions=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -580,7 +584,8 @@ def update_containerapp(cmd,
                                      secret_volume_mount=secret_volume_mount,
                                      source=source,
                                      artifact=artifact,
-                                     build_env_vars=build_env_vars)
+                                     build_env_vars=build_env_vars,
+                                     max_inactive_revisions=max_inactive_revisions)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -674,7 +679,9 @@ def create_managed_environment(cmd,
                                mtls_enabled=None,
                                enable_dedicated_gpu=False,
                                no_wait=False,
-                               logs_dynamic_json_columns=False):
+                               logs_dynamic_json_columns=False,
+                               system_assigned=False,
+                               user_assigned=None):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -1888,3 +1895,202 @@ def init_dapr_components(cmd, resource_group_name, environment_name, statestore=
             "daprComponents": [statestore_component_id, pubsub_component_id]
         }
     }
+
+def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    managed_env_def = None
+
+    try:
+        managed_env_def = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not managed_env_def:
+        raise ResourceNotFoundError("The containerapp env '{}' does not exist".format(name))
+
+    assign_system_identity = system_assigned
+    if not user_assigned:
+        user_assigned = []
+    assign_user_identities = [x.lower() for x in user_assigned]
+    if assign_user_identities:
+        assign_id_size = len(assign_user_identities)
+
+        # Remove duplicate identities that are passed and notify
+        assign_user_identities = list(set(assign_user_identities))
+        if assign_id_size != len(assign_user_identities):
+            logger.warning("At least one identity was passed twice.")
+
+    is_system_identity_changed = assign_system_identity
+    to_add_user_assigned_identity = []
+
+    # If identity not returned
+    try:
+        managed_env_def["identity"]
+        managed_env_def["identity"]["type"]
+    except:
+        managed_env_def["identity"] = {}
+        managed_env_def["identity"]["type"] = "None"
+    payload = {"identity": {"type": managed_env_def["identity"]["type"]}}
+
+    # check system identity is already assigned
+    if assign_system_identity and managed_env_def["identity"]["type"].__contains__("SystemAssigned"):
+        is_system_identity_changed = False
+        logger.warning("System identity is already assigned to containerapp environment")
+
+    # check user identity is already assigned
+    if assign_user_identities:
+        if "userAssignedIdentities" not in managed_env_def["identity"]:
+            managed_env_def["identity"]["userAssignedIdentities"] = {}
+
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+        for r in assign_user_identities:
+            r = _ensure_identity_resource_id(subscription_id, resource_group_name, r).replace("resourceGroup", "resourcegroup")
+            isExisting = False
+
+            for old_user_identity in managed_env_def["identity"]["userAssignedIdentities"]:
+                if old_user_identity.lower() == r.lower():
+                    isExisting = True
+                    logger.warning("User identity %s is already assigned to containerapp environment", old_user_identity)
+                    break
+
+            if not isExisting:
+                to_add_user_assigned_identity.append(r)
+
+    # no changes to containerapp environment
+    if (not is_system_identity_changed) and (not to_add_user_assigned_identity):
+        logger.warning("No managed identities changes to containerapp environment", old_user_identity)
+        return managed_env_def
+
+    if to_add_user_assigned_identity:
+        payload["identity"]["userAssignedIdentities"] = {k: {} for k in to_add_user_assigned_identity}
+
+    # Assign correct type
+    try:
+        if managed_env_def["identity"]["type"] != "None":
+            payload["identity"]["type"] = managed_env_def["identity"]["type"]
+            if managed_env_def["identity"]["type"] == "SystemAssigned" and assign_user_identities:
+                payload["identity"]["type"] = "SystemAssigned,UserAssigned"
+            if managed_env_def["identity"]["type"] == "UserAssigned" and assign_system_identity:
+                payload["identity"]["type"] = "SystemAssigned,UserAssigned"
+            
+        else:
+            if assign_system_identity and assign_user_identities:
+                payload["identity"]["type"] = "SystemAssigned,UserAssigned"
+            elif assign_system_identity:
+                payload["identity"]["type"] = "SystemAssigned"
+            elif assign_user_identities:
+                payload["identity"]["type"] = "UserAssigned"
+    except:
+        # Always returns "type": "None" when CA has no previous identities
+        pass
+
+    try:
+        r = ManagedEnvironmentPreviewClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=payload, no_wait=no_wait)
+        return r["identity"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    remove_system_identity = system_assigned
+    remove_user_identities = user_assigned
+
+    if user_assigned:
+        remove_id_size = len(remove_user_identities)
+
+        # Remove duplicate identities that are passed and notify
+        remove_user_identities = list(set(remove_user_identities))
+        if remove_id_size != len(remove_user_identities):
+            logger.warning("At least one identity was passed twice.")
+
+    managed_env_def = None
+    # Get containerapp env properties of CA we are updating
+    try:
+        managed_env_def = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not managed_env_def:
+        raise ResourceNotFoundError("The containerapp env '{}' does not exist".format(name))
+
+    
+    # If identity not returned
+    try:
+        managed_env_def["identity"]
+        managed_env_def["identity"]["type"]
+    except:
+        managed_env_def["identity"] = {}
+        managed_env_def["identity"]["type"] = "None"
+    payload = {"identity": {"type": managed_env_def["identity"]["type"]}}
+
+    if managed_env_def["identity"]["type"] == "None":
+        raise InvalidArgumentValueError("The containerapp env {} has no system or user assigned identities.".format(name))
+
+    if remove_system_identity:
+        if managed_env_def["identity"]["type"] == "UserAssigned":
+            raise InvalidArgumentValueError("The containerapp job {} has no system assigned identities.".format(name))
+        payload["identity"]["type"] = ("None" if payload["identity"]["type"] == "SystemAssigned" else "UserAssigned")
+
+    #  Remove all user identities
+    if isinstance(user_assigned, list) and not user_assigned:
+        logger.warning("remvoe all user identities.")
+        payload["identity"]["type"] = ("None" if payload["identity"]["type"] == "UserAssigned" else "SystemAssigned")
+        remove_user_identities = []
+
+    if remove_user_identities:
+        payload["identity"]["userAssignedIdentities"] = {}
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        try:
+            managed_env_def["identity"]["userAssignedIdentities"]
+        except:
+            managed_env_def["identity"]["userAssignedIdentities"] = {}
+        for remove_id in remove_user_identities:
+            given_id = remove_id
+            remove_id = _ensure_identity_resource_id(subscription_id, resource_group_name, remove_id)
+            wasRemoved = False
+
+            for old_user_identity in managed_env_def["identity"]["userAssignedIdentities"]:
+                if old_user_identity.lower() == remove_id.lower():
+                    payload["identity"]["userAssignedIdentities"][old_user_identity] = None
+                    wasRemoved = True
+                    break
+
+            if not wasRemoved:
+                raise InvalidArgumentValueError("The containerapp job does not have specified user identity '{}' assigned, so it cannot be removed.".format(given_id))
+
+        # all user identities are removed
+        if len(managed_env_def["identity"]["userAssignedIdentities"]) == len(payload["identity"]["userAssignedIdentities"]):
+            payload["identity"].pop("userAssignedIdentities", None)
+            payload["identity"]["type"] = ("None" if payload["identity"]["type"] == "UserAssigned" else "SystemAssigned")
+        else:
+            payload["identity"]["type"] = ("UserAssigned" if payload["identity"]["type"] == "UserAssigned" else "SystemAssigned,UserAssigned")
+    try:
+        r = ManagedEnvironmentPreviewClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=payload, no_wait=no_wait)
+    except Exception as e:
+        handle_raw_exception(e)
+    
+    try:
+        return r["identity"]
+    except:
+        r["identity"] = {}
+        r["identity"]["type"] = "None"
+        return r["identity"]
+
+def show_env_managed_identity(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        r = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    try:
+        return r["identity"]
+    except:
+        r["identity"] = {}
+        r["identity"]["type"] = "None"
+        return r["identity"]

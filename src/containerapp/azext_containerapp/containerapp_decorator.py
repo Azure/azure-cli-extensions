@@ -615,6 +615,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         self.set_up_extended_location()
         self.set_up_source()
         self.set_up_repo()
+        if self.get_argument_max_inactive_revisions() is not None:
+            safe_set(self.containerapp_def, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
 
     def validate_arguments(self):
         super().validate_arguments()
@@ -967,6 +969,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_service_principal_tenant_id(self):
         return self.get_param("service_principal_tenant_id")
 
+    def get_argument_max_inactive_revisions(self):
+        return self.get_param("max_inactive_revisions")
 
 # decorator for preview update
 class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
@@ -1008,6 +1012,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         self.set_up_service_bindings()
         self.set_up_unbind_service_bindings()
         self.set_up_source()
+        if self.get_argument_max_inactive_revisions() is not None:
+            safe_set(self.new_containerapp, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
@@ -1172,6 +1178,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                     new_template["serviceBinds"] = [binding for binding in new_template["serviceBinds"] if
                                                     binding["name"] != item]
 
+    def get_argument_max_inactive_revisions(self):
+        return self.get_param("max_inactive_revisions")
 
 # decorator for preview list
 class ContainerAppPreviewListDecorator(BaseContainerAppDecorator):
