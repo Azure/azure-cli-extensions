@@ -31,7 +31,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'azure-mgmt-compute~=20.0.0'
+    'azure-mgmt-compute~=30.4.0'
 ]
 
 try:
