@@ -18,6 +18,7 @@ Pending
 * Add `--enable-ai-toolchain-operator` to `az aks create` and `az aks update`.
 * Add `--disable-ai-toolchain-operator` to the `az aks update` command.
 * Refactor azure service mesh related code to meet cli style requirements.
+* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
 
 1.0.0b4
 +++++++
