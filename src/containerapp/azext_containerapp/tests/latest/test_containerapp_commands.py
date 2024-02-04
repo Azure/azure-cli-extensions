@@ -1391,7 +1391,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
-        # self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
+        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -1473,7 +1473,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
-        # self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
+        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -1578,7 +1578,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
-        # self.cmd(f'containerapp env delete -g {env_rg} -n {env_name} --yes')
+        self.cmd(f'containerapp env delete -g {env_rg} -n {env_name} --yes')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
