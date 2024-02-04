@@ -86,6 +86,6 @@ class CloudServiceScenarioTest(ScenarioTest):
         self.cmd('cloud-service os-family list -l eastus', checks=[
             self.check('[0].type', 'Microsoft.Compute/locations/cloudServiceOSFamilies')
         ])
-        self.cmd('cloud-service os-family show -n 5 -l eastus' ,checks=[
+        self.cmd('cloud-service os-family show -n 5 -l eastus', checks=[
             self.check('type', 'Microsoft.Compute/locations/cloudServiceOSFamilies')
         ])
