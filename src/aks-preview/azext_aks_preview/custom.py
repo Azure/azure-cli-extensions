@@ -1565,17 +1565,14 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
 
     if not agentpool_exists:
         raise CLIError(
-            f"Node pool {nodepool_name} doesnt exist, "
-            "use 'aks nodepool list' to get current node pool list"
+            f"Node pool {nodepool_name} doesn't exist, "
+            "use 'az aks nodepool list' to get current node pool list"
         )
-    print("Type:", type(machine_names))
-    print("Type:", type(machine_names))
-    print("Value:", machine_names)
     
     if len(machine_names) == 0:
                 raise CLIError(
             f"Machine names doesn't provide, "
-            "use 'aks machine list' to get current machine list"
+            "use 'az aks machine list' to get current machine list"
         )
 
     AgentPoolDeleteMachinesParameter=cmd.get_models(
