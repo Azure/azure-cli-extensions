@@ -80,9 +80,10 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.certificate_virtual_path = AAZStrArg(
-            options=["--certificate-virtual-path"],
+        _args_schema.certificate_path = AAZStrArg(
+            options=["--certificate-path"],
             arg_group="Properties",
+            help={"short-summary": "Certificate path in Nginx configuration structure", "long-summary": "This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"},
             nullable=True,
         )
         _args_schema.key_vault_secret_id = AAZStrArg(
@@ -90,9 +91,10 @@ class Update(AAZCommand):
             arg_group="Properties",
             nullable=True,
         )
-        _args_schema.key_virtual_path = AAZStrArg(
-            options=["--key-virtual-path"],
+        _args_schema.key_path = AAZStrArg(
+            options=["--key-path"],
             arg_group="Properties",
+            help={"short-summary": "Key path in Nginx configuration structure", "long-summary": "This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"},
             nullable=True,
         )
         return cls._args_schema
@@ -345,9 +347,9 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("certificateVirtualPath", AAZStrType, ".certificate_virtual_path")
+                properties.set_prop("certificateVirtualPath", AAZStrType, ".certificate_path")
                 properties.set_prop("keyVaultSecretId", AAZStrType, ".key_vault_secret_id")
-                properties.set_prop("keyVirtualPath", AAZStrType, ".key_virtual_path")
+                properties.set_prop("keyVirtualPath", AAZStrType, ".key_path")
 
             return _instance_value
 
