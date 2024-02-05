@@ -35,7 +35,7 @@ from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
-    setup_common_guardrails_profile,
+    setup_common_safeguards_profile,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
@@ -184,14 +184,14 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
-    def get_guardrails_level(self) -> Union[str, None]:
-        return self.raw_param.get("guardrails_level")
+    def get_safeguards_level(self) -> Union[str, None]:
+        return self.raw_param.get("safeguards_level")
 
-    def get_guardrails_excluded_namespaces(self) -> Union[str, None]:
-        return self.raw_param.get("guardrails_excluded_ns")
+    def get_safeguards_excluded_namespaces(self) -> Union[str, None]:
+        return self.raw_param.get("safeguards_excluded_ns")
 
-    def get_guardrails_version(self) -> Union[str, None]:
-        return self.raw_param.get("guardrails_version")
+    def get_safeguards_version(self) -> Union[str, None]:
+        return self.raw_param.get("safeguards_version")
 
     def __validate_pod_identity_with_kubenet(self, mc, enable_pod_identity, enable_pod_identity_with_kubenet):
         """Helper function to check the validity of serveral pod identity related parameters.
@@ -3109,12 +3109,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
-    def set_up_guardrails_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        excludedNamespaces = self.context.get_guardrails_excluded_namespaces()
-        version = self.context.get_guardrails_version()
-        level = self.context.get_guardrails_level()
+    def set_up_safeguards_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
+        version = self.context.get_safeguards_version()
+        level = self.context.get_safeguards_level()
         # provided any value?
-        mc = setup_common_guardrails_profile(level, version, excludedNamespaces, mc, self.models)
+        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
         return mc
 
     def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3267,8 +3267,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_node_resource_group_profile(mc)
         # set up auto upgrade profile
         mc = self.set_up_auto_upgrade_profile(mc)
-        # set up guardrails profile
-        mc = self.set_up_guardrails_profile(mc)
+        # set up safeguards profile
+        mc = self.set_up_safeguards_profile(mc)
         # set up azure service mesh profile
         mc = self.set_up_azure_service_mesh_profile(mc)
         # setup k8s support plan
@@ -4238,18 +4238,18 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
-    def update_guardrails_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update guardrails profile for the ManagedCluster object
+    def update_safeguards_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update safeguards profile for the ManagedCluster object
         :return: the ManagedCluster object
         """
 
         self._ensure_mc(mc)
 
-        excludedNamespaces = self.context.get_guardrails_excluded_namespaces()
-        version = self.context.get_guardrails_version()
-        level = self.context.get_guardrails_level()
+        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
+        version = self.context.get_safeguards_version()
+        level = self.context.get_safeguards_level()
 
-        mc = setup_common_guardrails_profile(level, version, excludedNamespaces, mc, self.models)
+        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
 
         if level is not None:
             mc.safeguards_profile.level = level
@@ -4607,8 +4607,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_resource_group_profile(mc)
         # update auto upgrade profile
         mc = self.update_auto_upgrade_profile(mc)
-        # update guardrails_profile
-        mc = self.update_guardrails_profile(mc)
+        # update safeguards_profile
+        mc = self.update_safeguards_profile(mc)
         # update cluster upgrade settings profile
         mc = self.update_upgrade_settings(mc)
         # update nodepool taints

@@ -95,9 +95,9 @@ from azext_aks_preview._consts import (
     CONST_WEEKINDEX_FIRST,
     CONST_WEEKINDEX_FOURTH,
     CONST_WEEKINDEX_LAST,
-    CONST_GUARDRAILSLEVEL_OFF,
-    CONST_GUARDRAILSLEVEL_WARNING,
-    CONST_GUARDRAILSLEVEL_ENFORCEMENT,
+    CONST_SAFEGUARDSLEVEL_OFF,
+    CONST_SAFEGUARDSLEVEL_WARNING,
+    CONST_SAFEGUARDSLEVEL_ENFORCEMENT,
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
     CONST_WEEKINDEX_SECOND,
@@ -287,11 +287,11 @@ keyvault_network_access_types = [
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
 ]
 
-# consts for guardrails level
-guardrails_levels = [
-    CONST_GUARDRAILSLEVEL_OFF,
-    CONST_GUARDRAILSLEVEL_WARNING,
-    CONST_GUARDRAILSLEVEL_ENFORCEMENT,
+# consts for safeguards level
+safeguards_levels = [
+    CONST_SAFEGUARDSLEVEL_OFF,
+    CONST_SAFEGUARDSLEVEL_WARNING,
+    CONST_SAFEGUARDSLEVEL_ENFORCEMENT,
 ]
 
 # azure service mesh
@@ -322,7 +322,6 @@ storage_pool_options = [
     CONST_STORAGE_POOL_OPTION_SSD,
 ]
 
-# consts for guardrails level
 node_provisioning_modes = [
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
@@ -749,17 +748,17 @@ def load_arguments(self, _):
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
         c.argument(
-            "guardrails_level",
-            arg_type=get_enum_type(guardrails_levels),
+            "safeguards_level",
+            arg_type=get_enum_type(safeguards_levels),
             is_preview=True,
         )
         c.argument(
-            "guardrails_version",
+            "safeguards_version",
             type=str,
-            help="The guardrails version",
+            help="The safeguards version",
             is_preview=True,
         )
-        c.argument("guardrails_excluded_ns", type=str, is_preview=True)
+        c.argument("safeguards_excluded_ns", type=str, is_preview=True)
         # azure monitor profile
         c.argument(
             "enable_azuremonitormetrics",
@@ -812,7 +811,7 @@ def load_arguments(self, _):
             help=(
                 'Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". '
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
-            )
+            ),
         )
 
     with self.argument_context("aks update") as c:
@@ -985,7 +984,7 @@ def load_arguments(self, _):
             help=(
                 "space-separated labels: key[=value] [key[=value] ...]. "
                 "See https://aka.ms/node-labels for syntax of labels."
-            )
+            ),
         )
         c.argument("nodepool_taints", validator=validate_nodepool_taints)
         # misc
@@ -1127,12 +1126,17 @@ def load_arguments(self, _):
             help="path to file containing list of new line separated CAs",
         )
         c.argument(
-            "guardrails_level",
-            arg_type=get_enum_type(guardrails_levels),
+            "safeguards_level",
+            arg_type=get_enum_type(safeguards_levels),
             is_preview=True,
         )
-        c.argument("guardrails_version", help="The guardrails version", is_preview=True)
-        c.argument("guardrails_excluded_ns", is_preview=True)
+        c.argument(
+            "safeguards_version",
+            type=str,
+            help="The safeguards version",
+            is_preview=True,
+        )
+        c.argument("safeguards_excluded_ns", type=str, is_preview=True)
         c.argument(
             "enable_network_observability",
             action="store_true",
@@ -1189,7 +1193,7 @@ def load_arguments(self, _):
             help=(
                 'Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". '
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
-            )
+            ),
         )
 
     with self.argument_context("aks upgrade") as c:
@@ -1340,7 +1344,7 @@ def load_arguments(self, _):
             validator=validate_node_public_ip_tags,
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
-        c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
+        c.argument("skip_gpu_driver_install", action="store_true", is_preview=True)
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1473,7 +1477,7 @@ def load_arguments(self, _):
                 help=(
                     "The number of months between each set of occurrences for AbsoluteMonthly or "
                     "RelativeMonthly schedule."
-                )
+                ),
             )
             c.argument(
                 "day_of_week",
@@ -1489,7 +1493,7 @@ def load_arguments(self, _):
                 help=(
                     "Specify on which instance of the weekday specified in --day-of-week "
                     "the maintenance occurs for RelativeMonthly schedule."
-                )
+                ),
             )
             c.argument(
                 "duration_hours",
@@ -1992,9 +1996,7 @@ def _get_default_install_location(exe_name):
         home_dir = os.environ.get("USERPROFILE")
         if not home_dir:
             return None
-        install_location = os.path.join(
-            home_dir, f".azure-{exe_name}\\{exe_name}.exe"
-        )
+        install_location = os.path.join(home_dir, f".azure-{exe_name}\\{exe_name}.exe")
     elif system in ("Linux", "Darwin"):
         install_location = f"/usr/local/bin/{exe_name}"
     else:
