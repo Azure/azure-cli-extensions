@@ -4130,6 +4130,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
     def test_aks_create_update_secure_boot_flow(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
         node_pool_name = self.create_random_name("c", 6)
         node_pool_name_second = self.create_random_name("c", 6)
@@ -4137,6 +4139,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             {
                 "resource_group": resource_group,
                 "name": aks_name,
+                "dns_name_prefix": self.create_random_name("cliaksdns", 16),
+                "location": resource_group_location,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
                 "node_pool_name": node_pool_name,
                 "node_pool_name_second": node_pool_name_second,
                 "ssh_key_value": self.generate_ssh_keys(),
@@ -4197,6 +4202,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
     def test_aks_create_update_vtpm_flow(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
         node_pool_name = self.create_random_name("c", 6)
         node_pool_name_second = self.create_random_name("c", 6)
@@ -4204,6 +4211,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             {
                 "resource_group": resource_group,
                 "name": aks_name,
+                "dns_name_prefix": self.create_random_name("cliaksdns", 16),
+                "location": resource_group_location,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
                 "node_pool_name": node_pool_name,
                 "node_pool_name_second": node_pool_name_second,
                 "ssh_key_value": self.generate_ssh_keys(),

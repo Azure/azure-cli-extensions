@@ -436,7 +436,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         return skip_gpu_driver_install
 
-    def get_enable_secure_boot(self, enable_validation: bool = False) -> bool:
+    def get_enable_secure_boot(self) -> bool:
         """Obtain the value of enable_secure_boot.
         :return: bool
         """
@@ -452,11 +452,10 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             ):
                 enable_secure_boot = self.agentpool.security_profile.enable_secure_boot
 
-        if enable_validation:
-            if enable_secure_boot and self.get_disable_secure_boot():
-                raise MutuallyExclusiveArgumentError(
-                    'Cannot specify "--enable-secure-boot" and "--disable-secure-boot" at the same time'
-                )
+        if enable_secure_boot and self.get_disable_secure_boot():
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--enable-secure-boot" and "--disable-secure-boot" at the same time'
+            )
 
         return enable_secure_boot
 
@@ -467,7 +466,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         return self.raw_param.get("disable_secure_boot")
 
-    def get_enable_vtpm(self, enable_validation: bool = False) -> bool:
+    def get_enable_vtpm(self) -> bool:
         """Obtain the value of enable_vtpm.
         :return: bool
         """
@@ -483,11 +482,10 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             ):
                 enable_vtpm = self.agentpool.security_profile.enable_vtpm
 
-        if enable_validation:
-            if enable_vtpm and self.get_disable_vtpm():
-                raise MutuallyExclusiveArgumentError(
-                    'Cannot specify "--enable-vtpm" and "--disable-vtpm" at the same time'
-                )
+        if enable_vtpm and self.get_disable_vtpm():
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--enable-vtpm" and "--disable-vtpm" at the same time'
+            )
 
         return enable_vtpm
 
@@ -642,7 +640,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         """Set up secure boot property for the AgentPool object."""
         self._ensure_agentpool(agentpool)
 
-        if self.context.get_enable_secure_boot(enable_validation=True):
+        if self.context.get_enable_secure_boot():
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
 
@@ -655,7 +653,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         """Set up vtpm property for the AgentPool object."""
         self._ensure_agentpool(agentpool)
 
-        if self.context.get_enable_vtpm(enable_validation=True):
+        if self.context.get_enable_vtpm():
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
 
@@ -809,12 +807,12 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         """
         self._ensure_agentpool(agentpool)
 
-        if self.context.get_enable_secure_boot(enable_validation=True):
+        if self.context.get_enable_secure_boot():
             if agentpool.security_profile is None:
                 agentpool.secure_boot = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.enable_secure_boot = True
 
-        if self.context.get_disable_secure_boot(enable_validation=True):
+        if self.context.get_disable_secure_boot():
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.enable_secure_boot = False
@@ -827,12 +825,12 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         """
         self._ensure_agentpool(agentpool)
 
-        if self.context.get_enable_vtpm(enable_validation=True):
+        if self.context.get_enable_vtpm():
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.enable_vtpm = True
 
-        if self.context.get_disable_vtpm(enable_validation=True):
+        if self.context.get_disable_vtpm():
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.enable_vtpm = False
