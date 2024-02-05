@@ -4186,8 +4186,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--disable-secure-boot",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check(
-                    "agentpoolProfiles[1].securityProfile.enableSecureBoot", False),
+                self.check("securityProfile.enableSecureBoot", False),
             ],
         )
 
@@ -4259,8 +4258,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--disable-vtpm",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check(
-                    "agentpoolProfiles[1].securityProfile.enableVtpm", False),
+                self.check("securityProfile.enableVtpm", False),
             ],
         )
 
