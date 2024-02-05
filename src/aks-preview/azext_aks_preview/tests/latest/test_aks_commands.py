@@ -4160,7 +4160,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("agentPoolProfiles[0].securityProfile.enableSecureBoot", "True"),
+                self.check("agentPoolProfiles[0].securityProfile.enableSecureBoot", True),
             ],
         )
 
@@ -4175,7 +4175,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--enable-secure-boot",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("securityProfile.enableSecureBoot", "True"),
+                self.check("securityProfile.enableSecureBoot", True),
             ],
         )
 
@@ -4187,8 +4187,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check(
-                    "agentpoolProfiles[1].securityProfile.enableSecureBoot", False
-                ),
+                    "agentpoolProfiles[1].securityProfile.enableSecureBoot", False),
             ],
         )
 
@@ -4234,7 +4233,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("agentPoolProfiles[0].securityProfile.enableVtpm", "True"),
+                self.check("agentPoolProfiles[0].securityProfile.enableVtpm", True),
             ],
         )
 
@@ -4249,7 +4248,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--enable-vtpm",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("securityProfile.enableVtpm", "True"),
+                self.check("securityProfile.enableVtpm", True),
             ],
         )
 
@@ -4261,8 +4260,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check(
-                    "agentpoolProfiles[1].securityProfile.enableVtpm", False
-                ),
+                    "agentpoolProfiles[1].securityProfile.enableVtpm", False),
             ],
         )
 
