@@ -4232,7 +4232,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("agentPoolProfiles[0].securityProfile.enableVTPM", "True"),
+                self.check("agentPoolProfiles[0].securityProfile.enableVtpm", "True"),
             ],
         )
 
@@ -4246,7 +4246,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--enable-vtpm",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("securityProfile.enableVTPM", "True"),
+                self.check("securityProfile.enableVtpm", "True"),
             ],
         )
 
@@ -4257,7 +4257,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check(
-                    "agentpoolProfiles[1].securityProfile.enableVTPM", False
+                    "agentpoolProfiles[1].securityProfile.enableVtpm", False
                 ),
             ],
         )
