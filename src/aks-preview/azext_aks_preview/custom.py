@@ -1551,12 +1551,12 @@ def aks_agentpool_operation_abort(cmd,   # pylint: disable=unused-argument
 
 
 def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
-                         client,
-                         resource_group_name,
-                         cluster_name,
-                         nodepool_name,
-                         machine_names,
-                         no_wait=False):
+                                  client,
+                                  resource_group_name,
+                                  cluster_name,
+                                  nodepool_name,
+                                  machine_names,
+                                  no_wait=False):
     agentpool_exists = False
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -1569,20 +1569,20 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
             f"Node pool {nodepool_name} doesn't exist, "
             "use 'az aks nodepool list' to get current node pool list"
         )
-    
+
     if len(machine_names) == 0:
-                raise CLIError(
-            f"Machine names doesn't provide, "
+        raise CLIError(
+            "Machine names doesn't provide, "
             "use 'az aks machine list' to get current machine list"
         )
 
-    AgentPoolDeleteMachinesParameter=cmd.get_models(
+    AgentPoolDeleteMachinesParameter = cmd.get_models(
         "AgentPoolDeleteMachinesParameter",
          resource_type=CUSTOM_MGMT_AKS_PREVIEW,
          operation_group="agent_pools",
     )
 
-    machines=AgentPoolDeleteMachinesParameter(machine_names=machine_names)
+    machines = AgentPoolDeleteMachinesParameter(machine_names=machine_names)
     return sdk_no_wait(
         no_wait,
         client.begin_delete_machines,
