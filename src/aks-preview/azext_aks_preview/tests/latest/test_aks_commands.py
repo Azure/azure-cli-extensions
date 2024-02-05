@@ -4171,6 +4171,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--cluster-name={name} "
             "--name={node_pool_name_second} "
             "--os-type Linux "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
             "--enable-secure-boot",
             checks=[
                 self.check("provisioningState", "Succeeded"),
@@ -4181,6 +4182,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update to disable
         self.cmd(
             "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
             "--disable-secure-boot",
             checks=[
                 self.check("provisioningState", "Succeeded"),
@@ -4243,6 +4245,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--cluster-name={name} "
             "--name={node_pool_name_second} "
             "--os-type Linux "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
             "--enable-vtpm",
             checks=[
                 self.check("provisioningState", "Succeeded"),
@@ -4253,6 +4256,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update to disable
         self.cmd(
             "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
             "--disable-vtpm",
             checks=[
                 self.check("provisioningState", "Succeeded"),
