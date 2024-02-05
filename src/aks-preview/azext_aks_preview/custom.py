@@ -1578,8 +1578,8 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
 
     AgentPoolDeleteMachinesParameter = cmd.get_models(
         "AgentPoolDeleteMachinesParameter",
-         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-         operation_group="agent_pools",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
     )
 
     machines = AgentPoolDeleteMachinesParameter(machine_names=machine_names)
