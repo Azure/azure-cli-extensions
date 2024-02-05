@@ -12,6 +12,7 @@ upcoming
 * 'az containerapp create/update': support --max-inactive-revisions
 * 'az containerapp env create': support --mi-system-assigned and --mi-user-assigned for environment create commands
 * 'az containerapp env identity': support for container app environment assign/remove/show commands
+* 'az containerapp env storage set': Support create or update managed environment storage with NFS Azure File.
 * 'az containerapp create/update/up': don't compress jar/war/zip file before upload source code; update source to cloud builder to 20240124.1
 
 0.3.46
