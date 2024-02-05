@@ -1549,6 +1549,7 @@ def aks_agentpool_operation_abort(cmd,   # pylint: disable=unused-argument
         headers=headers,
     )
 
+
 def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
                          client,
                          resource_group_name,
