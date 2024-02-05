@@ -3431,9 +3431,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
         self.cmd(
-            "aks nodepool delete-machines --resource-group={resource_group} --cluster-name={name} --nodepool-name={nodepool_name} --machine-names {machine_name1} {machine_name2}",
-            checks=[self.check("provisioningState", "Succeeded")],
+            "aks nodepool delete-machines --resource-group={resource_group} --cluster-name={name} --nodepool-name={nodepool_name} --machine-names {machine_name1} {machine_name2}"
         )
+        # list machines after deletion
+        machine_list_after = self.cmd(list_cmd).get_output_in_json()
+        assert len(machine_list_after) == 2
         # delete AKS cluster
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
