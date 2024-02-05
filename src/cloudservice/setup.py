@@ -45,7 +45,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='cloud_service',
+    name='cloudservice',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools ComputeManagementClient Extension',
     author='Microsoft Corporation',
