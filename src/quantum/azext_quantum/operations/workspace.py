@@ -380,3 +380,57 @@ def clear(cmd):
     info = WorkspaceInfo(cmd)
     info.clear()
     info.save(cmd)
+
+#az quantum workspace keys list --workspace-name/-w --resource-group/-r 
+def list_keys(cmd, resource_group_name=None, workspace_name=None):
+    """
+    Set the default Azure Quantum workspace.
+    """
+    client = cf_workspaces(cmd.cli_ctx)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    if (not info.resource_group) or (not info.name):
+        raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+    
+    keys = client.list_keys(info.resource_group, info.name)
+    if keys:
+        info.save(cmd)
+    return keys
+
+#az quantum workspace keys regenerate --type/-n --workspace-name/-w --resource-group/-r (type: primaryKey, secondaryKey) 
+def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type=None):
+    """
+    Set the default Azure Quantum workspace.
+    """
+    client = cf_workspaces(cmd.cli_ctx)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    if (not info.resource_group) or (not info.name):
+        raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+    
+    if (not key_type):
+        raise RequiredArgumentMissingError("Please select the api key to regenerate.")
+    
+    keys = [] 
+    if key_type is not None:
+        for key in key_type.split(','):
+            keys.append(key)
+
+    response = client.regenerate_keys(info.resource_group, info.name, keys)
+    if response:
+        info.save(cmd)
+    return response
+
+#az quantum workspace update --workspace-name/-w --resource-group/-r –-enable-workspace-key true/false 
+def update(cmd, resource_group_name=None, workspace_name=None, enable_api_key=True):
+    """
+    Set the default Azure Quantum workspace.
+    """
+    client = cf_workspaces(cmd.cli_ctx)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    if (not info.resource_group) or (not info.name):
+        raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+    ws = client.get(info.resource_group, info.name)
+    ws.api_key_enabled = enable_api_key
+    ws = client.begin_create_or_update(info.resource_group, info.name, ws)
+    if ws:
+        info.save(cmd)
+    return ws
