@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+from pathlib import Path
 from abc import abstractmethod
 from typing import List, Tuple, final
 
@@ -26,6 +27,11 @@ from azext_aosm.vendored_sdks.models import (
     ReferencedResource, ResourceElementTemplate, TemplateType, ArtifactProfile,
     AzureOperatorNexusNetworkFunctionApplication, AzureOperatorNexusArtifactType,
     AzureOperatorNexusArmTemplateDeployMappingRuleProfile, AzureOperatorNexusArmTemplateArtifactProfile)
+
+from azext_aosm.common.constants import (
+    VNF_OUTPUT_FOLDER_FILENAME,
+    NF_DEFINITION_FOLDER_NAME,
+    TEMPLATE_PARAMETERS_FILENAME)
 
 logger = get_logger(__name__)
 
@@ -213,3 +219,21 @@ class NexusArmBuildProcessor(BaseArmBuildProcessor):
             artifact_store=ReferencedResource(id=""),
             template_artifact_profile=artifact_profile,
         )
+    
+    def generate_parameters_file(self) -> LocalFileBuilder:
+        """ Generate parameters file. """
+        mapping_rule_profile = self._generate_mapping_rule_profile()
+        params = (
+            mapping_rule_profile.template_mapping_rule_profile.template_parameters
+        )
+        return LocalFileBuilder(
+            Path(
+                VNF_OUTPUT_FOLDER_FILENAME,
+                NF_DEFINITION_FOLDER_NAME,
+                TEMPLATE_PARAMETERS_FILENAME,
+            ),
+            json.dumps(json.loads(params), indent=4),
+        )
+
+    def generate_template_parameters(self):
+        pass

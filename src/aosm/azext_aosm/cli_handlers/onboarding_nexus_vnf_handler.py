@@ -52,15 +52,6 @@ logger = get_logger(__name__)
 class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
     """CLI handler for publishing NFDs."""
 
-    @property
-    def default_config_file_name(self) -> str:
-        """Get the default configuration file name."""
-        return VNF_INPUT_FILENAME
-
-    @property
-    def output_folder_file_name(self) -> str:
-        """Get the output folder file name."""
-        return VNF_OUTPUT_FOLDER_FILENAME
 
     def _get_input_config(
         self, input_config: Dict[str, Any] = None
@@ -96,9 +87,6 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         # For each image, instantiate image processor
         for image in self.config.images:
             (source_acr_registry, name, version) = self._split_image_path(image)
-
-            # TEMP FIX FOR INVALID VERSIONS
-            version = self._create_semver_compatible_version(version)
 
             image_input = NexusImageFileInput(
                 artifact_name=name,
@@ -159,6 +147,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         logger.info("Created artifact manifest bicep element")
         return bicep_file
 
+    # JORDAN: can pull out
     def build_artifact_list(self) -> ArtifactDefinitionElementBuilder:
         """Build the artifact list."""
         logger.info("Creating artifacts list for artifacts.json")
@@ -195,43 +184,26 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             params_schema = processor.generate_params_schema()
             schema_properties.update(params_schema)
 
-            # For each arm template, generate nf application
-            if isinstance(processor, NexusArmBuildProcessor):
+            # Generate local file for parameters, i.e vhdParameters
+            parameters_file = processor.generate_parameters_file()
+            logger.info(
+                    "Created parameters file as supporting file for nfDefinition bicep"
+                )
 
+            if isinstance(processor, NexusArmBuildProcessor):
                 arm_nf_application_list.append(nf_application)
-                # Generate local file for template_parameters + add to supporting files list
-                params = (
-                    nf_application.deploy_parameters_mapping_rule_profile.template_mapping_rule_profile.template_parameters
-                )
-                template_name = TEMPLATE_PARAMETERS_FILENAME
-                logger.info(
-                    "Created templatateParameters as supporting file for nfDefinition bicep"
-                )
             elif isinstance(processor, NexusImageProcessor):
                 image_nf_application_list.append(nf_application)
-                # Generate local file for vhd_parameters
-                params = (
-                    nf_application.deploy_parameters_mapping_rule_profile.image_mapping_rule_profile.user_configuration
-                )
-                template_name = NEXUS_IMAGE_PARAMETERS_FILENAME
             else:
                 raise TypeError(f"Type: {type(processor)} is not valid")
 
-            parameters_file = LocalFileBuilder(
-                Path(
-                    VNF_OUTPUT_FOLDER_FILENAME,
-                    NF_DEFINITION_FOLDER_NAME,
-                    template_name,
-                ),
-                json.dumps(json.loads(params), indent=4),
-            )
             supporting_files.append(parameters_file)
 
         # Create bicep contents using vnf defintion j2 template
         template_path = get_template_path(
             VNF_TEMPLATE_FOLDER_NAME, VNF_DEFINITION_TEMPLATE_FILENAME
         )
-
+        # JORDAN: another private method?
         params = {
             "nfvi_type": 'AzureOperatorNexus',
             "acr_nf_applications": arm_nf_application_list,

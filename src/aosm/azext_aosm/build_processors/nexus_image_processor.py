@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+from pathlib import Path
 from typing import List, Tuple
 
 from knack.log import get_logger
@@ -22,6 +23,10 @@ from azext_aosm.vendored_sdks.models import (
     DependsOnProfile,
     ManifestArtifactFormat, ReferencedResource, ResourceElementTemplate,
 )
+from azext_aosm.common.constants import (
+    VNF_OUTPUT_FOLDER_FILENAME,
+    NF_DEFINITION_FOLDER_NAME,
+    NEXUS_IMAGE_PARAMETERS_FILENAME)
 
 logger = get_logger(__name__)
 
@@ -145,4 +150,19 @@ class NexusImageProcessor(BaseInputProcessor):
         return AzureOperatorNexusImageDeployMappingRuleProfile(
             application_enablement=ApplicationEnablement.ENABLED,
             image_mapping_rule_profile=mapping,
+        )
+
+    def generate_parameters_file(self) -> LocalFileBuilder:
+        """ Generate parameters file. """
+        mapping_rule_profile = self._generate_mapping_rule_profile()
+        params = (
+            mapping_rule_profile.image_mapping_rule_profile.user_configuration
+        )
+        return LocalFileBuilder(
+            Path(
+                VNF_OUTPUT_FOLDER_FILENAME,
+                NF_DEFINITION_FOLDER_NAME,
+                NEXUS_IMAGE_PARAMETERS_FILENAME,
+            ),
+            json.dumps(json.loads(params), indent=4),
         )
