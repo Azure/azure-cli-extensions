@@ -8,13 +8,12 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-
 from knack.log import get_logger
 from .aaz.latest.firmwareanalysis.firmware import CryptoCertificate as _CryptoCertificate
 from .aaz.latest.firmwareanalysis.firmware import Cve as _Cve
 from .aaz.latest.firmwareanalysis.firmware import Create
 from .aaz.latest.firmwareanalysis.workspace import GenerateUploadUrl
-from azure.storage.blob import BlobClient
+
 
 logger = get_logger(__name__)
 
@@ -53,6 +52,7 @@ class Cve(_Cve):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
 
         return result, next_link
+
 
 def firmware_upload(cmd, resource_group_name, workspace_name, firmware_id, file_path):
     Create(cli_ctx=cmd.cli_ctx)(command_args={
