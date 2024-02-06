@@ -540,7 +540,7 @@ helps['aks create'] = f"""
           short-summary: The ipTags of the node public IPs.
         - name: --safeguards-level
           type: string
-          short-summary: The AKS Deployment Safeguards Level. Accepted Values are [Off, Warning]. Requires azure policy addon to be enabled
+          short-summary: The AKS Deployment Safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
         - name: --safeguards-version
           type: string
           short-summary: The version of AKS Deployment Safeguards to use. Default "v1.0.0" Use the ListSafeguardsVersions API to discover available versions
@@ -1108,7 +1108,7 @@ helps['aks update'] = """
           long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
         - name: --safeguards-level
           type: string
-          short-summary: The AKS Deployment Safeguards Level. Accepted Values are [Off, Warning]. Requires azure policy addon to be enabled
+          short-summary: The AKS Deployment Safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
         - name: --safeguards-version
           type: string
           short-summary: The version of AKS Deployment Safeguards to use. Default "v1.0.0" Use the ListSafeguardsVersions API to discover available versions
