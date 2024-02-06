@@ -145,8 +145,8 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         headers = {'Authorization': 'Bearer ' + token}
         try:
             data_file = open(data_file_path, "rb")
-            file_extension = os.path.splitext(data_file_path)[1]
-            files = [("file", ("build_data" + file_extension, data_file))]
+            file_name = os.path.basename(data_file_path)
+            files = [("file", (file_name, data_file))]
             response_file_upload = requests.post(
                 upload_endpoint,
                 files=files,
