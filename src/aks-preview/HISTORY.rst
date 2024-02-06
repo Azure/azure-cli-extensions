@@ -13,6 +13,10 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-11-02-preview.
 
+1.0.0b6
++++++++
+* Replace `guardrails` parameters with `safeguards`
+
 1.0.0b5
 +++++++
 * Add `--enable-ai-toolchain-operator` to `az aks create` and `az aks update`.
