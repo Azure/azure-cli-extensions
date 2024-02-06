@@ -16,6 +16,9 @@ import threading
 import time
 import uuid
 import webbrowser
+import tempfile
+import subprocess
+import random
 
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
@@ -57,6 +60,8 @@ from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
     get_nodepool_snapshot_by_snapshot_id,
     print_or_merge_credentials,
+    which,
+    process_message,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -95,6 +100,7 @@ from azure.cli.core.azclierror import (
     ClientRequestError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
+    ValidationError,
 )
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -103,7 +109,10 @@ from azure.cli.core.util import (
     sdk_no_wait,
     shell_safe_json_parse,
 )
-from azure.core.exceptions import ResourceNotFoundError
+from azure.core.exceptions import (
+    ResourceNotFoundError,
+    HttpResponseError,
+)
 from azure.graphrbac.models import (
     ApplicationCreateParameters,
     KeyCredential,
@@ -3161,3 +3170,76 @@ def _aks_approuting_update(
         return None
 
     return aks_update_decorator.update_mc(mc)
+
+
+def aks_check_network_outbound(cmd, client, resource_group, cluster_name, node_name=None, custom_endpoints=None):
+    # Get a random node if node_name is not specified
+    if not node_name:
+        if not which("kubectl"):
+            raise ValidationError("Can not find kubectl executable in PATH")
+
+        fd, browse_path = tempfile.mkstemp()
+        try:
+            aks_get_credentials(cmd, client, resource_group, cluster_name, admin=False, path=browse_path)
+
+            output = subprocess.check_output(["kubectl", "--kubeconfig", browse_path, "get", "nodes", "-o", "json"], universal_newlines=True, stderr=subprocess.STDOUT)
+            if output:
+                cluster_info = json.loads(output)
+                index = random.randint(0, len(cluster_info["items"]) - 1)
+                node_name = str(cluster_info["items"][index]["metadata"]["name"])
+            else:
+                raise ValidationError("Failed to get node name from cluster")
+        except subprocess.CalledProcessError as ex:
+            raise ValidationError("Can not get node name from cluster: {}".format(ex))
+        finally:
+            os.close(fd)
+            os.remove(browse_path)
+
+    cluster = aks_show(cmd, client, resource_group, cluster_name, None)
+    if not cluster:
+        raise ValidationError("Can not get cluster information")
+    fqdn = cluster.fqdn
+    if not fqdn:
+        raise ValidationError("Can not get cluster api server")
+    print("Get cluster api server: ", fqdn)
+
+    vmss_name = node_name
+    instance_id = None
+    index = node_name.find("vmss")
+    if index != -1:
+        vmss_name = node_name[0:index + 4]
+        instance_id = node_name[index + 4:]
+    location = get_rg_location(cmd.cli_ctx, resource_group)
+    node_resource_group = "MC_{0}_{1}_{2}".format(resource_group, cluster_name, location)
+    print("Start checking network for node: {0}, instance_id: {1}, node_resource_group: {2}".format(vmss_name, instance_id, node_resource_group))
+
+    try:
+        from azure.cli.core.profiles import ResourceType
+        from azure.cli.command_modules.vm._client_factory import _compute_client_factory
+
+        client = _compute_client_factory(cmd.cli_ctx)
+        command = "bash /opt/azure/containers/aks-check-network.sh {0}".format(fqdn)
+        if custom_endpoints:
+            endpoints = ''.join(custom_endpoints.split(" "))
+            command += " {0}".format(endpoints)
+
+        if instance_id:
+            RunCommandInput = cmd.get_models('RunCommandInput', resource_type=ResourceType.MGMT_COMPUTE, operation_group="virtual_machine_scale_sets")
+            command_result_poller = client.virtual_machine_scale_set_vms.begin_run_command(
+                node_resource_group, vmss_name, instance_id,
+                RunCommandInput(command_id="RunShellScript", script=[command]))
+        else:
+            RunCommandInput = cmd.get_models('RunCommandInput', resource_type=ResourceType.MGMT_COMPUTE, operation_group="virtual_machine_run_commands")
+            command_result_poller = client.virtual_machines.begin_run_command(
+                node_resource_group, vmss_name,
+                RunCommandInput(command_id="RunShellScript", script=[command]))
+        command_result = command_result_poller.result()
+        display_status = command_result.value[0].display_status
+        message = command_result.value[0].message
+        if display_status == "Provisioning succeeded":
+            return process_message(message)
+        else:
+            raise InvalidArgumentValueError("Can not run command on node {0} with returned code {1} and message {2}".
+                                            format(vmss_name, display_status, message))
+    except Exception as ex:
+        raise HttpResponseError("Can not run command on node {0}: {1}".format(vmss_name, ex))

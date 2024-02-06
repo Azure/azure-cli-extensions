@@ -2950,3 +2950,27 @@ helps['aks approuting zone list'] = """
     short-summary: List DNS Zone IDs in App Routing.
     long-summary: This command lists the DNS zone resources used in App Routing.
 """
+
+helps['aks check-network'] = """
+    type: group
+    short-summary: Commands to troubleshoot network connectivity in managed Kubernetes cluster.
+"""
+
+helps['aks check-network outbound'] = """
+    type: command
+    short-summary: Perform outbound network connectivity check for a node in a managed Kubernetes cluster.
+    long-summary: This command checks outbound network connectivity from a node to certain required AKS endpoints.
+    parameters:
+      - name: --name -n
+        type: string
+        short-summary: Name of the managed cluster.
+      - name: --resource-group -g
+        type: string
+        short-summary: Name of the resource group.
+      - name: --node-name
+        type: string
+        short-summary: Name of the node to perform the connectivity check. If not specified, a random node will be chosen.
+      - name: --custom-endpoints
+        type: string
+        short-summary: Additional endpoint(s) to perform the connectivity check, separated by comma.
+"""
