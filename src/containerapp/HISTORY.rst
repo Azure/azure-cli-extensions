@@ -5,11 +5,14 @@ Release History
 upcoming
 ++++++
 * 'az containerapp add-on' : support for add-on milvus create and delete commands
-* [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.56.1
+* [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.59.0
 * 'az containerapp add-on' : support for add-on weaviate create and delete commands
 * Upgrade api-version to 2023-11-02-preview
 * 'az containerapp create/update/up': support --build-env-vars to set environment variables for build
 * 'az containerapp create/update': support --max-inactive-revisions
+* 'az containerapp env create': support --mi-system-assigned and --mi-user-assigned for environment create commands
+* 'az containerapp env identity': support for container app environment assign/remove/show commands
+* 'az containerapp env storage set': Support create or update managed environment storage with NFS Azure File.
 * 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
 
 0.3.46

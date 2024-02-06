@@ -4,7 +4,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=line-too-long
 import os
 from packaging.version import parse
 
@@ -20,6 +20,7 @@ diff_branch = os.environ.get('diff_branch', None)
 base_meta_path = os.environ.get('base_meta_path', None)
 diff_meta_path = os.environ.get('diff_meta_path', None)
 output_file = os.environ.get('output_file', None)
+
 changed_module_list = os.environ.get('changed_module_list', "").split()
 pr_label_list = os.environ.get('pr_label_list', "").split()
 pr_label_list = [name.lower() for name in pr_label_list]
@@ -63,11 +64,15 @@ def get_next_version_segment_tag():
         return None
 
 
+def add_suggest_header(comment_message):
+    comment_message.append("## :warning: Suggestions")
+
+
 def gen_comment_message(mod, next_version, comment_message):
-    comment_message.append("### module: {0}".format(mod))
-    comment_message.append(" - suggested next version number in setup.py: {0}".format(next_version.get("version", "-")))
+    comment_message.append("### Module: {0}".format(mod))
+    comment_message.append(" - Update version to `{0}` in setup.py".format(next_version.get("version", "-")))
     if next_version.get("has_preview_tag", False):
-        comment_message.append(' - azext_{0}/azext_metadata.json: "azext.isPreview": true,'.format(mod))
+        comment_message.append(' - Set `azext.isPreview` to `true` in azext_{0}/azext_metadata.json'.format(mod))
 
 
 def add_label_hint_message(comment_message):
@@ -77,6 +82,13 @@ def add_label_hint_message(comment_message):
     comment_message.append(" - Major/minor/patch/pre increment of version number is calculated by pull request "
                            "code changes automatically. "
                            "If needed, please add `major`/`minor`/`patch`/`pre` label to adjust it.")
+    comment_message.append(" - For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
+
+
+def save_comment_message(cli_ext_path, file_name, comment_message):
+    with open(os.path.join(cli_ext_path, file_name), "w") as f:
+        for line in comment_message:
+            f.write(line + "\n")
 
 
 def main():
@@ -91,11 +103,16 @@ def main():
     print("output_file: ", output_file)
     print("changed_module_list: ", changed_module_list)
     print("pr_label_list: ", pr_label_list)
+    comment_message = []
+    if len(changed_module_list) == 0:
+        comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
+        save_comment_message(cli_ext_path, output_file, comment_message)
+        return
     next_version_pre_tag = get_next_version_pre_tag()
     next_version_segment_tag = get_next_version_segment_tag()
     print("next_version_pre_tag: ", next_version_pre_tag)
     print("next_version_segment_tag: ", next_version_segment_tag)
-    comment_message = []
+    add_suggest_header(comment_message)
     for mod in changed_module_list:
         base_meta_file = os.path.join(cli_ext_path, base_meta_path, "az_" + mod + "_meta.json")
         diff_meta_file = os.path.join(cli_ext_path, diff_meta_path, "az_" + mod + "_meta.json")
@@ -124,9 +141,7 @@ def main():
         gen_comment_message(mod, next_version, comment_message)
     add_label_hint_message(comment_message)
     print(comment_message)
-    with open(os.path.join(cli_ext_path, output_file), "w") as f:
-        for line in comment_message:
-            f.write(line + "\n")
+    save_comment_message(cli_ext_path, output_file, comment_message)
 
 
 if __name__ == '__main__':

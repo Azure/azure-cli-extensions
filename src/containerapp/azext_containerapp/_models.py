@@ -535,3 +535,8 @@ ExtendedLocation = {
     "name": None,
     "type": None
 }
+
+ManagedServiceIdentity = {
+    "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
+    "userAssignedIdentities": None  # {string: UserAssignedIdentity}
+}
