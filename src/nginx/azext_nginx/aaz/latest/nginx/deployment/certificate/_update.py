@@ -89,6 +89,7 @@ class Update(AAZCommand):
         _args_schema.key_vault_secret_id = AAZStrArg(
             options=["--key-vault-secret-id"],
             arg_group="Properties",
+            help="The secret ID for your certificate from Azure Key Vault",
             nullable=True,
         )
         _args_schema.key_path = AAZStrArg(

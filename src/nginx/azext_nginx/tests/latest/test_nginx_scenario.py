@@ -9,6 +9,7 @@ import json
 
 class NginxScenarioTest(ScenarioTest):
 
+
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='eastus')
     def test_deployment_cert_config(self, resource_group):
@@ -44,8 +45,7 @@ class NginxScenarioTest(ScenarioTest):
         ])
 
         deployment_list = self.cmd('nginx deployment list --resource-group {rg}',).get_output_in_json()
-        assert len(deployment_list) > 0
-        
+        assert len(deployment_list) > 0        
         self.cmd('nginx deployment update --name {deployment_name} --resource-group {rg} --location {location} --tags {tags} --enable-diagnostics false', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['deployment_name'])
@@ -61,7 +61,6 @@ class NginxScenarioTest(ScenarioTest):
         self.kwargs['policy'] = policy
         with open('policy.json', 'w') as json_file:
             json.dump(policy, json_file)
-        
         self.cmd('keyvault certificate create --vault-name {kv_name} -n {cert_name} -p @policy.json')
         certificate = self.cmd('keyvault certificate show --name {cert_name} --vault-name {kv_name}').get_output_in_json()
         self.kwargs['kv_secret_id'] = certificate['sid']
@@ -73,10 +72,8 @@ class NginxScenarioTest(ScenarioTest):
             self.check('name', self.kwargs['cert_name']),
             self.check('properties.keyVaultSecretId', self.kwargs['kv_secret_id'])
         ])
-        
         cert_list = self.cmd('nginx deployment certificate list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
         assert len(cert_list) > 0
-
         self.cmd('nginx deployment certificate update --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --certificate-path /etc/nginx/testupdated.cert --key-path /etc/nginx/testupdated.key', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['cert_name']),
@@ -102,9 +99,6 @@ class NginxScenarioTest(ScenarioTest):
         assert len(config_list) > 0
 
         self.cmd('nginx deployment configuration delete --name default --deployment-name {deployment_name} --resource-group {rg} --yes')
-        #config_list = self.cmd('nginx deployment configuration list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
-        #assert len(config_list) == 0
-
         self.cmd('nginx deployment configuration analyze --name default --deployment-name {deployment_name} --resource-group {rg} --config root-file=nginx.conf package={compressed_file}', checks=[
             self.check('status', 'SUCCEEDED'),
         ])
