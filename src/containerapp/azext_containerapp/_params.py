@@ -64,6 +64,15 @@ def load_arguments(self, _):
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
 
+    with self.argument_context('containerapp env storage') as c:
+        c.argument('storage_type', arg_type = get_enum_type(['AzureFile', 'NfsAzureFile']), help="Type of the storage. Assumed to be AzureFile if not specified.", is_preview=True)
+        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]),
+                   help="Access mode for the AzureFile or nfs AzureFile storage.")
+        c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "--file-share", "-f"],
+                   help="Name of the share on the AzureFile or nfs AzureFile storage.")
+        c.argument('server', options_list=["--server", "-s"],
+                   help="Server of the NfsAzureFile storage account.", is_preview=True)
+        
     # App Resiliency
     with self.argument_context('containerapp resiliency') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
@@ -113,6 +122,10 @@ def load_arguments(self, _):
         c.argument('enable_dedicated_gpu', arg_type=get_three_state_flag(), options_list=["--enable-dedicated-gpu"],
                    help="Boolean indicating if the environment is enabled to have dedicated gpu", is_preview=True)
 
+    with self.argument_context('containerapp env create', arg_group='Identity', is_preview=True) as c:
+        c.argument('system_assigned', options_list=['--mi-system-assigned'], help='Boolean indicating whether to assign system-assigned identity.', action='store_true')
+        c.argument('user_assigned', options_list=['--mi-user-assigned'], nargs='+', help='Space-separated user identities to be assigned.')
+
     with self.argument_context('containerapp env certificate create') as c:
         c.argument('hostname', options_list=['--hostname'], help='The custom domain name.')
         c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the managed certificate which should be unique within the Container Apps environment.')
@@ -148,6 +161,13 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env dapr-component init') as c:
         c.argument('statestore', help="The state store component and dev service to create.")
         c.argument('pubsub', help="The pubsub component and dev service to create.")
+    
+    with self.argument_context('containerapp env identity', is_preview=True) as c:
+        c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
+        c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.", action='store_true')
+
+    with self.argument_context('containerapp env identity remove', is_preview=True) as c:
+        c.argument('user_assigned', nargs='*', help="Space-separated user identities. If no user identities are specified, all user identities will be removed.")
 
     with self.argument_context('containerapp up') as c:
         c.argument('environment', validator=validate_env_name_or_id_for_up, options_list=['--environment'], help="Name or resource ID of the container app's managed environment or connected environment.")
