@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create an Elastic SAN.
