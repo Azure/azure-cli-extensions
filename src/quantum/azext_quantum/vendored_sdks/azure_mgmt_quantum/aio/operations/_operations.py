@@ -262,9 +262,6 @@ class WorkspacesOperations:
         :param quantum_workspace: Workspace details. Is either a QuantumWorkspace type or a IO[bytes]
          type. Required.
         :type quantum_workspace: ~azure.mgmt.quantum.models.QuantumWorkspace or IO[bytes]
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
         :return: An instance of AsyncLROPoller that returns QuantumWorkspace
         :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.quantum.models.QuantumWorkspace]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -388,9 +385,6 @@ class WorkspacesOperations:
         :param workspace_tags: Parameters supplied to update tags. Is either a TagsObject type or a
          IO[bytes] type. Required.
         :type workspace_tags: ~azure.mgmt.quantum.models.TagsObject or IO[bytes]
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
         :return: QuantumWorkspace
         :rtype: ~azure.mgmt.quantum.models.QuantumWorkspace
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -988,9 +982,6 @@ class WorkspaceOperations:
          CheckNameAvailabilityParameters type or a IO[bytes] type. Required.
         :type check_name_availability_parameters:
          ~azure.mgmt.quantum.models.CheckNameAvailabilityParameters or IO[bytes]
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
         :return: CheckNameAvailabilityResult
         :rtype: ~azure.mgmt.quantum.models.CheckNameAvailabilityResult
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -1184,9 +1175,6 @@ class WorkspaceOperations:
         :param key_specification: Which key to regenerate:  primary or secondary. Is either a APIKeys
          type or a IO[bytes] type. Required.
         :type key_specification: ~azure.mgmt.quantum.models.APIKeys or IO[bytes]
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
         :return: None
         :rtype: None
         :raises ~azure.core.exceptions.HttpResponseError:
