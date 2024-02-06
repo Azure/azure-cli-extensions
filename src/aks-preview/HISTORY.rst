@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-11-02-preview.
+* Add `az aks nodepool delete-machines` command.
 
 1.0.0b5
 +++++++
@@ -27,7 +28,6 @@ Pending
 +++++++
 * Change the format for az aks machine commands to separate the ipv4, ipv6 columns
 * Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
-* Add `az aks nodepool delete-machines` command.
 
 1.0.0b2
 +++++++
