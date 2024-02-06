@@ -76,10 +76,6 @@ class AzureQuantumManagementClient:  # pylint: disable=client-accepts-api-versio
                 policies.SensitiveHeaderCleanupPolicy(**kwargs) if self._config.redirect_policy else None,
                 self._config.http_logging_policy,
             ]
-        print("base_url: ")
-        print(endpoint)
-        print("kwargs: ")
-        print(kwargs)
         self._client: ARMPipelineClient = ARMPipelineClient(base_url=endpoint, policies=_policies, **kwargs)
 
         client_models = {k: v for k, v in _models._models.__dict__.items() if isinstance(v, type)}
