@@ -8,8 +8,6 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import json
 
 class NginxScenarioTest(ScenarioTest):
-
-
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='eastus2euap')
     def test_deployment_cert_config(self, resource_group):
@@ -45,7 +43,7 @@ class NginxScenarioTest(ScenarioTest):
         ])
 
         deployment_list = self.cmd('nginx deployment list --resource-group {rg}',).get_output_in_json()
-        assert len(deployment_list) > 0        
+        assert len(deployment_list) > 0
         self.cmd('nginx deployment update --name {deployment_name} --resource-group {rg} --location {location} --tags {tags} --enable-diagnostics false', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['deployment_name'])
