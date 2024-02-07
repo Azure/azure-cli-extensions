@@ -13,6 +13,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 +++++++
 * Vendor new SDK and bump API version to 2023-11-02-preview.
 * Replace `guardrails` parameters with `safeguards`.
+* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
 
 1.0.0b5
 +++++++
