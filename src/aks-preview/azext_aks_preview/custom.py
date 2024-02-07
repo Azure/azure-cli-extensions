@@ -95,6 +95,7 @@ from azure.cli.core.azclierror import (
     ClientRequestError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
+    RequiredArgumentMissingError,
 )
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -1565,14 +1566,14 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
             break
 
     if not agentpool_exists:
-        raise CLIError(
+        raise ResourceNotFoundError(
             f"Node pool {nodepool_name} doesn't exist, "
             "use 'az aks nodepool list' to get current node pool list"
         )
 
     if len(machine_names) == 0:
-        raise CLIError(
-            "Machine names doesn't provide, "
+        raise RequiredArgumentMissingError(
+            "--machine-names doesn't provide, "
             "use 'az aks machine list' to get current machine list"
         )
 
