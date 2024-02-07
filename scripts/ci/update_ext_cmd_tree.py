@@ -46,7 +46,7 @@ def update_cmd_tree(ext_name):
     sys.path.append(ext_dir)
     extension_command_table, _ = _load_extension_command_loader(invoker.commands_loader, None, ext_mod)
 
-    EXT_CMD_TREE_TO_UPLOAD = Session()
+    EXT_CMD_TREE_TO_UPLOAD = Session(encoding='utf-8')
     EXT_CMD_TREE_TO_UPLOAD.load(os.path.expanduser(os.path.join('~', '.azure', file_name)))
     root = {}
     for cmd_name, ext_cmd in extension_command_table.items():
