@@ -7,8 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from io import IOBase
-from typing import Any, Callable, Dict, IO, Iterable, Optional, TypeVar, Union, cast, overload
-import urllib.parse
+from typing import Any, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
 
 from azure.core.exceptions import (
     ClientAuthenticationError,
@@ -18,7 +17,6 @@ from azure.core.exceptions import (
     ResourceNotModifiedError,
     map_error,
 )
-from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
@@ -39,7 +37,13 @@ _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 
 
-def build_list_request(resource_group_name: str, account_name: str, subscription_id: str, **kwargs: Any) -> HttpRequest:
+def build_get_request(
+    resource_group_name: str,
+    throughput_pool_name: str,
+    throughput_pool_account_name: str,
+    subscription_id: str,
+    **kwargs: Any
+) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
@@ -49,15 +53,28 @@ def build_list_request(resource_group_name: str, account_name: str, subscription
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/services",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/throughputPools/{throughputPoolName}/throughputPoolAccounts/{throughputPoolAccountName}",
     )  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
         "resourceGroupName": _SERIALIZER.url(
             "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
         ),
-        "accountName": _SERIALIZER.url(
-            "account_name", account_name, "str", max_length=50, min_length=3, pattern=r"^[a-z0-9]+(-[a-z0-9]+)*"
+        "throughputPoolName": _SERIALIZER.url(
+            "throughput_pool_name",
+            throughput_pool_name,
+            "str",
+            max_length=50,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
+        ),
+        "throughputPoolAccountName": _SERIALIZER.url(
+            "throughput_pool_account_name",
+            throughput_pool_account_name,
+            "str",
+            max_length=50,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
         ),
     }
 
@@ -73,7 +90,11 @@ def build_list_request(resource_group_name: str, account_name: str, subscription
 
 
 def build_create_request(
-    resource_group_name: str, account_name: str, service_name: str, subscription_id: str, **kwargs: Any
+    resource_group_name: str,
+    throughput_pool_name: str,
+    throughput_pool_account_name: str,
+    subscription_id: str,
+    **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
@@ -85,17 +106,29 @@ def build_create_request(
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/services/{serviceName}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/throughputPools/{throughputPoolName}/throughputPoolAccounts/{throughputPoolAccountName}",
     )  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
         "resourceGroupName": _SERIALIZER.url(
             "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
         ),
-        "accountName": _SERIALIZER.url(
-            "account_name", account_name, "str", max_length=50, min_length=3, pattern=r"^[a-z0-9]+(-[a-z0-9]+)*"
+        "throughputPoolName": _SERIALIZER.url(
+            "throughput_pool_name",
+            throughput_pool_name,
+            "str",
+            max_length=50,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
         ),
-        "serviceName": _SERIALIZER.url("service_name", service_name, "str", max_length=50, min_length=3),
+        "throughputPoolAccountName": _SERIALIZER.url(
+            "throughput_pool_account_name",
+            throughput_pool_account_name,
+            "str",
+            max_length=50,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
+        ),
     }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
@@ -111,44 +144,12 @@ def build_create_request(
     return HttpRequest(method="PUT", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_get_request(
-    resource_group_name: str, account_name: str, service_name: str, subscription_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-02-15-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = kwargs.pop(
-        "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/services/{serviceName}",
-    )  # pylint: disable=line-too-long
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
-        "resourceGroupName": _SERIALIZER.url(
-            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
-        ),
-        "accountName": _SERIALIZER.url(
-            "account_name", account_name, "str", max_length=50, min_length=3, pattern=r"^[a-z0-9]+(-[a-z0-9]+)*"
-        ),
-        "serviceName": _SERIALIZER.url("service_name", service_name, "str", max_length=50, min_length=3),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
 def build_delete_request(
-    resource_group_name: str, account_name: str, service_name: str, subscription_id: str, **kwargs: Any
+    resource_group_name: str,
+    throughput_pool_name: str,
+    throughput_pool_account_name: str,
+    subscription_id: str,
+    **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
@@ -159,17 +160,29 @@ def build_delete_request(
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/services/{serviceName}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/throughputPools/{throughputPoolName}/throughputPoolAccounts/{throughputPoolAccountName}",
     )  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
         "resourceGroupName": _SERIALIZER.url(
             "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
         ),
-        "accountName": _SERIALIZER.url(
-            "account_name", account_name, "str", max_length=50, min_length=3, pattern=r"^[a-z0-9]+(-[a-z0-9]+)*"
+        "throughputPoolName": _SERIALIZER.url(
+            "throughput_pool_name",
+            throughput_pool_name,
+            "str",
+            max_length=50,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
         ),
-        "serviceName": _SERIALIZER.url("service_name", service_name, "str", max_length=50, min_length=3),
+        "throughputPoolAccountName": _SERIALIZER.url(
+            "throughput_pool_account_name",
+            throughput_pool_account_name,
+            "str",
+            max_length=50,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
+        ),
     }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
@@ -183,14 +196,14 @@ def build_delete_request(
     return HttpRequest(method="DELETE", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-class ServiceOperations:
+class ThroughputPoolAccountOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
         :class:`~azure.mgmt.cosmosdb.CosmosDBManagementClient`'s
-        :attr:`service` attribute.
+        :attr:`throughput_pool_account` attribute.
     """
 
     models = _models
@@ -203,25 +216,24 @@ class ServiceOperations:
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list(self, resource_group_name: str, account_name: str, **kwargs: Any) -> Iterable["_models.ServiceResource"]:
-        """Gets the status of service.
+    def get(
+        self, resource_group_name: str, throughput_pool_name: str, throughput_pool_account_name: str, **kwargs: Any
+    ) -> _models.ThroughputPoolAccountResource:
+        """Retrieves the properties of an existing Azure Cosmos DB Throughput Pool.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
+        :param throughput_pool_name: Cosmos DB Throughput Pool name. Required.
+        :type throughput_pool_name: str
+        :param throughput_pool_account_name: Cosmos DB global database account in a Throughput Pool.
+         Required.
+        :type throughput_pool_account_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ServiceResource or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.ServiceResource]
+        :return: ThroughputPoolAccountResource or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.ThroughputPoolAccountResource
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ServiceResourceListResult] = kwargs.pop("cls", None)
-
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -230,75 +242,56 @@ class ServiceOperations:
         }
         error_map.update(kwargs.pop("error_map", {}) or {})
 
-        def prepare_request(next_link=None):
-            if not next_link:
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-                request = build_list_request(
-                    resource_group_name=resource_group_name,
-                    account_name=account_name,
-                    subscription_id=self._config.subscription_id,
-                    api_version=api_version,
-                    template_url=self.list.metadata["url"],
-                    headers=_headers,
-                    params=_params,
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[_models.ThroughputPoolAccountResource] = kwargs.pop("cls", None)
 
-            else:
-                # make call to next link with the client's api-version
-                _parsed_next_link = urllib.parse.urlparse(next_link)
-                _next_request_params = case_insensitive_dict(
-                    {
-                        key: [urllib.parse.quote(v) for v in value]
-                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
-                    }
-                )
-                _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
-                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-                request.method = "GET"
-            return request
+        request = build_get_request(
+            resource_group_name=resource_group_name,
+            throughput_pool_name=throughput_pool_name,
+            throughput_pool_account_name=throughput_pool_account_name,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            template_url=self.get.metadata["url"],
+            headers=_headers,
+            params=_params,
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
 
-        def extract_data(pipeline_response):
-            deserialized = self._deserialize("ServiceResourceListResult", pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, iter(list_of_elem)
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
+        )
 
-        def get_next(next_link=None):
-            request = prepare_request(next_link)
+        response = pipeline_response.http_response
 
-            _stream = False
-            pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
-            )
-            response = pipeline_response.http_response
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+        deserialized = self._deserialize("ThroughputPoolAccountResource", pipeline_response)
 
-            return pipeline_response
+        if cls:
+            return cls(pipeline_response, deserialized, {})
 
-        return ItemPaged(get_next, extract_data)
+        return deserialized
 
-    list.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/services"
+    get.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/throughputPools/{throughputPoolName}/throughputPoolAccounts/{throughputPoolAccountName}"
     }
 
     def _create_initial(
         self,
         resource_group_name: str,
-        account_name: str,
-        service_name: str,
-        create_update_parameters: Union[_models.ServiceResourceCreateUpdateParameters, IO],
+        throughput_pool_name: str,
+        throughput_pool_account_name: str,
+        body: Union[_models.ThroughputPoolAccountResource, IO],
         **kwargs: Any
-    ) -> Optional[_models.ServiceResource]:
+    ) -> _models.ThroughputPoolAccountResource:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -312,20 +305,20 @@ class ServiceOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[Optional[_models.ServiceResource]] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ThroughputPoolAccountResource] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
         _content = None
-        if isinstance(create_update_parameters, (IOBase, bytes)):
-            _content = create_update_parameters
+        if isinstance(body, (IOBase, bytes)):
+            _content = body
         else:
-            _json = self._serialize.body(create_update_parameters, "ServiceResourceCreateUpdateParameters")
+            _json = self._serialize.body(body, "ThroughputPoolAccountResource")
 
         request = build_create_request(
             resource_group_name=resource_group_name,
-            account_name=account_name,
-            service_name=service_name,
+            throughput_pool_name=throughput_pool_name,
+            throughput_pool_account_name=throughput_pool_account_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             content_type=content_type,
@@ -345,46 +338,50 @@ class ServiceOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize("ServiceResource", pipeline_response)
+            deserialized = self._deserialize("ThroughputPoolAccountResource", pipeline_response)
+
+        if response.status_code == 201:
+            deserialized = self._deserialize("ThroughputPoolAccountResource", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     _create_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/services/{serviceName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/throughputPools/{throughputPoolName}/throughputPoolAccounts/{throughputPoolAccountName}"
     }
 
     @overload
     def begin_create(
         self,
         resource_group_name: str,
-        account_name: str,
-        service_name: str,
-        create_update_parameters: _models.ServiceResourceCreateUpdateParameters,
+        throughput_pool_name: str,
+        throughput_pool_account_name: str,
+        body: _models.ThroughputPoolAccountResource,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ServiceResource]:
-        """Creates a service.
+    ) -> LROPoller[_models.ThroughputPoolAccountResource]:
+        """Creates or updates an Azure Cosmos DB ThroughputPool account. The "Update" method is preferred
+        when performing updates on an account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param service_name: Cosmos DB service name. Required.
-        :type service_name: str
-        :param create_update_parameters: The Service resource parameters. Required.
-        :type create_update_parameters:
-         ~azure.mgmt.cosmosdb.models.ServiceResourceCreateUpdateParameters
+        :param throughput_pool_name: Cosmos DB Throughput Pool name. Required.
+        :type throughput_pool_name: str
+        :param throughput_pool_account_name: Cosmos DB global database account in a Throughput Pool.
+         Required.
+        :type throughput_pool_account_name: str
+        :param body: The parameters to provide for the current ThroughputPoolAccount. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.ThroughputPoolAccountResource
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -396,9 +393,10 @@ class ServiceOperations:
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of LROPoller that returns either ServiceResource or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ServiceResource]
+        :return: An instance of LROPoller that returns either ThroughputPoolAccountResource or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ThroughputPoolAccountResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -406,24 +404,26 @@ class ServiceOperations:
     def begin_create(
         self,
         resource_group_name: str,
-        account_name: str,
-        service_name: str,
-        create_update_parameters: IO,
+        throughput_pool_name: str,
+        throughput_pool_account_name: str,
+        body: IO,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ServiceResource]:
-        """Creates a service.
+    ) -> LROPoller[_models.ThroughputPoolAccountResource]:
+        """Creates or updates an Azure Cosmos DB ThroughputPool account. The "Update" method is preferred
+        when performing updates on an account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param service_name: Cosmos DB service name. Required.
-        :type service_name: str
-        :param create_update_parameters: The Service resource parameters. Required.
-        :type create_update_parameters: IO
+        :param throughput_pool_name: Cosmos DB Throughput Pool name. Required.
+        :type throughput_pool_name: str
+        :param throughput_pool_account_name: Cosmos DB global database account in a Throughput Pool.
+         Required.
+        :type throughput_pool_account_name: str
+        :param body: The parameters to provide for the current ThroughputPoolAccount. Required.
+        :type body: IO
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -435,9 +435,10 @@ class ServiceOperations:
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of LROPoller that returns either ServiceResource or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ServiceResource]
+        :return: An instance of LROPoller that returns either ThroughputPoolAccountResource or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ThroughputPoolAccountResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -445,24 +446,25 @@ class ServiceOperations:
     def begin_create(
         self,
         resource_group_name: str,
-        account_name: str,
-        service_name: str,
-        create_update_parameters: Union[_models.ServiceResourceCreateUpdateParameters, IO],
+        throughput_pool_name: str,
+        throughput_pool_account_name: str,
+        body: Union[_models.ThroughputPoolAccountResource, IO],
         **kwargs: Any
-    ) -> LROPoller[_models.ServiceResource]:
-        """Creates a service.
+    ) -> LROPoller[_models.ThroughputPoolAccountResource]:
+        """Creates or updates an Azure Cosmos DB ThroughputPool account. The "Update" method is preferred
+        when performing updates on an account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param service_name: Cosmos DB service name. Required.
-        :type service_name: str
-        :param create_update_parameters: The Service resource parameters. Is either a
-         ServiceResourceCreateUpdateParameters type or a IO type. Required.
-        :type create_update_parameters:
-         ~azure.mgmt.cosmosdb.models.ServiceResourceCreateUpdateParameters or IO
+        :param throughput_pool_name: Cosmos DB Throughput Pool name. Required.
+        :type throughput_pool_name: str
+        :param throughput_pool_account_name: Cosmos DB global database account in a Throughput Pool.
+         Required.
+        :type throughput_pool_account_name: str
+        :param body: The parameters to provide for the current ThroughputPoolAccount. Is either a
+         ThroughputPoolAccountResource type or a IO type. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.ThroughputPoolAccountResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
         :paramtype content_type: str
@@ -474,9 +476,10 @@ class ServiceOperations:
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of LROPoller that returns either ServiceResource or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ServiceResource]
+        :return: An instance of LROPoller that returns either ThroughputPoolAccountResource or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ThroughputPoolAccountResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -484,16 +487,16 @@ class ServiceOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ServiceResource] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ThroughputPoolAccountResource] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
             raw_result = self._create_initial(
                 resource_group_name=resource_group_name,
-                account_name=account_name,
-                service_name=service_name,
-                create_update_parameters=create_update_parameters,
+                throughput_pool_name=throughput_pool_name,
+                throughput_pool_account_name=throughput_pool_account_name,
+                body=body,
                 api_version=api_version,
                 content_type=content_type,
                 cls=lambda x, y, z: x,
@@ -504,13 +507,15 @@ class ServiceOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ServiceResource", pipeline_response)
+            deserialized = self._deserialize("ThroughputPoolAccountResource", pipeline_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
         if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -525,78 +530,11 @@ class ServiceOperations:
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     begin_create.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/services/{serviceName}"
-    }
-
-    @distributed_trace
-    def get(
-        self, resource_group_name: str, account_name: str, service_name: str, **kwargs: Any
-    ) -> _models.ServiceResource:
-        """Gets the status of service.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param service_name: Cosmos DB service name. Required.
-        :type service_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ServiceResource or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.ServiceResource
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        error_map = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ServiceResource] = kwargs.pop("cls", None)
-
-        request = build_get_request(
-            resource_group_name=resource_group_name,
-            account_name=account_name,
-            service_name=service_name,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            template_url=self.get.metadata["url"],
-            headers=_headers,
-            params=_params,
-        )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("ServiceResource", pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-
-    get.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/services/{serviceName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/throughputPools/{throughputPoolName}/throughputPoolAccounts/{throughputPoolAccountName}"
     }
 
     def _delete_initial(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, account_name: str, service_name: str, **kwargs: Any
+        self, resource_group_name: str, throughput_pool_name: str, throughput_pool_account_name: str, **kwargs: Any
     ) -> None:
         error_map = {
             401: ClientAuthenticationError,
@@ -614,8 +552,8 @@ class ServiceOperations:
 
         request = build_delete_request(
             resource_group_name=resource_group_name,
-            account_name=account_name,
-            service_name=service_name,
+            throughput_pool_name=throughput_pool_name,
+            throughput_pool_account_name=throughput_pool_account_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             template_url=self._delete_initial.metadata["url"],
@@ -632,9 +570,10 @@ class ServiceOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
@@ -647,22 +586,23 @@ class ServiceOperations:
             return cls(pipeline_response, None, response_headers)
 
     _delete_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/services/{serviceName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/throughputPools/{throughputPoolName}/throughputPoolAccounts/{throughputPoolAccountName}"
     }
 
     @distributed_trace
     def begin_delete(
-        self, resource_group_name: str, account_name: str, service_name: str, **kwargs: Any
+        self, resource_group_name: str, throughput_pool_name: str, throughput_pool_account_name: str, **kwargs: Any
     ) -> LROPoller[None]:
-        """Deletes service with the given serviceName.
+        """Removes an existing Azure Cosmos DB database account from a throughput pool.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param service_name: Cosmos DB service name. Required.
-        :type service_name: str
+        :param throughput_pool_name: Cosmos DB Throughput Pool name. Required.
+        :type throughput_pool_name: str
+        :param throughput_pool_account_name: Cosmos DB global database account in a Throughput Pool.
+         Required.
+        :type throughput_pool_account_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -686,8 +626,8 @@ class ServiceOperations:
         if cont_token is None:
             raw_result = self._delete_initial(  # type: ignore
                 resource_group_name=resource_group_name,
-                account_name=account_name,
-                service_name=service_name,
+                throughput_pool_name=throughput_pool_name,
+                throughput_pool_account_name=throughput_pool_account_name,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
                 headers=_headers,
@@ -716,5 +656,5 @@ class ServiceOperations:
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     begin_delete.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/services/{serviceName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/throughputPools/{throughputPoolName}/throughputPoolAccounts/{throughputPoolAccountName}"
     }
