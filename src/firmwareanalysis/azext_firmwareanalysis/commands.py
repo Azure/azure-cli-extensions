@@ -18,5 +18,3 @@ from .custom import Cve
 def load_command_table(self, _):  # pylint: disable=unused-argument
     self.command_table["firmwareanalysis firmware crypto-certificate"] = CryptoCertificate(loader=self)
     self.command_table["firmwareanalysis firmware cve"] = Cve(loader=self)
-    with self.command_group("firmwareanalysis firmware") as g:
-        g.custom_command("upload", "firmware_upload")

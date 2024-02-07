@@ -10,9 +10,4 @@
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    with self.argument_context('firmwareanalysis firmware upload') as c:
-        # (2) Register different kinds of arguments
-        c.argument('resource_group_name', options_list=['--resource-group', '-r'], help='Name of the resource group.')
-        c.argument('workspace_name', options_list=['--workspace-name', '-w'], help='Name of the workspace.')
-        c.argument('firmware_id', options_list=['--firmware-id', '-f'], help='Id of the firmware.')
-        c.argument('file_path', options_list=['--file-path', '-fp'], help='path of the firmware file.')
+pass
