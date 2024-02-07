@@ -81,9 +81,9 @@ def upload_cmd_tree():
     file_path = os.path.expanduser(os.path.join('~', '.azure', file_name))
 
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
-           f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--file', f'{file_path}', '--auth-mode', 'login']
-    result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(result.stdout)
+           f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--file', f'{file_path}', '--auth-mode', 'login',
+           '--overwrite']
+    subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--auth-mode', 'login']
