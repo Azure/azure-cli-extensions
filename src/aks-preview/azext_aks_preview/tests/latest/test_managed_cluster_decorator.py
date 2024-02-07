@@ -4857,6 +4857,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_azure_service_mesh": True,
+                "revision": "asm-1-88"
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -4867,7 +4868,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             service_mesh_profile=self.models.ServiceMeshProfile(
-                mode="Istio", istio=self.models.IstioServiceMesh()
+                mode="Istio", istio=self.models.IstioServiceMesh(
+                    revisions = ["asm-1-88"]
+                )
             ),
         )
 
