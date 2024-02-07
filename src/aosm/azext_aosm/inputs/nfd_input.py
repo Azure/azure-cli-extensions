@@ -52,7 +52,10 @@ class NFDInput(BaseInput):
         :rtype: Dict[str, Any]
         """
         if self.network_function_definition.id:
-            logger.debug("network_function_definition.id for NFD input: %s", self.network_function_definition.id)
+            logger.debug(
+                "network_function_definition.id for NFD input: %s",
+                self.network_function_definition.id,
+            )
             split_id = self.network_function_definition.id.split("/")
             publisher_name: str = split_id[8]
             nfdg_name: str = split_id[10]

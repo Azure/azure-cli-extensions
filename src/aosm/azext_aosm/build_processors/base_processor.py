@@ -10,12 +10,15 @@ from typing import Any, Dict, List, Tuple
 from knack.log import get_logger
 
 from azext_aosm.common.artifact import BaseArtifact
-from azext_aosm.common.local_file_builder import LocalFileBuilder
-from azext_aosm.inputs.base_input import BaseInput
-from azext_aosm.vendored_sdks.models import (ManifestArtifactFormat,
-                                             NetworkFunctionApplication,
-                                             ResourceElementTemplate)
 from azext_aosm.common.constants import CGS_NAME
+from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
+from azext_aosm.inputs.base_input import BaseInput
+from azext_aosm.vendored_sdks.models import (
+    ManifestArtifactFormat,
+    NetworkFunctionApplication,
+    ResourceElementTemplate,
+)
+
 logger = get_logger(__name__)
 
 
@@ -183,10 +186,16 @@ class BaseInputProcessor(ABC):
         # Loop through each property in the schema.
         for subschema_name, subschema in schema["properties"].items():
             # If the property is not in the values, and is required, add it to the values.
-            if "required" in schema and subschema_name not in values and subschema_name in schema["required"]:
+            if (
+                "required" in schema
+                and subschema_name not in values
+                and subschema_name in schema["required"]
+            ):
                 print(f"Adding {subschema_name} to values")
                 if subschema["type"] == "object":
-                    values[subschema_name] = self.generate_values_mappings(subschema, {}, is_ret)
+                    values[subschema_name] = self.generate_values_mappings(
+                        subschema, {}, is_ret
+                    )
                 else:
                     values[subschema_name] = (
                         f"{{configurationparameters('{CGS_NAME}').{self.name}.{subschema_name}}}"
@@ -198,8 +207,14 @@ class BaseInputProcessor(ABC):
             if subschema_name in values and subschema["type"] == "object":
                 # Python evaluates {} as False, so we need to explicitly set to {}
                 default_subschema_values = values[subschema_name] or {}
-                values[subschema_name] = self.generate_values_mappings(subschema, default_subschema_values, is_ret)
+                values[subschema_name] = self.generate_values_mappings(
+                    subschema, default_subschema_values, is_ret
+                )
 
-        logger.debug("Output of generate_values_mappings for %s: %s", self.name, json.dumps(values, indent=4))
+        logger.debug(
+            "Output of generate_values_mappings for %s: %s",
+            self.name,
+            json.dumps(values, indent=4),
+        )
 
         return values

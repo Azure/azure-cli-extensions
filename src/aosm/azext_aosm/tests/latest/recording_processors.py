@@ -7,10 +7,11 @@
 # the recordings so that we can avoid checking in secrets to the repo.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk.scenario_tests import RecordingProcessor
-from azure.cli.testsdk.scenario_tests.utilities import is_text_payload
 import json
 import re
+
+from azure.cli.testsdk.scenario_tests import RecordingProcessor
+from azure.cli.testsdk.scenario_tests.utilities import is_text_payload
 
 MOCK_TOKEN = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 MOCK_SAS_URI = "https://xxxxxxxxxxxxxxx.blob.core.windows.net"

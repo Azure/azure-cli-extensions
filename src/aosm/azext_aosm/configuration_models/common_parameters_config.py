@@ -47,6 +47,7 @@ class CNFCommonParametersConfig(NFDCommonParametersConfig):
 @dataclass(frozen=True)
 class NSDCommonParametersConfig(BaseCommonParametersConfig):
     """Common parameters configuration for NSDs."""
+
     nsDesignGroup: str
     nsDesignVersion: str
     nfviSiteName: str

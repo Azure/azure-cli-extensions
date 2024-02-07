@@ -5,17 +5,22 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Optional
+
+from azure.cli.core.azclierror import UnrecognizedArgumentError
+from azure.cli.core.commands import AzCliCommand
+
 from azext_aosm.cli_handlers.onboarding_cnf_handler import OnboardingCNFCLIHandler
-from azext_aosm.cli_handlers.onboarding_vnf_handler import OnboardingVNFCLIHandler
 from azext_aosm.cli_handlers.onboarding_nsd_handler import OnboardingNSDCLIHandler
+from azext_aosm.cli_handlers.onboarding_vnf_handler import OnboardingVNFCLIHandler
 from azext_aosm.common.command_context import CommandContext
 from azext_aosm.common.constants import ALL_PARAMETERS_FILE_NAME, CNF, VNF
-from azure.cli.core.commands import AzCliCommand
-from azure.cli.core.azclierror import UnrecognizedArgumentError
 
 
 def onboard_nfd_generate_config(definition_type: str, output_file: str | None):
     """Generate config file for onboarding NFs."""
+    # Declare types explicitly
+    handler: OnboardingCNFCLIHandler | OnboardingVNFCLIHandler
     if definition_type == CNF:
         handler = OnboardingCNFCLIHandler()
         handler.generate_config(output_file)
@@ -26,8 +31,12 @@ def onboard_nfd_generate_config(definition_type: str, output_file: str | None):
         raise UnrecognizedArgumentError("Invalid definition type")
 
 
-def onboard_nfd_build(definition_type: str, config_file: Path, skip: str = None):
+def onboard_nfd_build(
+    definition_type: str, config_file: Path, skip: Optional[str] = None
+):
     """Build the NF definition."""
+    # Declare types explicitly
+    handler: OnboardingCNFCLIHandler | OnboardingVNFCLIHandler
     if definition_type == CNF:
         handler = OnboardingCNFCLIHandler(Path(config_file), skip=skip)
         handler.build()
@@ -52,6 +61,8 @@ def onboard_nfd_publish(
             "definition_folder": Path(build_output_folder),
         },
     )
+    # Declare types explicitly
+    handler: OnboardingCNFCLIHandler | OnboardingVNFCLIHandler
     if definition_type == CNF:
         handler = OnboardingCNFCLIHandler(
             Path(build_output_folder, ALL_PARAMETERS_FILE_NAME)

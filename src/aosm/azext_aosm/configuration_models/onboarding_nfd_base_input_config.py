@@ -7,18 +7,23 @@ from dataclasses import dataclass, field
 
 from azure.cli.core.azclierror import ValidationError
 
-from azext_aosm.configuration_models.onboarding_base_input_config import \
-    OnboardingBaseInputConfig
+from azext_aosm.configuration_models.onboarding_base_input_config import (
+    OnboardingBaseInputConfig,
+)
 
 
 @dataclass
 class OnboardingNFDBaseInputConfig(OnboardingBaseInputConfig):
     """Common input configuration for onboarding NFDs."""
 
-    nf_name: str = field(default="", metadata={"comment": "Name of the network function."})
+    nf_name: str = field(
+        default="", metadata={"comment": "Name of the network function."}
+    )
     version: str = field(
         default="",
-        metadata={"comment": "Version of the network function definition in 1.1.1 format."},
+        metadata={
+            "comment": "Version of the network function definition in 1.1.1 format (three integers separated by dots)."
+        },
     )
 
     def validate(self):
@@ -30,6 +35,5 @@ class OnboardingNFDBaseInputConfig(OnboardingBaseInputConfig):
             raise ValidationError("version must be set")
         if "-" in self.version or "." not in self.version:
             raise ValidationError(
-                "Config validation error. Version should be in"
-                " format 1.1.1"
-        )
+                "Config validation error. Version must be in format 1.1.1 (three integers separated by dots)."
+            )

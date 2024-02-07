@@ -7,12 +7,12 @@ from argcomplete.completers import FilesCompleter
 from azure.cli.core import AzCommandsLoader
 
 from .common.constants import (
-    CNF,
-    VNF,
-    BICEP_PUBLISH,
     ARTIFACT_UPLOAD,
-    IMAGE_UPLOAD,
+    BICEP_PUBLISH,
+    CNF,
     HELM_TEMPLATE,
+    IMAGE_UPLOAD,
+    VNF,
 )
 
 

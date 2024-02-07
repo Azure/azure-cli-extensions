@@ -27,13 +27,13 @@ class ImageSourceConfig:
             )
         },
     )
-    source_registry_namespace: str | None = field(
+    source_registry_namespace: str = field(
         default="",
         metadata={
             "comment": (
                 "Optional. Namespace of the repository of the source acr registry from which to pull.\n"
                 "For example if your repository is samples/prod/nginx then set this to samples/prod.\n"
-                "Leave blank if the image is in the root namespace.\n"
+                "Leave as empty string if the image is in the root namespace.\n"
                 "See https://learn.microsoft.com/en-us/azure/container-registry/"
                 "container-registry-best-practices#repository-namespaces for further details."
             )
@@ -55,8 +55,10 @@ class HelmPackageConfig:
         default="",
         metadata={
             "comment": (
-                "The file path to the helm chart on the local disk, relative to the directory from which the command is run.\n"
-                "Accepts .tgz, .tar or .tar.gz, or an unpacked directory. Use Linux slash (/) file separator even if running on Windows."
+                "The file path to the helm chart on the local disk, relative to the directory from which the "
+                "command is run.\n"
+                "Accepts .tgz, .tar or .tar.gz, or an unpacked directory. Use Linux slash (/) file separator "
+                "even if running on Windows."
             )
         },
     )
@@ -64,8 +66,8 @@ class HelmPackageConfig:
         default="",
         metadata={
             "comment": (
-                "The file path (absolute or relative to this configuration file) of YAML values file on the local disk which "
-                "will be used instead of the values.yaml file present in the helm chart.\n"
+                "The file path (absolute or relative to this configuration file) of YAML values file on the "
+                "local disk which will be used instead of the values.yaml file present in the helm chart.\n"
                 "Accepts .yaml or .yml. Use Linux slash (/) file separator even if running on Windows."
             )
         },
@@ -95,7 +97,9 @@ class OnboardingCNFInputConfig(OnboardingNFDBaseInputConfig):
     # TODO: Add better comment for images as not a list
     images: ImageSourceConfig = field(
         default_factory=ImageSourceConfig,
-        metadata={"comment": "Source of container images to be included in the CNF. Currently only one source is supported."},
+        metadata={
+            "comment": "Source of container images to be included in the CNF. Currently only one source is supported."
+        },
     )
     helm_packages: List[HelmPackageConfig] = field(
         default_factory=lambda: [HelmPackageConfig()],

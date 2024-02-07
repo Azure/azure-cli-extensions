@@ -15,9 +15,10 @@
 
 import os
 from typing import Dict
+
 from azure.cli.testsdk import LiveScenarioTest, ResourceGroupPreparer
-from knack.log import get_logger
 from jinja2 import Template
+from knack.log import get_logger
 
 logger = get_logger(__name__)
 

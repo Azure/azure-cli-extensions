@@ -6,10 +6,10 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+from azext_aosm.common.command_context import CommandContext
 from azext_aosm.configuration_models.common_parameters_config import (
     BaseCommonParametersConfig,
 )
-from azext_aosm.common.command_context import CommandContext
 
 
 class BaseDefinitionElement(ABC):
@@ -20,11 +20,15 @@ class BaseDefinitionElement(ABC):
         self.only_delete_on_clean = only_delete_on_clean
 
     @abstractmethod
-    def deploy(self, config: BaseCommonParametersConfig, command_context: CommandContext):
+    def deploy(
+        self, config: BaseCommonParametersConfig, command_context: CommandContext
+    ):
         """Deploy the element."""
         return NotImplementedError
 
     @abstractmethod
-    def delete(self, config: BaseCommonParametersConfig, command_context: CommandContext):
+    def delete(
+        self, config: BaseCommonParametersConfig, command_context: CommandContext
+    ):
         """Delete the element."""
         return NotImplementedError

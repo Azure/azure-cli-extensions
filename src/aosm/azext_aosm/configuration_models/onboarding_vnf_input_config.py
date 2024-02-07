@@ -9,10 +9,10 @@ from typing import List
 
 from azure.cli.core.azclierror import ValidationError
 
-from azext_aosm.configuration_models.common_input import \
-    ArmTemplatePropertiesConfig
-from azext_aosm.configuration_models.onboarding_nfd_base_input_config import \
-    OnboardingNFDBaseInputConfig
+from azext_aosm.configuration_models.common_input import ArmTemplatePropertiesConfig
+from azext_aosm.configuration_models.onboarding_nfd_base_input_config import (
+    OnboardingNFDBaseInputConfig,
+)
 
 
 @dataclass
@@ -20,17 +20,24 @@ class VhdImageConfig:
     """Configuration for a VHD image."""
 
     artifact_name: str = field(
-        default="", metadata={"comment": "Optional. Name of the artifact. Name will be generated if not supplied."}
+        default="",
+        metadata={
+            "comment": "Optional. Name of the artifact. Name will be generated if not supplied."
+        },
     )
     version: str = field(
-        default="", metadata={"comment": "Version of the artifact in A-B-C format. Note the '-' (dash) not '.' (dot)."}
+        default="",
+        metadata={
+            "comment": "Version of the artifact in A-B-C format. Note the '-' (dash) not '.' (dot)."
+        },
     )
     file_path: str = field(
         default="",
         metadata={
             "comment": (
                 "Supply either file_path or blob_sas_url, not both.\n"
-                "File path (absolute or relative to this configuration file) of the artifact you wish to upload from your local disk.\n"
+                "File path (absolute or relative to this configuration file) of the artifact you wish to upload from "
+                "your local disk.\n"
                 "Leave as empty string if not required. Use Linux slash (/) file separator even if running on Windows."
             )
         },
@@ -39,9 +46,9 @@ class VhdImageConfig:
         default="",
         metadata={
             "comment": (
-                "Supply either file_path or blob_sas_url, not both.\nSAS URL of the blob artifact you wish to copy to your Artifact Store.\n"
-                "Leave as empty string if not required."
-                "Use Linux slash (/) file separator even if running on Windows."
+                "Supply either file_path or blob_sas_url, not both.\nSAS URL of the blob artifact you wish to copy to "
+                "your Artifact Store.\n"
+                "Leave as empty string if not required. Use Linux slash (/) file separator even if running on Windows."
             )
         },
     )
@@ -118,7 +125,10 @@ class OnboardingVNFInputConfig(OnboardingNFDBaseInputConfig):
     # TODO: Add better comments
     arm_templates: List[ArmTemplatePropertiesConfig] = field(
         default_factory=lambda: [ArmTemplatePropertiesConfig()],
-        metadata={"comment": "ARM template configuration. The ARM templates given here would deploy a VM if run. They will be used to generate the VNF."},
+        metadata={
+            "comment": "ARM template configuration. The ARM templates given here would deploy a VM if run. They will "
+            "be used to generate the VNF."
+        },
     )
 
     vhd: VhdImageConfig = field(

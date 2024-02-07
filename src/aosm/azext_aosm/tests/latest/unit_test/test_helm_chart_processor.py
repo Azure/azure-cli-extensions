@@ -1,10 +1,9 @@
 import os
+from pathlib import Path
 from unittest import TestCase
 from unittest.mock import Mock
-from azext_aosm.build_processors.helm_chart_processor import (
-    HelmChartProcessor,
-)
-from pathlib import Path
+
+from azext_aosm.build_processors.helm_chart_processor import HelmChartProcessor
 
 code_directory = os.path.dirname(__file__)
 parent_directory = os.path.abspath(os.path.join(code_directory, ".."))

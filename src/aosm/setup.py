@@ -5,6 +5,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from codecs import open
+
 from setuptools import find_packages, setup
 
 try:
@@ -32,7 +33,13 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = ["oras~=0.1.19", "azure-storage-blob>=12.15.0", "jinja2>=3.1.2", "genson>=1.2.2", "ruamel.yaml>=0.17.4"]
+DEPENDENCIES = [
+    "oras~=0.1.19",
+    "azure-storage-blob>=12.15.0",
+    "jinja2>=3.1.2",
+    "genson>=1.2.2",
+    "ruamel.yaml>=0.17.4",
+]
 
 with open("README.md", "r", encoding="utf-8") as f:
     README = f.read()

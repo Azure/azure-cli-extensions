@@ -7,7 +7,9 @@ from pathlib import Path
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from azext_aosm.definition_folder.builder.bicep_builder import BicepDefinitionElementBuilder
+from azext_aosm.definition_folder.builder.bicep_builder import (
+    BicepDefinitionElementBuilder,
+)
 
 
 class TestBicepDefinitionElementBuilder(TestCase):
@@ -20,8 +22,7 @@ class TestBicepDefinitionElementBuilder(TestCase):
 
         # Create a Bicep definition element builder.
         bicep_definition_element_builder = BicepDefinitionElementBuilder(
-            Path("/some/folder"),
-            "some bicep content"
+            Path("/some/folder"), "some bicep content"
         )
 
         # Write the definition element to disk.
@@ -38,8 +39,7 @@ class TestBicepDefinitionElementBuilder(TestCase):
 
         # Create a Bicep definition element builder.
         bicep_definition_element_builder = BicepDefinitionElementBuilder(
-            Path("/some/folder"),
-            "some bicep content"
+            Path("/some/folder"), "some bicep content"
         )
 
         # Create some mocks to act as supporting files.

@@ -5,26 +5,27 @@
 import copy
 import json
 import shutil
-import tempfile
-from dataclasses import dataclass
-from pathlib import Path
 import subprocess
-from typing import Any, Dict, List, Optional, Tuple
+import tempfile
 import warnings
-
-import ruamel.yaml
-from ruamel.yaml.error import ReusedAnchorWarning
+from dataclasses import dataclass
+from os import PathLike
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import genson
+import ruamel.yaml
 import yaml
 from knack.log import get_logger
+from ruamel.yaml.error import ReusedAnchorWarning
 
 from azext_aosm.common.exceptions import (
     DefaultValuesNotFoundError,
     MissingChartDependencyError,
     SchemaGetOrGenerateError,
+    TemplateValidationError,
 )
-from azext_aosm.common.utils import extract_tarfile, check_tool_installed
+from azext_aosm.common.utils import check_tool_installed, extract_tarfile
 from azext_aosm.inputs.base_input import BaseInput
 
 logger = get_logger(__name__)
@@ -98,7 +99,7 @@ class HelmChartInput(BaseInput):
             self._chart_dir = extract_tarfile(chart_path, self._temp_dir_path)
         self._validate()
         self.metadata = self._get_metadata()
-        self.helm_template = None
+        self.helm_template: Optional[str] = None
         self.default_config_path = default_config_path
 
     @staticmethod
@@ -156,7 +157,7 @@ class HelmChartInput(BaseInput):
         check_tool_installed("helm")
 
         if self.default_config_path:
-            cmd = [
+            cmd: List[Union[str, PathLike]] = [
                 "helm",
                 "template",
                 self.artifact_name,
@@ -182,7 +183,6 @@ class HelmChartInput(BaseInput):
                 self.artifact_name,
                 helm_template_output,
             )
-            return ""
         except subprocess.CalledProcessError as error:
             # Return the error message without raising an error.
             # The errors are going to be collected into a file by the caller of this function.
@@ -196,20 +196,20 @@ class HelmChartInput(BaseInput):
             error_message = error_message.replace(
                 "\nUse --debug flag to render out invalid YAML", ""
             )
-            return error_message
+            raise TemplateValidationError(error_message)
 
     def validate_values(self) -> None:
         """
-        Confirm that the values.yaml file exists in the Helm chart directory
-        or that the default values are provided.
+        Confirm that the default values are provided or that a values.yaml file exists in the
+        Helm chart directory.
 
         :raises DefaultValuesNotFoundError: If the values.yaml and default values do not exist.
         """
         logger.debug("Getting default values for Helm chart %s", self.artifact_name)
 
-        default_config = self.default_config or self._read_values_yaml()
-
-        if not default_config:
+        try:
+            self.default_config or self._read_values_yaml()
+        except FileNotFoundError:
             logger.error("No values found for Helm chart '%s'", self.chart_path)
             raise DefaultValuesNotFoundError(
                 "ERROR: No default values found for the Helm chart"
@@ -281,7 +281,9 @@ class HelmChartInput(BaseInput):
         :rtype: List[HelmChartInput]
         :raises MissingChartDependencyError: If a dependency chart is missing.
         """
-        logger.debug("Getting dependency charts for Helm chart input, '%s'", self.artifact_name)
+        logger.debug(
+            "Getting dependency charts for Helm chart input, '%s'", self.artifact_name
+        )
         # All dependency charts should be located in the charts directory.
         dependency_chart_dir = Path(self._chart_dir, "charts")
 
@@ -421,6 +423,14 @@ class HelmChartInput(BaseInput):
                 with file.open(encoding="UTF-8") as f:
                     content = yaml_processor.load(f)
                 return content
+
+        logger.error(
+            "values.yaml|yml file not found in Helm chart '%s'", self.chart_path
+        )
+        raise FileNotFoundError(
+            f"ERROR: The Helm chart '{self.chart_path}' does not contain"
+            "a values.yaml file."
+        )
 
     def __del__(self):
         shutil.rmtree(self._temp_dir_path)

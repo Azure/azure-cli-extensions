@@ -7,14 +7,14 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import List
 
-from azext_aosm.common.local_file_builder import LocalFileBuilder
+from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
 
 
 class BaseDefinitionElementBuilder(ABC):
     """Base element definition builder."""
 
     path: Path
-    supporting_files: "list[LocalFileBuilder]"
+    supporting_files: List[LocalFileBuilder]
     only_delete_on_clean: bool
 
     def __init__(self, path: Path, only_delete_on_clean: bool = False):

@@ -3,17 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
-import tarfile
-from pathlib import Path
-from typing import Any, Dict, Iterable
 import json
+import os
 import shutil
 import subprocess
+import tarfile
 import tempfile
+from pathlib import Path
+
+from knack.log import get_logger
 
 from azext_aosm.common.exceptions import InvalidFileTypeError, MissingDependency
-from knack.log import get_logger
 
 logger = get_logger(__name__)
 

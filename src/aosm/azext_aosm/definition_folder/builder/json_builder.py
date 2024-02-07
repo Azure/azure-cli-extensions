@@ -1,8 +1,9 @@
 from pathlib import Path
 
 from azext_aosm.common.constants import ALL_PARAMETERS_FILE_NAME
-from azext_aosm.definition_folder.builder.base_builder import \
-    BaseDefinitionElementBuilder
+from azext_aosm.definition_folder.builder.base_builder import (
+    BaseDefinitionElementBuilder,
+)
 
 
 class JSONDefinitionElementBuilder(BaseDefinitionElementBuilder):
