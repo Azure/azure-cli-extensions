@@ -83,13 +83,15 @@ def upload_cmd_tree():
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--file', f'{file_path}', '--auth-mode', 'login',
            '--overwrite']
-    result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    print(result)
+    result = subprocess.run(cmd, capture_output=True)
+    if result.returncode != 0:
+        print(f"Failed to upload '{file_name}' to the storage account")
+        raise
 
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--auth-mode', 'login']
-    result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if result.stdout:
+    result = subprocess.run(cmd, capture_output=True)
+    if result.stdout and result.returncode == 0:
         url = json.loads(result.stdout)
     else:
         print(f"Failed to get the URL for '{blob_file_name}'")
