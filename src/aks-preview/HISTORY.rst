@@ -19,6 +19,7 @@ Pending
 * Add `--ssh-access` to the `az aks update` command.
 * Add `--ssh-access` to the `az aks nodepool add` command.
 * Add `--ssh-access` to the `az aks nodepool update` command.
+* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
 
 1.0.0b5
 +++++++

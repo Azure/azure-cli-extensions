@@ -7,6 +7,7 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=protected-access
 
 from knack.log import get_logger
 from .aaz.latest.elastic_san.volume_group import Create as _VolumeGroupCreate

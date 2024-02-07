@@ -3,9 +3,13 @@
 Release History
 ===============
 
+1.6.5
+++++++
+* Fix tenant ID retrieval for proxy command.
+
 1.6.4
 ++++++
-* replace AAD Graph with Microsoft Graph for getting Custom Locations RP service principal application object ID.
+* Replace AAD Graph with Microsoft Graph for getting Custom Locations RP service principal application object ID.
 
 1.6.3
 ++++++
