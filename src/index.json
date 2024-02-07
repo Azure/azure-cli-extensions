@@ -20898,8 +20898,8 @@
         ],
         "azure-sphere": [
             {
-                "downloadUrl": "https://github.com/jamesadevine/azure-cli-extensions/raw/devinejames/package-test/whl-test/azure_sphere-0.1.6-py3-none-any.whl",
-                "filename": "azure_sphere-0.1.6-py3-none-any.whl",
+                "downloadUrl": "https://github.com/jamesadevine/azure-cli-extensions/raw/devinejames/package-test/whl-test/azure_sphere-0.1.6-py2.py3-none-any.whl",
+                "filename": "azure_sphere-0.1.6-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.45.0",
@@ -20915,12 +20915,12 @@
                         "Programming Language :: Python :: 3.9",
                         "License :: OSI Approved :: MIT License"
                     ],
+                    "description_content_type": "text/markdown",
                     "extensions": {
                         "python.details": {
                             "contacts": [
                                 {
-                                    "email": "azsppgsup@microsoft.com",
-                                    "name": "Microsoft Corporation",
+                                    "email": "Microsoft Corporation <azsppgsup@microsoft.com>",
                                     "role": "author"
                                 }
                             ],
@@ -20935,23 +20935,30 @@
                     "extras": [],
                     "generator": "bdist_wheel (0.30.0)",
                     "license": "MIT",
+                    "license_file": "LICENSE",
                     "metadata_version": "2.0",
                     "name": "azure-sphere",
-                    "requires_python": ">=3.6.0",
+                    "requires_python": "<4,>=3.6",
                     "run_requires": [
                         {
                             "requires": [
                                 "azure-core (>=1.24.0)",
+                                "azure-core>=1.24.0",
                                 "azure-mgmt-core (>=1.3.0)",
+                                "azure-mgmt-core>=1.3.0",
                                 "azuresphere-device-api (>=1.1.0)",
-                                "semantic-version (==2.8.5)"
+                                "azuresphere-device-api>=1.1.0",
+                                "azuresphere-imagemetadata",
+                                "azuresphere-imagemetadata",
+                                "semantic-version (==2.8.5)",
+                                "semantic_version==2.8.5"
                             ]
                         }
                     ],
                     "summary": "Microsoft Azure Command-Line Tools Azure Sphere Extension",
                     "version": "0.1.6"
                 },
-                "sha256Digest": "a3faccfc6a74ff32a883e8c3f4827183f029f38a9a65c533beca34609be2385e "
+                "sha256Digest": "fef419b60a45a60266aab52a5d3c4b74b64cd672edfce31d4bdf83834e134246"
             }
         ],
         "azurelargeinstance": [
