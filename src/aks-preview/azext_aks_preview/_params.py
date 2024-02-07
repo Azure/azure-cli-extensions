@@ -110,6 +110,7 @@ from azext_aks_preview._consts import (
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
     CONST_SSH_ACCESS_LOCALUSER,
+    CONST_SSH_ACCESS_DISABLED,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -327,6 +328,11 @@ storage_pool_options = [
 node_provisioning_modes = [
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
+]
+
+ssh_accesses = [
+    CONST_SSH_ACCESS_LOCALUSER,
+    CONST_SSH_ACCESS_DISABLED,
 ]
 
 
@@ -818,7 +824,7 @@ def load_arguments(self, _):
         # in creation scenario, use "localuser" as default
         c.argument(
             'ssh_access',
-            arg_type=get_enum_type(["disabled", "localuser"]),
+            arg_type=get_enum_type(ssh_accesses),
             default=CONST_SSH_ACCESS_LOCALUSER,
             is_preview=True,
         )
@@ -1200,7 +1206,7 @@ def load_arguments(self, _):
             )
         )
         # In update scenario, use emtpy str as default.
-        c.argument('ssh_access', arg_type=get_enum_type(["disabled", "localuser"]), is_preview=True)
+        c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1354,7 +1360,7 @@ def load_arguments(self, _):
         # in creation scenario, use "localuser" as default
         c.argument(
             'ssh_access',
-            arg_type=get_enum_type(["disabled", "localuser"]),
+            arg_type=get_enum_type(ssh_accesses),
             default=CONST_SSH_ACCESS_LOCALUSER,
             is_preview=True,
         )
@@ -1414,7 +1420,7 @@ def load_arguments(self, _):
             validator=validate_os_sku,
         )
         # In update scenario, use emtpy str as default.
-        c.argument('ssh_access', arg_type=get_enum_type(["disabled", "localuser"]), is_preview=True)
+        c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context("aks nodepool upgrade") as c:

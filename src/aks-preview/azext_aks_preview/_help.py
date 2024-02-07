@@ -591,7 +591,7 @@ helps['aks create'] = f"""
           short-summary: Enable AI toolchain operator to the cluster.
         - name: --ssh-access
           type: string
-          short-summary: Configure SSH setting for all node pools in this cluster. Allowed values are ["disabled", "localuser"]. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key. Default value is "localuser".
+          short-summary: Configure SSH setting for all node pools in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -1147,7 +1147,7 @@ helps['aks update'] = """
           short-summary: Disable AI toolchain operator.
         - name: --ssh-access
           type: string
-          short-summary: Update SSH setting for all node pools in this cluster. Allowed values are ["disabled", "localuser"]. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key. Default value is "localuser".
+          short-summary: Update SSH setting for all node pools in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1724,7 +1724,7 @@ helps['aks nodepool add'] = """
           short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
         - name: --ssh-access
           type: string
-          short-summary: Configure SSH setting for the node pool. Allowed values are ["disabled", "localuser"]. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key. Default value is "localuser".
+          short-summary: Configure SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1845,7 +1845,7 @@ helps['aks nodepool update'] = """
           short-summary: The os-sku of the agent node pool.
         - name: --ssh-access
           type: string
-          short-summary: Update SSH setting for the node pool. Allowed values are ["disabled", "localuser"]. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key. Default value is "localuser".
+          short-summary: Update SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
