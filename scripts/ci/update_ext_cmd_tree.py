@@ -14,7 +14,6 @@ from azure.cli.core.commands import _load_extension_command_loader
 from azure.cli.core.extension import get_extension_modname, get_extension_path
 from sync_extensions import download_file
 
-
 STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_ACCOUNT')
 STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_CONTAINER')
 BLOB_PREFIX = os.getenv('AZURE_EXTENSION_CMD_TREE_BLOB_PREFIX')
