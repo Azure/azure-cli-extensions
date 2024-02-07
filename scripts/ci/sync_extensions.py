@@ -68,7 +68,8 @@ def _sync_wheel(ext, updated_indexes, failed_urls, overwrite, temp_dir):
             return
 
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
-               f'{STORAGE_ACCOUNT}', '--name', f'{blob_name}', '--file', 'file_path', '--auth-mode', 'login']
+           f'{STORAGE_ACCOUNT}', '--name', f'{blob_name}', '--file', f'{os.path.abspath(whl_path)}',
+           '--auth-mode', 'login']
     result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(json.loads(result.stdout))
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
