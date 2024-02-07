@@ -88,7 +88,8 @@ def upload_cmd_tree():
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--auth-mode', 'login']
     result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    url = json.loads(result.stdout)
+    print(result)
+    url = result.stdout.decode('utf-8')
 
     download_file_path = os.path.expanduser(os.path.join('~', '.azure', downloaded_file_name))
     download_file(url, download_file_path)

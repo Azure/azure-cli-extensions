@@ -74,7 +74,8 @@ def _sync_wheel(ext, updated_indexes, failed_urls, overwrite, temp_dir):
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name',  f'{blob_name}', '--auth-mode', 'login']
     result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    url = json.loads(result.stdout)
+    print(result)
+    url = result.stdout.decode('utf-8')
     updated_index = ext
     updated_index['downloadUrl'] = url
     updated_indexes.append(updated_index)
