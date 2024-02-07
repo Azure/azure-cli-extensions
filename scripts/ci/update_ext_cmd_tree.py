@@ -85,8 +85,8 @@ def upload_cmd_tree():
            '--overwrite']
     result = subprocess.run(cmd, capture_output=True)
     if result.returncode != 0:
-        print(f"Failed to upload '{file_name}' to the storage account")
-        raise
+        print(f"Failed to upload '{blob_file_name}' to the storage account")
+        print(result)
 
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--auth-mode', 'login']
