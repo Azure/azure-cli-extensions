@@ -2074,7 +2074,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return self.models.ServiceMeshProfile(  # pylint: disable=no-member
                 mode=CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
                 istio=self.models.IstioServiceMesh(
-                    revisions = revisions
+                    revisions=revisions
                 ),  # pylint: disable=no-member
             )
 

@@ -4869,7 +4869,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             service_mesh_profile=self.models.ServiceMeshProfile(
                 mode="Istio", istio=self.models.IstioServiceMesh(
-                    revisions = ["asm-1-88"]
+                    revisions=["asm-1-88"]
                 )
             ),
         )
