@@ -83,13 +83,17 @@ def upload_cmd_tree():
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--file', f'{file_path}', '--auth-mode', 'login',
            '--overwrite']
-    subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print(result)
 
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--auth-mode', 'login']
-    result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(result)
-    url = result.stdout.decode('utf-8')
+    result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if result.stdout:
+        url = json.loads(result.stdout)
+    else:
+        print(f"Failed to get the URL for '{blob_file_name}'")
+        raise
 
     download_file_path = os.path.expanduser(os.path.join('~', '.azure', downloaded_file_name))
     download_file(url, download_file_path)
