@@ -11,11 +11,11 @@ class NginxScenarioTest(ScenarioTest):
 
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='eastus')
+    @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='eastus2euap')
     def test_deployment_cert_config(self, resource_group):
         self.kwargs.update({
             'deployment_name': 'azclitest-deployment',
-            'location': 'eastus',
+            'location': 'eastus2euap',
             'rg': resource_group,
             'sku': 'preview_Monthly_gmz7xq9ge3py',
             'public_ip_name': 'azclitest-public-ip',
