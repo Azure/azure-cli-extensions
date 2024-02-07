@@ -422,22 +422,21 @@ def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type
     return response
 
 #az quantum workspace update --workspace-name/-w --resource-group/-r –-enable-api-key true/false 
-def enable_keys(cmd, enable_key=True, resource_group_name=None, workspace_name=None):
+def enable_keys(cmd, resource_group_name=None, workspace_name=None, enable_key=None):
     """
     Update the default Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
-    print(info)
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+    
+    if (enable_key != "True") and (enable_key != "true") and (enable_key != "False") and (enable_key != "false"):
+        raise InvalidArgumentValueError("Please set –-enable-api-key to be True/true or False/false.")
+    
     ws = client.get(info.resource_group, info.name)
-    print(enable_key)
-    print(ws.properties)
-    ws.properties.api_key_enabled = False
-    print(ws)
+    ws.properties.api_key_enabled = bool(enable_key)
     ws = client.begin_create_or_update(info.resource_group, info.name, ws)
-    print(ws)
     if ws:
         info.save(cmd)
     return ws
