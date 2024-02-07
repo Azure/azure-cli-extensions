@@ -283,3 +283,39 @@ helps['quantum workspace show'] = """
         text: |-
             az quantum workspace show -g MyResourceGroup -w MyWorkspace
 """
+
+helps['quantum workspace update'] = """
+    type: command
+    short-summary: Enable or disable Azure Quantum workspace api keys.
+    examples:
+      - name: Enable a provided Azure Quantum workspace api keys.
+        text: |-
+            az quantum workspace update --enable-api-key True
+      - name: Disable a provided Azure Quantum workspace api keys.
+        text: |-
+            az quantum workspace update --enable-api-key False
+"""
+
+helps['quantum workspace keys list'] = """
+    type: command
+    short-summary: Display Azure Quantum workspace api keys.
+    examples:
+      - name: Show the currently selected default Azure Quantum workspace api keys.
+        text: |-
+            az quantum workspace keys list
+"""
+
+helps['quantum workspace keys regenerate'] = """
+    type: command
+    short-summary: Regenerate Azure Quantum workspace api key.
+    examples:
+      - name: Regenerate the currently selected default Azure Quantum workspace primary api key.
+        text: |-
+            az quantum workspace keys regenerate --key-type Primary
+      - name: Regenerate the currently selected default Azure Quantum workspace secondary api key.
+        text: |-
+            az quantum workspace keys regenerate --key-type Secondary
+      - name: Regenerate the currently selected default Azure Quantum workspace secondary api key.
+        text: |-
+            az quantum workspace keys regenerate --key-type Primary,Secondary
+"""
