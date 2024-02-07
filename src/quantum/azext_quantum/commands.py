@@ -184,7 +184,7 @@ def load_command_table(self, _):
         w.command('quotas', 'quotas', validator=validate_workspace_info)
         w.command('keys list', 'list_keys')
         w.command('keys regenerate', 'regenerate_keys')
-        w.command('update', 'update')
+        w.command('update', 'enable_keys')
 
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)

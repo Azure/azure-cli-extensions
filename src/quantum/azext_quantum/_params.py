@@ -59,7 +59,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     item_type = CLIArgumentType(help='The item index in a batching job.')
     skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
     key_type = CLIArgumentType(options_list=['--key-type'], help='The api keys to be regenerated, should be Primary and/or Secondary.')
-    enable_api_key = CLIArgumentType(options_list=[' –-enable-api-key'], help='Enable or disable api key authentication.')
+    enable_key = CLIArgumentType(options_list=['--enable-key'], help='Enable or disable api key authentication.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -147,4 +147,4 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
 
     with self.argument_context('quantum workspace update') as c:
         c.argument('workspace_name', workspace_name_type)
-        c.argument('enable_api_key', enable_api_key)
+        c.argument('enable_key', enable_key)

@@ -19,10 +19,11 @@ from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalE
                                        RequiredArgumentMissingError, ResourceNotFoundError)
 
 from msrestazure.azure_exceptions import CloudError
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
+from .._client_factory import cf_workspaces, cf_quotas, cf_workspace, cf_offerings, _get_data_credentials
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
-from ..vendored_sdks.azure_mgmt_quantum.models import Provider
+from ..vendored_sdks.azure_mgmt_quantum.models import Provider, APIKeys
+from ..vendored_sdks.azure_mgmt_quantum.models._enums import KeyType
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
@@ -384,24 +385,24 @@ def clear(cmd):
 #az quantum workspace keys list --workspace-name/-w --resource-group/-r 
 def list_keys(cmd, resource_group_name=None, workspace_name=None):
     """
-    Set the default Azure Quantum workspace.
+    List Azure Quantum workspace api keys.
     """
-    client = cf_workspaces(cmd.cli_ctx)
+    client = cf_workspace(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     
-    keys = client.list_keys(info.resource_group, info.name)
-    if keys:
-        info.save(cmd)
+    keys = client.list_keys(resource_group_name=info.resource_group, workspace_name=info.name)
+    #if keys:
+    #    info.save(cmd)
     return keys
 
 #az quantum workspace keys regenerate --type/-n --workspace-name/-w --resource-group/-r (type: primaryKey, secondaryKey) 
 def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type=None):
     """
-    Set the default Azure Quantum workspace.
+    Regenerate Azure Quantum workspace api keys.
     """
-    client = cf_workspaces(cmd.cli_ctx)
+    client = cf_workspace(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
@@ -412,25 +413,31 @@ def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type
     keys = [] 
     if key_type is not None:
         for key in key_type.split(','):
-            keys.append(key)
+            keys.append(KeyType[key])
 
-    response = client.regenerate_keys(info.resource_group, info.name, keys)
-    if response:
-        info.save(cmd)
+    key_specification = APIKeys(keys=keys)
+    response = client.regenerate_keys(resource_group_name=info.resource_group, workspace_name=info.name, key_specification=key_specification)
+    #if response:
+    #    info.save(cmd)
     return response
 
-#az quantum workspace update --workspace-name/-w --resource-group/-r –-enable-workspace-key true/false 
-def update(cmd, resource_group_name=None, workspace_name=None, enable_api_key=True):
+#az quantum workspace update --workspace-name/-w --resource-group/-r –-enable-api-key true/false 
+def enable_keys(cmd, enable_key=True, resource_group_name=None, workspace_name=None):
     """
-    Set the default Azure Quantum workspace.
+    Update the default Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    print(info)
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     ws = client.get(info.resource_group, info.name)
-    ws.api_key_enabled = enable_api_key
+    print(enable_key)
+    print(ws.properties)
+    ws.properties.api_key_enabled = False
+    print(ws)
     ws = client.begin_create_or_update(info.resource_group, info.name, ws)
+    print(ws)
     if ws:
         info.save(cmd)
     return ws

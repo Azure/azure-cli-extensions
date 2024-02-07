@@ -52,6 +52,10 @@ def cf_workspaces(cli_ctx, *_):
     return cf_quantum_mgmt(cli_ctx).workspaces
 
 
+def cf_workspace(cli_ctx, *_):
+    return cf_quantum_mgmt(cli_ctx).workspace
+
+
 def cf_offerings(cli_ctx, *_):
     return cf_quantum_mgmt(cli_ctx).offerings
 
