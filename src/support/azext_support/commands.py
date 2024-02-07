@@ -6,10 +6,13 @@
 from azext_support._client_factory import (cf_communications,
                                            cf_problem_classifications,
                                            cf_services, cf_support,
-                                           cf_support_tickets)
+                                           cf_support_tickets,
+                                           cf_files)
 from azext_support._validators import validate_tickets_create
+from azext_support._validators import _check_name_availability_no_subscription
 from azure.cli.core.commands import CliCommandType
 from azext_support.custom import TicketUpdate, TicketCreate
+from azext_support.custom import FileWorkspaceCreateNoSubscription, FileWorkspaceCreateSubscription
 from azext_support.custom import CommunicationCreate
 from azext_support.custom import CommunicationNoSubscriptionCreate
 
@@ -30,6 +33,9 @@ def load_command_table(self, _):
     support_communications = CliCommandType(
         operations_tmpl='azext_support.vendored_sdks.operations#CommunicationsOperations.{}',
         client_factory=cf_communications)
+    support_files = CliCommandType(
+		operations_tmpl='azext_support.vendored_sdks.operations#FilesOperations.{}',
+		client_factory=cf_files)
 
     self.command_group('support', support, client_factory=cf_support)
 
@@ -59,3 +65,13 @@ def load_command_table(self, _):
     self.command_table['support in-subscription tickets create'] = TicketCreate(loader=self)
     self.command_table['support in-subscription communication create'] = CommunicationCreate(loader=self)
     self.command_table['support no-subscription communication create'] = CommunicationNoSubscriptionCreate(loader=self)
+    
+    with self.command_group('support no-subscription file') as g:
+        g.custom_command('upload', 'upload_files_no_subscription')
+
+    with self.command_group('support in-subscription file') as g:
+        g.custom_command('upload', 'upload_files_in_subscription')
+
+    self.command_table['support in-subscription file-workspace create'] = FileWorkspaceCreateSubscription(loader=self)
+    self.command_table['support no-subscription file-workspace create'] = FileWorkspaceCreateNoSubscription(loader=self)
+
