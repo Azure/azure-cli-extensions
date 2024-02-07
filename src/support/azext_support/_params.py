@@ -159,7 +159,6 @@ def load_file_workspace_argument(self, _):
         c.argument('file_path', help = 'Path of the file you want to uploaded', required=True)
         c.argument('subscription', help='Specified subscription for the file workspace', required=True)
 
-
     with self.argument_context('support no-subscription file upload') as c:
         c.argument('file_workspace_name', help='Name of the file workspace.', required=True)
         c.argument('file_path', help = 'Path of the file you want to uploaded', required=True)
