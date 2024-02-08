@@ -26,6 +26,9 @@ from .aaz.latest.support.no_subscription.communication import Create as _CreateN
 from .aaz.latest.support.in_subscription.file_workspace import Create as _CreateFileWorkspace
 from .aaz.latest.support.no_subscription.file_workspace import Create as _CreateNoSubscriptionFileWorkspace
 
+##costants for file upload
+max_chunk_size= 2621440
+
 def list_support_tickets(cmd, client, filters=None):
     if filters is None:
         filters = "CreatedDate ge " + str(date.today() - timedelta(days=7))
@@ -286,16 +289,14 @@ class FileWorkspaceCreateNoSubscription(_CreateNoSubscriptionFileWorkspace):
         from azext_support._validators import _check_name_availability_no_subscription
         super().pre_operations()
         args = self.ctx.args
-        file_workspace_name = str(args.file_workspace_name)
-        _check_name_availability_no_subscription(self.cli_ctx, file_workspace_name, "Microsoft.Support/workspace")
+        _check_name_availability_no_subscription(self.cli_ctx, str(args.file_workspace_name), "Microsoft.Support/fileWorkspaces")
     
 class FileWorkspaceCreateSubscription(_CreateFileWorkspace):
     def pre_operations(self):
         from azext_support._validators import _check_name_availability_subscription
         super().pre_operations()
         args = self.ctx.args
-        file_workspace_name = str(args.file_workspace_name)
-        _check_name_availability_subscription(self.cli_ctx, file_workspace_name, "Microsoft.Support/workspace")
+        _check_name_availability_subscription(self.cli_ctx, str(args.file_workspace_name), "Microsoft.Support/fileWorkspaces")
     
 def encode_string_content(chunk_content):
     return str(base64.b64encode(chunk_content).decode('utf-8'))
@@ -314,16 +315,13 @@ def upload_files_no_subscription(cmd, file_path, file_workspace_name):
     from .aaz.latest.support.no_subscription.file import Create
     from .aaz.latest.support.no_subscription.file import Upload
 
-    ##costants for file upload
-    max_chunk_size= 2621440
-
     validate_file_path(file_path)
 
     full_file_name, file_extension, file_name_without_extension = get_file_name_info(file_path)
-    content = get_file_content(file_path)
-
     validate_file_extension(file_extension)
     validate_file_name(file_name_without_extension)
+
+    content = get_file_content(file_path)
     
     file_size = len(content)
     validate_file_size(file_size)
@@ -337,7 +335,7 @@ def upload_files_no_subscription(cmd, file_path, file_workspace_name):
     for chunk_index in range(number_of_chunks):
         chunk_content = content[chunk_index * chunk_size: (chunk_index + 1) * chunk_size]
         string_encoded_content = encode_string_content(chunk_content)
-        upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content, "--file-name": full_file_name, "--file-workspace-name": file_workspace_name }
+        upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content }
         resp_upload = Upload(cli_ctx = cmd.cli_ctx)(command_args=upload_input)
         print("File {} has been succesfully uploaded!".format(full_file_name))
 
@@ -345,16 +343,13 @@ def upload_files_in_subscription(cmd, file_path, file_workspace_name, subscripti
     from .aaz.latest.support.in_subscription.file import Create as Create_Sub
     from .aaz.latest.support.in_subscription.file import Upload as Upload_Sub
 
-    ##costants for file upload
-    max_chunk_size= 2621440
-
     validate_file_path(file_path)
 
     full_file_name, file_extension, file_name_without_extension = get_file_name_info(file_path)
-    content = get_file_content(file_path)
-
     validate_file_extension(file_extension)
     validate_file_name(file_name_without_extension)
+
+    content = get_file_content(file_path)
     
     file_size = len(content)
     validate_file_size(file_size)
@@ -372,9 +367,9 @@ def upload_files_in_subscription(cmd, file_path, file_workspace_name, subscripti
         chunk_content = content[chunk_index * chunk_size: (chunk_index + 1) * chunk_size]
         string_encoded_content = encode_string_content(chunk_content)
         if (subscription_id):
-            upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content, "--file-name": full_file_name, "--file-workspace-name": file_workspace_name, "subscription" : subscription_id  }
+            upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content,  "subscription" : subscription_id  }
         else: 
-            upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content, "--file-name": full_file_name, "--file-workspace-name": file_workspace_name }
+            upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content }
         resp_upload = Upload_Sub(cli_ctx = cmd.cli_ctx)(command_args=upload_input)
         print("File {} has been succesfully uploaded!".format(full_file_name))
 
