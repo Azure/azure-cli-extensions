@@ -3232,7 +3232,9 @@ def aks_check_network_outbound(cmd, client, resource_group, cluster_name, node_n
         index = node_name.find("vmss")
         if index != -1:
             vmss_name = node_name[:index + 4]
-            instance_id = node_name[index + 4:]
+            instance_id = int(node_name[index + 4:], base = 36)
+        else:
+            raise ValidationError("Node name {0} is invalid!".format(node_name))
 
     print("Start checking network for vmss: {0}, instance_id: {1}, node_resource_group: {2}".format(vmss_name, instance_id, managed_resource_group))
 
