@@ -178,6 +178,7 @@ def run_az_cmd(cmd, message=False, raise_error=True):
         
     try:
         result = subprocess.run(cmd, capture_output=True, check=True)
+        return result
     except subprocess.CalledProcessError as ex:
         if raise_error:
             raise Exception(f"Failed to run command: {cmd}") from ex
