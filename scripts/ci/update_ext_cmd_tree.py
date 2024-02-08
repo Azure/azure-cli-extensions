@@ -83,19 +83,18 @@ def upload_cmd_tree():
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--file', f'{file_path}', '--auth-mode', 'login',
            '--overwrite']
-    result = subprocess.run(cmd, capture_output=True)
-    if result.returncode != 0:
-        print(f"Failed to upload '{blob_file_name}' to the storage account")
-        print(result)
+    try:
+        subprocess.run(cmd, capture_output=True, check=True)
+    except subprocess.CalledProcessError as ex:
+        raise Exception(f"Failed to upload '{blob_file_name}' to the storage account") from ex
 
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--auth-mode', 'login']
-    result = subprocess.run(cmd, capture_output=True)
-    if result.stdout and result.returncode == 0:
+    try:
+        result = subprocess.run(cmd, capture_output=True, check=True)
         url = json.loads(result.stdout)
-    else:
-        print(f"Failed to get the URL for '{blob_file_name}'")
-        raise
+    except subprocess.CalledProcessError as ex:
+        raise Exception(f"Failed to get the URL for '{blob_file_name}'") from ex
 
     download_file_path = os.path.expanduser(os.path.join('~', '.azure', downloaded_file_name))
     download_file(url, download_file_path)
