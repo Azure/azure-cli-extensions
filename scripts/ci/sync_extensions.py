@@ -5,9 +5,9 @@
 # pylint: disable=line-too-long
 # pylint: disable=broad-except
 
+import json
 import os
 import re
-import json
 import subprocess
 
 from util import run_az_cmd
@@ -79,6 +79,7 @@ def _sync_wheel(ext, updated_indexes, failed_urls, overwrite, temp_dir):
            f'{STORAGE_ACCOUNT}', '--name',  f'{blob_name}', '--auth-mode', 'login']
     message = f"Getting the URL for '{blob_name}'"
     result = run_az_cmd(cmd, message=message, raise_error=True)
+    url = json.loads(result.stdout)
 
     updated_index = ext
     updated_index['downloadUrl'] = url
