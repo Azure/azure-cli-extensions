@@ -77,6 +77,7 @@ def _sync_wheel(ext, updated_indexes, failed_urls, overwrite, temp_dir):
         subprocess.run(cmd, capture_output=True, check=True)
     except subprocess.CalledProcessError as ex:
         raise Exception(f"Failed to upload '{blob_name}' to the storage") from ex
+
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name',  f'{blob_name}', '--auth-mode', 'login']
     try:
