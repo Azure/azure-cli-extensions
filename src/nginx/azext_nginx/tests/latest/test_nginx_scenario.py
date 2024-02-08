@@ -7,9 +7,9 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import json
 
+
 class NginxScenarioTest(ScenarioTest):
 
-    
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='eastus2euap')
     def test_deployment_cert_config(self, resource_group):
