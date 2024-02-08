@@ -317,7 +317,7 @@ def upload_files_no_subscription(cmd, file_path, file_workspace_name):
 
     validate_file_path(file_path)
 
-    full_file_name, file_extension, file_name_without_extension = get_file_name_info(file_path)
+    full_file_name, file_name_without_extension, file_extension = get_file_name_info(file_path)
     validate_file_extension(file_extension)
     validate_file_name(file_name_without_extension)
 
@@ -345,7 +345,7 @@ def upload_files_in_subscription(cmd, file_path, file_workspace_name, subscripti
 
     validate_file_path(file_path)
 
-    full_file_name, file_extension, file_name_without_extension = get_file_name_info(file_path)
+    full_file_name, file_name_without_extension, file_extension = get_file_name_info(file_path)
     validate_file_extension(file_extension)
     validate_file_name(file_name_without_extension)
 

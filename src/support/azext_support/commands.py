@@ -8,7 +8,6 @@ from azext_support._client_factory import (cf_communications,
                                            cf_services, cf_support,
                                            cf_support_tickets)
 from azext_support._validators import validate_tickets_create
-from azext_support._validators import _check_name_availability_no_subscription
 from azure.cli.core.commands import CliCommandType
 from azext_support.custom import TicketUpdate, TicketCreate
 from azext_support.custom import FileWorkspaceCreateNoSubscription, FileWorkspaceCreateSubscription
