@@ -14,7 +14,7 @@ from azure.cli.core.util import sdk_no_wait
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
-
+from azext_fleet.constants import *
 
 # pylint: disable=too-many-locals
 def create_fleet(cmd,
@@ -316,10 +316,17 @@ def create_update_run(cmd,
                       stages=None,
                       update_strategy_name=None,
                       no_wait=False):
-    if upgrade_type == "Full" and kubernetes_version is None:
-        raise CLIError("Please set kubernetes version when upgrade type is 'Full'.")
-    if upgrade_type == "NodeImageOnly" and kubernetes_version is not None:
-        raise CLIError("Cannot set kubernetes version when upgrade type is 'NodeImageOnly'.")
+
+    if upgrade_type in UPGRADE_TYPE_ERROR_MESSAGES:
+        if (
+            ((upgrade_type == "Full" or upgrade_type == "ControlPlaneOnly") and kubernetes_version is None) or
+            (upgrade_type == "NodeImageOnly" and kubernetes_version is not None)
+        ):
+            raise CLIError(UPGRADE_TYPE_ERROR_MESSAGES[upgrade_type])
+    else:
+        raise CLIError((f"The upgrade type parameter '{upgrade_type}' is not valid."
+                f"Valid options are: '{UPGRADE_TYPE_FULL}', '{UPGRADE_TYPE_CONTROLPLANEONLY}', or '{UPGRADE_TYPE_NODEIMAGEONLY}'"))
+
     if stages is not None and update_strategy_name is not None:
         raise CLIError("Cannot set stages when update strategy name is set.")
 
