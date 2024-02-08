@@ -175,6 +175,20 @@ class SupportScenarioTest(ScenarioTest):
         rsp = self.cmd(cmd).get_output_in_json()
         self._validate_support_tickets_show_cmd(rsp, test_ticket_name)
 
+    def test_chat_transcript(self):
+        test_ticket_name = "58cf91d7-27a54e37-7ee57473-c9c9-4350-b0e1-f7aa2479108d"
+        test_chat_transcript_name = "e3bc592b-ba39-49d3-8853-16e33023b22b"
+
+        # List Chat Transcript
+        cmd = self._build_chat_transcript_list_cmd(test_ticket_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_chat_transcript_list_cmd(rsp, test_chat_transcript_name)
+
+        # Show Chat Transcript
+        cmd = self._build_chat_transcript_show_cmd(test_ticket_name, test_chat_transcript_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_chat_transcript_show_cmd(rsp, test_chat_transcript_name)
+
     def _build_base_support_tickets_create_command(self, test_ticket_name):
         test_ticket_title = "test ticket from python cli test. Do not assign and close after a day."
         cmd = "support in-subscription tickets create --debug "
@@ -401,3 +415,30 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(rsp is not None)
         self.assertTrue(rsp.exit_code is not None)
         self.assertTrue(rsp.exit_code == exit_code)
+
+    def _build_chat_transcript_list_cmd(self, test_ticket_name):
+        cmd = "support in-subscription chat-transcript list "
+        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
+
+        return cmd
+
+    def _validate_chat_transcript_list_cmd(self, rsp, test_chat_transcript_name):
+        self.assertTrue(rsp is not None)
+        self.assertTrue("type" in rsp[0])
+        self.assertTrue(rsp[0]["type"] == "Microsoft.Support/chatTranscripts")
+        self.assertTrue("name" in rsp[0])
+        self.assertTrue(rsp[0]["name"] == test_chat_transcript_name)
+
+    def _build_chat_transcript_show_cmd(self, test_ticket_name, test_chat_transcript_name):
+        cmd = "support in-subscription chat-transcript show "
+        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--chat-transcript-name '{0}' ".format(test_chat_transcript_name)
+
+        return cmd
+
+    def _validate_chat_transcript_show_cmd(self, rsp, test_chat_transcript_name):
+        self.assertTrue(rsp is not None)
+        self.assertTrue("type" in rsp)
+        self.assertTrue(rsp["type"] == "Microsoft.Support/chatTranscripts")
+        self.assertTrue("name" in rsp)
+        self.assertTrue(rsp["name"] == test_chat_transcript_name)
