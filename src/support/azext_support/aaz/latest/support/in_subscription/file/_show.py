@@ -18,8 +18,11 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get details of a specific file in a work space.
 
-    :example: Show a file within a file-workspace for a specified subscription
+    :example: Show a file within a file-workspace for a specified subscription (different from the account subscription)
         az support in-subscription file-workspace file show --subscription "TestSubscription" --file-workspace-name "TestWorkspaceName" --file-name "FileName"
+
+    :example: Show a file within a file-workspace for a specified subscription (same as the account subscription)
+        az support in-subscription file-workspace file show --file-workspace-name "TestWorkspaceName" --file-name "FileName"
     """
 
     _aaz_info = {
@@ -46,7 +49,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.file_name = AAZStrArg(
-            options=["-n", "--name", "--file-name"],
+            options=["--file-name"],
             help="File Name",
             required=True,
             id_part="child_name_1",

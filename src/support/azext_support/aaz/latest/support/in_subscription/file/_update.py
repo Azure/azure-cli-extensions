@@ -11,7 +11,7 @@
 from azure.cli.core.aaz import *
 
 
-class UpdateUntitled1(AAZCommand):
+class Update(AAZCommand):
     """Update a new file under a workspace for the specified subscription.
     """
 
@@ -21,6 +21,8 @@ class UpdateUntitled1(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/fileworkspaces/{}/files/{}", "2022-09-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -79,6 +81,7 @@ class UpdateUntitled1(AAZCommand):
         self.FilesGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
         self.FilesCreate(ctx=self.ctx)()
         self.post_operations()
@@ -182,7 +185,7 @@ class UpdateUntitled1(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateUntitled1Helper._build_schema_file_details_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_file_details_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -277,7 +280,7 @@ class UpdateUntitled1(AAZCommand):
                 return cls._schema_on_201
 
             cls._schema_on_201 = AAZObjectType()
-            _UpdateUntitled1Helper._build_schema_file_details_read(cls._schema_on_201)
+            _UpdateHelper._build_schema_file_details_read(cls._schema_on_201)
 
             return cls._schema_on_201
 
@@ -302,9 +305,17 @@ class UpdateUntitled1(AAZCommand):
 
             return _instance_value
 
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
 
-class _UpdateUntitled1Helper:
-    """Helper class for UpdateUntitled1"""
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.vars.instance,
+                self.ctx.generic_update_args
+            )
+
+
+class _UpdateHelper:
+    """Helper class for Update"""
 
     _schema_file_details_read = None
 
@@ -380,4 +391,4 @@ class _UpdateUntitled1Helper:
         _schema.type = cls._schema_file_details_read.type
 
 
-__all__ = ["UpdateUntitled1"]
+__all__ = ["Update"]

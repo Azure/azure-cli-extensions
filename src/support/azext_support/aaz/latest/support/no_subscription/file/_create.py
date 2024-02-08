@@ -55,17 +55,17 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.chunk_size = AAZIntArg(
+        _args_schema.chunk_size = AAZFloatArg(
             options=["--chunk-size"],
             arg_group="Properties",
             help="Size of each chunk",
         )
-        _args_schema.file_size = AAZIntArg(
+        _args_schema.file_size = AAZFloatArg(
             options=["--file-size"],
             arg_group="Properties",
             help="Size of the file to be uploaded",
         )
-        _args_schema.number_of_chunks = AAZIntArg(
+        _args_schema.number_of_chunks = AAZFloatArg(
             options=["--number-of-chunks"],
             arg_group="Properties",
             help="Number of chunks to be uploaded",
@@ -162,9 +162,9 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("chunkSize", AAZIntType, ".chunk_size")
-                properties.set_prop("fileSize", AAZIntType, ".file_size")
-                properties.set_prop("numberOfChunks", AAZIntType, ".number_of_chunks")
+                properties.set_prop("chunkSize", AAZFloatType, ".chunk_size")
+                properties.set_prop("fileSize", AAZFloatType, ".file_size")
+                properties.set_prop("numberOfChunks", AAZFloatType, ".number_of_chunks")
 
             return self.serialize_content(_content_value)
 
@@ -204,17 +204,17 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_201.properties
-            properties.chunk_size = AAZIntType(
+            properties.chunk_size = AAZFloatType(
                 serialized_name="chunkSize",
             )
             properties.created_on = AAZStrType(
                 serialized_name="createdOn",
                 flags={"read_only": True},
             )
-            properties.file_size = AAZIntType(
+            properties.file_size = AAZFloatType(
                 serialized_name="fileSize",
             )
-            properties.number_of_chunks = AAZIntType(
+            properties.number_of_chunks = AAZFloatType(
                 serialized_name="numberOfChunks",
             )
 

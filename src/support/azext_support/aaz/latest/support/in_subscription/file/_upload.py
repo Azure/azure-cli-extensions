@@ -54,7 +54,7 @@ class Upload(AAZCommand):
         # define Arg Group "UploadFile"
 
         _args_schema = cls._args_schema
-        _args_schema.chunk_index = AAZIntArg(
+        _args_schema.chunk_index = AAZFloatArg(
             options=["--chunk-index"],
             arg_group="UploadFile",
             help="Index of the uploaded chunk (Index starts at 0)",
@@ -149,7 +149,7 @@ class Upload(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("chunkIndex", AAZIntType, ".chunk_index")
+            _builder.set_prop("chunkIndex", AAZFloatType, ".chunk_index")
             _builder.set_prop("content", AAZStrType, ".content")
 
             return self.serialize_content(_content_value)
