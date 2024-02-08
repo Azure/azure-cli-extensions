@@ -10,6 +10,8 @@ import re
 import json
 import subprocess
 
+from util import run_az_cmd
+
 DEFAULT_TARGET_INDEX_URL = os.getenv('AZURE_EXTENSION_TARGET_INDEX_URL')
 STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_ACCOUNT')
 STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_CONTAINER')
@@ -48,7 +50,6 @@ def download_file(url, file_path):
             if chunk:  # ignore keep-alive new chunks
                 f.write(chunk)
 
-
 def _sync_wheel(ext, updated_indexes, failed_urls, overwrite, temp_dir):
     download_url = ext['downloadUrl']
     whl_file = download_url.split('/')[-1]
@@ -62,10 +63,8 @@ def _sync_wheel(ext, updated_indexes, failed_urls, overwrite, temp_dir):
     if not overwrite:
         cmd = ['az', 'storage', 'blob', 'exists', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
                f'{STORAGE_ACCOUNT}', '--name', f'{blob_name}', '--auth-mode', 'login']
-        try:
-            result = subprocess.run(cmd, capture_output=True, check=True)
-        except subprocess.CalledProcessError as ex:
-            raise Exception(f"Failed to check if '{blob_name}' exists in the storage") from ex
+        message = f"Checking if '{blob_name}' exists in the storage"
+        result = run_az_cmd(cmd, message=message, raise_error=True)
         if json.loads(result.stdout)['exists']:
             print("Skipping '{}' as it already exists...".format(whl_file))
             return
@@ -73,18 +72,13 @@ def _sync_wheel(ext, updated_indexes, failed_urls, overwrite, temp_dir):
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_name}', '--file', f'{os.path.abspath(whl_path)}',
            '--auth-mode', 'login', '--overwrite']
-    try:
-        subprocess.run(cmd, capture_output=True, check=True)
-    except subprocess.CalledProcessError as ex:
-        raise Exception(f"Failed to upload '{blob_name}' to the storage") from ex
+    message = f"uploading '{blob_name}' to the storage"
+    run_az_cmd(cmd, message=message, raise_error=True)
 
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name',  f'{blob_name}', '--auth-mode', 'login']
-    try:
-        result = subprocess.run(cmd, capture_output=True, check=True)
-        url = json.loads(result.stdout)
-    except subprocess.CalledProcessError as ex:
-        raise Exception(f"Failed to get the URL for '{blob_name}'") from ex
+    message = f"Getting the URL for '{blob_name}'"
+    result = run_az_cmd(cmd, message=message, raise_error=True)
 
     updated_index = ext
     updated_index['downloadUrl'] = url
@@ -160,10 +154,8 @@ def main():
         cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
                f'{STORAGE_ACCOUNT}', '--name', f'{backup_index_name}',
                '--file', f'{os.path.abspath(target_index_path)}', '--auth-mode', 'login', '--overwrite']
-        try:
-            subprocess.run(cmd, capture_output=True, check=True)
-        except subprocess.CalledProcessError as ex:
-            raise Exception(f"Failed to upload '{backup_index_name}' to the storage account") from ex
+        message = f"Uploading '{backup_index_name}' to the storage"
+        run_az_cmd(cmd, message=message, raise_error=True)
 
         # start with an empty index.json to sync all extensions
         initial_index = {"extensions": {}, "formatVersion": "1"}
@@ -189,10 +181,8 @@ def main():
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{index_name}', '--file', f'{os.path.abspath(target_index_path)}',
            '--auth-mode', 'login', '--overwrite']
-    try:
-        subprocess.run(cmd, capture_output=True, check=True)
-    except subprocess.CalledProcessError as ex:
-        raise Exception(f"Failed to upload '{index_name}' to the storage account") from ex
+    message = f"Uploading '{index_name}' to the storage"
+    run_az_cmd(cmd, message=message, raise_error=True)
 
     print("\nSync finished.")
     if updated_indexes:

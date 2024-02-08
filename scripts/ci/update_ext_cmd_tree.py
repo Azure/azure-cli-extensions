@@ -6,13 +6,14 @@
 import filecmp
 import json
 import os
-import subprocess
 import sys
+
 from azure.cli.core import get_default_cli
 from azure.cli.core._session import Session
 from azure.cli.core.commands import _load_extension_command_loader
 from azure.cli.core.extension import get_extension_modname, get_extension_path
 from sync_extensions import download_file
+from util import run_az_cmd
 
 STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_ACCOUNT')
 STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_CONTAINER')
@@ -83,18 +84,14 @@ def upload_cmd_tree():
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--file', f'{file_path}', '--auth-mode', 'login',
            '--overwrite']
-    try:
-        subprocess.run(cmd, capture_output=True, check=True)
-    except subprocess.CalledProcessError as ex:
-        raise Exception(f"Failed to upload '{blob_file_name}' to the storage account") from ex
+    message = f"Uploading '{blob_file_name}' to the storage"
+    run_az_cmd(cmd, message=message, raise_error=True)
 
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--auth-mode', 'login']
-    try:
-        result = subprocess.run(cmd, capture_output=True, check=True)
-        url = json.loads(result.stdout)
-    except subprocess.CalledProcessError as ex:
-        raise Exception(f"Failed to get the URL for '{blob_file_name}'") from ex
+    message = f"Getting the URL for '{blob_file_name}'"
+    result = run_az_cmd(cmd, message=message, raise_error=True)
+    url = json.loads(result.stdout)
 
     download_file_path = os.path.expanduser(os.path.join('~', '.azure', downloaded_file_name))
     download_file(url, download_file_path)

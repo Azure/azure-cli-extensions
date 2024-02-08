@@ -3,14 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import logging
 import os
 import re
 import shlex
-import json
+import subprocess
 import zipfile
-
-from subprocess import check_output
 
 logger = logging.getLogger(__name__)
 
@@ -136,7 +135,7 @@ def diff_code(start, end):
 
         # If running in Travis CI, only run tests for edited extensions
         commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
-        if commit_range and not check_output(
+        if commit_range and not subprocess.check_output(
                 ['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
             continue
 
@@ -154,7 +153,7 @@ def diff_code(start, end):
             else:
                 cmd = cmd_tpl.format(start=start, end=end,
                                      code_dir=src_d_full)
-                if not check_output(shlex.split(cmd)):
+                if not subprocess.check_output(shlex.split(cmd)):
                     continue
 
         diff_ref.append((pkg_name, src_d_full))
@@ -163,3 +162,23 @@ def diff_code(start, end):
                    f'end: {end}, '
                    f'diff_ref: {diff_ref}.')
     return diff_ref
+
+def run_az_cmd(cmd, message=False, raise_error=True):
+    """
+    :param cmd: The entire command line to run.
+    :param message: A custom message to print, or True (bool) to use a default.
+    :param raise_error: Whether to raise an exception if the command fails.
+    """
+     # use default message if custom not provided
+    if message is True:
+        print(f'Running: {cmd}')
+    
+    if message:
+        print(f'{message}')
+        
+    try:
+        result = subprocess.run(cmd, capture_output=True, check=True)
+    except subprocess.CalledProcessError as ex:
+        if raise_error:
+            raise Exception(f"Failed to run command: {cmd}") from ex
+        return result
