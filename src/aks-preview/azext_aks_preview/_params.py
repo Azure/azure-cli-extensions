@@ -1420,6 +1420,14 @@ def load_arguments(self, _):
             help="delete an AKS nodepool by ignoring PodDisruptionBudget setting",
         )
 
+    with self.argument_context("aks nodepool delete-machines") as c:
+        c.argument(
+            "machine_names",
+            nargs="+",
+            required=True,
+            help="Space-separated machine names to delete.",
+        )
+
     with self.argument_context("aks machine") as c:
         c.argument("cluster_name", help="The cluster name.")
         c.argument(

@@ -62,20 +62,27 @@ def _sync_wheel(ext, updated_indexes, failed_urls, overwrite, temp_dir):
     if not overwrite:
         cmd = ['az', 'storage', 'blob', 'exists', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
                f'{STORAGE_ACCOUNT}', '--name', f'{blob_name}', '--auth-mode', 'login']
-        result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if json.loads(result.stdout)['exists']:
+        result = subprocess.run(cmd, capture_output=True)
+        if result.stdout and json.loads(result.stdout)['exists']:
             print("Skipping '{}' as it already exists...".format(whl_file))
             return
 
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{blob_name}', '--file', f'{os.path.abspath(whl_path)}',
-           '--auth-mode', 'login']
-    result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(json.loads(result.stdout))
+           '--auth-mode', 'login', '--overwrite']
+    result = subprocess.run(cmd, capture_output=True)
+    if result.returncode != 0:
+        print(f"Failed to upload '{whl_file}' to the storage account")
+        raise
     cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name',  f'{blob_name}', '--auth-mode', 'login']
-    result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    url = json.loads(result.stdout)
+    result = subprocess.run(cmd, capture_output=True)
+    print(result)
+    if result.stdout and result.returncode == 0:
+        url = json.loads(result.stdout)
+    else:
+        print("Failed to get the URL for '{}'".format(whl_file))
+        raise
     updated_index = ext
     updated_index['downloadUrl'] = url
     updated_indexes.append(updated_index)
@@ -148,9 +155,12 @@ def main():
         # backup the old index.json
         backup_index_name = f'{BLOB_PREFIX}/index.json.sav' if BLOB_PREFIX else 'index.json.sav'
         cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
-               f'{STORAGE_ACCOUNT}', '--name', f'{backup_index_name}', '--file', f'{os.path.abspath(target_index_path)}', '--auth-mode', 'login']
-        result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        print(json.loads(result.stdout))
+               f'{STORAGE_ACCOUNT}', '--name', f'{backup_index_name}',
+               '--file', f'{os.path.abspath(target_index_path)}', '--auth-mode', 'login', '--overwrite']
+        result = subprocess.run(cmd, capture_output=True)
+        if result.returncode != 0:
+            print(f"Failed to upload '{target_index_path}' to the storage account")
+            raise
         # start with an empty index.json to sync all extensions
         initial_index = {"extensions": {}, "formatVersion": "1"}
         open(target_index_path, 'w').write(json.dumps(initial_index, indent=4, sort_keys=True))
@@ -174,9 +184,11 @@ def main():
     index_name = f'{BLOB_PREFIX}/index.json' if BLOB_PREFIX else 'index.json'
     cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
            f'{STORAGE_ACCOUNT}', '--name', f'{index_name}', '--file', f'{os.path.abspath(target_index_path)}',
-           '--auth-mode', 'login']
-    result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(json.loads(result.stdout))
+           '--auth-mode', 'login', '--overwrite']
+    result = subprocess.run(cmd, capture_output=True)
+    if result.returncode != 0:
+        print(f"Failed to upload '{target_index_path}' to the storage account")
+        raise
     print("\nSync finished.")
     if updated_indexes:
         print("New extensions available in:")

@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b1
+++++++
+* [2024-02-08] Version intended to work with QDK version 0.29.0
+* Updated documentations and messages.
+
 0.21.0
 ++++++
 * [2024-01-10] Version intended to work with QDK version 0.29.0
