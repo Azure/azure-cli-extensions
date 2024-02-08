@@ -185,7 +185,7 @@ helps['aks create'] = f"""
             - http_application_routing        : configure ingress with automatic public DNS name creation.
             - monitoring                      :  turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
             - virtual-node                    : enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use. aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
-            - azure-policy                    : enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling AKS Deployment Safeguards. Learn more at aka.ms/aks/policy.
+            - azure-policy                    : enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling deployment safeguards. Learn more at aka.ms/aks/policy.
             - ingress-appgw                   : enable Application Gateway Ingress Controller addon (PREVIEW).
             - confcom                         : enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
             - open-service-mesh               : enable Open Service Mesh addon (PREVIEW).
@@ -540,13 +540,13 @@ helps['aks create'] = f"""
           short-summary: The ipTags of the node public IPs.
         - name: --safeguards-level
           type: string
-          short-summary: The AKS Deployment Safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
+          short-summary: The deployment safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
         - name: --safeguards-version
           type: string
-          short-summary: The version of AKS Deployment Safeguards to use. Default "v1.0.0" Use the ListSafeguardsVersions API to discover available versions
+          short-summary: The version of deployment safeguards to use. Default "v1.0.0" Use the ListSafeguardsVersions API to discover available versions
         - name: --safeguards-excluded-ns
           type: string
-          short-summary: Comma-separated list of Kubernetes namespaces to exclude from AKS Deployment Safeguards
+          short-summary: Comma-separated list of Kubernetes namespaces to exclude from deployment safeguards
         - name: --enable-asm --enable-azure-service-mesh
           type: bool
           short-summary: Enable Azure Service Mesh.
@@ -1108,13 +1108,13 @@ helps['aks update'] = """
           long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
         - name: --safeguards-level
           type: string
-          short-summary: The AKS Deployment Safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
+          short-summary: The deployment safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
         - name: --safeguards-version
           type: string
-          short-summary: The version of AKS Deployment Safeguards to use. Default "v1.0.0" Use the ListSafeguardsVersions API to discover available versions
+          short-summary: The version of deployment safeguards to use. Default "v1.0.0" Use the ListSafeguardsVersions API to discover available versions
         - name: --safeguards-excluded-ns
           type: string
-          short-summary: Comma-separated list of Kubernetes namespaces to exclude from AKS Deployment Safeguards. Use "" to clear a previously non-empty list
+          short-summary: Comma-separated list of Kubernetes namespaces to exclude from deployment safeguards. Use "" to clear a previously non-empty list
         - name: --nodepool-taints
           type: string
           short-summary: The node taints for all node pool.

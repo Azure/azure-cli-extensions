@@ -755,7 +755,7 @@ def load_arguments(self, _):
         c.argument(
             "safeguards_version",
             type=str,
-            help="The AKS Deployment Safeguards version",
+            help="The deployment safeguards version",
             is_preview=True,
         )
         c.argument("safeguards_excluded_ns", type=str, is_preview=True)
@@ -1130,7 +1130,7 @@ def load_arguments(self, _):
             arg_type=get_enum_type(safeguards_levels),
             is_preview=True,
         )
-        c.argument("safeguards_version", help="The AKS Deployment Safeguards version", is_preview=True)
+        c.argument("safeguards_version", help="The deployment safeguards version", is_preview=True)
         c.argument("safeguards_excluded_ns", is_preview=True)
         c.argument(
             "enable_network_observability",
