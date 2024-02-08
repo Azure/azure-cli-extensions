@@ -2066,9 +2066,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # returns a service mesh profile only if '--enable-azure-service-mesh' is applied
         enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
         revision = self.raw_param.get("revision", None)
-        if revision is None:
-            revisions = []
-        else:
+        revisions = None
+        if revision is not None:
             revisions = [revision]
         if enable_asm:
             return self.models.ServiceMeshProfile(  # pylint: disable=no-member
