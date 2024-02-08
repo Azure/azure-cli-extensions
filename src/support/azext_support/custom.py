@@ -27,7 +27,7 @@ from .aaz.latest.support.in_subscription.file_workspace import Create as _Create
 from .aaz.latest.support.no_subscription.file_workspace import Create as _CreateNoSubscriptionFileWorkspace
 
 ##costants for file upload
-max_chunk_size= 2621440
+max_chunk_size= 1024 * 1024 * 2.5 #2.5MB
 
 def list_support_tickets(cmd, client, filters=None):
     if filters is None:

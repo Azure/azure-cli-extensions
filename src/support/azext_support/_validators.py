@@ -16,6 +16,13 @@ import os
 
 logger = get_logger(__name__)
 
+#file constants
+max_file_name_length = 110
+min_file_size = 1
+max_file_size = 1024 * 1024 * 5
+unsupported_file_extensions = [".bat", ".cmd", ".exe", ".ps1", ".js", ".vbs", ".com", ".lnk", ".reg",
+".bin", ".cpl", ".inf", ".ins", ".isu", ".job", ".jse", ".lnk", ".msi", ".msp", ".paf", ".pif", ".rgs", 
+".scr", ".sct", ".svg", ".vbe", ".vb", ".ws", ".wsf", ".wsh", ".htm", ".html"]
 
 def datetime_type(string):
     """ Validates UTC datetime. Examples of accepted forms:
@@ -147,19 +154,13 @@ def validate_file_path(file_path):
         raise CLIError("File does not exist!")
     
 def validate_file_name(file_name):
-    max_file_name_length = 110
     if len(file_name) > max_file_name_length:
         raise CLIError("File name should not be more than 110 characters.")
     
 def validate_file_size(file_size):
-    max_file_size = 5242880
-    min_file_size = 1
     if (file_size > max_file_size) or (file_size < min_file_size):
         raise CLIError("The file must be between 1 and 5242880 bytes")
 
 def validate_file_extension(file_extension):
-    unsupported_file_extensions = [".bat", ".cmd", ".exe", ".ps1", ".js", ".vbs", ".com", ".lnk", ".reg",
-    ".bin", ".cpl", ".inf", ".ins", ".isu", ".job", ".jse", ".lnk", ".msi", ".msp", ".paf", ".pif", ".rgs", 
-    ".scr", ".sct", ".svg", ".vbe", ".vb", ".ws", ".wsf", ".wsh", ".htm", ".html"]
     if file_extension in unsupported_file_extensions:
         raise CLIError("The file extension is not supported.")
