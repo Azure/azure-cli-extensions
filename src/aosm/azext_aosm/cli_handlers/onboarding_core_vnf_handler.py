@@ -136,7 +136,9 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             "acr_artifacts": acr_artifact_list,
             "sa_artifacts": sa_artifact_list,
         }
-        bicep_contents = render_bicep_contents_from_j2(template_path, params)
+        bicep_contents = render_bicep_contents_from_j2(
+            template_path, params
+        )
 
         # Create Bicep element with manifest contents
         bicep_file = BicepDefinitionElementBuilder(
