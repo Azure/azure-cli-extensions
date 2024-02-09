@@ -10,7 +10,8 @@ import json
 import base64
 import os
 import math
-from azext_support._validators import validate_file_path, validate_file_size, validate_file_extension, validate_file_name
+from azext_support._validators import validate_file_path, validate_file_size
+from azext_support._validators import validate_file_extension, validate_file_name
 
 from datetime import date, datetime, timedelta
 

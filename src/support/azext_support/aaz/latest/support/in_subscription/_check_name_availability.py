@@ -51,7 +51,7 @@ class CheckNameAvailability(AAZCommand):
             arg_group="CheckNameAvailabilityInput",
             help="The type of resource.",
             required=True,
-            enum={"Microsoft.Support/communications": "Microsoft.Support/communications", "Microsoft.Support/supportTickets": "Microsoft.Support/supportTickets", "Microsoft.Support/fileWorkspaces" : "Microsoft.Support/fileWorkspaces"},
+            enum={"Microsoft.Support/communications": "Microsoft.Support/communications", "Microsoft.Support/supportTickets": "Microsoft.Support/supportTickets"},
         )
         return cls._args_schema
 
