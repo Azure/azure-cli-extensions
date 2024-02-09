@@ -20,17 +20,10 @@ from azext_aosm.vendored_sdks.models import \
     NFDResourceElementTemplate
 from azext_aosm.vendored_sdks.models import (NSDArtifactProfile,
                                              ReferencedResource, TemplateType)
-from azext_aosm.common.constants import NSD_OUTPUT_FOLDER_FILENAME
+from azext_aosm.common.constants import NSD_OUTPUT_FOLDER_FILENAME, NSD_NF_TEMPLATE_FILENAME, NSD_TEMPLATE_FOLDER_NAME
+from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
 
 logger = get_logger(__name__)
-
-NF_BICEP_TEMPLATE_PATH = (
-    Path(__file__).parent.parent / "common" / "templates" / "nf_template.bicep"
-)
-
-NF_BICEP_TEMPLATE_PATH = (
-    Path(__file__).parent.parent / "common" / "templates" / "nf_template.bicep"
-)
 
 
 class NFDProcessor(BaseInputProcessor):
@@ -82,10 +75,15 @@ class NFDProcessor(BaseInputProcessor):
             file_path=self.input_artifact.arm_template_output_path.relative_to(Path(NSD_OUTPUT_FOLDER_FILENAME)),
         )
 
+        template_path = get_template_path(NSD_TEMPLATE_FOLDER_NAME, NSD_NF_TEMPLATE_FILENAME)
+        params = {
+            "nfvi_type": self.input_artifact.network_function_definition.properties.network_function_template.nfvi_type
+        }
+        bicep_contents = render_bicep_contents_from_j2(template_path, params)
         # Create a local file builder for the ARM template
         file_builder = LocalFileBuilder(
             self.input_artifact.arm_template_output_path,
-            NF_BICEP_TEMPLATE_PATH.read_text(),
+            bicep_contents,
         )
 
         return [artifact_details], [file_builder]

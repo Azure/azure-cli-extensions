@@ -60,6 +60,7 @@ NSD_MANIFEST_TEMPLATE_FILENAME = "nsdartifactmanifest.bicep.j2"
 NSD_BASE_TEMPLATE_FILENAME = "nsdbase.bicep"
 NSD_TEMPLATE_FOLDER_NAME = "nsd"
 NSD_DEFINITION_FOLDER_NAME = "nsdDefinition"
+NSD_NF_TEMPLATE_FILENAME = "nf_template.bicep.j2"
 
 VNF_OUTPUT_FOLDER_FILENAME = "vnf-cli-output"
 VNF_INPUT_FILENAME = "vnf-input.jsonc"

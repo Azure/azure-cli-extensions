@@ -33,7 +33,7 @@ resource nfResource 'Microsoft.HybridNetwork/networkFunctions@2023-09-01' = [for
       id: nfdv.id
       idType: 'Open'
     }
-    nfviType: (configObject.customLocationId == '') ? 'AzureCore' : 'AzureArcKubernetes'
+    nfviType: '{{nfvi_type}}'
     nfviId: (configObject.customLocationId == '') ? resourceGroupId : configObject.customLocationId
     allowSoftwareUpdate: true
     configurationType: 'Secret'
