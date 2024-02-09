@@ -98,6 +98,7 @@ class VhdImageConfig:
                 "One of file_path or sas_blob_url must be set for vhd."
             )
 
+
 @dataclass
 class OnboardingCoreVNFInputConfig(OnboardingNFDBaseInputConfig):
     """Input configuration for onboarding VNFs."""
@@ -185,7 +186,12 @@ class OnboardingNexusVNFInputConfig(OnboardingNFDBaseInputConfig):
 
     arm_templates: List[ArmTemplatePropertiesConfig] = field(
         default_factory=lambda: [ArmTemplatePropertiesConfig()],
-        metadata={"comment": "ARM template configuration. The ARM templates given here would deploy a VM if run. They will be used to generate the VNF."},
+        metadata={
+            "comment": (
+                "ARM template configuration. The ARM templates given here would deploy a VM if run."
+                "They will be used to generate the VNF."
+            )
+        },
     )
 
     images: List[str] = field(

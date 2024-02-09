@@ -10,18 +10,17 @@ from knack.log import get_logger
 from azext_aosm.build_processors.arm_processor import AzureCoreArmBuildProcessor
 from azext_aosm.build_processors.vhd_processor import VHDProcessor
 from azext_aosm.build_processors.base_processor import BaseInputProcessor
-from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
-                                         BASE_FOLDER_NAME,
-                                         MANIFEST_FOLDER_NAME,
-                                         NF_DEFINITION_FOLDER_NAME,
-                                         VNF_CORE_BASE_TEMPLATE_FILENAME,
-                                         VNF_TEMPLATE_FOLDER_NAME,
-                                         VNF_DEFINITION_TEMPLATE_FILENAME,
-                                         VNF_MANIFEST_TEMPLATE_FILENAME,
-                                         VNF_OUTPUT_FOLDER_FILENAME,
-                                         DEPLOYMENT_PARAMETERS_FILENAME,
-                                         VHD_PARAMETERS_FILENAME,
-                                         TEMPLATE_PARAMETERS_FILENAME)
+from azext_aosm.common.constants import (
+    BASE_FOLDER_NAME,
+    MANIFEST_FOLDER_NAME,
+    VNF_CORE_BASE_TEMPLATE_FILENAME,
+    VNF_TEMPLATE_FOLDER_NAME,
+    VNF_MANIFEST_TEMPLATE_FILENAME,
+    VNF_OUTPUT_FOLDER_FILENAME,
+    DEPLOYMENT_PARAMETERS_FILENAME,
+    VHD_PARAMETERS_FILENAME,
+    TEMPLATE_PARAMETERS_FILENAME
+)
 from azext_aosm.configuration_models.onboarding_vnf_input_config import (
     OnboardingCoreVNFInputConfig,
 )

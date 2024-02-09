@@ -27,8 +27,6 @@ from knack.util import CLIError
 from knack.log import get_logger
 from oras.client import OrasClient
 
-
-
 logger = get_logger(__name__)
 
 

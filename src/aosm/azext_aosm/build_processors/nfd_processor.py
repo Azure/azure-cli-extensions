@@ -16,7 +16,7 @@ from azext_aosm.inputs.nfd_input import NFDInput
 from azext_aosm.vendored_sdks.models import (
     ArmResourceDefinitionResourceElementTemplate, ArtifactType,
     DependsOnProfile, ManifestArtifactFormat, NetworkFunctionApplication,
-    NetworkFunctionDefinitionResourceElementTemplateDetails as \
+    NetworkFunctionDefinitionResourceElementTemplateDetails as
     NFDResourceElementTemplate, NSDArtifactProfile,
     ReferencedResource, TemplateType)
 from azext_aosm.common.constants import NSD_OUTPUT_FOLDER_FILENAME, NSD_NF_TEMPLATE_FILENAME, NSD_TEMPLATE_FOLDER_NAME

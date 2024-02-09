@@ -2,14 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-import copy
-import json
-from pathlib import Path
+
 from typing import Any, Dict, Optional
-
 from knack.log import get_logger
-
-from azext_aosm.common.constants import BASE_SCHEMA
 from azext_aosm.inputs.base_input import BaseInput
 
 logger = get_logger(__name__)

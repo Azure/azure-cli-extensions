@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import json
-import re
 from pathlib import Path
 from typing import Dict, Any
 from knack.log import get_logger
@@ -11,17 +10,17 @@ from knack.log import get_logger
 from azext_aosm.build_processors.arm_processor import NexusArmBuildProcessor
 from azext_aosm.build_processors.nexus_image_processor import NexusImageProcessor
 from azext_aosm.build_processors.base_processor import BaseInputProcessor
-from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
-                                         BASE_FOLDER_NAME,
-                                         MANIFEST_FOLDER_NAME,
-                                         VNF_TEMPLATE_FOLDER_NAME,
-                                         VNF_MANIFEST_TEMPLATE_FILENAME,
-                                         VNF_OUTPUT_FOLDER_FILENAME,
-                                         DEPLOYMENT_PARAMETERS_FILENAME,
-                                         NEXUS_IMAGE_PARAMETERS_FILENAME,
-                                         TEMPLATE_PARAMETERS_FILENAME,
-                                         VNF_NEXUS_BASE_TEMPLATE_FILENAME,
-                                         )
+from azext_aosm.common.constants import (
+    BASE_FOLDER_NAME,
+    MANIFEST_FOLDER_NAME,
+    VNF_TEMPLATE_FOLDER_NAME,
+    VNF_MANIFEST_TEMPLATE_FILENAME,
+    VNF_OUTPUT_FOLDER_FILENAME,
+    DEPLOYMENT_PARAMETERS_FILENAME,
+    NEXUS_IMAGE_PARAMETERS_FILENAME,
+    TEMPLATE_PARAMETERS_FILENAME,
+    VNF_NEXUS_BASE_TEMPLATE_FILENAME,
+)
 from azext_aosm.configuration_models.onboarding_vnf_input_config import (
     OnboardingNexusVNFInputConfig,
 )

@@ -118,7 +118,7 @@ class BaseArmBuildProcessor(BaseInputProcessor):
 
     def generate_resource_element_template(self) -> ResourceElementTemplate:
         """Generate the resource element template.
-        
+
         Note: There is no Nexus specific RET, arm RET can deploy anything (except NFs)
         """
         parameter_values = self.generate_values_mappings(
@@ -144,7 +144,7 @@ class BaseArmBuildProcessor(BaseInputProcessor):
         )
 
     def generate_parameters_file(self) -> LocalFileBuilder:
-        """ Generate parameters file. """
+        """Generate parameters file."""
         mapping_rule_profile = self._generate_mapping_rule_profile()
         params = (
             mapping_rule_profile.template_mapping_rule_profile.template_parameters

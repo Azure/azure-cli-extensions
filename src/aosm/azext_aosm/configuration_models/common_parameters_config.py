@@ -38,6 +38,7 @@ class CoreVNFCommonParametersConfig(NFDCommonParametersConfig):
     saArtifactStoreName: str
     saManifestName: str
 
+
 @dataclass(frozen=True)
 class NexusVNFCommonParametersConfig(NFDCommonParametersConfig):
     """Common parameters configuration for VNFs."""

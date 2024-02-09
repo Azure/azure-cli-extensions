@@ -198,7 +198,6 @@ class OnboardingBaseCLIHandler(ABC):
         bicep_contents: str = template.render()
         return bicep_contents
 
-
     def _serialize(self, dataclass, indent_count=1):
         """
         Convert a dataclass instance to a JSONC string.
