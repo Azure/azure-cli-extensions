@@ -120,7 +120,7 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
           }
           deployParametersMappingRuleProfile: {
             imageMappingRuleProfile: {
-              userConfiguration: string(loadJsonContent('{{image_parameters_file}}'))
+              userConfiguration: string(loadJsonContent('{{ configuration.name }}-{{image_parameters_file}}'))
             }
             applicationEnablement: '{{ configuration.deploy_parameters_mapping_rule_profile.application_enablement.value }}'
           }

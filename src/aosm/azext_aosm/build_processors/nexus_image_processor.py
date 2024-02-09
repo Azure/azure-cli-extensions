@@ -165,7 +165,7 @@ class NexusImageProcessor(BaseInputProcessor):
             Path(
                 VNF_OUTPUT_FOLDER_FILENAME,
                 NF_DEFINITION_FOLDER_NAME,
-                NEXUS_IMAGE_PARAMETERS_FILENAME,
+                self.input_artifact.artifact_name + '-' + NEXUS_IMAGE_PARAMETERS_FILENAME,
             ),
             json.dumps(json.loads(params), indent=4),
         )
