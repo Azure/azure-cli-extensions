@@ -134,11 +134,33 @@ class BaseArmBuildProcessor(BaseInputProcessor):
             ),
         )
 
+    def generate_parameters_file(self) -> LocalFileBuilder:
+        """ Generate parameters file. """
+        mapping_rule_profile = self._generate_mapping_rule_profile()
+        params = (
+            mapping_rule_profile.template_mapping_rule_profile.template_parameters
+        )
+        print(self.input_artifact.artifact_name + '-' + TEMPLATE_PARAMETERS_FILENAME)
+        logger.info(
+            "Created parameters file for arm template."
+        )
+        return LocalFileBuilder(
+            Path(
+                VNF_OUTPUT_FOLDER_FILENAME,
+                NF_DEFINITION_FOLDER_NAME,
+                self.input_artifact.artifact_name + '-' + TEMPLATE_PARAMETERS_FILENAME,
+            ),
+            json.dumps(json.loads(params), indent=4),
+        )
+
+    def _generate_mapping_rule_profile(
+        self,
+    ):
+        raise NotImplementedError("This method must be implemented in a subclass.")
+
 
 class AzureCoreArmBuildProcessor(BaseArmBuildProcessor):
-    """
-    This class represents an ARM template processor for Azure Core.
-    """
+    """This class represents an ARM template processor for Azure Core."""
 
     def generate_nfvi_specific_nf_application(
         self,
@@ -177,6 +199,7 @@ class AzureCoreArmBuildProcessor(BaseArmBuildProcessor):
             artifact_store=ReferencedResource(id=""),
             template_artifact_profile=artifact_profile,
         )
+
 
 class NexusArmBuildProcessor(BaseArmBuildProcessor):
     """
@@ -219,21 +242,3 @@ class NexusArmBuildProcessor(BaseArmBuildProcessor):
             artifact_store=ReferencedResource(id=""),
             template_artifact_profile=artifact_profile,
         )
-    
-    def generate_parameters_file(self) -> LocalFileBuilder:
-        """ Generate parameters file. """
-        mapping_rule_profile = self._generate_mapping_rule_profile()
-        params = (
-            mapping_rule_profile.template_mapping_rule_profile.template_parameters
-        )
-        return LocalFileBuilder(
-            Path(
-                VNF_OUTPUT_FOLDER_FILENAME,
-                NF_DEFINITION_FOLDER_NAME,
-                TEMPLATE_PARAMETERS_FILENAME,
-            ),
-            json.dumps(json.loads(params), indent=4),
-        )
-
-    def generate_template_parameters(self):
-        pass

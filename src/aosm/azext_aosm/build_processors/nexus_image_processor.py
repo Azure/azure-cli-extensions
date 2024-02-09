@@ -158,6 +158,9 @@ class NexusImageProcessor(BaseInputProcessor):
         params = (
             mapping_rule_profile.image_mapping_rule_profile.user_configuration
         )
+        logger.info(
+            "Created parameters file for Nexus image."
+        )
         return LocalFileBuilder(
             Path(
                 VNF_OUTPUT_FOLDER_FILENAME,

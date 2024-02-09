@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+from pathlib import Path
 import json
 from typing import List, Tuple
 
@@ -20,6 +20,10 @@ from azext_aosm.vendored_sdks.models import (
     AzureCoreVhdImageDeployMappingRuleProfile, DependsOnProfile,
     ManifestArtifactFormat, ReferencedResource, ResourceElementTemplate,
     VhdImageArtifactProfile, VhdImageMappingRuleProfile)
+from azext_aosm.common.constants import (
+    VNF_OUTPUT_FOLDER_FILENAME,
+    NF_DEFINITION_FOLDER_NAME,
+    VHD_PARAMETERS_FILENAME)
 
 logger = get_logger(__name__)
 
@@ -161,4 +165,22 @@ class VHDProcessor(BaseInputProcessor):
         return AzureCoreVhdImageDeployMappingRuleProfile(
             application_enablement=ApplicationEnablement.ENABLED,
             vhd_image_mapping_rule_profile=mapping,
+        )
+
+    def generate_parameters_file(self) -> LocalFileBuilder:
+        """ Generate parameters file. """
+        mapping_rule_profile = self._generate_mapping_rule_profile()
+        params = (
+            mapping_rule_profile.vhd_image_mapping_rule_profile.user_configuration
+        )
+        logger.info(
+            "Created parameters file for Nexus image."
+        )
+        return LocalFileBuilder(
+            Path(
+                VNF_OUTPUT_FOLDER_FILENAME,
+                NF_DEFINITION_FOLDER_NAME,
+                VHD_PARAMETERS_FILENAME,
+            ),
+            json.dumps(json.loads(params), indent=4),
         )

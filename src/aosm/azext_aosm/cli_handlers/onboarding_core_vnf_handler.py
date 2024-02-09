@@ -171,90 +171,6 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             Path(VNF_OUTPUT_FOLDER_FILENAME, ARTIFACT_LIST_FILENAME), artifact_list
         )
 
-    def build_resource_bicep(self) -> BicepDefinitionElementBuilder:
-        """Build the resource bicep file."""
-        logger.info("Creating artifacts list for artifacts.json")
-        acr_nf_application_list = []
-        sa_nf_application_list = []
-        supporting_files = []
-        schema_properties = {}
-
-        for processor in self.processors:
-            # Generate NF Application
-            nf_application = processor.generate_nf_application()
-            logger.debug("Created nf application %s", nf_application.name)
-
-            # Generate deploymentParameters schema properties
-            params_schema = processor.generate_params_schema()
-            schema_properties.update(params_schema)
-
-            # For each arm template, generate nf application
-            if isinstance(processor, AzureCoreArmBuildProcessor):
-
-                acr_nf_application_list.append(nf_application)
-                # Generate local file for template_parameters + add to supporting files list
-                params = (
-                    nf_application.deploy_parameters_mapping_rule_profile.template_mapping_rule_profile.template_parameters
-                )
-                template_name = TEMPLATE_PARAMETERS_FILENAME
-                logger.info(
-                    "Created templatateParameters as supporting file for nfDefinition bicep"
-                )
-            elif isinstance(processor, VHDProcessor):
-                sa_nf_application_list.append(nf_application)
-                # Generate local file for vhd_parameters
-                params = (
-                    nf_application.deploy_parameters_mapping_rule_profile.vhd_image_mapping_rule_profile.user_configuration
-                )
-                template_name = VHD_PARAMETERS_FILENAME
-            else:
-                raise TypeError(f"Type: {type(processor)} is not valid")
-
-            parameters_file = LocalFileBuilder(
-                Path(
-                    VNF_OUTPUT_FOLDER_FILENAME,
-                    NF_DEFINITION_FOLDER_NAME,
-                    template_name,
-                ),
-                json.dumps(json.loads(params), indent=4),
-            )
-            supporting_files.append(parameters_file)
-
-        # Create bicep contents using vnf defintion j2 template
-        template_path = get_template_path(
-            VNF_TEMPLATE_FOLDER_NAME, VNF_DEFINITION_TEMPLATE_FILENAME
-        )
-
-        params = {
-            "nfvi_type": 'AzureCore',
-            "acr_nf_applications": acr_nf_application_list,
-            "sa_nf_applications": sa_nf_application_list,
-            "nexus_image_nf_applications": [],
-            "deployment_parameters_file": DEPLOYMENT_PARAMETERS_FILENAME,
-            "vhd_parameters_file": VHD_PARAMETERS_FILENAME,
-            "template_parameters_file": TEMPLATE_PARAMETERS_FILENAME
-        }
-        bicep_contents = render_bicep_contents_from_j2(
-            template_path, params
-        )
-
-        # Create a bicep element
-        # + add its supporting files (deploymentParameters, vhdParameters and templateParameters)
-        bicep_file = BicepDefinitionElementBuilder(
-            Path(VNF_OUTPUT_FOLDER_FILENAME, NF_DEFINITION_FOLDER_NAME),
-            bicep_contents,
-        )
-        for supporting_file in supporting_files:
-            bicep_file.add_supporting_file(supporting_file)
-
-        # Add the deploymentParameters schema file
-        bicep_file.add_supporting_file(
-            self._render_deployment_params_schema(
-                schema_properties, VNF_OUTPUT_FOLDER_FILENAME, NF_DEFINITION_FOLDER_NAME
-            )
-        )
-        return bicep_file
-
     def build_all_parameters_json(self) -> JSONDefinitionElementBuilder:
         """Create object for all_parameters.json."""
         params_content = {
@@ -288,3 +204,29 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         if vhd.image_api_version:
             default_config.update({"image_api_version": vhd.image_api_version})
         return default_config
+
+    def _generate_type_specific_nf_application(self, processor) -> (Any, Any):
+        """Generate the type specific nf application."""
+        arm_nf = []
+        image_nf = []
+        nf_application = processor.generate_nf_application()
+        print(nf_application)
+        if isinstance(processor, AzureCoreArmBuildProcessor):
+            arm_nf.append(nf_application)
+        elif isinstance(processor, VHDProcessor):
+            image_nf.append(nf_application)
+        else:
+            raise TypeError(f"Type: {type(processor)} is not valid")
+        logger.debug("Created nf application %s", nf_application.name)
+        return (arm_nf, image_nf)
+
+    def _get_nfd_template_params(self, arm_nf_application_list, image_nf_application_list) -> Dict[str, Any]:
+        """Get the nfd template params."""
+        return {"nfvi_type": 'AzureCore',
+            "acr_nf_applications": arm_nf_application_list,
+            "sa_nf_applications": image_nf_application_list,
+            "nexus_image_nf_applications": [],
+            "deployment_parameters_file": DEPLOYMENT_PARAMETERS_FILENAME,
+            "vhd_parameters_file": VHD_PARAMETERS_FILENAME,
+            "template_parameters_file": TEMPLATE_PARAMETERS_FILENAME
+        }
