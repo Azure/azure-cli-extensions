@@ -1986,10 +1986,14 @@ def load_arguments(self, _):
         c.argument("attach_zones")
 
     with self.argument_context('aks check-network outbound') as c:
-        c.argument('cluster_name', options_list=['--name', '-n'], required=True, help='Name of the managed cluster.')
-        c.argument('resource_group', options_list=['--resource-group', '-g'], required=True, help='Name of the resource group.')
-        c.argument('node_name', options_list=['--node-name'], required=False, help='Name of the node to perform the connectivity check.')
-        c.argument('custom_endpoints', options_list=['--custom-endpoints'], required=False, help='Additional endpoint(s) to perform the connectivity check, separated by comma.')
+        c.argument('cluster_name', options_list=['--name', '-n'],
+                   required=True, help='Name of the managed cluster.')
+        c.argument('resource_group', options_list=['--resource-group', '-g'],
+                   required=True, help='Name of the resource group.')
+        c.argument('node_name', options_list=['--node-name'],
+                   required=False, help='Name of the node to perform the connectivity check.')
+        c.argument('custom_endpoints', options_list=['--custom-endpoints'],
+                   required=False, help='Additional endpoint(s) to perform the connectivity check, separated by comma.')
 
 def _get_default_install_location(exe_name):
     system = platform.system()
