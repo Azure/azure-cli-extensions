@@ -98,7 +98,7 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
           }
           deployParametersMappingRuleProfile: {
             templateMappingRuleProfile: {
-              templateParameters: string(loadJsonContent('{{template_parameters_file}}'))
+              templateParameters: string(loadJsonContent('{{ configuration.name }}-{{template_parameters_file}}'))
             }
             applicationEnablement: '{{ configuration.deploy_parameters_mapping_rule_profile.application_enablement.value }}'
           }
