@@ -11,41 +11,37 @@ from azext_aosm.cli_handlers.onboarding_core_vnf_handler import OnboardingCoreVN
 from azext_aosm.cli_handlers.onboarding_nexus_vnf_handler import OnboardingNexusVNFCLIHandler
 from azext_aosm.cli_handlers.onboarding_nsd_handler import OnboardingNSDCLIHandler
 from azext_aosm.common.command_context import CommandContext
-from azext_aosm.common.constants import ALL_PARAMETERS_FILE_NAME, CNF, VNF
+from azext_aosm.common.constants import ALL_PARAMETERS_FILE_NAME, CNF, VNF, VNF_NEXUS
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import UnrecognizedArgumentError
 
 
-def onboard_nfd_generate_config(definition_type: str, output_file: str | None, nexus: bool = False):
+def onboard_nfd_generate_config(definition_type: str, output_file: str | None):
     """Generate config file for onboarding NFs."""
     if definition_type == CNF:
         handler = OnboardingCNFCLIHandler()
-        handler.generate_config(output_file)
     elif definition_type == VNF:
-        if nexus:
-            handler = OnboardingNexusVNFCLIHandler()
-        else:
-            handler = OnboardingCoreVNFCLIHandler()
-
-        handler.generate_config(output_file)
+        handler = OnboardingCoreVNFCLIHandler()
+    elif definition_type == VNF_NEXUS:
+        handler = OnboardingNexusVNFCLIHandler()
     else:
-        raise UnrecognizedArgumentError("Invalid definition type")
+        raise UnrecognizedArgumentError(
+            "Invalid definition type, valid values are 'cnf', 'vnf' or 'vnfnexus'")
+    handler.generate_config(output_file)
 
 
-def onboard_nfd_build(definition_type: str, config_file: Path, skip: str = None, nexus: bool = False):
+def onboard_nfd_build(definition_type: str, config_file: Path, skip: str = None):
     """Build the NF definition."""
     if definition_type == CNF:
         handler = OnboardingCNFCLIHandler(Path(config_file), skip=skip)
-        handler.build()
     elif definition_type == VNF:
-        if nexus:
-            handler = OnboardingNexusVNFCLIHandler(Path(config_file))
-        else:
-            handler = OnboardingCoreVNFCLIHandler(Path(config_file))
-
-        handler.build()
+        handler = OnboardingCoreVNFCLIHandler(Path(config_file))
+    elif definition_type == VNF_NEXUS:
+        handler = OnboardingNexusVNFCLIHandler(Path(config_file))
     else:
-        raise UnrecognizedArgumentError("Invalid definition type")
+        raise UnrecognizedArgumentError(
+            "Invalid definition type, valid values are 'cnf', 'vnf' or 'vnfnexus'")
+    handler.build()
 
 
 def onboard_nfd_publish(
@@ -53,7 +49,6 @@ def onboard_nfd_publish(
     definition_type: str,
     build_output_folder: Path,
     no_subscription_permissions: bool = False,
-    nexus: bool = False
 ):
     """Publish the NF definition."""
     command_context = CommandContext(
@@ -64,18 +59,15 @@ def onboard_nfd_publish(
         },
     )
     if definition_type == CNF:
-        handler = OnboardingCNFCLIHandler(
-            Path(build_output_folder, ALL_PARAMETERS_FILE_NAME)
-        )
-        handler.publish(command_context=command_context)
+        handler = OnboardingCNFCLIHandler(Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
     elif definition_type == VNF:
-        if nexus:
-            handler = OnboardingNexusVNFCLIHandler(Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
-        else:
-            handler = OnboardingCoreVNFCLIHandler(Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
-        handler.publish(command_context=command_context)
+        handler = OnboardingCoreVNFCLIHandler(Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
+    elif definition_type == VNF_NEXUS:
+        handler = OnboardingNexusVNFCLIHandler(Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
     else:
-        raise UnrecognizedArgumentError("Invalid definition type")
+        raise UnrecognizedArgumentError(
+            "Invalid definition type, valid values are 'cnf', 'vnf' or 'vnfnexus'")
+    handler.publish(command_context=command_context)
 
 
 # def onboard_nfd_delete(cmd: AzCliCommand, definition_type: str, config_file: str):

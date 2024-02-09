@@ -9,6 +9,7 @@ from azure.cli.core import AzCommandsLoader
 from .common.constants import (
     CNF,
     VNF,
+    VNF_NEXUS,
     BICEP_PUBLISH,
     ARTIFACT_UPLOAD,
     IMAGE_UPLOAD,
@@ -23,7 +24,7 @@ def load_arguments(self: AzCommandsLoader, _):
         get_three_state_flag,
     )
 
-    definition_type = get_enum_type([VNF, CNF])
+    definition_type = get_enum_type([VNF, CNF, VNF_NEXUS])
     nf_skip_steps = get_enum_type(
         [BICEP_PUBLISH, ARTIFACT_UPLOAD, IMAGE_UPLOAD, HELM_TEMPLATE]
     )
