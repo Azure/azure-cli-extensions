@@ -4,19 +4,22 @@
 # --------------------------------------------------------------------------------------------
 from pathlib import Path
 from abc import ABC, abstractmethod
-from azext_aosm.common.constants import VNF_INPUT_FILENAME, VNF_OUTPUT_FOLDER_FILENAME
+
 from .onboarding_nfd_base_handler import OnboardingNFDBaseCLIHandler
 from knack.log import get_logger
-from azext_aosm.common.constants import (
-                                         NF_DEFINITION_FOLDER_NAME,
+from azext_aosm.common.constants import (NF_DEFINITION_FOLDER_NAME,
                                          VNF_TEMPLATE_FOLDER_NAME,
                                          VNF_DEFINITION_TEMPLATE_FILENAME,
-                                         VNF_INPUT_FILENAME)
+                                         VNF_INPUT_FILENAME,
+                                         VNF_OUTPUT_FOLDER_FILENAME,
+                                         ARTIFACT_LIST_FILENAME)
 from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
 from azext_aosm.definition_folder.builder.bicep_builder import (
     BicepDefinitionElementBuilder,
 )
+from azext_aosm.definition_folder.builder.artifact_builder import ArtifactDefinitionElementBuilder
 logger = get_logger(__name__)
+
 
 class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
     """CLI handler for publishing NFDs."""
@@ -30,6 +33,26 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
     def output_folder_file_name(self) -> str:
         """Get the output folder file name."""
         return VNF_OUTPUT_FOLDER_FILENAME
+
+    def build_artifact_list(self) -> ArtifactDefinitionElementBuilder:
+        """Build the artifact list."""
+        logger.info("Creating artifacts list for artifacts.json")
+        artifact_list = []
+        # For each arm template, get list of artifacts and combine
+        for processor in self.processors:
+            (artifacts, _) = processor.get_artifact_details()
+            if artifacts not in artifact_list:
+                artifact_list.extend(artifacts)
+        logger.debug(
+            "Created list of artifact details from %s arm template(s) and the image provided: %s",
+            len(self.config.arm_templates),
+            artifact_list,
+        )
+
+        # Generate Artifact Element with artifact list (of arm template and vhd images)
+        return ArtifactDefinitionElementBuilder(
+            Path(VNF_OUTPUT_FOLDER_FILENAME, ARTIFACT_LIST_FILENAME), artifact_list
+        )
 
     def build_resource_bicep(self) -> BicepDefinitionElementBuilder:
         """Build the resource bicep file."""

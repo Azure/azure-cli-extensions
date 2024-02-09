@@ -22,15 +22,11 @@ from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
                                          DEPLOYMENT_PARAMETERS_FILENAME,
                                          VHD_PARAMETERS_FILENAME,
                                          TEMPLATE_PARAMETERS_FILENAME)
-from azext_aosm.common.local_file_builder import LocalFileBuilder
 from azext_aosm.configuration_models.onboarding_vnf_input_config import (
     OnboardingCoreVNFInputConfig,
 )
 from azext_aosm.configuration_models.common_parameters_config import (
     CoreVNFCommonParametersConfig,
-)
-from azext_aosm.definition_folder.builder.artifact_builder import (
-    ArtifactDefinitionElementBuilder,
 )
 from azext_aosm.definition_folder.builder.bicep_builder import (
     BicepDefinitionElementBuilder,
@@ -151,26 +147,6 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         logger.info("Created artifact manifest bicep element")
         return bicep_file
 
-    def build_artifact_list(self) -> ArtifactDefinitionElementBuilder:
-        """Build the artifact list."""
-        logger.info("Creating artifacts list for artifacts.json")
-        artifact_list = []
-        # For each arm template, get list of artifacts and combine
-        for processor in self.processors:
-            (artifacts, _) = processor.get_artifact_details()
-            if artifacts not in artifact_list:
-                artifact_list.extend(artifacts)
-        logger.debug(
-            "Created list of artifact details from %s arm template(s) and the vhd image provided: %s",
-            len(self.config.arm_templates),
-            artifact_list,
-        )
-
-        # Generate Artifact Element with artifact list (of arm template and vhd images)
-        return ArtifactDefinitionElementBuilder(
-            Path(VNF_OUTPUT_FOLDER_FILENAME, ARTIFACT_LIST_FILENAME), artifact_list
-        )
-
     def build_all_parameters_json(self) -> JSONDefinitionElementBuilder:
         """Create object for all_parameters.json."""
         params_content = {
@@ -205,7 +181,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             default_config.update({"image_api_version": vhd.image_api_version})
         return default_config
 
-    def _generate_type_specific_nf_application(self, processor) -> (Any, Any):
+    def _generate_type_specific_nf_application(self, processor) -> "tuple[list, list]":
         """Generate the type specific nf application."""
         arm_nf = []
         image_nf = []
@@ -220,9 +196,11 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         logger.debug("Created nf application %s", nf_application.name)
         return (arm_nf, image_nf)
 
-    def _get_nfd_template_params(self, arm_nf_application_list, image_nf_application_list) -> Dict[str, Any]:
+    def _get_nfd_template_params(
+            self, arm_nf_application_list, image_nf_application_list) -> Dict[str, Any]:
         """Get the nfd template params."""
-        return {"nfvi_type": 'AzureCore',
+        return {
+            "nfvi_type": 'AzureCore',
             "acr_nf_applications": arm_nf_application_list,
             "sa_nf_applications": image_nf_application_list,
             "nexus_image_nf_applications": [],

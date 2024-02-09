@@ -21,16 +21,12 @@ from azext_aosm.common.constants import (ARTIFACT_LIST_FILENAME,
                                          NEXUS_IMAGE_PARAMETERS_FILENAME,
                                          TEMPLATE_PARAMETERS_FILENAME,
                                          VNF_NEXUS_BASE_TEMPLATE_FILENAME,
-                                         SEMVER_REGEX)
-from azext_aosm.common.local_file_builder import LocalFileBuilder
+                                         )
 from azext_aosm.configuration_models.onboarding_vnf_input_config import (
     OnboardingNexusVNFInputConfig,
 )
 from azext_aosm.configuration_models.common_parameters_config import (
     NexusVNFCommonParametersConfig,
-)
-from azext_aosm.definition_folder.builder.artifact_builder import (
-    ArtifactDefinitionElementBuilder,
 )
 from azext_aosm.definition_folder.builder.bicep_builder import (
     BicepDefinitionElementBuilder,
@@ -48,7 +44,6 @@ logger = get_logger(__name__)
 
 class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
     """CLI handler for publishing NFDs."""
-
 
     def _get_input_config(
         self, input_config: Dict[str, Any] = None
@@ -144,27 +139,6 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         logger.info("Created artifact manifest bicep element")
         return bicep_file
 
-    # JORDAN: can pull out
-    def build_artifact_list(self) -> ArtifactDefinitionElementBuilder:
-        """Build the artifact list."""
-        logger.info("Creating artifacts list for artifacts.json")
-        artifact_list = []
-        # For each arm template, get list of artifacts and combine
-        for processor in self.processors:
-            (artifacts, _) = processor.get_artifact_details()
-            if artifacts not in artifact_list:
-                artifact_list.extend(artifacts)
-        logger.debug(
-            "Created list of artifact details from arm template(s) and image(s) provided: %s",
-            artifact_list,
-        )
-
-        # Generate Artifact Element with artifact list (of arm template and vhd images)
-        return ArtifactDefinitionElementBuilder(
-            Path(VNF_OUTPUT_FOLDER_FILENAME, ARTIFACT_LIST_FILENAME), artifact_list
-        )
-
-
     def build_all_parameters_json(self) -> JSONDefinitionElementBuilder:
         """Build the all parameters json file."""
         params_content = {
@@ -181,21 +155,13 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         )
         return base_file
 
-    def _split_image_path(self, image) -> (str, str, str):
+    def _split_image_path(self, image) -> "tuple[str, str, str]":
         """Split the image path into source acr registry, name and version."""
         (source_acr_registry, name_and_version) = image.split("/", 2)
         (name, version) = name_and_version.split(":", 2)
         return (source_acr_registry, name, version)
 
-    def _create_semver_compatible_version(self, version) -> str:
-        """Create a semver compatible version."""
-        if re.search(SEMVER_REGEX, version):
-            return version
-        else:
-            print(f"Invalid version {version}, using 1.0.0 as default")
-            return '1.0.0'
-
-    def _generate_type_specific_nf_application(self, processor) -> (Any, Any):
+    def _generate_type_specific_nf_application(self, processor) -> "tuple[list, list]":
         """Generate the type specific nf application."""
         arm_nf = []
         image_nf = []
@@ -210,7 +176,8 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         logger.debug("Created nf application %s", nf_application.name)
         return (arm_nf, image_nf)
 
-    def _get_nfd_template_params(self, arm_nf_application_list, image_nf_application_list) -> Dict[str, Any]:
+    def _get_nfd_template_params(
+            self, arm_nf_application_list, image_nf_application_list) -> Dict[str, Any]:
         """Get the nfd template params."""
         return {
             "nfvi_type": 'AzureOperatorNexus',
