@@ -322,6 +322,7 @@ def setup_common_guardrails_profile(level, version, excludedNamespaces, mc: Mana
 
     return mc
 
+
 def process_message(message):
     result = message.split("\n")
     if result[-2] != "[stderr]":

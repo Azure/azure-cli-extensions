@@ -3170,6 +3170,35 @@ def _aks_approuting_update(
     return aks_update_decorator.update_mc(mc)
 
 
+def _aks_run_command(cmd, client, vm_set_type, managed_resource_group, vmss_name=None, instance_id=None, vm_name=None, fqdn=None, custom_endpoints=None):
+    try:
+        command = "bash /opt/azure/containers/aks-check-network.sh {0}".format(fqdn)
+        if custom_endpoints:
+            endpoints = ''.join(custom_endpoints.split(" "))
+            command += " {0}".format(endpoints)
+
+        if vm_set_type == "VirtualMachineScaleSets":
+            RunCommandInput = cmd.get_models('RunCommandInput', resource_type=ResourceType.MGMT_COMPUTE, operation_group="virtual_machine_scale_sets")
+            command_result = LongRunningOperation(cmd.cli_ctx)(client.virtual_machine_scale_set_vms.begin_run_command(
+                managed_resource_group, vmss_name, instance_id,
+                RunCommandInput(command_id="RunShellScript", script=[command])))
+        elif vm_set_type == "AvailabilitySet":
+            RunCommandInput = cmd.get_models('RunCommandInput', resource_type=ResourceType.MGMT_COMPUTE, operation_group="virtual_machine_run_commands")
+            command_result = LongRunningOperation(cmd.cli_ctx)(client.virtual_machines.begin_run_command(
+                managed_resource_group, vm_name,
+                RunCommandInput(command_id="RunShellScript", script=[command])))
+
+        display_status = command_result.value[0].display_status
+        message = command_result.value[0].message
+        if display_status == "Provisioning succeeded":
+            return process_message(message)
+        else:
+            raise InvalidArgumentValueError("Can not run command with returned code {0} and message {1}".
+                                            format(display_status, message))
+    except Exception as ex:
+        raise HttpResponseError("Can not run command with returned exception {0}".format(ex))
+
+
 def aks_check_network_outbound(cmd, client, resource_group, cluster_name, node_name=None, custom_endpoints=None):
     fqdn = ""
     cluster = aks_show(cmd, client, resource_group, cluster_name, None)
@@ -3180,81 +3209,97 @@ def aks_check_network_outbound(cmd, client, resource_group, cluster_name, node_n
         if not fqdn or fqdn == "":
             logger.warning("Can not get cluster api server!")
         else:
-            print("Get cluster api server: ", fqdn)
+            print("Get cluster api server:", fqdn)
+        
+        vm_set_type = cluster.agent_pool_profiles[0].type
+        if not vm_set_type:
+            raise ValidationError("Can not get VM set type of the cluster!")
+        print("Get node pool VM set type:", vm_set_type)
 
     location = get_rg_location(cmd.cli_ctx, resource_group)
     managed_resource_group = "MC_{0}_{1}_{2}".format(resource_group, cluster_name, location)
     logger.debug("Location: %s, Managed Resource Group: %s", location, managed_resource_group)
 
+    command = "bash /opt/azure/containers/aks-check-network.sh {0}".format(fqdn)
+    if custom_endpoints:
+        endpoints = ''.join(custom_endpoints.split(" "))
+        command += " {0}".format(endpoints)
+
     compute_client = get_compute_client(cmd.cli_ctx)
 
-    if not node_name:
-        print("No node name specified, will randomly select a node from the cluster")
+    if vm_set_type == "VirtualMachineScaleSets":
+        if not node_name:
+            print("No node name specified, will randomly select a node from the cluster")
 
-        agentpool_client = cf_agent_pools(cmd.cli_ctx)
-        nodepool_list = list(aks_agentpool_list(cmd, agentpool_client, resource_group, cluster_name))
-        if not nodepool_list:
-            raise ValidationError("No nodepool found in the cluster!")
-        
-        logger.debug("Get list of nodepools in the cluster: %s", nodepool_list)
-        for nodepool in nodepool_list:
-            logger.debug("Nodepool: %s", nodepool)
-            if nodepool.provisioning_state == "Succeeded" and nodepool.os_type == "Linux":
-                nodepool_name = nodepool.name
-                logger.debug("Select nodepool: %s", nodepool_name)
-                break
+            agentpool_client = cf_agent_pools(cmd.cli_ctx)
+            nodepool_list = list(aks_agentpool_list(cmd, agentpool_client, resource_group, cluster_name))
+            if not nodepool_list:
+                raise ValidationError("No node pool found in the cluster!")
+            
+            logger.debug("Get list of node pools in the cluster: %s", nodepool_list)
+            for nodepool in nodepool_list:
+                logger.debug("Nodepool: %s", nodepool)
+                if nodepool.provisioning_state == "Succeeded" and nodepool.os_type == "Linux":
+                    nodepool_name = nodepool.name
+                    logger.debug("Select nodepool: %s", nodepool_name)
+                    break
 
-        if not nodepool_name:
-            raise ValidationError("No suitable nodepool found in the cluster. Nodepool must be of type Linux!")
+            if not nodepool_name:
+                raise ValidationError("No suitable node pool found in the cluster. Node pool must be of type Linux!")
+            
+            vmss_list = compute_client.virtual_machine_scale_sets.list(managed_resource_group)
+            if not vmss_list:
+                raise ValidationError("No VMSS found in the managed resource group %s!".format(managed_resource_group))
+            
+            logger.debug("Get list of VMSS in the managed resource group: %s", vmss_list)
+            for vmss in vmss_list:
+                vmss_tag = vmss.tags.get("aks-managed-poolName")
+                logger.debug("Check tag of VMSS %s and node pool name %s", vmss_tag, nodepool_name)
+                if vmss_tag and vmss_tag == nodepool_name:
+                    vmss_name = vmss.name
+                    logger.debug("Select VMSS: %s", vmss_name)
+                    break
+            if not vmss_name:
+                raise ValidationError("No VMSS pool matched AKS node pool %s!".format(nodepool_name))
+        
+            instances = list(compute_client.virtual_machine_scale_set_vms.list(managed_resource_group, vmss_name))
+            if not instances:
+                raise ValidationError("No instance found in the VMSS %s!".format(vmss_name))
+            
+            instance_id = instances[0].instance_id
+            logger.debug("Select instance id: %s", instance_id)
+        else:
+            index = node_name.find("vmss")
+            if index != -1:
+                vmss_name = node_name[:index + 4]
+                instance_id = int(node_name[index + 4:], base = 36)
+            else:
+                raise ValidationError("Node name {0} is invalid!".format(node_name))
+            
+        print("Start checking outbound network for vmss: {0}, instance_id: {1}, managed_resource_group: {2}".format(vmss_name, instance_id, managed_resource_group))
 
-        vmss_list = compute_client.virtual_machine_scale_sets.list(managed_resource_group)
-        if not vmss_list:
-            raise ValidationError("No VMSS found in the managed resource group %s!".format(managed_resource_group))
-        
-        logger.debug("Get list of VMSS in the managed resource group: %s", vmss_list)
-        for vmss in vmss_list:
-            vmss_tag = vmss.tags.get("aks-managed-poolName")
-            logger.debug("Check tag of VMSS %s and nodepool name %s", vmss_tag, nodepool_name)
-            if vmss_tag and vmss_tag == nodepool_name:
-                vmss_name = vmss.name
-                logger.debug("Select VMSS: %s", vmss_name)
-                break
-        
-        if not vmss_name:
-            raise ValidationError("No VMSS pool matched AKS nodepool %s!".format(nodepool_name))
-        
-        instances = list(compute_client.virtual_machine_scale_set_vms.list(managed_resource_group, vmss_name))
-        if not instances:
-            raise ValidationError("No instance found in the VMSS %s!".format(vmss_name))
-        instance_id = instances[0].instance_id
-        logger.debug("Select instance id: %s", instance_id)
+        return _aks_run_command(cmd, compute_client, vm_set_type, managed_resource_group, vmss_name, instance_id, None, fqdn, custom_endpoints)
+    elif vm_set_type == "AvailabilitySet":
+        if not node_name:
+            print("No node name specified, will randomly select a node from the cluster")
+
+            vm_list = compute_client.virtual_machines.list(managed_resource_group)
+            if not vm_list:
+                raise ValidationError("No VM found in the managed resource group %s!".format(managed_resource_group))
+            
+            for vm in vm_list:
+                logger.debug("OS Profile: %s", vm.os_profile)
+                if vm.os_profile.linux_configuration != None and vm.provisioning_state == "Succeeded":
+                    vm_name = vm.name
+                    logger.debug("Select VM: %s", vm_name)
+            
+            if not vm_name:
+                raise ValidationError("No suitable VM found in the managed resource. VM must be of type Linux!")
+        else:
+            vm_name = node_name
+
+        print("Start checking outbound network for vm: {0}, managed_resource_group: {1}".format(vm_name, managed_resource_group))
+
+        return _aks_run_command(cmd, compute_client, vm_set_type, managed_resource_group, None, None, vm_name, fqdn, custom_endpoints)
     else:
-        index = node_name.find("vmss")
-        if index != -1:
-            vmss_name = node_name[:index + 4]
-            instance_id = int(node_name[index + 4:], base = 36)
-        else:
-            raise ValidationError("Node name {0} is invalid!".format(node_name))
-
-    print("Start checking network for vmss: {0}, instance_id: {1}, node_resource_group: {2}".format(vmss_name, instance_id, managed_resource_group))
-
-    try:
-        command = "bash /opt/azure/containers/aks-check-network.sh {0}".format(fqdn)
-        if custom_endpoints:
-            endpoints = ''.join(custom_endpoints.split(" "))
-            command += " {0}".format(endpoints)
-
-        RunCommandInput = cmd.get_models('RunCommandInput', resource_type=ResourceType.MGMT_COMPUTE, operation_group="virtual_machine_scale_sets")
-        command_result = LongRunningOperation(cmd.cli_ctx)(compute_client.virtual_machine_scale_set_vms.begin_run_command(
-            managed_resource_group, vmss_name, instance_id,
-            RunCommandInput(command_id="RunShellScript", script=[command])))
-
-        display_status = command_result.value[0].display_status
-        message = command_result.value[0].message
-        if display_status == "Provisioning succeeded":
-            return process_message(message)
-        else:
-            raise InvalidArgumentValueError("Can not run command on node {0} with returned code {1} and message {2}".
-                                            format(vmss_name, display_status, message))
-    except Exception as ex:
-        raise HttpResponseError("Can not run command on node {0}: {1}".format(vmss_name, ex))
+        raise ValidationError("VM set type {0} is not supported!".format(vm_set_type))
