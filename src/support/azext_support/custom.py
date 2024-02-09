@@ -315,34 +315,15 @@ def upload_files_no_subscription(cmd, file_path, file_workspace_name):
     from .aaz.latest.support.no_subscription.file import Create
     from .aaz.latest.support.no_subscription.file import Upload
 
-    validate_file_path(file_path)
-
-    full_file_name, file_name_without_extension, file_extension = get_file_name_info(file_path)
-    validate_file_extension(file_extension)
-    validate_file_name(file_name_without_extension)
-
-    content = get_file_content(file_path)
-    
-    file_size = len(content)
-    validate_file_size(file_size)
-    
-    chunk_size = min(max_chunk_size, file_size)
-    number_of_chunks = math.ceil(file_size / chunk_size)
-
-    create_input  = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "file_size": file_size,"chunk_size" : chunk_size, "number_of_chunks" : number_of_chunks }
-    resp_create = Create(cli_ctx = cmd.cli_ctx)(command_args=create_input)
-    
-    for chunk_index in range(number_of_chunks):
-        chunk_content = content[chunk_index * chunk_size: (chunk_index + 1) * chunk_size]
-        string_encoded_content = encode_string_content(chunk_content)
-        upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content }
-        resp_upload = Upload(cli_ctx = cmd.cli_ctx)(command_args=upload_input)
-        print("File {} has been succesfully uploaded!".format(full_file_name))
+    upload_file(cmd, file_path, file_workspace_name, False, Create, Upload)
 
 def upload_files_in_subscription(cmd, file_path, file_workspace_name, subscription_id = None):
     from .aaz.latest.support.in_subscription.file import Create as Create_Sub
     from .aaz.latest.support.in_subscription.file import Upload as Upload_Sub
 
+    upload_file(cmd, file_path, file_workspace_name, True, Create_Sub, Upload_Sub, subscription_id)
+
+def upload_file(cmd, file_path, file_workspace_name,is_subscription_scenerio, Create, Upload, subscription_id = None):
     validate_file_path(file_path)
 
     full_file_name, file_name_without_extension, file_extension = get_file_name_info(file_path)
@@ -357,20 +338,21 @@ def upload_files_in_subscription(cmd, file_path, file_workspace_name, subscripti
     chunk_size = min(max_chunk_size, file_size)
     number_of_chunks = math.ceil(file_size / chunk_size)
 
-    if (subscription_id):
+    if (is_subscription_scenerio and subscription_id != None):
         create_input  = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "file_size": file_size,"chunk_size" : chunk_size, "number_of_chunks" : number_of_chunks, "subscription" : subscription_id}
     else:
         create_input  = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "file_size": file_size,"chunk_size" : chunk_size, "number_of_chunks" : number_of_chunks }
-    resp_create = Create_Sub(cli_ctx = cmd.cli_ctx)(command_args=create_input)
+   
+    resp_create = Create(cli_ctx = cmd.cli_ctx)(command_args=create_input)
 
     for chunk_index in range(number_of_chunks):
         chunk_content = content[chunk_index * chunk_size: (chunk_index + 1) * chunk_size]
         string_encoded_content = encode_string_content(chunk_content)
-        if (subscription_id):
-            upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content,  "subscription" : subscription_id  }
-        else: 
-            upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content }
-        resp_upload = Upload_Sub(cli_ctx = cmd.cli_ctx)(command_args=upload_input)
-        print("File {} has been succesfully uploaded!".format(full_file_name))
-
-
+        
+    if (is_subscription_scenerio and subscription_id != None):
+        upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content,  "subscription" : subscription_id  }
+    else: 
+        upload_input = { "file_name": full_file_name, "file_workspace_name": file_workspace_name, "chunk_index": chunk_index, "content": string_encoded_content }
+       
+    resp_upload = Upload(cli_ctx = cmd.cli_ctx)(command_args=upload_input)
+    print("File '{}' has been succesfully uploaded.".format(full_file_name))
