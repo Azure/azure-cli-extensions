@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.8.1b1
+1.8.0b2
 ++++++
 * Add Email communication resource CRUD operations
 * Add Domain resource CRUD operations
