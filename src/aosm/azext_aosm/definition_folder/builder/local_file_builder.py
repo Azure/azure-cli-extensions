@@ -3,10 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-
 from pathlib import Path
 
 
+# pylint: disable=too-few-public-methods
 class LocalFileBuilder:
     """Writes locally generated files to disk."""
 

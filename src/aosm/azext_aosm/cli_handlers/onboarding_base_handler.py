@@ -8,25 +8,26 @@ import json
 from abc import ABC, abstractmethod
 from dataclasses import fields, is_dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
+
 from azure.cli.core.azclierror import UnclassifiedUserFault
 from jinja2 import StrictUndefined, Template
 from knack.log import get_logger
 
+from azext_aosm.common.command_context import CommandContext
+from azext_aosm.common.constants import DEPLOYMENT_PARAMETERS_FILENAME
+from azext_aosm.configuration_models.common_parameters_config import (
+    BaseCommonParametersConfig,
+)
 from azext_aosm.configuration_models.onboarding_base_input_config import (
     OnboardingBaseInputConfig,
 )
 from azext_aosm.definition_folder.builder.definition_folder_builder import (
     DefinitionFolderBuilder,
 )
+from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
 from azext_aosm.definition_folder.reader.definition_folder import DefinitionFolder
-from azext_aosm.common.command_context import CommandContext
-from azext_aosm.configuration_models.common_parameters_config import (
-    BaseCommonParametersConfig,
-)
-from azext_aosm.common.local_file_builder import LocalFileBuilder
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
-from azext_aosm.common.constants import DEPLOYMENT_PARAMETERS_FILENAME
 
 logger = get_logger(__name__)
 
@@ -38,13 +39,15 @@ class OnboardingBaseCLIHandler(ABC):
         self,
         provided_input_path: Optional[Path] = None,
         aosm_client: Optional[HybridNetworkManagementClient] = None,
-        skip: str = None,
+        skip: Optional[str] = None,
     ):
         """Initialize the CLI handler."""
         self.aosm_client = aosm_client
         self.skip = skip
         # If config file provided (for build, publish and delete)
         if provided_input_path:
+            # Explicitly define types
+            self.config: Union[OnboardingBaseInputConfig, BaseCommonParametersConfig]
             provided_input_path = Path(provided_input_path)
             # If config file is the input.jsonc for build command
             if provided_input_path.suffix == ".jsonc":
@@ -110,6 +113,7 @@ class OnboardingBaseCLIHandler(ABC):
         definition_folder = DefinitionFolder(
             command_context.cli_options["definition_folder"]
         )
+        assert isinstance(self.config, BaseCommonParametersConfig)
         definition_folder.deploy(config=self.config, command_context=command_context)
 
     def delete(self, command_context: CommandContext):
@@ -121,8 +125,12 @@ class OnboardingBaseCLIHandler(ABC):
         # TODO: Implement
 
     def pre_validate_build(self):
-        """Perform all validations that need to be done before running the build command."""
-        pass
+        """
+        Perform all validations that need to be done before running the build command.
+
+        This method must be overwritten by subclasses to be of use, but is not abstract as it's
+        allowed to not perform any pre-validation, in which case this base method just does nothing.
+        """
 
     @abstractmethod
     def build_base_bicep(self):
@@ -155,18 +163,19 @@ class OnboardingBaseCLIHandler(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _get_input_config(self, input_config: dict = None) -> OnboardingBaseInputConfig:
+    def _get_input_config(
+        self, input_config: Optional[dict] = None
+    ) -> OnboardingBaseInputConfig:
         """Get the configuration for the command."""
         raise NotImplementedError
 
     @abstractmethod
-    def _get_params_config(
-        self, config_file: Path = None
-    ) -> BaseCommonParametersConfig:
+    def _get_params_config(self, config_file: Path) -> BaseCommonParametersConfig:
         """Get the parameters config for publish/delete."""
         raise NotImplementedError
 
-    def _read_input_config_from_file(self, input_json_path: Path) -> dict:
+    @staticmethod
+    def _read_input_config_from_file(input_json_path: Path) -> dict:
         """Reads the input JSONC file, removes comments.
 
         Returns config as dictionary.
@@ -177,7 +186,8 @@ class OnboardingBaseCLIHandler(ABC):
 
         return config_dict
 
-    def _render_base_bicep_contents(self, template_path):
+    @staticmethod
+    def _render_base_bicep_contents(template_path):
         """Write the base bicep file from given template."""
         with open(template_path, "r", encoding="UTF-8") as f:
             template: Template = Template(
@@ -293,7 +303,8 @@ class OnboardingBaseCLIHandler(ABC):
         print(f"Empty configuration has been written to {output_path.name}")
         logger.info("Empty  configuration has been written to %s", output_path.name)
 
-    def _check_for_overwrite(self, output_path: Path):
+    @staticmethod
+    def _check_for_overwrite(output_path: Path):
         """Check that the input file exists."""
         if output_path.exists():
             carry_on = input(
@@ -318,7 +329,8 @@ class OnboardingBaseCLIHandler(ABC):
             ),
         )
 
-    def _build_deploy_params_schema(self, schema_properties):
+    @staticmethod
+    def _build_deploy_params_schema(schema_properties):
         """Build the schema for deployParameters.json."""
         schema_contents = {
             "$schema": "https://json-schema.org/draft-07/schema#",

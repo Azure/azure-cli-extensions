@@ -4,26 +4,26 @@
 # --------------------------------------------------------------------------------------------
 import json
 from pathlib import Path
+from typing import Any, Dict, List
 
+from knack.log import get_logger
+
+from azext_aosm.common.command_context import CommandContext
 from azext_aosm.configuration_models.common_parameters_config import (
     BaseCommonParametersConfig,
 )
-from azext_aosm.definition_folder.reader.base_definition import BaseDefinitionElement
-from azext_aosm.definition_folder.reader.bicep_definition import BicepDefinitionElement
 from azext_aosm.definition_folder.reader.artifact_definition import (
     ArtifactDefinitionElement,
 )
-from azure.mgmt.resource import ResourceManagementClient
-from azext_aosm.common.command_context import CommandContext
-from knack.log import get_logger
-
-from typing import Any, Dict, List
+from azext_aosm.definition_folder.reader.base_definition import BaseDefinitionElement
+from azext_aosm.definition_folder.reader.bicep_definition import BicepDefinitionElement
 
 logger = get_logger(__name__)
 
 
 class DefinitionFolder:
     """Represents a definition folder for an NFD or NSD."""
+
     def __init__(self, path: Path):
         self.path = path
         try:
@@ -71,14 +71,25 @@ class DefinitionFolder:
             )
         return parsed_elements
 
-    def deploy(self, config: BaseCommonParametersConfig, command_context: CommandContext):
+    def deploy(
+        self, config: BaseCommonParametersConfig, command_context: CommandContext
+    ):
         """Deploy the resources defined in the folder."""
         for element in self.elements:
-            logger.debug("Deploying definition element %s of type %s", element.path, type(element))
+            logger.debug(
+                "Deploying definition element %s of type %s",
+                element.path,
+                type(element),
+            )
             element.deploy(config=config, command_context=command_context)
 
-    def delete(self, resource_client: ResourceManagementClient, clean: bool = False):
+    def delete(
+        self,
+        config: BaseCommonParametersConfig,
+        command_context: CommandContext,
+        clean: bool = False,
+    ):
         """Delete the definition folder."""
         for element in reversed(self.elements):
             if clean or not element.only_delete_on_clean:
-                element.delete(resource_client)
+                element.delete(config=config, command_context=command_context)

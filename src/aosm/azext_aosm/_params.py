@@ -12,8 +12,8 @@ from .common.constants import (
     VNF_NEXUS,
     BICEP_PUBLISH,
     ARTIFACT_UPLOAD,
-    IMAGE_UPLOAD,
     HELM_TEMPLATE,
+    IMAGE_UPLOAD,
 )
 
 

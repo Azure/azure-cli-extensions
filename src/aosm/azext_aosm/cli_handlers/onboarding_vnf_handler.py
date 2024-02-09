@@ -3,21 +3,26 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from pathlib import Path
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 from .onboarding_nfd_base_handler import OnboardingNFDBaseCLIHandler
 from knack.log import get_logger
-from azext_aosm.common.constants import (NF_DEFINITION_FOLDER_NAME,
-                                         VNF_TEMPLATE_FOLDER_NAME,
-                                         VNF_DEFINITION_TEMPLATE_FILENAME,
-                                         VNF_INPUT_FILENAME,
-                                         VNF_OUTPUT_FOLDER_FILENAME,
-                                         ARTIFACT_LIST_FILENAME)
+
 from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
 from azext_aosm.definition_folder.builder.bicep_builder import (
     BicepDefinitionElementBuilder,
 )
 from azext_aosm.definition_folder.builder.artifact_builder import ArtifactDefinitionElementBuilder
+
+from azext_aosm.common.constants import (
+    ARTIFACT_LIST_FILENAME,
+    NF_DEFINITION_FOLDER_NAME,
+    VNF_DEFINITION_TEMPLATE_FILENAME,
+    VNF_INPUT_FILENAME,
+    VNF_OUTPUT_FOLDER_FILENAME,
+    VNF_TEMPLATE_FOLDER_NAME,
+)
+
 logger = get_logger(__name__)
 
 

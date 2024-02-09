@@ -7,22 +7,36 @@ from __future__ import annotations
 import json
 import warnings
 from pathlib import Path
+from typing import Optional
+
 import ruamel.yaml
+from azure.cli.core.azclierror import ValidationError
+from jinja2 import Template
+from knack.log import get_logger
 from ruamel.yaml.error import ReusedAnchorWarning
 
-from jinja2 import Template
-
-from azure.cli.core.azclierror import ValidationError
-from knack.log import get_logger
-
 from azext_aosm.build_processors.helm_chart_processor import HelmChartProcessor
-from azext_aosm.inputs.helm_chart_input import HelmChartInput
-from azext_aosm.common.local_file_builder import LocalFileBuilder
-from azext_aosm.configuration_models.onboarding_cnf_input_config import (
-    OnboardingCNFInputConfig,
+from azext_aosm.common.constants import (
+    ARTIFACT_LIST_FILENAME,
+    BASE_FOLDER_NAME,
+    CNF_BASE_TEMPLATE_FILENAME,
+    CNF_DEFINITION_TEMPLATE_FILENAME,
+    CNF_HELM_VALIDATION_ERRORS_TEMPLATE_FILENAME,
+    CNF_INPUT_FILENAME,
+    CNF_MANIFEST_TEMPLATE_FILENAME,
+    CNF_OUTPUT_FOLDER_FILENAME,
+    CNF_TEMPLATE_FOLDER_NAME,
+    DEPLOYMENT_PARAMETERS_FILENAME,
+    HELM_TEMPLATE,
+    MANIFEST_FOLDER_NAME,
+    NF_DEFINITION_FOLDER_NAME,
 )
+from azext_aosm.common.exceptions import TemplateValidationError
 from azext_aosm.configuration_models.common_parameters_config import (
     CNFCommonParametersConfig,
+)
+from azext_aosm.configuration_models.onboarding_cnf_input_config import (
+    OnboardingCNFInputConfig,
 )
 from azext_aosm.definition_folder.builder.artifact_builder import (
     ArtifactDefinitionElementBuilder,
@@ -33,21 +47,8 @@ from azext_aosm.definition_folder.builder.bicep_builder import (
 from azext_aosm.definition_folder.builder.json_builder import (
     JSONDefinitionElementBuilder,
 )
-from azext_aosm.common.constants import (
-    ARTIFACT_LIST_FILENAME,
-    BASE_FOLDER_NAME,
-    CNF_BASE_TEMPLATE_FILENAME,
-    CNF_TEMPLATE_FOLDER_NAME,
-    CNF_DEFINITION_TEMPLATE_FILENAME,
-    CNF_HELM_VALIDATION_ERRORS_TEMPLATE_FILENAME,
-    CNF_INPUT_FILENAME,
-    CNF_MANIFEST_TEMPLATE_FILENAME,
-    CNF_OUTPUT_FOLDER_FILENAME,
-    HELM_TEMPLATE,
-    MANIFEST_FOLDER_NAME,
-    NF_DEFINITION_FOLDER_NAME,
-    DEPLOYMENT_PARAMETERS_FILENAME,
-)
+from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
+from azext_aosm.inputs.helm_chart_input import HelmChartInput
 
 from .onboarding_nfd_base_handler import OnboardingNFDBaseCLIHandler
 from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
@@ -70,13 +71,13 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
         """Get the output folder file name."""
         return CNF_OUTPUT_FOLDER_FILENAME
 
-    def _get_input_config(self, input_config: dict = None) -> OnboardingCNFInputConfig:
+    def _get_input_config(self, input_config: Optional[dict] = None) -> OnboardingCNFInputConfig:
         """Get the configuration for the command."""
         if input_config is None:
             input_config = {}
         return OnboardingCNFInputConfig(**input_config)
 
-    def _get_params_config(self, config_file: Path = None) -> CNFCommonParametersConfig:
+    def _get_params_config(self, config_file: Path) -> CNFCommonParametersConfig:
         """Get the configuration for the command."""
         with open(config_file, "r", encoding="utf-8") as _file:
             params_dict = json.load(_file)
@@ -84,9 +85,10 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
             params_dict = {}
         return CNFCommonParametersConfig(**params_dict)
 
-    def _get_processor_list(self) -> [HelmChartProcessor]:
+    def _get_processor_list(self) -> list[HelmChartProcessor]:
         processor_list = []
         # for each helm package, instantiate helm processor
+        assert isinstance(self.config, OnboardingCNFInputConfig)
         for helm_package in self.config.helm_packages:
             if helm_package.default_values:
                 if Path(helm_package.default_values).exists():
@@ -119,12 +121,12 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
         validation_errors = {}
 
         for helm_processor in self.processors:
-            validation_output = helm_processor.input_artifact.validate_template()
-
-            if validation_output:
+            try:
+                helm_processor.input_artifact.validate_template()
+            except TemplateValidationError as error:
                 validation_errors[
                     helm_processor.input_artifact.artifact_name
-                ] = validation_output
+                ] = str(error)
 
         if validation_errors:
             # Create an error file using a j2 template

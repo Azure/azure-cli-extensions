@@ -11,27 +11,33 @@ from typing import List, Tuple, final
 from knack.log import get_logger
 
 from azext_aosm.build_processors.base_processor import BaseInputProcessor
-from azext_aosm.common.artifact import BaseArtifact, LocalFileACRArtifact
-from azext_aosm.common.local_file_builder import LocalFileBuilder
+from azext_aosm.common.artifact import (BaseArtifact, LocalFileACRArtifact)
+from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
 from azext_aosm.inputs.arm_template_input import ArmTemplateInput
 from azext_aosm.vendored_sdks.models import (
     ArtifactType,
     AzureOperatorNexusNetworkFunctionArmTemplateApplication,
     ApplicationEnablement, ArmResourceDefinitionResourceElementTemplate,
     ArmResourceDefinitionResourceElementTemplateDetails,
-    ArmTemplateArtifactProfile, ArmTemplateMappingRuleProfile,
+    ArmTemplateArtifactProfile,
+    ArmTemplateMappingRuleProfile,
     AzureCoreArmTemplateArtifactProfile,
-    AzureCoreArmTemplateDeployMappingRuleProfile, AzureCoreArtifactType,
-    AzureCoreNetworkFunctionArmTemplateApplication, DependsOnProfile,
-    ManifestArtifactFormat, NetworkFunctionApplication, NSDArtifactProfile,
-    ReferencedResource, ResourceElementTemplate, TemplateType, ArtifactProfile,
-    AzureOperatorNexusNetworkFunctionApplication, AzureOperatorNexusArtifactType,
-    AzureOperatorNexusArmTemplateDeployMappingRuleProfile, AzureOperatorNexusArmTemplateArtifactProfile)
+    NetworkFunctionApplication, NSDArtifactProfile,
+    ResourceElementTemplate, TemplateType, AzureOperatorNexusArtifactType,
+    AzureOperatorNexusArmTemplateDeployMappingRuleProfile, AzureOperatorNexusArmTemplateArtifactProfile,
+    AzureCoreArmTemplateDeployMappingRuleProfile,
+    AzureCoreArtifactType,
+    AzureCoreNetworkFunctionArmTemplateApplication,
+    DependsOnProfile,
+    ManifestArtifactFormat,
+    ReferencedResource,
+)
 
 from azext_aosm.common.constants import (
     VNF_OUTPUT_FOLDER_FILENAME,
     NF_DEFINITION_FOLDER_NAME,
     TEMPLATE_PARAMETERS_FILENAME)
+
 
 logger = get_logger(__name__)
 
@@ -66,7 +72,9 @@ class BaseArmBuildProcessor(BaseInputProcessor):
         :return: A list of artifacts for the artifact manifest.
         :rtype: List[ManifestArtifactFormat]
         """
-        logger.debug("Getting artifact manifest list for ARM template input %s.", self.name)
+        logger.debug(
+            "Getting artifact manifest list for ARM template input %s.", self.name
+        )
         return [
             ManifestArtifactFormat(
                 artifact_name=self.input_artifact.artifact_name,
@@ -125,8 +133,9 @@ class BaseArmBuildProcessor(BaseInputProcessor):
 
         return ArmResourceDefinitionResourceElementTemplateDetails(
             name=self.name,
-            depends_on_profile=DependsOnProfile(install_depends_on=[],
-                                                uninstall_depends_on=[], update_depends_on=[]),
+            depends_on_profile=DependsOnProfile(
+                install_depends_on=[], uninstall_depends_on=[], update_depends_on=[]
+            ),
             configuration=ArmResourceDefinitionResourceElementTemplate(
                 template_type=TemplateType.ARM_TEMPLATE.value,
                 parameter_values=json.dumps(parameter_values),
@@ -166,8 +175,9 @@ class AzureCoreArmBuildProcessor(BaseArmBuildProcessor):
     ) -> AzureCoreNetworkFunctionArmTemplateApplication:
         return AzureCoreNetworkFunctionArmTemplateApplication(
             name=self.name,
-            depends_on_profile=DependsOnProfile(install_depends_on=[],
-                                                uninstall_depends_on=[], update_depends_on=[]),
+            depends_on_profile=DependsOnProfile(
+                install_depends_on=[], uninstall_depends_on=[], update_depends_on=[]
+            ),
             artifact_type=AzureCoreArtifactType.ARM_TEMPLATE,
             artifact_profile=self._generate_artifact_profile(),
             deploy_parameters_mapping_rule_profile=self._generate_mapping_rule_profile(),

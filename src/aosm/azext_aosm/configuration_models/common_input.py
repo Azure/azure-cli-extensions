@@ -14,16 +14,18 @@ class ArmTemplatePropertiesConfig:
     """ARM template configuration."""
 
     artifact_name: str = field(
-        default="", metadata={"comment": "Name of the artifact. Used as internal reference only."}
+        default="",
+        metadata={"comment": "Name of the artifact. Used as internal reference only."},
     )
     version: str = field(
-        default="", metadata={"comment": "Version of the artifact in 1.1.1 format."}
+        default="", metadata={"comment": "Version of the artifact in 1.1.1 format (three integers separated by dots)."}
     )
     file_path: str = field(
         default="",
         metadata={
             "comment": (
-                "File path (absolute or relative to this configuration file) of the artifact you wish to upload from your local disk.\n"
+                "File path (absolute or relative to this configuration file) of the artifact you wish to upload from "
+                "your local disk.\n"
                 "Use Linux slash (/) file separator even if running on Windows."
             )
         },

@@ -15,7 +15,7 @@ from azext_aosm.common.artifact import (
     LocalFileACRArtifact,
     RemoteACRArtifact,
 )
-from azext_aosm.common.local_file_builder import LocalFileBuilder
+from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
 from azext_aosm.inputs.helm_chart_input import HelmChartInput
 from azext_aosm.vendored_sdks.models import (
     ApplicationEnablement,
@@ -68,7 +68,9 @@ class HelmChartProcessor(BaseInputProcessor):
         :return: A list of artifacts for the artifact manifest.
         :rtype: List[ManifestArtifactFormat]
         """
-        logger.debug("Getting artifact manifest list for Helm chart input %s.", self.name)
+        logger.debug(
+            "Getting artifact manifest list for Helm chart input %s.", self.name
+        )
         artifact_manifest_list = []
         artifact_manifest_list.append(
             ManifestArtifactFormat(
@@ -200,7 +202,8 @@ class HelmChartProcessor(BaseInputProcessor):
 
         return images
 
-    def _find_image_lines(self, chart: HelmChartInput, image_lines: Set[str]) -> None:
+    @staticmethod
+    def _find_image_lines(chart: HelmChartInput, image_lines: Set[str]) -> None:
         """
         Finds the lines containing image references in the given Helm chart and its dependencies.
 

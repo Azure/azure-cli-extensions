@@ -19,3 +19,7 @@ class SchemaGetOrGenerateError(Exception):
 
 class DefaultValuesNotFoundError(UserFault):
     """Raised when the default values file cannot be found"""
+
+
+class TemplateValidationError(Exception):
+    """Raised when template validation fails"""

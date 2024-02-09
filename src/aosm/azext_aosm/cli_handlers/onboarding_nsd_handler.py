@@ -6,35 +6,49 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Optional
 
 from knack.log import get_logger
-
-from azext_aosm.build_processors.arm_processor import (
-    AzureCoreArmBuildProcessor)
 from azext_aosm.build_processors.nfd_processor import NFDProcessor
-from azext_aosm.cli_handlers.onboarding_nfd_base_handler import \
-    OnboardingBaseCLIHandler
+from azext_aosm.build_processors.arm_processor import AzureCoreArmBuildProcessor
+from azext_aosm.cli_handlers.onboarding_nfd_base_handler import OnboardingBaseCLIHandler
 from azext_aosm.common.constants import (  # NSD_DEFINITION_TEMPLATE_FILENAME,
-    ARTIFACT_LIST_FILENAME, BASE_FOLDER_NAME, MANIFEST_FOLDER_NAME,
-    NSD_BASE_TEMPLATE_FILENAME, NSD_TEMPLATE_FOLDER_NAME, NSD_INPUT_FILENAME,
-    NSD_MANIFEST_TEMPLATE_FILENAME, NSD_OUTPUT_FOLDER_FILENAME, NSD_DEFINITION_TEMPLATE_FILENAME,
-    CGS_FILENAME, NSD_DEFINITION_FOLDER_NAME, DEPLOYMENT_PARAMETERS_FILENAME,
-    TEMPLATE_PARAMETERS_FILENAME, CGS_NAME)
-from azext_aosm.common.local_file_builder import LocalFileBuilder
-from azext_aosm.configuration_models.common_parameters_config import \
-    NSDCommonParametersConfig
-from azext_aosm.configuration_models.onboarding_nsd_input_config import \
-    OnboardingNSDInputConfig
-from azext_aosm.definition_folder.builder.artifact_builder import \
-    ArtifactDefinitionElementBuilder
-from azext_aosm.definition_folder.builder.bicep_builder import \
-    BicepDefinitionElementBuilder
-from azext_aosm.definition_folder.builder.json_builder import \
-    JSONDefinitionElementBuilder
+    ARTIFACT_LIST_FILENAME,
+    BASE_FOLDER_NAME,
+    CGS_FILENAME,
+    CGS_NAME,
+    DEPLOYMENT_PARAMETERS_FILENAME,
+    MANIFEST_FOLDER_NAME,
+    NSD_BASE_TEMPLATE_FILENAME,
+    NSD_DEFINITION_FOLDER_NAME,
+    NSD_DEFINITION_TEMPLATE_FILENAME,
+    NSD_INPUT_FILENAME,
+    NSD_MANIFEST_TEMPLATE_FILENAME,
+    NSD_OUTPUT_FOLDER_FILENAME,
+    NSD_TEMPLATE_FOLDER_NAME,
+    TEMPLATE_PARAMETERS_FILENAME,
+)
+from azext_aosm.configuration_models.common_parameters_config import (
+    NSDCommonParametersConfig,
+)
+from azext_aosm.configuration_models.onboarding_nsd_input_config import (
+    OnboardingNSDInputConfig,
+)
+from azext_aosm.definition_folder.builder.artifact_builder import (
+    ArtifactDefinitionElementBuilder,
+)
+from azext_aosm.definition_folder.builder.bicep_builder import (
+    BicepDefinitionElementBuilder,
+)
+from azext_aosm.definition_folder.builder.json_builder import (
+    JSONDefinitionElementBuilder,
+)
+from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
 from azext_aosm.inputs.arm_template_input import ArmTemplateInput
 from azext_aosm.inputs.nfd_input import NFDInput
 from azext_aosm.vendored_sdks.models import NetworkFunctionDefinitionVersion
 from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
+from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 
 logger = get_logger(__name__)
 
@@ -55,17 +69,16 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
     @property
     def nfvi_site_name(self) -> str:
         """Return the name of the NFVI used for the NSDV."""
+        assert isinstance(self.config, OnboardingNSDInputConfig)
         return f"{self.config.nsd_name}_NFVI"
 
-    def _get_input_config(self, input_config: dict = None) -> OnboardingNSDInputConfig:
+    def _get_input_config(self, input_config: Optional[dict] = None) -> OnboardingNSDInputConfig:
         """Get the configuration for the command."""
         if input_config is None:
             input_config = {}
         return OnboardingNSDInputConfig(**input_config)
 
-    def _get_params_config(
-        self, config_file: dict = None
-    ) -> NSDCommonParametersConfig:
+    def _get_params_config(self, config_file: Path) -> NSDCommonParametersConfig:
         """Get the configuration for the command."""
         with open(config_file, "r", encoding="utf-8") as _file:
             params_dict = json.load(_file)
@@ -82,16 +95,21 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
                     artifact_name=resource_element.properties.artifact_name,
                     artifact_version=resource_element.properties.version,
                     default_config=None,
-                    template_path=Path(resource_element.properties.file_path).absolute(),
+                    template_path=Path(
+                        resource_element.properties.file_path
+                    ).absolute(),
                 )
                 # TODO: generalise for nexus in nexus ready stories
                 processor_list.append(
                     AzureCoreArmBuildProcessor(arm_input.artifact_name, arm_input)
                 )
             elif resource_element.resource_element_type == "NF":
-                # TODO: change artifact name and version to the nfd name and version or justify why it was this in the first place
+                # TODO: change artifact name and version to the nfd name and version or justify why it was this
+                #       in the first place
                 # AC4 note: I couldn't find a reference in the old code, but this
-                # does ring a bell. Was it so the artifact manifest didn't get broken with changes to NF versions? I.e., you could make an NF version change in CGV, and the artifact manifest, which is immutable, would still be valid?
+                # does ring a bell. Was it so the artifact manifest didn't get broken with changes to NF versions?
+                # I.e., you could make an NF version change in CGV, and the artifact manifest, which is immutable,
+                # would still be valid?
                 # I am concerned that if we have multiple NFs we will have clashing artifact names.
                 # I'm not changing the behaviour right now as it's too high risk, but we should look again here.
                 nfdv_object = self._get_nfdv(resource_element.properties)
@@ -115,7 +133,9 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
                 processor_list.append(nfd_processor)
             else:
                 # TODO: raise more specific error
-                raise ValueError(f"Invalid resource element type: {resource_element.resource_element_type}")
+                raise ValueError(
+                    f"Invalid resource element type: {resource_element.resource_element_type}"
+                )
         return processor_list
 
     def build_base_bicep(self) -> BicepDefinitionElementBuilder:
@@ -189,9 +209,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
             ret_list.append(nf_ret)
 
             # Adding supporting file: config mappings
-            deploy_values = (
-                nf_ret.configuration.parameter_values
-            )
+            deploy_values = nf_ret.configuration.parameter_values
             mapping_file = LocalFileBuilder(
                 Path(
                     NSD_OUTPUT_FOLDER_FILENAME,
@@ -253,23 +271,21 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
             "acrManifestName": self.config.acr_artifact_store_name + "-manifest",
             "nsDesignGroup": self.config.nsd_name,
             "nsDesignVersion": self.config.nsd_version,
-            "nfviSiteName": self.nfvi_site_name
+            "nfviSiteName": self.nfvi_site_name,
         }
         base_file = JSONDefinitionElementBuilder(
             Path(NSD_OUTPUT_FOLDER_FILENAME), json.dumps(params_content, indent=4)
         )
         return base_file
 
-    def _render_config_group_schema_contents(self, complete_schema, nf_names):
-
-        required = [nf for nf in nf_names]
-
+    @staticmethod
+    def _render_config_group_schema_contents(complete_schema, nf_names):
         params_content = {
             "$schema": "https://json-schema.org/draft-07/schema#",
             "title": f"{CGS_NAME}",
             "type": "object",
             "properties": complete_schema,
-            "required": required,
+            "required": nf_names,
         }
         return LocalFileBuilder(
             Path(
@@ -285,6 +301,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
         print(
             f"Reading existing NFDV resource object {nf_properties.version} from group {nf_properties.name}"
         )
+        assert isinstance(self.aosm_client, HybridNetworkManagementClient)
         nfdv_object = self.aosm_client.network_function_definition_versions.get(
             resource_group_name=nf_properties.publisher_resource_group,
             publisher_name=nf_properties.publisher,

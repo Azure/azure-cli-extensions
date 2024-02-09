@@ -5,10 +5,6 @@
 
 from azure.cli.core import AzCommandsLoader
 
-from ._client_factory import cf_aosm  # pylint: disable=import-error
-
-# from azext_aosm._client_factory import cf_aosm
-
 
 def load_command_table(self: AzCommandsLoader, _):
     with self.command_group("aosm nfd") as g:

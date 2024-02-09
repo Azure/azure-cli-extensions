@@ -9,17 +9,26 @@ from typing import List, Tuple
 from knack.log import get_logger
 
 from azext_aosm.build_processors.base_processor import BaseInputProcessor
-from azext_aosm.common.artifact import (BaseArtifact,
-                                        BlobStorageAccountArtifact,
-                                        LocalFileStorageAccountArtifact)
-from azext_aosm.common.local_file_builder import LocalFileBuilder
+from azext_aosm.common.artifact import (
+    BaseArtifact,
+    BlobStorageAccountArtifact,
+    LocalFileStorageAccountArtifact
+)
+from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
 from azext_aosm.inputs.vhd_file_input import VHDFileInput
 from azext_aosm.vendored_sdks.models import (
-    ApplicationEnablement, ArtifactType,
-    AzureCoreNetworkFunctionVhdApplication, AzureCoreVhdImageArtifactProfile,
-    AzureCoreVhdImageDeployMappingRuleProfile, DependsOnProfile,
-    ManifestArtifactFormat, ReferencedResource, ResourceElementTemplate,
-    VhdImageArtifactProfile, VhdImageMappingRuleProfile)
+    ApplicationEnablement,
+    ArtifactType,
+    AzureCoreNetworkFunctionVhdApplication,
+    AzureCoreVhdImageArtifactProfile,
+    AzureCoreVhdImageDeployMappingRuleProfile,
+    DependsOnProfile,
+    ManifestArtifactFormat,
+    ReferencedResource,
+    ResourceElementTemplate,
+    VhdImageArtifactProfile,
+    VhdImageMappingRuleProfile,
+)
 from azext_aosm.common.constants import (
     VNF_OUTPUT_FOLDER_FILENAME,
     NF_DEFINITION_FOLDER_NAME,
@@ -89,7 +98,9 @@ class VHDProcessor(BaseInputProcessor):
             )
             artifacts.append(
                 BlobStorageAccountArtifact(
-                    artifact_manifest=artifact_manifest,
+                    artifact_name=self.input_artifact.artifact_name,
+                    artifact_type=ArtifactType.VHD_IMAGE_FILE.value,
+                    artifact_version=self.input_artifact.artifact_version,
                     blob_sas_uri=self.input_artifact.blob_sas_uri,
                 )
             )
@@ -112,8 +123,9 @@ class VHDProcessor(BaseInputProcessor):
 
         return AzureCoreNetworkFunctionVhdApplication(
             name=self.name,
-            depends_on_profile=DependsOnProfile(install_depends_on=[],
-                                                uninstall_depends_on=[], update_depends_on=[]),
+            depends_on_profile=DependsOnProfile(
+                install_depends_on=[], uninstall_depends_on=[], update_depends_on=[]
+            ),
             artifact_profile=self._generate_artifact_profile(),
             deploy_parameters_mapping_rule_profile=self._generate_mapping_rule_profile(),
         )

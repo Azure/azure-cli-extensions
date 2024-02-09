@@ -5,21 +5,20 @@
 
 import json
 from pathlib import Path
-from typing import List, Tuple, Any, Dict
+from typing import Any, Dict, List, Tuple
+
 from knack.log import get_logger
 
 from azext_aosm.build_processors.base_processor import BaseInputProcessor
-from azext_aosm.common.artifact import BaseArtifact, LocalFileACRArtifact
-from azext_aosm.common.local_file_builder import LocalFileBuilder
+from azext_aosm.common.artifact import (BaseArtifact, LocalFileACRArtifact)
+from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
 from azext_aosm.inputs.nfd_input import NFDInput
 from azext_aosm.vendored_sdks.models import (
     ArmResourceDefinitionResourceElementTemplate, ArtifactType,
-    DependsOnProfile, ManifestArtifactFormat, NetworkFunctionApplication)
-from azext_aosm.vendored_sdks.models import \
+    DependsOnProfile, ManifestArtifactFormat, NetworkFunctionApplication,
     NetworkFunctionDefinitionResourceElementTemplateDetails as \
-    NFDResourceElementTemplate
-from azext_aosm.vendored_sdks.models import (NSDArtifactProfile,
-                                             ReferencedResource, TemplateType)
+    NFDResourceElementTemplate, NSDArtifactProfile,
+    ReferencedResource, TemplateType)
 from azext_aosm.common.constants import NSD_OUTPUT_FOLDER_FILENAME, NSD_NF_TEMPLATE_FILENAME, NSD_TEMPLATE_FOLDER_NAME
 from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
 
@@ -72,7 +71,9 @@ class NFDProcessor(BaseInputProcessor):
             artifact_name=self.input_artifact.artifact_name,
             artifact_type=ArtifactType.OCI_ARTIFACT.value,
             artifact_version=self.input_artifact.artifact_version,
-            file_path=self.input_artifact.arm_template_output_path.relative_to(Path(NSD_OUTPUT_FOLDER_FILENAME)),
+            file_path=self.input_artifact.arm_template_output_path.relative_to(
+                Path(NSD_OUTPUT_FOLDER_FILENAME)
+            ),
         )
 
         template_path = get_template_path(NSD_TEMPLATE_FOLDER_NAME, NSD_NF_TEMPLATE_FILENAME)
@@ -123,8 +124,9 @@ class NFDProcessor(BaseInputProcessor):
         return NFDResourceElementTemplate(
             name=self.name,
             configuration=configuration,
-            depends_on_profile=DependsOnProfile(install_depends_on=[],
-                                                uninstall_depends_on=[], update_depends_on=[]),
+            depends_on_profile=DependsOnProfile(
+                install_depends_on=[], uninstall_depends_on=[], update_depends_on=[]
+            ),
         )
 
     def _generate_schema(

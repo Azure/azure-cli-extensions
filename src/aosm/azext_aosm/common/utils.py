@@ -7,14 +7,14 @@ import os
 import tarfile
 from pathlib import Path
 from jinja2 import StrictUndefined, Template
-from typing import Any, Dict, Iterable
 import json
 import shutil
 import subprocess
 import tempfile
 
-from azext_aosm.common.exceptions import InvalidFileTypeError, MissingDependency
 from knack.log import get_logger
+
+from azext_aosm.common.exceptions import InvalidFileTypeError, MissingDependency
 
 logger = get_logger(__name__)
 

@@ -7,8 +7,9 @@ import json
 from pathlib import Path
 from typing import List
 
-from azext_aosm.common.artifact import BaseArtifact
 from knack.log import get_logger
+
+from azext_aosm.common.artifact import BaseArtifact
 
 from .base_builder import BaseDefinitionElementBuilder
 
@@ -33,9 +34,12 @@ class ArtifactDefinitionElementBuilder(BaseDefinitionElementBuilder):
         """Write the definition element to disk."""
         self.path.mkdir(exist_ok=True)
         artifacts_list = []
-        # TODO: handle converting path to string that doesn't couple this code to the artifact. Probably should be in to_dict method.
+        # TODO: Handle converting path to string that doesn't couple this code to the artifact.
+        #       Probably should be in to_dict method.
         for artifact in self.artifacts:
-            logger.debug("Writing artifact %s as: %s", artifact.artifact_name, artifact.to_dict())
+            logger.debug(
+                "Writing artifact %s as: %s", artifact.artifact_name, artifact.to_dict()
+            )
             if hasattr(artifact, "file_path") and artifact.file_path is not None:
                 artifact.file_path = str(artifact.file_path)
             artifacts_list.append(artifact.to_dict())
