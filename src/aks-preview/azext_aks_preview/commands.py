@@ -233,6 +233,9 @@ def load_command_table(self, _):
         g.custom_command(
             "operation-abort", "aks_agentpool_operation_abort", supports_no_wait=True
         )
+        g.custom_command(
+            "delete-machines", "aks_agentpool_delete_machines", supports_no_wait=True
+        )
 
     with self.command_group(
         "aks machine", machines_sdk, client_factory=cf_machines
