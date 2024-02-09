@@ -392,7 +392,7 @@ def communication_email_send(client,
             },
             "replyTo": None if reply_to is None else [{"address": reply_to}],
             "attachments": [] if attachments_list is None else [json.loads(attachment)
-                                                                  for attachment in attachments_list],
+                                                                for attachment in attachments_list],
             "senderAddress": sender,
             "userEngagementTrackingDisabled": disable_tracking,
             "headers": {
