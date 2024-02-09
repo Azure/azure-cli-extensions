@@ -3225,7 +3225,7 @@ def _aks_run_command(
         fqdn=None,
         custom_endpoints=None):
     try:
-        command = "bash /opt/azure/containers/aks-check-network.sh {0}".format(fqdn)
+        command = f"bash /opt/azure/containers/aks-check-network.sh {fqdn}"
         if custom_endpoints:
             endpoints = ''.join(custom_endpoints.split(" "))
             command += " {0}".format(endpoints)
@@ -3248,11 +3248,11 @@ def _aks_run_command(
         display_status = command_result.value[0].display_status
         message = command_result.value[0].message
         if display_status != "Provisioning succeeded":
-            raise InvalidArgumentValueError("Can not run command with returned code {0} and message {1}".
-                                            format(display_status, message))
+            raise InvalidArgumentValueError(
+                f"Can not run command with returned code {display_status} and message {message}")
         return process_message(message)
     except Exception as ex:
-        raise HttpResponseError("Can not run command with returned exception {0}".format(ex))
+        raise HttpResponseError(f"Can not run command with returned exception {ex}") from ex
 
 
 def aks_check_network_outbound(
@@ -3279,7 +3279,7 @@ def aks_check_network_outbound(
         print("Get node pool VM set type:", vm_set_type)
 
     location = get_rg_location(cmd.cli_ctx, resource_group)
-    managed_resource_group = "MC_{0}_{1}_{2}".format(resource_group, cluster_name, location)
+    managed_resource_group = f"MC_{resource_group}_{cluster_name}_{location}"
     logger.debug("Location: %s, Managed Resource Group: %s", location, managed_resource_group)
 
     compute_client = get_compute_client(cmd.cli_ctx)
@@ -3310,7 +3310,7 @@ def aks_check_network_outbound(
 
             vmss_list = compute_client.virtual_machine_scale_sets.list(managed_resource_group)
             if not vmss_list:
-                raise ValidationError("No VMSS found in the managed resource group {0}!".format(managed_resource_group))
+                raise ValidationError(f"No VMSS found in the managed resource group {managed_resource_group}!")
 
             logger.debug("Get list of VMSS in the managed resource group: %s", vmss_list)
             for vmss in vmss_list:
@@ -3321,11 +3321,11 @@ def aks_check_network_outbound(
                     logger.debug("Select VMSS: %s", vmss_name)
                     break
             if not vmss_name:
-                raise ValidationError("No VMSS pool matched AKS node pool {0}!".format(nodepool_name))
+                raise ValidationError(f"No VMSS pool matched AKS node pool {nodepool_name}!")
 
             instances = list(compute_client.virtual_machine_scale_set_vms.list(managed_resource_group, vmss_name))
             if not instances:
-                raise ValidationError("No instance found in the VMSS {0}!".format(vmss_name))
+                raise ValidationError(f"No instance found in the VMSS {vmss_name}!")
 
             instance_id = instances[0].instance_id
             logger.debug("Select instance id: %s", instance_id)
@@ -3337,8 +3337,8 @@ def aks_check_network_outbound(
             else:
                 raise ValidationError("Node name {0} is invalid!".format(node_name))
 
-        print("Start checking outbound network for vmss: {0}, instance_id: {1}, managed_resource_group: {2}".
-              format(vmss_name, instance_id, managed_resource_group))
+        print(f"Start checking outbound network for vmss: {vmss_name},"
+              f"instance_id: {instance_id}, managed_resource_group: {managed_resource_group}")
     elif vm_set_type == "AvailabilitySet":
         if not node_name:
             print("No node name specified, will randomly select a node from the cluster")
@@ -3358,10 +3358,10 @@ def aks_check_network_outbound(
         else:
             vm_name = node_name
 
-        print("Start checking outbound network for vm: {0}, managed_resource_group: {1}".
-              format(vm_name, managed_resource_group))
+        print(f"Start checking outbound network for vm: {vm_name},"
+              f"managed_resource_group: {managed_resource_group}")
     else:
-        raise ValidationError("VM set type {0} is not supported!".format(vm_set_type))
+        raise ValidationError(f"VM set type {vm_set_type} is not supported!")
 
     return _aks_run_command(cmd,
                             compute_client,
