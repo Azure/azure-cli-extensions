@@ -159,13 +159,7 @@ class LocalFileACRArtifact(BaseACRArtifact):
             output_folder_path = command_context.cli_options["definition_folder"]
             resolved_file_path = output_folder_path.resolve()
             upload_file_path = resolved_file_path / self.file_path
-            print("nfp", output_folder_path)
-            print("rfp", resolved_file_path)
-            print("ufp", upload_file_path)
             self.file_path = upload_file_path
-
-        # self.file_path = Path(self.file_path).resolve()
-        print("fp", self.file_path)
 
         if self.file_path.suffix == ".bicep":
             # Uploading the nf_template as part of the NSD will use this code path

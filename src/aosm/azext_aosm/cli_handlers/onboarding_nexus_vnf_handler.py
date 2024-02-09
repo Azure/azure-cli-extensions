@@ -166,7 +166,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         arm_nf = []
         image_nf = []
         nf_application = processor.generate_nf_application()
-        print(nf_application)
+
         if isinstance(processor, NexusArmBuildProcessor):
             arm_nf.append(nf_application)
         elif isinstance(processor, NexusImageProcessor):

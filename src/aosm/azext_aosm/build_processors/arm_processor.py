@@ -140,7 +140,6 @@ class BaseArmBuildProcessor(BaseInputProcessor):
         params = (
             mapping_rule_profile.template_mapping_rule_profile.template_parameters
         )
-        print(self.input_artifact.artifact_name + '-' + TEMPLATE_PARAMETERS_FILENAME)
         logger.info(
             "Created parameters file for arm template."
         )
@@ -170,7 +169,7 @@ class AzureCoreArmBuildProcessor(BaseArmBuildProcessor):
             depends_on_profile=DependsOnProfile(install_depends_on=[],
                                                 uninstall_depends_on=[], update_depends_on=[]),
             artifact_type=AzureCoreArtifactType.ARM_TEMPLATE,
-            artifact_profile=self.generate_artifact_profile(),
+            artifact_profile=self._generate_artifact_profile(),
             deploy_parameters_mapping_rule_profile=self._generate_mapping_rule_profile(),
         )
 
@@ -190,7 +189,7 @@ class AzureCoreArmBuildProcessor(BaseArmBuildProcessor):
             template_mapping_rule_profile=mapping_profile,
         )
 
-    def generate_artifact_profile(self) -> AzureCoreArmTemplateArtifactProfile:
+    def _generate_artifact_profile(self) -> AzureCoreArmTemplateArtifactProfile:
         artifact_profile = ArmTemplateArtifactProfile(
             template_name=self.input_artifact.artifact_name,
             template_version=self.input_artifact.artifact_version,
@@ -213,7 +212,7 @@ class NexusArmBuildProcessor(BaseArmBuildProcessor):
             depends_on_profile=DependsOnProfile(install_depends_on=[],
                                                 uninstall_depends_on=[], update_depends_on=[]),
             artifact_type=AzureOperatorNexusArtifactType.ARM_TEMPLATE,
-            artifact_profile=self.generate_artifact_profile(),
+            artifact_profile=self._generate_artifact_profile(),
             deploy_parameters_mapping_rule_profile=self._generate_mapping_rule_profile(),
         )
 
@@ -233,7 +232,7 @@ class NexusArmBuildProcessor(BaseArmBuildProcessor):
             template_mapping_rule_profile=mapping_profile,
         )
 
-    def generate_artifact_profile(self) -> AzureOperatorNexusArmTemplateArtifactProfile:
+    def _generate_artifact_profile(self) -> AzureOperatorNexusArmTemplateArtifactProfile:
         artifact_profile = ArmTemplateArtifactProfile(
             template_name=self.input_artifact.artifact_name,
             template_version=self.input_artifact.artifact_version,
