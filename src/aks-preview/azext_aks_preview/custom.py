@@ -3333,9 +3333,9 @@ def aks_check_network_outbound(
             index = node_name.find("vmss")
             if index != -1:
                 vmss_name = node_name[:index + 4]
-                instance_id = int(node_name[index + 4:], base = 36)
+                instance_id = int(node_name[index + 4:], base=36)
             else:
-                raise ValidationError("Node name {0} is invalid!".format(node_name))
+                raise ValidationError(f"Node name {node_name} is invalid!")
 
         print(f"Start checking outbound network for vmss: {vmss_name},"
               f"instance_id: {instance_id}, managed_resource_group: {managed_resource_group}")
@@ -3345,7 +3345,7 @@ def aks_check_network_outbound(
 
             vm_list = compute_client.virtual_machines.list(managed_resource_group)
             if not vm_list:
-                raise ValidationError("No VM found in the managed resource group {0}!".format(managed_resource_group))
+                raise ValidationError(f"No VM found in the managed resource group {managed_resource_group}!")
 
             for vm in vm_list:
                 logger.debug("OS Profile: %s", vm.os_profile)

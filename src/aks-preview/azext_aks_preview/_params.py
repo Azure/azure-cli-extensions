@@ -2003,6 +2003,7 @@ def load_arguments(self, _):
         c.argument('custom_endpoints', options_list=['--custom-endpoints'],
                    required=False, help='Additional endpoint(s) to perform the connectivity check, separated by comma.')
 
+
 def _get_default_install_location(exe_name):
     system = platform.system()
     if system == "Windows":
