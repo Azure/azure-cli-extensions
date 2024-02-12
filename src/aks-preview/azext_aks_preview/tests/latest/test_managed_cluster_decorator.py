@@ -7694,7 +7694,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "dns_zone_resource_ids": "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com, /subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
-,test_dns_zone_resource_id_2",
                 "add_dns_zone": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
