@@ -13,6 +13,7 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
     CLIInternalError,
+    MutuallyExclusiveArgumentError,
 )
 from azext_dataprotection.manual.custom import (
     dataprotection_backup_instance_list_from_resourcegraph,
@@ -244,6 +245,175 @@ def get_datasource_auth_credentials_info(secret_store_type, secret_store_uri):
         raise RequiredArgumentMissingError("Either secret store uri or secret store type not provided.")
 
     return datasource_auth_credentials_info
+
+
+def validate_and_set_restore_mode_in_restore_request(recovery_point_id, point_in_time, restore_request):
+    if recovery_point_id is not None and point_in_time is not None:
+        raise RequiredArgumentMissingError("Please provide either recovery point id or point in time parameter, not both.")
+
+    if recovery_point_id is not None:
+        restore_request["object_type"] = "AzureBackupRecoveryPointBasedRestoreRequest"
+        restore_request["recovery_point_id"] = recovery_point_id
+        restore_mode = "RecoveryPointBased"
+
+    if point_in_time is not None:
+        restore_request["object_type"] = "AzureBackupRecoveryTimeBasedRestoreRequest"
+        restore_request["recovery_point_time"] = point_in_time
+        restore_mode = "PointInTimeBased"
+
+    if recovery_point_id is None and point_in_time is None:
+        raise RequiredArgumentMissingError("Please provide either recovery point id or point in time parameter.")
+
+    return restore_request, restore_mode
+
+
+def validate_restore_mode_for_workload(restore_mode, datasource_type, manifest):
+    if manifest is not None and manifest["allowedRestoreModes"] is not None and restore_mode not in manifest["allowedRestoreModes"]:
+        raise InvalidArgumentValueError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
+                                        ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
+
+
+def validate_and_set_source_datastore_type_in_restore_request(source_datastore, datasource_type, restore_request, manifest):
+    if source_datastore in manifest["policySettings"]["supportedDatastoreTypes"]:
+        restore_request["source_data_store_type"] = source_datastore
+    else:
+        raise InvalidArgumentValueError(source_datastore + " datastore type is not supported for datasource type " + datasource_type +
+                                        ". Supported datastore types are " + ','.join(manifest["policySettings"]["supportedDatastoreTypes"]))
+    return restore_request
+
+
+def validate_and_set_rehydration_priority_in_restore_request(rehydration_priority, rehydration_duration, restore_request):
+    if rehydration_duration < 10 or rehydration_duration > 30:
+        raise InvalidArgumentValueError("The allowed range of rehydration duration is 10 to 30 days.")
+    restore_request["object_type"] = "AzureBackupRestoreWithRehydrationRequest"
+    restore_request["rehydration_priority"] = rehydration_priority
+    restore_request["rehydration_retention_duration"] = "P" + str(rehydration_duration) + "D"
+
+
+def validate_and_set_datasource_id_in_restore_request(cmd, target_resource_id, backup_instance_id):
+    datasource_id = None
+    # Alternate/Original Location - setting the Target's datasource info accordingly
+    if target_resource_id is not None and backup_instance_id is not None:
+        raise MutuallyExclusiveArgumentError("Please provide either target-resource-id or backup-instance-id, not both.")
+
+    if target_resource_id is not None:
+        # No validation for alternate/original location restore, as target_resource_id can be used for both
+        datasource_id = target_resource_id
+
+    if backup_instance_id is not None:
+        # No validation for alternate/original location restore, to be added if understood to be required
+        vault_resource_group = get_vault_rg_from_bi_id(backup_instance_id)
+        vault_name = get_vault_name_from_bi_id((backup_instance_id))
+        backup_instance_name = get_bi_name_from_bi_id(backup_instance_id)
+
+        from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as _Show
+        backup_instance = _Show(cli_ctx=cmd.cli_ctx)(command_args={
+            "vault_name": vault_name,
+            "resource_group": vault_resource_group,
+            "backup_instance_name": backup_instance_name
+        })
+        datasource_id = backup_instance['properties']['dataSourceInfo']['resourceID']
+
+    if backup_instance_id is None and target_resource_id is None:
+        raise MutuallyExclusiveArgumentError("Please provide either target-resource-id (for alternate location restore) "
+                                             "or backup-instance-id (for original location restore).")
+
+    return datasource_id
+
+
+def get_resource_criteria_list(datasource_type, restore_configuration, container_list, from_prefix_pattern, to_prefix_pattern):
+    # We set the restore criteria depending on the datasource type and on the prefix pattern/container list as provided
+    # AKS directly uses the restore configuration. Currently, the "else" just covers Blobs.
+    restore_criteria_list = []
+    if datasource_type == "AzureKubernetesService":
+        if restore_configuration is not None:
+            restore_criteria = restore_configuration
+        else:
+            raise RequiredArgumentMissingError("Please input parameter restore_configuration for AKS cluster restore.\n\
+                                               Use command initialize-restoreconfig for creating the RestoreConfiguration")
+        restore_criteria_list.append(restore_criteria)
+    else:
+        # For non-AKS workloads (blobs (non-vaulted)), we need either a prefix-pattern or a container-list. Accordingly, the restore
+        # criteria's min_matching_value and max_matching_value are set. We need to provide one, but can't provide both
+        if container_list is not None and (from_prefix_pattern is not None or to_prefix_pattern is not None):
+            raise MutuallyExclusiveArgumentError("Please specify either container list or prefix pattern.")
+
+        if container_list is not None:
+            if len(container_list) > 10:
+                raise InvalidArgumentValueError("A maximum of 10 containers can be restored. Please choose up to 10 containers.")
+            for container in container_list:
+                if container[0] == '$':
+                    raise InvalidArgumentValueError("container name can not start with '$'. Please retry with different sets of containers.")
+                restore_criteria = {}
+                restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
+                restore_criteria["min_matching_value"] = container
+                restore_criteria["max_matching_value"] = container + "-0"
+
+                restore_criteria_list.append(restore_criteria)
+
+        if from_prefix_pattern is not None or to_prefix_pattern is not None:
+            validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern)
+
+            for index, _ in enumerate(from_prefix_pattern):
+                restore_criteria = {}
+                restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
+                restore_criteria["min_matching_value"] = from_prefix_pattern[index]
+                restore_criteria["max_matching_value"] = to_prefix_pattern[index]
+
+                restore_criteria_list.append(restore_criteria)
+
+        if container_list is None and from_prefix_pattern is None and to_prefix_pattern is None:
+            raise RequiredArgumentMissingError("Provide ContainersList or Prefixes for Item Level Recovery")
+    return restore_criteria_list
+
+
+def validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern):
+    if from_prefix_pattern is None or to_prefix_pattern is None or \
+        len(from_prefix_pattern) != len(to_prefix_pattern) or len(from_prefix_pattern) > 10:
+        raise InvalidArgumentValueError(
+            "from-prefix-pattern and to-prefix-pattern should not be null, both of them should have "
+            "equal length and can have a maximum of 10 patterns."
+        )
+
+    for index, _ in enumerate(from_prefix_pattern):
+        if from_prefix_pattern[index][0] == '$' or to_prefix_pattern[index][0] == '$':
+            raise InvalidArgumentValueError(
+                "Prefix patterns should not start with '$'. Please provide valid prefix patterns and try again."
+            )
+
+        if not 3 <= len(from_prefix_pattern[index]) <= 63 or not 3 <= len(to_prefix_pattern[index]) <= 63:
+            raise InvalidArgumentValueError(
+                "Prefix patterns needs to be between 3 to 63 characters."
+            )
+
+        if from_prefix_pattern[index] >= to_prefix_pattern[index]:
+            raise InvalidArgumentValueError(
+                "From prefix pattern must be less than to prefix pattern."
+            )
+
+        regex_pattern = r"^[a-z0-9](?!.*--)[a-z0-9-]{1,61}[a-z0-9](\/.{1,60})*$"
+        if re.match(regex_pattern, from_prefix_pattern[index]) is None:
+            raise InvalidArgumentValueError(
+                "prefix patterns must start or end with a letter or number,"
+                "and can contain only lowercase letters, numbers, and the dash (-) character. "
+                "consecutive dashes are not permitted."
+                "Given pattern " + from_prefix_pattern[index] + " violates the above rule."
+            )
+
+        if re.match(regex_pattern, to_prefix_pattern[index]) is None:
+            raise InvalidArgumentValueError(
+                "prefix patterns must start or end with a letter or number,"
+                "and can contain only lowercase letters, numbers, and the dash (-) character. "
+                "consecutive dashes are not permitted."
+                "Given pattern " + to_prefix_pattern[index] + " violates the above rule."
+            )
+
+        for compareindex in range(index + 1, len(from_prefix_pattern)):
+            if (from_prefix_pattern[index] <= from_prefix_pattern[compareindex] and to_prefix_pattern[index] >= from_prefix_pattern[compareindex]) or \
+                (from_prefix_pattern[index] >= from_prefix_pattern[compareindex] and from_prefix_pattern[index] <= to_prefix_pattern[compareindex]):
+                raise InvalidArgumentValueError(
+                    "overlapping ranges are not allowed."
+                )
 
 
 def get_policy_parameters(datasource_id, snapshot_resource_group_name):
