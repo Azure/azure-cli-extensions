@@ -171,6 +171,7 @@ from azext_aks_preview._validators import (
     validate_force_upgrade_disable_and_enable_parameters,
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
+    validate_custom_endpoints,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
@@ -2001,7 +2002,8 @@ def load_arguments(self, _):
         c.argument('node_name', options_list=['--node-name'],
                    required=False, help='Name of the node to perform the connectivity check.')
         c.argument('custom_endpoints', options_list=['--custom-endpoints'],
-                   required=False, help='Additional endpoint(s) to perform the connectivity check, separated by comma.')
+                   required=False, help='Additional endpoint(s) to perform the connectivity check, separated by comma.',
+                   validator=validate_custom_endpoints)
 
 
 def _get_default_install_location(exe_name):

@@ -846,3 +846,14 @@ def validate_artifact_streaming(namespace):
     if namespace.enable_artifact_streaming:
         if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() == "windows":
             raise ArgumentUsageError('--enable-artifact-streaming can only be set for Linux nodepools')
+
+
+def validate_custom_endpoints(namespace):
+    """Validates that custom endpoints do not contain protocol."""
+    if not namespace.custom_endpoints:
+        return
+
+    endpoint_list = [endpoint.strip() for endpoint in namespace.custom_endpoints.split(",")]
+    for endpoint in endpoint_list:
+        if "://" in endpoint:
+            raise CLIError(f"Custom endpoint {endpoint} should not contain protocol.")
