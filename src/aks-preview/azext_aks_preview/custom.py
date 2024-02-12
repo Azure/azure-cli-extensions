@@ -3237,14 +3237,16 @@ def _aks_run_command(
             RunCommandInput = cmd.get_models('RunCommandInput',
                                              resource_type=ResourceType.MGMT_COMPUTE,
                                              operation_group="virtual_machine_scale_sets")
-            command_result = LongRunningOperation(cmd.cli_ctx)(compute_client.virtual_machine_scale_set_vms.begin_run_command(
+            command_result = LongRunningOperation(cmd.cli_ctx)(
+                compute_client.virtual_machine_scale_set_vms.begin_run_command(
                 managed_resource_group, vmss_name, instance_id,
                 RunCommandInput(command_id="RunShellScript", script=[command])))
         elif vm_set_type == "AvailabilitySet":
             RunCommandInput = cmd.get_models('RunCommandInput',
                                              resource_type=ResourceType.MGMT_COMPUTE,
                                              operation_group="virtual_machine_run_commands")
-            command_result = LongRunningOperation(cmd.cli_ctx)(compute_client.virtual_machines.begin_run_command(
+            command_result = LongRunningOperation(cmd.cli_ctx)(
+                compute_client.virtual_machines.begin_run_command(
                 managed_resource_group, vm_name,
                 RunCommandInput(command_id="RunShellScript", script=[command])))
 
