@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "support in-subscription file",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """File operations for a specified subscription

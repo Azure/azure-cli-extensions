@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "support no-subscription file-workspace create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Creates a new file workspace.

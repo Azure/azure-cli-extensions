@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "support no-subscription file-workspace",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """File workspaces for Azure Support.

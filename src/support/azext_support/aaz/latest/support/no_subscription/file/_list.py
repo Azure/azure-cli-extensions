@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "support no-subscription file list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List all the Files information under a workspace for an Azure subscription.

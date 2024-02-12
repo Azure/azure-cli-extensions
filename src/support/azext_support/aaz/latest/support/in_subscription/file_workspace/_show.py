@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "support in-subscription file-workspace show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get details for a specific file workspace in an Azure subscription.
