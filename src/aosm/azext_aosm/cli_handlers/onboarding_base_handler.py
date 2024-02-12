@@ -8,9 +8,9 @@ import json
 from abc import ABC, abstractmethod
 from dataclasses import fields, is_dataclass
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 from json.decoder import JSONDecodeError
-from azure.cli.core.azclierror import InvalidArgumentValueError, UnclassifiedUserFault, UserFault
+from azure.cli.core.azclierror import InvalidArgumentValueError, UnclassifiedUserFault
 from jinja2 import StrictUndefined, Template
 from knack.log import get_logger
 

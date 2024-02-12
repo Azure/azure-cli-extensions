@@ -11,7 +11,7 @@ from typing import Any, Dict
 VNF = "vnf"
 CNF = "cnf"
 NSD = "nsd"
-VNF_NEXUS = "vnfnexus"
+VNF_NEXUS = "vnf-nexus"
 
 class DeployableResourceTypes(str, Enum):
     VNF = VNF

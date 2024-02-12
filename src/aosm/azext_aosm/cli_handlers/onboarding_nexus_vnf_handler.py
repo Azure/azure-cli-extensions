@@ -44,6 +44,8 @@ logger = get_logger(__name__)
 class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
     """CLI handler for publishing NFDs."""
 
+    config: OnboardingNexusVNFInputConfig
+    
     def _get_input_config(
         self, input_config: Dict[str, Any] = None
     ) -> OnboardingNexusVNFInputConfig:

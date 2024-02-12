@@ -103,7 +103,7 @@ class VhdImageConfig:
 class OnboardingCoreVNFInputConfig(OnboardingNFDBaseInputConfig):
     """Input configuration for onboarding VNFs."""
 
-    blob_artifact_store_name: str | None = field(
+    blob_artifact_store_name: str = field(
         default="",
         metadata={
             "comment": (
@@ -122,7 +122,6 @@ class OnboardingCoreVNFInputConfig(OnboardingNFDBaseInputConfig):
         },
     )
 
-    # TODO: Add better comments
     arm_templates: List[ArmTemplatePropertiesConfig] = field(
         default_factory=lambda: [ArmTemplatePropertiesConfig()],
         metadata={
@@ -148,11 +147,14 @@ class OnboardingCoreVNFInputConfig(OnboardingNFDBaseInputConfig):
         if self.vhd and isinstance(self.vhd, dict):
             self.vhd = VhdImageConfig(**self.vhd)
 
+        sanitized_nf_name = self.nf_name.lower().replace("_", "-")
+        if not self.blob_artifact_store_name:
+            self.blob_artifact_store_name = sanitized_nf_name + "-sa"
+
     @property
     def sa_manifest_name(self) -> str:
         """Return the Storage account manifest name from the NFD name."""
-        sanitized_nf_name = self.nf_name.lower().replace("_", "-")
-        return f"{sanitized_nf_name}-sa-manifest-{self.version.replace('.', '-')}"
+        return f"{self.blob_artifact_store_name}-manifest-{self.version.replace('.', '-')}"
 
     def validate(self):
         """Validate the configuration."""

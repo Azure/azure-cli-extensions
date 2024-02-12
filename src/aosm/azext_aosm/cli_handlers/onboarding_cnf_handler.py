@@ -61,6 +61,8 @@ warnings.simplefilter("ignore", ReusedAnchorWarning)
 class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
     """CLI handler for publishing NFDs."""
 
+    config: OnboardingCNFInputConfig
+
     @property
     def default_config_file_name(self) -> str:
         """Get the default configuration file name."""

@@ -56,6 +56,8 @@ logger = get_logger(__name__)
 class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
     """CLI handler for publishing NFDs."""
 
+    config: OnboardingNSDInputConfig
+
     @property
     def default_config_file_name(self) -> str:
         """Get the default configuration file name."""

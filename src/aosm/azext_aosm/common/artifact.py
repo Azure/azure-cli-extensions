@@ -547,12 +547,12 @@ class BaseStorageAccountArtifact(BaseArtifact):
 
     @abstractmethod
     def upload(
-        self, config: NFDCommonParametersConfig, command_context: CommandContext
+        self, config: BaseCommonParametersConfig, command_context: CommandContext
     ):
         """Upload the artifact."""
 
     def _get_blob_client(
-        self, config: NFDCommonParametersConfig, command_context: CommandContext
+        self, config: BaseCommonParametersConfig, command_context: CommandContext
     ) -> BlobClient:
         container_basename = self.artifact_name.replace("-", "")
         container_name = f"{container_basename}-{self.artifact_version}"

@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import json
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, List, Tuple, Optional
 from knack.log import get_logger
 
 from azext_aosm.build_processors.arm_processor import AzureCoreArmBuildProcessor
@@ -44,8 +44,10 @@ logger = get_logger(__name__)
 class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
     """CLI handler for publishing NFDs."""
 
+    config: OnboardingCoreVNFInputConfig
+
     def _get_input_config(
-        self, input_config: Dict[str, Any] = None
+        self, input_config: Optional[dict] = None
     ) -> OnboardingCoreVNFInputConfig:
         """Get the configuration for the command."""
         if input_config is None:
@@ -62,7 +64,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             params_dict = {}
         return CoreVNFCommonParametersConfig(**params_dict)
 
-    def _get_processor_list(self) -> [BaseInputProcessor]:
+    def _get_processor_list(self) -> List[BaseInputProcessor]:
         """Get the list of processors."""
         processor_list = []
         # for each arm template, instantiate arm processor
@@ -157,7 +159,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             "acrArtifactStoreName": self.config.acr_artifact_store_name,
             "saArtifactStoreName": self.config.blob_artifact_store_name,
             "acrManifestName": self.config.acr_artifact_store_name + "-manifest",
-            "saManifestName": self.config.blob_artifact_store_name + "-manifest",
+            "saManifestName": self.config.sa_manifest_name,
             "nfDefinitionGroup": self.config.nf_name,
             "nfDefinitionVersion": self.config.version
         }
@@ -182,7 +184,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             default_config.update({"image_api_version": vhd.image_api_version})
         return default_config
 
-    def _generate_type_specific_nf_application(self, processor) -> "tuple[list, list]":
+    def _generate_type_specific_nf_application(self, processor) -> Tuple[List, List]:
         """Generate the type specific nf application."""
         arm_nf = []
         image_nf = []
