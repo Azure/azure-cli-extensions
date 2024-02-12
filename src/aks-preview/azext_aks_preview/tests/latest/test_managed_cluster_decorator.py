@@ -7831,39 +7831,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
 
-    def test_enable_disable_ai_toolchain_operator(self):
-        # Should not update mc if unset
-        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_0 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        dec_0.context.attach_mc(mc_0)
-        dec_mc_0 = dec_0.update_ai_toolchain_operator(mc_0)
-        ground_truth_mc_0 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        self.assertEqual(dec_mc_0, ground_truth_mc_0)
-
-        # Should error if both set
-        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"disable_ai_toolchain_operator": True, "enable_ai_toolchain_operator": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_6 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        dec_6.context.attach_mc(mc_6)
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            dec_6.update_ai_toolchain_operator(mc_6)
-
-            # update app routing with key vault
+        # update app routing with key vault
         from azure.cli.core.mock import DummyCli
         from azure.cli.core.commands import AzCliCommand
         from azure.cli.core import AzCommandsLoader
@@ -7921,6 +7889,38 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_8, ground_truth_mc_8)
+
+    def test_enable_disable_ai_toolchain_operator(self):
+        # Should not update mc if unset
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_ai_toolchain_operator(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Should error if both set
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_ai_toolchain_operator": True, "enable_ai_toolchain_operator": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_6.update_ai_toolchain_operator(mc_6)
 
     def test_update_mc_profile_preview(self):
         import inspect
