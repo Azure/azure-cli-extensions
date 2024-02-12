@@ -176,6 +176,20 @@ class SupportScenarioTest(ScenarioTest):
         rsp = self.cmd(cmd).get_output_in_json()
         self._validate_support_tickets_show_cmd(rsp, test_ticket_name)
 
+    def test_chat_transcript(self):
+        test_ticket_name = "58cf91d7-27a54e37-7ee57473-c9c9-4350-b0e1-f7aa2479108d"
+        test_chat_transcript_name = "e3bc592b-ba39-49d3-8853-16e33023b22b"
+
+        # List Chat Transcript
+        cmd = self._build_chat_transcript_list_cmd(test_ticket_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_chat_transcript_list_cmd(rsp, test_chat_transcript_name)
+
+        # Show Chat Transcript
+        cmd = self._build_chat_transcript_show_cmd(test_ticket_name, test_chat_transcript_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_chat_transcript_show_cmd(rsp, test_chat_transcript_name)
+
     def _build_base_support_tickets_create_command(self, test_ticket_name):
         test_ticket_title = "test ticket from python cli test. Do not assign and close after a day."
         cmd = "support in-subscription tickets create --debug "
