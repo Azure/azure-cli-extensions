@@ -4487,20 +4487,24 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
             if add_dns_zone:
-                mc.ingress_profile.web_app_routing.dns_zone_resource_ids = mc.ingress_profile.web_app_routing.dns_zone_resource_ids or []
+                mc.ingress_profile.web_app_routing.dns_zone_resource_ids = (
+                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids or []
+                )
                 for dns_zone_id in dns_zone_resource_ids:
                     if dns_zone_id not in mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
                         mc.ingress_profile.web_app_routing.dns_zone_resource_ids.append(dns_zone_id)
                         if attach_zones:
                             try:
-                                is_private_dns_zone = parse_resource_id(dns_zone).get("type").lower() == "privatednszones"
+                                is_private_dns_zone = (
+                                    parse_resource_id(dns_zone_id).get("type").lower() == "privatednszones"
+                                )
                                 role = "Private DNS Zone Contributor" if is_private_dns_zone else "DNS Zone Contributor"
                                 if not add_role_assignment(
                                     self.cmd,
                                     role,
                                     mc.ingress_profile.web_app_routing.identity.object_id,
                                     False,
-                                    scope=dns_zone
+                                    scope=dns_zone_id
                                 ):
                                     logger.warning(
                                         'Could not create a role assignment for App Routing. '
