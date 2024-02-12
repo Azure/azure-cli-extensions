@@ -18,6 +18,7 @@ def reset_softdelete_base_state(test):
     ])
 
     # Ensure that backup instance is protected in the primary soft delete vault
+    test.cmd('az dataprotection backup-instance deleted-backup-instance undelete -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"')
     test.cmd('az dataprotection backup-instance resume-protection -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"')
     test.cmd('az dataprotection backup-instance show -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"', checks=[
         test.check('properties.protectionStatus.status', "ProtectionConfigured")
