@@ -4,7 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 import re
-
+import os
+import math
+import base64
 from azure.cli.core._profile import Profile
 from azure.cli.core.azclierror import UnauthorizedError
 from knack.util import CLIError
@@ -12,6 +14,8 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
+# costants for file upload
+max_chunk_size = 1024 * 1024 * 2.5  # 2.5MB
 
 def is_billing_ticket(service_name):
     return "517f2da6-78fd-0498-4e22-ad26996b1dfc" in service_name
@@ -55,3 +59,93 @@ def get_bearer_token(cmd, tenant_id):
             unauthorized_error
 
     return "Bearer " + creds[1]
+
+
+def encode_string_content(chunk_content):
+    return str(base64.b64encode(chunk_content).decode("utf-8"))
+
+
+def get_file_content(file_path):
+    with open(file_path, "rb") as file:
+        content_bytes = file.read()
+    return content_bytes
+
+
+def get_file_name_info(file_path):
+    full_file_name = os.path.split(file_path)[1]
+    file_name_without_extension, file_extension = os.path.splitext(full_file_name)
+    return full_file_name, file_name_without_extension, file_extension
+
+
+def upload_file(
+    cmd,
+    file_path,
+    file_workspace_name,
+    is_subscription_scenerio,
+    Create,
+    Upload,
+    subscription_id=None,
+):
+    from azext_support._validators import validate_file_path, validate_file_size
+    from azext_support._validators import validate_file_extension, validate_file_name
+
+    validate_file_path(file_path)
+
+    full_file_name, file_name_without_extension, file_extension = get_file_name_info(
+        file_path
+    )
+    validate_file_extension(file_extension)
+    validate_file_name(file_name_without_extension)
+
+    content = get_file_content(file_path)
+
+    file_size = len(content)
+    validate_file_size(file_size)
+
+    chunk_size = min(max_chunk_size, file_size)
+    number_of_chunks = math.ceil(file_size / chunk_size)
+
+    if is_subscription_scenerio and subscription_id is not None:
+        create_input = {
+            "file_name": full_file_name,
+            "file_workspace_name": file_workspace_name,
+            "file_size": file_size,
+            "chunk_size": chunk_size,
+            "number_of_chunks": number_of_chunks,
+            "subscription": subscription_id,
+        }
+    else:
+        create_input = {
+            "file_name": full_file_name,
+            "file_workspace_name": file_workspace_name,
+            "file_size": file_size,
+            "chunk_size": chunk_size,
+            "number_of_chunks": number_of_chunks,
+        }
+
+    Create(cli_ctx=cmd.cli_ctx)(command_args=create_input)
+
+    for chunk_index in range(number_of_chunks):
+        chunk_content = content[
+            chunk_index * chunk_size: (chunk_index + 1) * chunk_size
+        ]
+        string_encoded_content = encode_string_content(chunk_content)
+
+    if is_subscription_scenerio and subscription_id is not None:
+        upload_input = {
+            "file_name": full_file_name,
+            "file_workspace_name": file_workspace_name,
+            "chunk_index": chunk_index,
+            "content": string_encoded_content,
+            "subscription": subscription_id,
+        }
+    else:
+        upload_input = {
+            "file_name": full_file_name,
+            "file_workspace_name": file_workspace_name,
+            "chunk_index": chunk_index,
+            "content": string_encoded_content,
+        }
+
+    Upload(cli_ctx=cmd.cli_ctx)(command_args=upload_input)
+    print("File '{}' has been succesfully uploaded.".format(full_file_name))
