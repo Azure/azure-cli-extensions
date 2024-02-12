@@ -22,7 +22,7 @@ from azext_aosm.common.constants import ALL_PARAMETERS_FILE_NAME, CNF, VNF, VNF_
 def onboard_nfd_generate_config(definition_type: str, output_file: str | None):
     """Generate config file for onboarding NFs."""
     # Declare types explicitly
-    handler: OnboardingCNFCLIHandler | OnboardingVNFCLIHandler
+    handler: OnboardingCNFCLIHandler | OnboardingVNFCLIHandler | OnboardingNexusVNFCLIHandler
     if definition_type == CNF:
         handler = OnboardingCNFCLIHandler()
     elif definition_type == VNF:
@@ -40,13 +40,13 @@ def onboard_nfd_build(
 ):
     """Build the NF definition."""
     # Declare types explicitly
-    handler: OnboardingCNFCLIHandler | OnboardingVNFCLIHandler
+    handler: OnboardingCNFCLIHandler | OnboardingVNFCLIHandler | OnboardingNexusVNFCLIHandler
     if definition_type == CNF:
-        handler = OnboardingCNFCLIHandler(Path(config_file), skip=skip)
+        handler = OnboardingCNFCLIHandler(config_file_path=Path(config_file), skip=skip)
     elif definition_type == VNF:
-        handler = OnboardingCoreVNFCLIHandler(Path(config_file))
+        handler = OnboardingCoreVNFCLIHandler(config_file_path=Path(config_file))
     elif definition_type == VNF_NEXUS:
-        handler = OnboardingNexusVNFCLIHandler(Path(config_file))
+        handler = OnboardingNexusVNFCLIHandler(config_file_path=Path(config_file))
     else:
         raise UnrecognizedArgumentError(
             "Invalid definition type, valid values are 'cnf', 'vnf' or 'vnfnexus'")
@@ -70,11 +70,14 @@ def onboard_nfd_publish(
     # Declare types explicitly
     handler: OnboardingCNFCLIHandler | OnboardingVNFCLIHandler
     if definition_type == CNF:
-        handler = OnboardingCNFCLIHandler(Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
+        handler = OnboardingCNFCLIHandler(
+            all_deploy_params_file_path=Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
     elif definition_type == VNF:
-        handler = OnboardingCoreVNFCLIHandler(Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
+        handler = OnboardingCoreVNFCLIHandler(
+            all_deploy_params_file_path=Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
     elif definition_type == VNF_NEXUS:
-        handler = OnboardingNexusVNFCLIHandler(Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
+        handler = OnboardingNexusVNFCLIHandler(
+            all_deploy_params_file_path=Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
     else:
         raise UnrecognizedArgumentError(
             "Invalid definition type, valid values are 'cnf', 'vnf' or 'vnfnexus'")
@@ -103,7 +106,8 @@ def onboard_nsd_generate_config(output_file: str | None):
 def onboard_nsd_build(config_file: Path, cmd: AzCliCommand):
     """Build the NSD definition."""
     command_context = CommandContext(cli_ctx=cmd.cli_ctx)
-    handler = OnboardingNSDCLIHandler(Path(config_file), command_context.aosm_client)
+    handler = OnboardingNSDCLIHandler(config_file_path=Path(config_file),
+                                      aosm_client=command_context.aosm_client)
     handler.build()
 
 
@@ -121,7 +125,7 @@ def onboard_nsd_publish(
         },
     )
     handler = OnboardingNSDCLIHandler(
-        Path(build_output_folder, ALL_PARAMETERS_FILE_NAME)
+        all_deploy_params_file_path=Path(build_output_folder, ALL_PARAMETERS_FILE_NAME)
     )
     handler.publish(command_context=command_context)
 
