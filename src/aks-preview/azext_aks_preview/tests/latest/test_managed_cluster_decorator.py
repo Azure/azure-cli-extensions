@@ -7693,7 +7693,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "dns_zone_resource_ids": "test_dns_zone_resource_id_1,test_dns_zone_resource_id_2",
+                "dns_zone_resource_ids": "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com, /subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
+,test_dns_zone_resource_id_2",
                 "add_dns_zone": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
@@ -7714,8 +7715,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
                     dns_zone_resource_ids=[
-                        "test_dns_zone_resource_id_1",
-                        "test_dns_zone_resource_id_2",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
                     ],
                 )
             ),
@@ -7728,7 +7729,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "dns_zone_resource_ids": "test_dns_zone_resource_id_1",
+                "dns_zone_resource_ids": "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com",
                 "delete_dns_zone": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
@@ -7739,8 +7740,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
                     dns_zone_resource_ids=[
-                        "test_dns_zone_resource_id_1",
-                        "test_dns_zone_resource_id_2",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
                     ],
                 )
             ),
@@ -7751,7 +7752,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             ingress_profile=self.models.ManagedClusterIngressProfile(
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
-                    enabled=True, dns_zone_resource_ids=["test_dns_zone_resource_id_2"]
+                    enabled=True, dns_zone_resource_ids=["/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com"]
                 )
             ),
         )
@@ -7762,7 +7763,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "dns_zone_resource_ids": "test_dns_zone_resource_id_3,test_dns_zone_resource_id_4",
+                "dns_zone_resource_ids": "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/privateDnsZones/testdnszone_3.com,/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/privateDnsZones/testdnszone_4.com",
                 "update_dns_zone": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
@@ -7773,8 +7774,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
                     dns_zone_resource_ids=[
-                        "test_dns_zone_resource_id_1",
-                        "test_dns_zone_resource_id_2",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
                     ],
                 )
             ),
@@ -7788,8 +7789,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
                     dns_zone_resource_ids=[
-                        "test_dns_zone_resource_id_3",
-                        "test_dns_zone_resource_id_4",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/privateDnsZones/testdnszone_3.com",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/privateDnsZones/testdnszone_4.com",
                     ],
                 )
             ),
@@ -7809,8 +7810,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
                     dns_zone_resource_ids=[
-                        "test_dns_zone_resource_id_1",
-                        "test_dns_zone_resource_id_2",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
                     ],
                 )
             ),
@@ -7823,8 +7824,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
                     dns_zone_resource_ids=[
-                        "test_dns_zone_resource_id_1",
-                        "test_dns_zone_resource_id_2",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
                     ],
                 )
             ),
