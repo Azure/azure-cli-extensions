@@ -58,6 +58,7 @@ class Create(AAZCommand):
         _args_schema.body = AAZStrArg(
             options=["--body"],
             help="Body of the communication.",
+            required=True,
         )
         _args_schema.sender = AAZStrArg(
             options=["--sender"],
@@ -66,6 +67,7 @@ class Create(AAZCommand):
         _args_schema.subject = AAZStrArg(
             options=["--subject"],
             help="Subject of the communication.",
+            required=True,
         )
         return cls._args_schema
 
