@@ -14,6 +14,7 @@ Pending
 * Vendor new SDK and bump API version to 2023-11-02-preview.
 * Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
 * Add `az aks nodepool delete-machines` command.
+* Update `az aks approuting zone` command to support private dns zones.
 
 1.0.0b5
 +++++++
