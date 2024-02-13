@@ -99,11 +99,11 @@ def upload_file(
 
     content = get_file_content(file_path)
 
-    file_size = len(content)
+    file_size = int(len(content))
     validate_file_size(file_size)
 
-    chunk_size = min(max_chunk_size, file_size)
-    number_of_chunks = math.ceil(file_size / chunk_size)
+    chunk_size = int(min(max_chunk_size, file_size))
+    number_of_chunks = int(math.ceil(file_size / chunk_size))
 
     if is_subscription_scenerio and subscription_id is not None:
         create_input = {

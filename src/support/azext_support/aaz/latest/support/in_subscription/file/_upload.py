@@ -42,13 +42,11 @@ class Upload(AAZCommand):
             options=["--file-name"],
             help="File Name",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.file_workspace_name = AAZStrArg(
             options=["--file-workspace-name"],
             help="File WorkspaceName",
             required=True,
-            id_part="name",
         )
 
         # define Arg Group "UploadFile"

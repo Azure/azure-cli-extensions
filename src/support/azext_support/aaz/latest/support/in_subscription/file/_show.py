@@ -51,13 +51,11 @@ class Show(AAZCommand):
             options=["--file-name"],
             help="File Name",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.file_workspace_name = AAZStrArg(
             options=["--file-workspace-name"],
             help="File Workspace Name",
             required=True,
-            id_part="name",
         )
         return cls._args_schema
 
