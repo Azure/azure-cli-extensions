@@ -323,8 +323,8 @@ def create_update_run(cmd,
 
     if upgrade_type in UPGRADE_TYPE_ERROR_MESSAGES:
         if (
-            ((upgrade_type == "Full" or upgrade_type == "ControlPlaneOnly") and kubernetes_version is None) or
-            (upgrade_type == "NodeImageOnly" and kubernetes_version is not None)
+            ((upgrade_type == UPGRADE_TYPE_FULL or upgrade_type == UPGRADE_TYPE_CONTROLPLANEONLY) and kubernetes_version is None) or
+            (upgrade_type == UPGRADE_TYPE_NODEIMAGEONLY and kubernetes_version is not None)
         ):
             raise CLIError(UPGRADE_TYPE_ERROR_MESSAGES[upgrade_type])
     else:
