@@ -433,8 +433,11 @@ class FileWorkspaceCreateSubscription(_CreateFileWorkspace):
 
 
 def upload_files_no_subscription(cmd, file_path, file_workspace_name):
-    from .aaz.latest.support.no_subscription.file import Create
-    from .aaz.latest.support.no_subscription.file import Upload
+    
+    from .aaz.latest.support.no_subscription.file import (
+        Create as Create,
+        Upload as Upload,
+    )
 
     upload_file(cmd, file_path, file_workspace_name, False, Create, Upload)
 
@@ -442,9 +445,10 @@ def upload_files_no_subscription(cmd, file_path, file_workspace_name):
 def upload_files_in_subscription(
     cmd, file_path, file_workspace_name, subscription_id=None
 ):
-    from .aaz.latest.support.in_subscription.file import Create as Create_Sub
-    from .aaz.latest.support.in_subscription.file import Upload as Upload_Sub
-
+    from .aaz.latest.support.in_subscription.file import (
+		Create as Create_Sub,
+		Upload as Upload_Sub,
+	)
     upload_file(
         cmd,
         file_path,

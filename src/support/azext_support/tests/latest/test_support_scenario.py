@@ -442,10 +442,29 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(rsp["type"] == "Microsoft.Support/chatTranscripts")
         self.assertTrue("name" in rsp)
         self.assertTrue(rsp["name"] == test_chat_transcript_name)
- 
+
     def test_support_file_attachment_no_subscription(self):
         # Create File workspace
-        file_workspace_name = self.create_random_name(prefix='cli', length=20)
+        file_workspace_name = self.create_random_name(prefix='no_sub_', length=20)
+
+        self._validate_create_file_workspace_no_subscription(file_workspace_name)
+
+        # Show File workspace
+        self._validate_show_file_workspace_no_subscription(file_workspace_name)
+
+        # Upload File
+        file_name = "testFile.txt"
+        file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), file_name)
+        file_path = file_path.replace('\\','\\\\')
+        self._validate_upload_file_no_subscription(file_workspace_name, file_path)
+
+        # List File 
+        self._validate_list_file_attachment_no_subscription(file_workspace_name)
+
+        # Show File
+        self._validate_show_file_no_subscription(file_workspace_name, file_name)
+
+    def _validate_create_file_workspace_no_subscription(self, file_workspace_name):
         create_file_workspace_result = self.cmd('support no-subscription file-workspace create --file-workspace-name ' + file_workspace_name).get_output_in_json()
         self.assertTrue(create_file_workspace_result is not None)
         self.assertTrue("type" in create_file_workspace_result)
@@ -457,7 +476,7 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue("createdOn" in create_file_workspace_result)
         self.assertTrue("expirationTime" in create_file_workspace_result)
 
-        # Show File workspace
+    def _validate_show_file_workspace_no_subscription(self, file_workspace_name):
         show_file_workspace_result = self.cmd('support no-subscription file-workspace show --file-workspace-name ' + file_workspace_name).get_output_in_json()
         self.assertTrue(show_file_workspace_result is not None)
         self.assertTrue("type" in show_file_workspace_result)
@@ -469,13 +488,10 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue("createdOn" in show_file_workspace_result)
         self.assertTrue("expirationTime" in show_file_workspace_result)
 
-        # Upload File
-        file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testFile.txt")
-        file_path = file_path.replace('\\','\\\\')
-
+    def _validate_upload_file_no_subscription(self, file_workspace_name, file_path):
         upload_file_result = self.cmd('support no-subscription file upload --file-workspace-name ' + file_workspace_name + ' --file-path ' + file_path)
 
-        # List File 
+    def _validate_list_file_attachment_no_subscription(self, file_workspace_name):
         list_file_attachment_result = self.cmd('support no-subscription file list --file-workspace-name ' + file_workspace_name).get_output_in_json()
         self.assertTrue(list_file_attachment_result is not None)
         self.assertTrue(len(list_file_attachment_result) >= 1)
@@ -491,9 +507,8 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(list_file_attachment_result[0]["fileSize"] <= 1024 * 1024 * 5.0)
         self.assertTrue(list_file_attachment_result[0]["numberOfChunks"] <= 2.0)
 
-        # Show File
-        show_file_result = self.cmd('support no-subscription file show --file-workspace-name ' + file_workspace_name + ' --file-name ' +
-        list_file_attachment_result[0]["name"]).get_output_in_json()
+    def _validate_show_file_no_subscription(self, file_workspace_name, file_name):
+        show_file_result = self.cmd('support no-subscription file show --file-workspace-name ' + file_workspace_name + ' --file-name ' + file_name).get_output_in_json()
         self.assertTrue(show_file_result is not None)
         self.assertTrue("type" in show_file_result)
         self.assertTrue(show_file_result["type"] == "Microsoft.Support/files")
@@ -506,15 +521,53 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(show_file_result["chunkSize"] <= 1024 * 1024 * 2.5)
         self.assertTrue(show_file_result["fileSize"] <= 1024 * 1024 * 5.0)
         self.assertTrue(show_file_result["numberOfChunks"] <= 2.0)
-    
+
     def test_support_file_attachment_in_subscription(self):
         #this tests the scenario where the user inputs the subscription that is different from the account subscription
+        #CLI subscription scenario
+        # Retrieve subscription ID
+        subscription = get_subscription_id(self.cli_ctx)  
 
-        #get subscription 
-        subscription = get_subscription_id(self.cli_ctx)
-       
         # Create File workspace
-        file_workspace_name = self.create_random_name(prefix='cli', length=20)
+        file_workspace_name_cli = self.create_random_name(prefix='in_sub_cli_', length=20)      
+        self._validate_create_file_workspace_cli_in_subscription(file_workspace_name_cli, subscription)
+
+        # Show File workspace
+        self._validate_show_file_workspace_cli_in_subscription(file_workspace_name_cli, subscription)
+
+        # Upload File
+        file_name = "testFile.txt"
+        file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), file_name)
+        file_path = file_path.replace('\\','\\\\')
+        self._validate_upload_file_cli_in_subscription(file_workspace_name_cli, file_path, subscription)
+
+        # List File 
+        self._validate_list_file_cli_in_subscription(file_workspace_name_cli, subscription)
+
+        # Show File
+        self._validate_show_file_cli_in_subscription(file_workspace_name_cli, file_name, subscription)
+                
+        #this tests the scenario where the user does not input the subscription since it is the same as the account subscription
+        #In Account subscription scenario
+        
+        # Create File workspace
+        file_workspace_name_for_account = self.create_random_name(prefix='in_sub_account_', length=20)
+
+        self._validate_create_file_workspace_account_in_subscription(file_workspace_name_for_account)
+
+        # Show File workspace
+        self._validate_show_file_workspace_account_in_subscription(file_workspace_name_for_account)
+
+        # Upload File
+        self._validate_upload_file_account_in_subscription(file_workspace_name_for_account, file_path)
+
+        # List File 
+        self._validate_list_file_account_in_subscription(file_workspace_name_for_account)
+
+        # Show File
+        self._validate_show_file_account_in_subscription(file_workspace_name_for_account, file_name)
+
+    def _validate_create_file_workspace_cli_in_subscription(self, file_workspace_name, subscription):
         create_file_workspace_result = self.cmd('support in-subscription file-workspace create --file-workspace-name ' + file_workspace_name + ' --subscription ' + subscription).get_output_in_json()
         self.assertTrue(create_file_workspace_result is not None)
         self.assertTrue("type" in create_file_workspace_result)
@@ -525,8 +578,8 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(("/subscriptions/"+subscription+"/providers/Microsoft.Support/fileWorkspaces/" + file_workspace_name) == create_file_workspace_result["id"])
         self.assertTrue("createdOn" in create_file_workspace_result)
         self.assertTrue("expirationTime" in create_file_workspace_result)
-        
-        # Show File workspace
+
+    def _validate_show_file_workspace_cli_in_subscription(self, file_workspace_name, subscription):
         show_file_workspace_result = self.cmd('support in-subscription file-workspace show --file-workspace-name ' + file_workspace_name + ' --subscription ' + subscription).get_output_in_json()
         self.assertTrue(show_file_workspace_result is not None)
         self.assertTrue("type" in show_file_workspace_result)
@@ -537,13 +590,11 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(("/subscriptions/"+subscription+"/providers/Microsoft.Support/fileWorkspaces/" + file_workspace_name) == show_file_workspace_result["id"])
         self.assertTrue("createdOn" in show_file_workspace_result)
         self.assertTrue("expirationTime" in show_file_workspace_result)
-       
-        # Upload File
-        file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testFile.txt")
-        file_path = file_path.replace('\\','\\\\')
+
+    def _validate_upload_file_cli_in_subscription(self, file_workspace_name, file_path, subscription):
         upload_file_result = self.cmd('support in-subscription file upload --file-workspace-name ' + file_workspace_name + ' --file-path ' + file_path + ' --subscription ' + subscription)
-        
-        # List File 
+
+    def _validate_list_file_cli_in_subscription(self, file_workspace_name, subscription):
         list_file_attachment_result = self.cmd('support in-subscription file list --file-workspace-name ' + file_workspace_name + ' --subscription ' + subscription).get_output_in_json()
         self.assertTrue(list_file_attachment_result is not None)
         self.assertTrue(len(list_file_attachment_result) >= 1)
@@ -559,9 +610,9 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(list_file_attachment_result[0]["fileSize"] <= 1024 * 1024 * 5.0)
         self.assertTrue(list_file_attachment_result[0]["numberOfChunks"] <= 2.0)
 
-        # Show File
+    def _validate_show_file_cli_in_subscription(self, file_workspace_name, file_name, subscription):
         show_file_result = self.cmd('support in-subscription file show --file-workspace-name ' + file_workspace_name + ' --file-name ' +
-        list_file_attachment_result[0]["name"] + ' --subscription ' + subscription).get_output_in_json()
+        file_name + ' --subscription ' + subscription).get_output_in_json()
         self.assertTrue(show_file_result is not None)
         self.assertTrue("type" in show_file_result)
         self.assertTrue(show_file_result["type"] == "Microsoft.Support/files")
@@ -575,9 +626,7 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(show_file_result["fileSize"] <= 1024 * 1024 * 5.0)
         self.assertTrue(show_file_result["numberOfChunks"] <= 2.0)
 
-        #this tests the scenario where the user does not input the subscription since it is the same as the account subscription
-       
-        # Create File workspace
+    def _validate_create_file_workspace_account_in_subscription(self, file_workspace_name):
         file_workspace_name = self.create_random_name(prefix='cli', length=20)
         create_file_workspace_result = self.cmd('support in-subscription file-workspace create --file-workspace-name ' + file_workspace_name).get_output_in_json()
         self.assertTrue(create_file_workspace_result is not None)
@@ -589,8 +638,8 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(("/providers/Microsoft.Support/fileWorkspaces/" + file_workspace_name) in create_file_workspace_result["id"])
         self.assertTrue("createdOn" in create_file_workspace_result)
         self.assertTrue("expirationTime" in create_file_workspace_result)
-       
-        # Show File workspace
+
+    def _validate_show_file_workspace_account_in_subscription(self, file_workspace_name):
         show_file_workspace_result = self.cmd('support in-subscription file-workspace show --file-workspace-name ' + file_workspace_name).get_output_in_json()
         self.assertTrue(show_file_workspace_result is not None)
         self.assertTrue("type" in show_file_workspace_result)
@@ -601,13 +650,13 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(("/providers/Microsoft.Support/fileWorkspaces/" + file_workspace_name) in show_file_workspace_result["id"])
         self.assertTrue("createdOn" in show_file_workspace_result)
         self.assertTrue("expirationTime" in show_file_workspace_result)
-       
-        # Upload File
+
+    def _validate_upload_file_account_in_subscription(self, file_workspace_name, file_path):
         file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testFile.txt")
         file_path = file_path.replace('\\','\\\\')
         upload_file_result = self.cmd('support in-subscription file upload --file-workspace-name ' + file_workspace_name + ' --file-path ' + file_path)
-        
-        # List File 
+     
+    def _validate_list_file_account_in_subscription(self, file_workspace_name):
         list_file_attachment_result = self.cmd('support in-subscription file list --file-workspace-name ' + file_workspace_name).get_output_in_json()
         self.assertTrue(list_file_attachment_result is not None)
         self.assertTrue(len(list_file_attachment_result) >= 1)
@@ -622,10 +671,10 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(list_file_attachment_result[0]["chunkSize"] <= 1024 * 1024 * 2.5)
         self.assertTrue(list_file_attachment_result[0]["fileSize"] <= 1024 * 1024 * 5.0)
         self.assertTrue(list_file_attachment_result[0]["numberOfChunks"] <= 2.0)
-       
-        # Show File
+
+    def _validate_show_file_account_in_subscription(self, file_workspace_name, file_name):
         show_file_result = self.cmd('support in-subscription file show --file-workspace-name ' + file_workspace_name + ' --file-name ' +
-        list_file_attachment_result[0]["name"]).get_output_in_json()
+        file_name).get_output_in_json()
         self.assertTrue(show_file_result is not None)
         self.assertTrue("type" in show_file_result)
         self.assertTrue(show_file_result["type"] == "Microsoft.Support/files")
@@ -638,3 +687,6 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(show_file_result["chunkSize"] <= 1024 * 1024 * 2.5)
         self.assertTrue(show_file_result["fileSize"] <= 1024 * 1024 * 5.0)
         self.assertTrue(show_file_result["numberOfChunks"] <= 2.0)
+
+        
+
