@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, too-many-statements
 
 import argparse
 
@@ -9,57 +10,19 @@ from knack.log import get_logger
 from knack.util import CLIError
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
-    Location,
-    DatabaseRestoreResource
+    DatabaseRestoreResource,
+    GremlinDatabaseRestoreResource,
+    CosmosCassandraDataTransferDataSourceSink,
+    CosmosMongoDataTransferDataSourceSink,
+    CosmosSqlDataTransferDataSourceSink,
+    PhysicalPartitionThroughputInfoResource,
+    PhysicalPartitionId
 )
 
 logger = get_logger(__name__)
 
 
 # pylint: disable=protected-access, too-few-public-methods
-class CreateLocation(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string=None):
-        if namespace.locations is None:
-            namespace._deprecated_location_format = False
-            namespace.locations = []
-
-        if any("regionname" in s.lower() for s in values):
-            keys_found = set()
-            _name = ""
-            _failover = 0
-            _is_zr = False
-            for item in values:
-                kvp = item.split('=', 1)
-                _key = kvp[0].lower()
-                if _key in keys_found:
-                    raise CLIError('usage error: --locations [KEY=VALUE ...]')
-                keys_found.add(_key)
-                if _key == "regionname":
-                    _name = kvp[1]
-                elif _key == "failoverpriority":
-                    _failover = int(kvp[1])
-                elif _key == "iszoneredundant":
-                    _is_zr = kvp[1].lower() == "true"
-                else:
-                    raise CLIError('usage error: --locations [KEY=VALUE ...]')
-            namespace.locations.append(
-                Location(location_name=_name,
-                         failover_priority=_failover,
-                         is_zone_redundant=_is_zr))
-        else:
-            # pylint: disable=line-too-long
-            if not namespace._deprecated_location_format:
-                logger.warning('The regionName=failoverPriority method of specifying locations is deprecated. Use --locations KEY=VALUE [KEY=VALUE ...] to specify the regionName, failoverPriority, and isZoneRedundant properties of the location. Multiple locations can be specified by including more than one --locations argument.')
-            namespace._deprecated_location_format = True
-
-            for item in values:
-                comps = item.split('=', 1)
-                namespace.locations.append(
-                    Location(location_name=comps[0],
-                             failover_priority=int(comps[1]),
-                             is_zone_redundant=False))
-
-
 class CreateDatabaseRestoreResource(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         if namespace.databases_to_restore is None:
@@ -93,30 +56,214 @@ class CreateDatabaseRestoreResource(argparse._AppendAction):
         namespace.databases_to_restore.append(database_restore_resource)
 
 
-class UtcDatetimeAction(argparse.Action):
+# pylint: disable=protected-access, too-few-public-methods
+class CreateGremlinDatabaseRestoreResource(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
-        """ Parse a date value and return the ISO8601 string. """
-        import dateutil.parser
-        import dateutil.tz
+        if namespace.gremlin_databases_to_restore is None:
+            namespace.gremlin_databases_to_restore = []
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError('usage error: --gremlin-databases-to-restore [name=DatabaseName graphs=Graph1 Graph2 ...]')
+        gremlin_database_restore_resource = GremlinDatabaseRestoreResource()
+        i = 0
+        for item in values:
+            if i == 0:
+                kvp = item.split('=', 1)
+                if len(kvp) != 2 or kvp[0].lower() != 'name':
+                    # pylint: disable=line-too-long
+                    raise CLIError('usage error: --gremlin-databases-to-restore [name=DatabaseName graphs=Graph1 Graph2 ...]')
+                database_name = kvp[1]
+                gremlin_database_restore_resource.database_name = database_name
+            elif i == 1:
+                kvp = item.split('=', 1)
+                if len(kvp) != 2 or kvp[0].lower() != 'graphs':
+                    # pylint: disable=line-too-long
+                    raise CLIError('usage error: --databases-to-restore [name=DatabaseName graphs=Graph1 Graph2 ...]')
+                gremlin_database_restore_resource.graph_names = []
+                graph_name = kvp[1]
+                gremlin_database_restore_resource.graph_names.append(graph_name)
+            else:
+                if gremlin_database_restore_resource.graph_names is None:
+                    gremlin_database_restore_resource.graph_names = []
+                gremlin_database_restore_resource.graph_names.append(item)
+            i += 1
+        namespace.gremlin_databases_to_restore.append(gremlin_database_restore_resource)
 
-        accepted_formats = []
-        accepted_formats.append('date (yyyy-mm-dd)')
-        accepted_formats.append('time (hh:mm:ss.xxxxx)')
-        accepted_formats.append('timezone (+/-hh:mm)')
-        help_string = 'Format: ' + ' '.join(accepted_formats)
-        value_string = ''.join(values)
-        dt_val = None
-        try:
-            # attempt to parse ISO 8601
-            dt_val = dateutil.parser.parse(value_string)
-        except ValueError:
-            pass
 
-        if not dt_val:
-            raise CLIError("Unable to parse: '{}'. Expected format: {}".format(value_string, help_string))
+# pylint: disable=protected-access, too-few-public-methods
+class CreateTableRestoreResource(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if namespace.tables_to_restore is None:
+            namespace.tables_to_restore = []
 
-        if not dt_val.tzinfo:
-            dt_val = dt_val.replace(tzinfo=dateutil.tz.tzutc())
+        for item in values:
+            namespace.tables_to_restore.append(item)
 
-        iso_string = dt_val.isoformat()
-        setattr(namespace, self.dest, iso_string)
+
+class AddCassandraTableAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
+
+        keyspace_name = None
+        table_name = None
+
+        for (k, v) in (x.split('=', 1) for x in values):
+            kl = k.lower()
+            if kl == 'keyspace':
+                keyspace_name = v
+
+            elif kl == 'table':
+                table_name = v
+
+            else:
+                raise CLIError(
+                    f'Unsupported Key {k} is provided for {option_string} component. All'
+                    ' possible keys are: keyspace, table'
+                )
+
+        if keyspace_name is None:
+            raise CLIError(f'usage error: missing key keyspace in {option_string} component')
+
+        if table_name is None:
+            raise CLIError(f'usage error: missing key table in {option_string} component')
+
+        cassandra_table = CosmosCassandraDataTransferDataSourceSink(keyspace_name=keyspace_name, table_name=table_name)
+
+        if option_string == "--source-cassandra-table":
+            namespace.source_cassandra_table = cassandra_table
+        elif option_string == "--dest-cassandra-table":
+            namespace.dest_cassandra_table = cassandra_table
+        elif option_string == "--src-cassandra":
+            namespace.src_cassandra = cassandra_table
+        elif option_string == "--dest-cassandra":
+            namespace.dest_cassandra = cassandra_table
+        else:
+            namespace.cassandra_table = cassandra_table
+
+
+class AddMongoCollectionAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
+
+        database_name = None
+        collection_name = None
+
+        for (k, v) in (x.split('=', 1) for x in values):
+            kl = k.lower()
+            if kl == 'database':
+                database_name = v
+
+            elif kl == 'collection':
+                collection_name = v
+
+            else:
+                raise CLIError(
+                    f'Unsupported Key {k} is provided for {option_string} component. All'
+                    ' possible keys are: database, collection'
+                )
+
+        if database_name is None:
+            raise CLIError(f'usage error: missing key database in {option_string} component')
+
+        if collection_name is None:
+            raise CLIError(f'usage error: missing key table in {option_string} component')
+
+        mongo_collection = CosmosMongoDataTransferDataSourceSink(database_name=database_name, collection_name=collection_name)
+
+        if option_string == "--source-mongo":
+            namespace.source_mongo = mongo_collection
+        elif option_string == "--dest-mongo":
+            namespace.dest_mongo = mongo_collection
+        elif option_string == "--src-mongo":
+            namespace.src_mongo = mongo_collection
+        else:
+            namespace.mongo_collection = mongo_collection
+
+
+class AddSqlContainerAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
+
+        database_name = None
+        container_name = None
+
+        for (k, v) in (x.split('=', 1) for x in values):
+            kl = k.lower()
+            if kl == 'database':
+                database_name = v
+
+            elif kl == 'container':
+                container_name = v
+
+            else:
+                raise CLIError(
+                    f'Unsupported Key {k} is provided for {option_string} component. All'
+                    ' possible keys are: database, container'
+                )
+
+        if database_name is None:
+            raise CLIError(f'usage error: missing key database in {option_string} component')
+
+        if container_name is None:
+            raise CLIError(f'usage error: missing key container in {option_string} component')
+
+        nosql_container = CosmosSqlDataTransferDataSourceSink(database_name=database_name, container_name=container_name)
+
+        if option_string == "--source-sql-container":
+            namespace.source_sql_container = nosql_container
+        elif option_string == "--dest-sql-container":
+            namespace.dest_sql_container = nosql_container
+        elif option_string == "--src-nosql":
+            namespace.src_nosql = nosql_container
+        elif option_string == "--dest-nosql":
+            namespace.dest_nosql = nosql_container
+        else:
+            namespace.sql_container = nosql_container
+
+
+# pylint: disable=protected-access, too-few-public-methods
+class CreateTargetPhysicalPartitionThroughputInfoAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if namespace.target_partition_info is None:
+            namespace.target_partition_info = []
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError('usage error: --target-partition-info [PhysicalPartitionId1=Throughput1 PhysicalPartitionId2=Throughput2 ...]')
+        for item in values:
+            kvp = item.split('=', 1)
+            if len(kvp) != 2:
+                raise CLIError('usage error: --target-partition-info [PhysicalPartitionId1=Throughput1 PhysicalPartitionId2=Throughput2 ...]')
+            namespace.target_partition_info.append(
+                PhysicalPartitionThroughputInfoResource(id=kvp[0], throughput=kvp[1]))
+
+
+# pylint: disable=protected-access, too-few-public-methods
+class CreateSourcePhysicalPartitionThroughputInfoAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if namespace.source_partition_info is None:
+            namespace.source_partition_info = []
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError('usage error: --source-partition-info [PhysicalPartitionId1 PhysicalPartitionId2 ...]')
+        for item in values:
+            namespace.source_partition_info.append(
+                PhysicalPartitionThroughputInfoResource(id=item, throughput=0))
+
+
+# pylint: disable=protected-access, too-few-public-methods
+class CreatePhysicalPartitionIdListAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if namespace.physical_partition_ids is None:
+            namespace.physical_partition_ids = []
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError('usage error: --physical-partition-ids [PhysicalPartitionId1 PhysicalPartitionId2 ...]')
+        for item in values:
+            namespace.physical_partition_ids.append(
+                PhysicalPartitionId(id=item))

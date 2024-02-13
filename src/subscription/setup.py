@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.4"
+VERSION = "0.1.5"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -34,7 +34,7 @@ setup(
     license='MIT',
     author='Wilco Bauwer',
     author_email='wilcob@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/subscription',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/subscription',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES,

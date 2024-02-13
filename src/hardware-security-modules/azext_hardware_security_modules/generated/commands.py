@@ -7,26 +7,40 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=too-many-statements
+# pylint: disable=too-many-locals
+# pylint: disable=bad-continuation
+# pylint: disable=line-too-long
 
 from azure.cli.core.commands import CliCommandType
+from azext_hardware_security_modules.generated._client_factory import cf_dedicated_hsm
+
+
+hardware_security_modules_dedicated_hsm = CliCommandType(
+    operations_tmpl='azext_hardware_security_modules.vendored_sdks.hardwaresecuritymodules.operations._dedicated_hsm_operations#DedicatedHsmOperations.{}',
+    client_factory=cf_dedicated_hsm,
+)
 
 
 def load_command_table(self, _):
 
-    from azext_hardware_security_modules.generated._client_factory import cf_dedicated_hsm
-    hardwaresecuritymodules_dedicated_hsm = CliCommandType(
-        operations_tmpl='azext_hardware_security_modules.vendored_sdks.hardwaresecuritymodules.operations._dedicated_hsm_'
-        'operations#DedicatedHsmOperations.{}',
-        client_factory=cf_dedicated_hsm)
-    with self.command_group('dedicated-hsm', hardwaresecuritymodules_dedicated_hsm,
-                            client_factory=cf_dedicated_hsm, is_experimental=True) as g:
-        g.custom_command('list', 'hardwaresecuritymodules_dedicated_hsm_list')
-        g.custom_show_command(
-            'show', 'hardwaresecuritymodules_dedicated_hsm_show')
+    with self.command_group(
+        'dedicated-hsm',
+        hardware_security_modules_dedicated_hsm,
+        client_factory=cf_dedicated_hsm,
+    ) as g:
+        g.custom_command('list', 'hardware_security_modules_dedicated_hsm_list')
+        g.custom_show_command('show', 'hardware_security_modules_dedicated_hsm_show')
+        g.custom_command('create', 'hardware_security_modules_dedicated_hsm_create', supports_no_wait=True)
+        g.custom_command('update', 'hardware_security_modules_dedicated_hsm_update', supports_no_wait=True)
         g.custom_command(
-            'create', 'hardwaresecuritymodules_dedicated_hsm_create', supports_no_wait=True)
+            'delete', 'hardware_security_modules_dedicated_hsm_delete', supports_no_wait=True, confirmation=True
+        )
         g.custom_command(
-            'update', 'hardwaresecuritymodules_dedicated_hsm_update', supports_no_wait=True)
-        g.custom_command('delete', 'hardwaresecuritymodules_dedicated_hsm_delete',
-                         supports_no_wait=True, confirmation=True)
-        g.wait_command('wait')
+            'list-outbound-network-dependency-endpoint',
+            'hardware_security_modules_dedicated_hsm_list_outbound_network_dependency_endpoint',
+        )
+        g.custom_wait_command('wait', 'hardware_security_modules_dedicated_hsm_show')
+
+    with self.command_group('hardware-security-modules', is_experimental=True):
+        pass

@@ -1,0 +1,594 @@
+interactions:
+- request:
+    body: '{"extendedLocation": {"name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc",
+      "type": "CustomLocation"}, "location": "eastus", "properties": {"interfaceName":
+      "eth0", "isolationDomainIds": ["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],
+      "vlans": [1004]}, "tags": {"tag1": "tag1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud trunkednetwork create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '489'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --extended-location --location --interface-name --isolation-domain-ids
+        --vlans --tags --resource-group --debug
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:52:32.6304464Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:52:32.6304464Z"},"properties":{"provisioningState":"Accepted","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004]}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '992'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Jun 2023 20:52:33 GMT
+      etag:
+      - '"3b041e44-0000-0100-0000-649363110000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 076f17cd-a2c3-450f-9218-63e9e5d689b6
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud trunkednetwork create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --extended-location --location --interface-name --isolation-domain-ids
+        --vlans --tags --resource-group --debug
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","name":"a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Accepted","startTime":"2023-06-21T20:52:32.858661Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '574'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Jun 2023 20:52:34 GMT
+      etag:
+      - '"e1025079-0000-0100-0000-649363100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud trunkednetwork create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --extended-location --location --interface-name --isolation-domain-ids
+        --vlans --tags --resource-group --debug
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","name":"a4a97291-355c-4ce2-9403-cf3d79beb170*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Succeeded","startTime":"2023-06-21T20:52:32.858661Z","endTime":"2023-06-21T20:52:40.0698771Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Jun 2023 20:53:03 GMT
+      etag:
+      - '"e1025579-0000-0100-0000-649363180000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud trunkednetwork create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --extended-location --location --interface-name --isolation-domain-ids
+        --vlans --tags --resource-group --debug
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:52:32.6304464Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T20:52:41.7742206Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004],"hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Jun 2023 20:53:04 GMT
+      etag:
+      - '"3b042744-0000-0100-0000-649363190000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"tag1": "tag1", "tag2": "tag2update"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud trunkednetwork update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '48'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:52:32.6304464Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:53:06.2648017Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004],"hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1373'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Jun 2023 20:53:06 GMT
+      etag:
+      - '"3b043b44-0000-0100-0000-649363320000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud trunkednetwork show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:52:32.6304464Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:53:06.2648017Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004],"hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1373'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Jun 2023 20:53:07 GMT
+      etag:
+      - '"3b043b44-0000-0100-0000-649363320000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud trunkednetwork list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/trunkedNetworks?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/trunkedNetworks/trunkedNetworkName","name":"trunkedNetworkName","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T20:43:42.0125373Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T20:43:48.9668812Z"},"properties":{"provisioningState":"Failed","hybridAksPluginType":"DPDK","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004],"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j25-cluster/providers/Microsoft.NetworkCloud/trunkedNetworks/trunk-530-535","name":"trunk-530-535","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j25-77c882e61c36-hostedresources-516cffcc/providers/microsoft.extendedlocation/customlocations/j25-77c882e61c36-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"trunkednetwork","ManagedBy":"nc-labs","LabEnvironment":"j25","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-06-18T20:42:02.7125551Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-18T20:42:11.6163832Z"},"properties":{"provisioningState":"Succeeded","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j25-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j25-l3domain-2"],"interfaceName":"trunk--d766a","hybridAksPluginType":"DPDK","vlans":[530,531,532,533,534,535],"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j25-cluster/providers/Microsoft.NetworkCloud/clusters/j25-77c882e61c36","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j17-cluster/providers/Microsoft.NetworkCloud/trunkedNetworks/trunk-530-535","name":"trunk-530-535","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j17-f96136f77dcb-hostedresources-299d1cbf/providers/microsoft.extendedlocation/customlocations/j17-f96136f77dcb-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"trunkednetwork","ManagedBy":"nc-labs","LabEnvironment":"j17","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-06-19T15:33:22.5148814Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-19T15:33:30.0157024Z"},"properties":{"provisioningState":"Succeeded","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j17-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j17-l3domain-2"],"interfaceName":"trunk--3651b","hybridAksPluginType":"DPDK","vlans":[530,531,532,533,534,535],"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j17-cluster/providers/Microsoft.NetworkCloud/clusters/j17-f96136f77dcb","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/trunkedNetworks/trunk-530-535","name":"trunk-530-535","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-487bb720ddfb-hostedresources-25e56565/providers/microsoft.extendedlocation/customlocations/m16-1-487bb720ddfb-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"trunkednetwork","ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-06-20T09:11:02.9148273Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-20T09:11:41.6057177Z"},"properties":{"provisioningState":"Succeeded","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/m16-1-l3domain-2"],"hybridAksPluginType":"DPDK","vlans":[530,531,532,533,534,535],"associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","interfaceName":"trunk--8f23d","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-487bb720ddfb"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:52:32.6304464Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:53:06.2648017Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004],"hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/trunkedNetworks/rg5trunk1","name":"rg5trunk1","type":"microsoft.networkcloud/trunkednetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-427177bf/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-04-21T17:21:19.9896443Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T17:22:56.1359986Z"},"properties":{"provisioningState":"Failed","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkFabric/IsolationDomains/isodomain-55"],"interfaceName":"rg3trunk528","hybridAksPluginType":"DPDK","vlans":[544]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/trunkedNetworks/trunk-530-535","name":"trunk-530-535","type":"microsoft.networkcloud/trunkednetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"trunkednetwork","ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-05-02T06:59:33.928901Z","lastModifiedBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T16:24:47.2099445Z"},"properties":{"provisioningState":"Failed","hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/mm2-test-haks","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/mm6-test-haks"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-2"],"hybridAksPluginType":"DPDK","vlans":[530,531,532,533,534,535],"associatedResourceIds":[]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/trunkedNetworks/trunk-502-507","name":"trunk-502-507","type":"microsoft.networkcloud/trunkednetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceType":"trunkedNetwork"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-02T17:29:17.3884708Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-02T22:34:44.3180865Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"trunk-502-5","isolationDomainIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-1"],"vlans":[502,503,504,505,506,507],"hybridAksPluginType":"SRIOV","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","detailedStatusMessage":"all
+        resource creation succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12730'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Jun 2023 20:53:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 93c6e42a-ca66-4152-83da-39846639a150
+      - da2194b5-4fd9-497e-beca-f0d4dc7f5af5
+      - 7629d87e-bb10-4794-a202-5a83be27f696
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud trunkednetwork list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","name":"cli-test-trunkednw-000001","type":"microsoft.networkcloud/trunkednetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:52:32.6304464Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:53:06.2648017Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","isolationDomainIds":["/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain2"],"vlans":[1004],"hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1385'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Jun 2023 20:53:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 746a3359-55b1-436d-a333-68d82a0d8db1
+      - e5065e9f-32a7-461e-8382-46ebe4e6b299
+      - 3dafff3f-0336-484c-9ee6-05f7b2a3a3e6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud trunkednetwork delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001?api-version=2023-10-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Jun 2023 20:53:10 GMT
+      etag:
+      - '"3b043f44-0000-0100-0000-649363370000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+      mise-correlation-id:
+      - e886ab4d-8959-41cc-b1b8-f3969b7b213b
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud trunkednetwork delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","name":"3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Deleting","startTime":"2023-06-21T20:53:10.8863968Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '575'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Jun 2023 20:53:10 GMT
+      etag:
+      - '"e1026079-0000-0100-0000-649363360000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud trunkednetwork delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","name":"3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Succeeded","startTime":"2023-06-21T20:53:10.8863968Z","endTime":"2023-06-21T20:53:17.6600691Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '635'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Jun 2023 20:53:41 GMT
+      etag:
+      - '"e1026679-0000-0100-0000-6493633d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud trunkednetwork delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","name":"3e1a427c-82c3-46ee-97f5-9caab0cf0abd*AB4291D250BFE2EFE39FFEB82CC12D5ECA6F94E11D681A9E56A1F86A425DEAAC","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/trunkedNetworks/cli-test-trunkednw-000001","status":"Succeeded","startTime":"2023-06-21T20:53:10.8863968Z","endTime":"2023-06-21T20:53:17.6600691Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '635'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Jun 2023 20:53:41 GMT
+      etag:
+      - '"e1026679-0000-0100-0000-6493633d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

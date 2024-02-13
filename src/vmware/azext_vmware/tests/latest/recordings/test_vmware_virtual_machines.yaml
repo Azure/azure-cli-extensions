@@ -1,0 +1,100 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware vm list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --private-cloud --cluster-name
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_virtual_machines000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines?api-version=2023-03-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-209","name":"vm-209","type":"Microsoft.AVS/privateClouds/clusters/virtualMachines","properties":{"displayName":"contoso-vm1","moRefId":"vm-209","folderPath":"vm/folder-1","restrictMovement":"Disabled"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-128","name":"vm-128","type":"Microsoft.AVS/privateClouds/clusters/virtualMachines","properties":{"displayName":"contoso-vm2","moRefId":"vm-128","folderPath":"vm","restrictMovement":"Enabled"}}]}'
+    headers:
+      content-length:
+      - '733'
+      content-type:
+      - application/json
+      date:
+      - Wed, 20 Sep 2023 15:29:19 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware vm show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --private-cloud --cluster-name --virtual-machine
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_virtual_machines000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-209?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-209","name":"vm-209","type":"Microsoft.AVS/privateClouds/clusters/virtualMachines","properties":{"displayName":"contoso-vm","moRefId":"vm-209","folderPath":"vm/folder-1","restrictMovement":"Disabled"}}'
+    headers:
+      content-length:
+      - '364'
+      content-type:
+      - application/json
+      date:
+      - Wed, 20 Sep 2023 15:29:23 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"restrictMovement": "Enabled"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware vm restrict-movement
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '31'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --private-cloud --cluster-name --virtual-machine --restrict-movement
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_virtual_machines000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-209/restrictMovement?api-version=2023-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 20 Sep 2023 15:29:29 GMT
+      server:
+      - Rocket
+    status:
+      code: 202
+      message: Accepted
+version: 1

@@ -12,6 +12,11 @@
 from knack.help_files import helps
 
 
+helps['healthcareapis'] = '''
+    type: group
+    short-summary: Manage Healthcare Apis
+'''
+
 helps['healthcareapis service'] = """
     type: group
     short-summary: healthcareapis service
@@ -58,7 +63,7 @@ helps['healthcareapis service create'] = """
 
             offer-throughput: The provisioned throughput for the backing database.
             key-vault-key-uri: The URI of the customer-managed key for the backing database.
-      - name: --authentication-configuration
+      - name: --authentication-configuration -c
         short-summary: "The authentication configuration for the service instance."
         long-summary: |
             Usage: --authentication-configuration authority=XX audience=XX smart-proxy-enabled=XX
@@ -87,6 +92,16 @@ helps['healthcareapis service create'] = """
 consumer.
 
             Multiple actions can be specified by using more than one --private-endpoint-connections argument.
+      - name: --oci-artifacts
+        short-summary: "The list of Open Container Initiative (OCI) artifacts."
+        long-summary: |
+            Usage: --oci-artifacts login-server=XX image-name=XX digest=XX
+
+            login-server: The Azure Container Registry login server.
+            image-name: The artifact name.
+            digest: The artifact digest.
+
+            Multiple actions can be specified by using more than one --oci-artifacts argument.
     examples:
       - name: Create or Update a service with all parameters
         text: |-
@@ -179,16 +194,39 @@ helps['healthcareapis private-endpoint-connection show'] = """
 helps['healthcareapis private-endpoint-connection create'] = """
     type: command
     short-summary: "Update the state of the specified private endpoint connection associated with the service."
+    parameters:
+      - name: --private-link-service-connection-state -s
+        short-summary: "A collection of information about the state of the connection between service consumer and \
+provider."
+        long-summary: |
+            Usage: --private-link-service-connection-state status=XX description=XX actions-required=XX
+
+            status: Indicates whether the connection has been Approved/Rejected/Removed by the owner of the service.
+            description: The reason for approval/rejection of the connection.
+            actions-required: A message indicating if changes on the service provider require any updates on the \
+consumer.
     examples:
       - name: PrivateEndpointConnection_CreateOrUpdate
         text: |-
-               az healthcareapis private-endpoint-connection create --name "myConnection" --resource-group "rgname" \
+               az healthcareapis private-endpoint-connection create --name "myConnection" \
+--private-link-service-connection-state description="Auto-Approved" status="Approved" --resource-group "rgname" \
 --resource-name "service1"
 """
 
 helps['healthcareapis private-endpoint-connection update'] = """
     type: command
     short-summary: "Update the state of the specified private endpoint connection associated with the service."
+    parameters:
+      - name: --private-link-service-connection-state -s
+        short-summary: "A collection of information about the state of the connection between service consumer and \
+provider."
+        long-summary: |
+            Usage: --private-link-service-connection-state status=XX description=XX actions-required=XX
+
+            status: Indicates whether the connection has been Approved/Rejected/Removed by the owner of the service.
+            description: The reason for approval/rejection of the connection.
+            actions-required: A message indicating if changes on the service provider require any updates on the \
+consumer.
 """
 
 helps['healthcareapis private-endpoint-connection delete'] = """
@@ -293,4 +331,561 @@ helps['healthcareapis acr reset'] = """
         text: |-
                az healthcareapis acr reset --resource-group "rgname" \
 --resource-name "service1"
+"""
+
+
+helps['healthcareapis workspace'] = """
+    type: group
+    short-summary: Manage workspace with healthcareapis
+"""
+
+helps['healthcareapis workspace list'] = """
+    type: command
+    short-summary: "Lists all the available workspaces under the specified resource group. And Lists all the available \
+workspaces under the specified subscription."
+    examples:
+      - name: Get workspaces by resource group
+        text: |-
+               az healthcareapis workspace list --resource-group "testRG"
+      - name: Get workspaces by subscription
+        text: |-
+               az healthcareapis workspace list
+"""
+
+helps['healthcareapis workspace show'] = """
+    type: command
+    short-summary: "Gets the properties of the specified workspace."
+    examples:
+      - name: Get workspace
+        text: |-
+               az healthcareapis workspace show --resource-group "testRG" --name "workspace1"
+"""
+
+helps['healthcareapis workspace create'] = """
+    type: command
+    short-summary: "Create a workspace resource with the specified parameters."
+    examples:
+      - name: Create or update a workspace
+        text: |-
+               az healthcareapis workspace create --resource-group "testRG" --location "westus" --name "workspace1"
+"""
+
+helps['healthcareapis workspace update'] = """
+    type: command
+    short-summary: "Patch workspace details."
+    examples:
+      - name: Update a workspace
+        text: |-
+               az healthcareapis workspace update --resource-group "testRG" --name "workspace1" --tags \
+tagKey="tagValue"
+"""
+
+helps['healthcareapis workspace delete'] = """
+    type: command
+    short-summary: "Deletes a specified workspace."
+    examples:
+      - name: Delete a workspace
+        text: |-
+               az healthcareapis workspace delete --resource-group "testRG" --name "workspace1"
+"""
+
+helps['healthcareapis workspace wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the healthcareapis workspace is met.
+    examples:
+      - name: Pause executing next line of CLI script until the healthcareapis workspace is successfully created.
+        text: |-
+               az healthcareapis workspace wait --resource-group "testRG" --name "workspace1" --created
+      - name: Pause executing next line of CLI script until the healthcareapis workspace is successfully updated.
+        text: |-
+               az healthcareapis workspace wait --resource-group "testRG" --name "workspace1" --updated
+      - name: Pause executing next line of CLI script until the healthcareapis workspace is successfully deleted.
+        text: |-
+               az healthcareapis workspace wait --resource-group "testRG" --name "workspace1" --deleted
+"""
+
+helps['healthcareapis workspace dicom-service'] = """
+    type: group
+    short-summary: Manage dicom service with healthcareapis
+"""
+
+helps['healthcareapis workspace dicom-service list'] = """
+    type: command
+    short-summary: "Lists all DICOM Services for the given workspace."
+    examples:
+      - name: List dicomservices
+        text: |-
+               az healthcareapis workspace dicom-service list --resource-group "testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace dicom-service show'] = """
+    type: command
+    short-summary: "Gets the properties of the specified DICOM Service."
+    examples:
+      - name: Get a dicomservice
+        text: |-
+               az healthcareapis workspace dicom-service show --name "blue" --resource-group "testRG" --workspace-name \
+"workspace1"
+"""
+
+helps['healthcareapis workspace dicom-service create'] = """
+    type: command
+    short-summary: "Create a DICOM Service resource with the specified parameters."
+    examples:
+      - name: Create or update a Dicom Service
+        text: |-
+               az healthcareapis workspace dicom-service create --name "blue" --location "westus" --resource-group \
+"testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace dicom-service update'] = """
+    type: command
+    short-summary: "Patch DICOM Service details."
+    examples:
+      - name: Update a dicomservice
+        text: |-
+               az healthcareapis workspace dicom-service update --name "blue" --tags tagKey="tagValue" \
+--resource-group "testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace dicom-service delete'] = """
+    type: command
+    short-summary: "Deletes a DICOM Service."
+    examples:
+      - name: Delete a dicomservice
+        text: |-
+               az healthcareapis workspace dicom-service delete --name "blue" --resource-group "testRG" \
+--workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace dicom-service wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the healthcareapis workspace dicom-service is \
+met.
+    examples:
+      - name: Pause executing next line of CLI script until the healthcareapis workspace dicom-service is successfully \
+created.
+        text: |-
+               az healthcareapis workspace dicom-service wait --name "blue" --resource-group "testRG" --workspace-name \
+"workspace1" --created
+      - name: Pause executing next line of CLI script until the healthcareapis workspace dicom-service is successfully \
+updated.
+        text: |-
+               az healthcareapis workspace dicom-service wait --name "blue" --resource-group "testRG" --workspace-name \
+"workspace1" --updated
+      - name: Pause executing next line of CLI script until the healthcareapis workspace dicom-service is successfully \
+deleted.
+        text: |-
+               az healthcareapis workspace dicom-service wait --name "blue" --resource-group "testRG" --workspace-name \
+"workspace1" --deleted
+"""
+
+helps['healthcareapis workspace iot-connector'] = """
+    type: group
+    short-summary: Manage iot connector with healthcareapis
+"""
+
+helps['healthcareapis workspace iot-connector list'] = """
+    type: command
+    short-summary: "Lists all IoT Connectors for the given workspace."
+    examples:
+      - name: List iotconnectors
+        text: |-
+               az healthcareapis workspace iot-connector list --resource-group "testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace iot-connector show'] = """
+    type: command
+    short-summary: "Gets the properties of the specified IoT Connector."
+    examples:
+      - name: Get an IoT Connector
+        text: |-
+               az healthcareapis workspace iot-connector show --name "blue" --resource-group "testRG" --workspace-name \
+"workspace1"
+"""
+
+helps['healthcareapis workspace iot-connector create'] = """
+    type: command
+    short-summary: "Create an IoT Connector resource with the specified parameters."
+    parameters:
+      - name: --ingestion-endpoint-configuration -c
+        short-summary: "Source configuration."
+        long-summary: |
+            Usage: --ingestion-endpoint-configuration event-hub-name=XX consumer-group=XX \
+fully-qualified-event-hub-namespace=XX
+
+            event-hub-name: Event Hub name to connect to.
+            consumer-group: Consumer group of the event hub to connected to.
+            fully-qualified-event-hub-namespace: Fully qualified namespace of the Event Hub to connect to.
+    examples:
+      - name: Create an IoT Connector
+        text: |-
+               az healthcareapis workspace iot-connector create --identity-type "SystemAssigned" --location "westus" --content \
+"{\\"template\\":[{\\"template\\":{\\"deviceIdExpression\\":\\"$.deviceid\\",\\"timestampExpression\\":\\"$.measurement\
+datetime\\",\\"typeMatchExpression\\":\\"$..[?(@heartrate)]\\",\\"typeName\\":\\"heartrate\\",\\"values\\":[{\\"require\
+d\\":\\"true\\",\\"valueExpression\\":\\"$.heartrate\\",\\"valueName\\":\\"hr\\"}]},\\"templateType\\":\\"JsonPathConte\
+nt\\"}],\\"templateType\\":\\"CollectionContent\\"}" --ingestion-endpoint-configuration consumer-group="ConsumerGroupA"\
+ event-hub-name="MyEventHubName" fully-qualified-event-hub-namespace="myeventhub.servicesbus.windows.net" --tags \
+additionalProp1="string" additionalProp2="string" additionalProp3="string" --name "blue" --resource-group "testRG" \
+--workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace iot-connector update'] = """
+    type: command
+    short-summary: "Patch an IoT Connector."
+    examples:
+      - name: Patch an IoT Connector
+        text: |-
+               az healthcareapis workspace iot-connector update --name "blue" --identity-type "SystemAssigned" --tags \
+additionalProp1="string" additionalProp2="string" additionalProp3="string" --resource-group "testRG" --workspace-name \
+"workspace1"
+"""
+
+helps['healthcareapis workspace iot-connector delete'] = """
+    type: command
+    short-summary: "Deletes an IoT Connector."
+    examples:
+      - name: Delete an IoT Connector
+        text: |-
+               az healthcareapis workspace iot-connector delete --name "blue" --resource-group "testRG" \
+--workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace iot-connector wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the healthcareapis workspace iot-connector is \
+met.
+    examples:
+      - name: Pause executing next line of CLI script until the healthcareapis workspace iot-connector is successfully \
+created.
+        text: |-
+               az healthcareapis workspace iot-connector wait --name "blue" --resource-group "testRG" --workspace-name \
+"workspace1" --created
+      - name: Pause executing next line of CLI script until the healthcareapis workspace iot-connector is successfully \
+updated.
+        text: |-
+               az healthcareapis workspace iot-connector wait --name "blue" --resource-group "testRG" --workspace-name \
+"workspace1" --updated
+      - name: Pause executing next line of CLI script until the healthcareapis workspace iot-connector is successfully \
+deleted.
+        text: |-
+               az healthcareapis workspace iot-connector wait --name "blue" --resource-group "testRG" --workspace-name \
+"workspace1" --deleted
+"""
+
+helps['healthcareapis workspace iot-connector fhir-destination'] = """
+    type: group
+    short-summary: Manage iot connector fhir destination with healthcareapis
+"""
+
+helps['healthcareapis workspace iot-connector fhir-destination list'] = """
+    type: command
+    short-summary: "Lists all FHIR destinations for the given IoT Connector."
+    examples:
+      - name: List IoT Connectors
+        text: |-
+               az healthcareapis workspace iot-connector fhir-destination list --iot-connector-name "blue" \
+--resource-group "testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace iot-connector fhir-destination show'] = """
+    type: command
+    short-summary: "Gets the properties of the specified Iot Connector FHIR destination."
+    examples:
+      - name: Get an IoT Connector destination
+        text: |-
+               az healthcareapis workspace iot-connector fhir-destination show --fhir-destination-name "dest1" \
+--iot-connector-name "blue" --resource-group "testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace iot-connector fhir-destination create'] = """
+    type: command
+    short-summary: "Create an IoT Connector FHIR destination resource with the specified parameters."
+    examples:
+      - name: Create or update an Iot Connector FHIR destination
+        text: |-
+               az healthcareapis workspace iot-connector fhir-destination create --fhir-destination-name "dest1" \
+--iot-connector-name "blue" --location "westus" --content "{\\"template\\":[{\\"template\\":{\\"codes\\":[{\\"code\\":\
+\\"8867-4\\",\\"display\\":\\"Heart rate\\",\\"system\\":\\"http://loinc.org\\"}],\\"periodInterval\\":60,\\"typeName\\\
+":\\"heartrate\\",\\"value\\":{\\"defaultPeriod\\":5000,\\"unit\\":\\"count/min\\",\\"valueName\\":\\"hr\\",\\"valueTyp\
+e\\":\\"SampledData\\"}},\\"templateType\\":\\"CodeValueFhir\\"}],\\"templateType\\":\\"CollectionFhirTemplate\\"}" \
+--fhir-service-resource-id "subscriptions/11111111-2222-3333-4444-555566667777/resourceGroups/myrg/providers/Microsoft.\
+HealthcareApis/workspaces/myworkspace/fhirservices/myfhirservice" --resource-identity-resolution-type "Create" \
+--resource-group "testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace iot-connector fhir-destination update'] = """
+    type: command
+    short-summary: "Update an IoT Connector FHIR destination resource with the specified parameters."
+"""
+
+helps['healthcareapis workspace iot-connector fhir-destination delete'] = """
+    type: command
+    short-summary: "Deletes an IoT Connector FHIR destination."
+    examples:
+      - name: Delete an IoT Connector destination
+        text: |-
+               az healthcareapis workspace iot-connector fhir-destination delete --fhir-destination-name "dest1" \
+--iot-connector-name "blue" --resource-group "testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace iot-connector fhir-destination wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the healthcareapis workspace iot-connector \
+fhir-destination is met.
+    examples:
+      - name: Pause executing next line of CLI script until the healthcareapis workspace iot-connector \
+fhir-destination is successfully created.
+        text: |-
+               az healthcareapis workspace iot-connector fhir-destination wait --fhir-destination-name "dest1" \
+--iot-connector-name "blue" --resource-group "testRG" --workspace-name "workspace1" --created
+      - name: Pause executing next line of CLI script until the healthcareapis workspace iot-connector \
+fhir-destination is successfully updated.
+        text: |-
+               az healthcareapis workspace iot-connector fhir-destination wait --fhir-destination-name "dest1" \
+--iot-connector-name "blue" --resource-group "testRG" --workspace-name "workspace1" --updated
+      - name: Pause executing next line of CLI script until the healthcareapis workspace iot-connector \
+fhir-destination is successfully deleted.
+        text: |-
+               az healthcareapis workspace iot-connector fhir-destination wait --fhir-destination-name "dest1" \
+--iot-connector-name "blue" --resource-group "testRG" --workspace-name "workspace1" --deleted
+"""
+
+helps['healthcareapis workspace fhir-service'] = """
+    type: group
+    short-summary: Manage fhir service with healthcareapis
+"""
+
+helps['healthcareapis workspace fhir-service list'] = """
+    type: command
+    short-summary: "Lists all FHIR Services for the given workspace."
+    examples:
+      - name: List fhirservices
+        text: |-
+               az healthcareapis workspace fhir-service list --resource-group "testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace fhir-service show'] = """
+    type: command
+    short-summary: "Gets the properties of the specified FHIR Service."
+    examples:
+      - name: Get a Fhir Service
+        text: |-
+               az healthcareapis workspace fhir-service show --name "fhirservices1" --resource-group "testRG" \
+--workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace fhir-service create'] = """
+    type: command
+    short-summary: "Create a FHIR Service resource with the specified parameters."
+    parameters:
+      - name: --access-policies
+        short-summary: "Fhir Service access policies."
+        long-summary: |
+            Usage: --access-policies object-id=XX
+
+            object-id: Required. An Azure AD object ID (User or Apps) that is allowed access to the FHIR service.
+
+            Multiple actions can be specified by using more than one --access-policies argument.
+      - name: --authentication-configuration -c
+        short-summary: "Fhir Service authentication configuration."
+        long-summary: |
+            Usage: --authentication-configuration authority=XX audience=XX smart-proxy-enabled=XX
+
+            authority: The authority url for the service
+            audience: The audience url for the service
+            smart-proxy-enabled: If the SMART on FHIR proxy is enabled
+      - name: --cors-configuration
+        short-summary: "Fhir Service Cors configuration."
+        long-summary: |
+            Usage: --cors-configuration origins=XX headers=XX methods=XX max-age=XX allow-credentials=XX
+
+            origins: The origins to be allowed via CORS.
+            headers: The headers to be allowed via CORS.
+            methods: The methods to be allowed via CORS.
+            max-age: The max age to be allowed via CORS.
+            allow-credentials: If credentials are allowed via CORS.
+      - name: --oci-artifacts
+        short-summary: "The list of Open Container Initiative (OCI) artifacts."
+        long-summary: |
+            Usage: --oci-artifacts login-server=XX image-name=XX digest=XX
+
+            login-server: The Azure Container Registry login server.
+            image-name: The artifact name.
+            digest: The artifact digest.
+
+            Multiple actions can be specified by using more than one --oci-artifacts argument.
+    examples:
+      - name: Create or update a Fhir Service
+        text: |-
+               az healthcareapis workspace fhir-service create --name "fhirservice1" --identity-type "SystemAssigned" --kind \
+"fhir-R4" --location "westus" --access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47" --access-policies \
+object-id="5b307da8-43d4-492b-8b66-b0294ade872f" --login-servers "test1.azurecr.io" --authentication-configuration \
+audience="https://azurehealthcareapis.com" authority="https://login.microsoftonline.com/abfde7b2-df0f-47e6-aabf-2462b07\
+508dc" smart-proxy-enabled=true --cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" \
+methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" --export-configuration-storage-account-name \
+"existingStorageAccount" --tags additionalProp1="string" additionalProp2="string" additionalProp3="string" \
+--resource-group "testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace fhir-service update'] = """
+    type: command
+    short-summary: "Patch FHIR Service details."
+    examples:
+      - name: Update a Fhir Service
+        text: |-
+               az healthcareapis workspace fhir-service update --name "fhirservice1" --tags tagKey="tagValue" \
+--resource-group "testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace fhir-service delete'] = """
+    type: command
+    short-summary: "Deletes a FHIR Service."
+    examples:
+      - name: Delete a Fhir Service
+        text: |-
+               az healthcareapis workspace fhir-service delete --name "fhirservice1" --resource-group "testRG" \
+--workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace fhir-service wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the healthcareapis workspace fhir-service is \
+met.
+    examples:
+      - name: Pause executing next line of CLI script until the healthcareapis workspace fhir-service is successfully \
+created.
+        text: |-
+               az healthcareapis workspace fhir-service wait --name "fhirservices1" --resource-group "testRG" \
+--workspace-name "workspace1" --created
+      - name: Pause executing next line of CLI script until the healthcareapis workspace fhir-service is successfully \
+updated.
+        text: |-
+               az healthcareapis workspace fhir-service wait --name "fhirservices1" --resource-group "testRG" \
+--workspace-name "workspace1" --updated
+      - name: Pause executing next line of CLI script until the healthcareapis workspace fhir-service is successfully \
+deleted.
+        text: |-
+               az healthcareapis workspace fhir-service wait --name "fhirservices1" --resource-group "testRG" \
+--workspace-name "workspace1" --deleted
+"""
+
+helps['healthcareapis workspace private-endpoint-connection'] = """
+    type: group
+    short-summary: Manage workspace private endpoint connection with healthcareapis
+"""
+
+helps['healthcareapis workspace private-endpoint-connection list'] = """
+    type: command
+    short-summary: "Lists all private endpoint connections for a workspace."
+    examples:
+      - name: WorkspacePrivateEndpointConnection_List
+        text: |-
+               az healthcareapis workspace private-endpoint-connection list --resource-group "testRG" --workspace-name \
+"workspace1"
+"""
+
+helps['healthcareapis workspace private-endpoint-connection show'] = """
+    type: command
+    short-summary: "Gets the specified private endpoint connection associated with the workspace."
+    examples:
+      - name: WorkspacePrivateEndpointConnection_GetConnection
+        text: |-
+               az healthcareapis workspace private-endpoint-connection show --private-endpoint-connection-name \
+"myConnection" --resource-group "testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace private-endpoint-connection create'] = """
+    type: command
+    short-summary: "Update the state of the specified private endpoint connection associated with the workspace."
+    parameters:
+      - name: --private-link-service-connection-state -s
+        short-summary: "A collection of information about the state of the connection between service consumer and \
+provider."
+        long-summary: |
+            Usage: --private-link-service-connection-state status=XX description=XX actions-required=XX
+
+            status: Indicates whether the connection has been Approved/Rejected/Removed by the owner of the service.
+            description: The reason for approval/rejection of the connection.
+            actions-required: A message indicating if changes on the service provider require any updates on the \
+consumer.
+    examples:
+      - name: WorkspacePrivateEndpointConnection_CreateOrUpdate
+        text: |-
+               az healthcareapis workspace private-endpoint-connection create --private-endpoint-connection-name \
+"myConnection" --private-link-service-connection-state description="Auto-Approved" status="Approved" --resource-group \
+"testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace private-endpoint-connection update'] = """
+    type: command
+    short-summary: "Update the state of the specified private endpoint connection associated with the workspace."
+    parameters:
+      - name: --private-link-service-connection-state -s
+        short-summary: "A collection of information about the state of the connection between service consumer and \
+provider."
+        long-summary: |
+            Usage: --private-link-service-connection-state status=XX description=XX actions-required=XX
+
+            status: Indicates whether the connection has been Approved/Rejected/Removed by the owner of the service.
+            description: The reason for approval/rejection of the connection.
+            actions-required: A message indicating if changes on the service provider require any updates on the \
+consumer.
+"""
+
+helps['healthcareapis workspace private-endpoint-connection delete'] = """
+    type: command
+    short-summary: "Deletes a private endpoint connection."
+    examples:
+      - name: WorkspacePrivateEndpointConnections_Delete
+        text: |-
+               az healthcareapis workspace private-endpoint-connection delete --private-endpoint-connection-name \
+"myConnection" --resource-group "testRG" --workspace-name "workspace1"
+"""
+
+helps['healthcareapis workspace private-endpoint-connection wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the healthcareapis workspace \
+private-endpoint-connection is met.
+    examples:
+      - name: Pause executing next line of CLI script until the healthcareapis workspace private-endpoint-connection \
+is successfully created.
+        text: |-
+               az healthcareapis workspace private-endpoint-connection wait --private-endpoint-connection-name \
+"myConnection" --resource-group "testRG" --workspace-name "workspace1" --created
+      - name: Pause executing next line of CLI script until the healthcareapis workspace private-endpoint-connection \
+is successfully updated.
+        text: |-
+               az healthcareapis workspace private-endpoint-connection wait --private-endpoint-connection-name \
+"myConnection" --resource-group "testRG" --workspace-name "workspace1" --updated
+      - name: Pause executing next line of CLI script until the healthcareapis workspace private-endpoint-connection \
+is successfully deleted.
+        text: |-
+               az healthcareapis workspace private-endpoint-connection wait --private-endpoint-connection-name \
+"myConnection" --resource-group "testRG" --workspace-name "workspace1" --deleted
+"""
+
+helps['healthcareapis workspace private-link-resource'] = """
+    type: group
+    short-summary: Manage workspace private link resource with healthcareapis
+"""
+
+helps['healthcareapis workspace private-link-resource list'] = """
+    type: command
+    short-summary: "Gets the private link resources that need to be created for a workspace."
+    examples:
+      - name: WorkspacePrivateLinkResources_ListGroupIds
+        text: |-
+               az healthcareapis workspace private-link-resource list --resource-group "testRG" --workspace-name \
+"workspace1"
+"""
+
+helps['healthcareapis workspace private-link-resource show'] = """
+    type: command
+    short-summary: "Gets a private link resource that need to be created for a workspace."
+    examples:
+      - name: WorkspacePrivateLinkResources_Get
+        text: |-
+               az healthcareapis workspace private-link-resource show --group-name "healthcareworkspace" \
+--resource-group "testRG" --workspace-name "workspace1"
 """

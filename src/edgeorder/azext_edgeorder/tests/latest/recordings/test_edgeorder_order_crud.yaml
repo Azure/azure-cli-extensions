@@ -1,0 +1,3706 @@
+interactions:
+- request:
+    body: '{"tags": {}, "location": "eastus", "properties": {"orderItemDetails": {"productDetails":
+      {"hierarchyInformation": {"productFamilyName": "azurestackedge", "productLineName":
+      "azurestackedge", "productName": "azurestackedgegpu", "configurationName": "edgep_base"}},
+      "orderItemType": "Purchase", "preferences": {"transportPreferences": {"preferredShipmentType":
+      "MicrosoftManaged"}}}, "addressDetails": {"forwardAddress": {"shippingAddress":
+      {"streetAddress1": "16 TOWNSEND ST", "streetAddress2": "UNIT 1", "city": "San
+      Francisco", "stateOrProvince": "CA", "country": "US", "postalCode": "94107",
+      "companyName": "Microsoft", "addressType": "None"}, "contactDetails": {"contactName":
+      "Petr Cech", "phone": "1234567890", "phoneExtension": "", "emailList": ["testemail@microsoft.com"]}}},
+      "orderId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '964'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --order-item-resource
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:24:19 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/6a1949bc-b0fb-42ff-8868-8cdf46f31241?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --order-item-resource
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/6a1949bc-b0fb-42ff-8868-8cdf46f31241?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:24:30 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --order-item-resource
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"orderItemDetails\": {\r\n      \"productDetails\":
+        {\r\n        \"displayInfo\": {\r\n          \"productFamilyDisplayName\":
+        \"Azure Stack Edge\",\r\n          \"configurationDisplayName\": \"Azure Stack
+        Edge Pro - 1 GPU\"\r\n        },\r\n        \"hierarchyInformation\": {\r\n
+        \         \"productFamilyName\": \"azurestackedge\",\r\n          \"productLineName\":
+        \"azurestackedge\",\r\n          \"productName\": \"azurestackedgegpu\",\r\n
+        \         \"configurationName\": \"edgep_base\"\r\n        },\r\n        \"count\":
+        0,\r\n        \"productDoubleEncryptionStatus\": \"Disabled\"\r\n      },\r\n
+        \     \"orderItemType\": \"Purchase\",\r\n      \"currentStage\": {\r\n        \"stageStatus\":
+        \"Succeeded\",\r\n        \"stageName\": \"Placed\",\r\n        \"startTime\":
+        \"2022-02-22T02:24:34.2281432+00:00\"\r\n      },\r\n      \"orderItemStageHistory\":
+        [\r\n        {\r\n          \"stageStatus\": \"Succeeded\",\r\n          \"stageName\":
+        \"Placed\",\r\n          \"startTime\": \"2022-02-22T02:24:34.2281432+00:00\"\r\n
+        \       },\r\n        {\r\n          \"stageStatus\": \"None\",\r\n          \"stageName\":
+        \"Confirmed\"\r\n        },\r\n        {\r\n          \"stageStatus\": \"None\",\r\n
+        \         \"stageName\": \"ReadyToShip\"\r\n        },\r\n        {\r\n          \"stageStatus\":
+        \"None\",\r\n          \"stageName\": \"Shipped\"\r\n        },\r\n        {\r\n
+        \         \"stageStatus\": \"None\",\r\n          \"stageName\": \"Delivered\"\r\n
+        \       },\r\n        {\r\n          \"stageStatus\": \"None\",\r\n          \"stageName\":
+        \"InUse\"\r\n        }\r\n      ],\r\n      \"preferences\": {\r\n        \"transportPreferences\":
+        {\r\n          \"preferredShipmentType\": \"MicrosoftManaged\"\r\n        }\r\n
+        \     },\r\n      \"notificationEmailList\": [],\r\n      \"cancellationStatus\":
+        \"Cancellable\",\r\n      \"deletionStatus\": \"NotAllowed\",\r\n      \"returnStatus\":
+        \"NotReturnable\",\r\n      \"managementRpDetailsList\": [\r\n        {\r\n
+        \         \"resourceProviderNamespace\": \"Microsoft.DataBoxEdge\"\r\n        }\r\n
+        \     ]\r\n    },\r\n    \"addressDetails\": {\r\n      \"forwardAddress\":
+        {\r\n        \"shippingAddress\": {\r\n          \"streetAddress1\": \"16
+        TOWNSEND ST\",\r\n          \"streetAddress2\": \"UNIT 1\",\r\n          \"city\":
+        \"San Francisco\",\r\n          \"stateOrProvince\": \"CA\",\r\n          \"country\":
+        \"US\",\r\n          \"postalCode\": \"94107\",\r\n          \"companyName\":
+        \"Microsoft\",\r\n          \"addressType\": \"None\"\r\n        },\r\n        \"contactDetails\":
+        {\r\n          \"contactName\": \"Petr Cech\",\r\n          \"phone\": \"1234567890\",\r\n
+        \         \"phoneExtension\": \"\",\r\n          \"emailList\": [\r\n            \"testemail@microsoft.com\"\r\n
+        \         ]\r\n        },\r\n        \"addressValidationStatus\": \"Valid\"\r\n
+        \     }\r\n    },\r\n    \"startTime\": \"2022-02-22T02:24:19.4261804+00:00\",\r\n
+        \   \"orderId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01\"\r\n
+        \ },\r\n  \"systemData\": {\r\n    \"createdBy\": \"ethanyang@microsoft.com\",\r\n
+        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2022-02-22T02:24:18.4890986+00:00\",\r\n
+        \   \"lastModifiedBy\": \"ethanyang@microsoft.com\",\r\n    \"lastModifiedByType\":
+        \"User\",\r\n    \"lastModifiedAt\": \"2022-02-22T02:24:18.4890986+00:00\"\r\n
+        \ },\r\n  \"location\": \"eastus\",\r\n  \"tags\": {},\r\n  \"name\": \"TestOrderItemName01\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01\",\r\n
+        \ \"type\": \"Microsoft.EdgeOrder/orderItems\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3357'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Feb 2022 02:24:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {}, "location": "eastus", "properties": {"orderItemDetails": {"productDetails":
+      {"hierarchyInformation": {"productFamilyName": "azurestackedge", "productLineName":
+      "azurestackedge", "productName": "azurestackedgegpu", "configurationName": "edgep_base"}},
+      "orderItemType": "Purchase", "preferences": {"transportPreferences": {"preferredShipmentType":
+      "MicrosoftManaged"}}}, "addressDetails": {"forwardAddress": {"shippingAddress":
+      {"streetAddress1": "16 TOWNSEND ST", "streetAddress2": "UNIT 1", "city": "San
+      Francisco", "stateOrProvince": "CA", "country": "US", "postalCode": "94107",
+      "companyName": "Microsoft", "addressType": "None"}, "contactDetails": {"contactName":
+      "Petr Cech", "phone": "1234567890", "phoneExtension": "", "emailList": ["testemail@microsoft.com"]}}},
+      "orderId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName02"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '964'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --order-item-resource
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName02?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:24:48 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/70acc64e-a894-421c-8213-dc07796344e4?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --order-item-resource
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/70acc64e-a894-421c-8213-dc07796344e4?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:24:58 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName02?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --order-item-resource
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName02?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"orderItemDetails\": {\r\n      \"productDetails\":
+        {\r\n        \"displayInfo\": {\r\n          \"productFamilyDisplayName\":
+        \"Azure Stack Edge\",\r\n          \"configurationDisplayName\": \"Azure Stack
+        Edge Pro - 1 GPU\"\r\n        },\r\n        \"hierarchyInformation\": {\r\n
+        \         \"productFamilyName\": \"azurestackedge\",\r\n          \"productLineName\":
+        \"azurestackedge\",\r\n          \"productName\": \"azurestackedgegpu\",\r\n
+        \         \"configurationName\": \"edgep_base\"\r\n        },\r\n        \"count\":
+        0,\r\n        \"productDoubleEncryptionStatus\": \"Disabled\"\r\n      },\r\n
+        \     \"orderItemType\": \"Purchase\",\r\n      \"currentStage\": {\r\n        \"stageStatus\":
+        \"Succeeded\",\r\n        \"stageName\": \"Placed\",\r\n        \"startTime\":
+        \"2022-02-22T02:25:04.4305617+00:00\"\r\n      },\r\n      \"orderItemStageHistory\":
+        [\r\n        {\r\n          \"stageStatus\": \"Succeeded\",\r\n          \"stageName\":
+        \"Placed\",\r\n          \"startTime\": \"2022-02-22T02:25:04.4305617+00:00\"\r\n
+        \       },\r\n        {\r\n          \"stageStatus\": \"None\",\r\n          \"stageName\":
+        \"Confirmed\"\r\n        },\r\n        {\r\n          \"stageStatus\": \"None\",\r\n
+        \         \"stageName\": \"ReadyToShip\"\r\n        },\r\n        {\r\n          \"stageStatus\":
+        \"None\",\r\n          \"stageName\": \"Shipped\"\r\n        },\r\n        {\r\n
+        \         \"stageStatus\": \"None\",\r\n          \"stageName\": \"Delivered\"\r\n
+        \       },\r\n        {\r\n          \"stageStatus\": \"None\",\r\n          \"stageName\":
+        \"InUse\"\r\n        }\r\n      ],\r\n      \"preferences\": {\r\n        \"transportPreferences\":
+        {\r\n          \"preferredShipmentType\": \"MicrosoftManaged\"\r\n        }\r\n
+        \     },\r\n      \"notificationEmailList\": [],\r\n      \"cancellationStatus\":
+        \"Cancellable\",\r\n      \"deletionStatus\": \"NotAllowed\",\r\n      \"returnStatus\":
+        \"NotReturnable\",\r\n      \"managementRpDetailsList\": [\r\n        {\r\n
+        \         \"resourceProviderNamespace\": \"Microsoft.DataBoxEdge\"\r\n        }\r\n
+        \     ]\r\n    },\r\n    \"addressDetails\": {\r\n      \"forwardAddress\":
+        {\r\n        \"shippingAddress\": {\r\n          \"streetAddress1\": \"16
+        TOWNSEND ST\",\r\n          \"streetAddress2\": \"UNIT 1\",\r\n          \"city\":
+        \"San Francisco\",\r\n          \"stateOrProvince\": \"CA\",\r\n          \"country\":
+        \"US\",\r\n          \"postalCode\": \"94107\",\r\n          \"companyName\":
+        \"Microsoft\",\r\n          \"addressType\": \"None\"\r\n        },\r\n        \"contactDetails\":
+        {\r\n          \"contactName\": \"Petr Cech\",\r\n          \"phone\": \"1234567890\",\r\n
+        \         \"phoneExtension\": \"\",\r\n          \"emailList\": [\r\n            \"testemail@microsoft.com\"\r\n
+        \         ]\r\n        },\r\n        \"addressValidationStatus\": \"Valid\"\r\n
+        \     }\r\n    },\r\n    \"startTime\": \"2022-02-22T02:24:48.916538+00:00\",\r\n
+        \   \"orderId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName02\"\r\n
+        \ },\r\n  \"systemData\": {\r\n    \"createdBy\": \"ethanyang@microsoft.com\",\r\n
+        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2022-02-22T02:24:47.9016618+00:00\",\r\n
+        \   \"lastModifiedBy\": \"ethanyang@microsoft.com\",\r\n    \"lastModifiedByType\":
+        \"User\",\r\n    \"lastModifiedAt\": \"2022-02-22T02:24:47.9016618+00:00\"\r\n
+        \ },\r\n  \"location\": \"eastus\",\r\n  \"tags\": {},\r\n  \"name\": \"TestOrderItemName02\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName02\",\r\n
+        \ \"type\": \"Microsoft.EdgeOrder/orderItems\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3356'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Feb 2022 02:25:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"orderItemDetails\":
+        {\r\n          \"productDetails\": {\r\n            \"displayInfo\": {\r\n
+        \             \"productFamilyDisplayName\": \"Azure Stack Edge\",\r\n              \"configurationDisplayName\":
+        \"Azure Stack Edge Pro - 1 GPU\"\r\n            },\r\n            \"hierarchyInformation\":
+        {\r\n              \"productFamilyName\": \"azurestackedge\",\r\n              \"productLineName\":
+        \"azurestackedge\",\r\n              \"productName\": \"azurestackedgegpu\",\r\n
+        \             \"configurationName\": \"edgep_base\"\r\n            },\r\n
+        \           \"count\": 0,\r\n            \"productDoubleEncryptionStatus\":
+        \"Disabled\"\r\n          },\r\n          \"orderItemType\": \"Purchase\",\r\n
+        \         \"currentStage\": {\r\n            \"stageStatus\": \"Succeeded\",\r\n
+        \           \"stageName\": \"Placed\",\r\n            \"startTime\": \"2022-02-22T02:24:34.2281432+00:00\"\r\n
+        \         },\r\n          \"orderItemStageHistory\": [\r\n            {\r\n
+        \             \"stageStatus\": \"Succeeded\",\r\n              \"stageName\":
+        \"Placed\",\r\n              \"startTime\": \"2022-02-22T02:24:34.2281432+00:00\"\r\n
+        \           },\r\n            {\r\n              \"stageStatus\": \"None\",\r\n
+        \             \"stageName\": \"Confirmed\"\r\n            },\r\n            {\r\n
+        \             \"stageStatus\": \"None\",\r\n              \"stageName\": \"ReadyToShip\"\r\n
+        \           },\r\n            {\r\n              \"stageStatus\": \"None\",\r\n
+        \             \"stageName\": \"Shipped\"\r\n            },\r\n            {\r\n
+        \             \"stageStatus\": \"None\",\r\n              \"stageName\": \"Delivered\"\r\n
+        \           },\r\n            {\r\n              \"stageStatus\": \"None\",\r\n
+        \             \"stageName\": \"InUse\"\r\n            }\r\n          ],\r\n
+        \         \"preferences\": {\r\n            \"transportPreferences\": {\r\n
+        \             \"preferredShipmentType\": \"MicrosoftManaged\"\r\n            }\r\n
+        \         },\r\n          \"notificationEmailList\": [],\r\n          \"cancellationStatus\":
+        \"Cancellable\",\r\n          \"deletionStatus\": \"NotAllowed\",\r\n          \"returnStatus\":
+        \"NotReturnable\",\r\n          \"managementRpDetailsList\": [\r\n            {\r\n
+        \             \"resourceProviderNamespace\": \"Microsoft.DataBoxEdge\"\r\n
+        \           }\r\n          ]\r\n        },\r\n        \"addressDetails\":
+        {\r\n          \"forwardAddress\": {\r\n            \"shippingAddress\": {\r\n
+        \             \"streetAddress1\": \"16 TOWNSEND ST\",\r\n              \"streetAddress2\":
+        \"UNIT 1\",\r\n              \"city\": \"San Francisco\",\r\n              \"stateOrProvince\":
+        \"CA\",\r\n              \"country\": \"US\",\r\n              \"postalCode\":
+        \"94107\",\r\n              \"companyName\": \"Microsoft\",\r\n              \"addressType\":
+        \"None\"\r\n            },\r\n            \"contactDetails\": {\r\n              \"contactName\":
+        \"Petr Cech\",\r\n              \"phone\": \"1234567890\",\r\n              \"phoneExtension\":
+        \"\",\r\n              \"emailList\": [\r\n                \"testemail@microsoft.com\"\r\n
+        \             ]\r\n            },\r\n            \"addressValidationStatus\":
+        \"Valid\"\r\n          }\r\n        },\r\n        \"startTime\": \"2022-02-22T02:24:19.4261804+00:00\",\r\n
+        \       \"orderId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01\"\r\n
+        \     },\r\n      \"systemData\": {\r\n        \"createdBy\": \"ethanyang@microsoft.com\",\r\n
+        \       \"createdByType\": \"User\",\r\n        \"createdAt\": \"2022-02-22T02:24:18.4890986+00:00\",\r\n
+        \       \"lastModifiedBy\": \"ethanyang@microsoft.com\",\r\n        \"lastModifiedByType\":
+        \"User\",\r\n        \"lastModifiedAt\": \"2022-02-22T02:24:18.4890986+00:00\"\r\n
+        \     },\r\n      \"location\": \"eastus\",\r\n      \"tags\": {},\r\n      \"name\":
+        \"TestOrderItemName01\",\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01\",\r\n
+        \     \"type\": \"Microsoft.EdgeOrder/orderItems\"\r\n    },\r\n    {\r\n
+        \     \"properties\": {\r\n        \"orderItemDetails\": {\r\n          \"productDetails\":
+        {\r\n            \"displayInfo\": {\r\n              \"productFamilyDisplayName\":
+        \"Azure Stack Edge\",\r\n              \"configurationDisplayName\": \"Azure
+        Stack Edge Pro - 1 GPU\"\r\n            },\r\n            \"hierarchyInformation\":
+        {\r\n              \"productFamilyName\": \"azurestackedge\",\r\n              \"productLineName\":
+        \"azurestackedge\",\r\n              \"productName\": \"azurestackedgegpu\",\r\n
+        \             \"configurationName\": \"edgep_base\"\r\n            },\r\n
+        \           \"count\": 0,\r\n            \"productDoubleEncryptionStatus\":
+        \"Disabled\"\r\n          },\r\n          \"orderItemType\": \"Purchase\",\r\n
+        \         \"currentStage\": {\r\n            \"stageStatus\": \"Succeeded\",\r\n
+        \           \"stageName\": \"Placed\",\r\n            \"startTime\": \"2022-02-22T02:25:04.4305617+00:00\"\r\n
+        \         },\r\n          \"orderItemStageHistory\": [\r\n            {\r\n
+        \             \"stageStatus\": \"Succeeded\",\r\n              \"stageName\":
+        \"Placed\",\r\n              \"startTime\": \"2022-02-22T02:25:04.4305617+00:00\"\r\n
+        \           },\r\n            {\r\n              \"stageStatus\": \"None\",\r\n
+        \             \"stageName\": \"Confirmed\"\r\n            },\r\n            {\r\n
+        \             \"stageStatus\": \"None\",\r\n              \"stageName\": \"ReadyToShip\"\r\n
+        \           },\r\n            {\r\n              \"stageStatus\": \"None\",\r\n
+        \             \"stageName\": \"Shipped\"\r\n            },\r\n            {\r\n
+        \             \"stageStatus\": \"None\",\r\n              \"stageName\": \"Delivered\"\r\n
+        \           },\r\n            {\r\n              \"stageStatus\": \"None\",\r\n
+        \             \"stageName\": \"InUse\"\r\n            }\r\n          ],\r\n
+        \         \"preferences\": {\r\n            \"transportPreferences\": {\r\n
+        \             \"preferredShipmentType\": \"MicrosoftManaged\"\r\n            }\r\n
+        \         },\r\n          \"notificationEmailList\": [],\r\n          \"cancellationStatus\":
+        \"Cancellable\",\r\n          \"deletionStatus\": \"NotAllowed\",\r\n          \"returnStatus\":
+        \"NotReturnable\",\r\n          \"managementRpDetailsList\": [\r\n            {\r\n
+        \             \"resourceProviderNamespace\": \"Microsoft.DataBoxEdge\"\r\n
+        \           }\r\n          ]\r\n        },\r\n        \"addressDetails\":
+        {\r\n          \"forwardAddress\": {\r\n            \"shippingAddress\": {\r\n
+        \             \"streetAddress1\": \"16 TOWNSEND ST\",\r\n              \"streetAddress2\":
+        \"UNIT 1\",\r\n              \"city\": \"San Francisco\",\r\n              \"stateOrProvince\":
+        \"CA\",\r\n              \"country\": \"US\",\r\n              \"postalCode\":
+        \"94107\",\r\n              \"companyName\": \"Microsoft\",\r\n              \"addressType\":
+        \"None\"\r\n            },\r\n            \"contactDetails\": {\r\n              \"contactName\":
+        \"Petr Cech\",\r\n              \"phone\": \"1234567890\",\r\n              \"phoneExtension\":
+        \"\",\r\n              \"emailList\": [\r\n                \"testemail@microsoft.com\"\r\n
+        \             ]\r\n            },\r\n            \"addressValidationStatus\":
+        \"Valid\"\r\n          }\r\n        },\r\n        \"startTime\": \"2022-02-22T02:24:48.916538+00:00\",\r\n
+        \       \"orderId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName02\"\r\n
+        \     },\r\n      \"systemData\": {\r\n        \"createdBy\": \"ethanyang@microsoft.com\",\r\n
+        \       \"createdByType\": \"User\",\r\n        \"createdAt\": \"2022-02-22T02:24:47.9016618+00:00\",\r\n
+        \       \"lastModifiedBy\": \"ethanyang@microsoft.com\",\r\n        \"lastModifiedByType\":
+        \"User\",\r\n        \"lastModifiedAt\": \"2022-02-22T02:24:47.9016618+00:00\"\r\n
+        \     },\r\n      \"location\": \"eastus\",\r\n      \"tags\": {},\r\n      \"name\":
+        \"TestOrderItemName02\",\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName02\",\r\n
+        \     \"type\": \"Microsoft.EdgeOrder/orderItems\"\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '7581'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Feb 2022 02:25:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orders?api-version=2021-12-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"orderItemIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01"],"currentStage":{"stageStatus":"Succeeded","stageName":"Placed","startTime":"2022-02-22T02:24:38.1063274+00:00"},"orderStageHistory":[{"stageStatus":"Succeeded","stageName":"Placed","startTime":"2022-02-22T02:24:38.1063274+00:00"},{"stageStatus":"None","stageName":"InReview"}]},"name":"TestOrderItemName01","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01","type":"Microsoft.EdgeOrder/orders"},{"properties":{"orderItemIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName02"],"currentStage":{"stageStatus":"Succeeded","stageName":"Placed","startTime":"2022-02-22T02:25:05.7682876+00:00"},"orderStageHistory":[{"stageStatus":"Succeeded","stageName":"Placed","startTime":"2022-02-22T02:25:05.7682876+00:00"},{"stageStatus":"None","stageName":"InReview"}]},"name":"TestOrderItemName02","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName02","type":"Microsoft.EdgeOrder/orders"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1423'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Feb 2022 02:25:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name --location
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"orderItemIds\": [\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01\"\r\n
+        \   ],\r\n    \"currentStage\": {\r\n      \"stageStatus\": \"Succeeded\",\r\n
+        \     \"stageName\": \"Placed\",\r\n      \"startTime\": \"2022-02-22T02:24:38.1063274+00:00\"\r\n
+        \   },\r\n    \"orderStageHistory\": [\r\n      {\r\n        \"stageStatus\":
+        \"Succeeded\",\r\n        \"stageName\": \"Placed\",\r\n        \"startTime\":
+        \"2022-02-22T02:24:38.1063274+00:00\"\r\n      },\r\n      {\r\n        \"stageStatus\":
+        \"None\",\r\n        \"stageName\": \"InReview\"\r\n      }\r\n    ]\r\n  },\r\n
+        \ \"name\": \"TestOrderItemName01\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01\",\r\n
+        \ \"type\": \"Microsoft.EdgeOrder/orders\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '892'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Feb 2022 02:25:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"reason": "Order cancelled"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item cancel
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '29'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --reason
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName02/cancel?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Tue, 22 Feb 2022 02:25:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName02?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:25:20 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:25:31 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:25:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:25:52 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:26:03 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:26:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:26:23 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:26:34 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:26:44 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:26:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:27:05 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:27:15 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:27:26 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:27:36 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:27:47 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:27:58 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:28:09 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:28:20 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:28:30 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:28:40 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:28:51 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:29:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:29:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:29:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:29:32 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:29:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:29:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:30:04 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:30:14 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:30:25 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:30:35 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:30:46 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:30:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:31:07 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:31:18 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:31:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:31:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:31:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/1457674360938937358-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Tue, 22 Feb 2022 02:32:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"orderItemDetails\":
+        {\r\n          \"productDetails\": {\r\n            \"displayInfo\": {\r\n
+        \             \"productFamilyDisplayName\": \"Azure Stack Edge\",\r\n              \"configurationDisplayName\":
+        \"Azure Stack Edge Pro - 1 GPU\"\r\n            },\r\n            \"hierarchyInformation\":
+        {\r\n              \"productFamilyName\": \"azurestackedge\",\r\n              \"productLineName\":
+        \"azurestackedge\",\r\n              \"productName\": \"azurestackedgegpu\",\r\n
+        \             \"configurationName\": \"edgep_base\"\r\n            },\r\n
+        \           \"count\": 0,\r\n            \"productDoubleEncryptionStatus\":
+        \"Disabled\"\r\n          },\r\n          \"orderItemType\": \"Purchase\",\r\n
+        \         \"currentStage\": {\r\n            \"stageStatus\": \"Succeeded\",\r\n
+        \           \"stageName\": \"Placed\",\r\n            \"startTime\": \"2022-02-22T02:24:34.2281432+00:00\"\r\n
+        \         },\r\n          \"orderItemStageHistory\": [\r\n            {\r\n
+        \             \"stageStatus\": \"Succeeded\",\r\n              \"stageName\":
+        \"Placed\",\r\n              \"startTime\": \"2022-02-22T02:24:34.2281432+00:00\"\r\n
+        \           },\r\n            {\r\n              \"stageStatus\": \"None\",\r\n
+        \             \"stageName\": \"Confirmed\"\r\n            },\r\n            {\r\n
+        \             \"stageStatus\": \"None\",\r\n              \"stageName\": \"ReadyToShip\"\r\n
+        \           },\r\n            {\r\n              \"stageStatus\": \"None\",\r\n
+        \             \"stageName\": \"Shipped\"\r\n            },\r\n            {\r\n
+        \             \"stageStatus\": \"None\",\r\n              \"stageName\": \"Delivered\"\r\n
+        \           },\r\n            {\r\n              \"stageStatus\": \"None\",\r\n
+        \             \"stageName\": \"InUse\"\r\n            }\r\n          ],\r\n
+        \         \"preferences\": {\r\n            \"transportPreferences\": {\r\n
+        \             \"preferredShipmentType\": \"MicrosoftManaged\"\r\n            }\r\n
+        \         },\r\n          \"notificationEmailList\": [],\r\n          \"cancellationStatus\":
+        \"Cancellable\",\r\n          \"deletionStatus\": \"NotAllowed\",\r\n          \"returnStatus\":
+        \"NotReturnable\",\r\n          \"managementRpDetailsList\": [\r\n            {\r\n
+        \             \"resourceProviderNamespace\": \"Microsoft.DataBoxEdge\"\r\n
+        \           }\r\n          ]\r\n        },\r\n        \"addressDetails\":
+        {\r\n          \"forwardAddress\": {\r\n            \"shippingAddress\": {\r\n
+        \             \"streetAddress1\": \"16 TOWNSEND ST\",\r\n              \"streetAddress2\":
+        \"UNIT 1\",\r\n              \"city\": \"San Francisco\",\r\n              \"stateOrProvince\":
+        \"CA\",\r\n              \"country\": \"US\",\r\n              \"postalCode\":
+        \"94107\",\r\n              \"companyName\": \"Microsoft\",\r\n              \"addressType\":
+        \"None\"\r\n            },\r\n            \"contactDetails\": {\r\n              \"contactName\":
+        \"Petr Cech\",\r\n              \"phone\": \"1234567890\",\r\n              \"phoneExtension\":
+        \"\",\r\n              \"emailList\": [\r\n                \"testemail@microsoft.com\"\r\n
+        \             ]\r\n            },\r\n            \"addressValidationStatus\":
+        \"Valid\"\r\n          }\r\n        },\r\n        \"startTime\": \"2022-02-22T02:24:19.4261804+00:00\",\r\n
+        \       \"orderId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01\"\r\n
+        \     },\r\n      \"systemData\": {\r\n        \"createdBy\": \"ethanyang@microsoft.com\",\r\n
+        \       \"createdByType\": \"User\",\r\n        \"createdAt\": \"2022-02-22T02:24:18.4890986+00:00\",\r\n
+        \       \"lastModifiedBy\": \"ethanyang@microsoft.com\",\r\n        \"lastModifiedByType\":
+        \"User\",\r\n        \"lastModifiedAt\": \"2022-02-22T02:24:18.4890986+00:00\"\r\n
+        \     },\r\n      \"location\": \"eastus\",\r\n      \"tags\": {},\r\n      \"name\":
+        \"TestOrderItemName01\",\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01\",\r\n
+        \     \"type\": \"Microsoft.EdgeOrder/orderItems\"\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3802'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Feb 2022 02:32:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"preferences": {"transportPreferences": {"preferredShipmentType":
+      "CustomerManaged"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '103'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --transport-preferences
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:32:04 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/e45c2814-fbaa-4b33-af0b-dcd8f45fbc04?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --transport-preferences
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/e45c2814-fbaa-4b33-af0b-dcd8f45fbc04?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:32:15 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --transport-preferences
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"orderItemDetails\": {\r\n      \"productDetails\":
+        {\r\n        \"displayInfo\": {\r\n          \"productFamilyDisplayName\":
+        \"Azure Stack Edge\",\r\n          \"configurationDisplayName\": \"Azure Stack
+        Edge Pro - 1 GPU\"\r\n        },\r\n        \"hierarchyInformation\": {\r\n
+        \         \"productFamilyName\": \"azurestackedge\",\r\n          \"productLineName\":
+        \"azurestackedge\",\r\n          \"productName\": \"azurestackedgegpu\",\r\n
+        \         \"configurationName\": \"edgep_base\"\r\n        },\r\n        \"count\":
+        0,\r\n        \"productDoubleEncryptionStatus\": \"Disabled\"\r\n      },\r\n
+        \     \"orderItemType\": \"Purchase\",\r\n      \"currentStage\": {\r\n        \"stageStatus\":
+        \"Succeeded\",\r\n        \"stageName\": \"Placed\",\r\n        \"startTime\":
+        \"2022-02-22T02:24:34.2281432+00:00\"\r\n      },\r\n      \"orderItemStageHistory\":
+        [\r\n        {\r\n          \"stageStatus\": \"Succeeded\",\r\n          \"stageName\":
+        \"Placed\",\r\n          \"startTime\": \"2022-02-22T02:24:34.2281432+00:00\"\r\n
+        \       },\r\n        {\r\n          \"stageStatus\": \"None\",\r\n          \"stageName\":
+        \"Confirmed\"\r\n        },\r\n        {\r\n          \"stageStatus\": \"None\",\r\n
+        \         \"stageName\": \"ReadyToShip\"\r\n        },\r\n        {\r\n          \"stageStatus\":
+        \"None\",\r\n          \"stageName\": \"Shipped\"\r\n        },\r\n        {\r\n
+        \         \"stageStatus\": \"None\",\r\n          \"stageName\": \"Delivered\"\r\n
+        \       },\r\n        {\r\n          \"stageStatus\": \"None\",\r\n          \"stageName\":
+        \"InUse\"\r\n        }\r\n      ],\r\n      \"preferences\": {\r\n        \"transportPreferences\":
+        {\r\n          \"preferredShipmentType\": \"CustomerManaged\"\r\n        }\r\n
+        \     },\r\n      \"notificationEmailList\": [],\r\n      \"cancellationStatus\":
+        \"Cancellable\",\r\n      \"deletionStatus\": \"NotAllowed\",\r\n      \"returnStatus\":
+        \"NotReturnable\",\r\n      \"managementRpDetailsList\": [\r\n        {\r\n
+        \         \"resourceProviderNamespace\": \"Microsoft.DataBoxEdge\"\r\n        }\r\n
+        \     ]\r\n    },\r\n    \"addressDetails\": {\r\n      \"forwardAddress\":
+        {\r\n        \"shippingAddress\": {\r\n          \"streetAddress1\": \"16
+        TOWNSEND ST\",\r\n          \"streetAddress2\": \"UNIT 1\",\r\n          \"city\":
+        \"San Francisco\",\r\n          \"stateOrProvince\": \"CA\",\r\n          \"country\":
+        \"US\",\r\n          \"postalCode\": \"94107\",\r\n          \"companyName\":
+        \"Microsoft\",\r\n          \"addressType\": \"None\"\r\n        },\r\n        \"contactDetails\":
+        {\r\n          \"contactName\": \"Petr Cech\",\r\n          \"phone\": \"1234567890\",\r\n
+        \         \"phoneExtension\": \"\",\r\n          \"emailList\": [\r\n            \"testemail@microsoft.com\"\r\n
+        \         ]\r\n        },\r\n        \"addressValidationStatus\": \"Valid\"\r\n
+        \     }\r\n    },\r\n    \"startTime\": \"2022-02-22T02:24:19.4261804+00:00\",\r\n
+        \   \"orderId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01\"\r\n
+        \ },\r\n  \"systemData\": {\r\n    \"createdBy\": \"ethanyang@microsoft.com\",\r\n
+        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2022-02-22T02:24:18.4890986+00:00\",\r\n
+        \   \"lastModifiedBy\": \"ethanyang@microsoft.com\",\r\n    \"lastModifiedByType\":
+        \"User\",\r\n    \"lastModifiedAt\": \"2022-02-22T02:32:03.8263708+00:00\"\r\n
+        \ },\r\n  \"location\": \"eastus\",\r\n  \"tags\": {},\r\n  \"name\": \"TestOrderItemName01\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01\",\r\n
+        \ \"type\": \"Microsoft.EdgeOrder/orderItems\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3356'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Feb 2022 02:32:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"reason": "Order cancelled"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item cancel
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '29'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --reason
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01/cancel?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Tue, 22 Feb 2022 02:32:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:32:29 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:32:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:32:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:33:00 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:33:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:33:20 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:33:31 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:33:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:33:52 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:34:03 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:34:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:34:23 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:34:34 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:34:44 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:34:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:35:06 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:35:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:35:26 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:35:37 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:35:47 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:35:57 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:36:08 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:36:18 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:36:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 22 Feb 2022 02:36:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder order-item delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/4729465173220691060-deleteresource?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Tue, 22 Feb 2022 02:36:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 204
+      message: No Content
+version: 1

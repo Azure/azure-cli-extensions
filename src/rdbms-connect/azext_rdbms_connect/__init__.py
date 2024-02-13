@@ -13,8 +13,7 @@ class RdbmsConnectCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         rdbms_connect_custom = CliCommandType(
             operations_tmpl='azext_rdbms_connect.custom#{}')
-        super(RdbmsConnectCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                         custom_command_type=rdbms_connect_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=rdbms_connect_custom)
 
     def load_command_table(self, args):
         from azext_rdbms_connect.commands import load_command_table

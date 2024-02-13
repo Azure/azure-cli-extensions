@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+from azure.cli.core.azclierror import ResourceNotFoundError
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ImportPipeline, ImportPipelineSourceProperties, PipelineTriggerProperties, PipelineSourceTriggerProperties
 from .utility_functions import create_identity_properties
 
@@ -45,6 +46,14 @@ def get_importpipeline(client, resource_group_name, registry_name, import_pipeli
 
 def delete_importpipeline(client, resource_group_name, registry_name, import_pipeline_name):
     '''Delete an import pipeline.'''
+
+    try:
+        client.import_pipelines.get(resource_group_name=resource_group_name,
+                                    registry_name=registry_name,
+                                    import_pipeline_name=import_pipeline_name)
+
+    except Exception as e:
+        raise ResourceNotFoundError(f'Import pipeline {import_pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.') from e
 
     return client.import_pipelines.begin_delete(resource_group_name=resource_group_name,
                                                 registry_name=registry_name,

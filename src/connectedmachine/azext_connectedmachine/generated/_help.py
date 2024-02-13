@@ -12,110 +12,13 @@
 from knack.help_files import helps
 
 
-helps['connectedmachine'] = """
-    type: group
-    short-summary: connectedmachine
-"""
-
-helps['connectedmachine list'] = """
+helps['connectedmachine private-link-scope update-tag'] = """
     type: command
-    short-summary: "Lists all the hybrid machines in the specified subscription."
+    short-summary: "Update an existing PrivateLinkScope's tags. To update other fields use the CreateOrUpdate \
+method."
     examples:
-      - name: List Machines by resource group
+      - name: PrivateLinkScopeUpdateTagsOnly
         text: |-
-               az connectedmachine list --resource-group "myResourceGroup"
-"""
-
-helps['connectedmachine show'] = """
-    type: command
-    short-summary: "Retrieves information about the model view or the instance view of a hybrid machine."
-    examples:
-      - name: Get Machine
-        text: |-
-               az connectedmachine show --name "myMachine" --resource-group "myResourceGroup"
-"""
-
-helps['connectedmachine delete'] = """
-    type: command
-    short-summary: "The operation to remove a hybrid machine identity in Azure."
-    examples:
-      - name: Delete a Machine
-        text: |-
-               az connectedmachine delete --name "myMachine" --resource-group "myResourceGroup"
-"""
-
-helps['connectedmachine extension'] = """
-    type: group
-    short-summary: connectedmachine extension
-"""
-
-helps['connectedmachine extension list'] = """
-    type: command
-    short-summary: "The operation to get all extensions of a non-Azure machine"
-    examples:
-      - name: Get all Machine Extensions
-        text: |-
-               az connectedmachine extension list --machine-name "myMachine" --resource-group "myResourceGroup"
-"""
-
-helps['connectedmachine extension show'] = """
-    type: command
-    short-summary: "The operation to get the extension."
-    examples:
-      - name: Get Machine Extension
-        text: |-
-               az connectedmachine extension show --machine-name "myMachine" --name "CustomScriptExtension" \
---resource-group "myResourceGroup"
-"""
-
-helps['connectedmachine extension create'] = """
-    type: command
-    short-summary: "The operation to create or update the extension."
-    examples:
-      - name: Create a Machine Extension (PUT)
-        text: |-
-               az connectedmachine extension create --machine-name "myMachine" --name "CustomScriptExtension" --location \
-"eastus2euap" --type "CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"pow\
-ershell.exe -c \\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" --type-handler-version "1.10" \
---resource-group "myResourceGroup"
-"""
-
-helps['connectedmachine extension update'] = """
-    type: command
-    short-summary: "The operation to update the extension."
-    examples:
-      - name: Update a Machine Extension (PATCH)
-        text: |-
-               az connectedmachine extension update --machine-name "myMachine" --name "CustomScriptExtension" --type \
-"CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
-\\\\\\"Get-Process | Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version "1.10" --resource-group \
-"myResourceGroup"
-"""
-
-helps['connectedmachine extension delete'] = """
-    type: command
-    short-summary: "The operation to delete the extension."
-    examples:
-      - name: Delete a Machine Extension
-        text: |-
-               az connectedmachine extension delete --machine-name "myMachine" --name "MMA" --resource-group \
-"myResourceGroup"
-"""
-
-helps['connectedmachine extension wait'] = """
-    type: command
-    short-summary: Place the CLI in a waiting state until a condition of the connectedmachine extension is met.
-    examples:
-      - name: Pause executing next line of CLI script until the connectedmachine extension is successfully created.
-        text: |-
-               az connectedmachine extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
---resource-group "myResourceGroup" --created
-      - name: Pause executing next line of CLI script until the connectedmachine extension is successfully updated.
-        text: |-
-               az connectedmachine extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
---resource-group "myResourceGroup" --updated
-      - name: Pause executing next line of CLI script until the connectedmachine extension is successfully deleted.
-        text: |-
-               az connectedmachine extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
---resource-group "myResourceGroup" --deleted
+               az connectedmachine private-link-scope update-tag --tags Tag1="Value1" Tag2="Value2" --resource-group \
+"my-resource-group" --scope-name "my-privatelinkscope"
 """

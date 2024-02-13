@@ -53,14 +53,17 @@ aem_extension_info_v2 = {
 
 
 def set_aem(cmd, resource_group_name, vm_name, skip_storage_analytics=False,
-            install_new_extension=False, set_access_to_individual_resources=False):
+            install_new_extension=False, set_access_to_individual_resources=False,
+            proxy_uri=None, debug_extension=False):
     aem = EnhancedMonitoring(cmd, resource_group_name, vm_name,
                              vm_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_COMPUTE),
                              storage_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE),
                              roles_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION),
                              skip_storage_analytics=skip_storage_analytics,
                              install_new_extension=install_new_extension,
-                             set_access_to_individual_resources=set_access_to_individual_resources)
+                             set_access_to_individual_resources=set_access_to_individual_resources,
+                             proxy_uri=proxy_uri,
+                             debug_extension=debug_extension)
     return aem.enable()
 
 
@@ -84,7 +87,9 @@ class EnhancedMonitoring(object):
                  storage_client, roles_client=None, skip_storage_analytics=None,
                  install_new_extension=None,
                  set_access_to_individual_resources=None,
-                 no_wait=False):
+                 no_wait=False,
+                 proxy_uri=None,
+                 debug_extension=False):
         self._vm_client = vm_client
         self._storage_client = storage_client
         self._roles_client = roles_client
@@ -106,6 +111,8 @@ class EnhancedMonitoring(object):
         self._install_new_extension = install_new_extension
         self._set_access_to_individual_resources = set_access_to_individual_resources
         self._no_wait = no_wait
+        self._proxy_uri = proxy_uri
+        self._debug_extension = debug_extension
 
     def enable(self):
         # * no extension + new extension switch => install new extension
@@ -131,19 +138,25 @@ class EnhancedMonitoring(object):
     def _enable_new(self):
         self._extension = aem_extension_info_v2[self._os_type]
 
+        new_identity = None
         if self._vm.identity is None:
             logger.info("VM has no identity, enabling system assigned")
-            params_identity = {}
-            params_identity['type'] = ResourceIdentityType.system_assigned
-            self._vm.identity = params_identity
-            poller = (self._vm_client.virtual_machines.
-                      begin_create_or_update(self._resource_group, self._vm.name, self._vm))
-            self._vm = poller.result()
+            new_identity = ResourceIdentityType.system_assigned
+
         elif self._vm.identity is not None and self._vm.identity.type == ResourceIdentityType.user_assigned:
             logger.info("VM has user assigned identity, enabling user and system assigned")
-            self._vm.identity.type = ResourceIdentityType.system_assigned_user_assigned
+            new_identity = ResourceIdentityType.system_assigned_user_assigned
+
+        if new_identity is not None:
+            params_identity = {}
+            params_identity['type'] = new_identity
+            VirtualMachineUpdate = self._cmd.get_models('VirtualMachineUpdate',
+                                                        resource_type=ResourceType.MGMT_COMPUTE,
+                                                        operation_group='virtual_machines')
+            vm_patch = VirtualMachineUpdate()
+            vm_patch.identity = params_identity
             poller = (self._vm_client.virtual_machines.
-                      begin_create_or_update(self._resource_group, self._vm.name, self._vm))
+                      begin_update(self._resource_group, self._vm.name, vm_patch))
             self._vm = poller.result()
 
         scopes = set()
@@ -167,6 +180,17 @@ class EnhancedMonitoring(object):
 
         self._create_role_assignments_for_scopes(scopes)
 
+        pub_cfg = {}
+        if self._proxy_uri is not None:
+            pub_cfg.update({
+                'proxy': self._proxy_uri
+            })
+
+        if self._debug_extension is True:
+            pub_cfg.update({
+                'debug': '1'
+            })
+
         VirtualMachineExtension = self._cmd.get_models('VirtualMachineExtension',
                                                        resource_type=ResourceType.MGMT_COMPUTE,
                                                        operation_group='virtual_machine_extensions')
@@ -177,7 +201,8 @@ class EnhancedMonitoring(object):
                                                type_properties_type=self._extension['name'],
                                                type_handler_version=self._extension['version'],
                                                settings={
-                                                   'system': 'SAP'
+                                                   'system': 'SAP',
+                                                   'cfg': [{'key': k, 'value': pub_cfg[k]} for k in pub_cfg]
                                                },
                                                auto_upgrade_minor_version=True)
 

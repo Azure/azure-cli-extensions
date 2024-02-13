@@ -1,0 +1,99 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - sentinel enrichment domain-whois show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --domain
+      User-Agent:
+      - AZURECLI/2.37.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sentinel_000001/providers/Microsoft.SecurityInsights/enrichment/domain/whois/?domain=microsoft.com&api-version=2022-06-01-preview
+  response:
+    body:
+      string: '{"domain":"microsoft.com","server":"whois.markmonitor.com","created":"1991-05-02T00:00:00Z","updated":"2022-04-18T00:00:00Z","expires":"2023-05-03T00:00:00Z","parsedWhois":{"registrar":{"name":"MarkMonitor,
+        Inc.","abuseContactPhone":"12083895770","abuseContactEmail":"abusecomplaints@markmonitor.com","ianaId":"292","url":"http://www.markmonitor.com","whoisServer":"whois.markmonitor.com"},"contacts":{"admin":{"name":"Domain
+        Administrator","org":"Microsoft Corporation","street":["One Microsoft Way,"],"city":"Redmond","state":"WA","postal":"98052","country":"us","phone":"14258828080","fax":"14259367329","email":"admin@domains.microsoft"},"registrant":{"name":"Domain
+        Administrator","org":"Microsoft Corporation","street":["One Microsoft Way,"],"city":"Redmond","state":"WA","postal":"98052","country":"us","phone":"14258828080","fax":"14259367329","email":"admin@domains.microsoft"},"billing":{"name":"","org":"","street":[],"city":"","state":"","postal":"","country":"","phone":"","fax":"","email":""},"tech":{"name":"MSN
+        Hostmaster","org":"Microsoft Corporation","street":["One Microsoft Way,"],"city":"Redmond","state":"WA","postal":"98052","country":"us","phone":"14258828080","fax":"14259367329","email":"msnhst@microsoft.com"}},"nameServers":["ns1-39.azure-dns.com","ns2-39.azure-dns.net","ns3-39.azure-dns.org","ns4-39.azure-dns.info"],"statuses":["clientUpdateProhibited","clientTransferProhibited","clientDeleteProhibited","serverUpdateProhibited","serverTransferProhibited","serverDeleteProhibited"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1515'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 26 Jun 2022 15:41:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - sentinel enrichment ip-geodata show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --ip-address
+      User-Agent:
+      - AZURECLI/2.37.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sentinel_000001/providers/Microsoft.SecurityInsights/enrichment/ip/geodata/?ipAddress=1.2.3.4&api-version=2022-06-01-preview
+  response:
+    body:
+      string: '{"asn":null,"carrier":null,"city":"brisbane","cityCf":50,"continent":"oceania","country":"australia","countryCf":86,"ipAddr":"1.2.3.4","ipRoutingType":"fixed","latitude":"-27.46758","longitude":"153.02789","organization":"apnic
+        debogon project","organizationType":"Telecommunications","region":null,"state":"queensland","stateCf":68,"stateCode":"qld"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '351'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 26 Jun 2022 15:41:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

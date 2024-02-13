@@ -1,0 +1,679 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "name": "TestNetworkSecurityPerimeter1"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '68'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name -l --resource-group
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"name":"TestNetworkSecurityPerimeter1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1","location":"eastus2euap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"2443a2a0-a958-4528-a549-42c292ed330a","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '423'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Dec 2023 13:29:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "name": "TestNetworkSecurityPerimeter2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '68'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name -l --resource-group
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"name":"TestNetworkSecurityPerimeter2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2","location":"eastus2euap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"6d7749c8-6ad0-4dae-98d3-e4dc5529c755","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '423'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Dec 2023 13:29:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"autoApprovedRemotePerimeterResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2",
+      "localInboundProfiles": ["*"], "remoteInboundProfiles": ["*"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '299'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --auto-remote-nsp-id --local-inbound-profile
+        --remote-inbound-profile
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"name":"TestNspLink1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1","type":"Microsoft.Network/networkSecurityPerimeters/links","properties":{"provisioningState":"Accepted","autoApprovedRemotePerimeterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2","remotePerimeterGuid":"6d7749c8-6ad0-4dae-98d3-e4dc5529c755","remotePerimeterLocation":"eastus2euap","localInboundProfiles":["*"],"localOutboundProfiles":["*"],"remoteInboundProfiles":["*"],"remoteOutboundProfiles":["*"],"status":"Approved","description":"Auto
+        Approved."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '820'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Dec 2023 13:29:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"name":"TestNspLink1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1","type":"Microsoft.Network/networkSecurityPerimeters/links","properties":{"provisioningState":"Accepted","autoApprovedRemotePerimeterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2","remotePerimeterGuid":"6d7749c8-6ad0-4dae-98d3-e4dc5529c755","remotePerimeterLocation":"eastus2euap","localInboundProfiles":["*"],"localOutboundProfiles":["*"],"remoteInboundProfiles":["*"],"remoteOutboundProfiles":["*"],"status":"Approved","description":"Auto
+        Approved."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '820'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Dec 2023 13:29:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --perimeter-name --resource-group
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"nextLink":"","value":[{"name":"TestNspLink1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1","type":"Microsoft.Network/networkSecurityPerimeters/links","properties":{"provisioningState":"Accepted","autoApprovedRemotePerimeterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2","remotePerimeterGuid":"6d7749c8-6ad0-4dae-98d3-e4dc5529c755","remotePerimeterLocation":"eastus2euap","localInboundProfiles":["*"],"localOutboundProfiles":["*"],"remoteInboundProfiles":["*"],"remoteOutboundProfiles":["*"],"status":"Approved","description":"Auto
+        Approved."}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '846'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Dec 2023 13:29:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --local-inbound-profile
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"name":"TestNspLink1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1","type":"Microsoft.Network/networkSecurityPerimeters/links","properties":{"provisioningState":"Succeeded","autoApprovedRemotePerimeterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2","remotePerimeterGuid":"6d7749c8-6ad0-4dae-98d3-e4dc5529c755","remotePerimeterLocation":"eastus2euap","localInboundProfiles":["*"],"localOutboundProfiles":["*"],"remoteInboundProfiles":["*"],"remoteOutboundProfiles":["*"],"status":"Approved","description":"Auto
+        Approved."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '821'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Dec 2023 13:29:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"autoApprovedRemotePerimeterResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2",
+      "description": "Auto Approved.", "localInboundProfiles": ["*"], "remoteInboundProfiles":
+      ["*"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '332'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --local-inbound-profile
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"name":"TestNspLink1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1","type":"Microsoft.Network/networkSecurityPerimeters/links","properties":{"provisioningState":"Accepted","autoApprovedRemotePerimeterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2","remotePerimeterGuid":"6d7749c8-6ad0-4dae-98d3-e4dc5529c755","remotePerimeterLocation":"eastus2euap","localInboundProfiles":["*"],"localOutboundProfiles":["*"],"remoteInboundProfiles":["*"],"remoteOutboundProfiles":["*"],"status":"Approved","description":"Auto
+        Approved."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '820'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Dec 2023 13:29:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1?api-version=2023-07-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 12 Dec 2023 13:29:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1/operationResults/f41c1459-348e-4695-970b-69c1fdd247e8?api-version=2023-07-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1/operationResults/f41c1459-348e-4695-970b-69c1fdd247e8?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Deleting","autoApprovedRemotePerimeterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2","remotePerimeterLocation":"eastus2euap","remotePerimeterGuid":"6d7749c8-6ad0-4dae-98d3-e4dc5529c755","localInboundProfiles":["*"],"localOutboundProfiles":["*"],"remoteInboundProfiles":["*"],"remoteOutboundProfiles":["*"],"status":"Approved","description":"Auto
+        Approved.","version":"3"},"name":"TestNspLink1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1","version":0,"apiVersion":"","publishingStates":{},"systemData":{"createdBy":"","createdByType":"User","lastModifiedBy":"","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '926'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Dec 2023 13:29:40 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1/operationResults/f41c1459-348e-4695-970b-69c1fdd247e8?api-version=2023-07-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1/links/TestNspLink1/operationResults/f41c1459-348e-4695-970b-69c1fdd247e8?api-version=2023-07-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Tue, 12 Dec 2023 13:30:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link-reference list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --perimeter-name --resource-group
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2/linkReferences?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"nextLink":"","value":[{"name":"Ref-from-TestNspLink1-2443a2a0-a958-4528-a549-42c292ed330a","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2/linkReferences/Ref-from-TestNspLink1-2443a2a0-a958-4528-a549-42c292ed330a","type":"Microsoft.Network/networkSecurityPerimeters/linkReferences","properties":{"provisioningState":"Accepted","remotePerimeterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1","remotePerimeterGuid":"2443a2a0-a958-4528-a549-42c292ed330a","remotePerimeterLocation":"eastus2euap","localInboundProfiles":["*"],"localOutboundProfiles":["*"],"remoteInboundProfiles":["*"],"remoteOutboundProfiles":["*"],"status":"Disconnected","description":"Auto
+        Approved."}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '948'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Dec 2023 13:30:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link-reference show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --perimeter-name --resource-group --name
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2/linkReferences/Ref-from-TestNspLink1-2443a2a0-a958-4528-a549-42c292ed330a?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"name":"Ref-from-TestNspLink1-2443a2a0-a958-4528-a549-42c292ed330a","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2/linkReferences/Ref-from-TestNspLink1-2443a2a0-a958-4528-a549-42c292ed330a","type":"Microsoft.Network/networkSecurityPerimeters/linkReferences","properties":{"provisioningState":"Accepted","remotePerimeterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1","remotePerimeterGuid":"2443a2a0-a958-4528-a549-42c292ed330a","remotePerimeterLocation":"eastus2euap","localInboundProfiles":["*"],"localOutboundProfiles":["*"],"remoteInboundProfiles":["*"],"remoteOutboundProfiles":["*"],"status":"Disconnected","description":"Auto
+        Approved."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '922'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Dec 2023 13:30:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link-reference delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --perimeter-name --resource-group --name --yes
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2/linkReferences/Ref-from-TestNspLink1-2443a2a0-a958-4528-a549-42c292ed330a?api-version=2023-07-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 12 Dec 2023 13:30:21 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2/linkReferences/Ref-from-TestNspLink1-2443a2a0-a958-4528-a549-42c292ed330a/operationResults/8ce20aa5-a82a-4969-b615-e294d34bd1fd?api-version=2023-07-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link-reference delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --perimeter-name --resource-group --name --yes
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2/linkReferences/Ref-from-TestNspLink1-2443a2a0-a958-4528-a549-42c292ed330a/operationResults/8ce20aa5-a82a-4969-b615-e294d34bd1fd?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"name":"Ref-from-TestNspLink1-2443a2a0-a958-4528-a549-42c292ed330a","properties":{"provisioningState":"Deleting","remotePerimeterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter1","remotePerimeterLocation":"eastus2euap","remotePerimeterGuid":"2443a2a0-a958-4528-a549-42c292ed330a","localInboundProfiles":["*"],"localOutboundProfiles":["*"],"remoteInboundProfiles":["*"],"remoteOutboundProfiles":["*"],"status":"Disconnected","description":"Auto
+        Approved.","version":"4","approvalType":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2/linkReferences/Ref-from-TestNspLink1-2443a2a0-a958-4528-a549-42c292ed330a","version":0,"apiVersion":"","publishingStates":{},"systemData":{"createdBy":"","createdByType":"User","lastModifiedBy":"","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1036'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 12 Dec 2023 13:30:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2/linkReferences/Ref-from-TestNspLink1-2443a2a0-a958-4528-a549-42c292ed330a/operationResults/8ce20aa5-a82a-4969-b615-e294d34bd1fd?api-version=2023-07-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter link-reference delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --perimeter-name --resource-group --name --yes
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_link_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter2/linkReferences/Ref-from-TestNspLink1-2443a2a0-a958-4528-a549-42c292ed330a/operationResults/8ce20aa5-a82a-4969-b615-e294d34bd1fd?api-version=2023-07-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Tue, 12 Dec 2023 13:30:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 204
+      message: No Content
+version: 1

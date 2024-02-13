@@ -2,122 +2,106 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# Generated from ScheduleQueryCondition.g4 by ANTLR 4.13.1
 # pylint: disable=all
-# Generated from ScheduleQueryCondition.g4 by ANTLR 4.7.2
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
-from typing.io import TextIO
 import sys
-
+if sys.version_info[1] > 5:
+	from typing import TextIO
+else:
+	from typing.io import TextIO
 
 def serializedATN():
-    with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3(")
-        buf.write("\u00fe\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
-        buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16")
-        buf.write("\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\4\23\t\23")
-        buf.write("\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31")
-        buf.write("\t\31\4\32\t\32\4\33\t\33\4\34\t\34\4\35\t\35\4\36\t\36")
-        buf.write("\4\37\t\37\4 \t \4!\t!\4\"\t\"\3\2\3\2\3\2\3\2\5\2I\n")
-        buf.write("\2\3\2\3\2\3\2\3\2\3\2\3\2\5\2Q\n\2\3\2\3\2\7\2U\n\2\f")
-        buf.write("\2\16\2X\13\2\3\2\3\2\5\2\\\n\2\3\2\7\2_\n\2\f\2\16\2")
-        buf.write("b\13\2\3\3\3\3\3\3\3\4\3\4\3\4\3\5\6\5k\n\5\r\5\16\5l")
-        buf.write("\3\6\3\6\3\6\3\6\3\6\5\6t\n\6\3\6\3\6\3\7\6\7y\n\7\r\7")
-        buf.write("\16\7z\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t")
-        buf.write("\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3")
-        buf.write("\t\6\t\u0097\n\t\r\t\16\t\u0098\3\n\3\n\3\n\3\13\3\13")
-        buf.write("\3\f\3\f\3\f\3\f\3\r\6\r\u00a5\n\r\r\r\16\r\u00a6\3\16")
-        buf.write("\3\16\3\16\3\17\3\17\3\17\3\20\3\20\3\20\3\20\3\20\3\20")
-        buf.write("\3\20\3\20\3\20\3\20\3\21\3\21\3\21\3\22\3\22\3\22\3\23")
-        buf.write("\3\23\3\23\3\24\3\24\3\24\3\25\3\25\3\25\3\26\3\26\3\26")
-        buf.write("\3\27\3\27\3\27\3\30\3\30\3\31\3\31\3\31\3\32\3\32\3\32")
-        buf.write("\3\33\3\33\3\33\3\33\3\33\7\33\u00db\n\33\f\33\16\33\u00de")
-        buf.write("\13\33\3\34\3\34\3\34\3\34\3\35\3\35\3\35\3\36\3\36\3")
-        buf.write("\36\3\37\3\37\3\37\3 \3 \3 \3!\3!\3!\3!\7!\u00f4\n!\f")
-        buf.write("!\16!\u00f7\13!\3\"\6\"\u00fa\n\"\r\"\16\"\u00fb\3\"\2")
-        buf.write("\2#\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60")
-        buf.write("\62\64\668:<>@B\2\b\4\2\3\4((\5\2\3\13&&((\4\2\n\n\37")
-        buf.write("\37\3\2 !\4\2\n\n\"\"\b\2\4\5\7\13\22\23$$&&((\2\u00fe")
-        buf.write("\2D\3\2\2\2\4c\3\2\2\2\6f\3\2\2\2\bj\3\2\2\2\ns\3\2\2")
-        buf.write("\2\fx\3\2\2\2\16|\3\2\2\2\20\u0096\3\2\2\2\22\u009a\3")
-        buf.write("\2\2\2\24\u009d\3\2\2\2\26\u009f\3\2\2\2\30\u00a4\3\2")
-        buf.write("\2\2\32\u00a8\3\2\2\2\34\u00ab\3\2\2\2\36\u00ae\3\2\2")
-        buf.write("\2 \u00b8\3\2\2\2\"\u00bb\3\2\2\2$\u00be\3\2\2\2&\u00c1")
-        buf.write("\3\2\2\2(\u00c4\3\2\2\2*\u00c7\3\2\2\2,\u00ca\3\2\2\2")
-        buf.write(".\u00cd\3\2\2\2\60\u00cf\3\2\2\2\62\u00d2\3\2\2\2\64\u00d5")
-        buf.write("\3\2\2\2\66\u00df\3\2\2\28\u00e3\3\2\2\2:\u00e6\3\2\2")
-        buf.write("\2<\u00e9\3\2\2\2>\u00ec\3\2\2\2@\u00ef\3\2\2\2B\u00f9")
-        buf.write("\3\2\2\2DH\5\4\3\2EF\5\n\6\2FG\5\6\4\2GI\3\2\2\2HE\3\2")
-        buf.write("\2\2HI\3\2\2\2IJ\3\2\2\2JK\5\16\b\2KL\7&\2\2LM\5\22\n")
-        buf.write("\2MP\5\24\13\2NO\7&\2\2OQ\5\26\f\2PN\3\2\2\2PQ\3\2\2\2")
-        buf.write("QV\3\2\2\2RS\7&\2\2SU\5\64\33\2TR\3\2\2\2UX\3\2\2\2VT")
-        buf.write("\3\2\2\2VW\3\2\2\2W[\3\2\2\2XV\3\2\2\2YZ\7&\2\2Z\\\5\36")
-        buf.write("\20\2[Y\3\2\2\2[\\\3\2\2\2\\`\3\2\2\2]_\7\'\2\2^]\3\2")
-        buf.write("\2\2_b\3\2\2\2`^\3\2\2\2`a\3\2\2\2a\3\3\2\2\2b`\3\2\2")
-        buf.write("\2cd\7(\2\2de\7&\2\2e\5\3\2\2\2fg\7\25\2\2gh\7&\2\2h\7")
-        buf.write("\3\2\2\2ik\t\2\2\2ji\3\2\2\2kl\3\2\2\2lj\3\2\2\2lm\3\2")
-        buf.write("\2\2m\t\3\2\2\2no\7%\2\2op\5\f\7\2pq\7%\2\2qt\3\2\2\2")
-        buf.write("rt\5\f\7\2sn\3\2\2\2sr\3\2\2\2tu\3\2\2\2uv\7&\2\2v\13")
-        buf.write("\3\2\2\2wy\t\3\2\2xw\3\2\2\2yz\3\2\2\2zx\3\2\2\2z{\3\2")
-        buf.write("\2\2{\r\3\2\2\2|}\7%\2\2}~\5\20\t\2~\177\7%\2\2\177\17")
-        buf.write("\3\2\2\2\u0080\u0097\7(\2\2\u0081\u0097\7&\2\2\u0082\u0097")
-        buf.write("\7$\2\2\u0083\u0097\7#\2\2\u0084\u0097\7\37\2\2\u0085")
-        buf.write("\u0097\7\"\2\2\u0086\u0097\5\62\32\2\u0087\u0097\7\f\2")
-        buf.write("\2\u0088\u0097\7\4\2\2\u0089\u0097\7\3\2\2\u008a\u0097")
-        buf.write("\7\r\2\2\u008b\u0097\7\16\2\2\u008c\u0097\7\5\2\2\u008d")
-        buf.write("\u0097\7\6\2\2\u008e\u0097\7\7\2\2\u008f\u0097\7\b\2\2")
-        buf.write("\u0090\u0097\7\t\2\2\u0091\u0097\7\n\2\2\u0092\u0097\7")
-        buf.write("\13\2\2\u0093\u0097\7\17\2\2\u0094\u0097\7\20\2\2\u0095")
-        buf.write("\u0097\7\21\2\2\u0096\u0080\3\2\2\2\u0096\u0081\3\2\2")
-        buf.write("\2\u0096\u0082\3\2\2\2\u0096\u0083\3\2\2\2\u0096\u0084")
-        buf.write("\3\2\2\2\u0096\u0085\3\2\2\2\u0096\u0086\3\2\2\2\u0096")
-        buf.write("\u0087\3\2\2\2\u0096\u0088\3\2\2\2\u0096\u0089\3\2\2\2")
-        buf.write("\u0096\u008a\3\2\2\2\u0096\u008b\3\2\2\2\u0096\u008c\3")
-        buf.write("\2\2\2\u0096\u008d\3\2\2\2\u0096\u008e\3\2\2\2\u0096\u008f")
-        buf.write("\3\2\2\2\u0096\u0090\3\2\2\2\u0096\u0091\3\2\2\2\u0096")
-        buf.write("\u0092\3\2\2\2\u0096\u0093\3\2\2\2\u0096\u0094\3\2\2\2")
-        buf.write("\u0096\u0095\3\2\2\2\u0097\u0098\3\2\2\2\u0098\u0096\3")
-        buf.write("\2\2\2\u0098\u0099\3\2\2\2\u0099\21\3\2\2\2\u009a\u009b")
-        buf.write("\7#\2\2\u009b\u009c\7&\2\2\u009c\23\3\2\2\2\u009d\u009e")
-        buf.write("\7$\2\2\u009e\25\3\2\2\2\u009f\u00a0\5\32\16\2\u00a0\u00a1")
-        buf.write("\5\34\17\2\u00a1\u00a2\5\30\r\2\u00a2\27\3\2\2\2\u00a3")
-        buf.write("\u00a5\t\3\2\2\u00a4\u00a3\3\2\2\2\u00a5\u00a6\3\2\2\2")
-        buf.write("\u00a6\u00a4\3\2\2\2\u00a6\u00a7\3\2\2\2\u00a7\31\3\2")
-        buf.write("\2\2\u00a8\u00a9\7\26\2\2\u00a9\u00aa\7&\2\2\u00aa\33")
-        buf.write("\3\2\2\2\u00ab\u00ac\7\27\2\2\u00ac\u00ad\7&\2\2\u00ad")
-        buf.write("\35\3\2\2\2\u00ae\u00af\5 \21\2\u00af\u00b0\5\"\22\2\u00b0")
-        buf.write("\u00b1\5*\26\2\u00b1\u00b2\5$\23\2\u00b2\u00b3\5&\24\2")
-        buf.write("\u00b3\u00b4\5(\25\2\u00b4\u00b5\5\60\31\2\u00b5\u00b6")
-        buf.write("\5,\27\2\u00b6\u00b7\5.\30\2\u00b7\37\3\2\2\2\u00b8\u00b9")
-        buf.write("\7\30\2\2\u00b9\u00ba\7&\2\2\u00ba!\3\2\2\2\u00bb\u00bc")
-        buf.write("\7\31\2\2\u00bc\u00bd\7&\2\2\u00bd#\3\2\2\2\u00be\u00bf")
-        buf.write("\7\34\2\2\u00bf\u00c0\7&\2\2\u00c0%\3\2\2\2\u00c1\u00c2")
-        buf.write("\7\32\2\2\u00c2\u00c3\7&\2\2\u00c3\'\3\2\2\2\u00c4\u00c5")
-        buf.write("\7\33\2\2\u00c5\u00c6\7&\2\2\u00c6)\3\2\2\2\u00c7\u00c8")
-        buf.write("\7$\2\2\u00c8\u00c9\7&\2\2\u00c9+\3\2\2\2\u00ca\u00cb")
-        buf.write("\7\35\2\2\u00cb\u00cc\7&\2\2\u00cc-\3\2\2\2\u00cd\u00ce")
-        buf.write("\7\36\2\2\u00ce/\3\2\2\2\u00cf\u00d0\7$\2\2\u00d0\u00d1")
-        buf.write("\7&\2\2\u00d1\61\3\2\2\2\u00d2\u00d3\7\24\2\2\u00d3\u00d4")
-        buf.write("\7&\2\2\u00d4\63\3\2\2\2\u00d5\u00d6\5\62\32\2\u00d6\u00dc")
-        buf.write("\5\66\34\2\u00d7\u00d8\58\35\2\u00d8\u00d9\5\66\34\2\u00d9")
-        buf.write("\u00db\3\2\2\2\u00da\u00d7\3\2\2\2\u00db\u00de\3\2\2\2")
-        buf.write("\u00dc\u00da\3\2\2\2\u00dc\u00dd\3\2\2\2\u00dd\65\3\2")
-        buf.write("\2\2\u00de\u00dc\3\2\2\2\u00df\u00e0\5> \2\u00e0\u00e1")
-        buf.write("\5:\36\2\u00e1\u00e2\5@!\2\u00e2\67\3\2\2\2\u00e3\u00e4")
-        buf.write("\t\4\2\2\u00e4\u00e5\7&\2\2\u00e59\3\2\2\2\u00e6\u00e7")
-        buf.write("\t\5\2\2\u00e7\u00e8\7&\2\2\u00e8;\3\2\2\2\u00e9\u00ea")
-        buf.write("\t\6\2\2\u00ea\u00eb\7&\2\2\u00eb=\3\2\2\2\u00ec\u00ed")
-        buf.write("\7(\2\2\u00ed\u00ee\7&\2\2\u00ee?\3\2\2\2\u00ef\u00f5")
-        buf.write("\5B\"\2\u00f0\u00f1\5<\37\2\u00f1\u00f2\5B\"\2\u00f2\u00f4")
-        buf.write("\3\2\2\2\u00f3\u00f0\3\2\2\2\u00f4\u00f7\3\2\2\2\u00f5")
-        buf.write("\u00f3\3\2\2\2\u00f5\u00f6\3\2\2\2\u00f6A\3\2\2\2\u00f7")
-        buf.write("\u00f5\3\2\2\2\u00f8\u00fa\t\7\2\2\u00f9\u00f8\3\2\2\2")
-        buf.write("\u00fa\u00fb\3\2\2\2\u00fb\u00f9\3\2\2\2\u00fb\u00fc\3")
-        buf.write("\2\2\2\u00fcC\3\2\2\2\20HPV[`lsz\u0096\u0098\u00a6\u00dc")
-        buf.write("\u00f5\u00fb")
-        return buf.getvalue()
-
+    return [
+        4,1,38,252,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
+        6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,
+        2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
+        7,20,2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,
+        2,27,7,27,2,28,7,28,2,29,7,29,2,30,7,30,2,31,7,31,2,32,7,32,1,0,
+        1,0,1,0,1,0,3,0,71,8,0,1,0,1,0,1,0,1,0,1,0,1,0,3,0,79,8,0,1,0,1,
+        0,5,0,83,8,0,10,0,12,0,86,9,0,1,0,1,0,3,0,90,8,0,1,0,5,0,93,8,0,
+        10,0,12,0,96,9,0,1,1,1,1,1,1,1,2,1,2,1,2,1,3,4,3,105,8,3,11,3,12,
+        3,106,1,4,1,4,1,4,1,4,1,4,3,4,114,8,4,1,4,1,4,1,5,4,5,119,8,5,11,
+        5,12,5,120,1,6,1,6,1,6,1,6,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,
+        7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,4,7,149,8,7,11,
+        7,12,7,150,1,8,1,8,1,8,1,9,1,9,1,10,1,10,1,10,1,10,1,11,4,11,163,
+        8,11,11,11,12,11,164,1,12,1,12,1,12,1,13,1,13,1,13,1,14,1,14,1,14,
+        1,14,1,14,1,14,1,14,1,14,1,14,1,14,1,15,1,15,1,15,1,16,1,16,1,16,
+        1,17,1,17,1,17,1,18,1,18,1,18,1,19,1,19,1,19,1,20,1,20,1,20,1,21,
+        1,21,1,21,1,22,1,22,1,23,1,23,1,23,1,24,1,24,1,24,1,25,1,25,1,25,
+        1,25,1,25,5,25,217,8,25,10,25,12,25,220,9,25,1,26,1,26,1,26,1,26,
+        1,27,1,27,1,27,1,28,1,28,1,28,1,29,1,29,1,29,1,30,1,30,1,30,1,31,
+        1,31,1,31,1,31,5,31,242,8,31,10,31,12,31,245,9,31,1,32,4,32,248,
+        8,32,11,32,12,32,249,1,32,0,0,33,0,2,4,6,8,10,12,14,16,18,20,22,
+        24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,0,
+        6,2,0,1,2,38,38,3,0,1,9,36,36,38,38,2,0,8,8,29,29,1,0,30,31,2,0,
+        8,8,32,32,6,0,2,3,5,9,16,17,34,34,36,36,38,38,252,0,66,1,0,0,0,2,
+        97,1,0,0,0,4,100,1,0,0,0,6,104,1,0,0,0,8,113,1,0,0,0,10,118,1,0,
+        0,0,12,122,1,0,0,0,14,148,1,0,0,0,16,152,1,0,0,0,18,155,1,0,0,0,
+        20,157,1,0,0,0,22,162,1,0,0,0,24,166,1,0,0,0,26,169,1,0,0,0,28,172,
+        1,0,0,0,30,182,1,0,0,0,32,185,1,0,0,0,34,188,1,0,0,0,36,191,1,0,
+        0,0,38,194,1,0,0,0,40,197,1,0,0,0,42,200,1,0,0,0,44,203,1,0,0,0,
+        46,205,1,0,0,0,48,208,1,0,0,0,50,211,1,0,0,0,52,221,1,0,0,0,54,225,
+        1,0,0,0,56,228,1,0,0,0,58,231,1,0,0,0,60,234,1,0,0,0,62,237,1,0,
+        0,0,64,247,1,0,0,0,66,70,3,2,1,0,67,68,3,8,4,0,68,69,3,4,2,0,69,
+        71,1,0,0,0,70,67,1,0,0,0,70,71,1,0,0,0,71,72,1,0,0,0,72,73,3,12,
+        6,0,73,74,5,36,0,0,74,75,3,16,8,0,75,78,3,18,9,0,76,77,5,36,0,0,
+        77,79,3,20,10,0,78,76,1,0,0,0,78,79,1,0,0,0,79,84,1,0,0,0,80,81,
+        5,36,0,0,81,83,3,50,25,0,82,80,1,0,0,0,83,86,1,0,0,0,84,82,1,0,0,
+        0,84,85,1,0,0,0,85,89,1,0,0,0,86,84,1,0,0,0,87,88,5,36,0,0,88,90,
+        3,28,14,0,89,87,1,0,0,0,89,90,1,0,0,0,90,94,1,0,0,0,91,93,5,37,0,
+        0,92,91,1,0,0,0,93,96,1,0,0,0,94,92,1,0,0,0,94,95,1,0,0,0,95,1,1,
+        0,0,0,96,94,1,0,0,0,97,98,5,38,0,0,98,99,5,36,0,0,99,3,1,0,0,0,100,
+        101,5,19,0,0,101,102,5,36,0,0,102,5,1,0,0,0,103,105,7,0,0,0,104,
+        103,1,0,0,0,105,106,1,0,0,0,106,104,1,0,0,0,106,107,1,0,0,0,107,
+        7,1,0,0,0,108,109,5,35,0,0,109,110,3,10,5,0,110,111,5,35,0,0,111,
+        114,1,0,0,0,112,114,3,10,5,0,113,108,1,0,0,0,113,112,1,0,0,0,114,
+        115,1,0,0,0,115,116,5,36,0,0,116,9,1,0,0,0,117,119,7,1,0,0,118,117,
+        1,0,0,0,119,120,1,0,0,0,120,118,1,0,0,0,120,121,1,0,0,0,121,11,1,
+        0,0,0,122,123,5,35,0,0,123,124,3,14,7,0,124,125,5,35,0,0,125,13,
+        1,0,0,0,126,149,5,38,0,0,127,149,5,36,0,0,128,149,5,34,0,0,129,149,
+        5,33,0,0,130,149,5,29,0,0,131,149,5,32,0,0,132,149,3,48,24,0,133,
+        149,5,10,0,0,134,149,5,2,0,0,135,149,5,1,0,0,136,149,5,11,0,0,137,
+        149,5,12,0,0,138,149,5,3,0,0,139,149,5,4,0,0,140,149,5,5,0,0,141,
+        149,5,6,0,0,142,149,5,7,0,0,143,149,5,8,0,0,144,149,5,9,0,0,145,
+        149,5,13,0,0,146,149,5,14,0,0,147,149,5,15,0,0,148,126,1,0,0,0,148,
+        127,1,0,0,0,148,128,1,0,0,0,148,129,1,0,0,0,148,130,1,0,0,0,148,
+        131,1,0,0,0,148,132,1,0,0,0,148,133,1,0,0,0,148,134,1,0,0,0,148,
+        135,1,0,0,0,148,136,1,0,0,0,148,137,1,0,0,0,148,138,1,0,0,0,148,
+        139,1,0,0,0,148,140,1,0,0,0,148,141,1,0,0,0,148,142,1,0,0,0,148,
+        143,1,0,0,0,148,144,1,0,0,0,148,145,1,0,0,0,148,146,1,0,0,0,148,
+        147,1,0,0,0,149,150,1,0,0,0,150,148,1,0,0,0,150,151,1,0,0,0,151,
+        15,1,0,0,0,152,153,5,33,0,0,153,154,5,36,0,0,154,17,1,0,0,0,155,
+        156,5,34,0,0,156,19,1,0,0,0,157,158,3,24,12,0,158,159,3,26,13,0,
+        159,160,3,22,11,0,160,21,1,0,0,0,161,163,7,1,0,0,162,161,1,0,0,0,
+        163,164,1,0,0,0,164,162,1,0,0,0,164,165,1,0,0,0,165,23,1,0,0,0,166,
+        167,5,20,0,0,167,168,5,36,0,0,168,25,1,0,0,0,169,170,5,21,0,0,170,
+        171,5,36,0,0,171,27,1,0,0,0,172,173,3,30,15,0,173,174,3,32,16,0,
+        174,175,3,40,20,0,175,176,3,34,17,0,176,177,3,36,18,0,177,178,3,
+        38,19,0,178,179,3,46,23,0,179,180,3,42,21,0,180,181,3,44,22,0,181,
+        29,1,0,0,0,182,183,5,22,0,0,183,184,5,36,0,0,184,31,1,0,0,0,185,
+        186,5,23,0,0,186,187,5,36,0,0,187,33,1,0,0,0,188,189,5,26,0,0,189,
+        190,5,36,0,0,190,35,1,0,0,0,191,192,5,24,0,0,192,193,5,36,0,0,193,
+        37,1,0,0,0,194,195,5,25,0,0,195,196,5,36,0,0,196,39,1,0,0,0,197,
+        198,5,34,0,0,198,199,5,36,0,0,199,41,1,0,0,0,200,201,5,27,0,0,201,
+        202,5,36,0,0,202,43,1,0,0,0,203,204,5,28,0,0,204,45,1,0,0,0,205,
+        206,5,34,0,0,206,207,5,36,0,0,207,47,1,0,0,0,208,209,5,18,0,0,209,
+        210,5,36,0,0,210,49,1,0,0,0,211,212,3,48,24,0,212,218,3,52,26,0,
+        213,214,3,54,27,0,214,215,3,52,26,0,215,217,1,0,0,0,216,213,1,0,
+        0,0,217,220,1,0,0,0,218,216,1,0,0,0,218,219,1,0,0,0,219,51,1,0,0,
+        0,220,218,1,0,0,0,221,222,3,60,30,0,222,223,3,56,28,0,223,224,3,
+        62,31,0,224,53,1,0,0,0,225,226,7,2,0,0,226,227,5,36,0,0,227,55,1,
+        0,0,0,228,229,7,3,0,0,229,230,5,36,0,0,230,57,1,0,0,0,231,232,7,
+        4,0,0,232,233,5,36,0,0,233,59,1,0,0,0,234,235,5,38,0,0,235,236,5,
+        36,0,0,236,61,1,0,0,0,237,243,3,64,32,0,238,239,3,58,29,0,239,240,
+        3,64,32,0,240,242,1,0,0,0,241,238,1,0,0,0,242,245,1,0,0,0,243,241,
+        1,0,0,0,243,244,1,0,0,0,244,63,1,0,0,0,245,243,1,0,0,0,246,248,7,
+        5,0,0,247,246,1,0,0,0,248,249,1,0,0,0,249,247,1,0,0,0,249,250,1,
+        0,0,0,250,65,1,0,0,0,14,70,78,84,89,94,106,113,120,148,150,164,218,
+        243,249
+    ]
 
 class ScheduleQueryConditionParser ( Parser ):
 
@@ -129,18 +113,18 @@ class ScheduleQueryConditionParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "'/'", "'.'", "'_'", "'\\'", "':'", "'%'",
-                     "'-'", "','", "'|'", "'&'", "'('", "')'", "'=='", "'\\\"'",
+    literalNames = [ "<INVALID>", "'/'", "'.'", "'_'", "'\\'", "':'", "'%'", 
+                     "'-'", "','", "'|'", "'&'", "'('", "')'", "'=='", "'\\\"'", 
                      "'\\''", "'*'", "'~'" ]
 
-    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
-                      "<INVALID>", "<INVALID>", "WHERE", "COMESFROM", "RESOURCE",
-                      "COLUMN", "AT", "LEAST", "OUT", "OF", "VIOLATIONS",
-                      "AGGREGATED", "POINTS", "AND", "INCLUDES", "EXCLUDES",
-                      "OR", "OPERATOR", "NUMBER", "QUOTE", "WHITESPACE",
+    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "WHERE", "COMESFROM", "RESOURCE", 
+                      "COLUMN", "AT", "LEAST", "OUT", "OF", "VIOLATIONS", 
+                      "AGGREGATED", "POINTS", "AND", "INCLUDES", "EXCLUDES", 
+                      "OR", "OPERATOR", "NUMBER", "QUOTE", "WHITESPACE", 
                       "NEWLINE", "WORD" ]
 
     RULE_expression = 0
@@ -177,13 +161,13 @@ class ScheduleQueryConditionParser ( Parser ):
     RULE_dim_values = 31
     RULE_dim_value = 32
 
-    ruleNames =  [ "expression", "aggregation", "comes_from", "namespace",
-                   "metric_with_quote", "metric", "query_with_quote", "query",
-                   "operator", "threshold", "resource_column", "resource_id",
-                   "resource", "column", "falling_period", "at", "least",
-                   "violations", "out", "of", "min_times", "aggregated",
-                   "points", "evaluation_period", "where", "dimensions",
-                   "dimension", "dim_separator", "dim_operator", "dim_val_separator",
+    ruleNames =  [ "expression", "aggregation", "comes_from", "namespace", 
+                   "metric_with_quote", "metric", "query_with_quote", "query", 
+                   "operator", "threshold", "resource_column", "resource_id", 
+                   "resource", "column", "falling_period", "at", "least", 
+                   "violations", "out", "of", "min_times", "aggregated", 
+                   "points", "evaluation_period", "where", "dimensions", 
+                   "dimension", "dim_separator", "dim_operator", "dim_val_separator", 
                    "dim_name", "dim_values", "dim_value" ]
 
     EOF = Token.EOF
@@ -228,7 +212,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.7.2")
+        self.checkVersion("4.13.1")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 
@@ -236,6 +220,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class ExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -351,7 +336,7 @@ class ScheduleQueryConditionParser ( Parser ):
                     self.state = 80
                     self.match(ScheduleQueryConditionParser.WHITESPACE)
                     self.state = 81
-                    self.dimensions()
+                    self.dimensions() 
                 self.state = 86
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,2,self._ctx)
@@ -359,7 +344,7 @@ class ScheduleQueryConditionParser ( Parser ):
             self.state = 89
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==ScheduleQueryConditionParser.WHITESPACE:
+            if _la==36:
                 self.state = 87
                 self.match(ScheduleQueryConditionParser.WHITESPACE)
                 self.state = 88
@@ -369,7 +354,7 @@ class ScheduleQueryConditionParser ( Parser ):
             self.state = 94
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==ScheduleQueryConditionParser.NEWLINE:
+            while _la==37:
                 self.state = 91
                 self.match(ScheduleQueryConditionParser.NEWLINE)
                 self.state = 96
@@ -386,6 +371,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class AggregationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -431,6 +417,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Comes_fromContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -476,6 +463,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class NamespaceContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -508,21 +496,21 @@ class ScheduleQueryConditionParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 104
+            self.state = 104 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
                 self.state = 103
                 _la = self._input.LA(1)
-                if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << ScheduleQueryConditionParser.T__0) | (1 << ScheduleQueryConditionParser.T__1) | (1 << ScheduleQueryConditionParser.WORD))) != 0)):
+                if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 274877906950) != 0)):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 106
+                self.state = 106 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << ScheduleQueryConditionParser.T__0) | (1 << ScheduleQueryConditionParser.T__1) | (1 << ScheduleQueryConditionParser.WORD))) != 0)):
+                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & 274877906950) != 0)):
                     break
 
         except RecognitionException as re:
@@ -535,6 +523,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Metric_with_quoteContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -576,7 +565,7 @@ class ScheduleQueryConditionParser ( Parser ):
             self.state = 113
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [ScheduleQueryConditionParser.QUOTE]:
+            if token in [35]:
                 self.state = 108
                 self.match(ScheduleQueryConditionParser.QUOTE)
                 self.state = 109
@@ -584,7 +573,7 @@ class ScheduleQueryConditionParser ( Parser ):
                 self.state = 110
                 self.match(ScheduleQueryConditionParser.QUOTE)
                 pass
-            elif token in [ScheduleQueryConditionParser.T__0, ScheduleQueryConditionParser.T__1, ScheduleQueryConditionParser.T__2, ScheduleQueryConditionParser.T__3, ScheduleQueryConditionParser.T__4, ScheduleQueryConditionParser.T__5, ScheduleQueryConditionParser.T__6, ScheduleQueryConditionParser.T__7, ScheduleQueryConditionParser.T__8, ScheduleQueryConditionParser.WHITESPACE, ScheduleQueryConditionParser.WORD]:
+            elif token in [1, 2, 3, 4, 5, 6, 7, 8, 9, 36, 38]:
                 self.state = 112
                 self.metric()
                 pass
@@ -603,6 +592,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class MetricContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -641,14 +631,14 @@ class ScheduleQueryConditionParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 118
+            self.state = 118 
             self._errHandler.sync(self)
             _alt = 1
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt == 1:
                     self.state = 117
                     _la = self._input.LA(1)
-                    if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << ScheduleQueryConditionParser.T__0) | (1 << ScheduleQueryConditionParser.T__1) | (1 << ScheduleQueryConditionParser.T__2) | (1 << ScheduleQueryConditionParser.T__3) | (1 << ScheduleQueryConditionParser.T__4) | (1 << ScheduleQueryConditionParser.T__5) | (1 << ScheduleQueryConditionParser.T__6) | (1 << ScheduleQueryConditionParser.T__7) | (1 << ScheduleQueryConditionParser.T__8) | (1 << ScheduleQueryConditionParser.WHITESPACE) | (1 << ScheduleQueryConditionParser.WORD))) != 0)):
+                    if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 343597384702) != 0)):
                         self._errHandler.recoverInline(self)
                     else:
                         self._errHandler.reportMatch(self)
@@ -656,7 +646,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
                 else:
                     raise NoViableAltException(self)
-                self.state = 120
+                self.state = 120 
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,7,self._ctx)
 
@@ -670,6 +660,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Query_with_quoteContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -721,6 +712,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class QueryContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -790,108 +782,108 @@ class ScheduleQueryConditionParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 148
+            self.state = 148 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
                 self.state = 148
                 self._errHandler.sync(self)
                 token = self._input.LA(1)
-                if token in [ScheduleQueryConditionParser.WORD]:
+                if token in [38]:
                     self.state = 126
                     self.match(ScheduleQueryConditionParser.WORD)
                     pass
-                elif token in [ScheduleQueryConditionParser.WHITESPACE]:
+                elif token in [36]:
                     self.state = 127
                     self.match(ScheduleQueryConditionParser.WHITESPACE)
                     pass
-                elif token in [ScheduleQueryConditionParser.NUMBER]:
+                elif token in [34]:
                     self.state = 128
                     self.match(ScheduleQueryConditionParser.NUMBER)
                     pass
-                elif token in [ScheduleQueryConditionParser.OPERATOR]:
+                elif token in [33]:
                     self.state = 129
                     self.match(ScheduleQueryConditionParser.OPERATOR)
                     pass
-                elif token in [ScheduleQueryConditionParser.AND]:
+                elif token in [29]:
                     self.state = 130
                     self.match(ScheduleQueryConditionParser.AND)
                     pass
-                elif token in [ScheduleQueryConditionParser.OR]:
+                elif token in [32]:
                     self.state = 131
                     self.match(ScheduleQueryConditionParser.OR)
                     pass
-                elif token in [ScheduleQueryConditionParser.WHERE]:
+                elif token in [18]:
                     self.state = 132
                     self.where()
                     pass
-                elif token in [ScheduleQueryConditionParser.T__9]:
+                elif token in [10]:
                     self.state = 133
                     self.match(ScheduleQueryConditionParser.T__9)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__1]:
+                elif token in [2]:
                     self.state = 134
                     self.match(ScheduleQueryConditionParser.T__1)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__0]:
+                elif token in [1]:
                     self.state = 135
                     self.match(ScheduleQueryConditionParser.T__0)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__10]:
+                elif token in [11]:
                     self.state = 136
                     self.match(ScheduleQueryConditionParser.T__10)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__11]:
+                elif token in [12]:
                     self.state = 137
                     self.match(ScheduleQueryConditionParser.T__11)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__2]:
+                elif token in [3]:
                     self.state = 138
                     self.match(ScheduleQueryConditionParser.T__2)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__3]:
+                elif token in [4]:
                     self.state = 139
                     self.match(ScheduleQueryConditionParser.T__3)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__4]:
+                elif token in [5]:
                     self.state = 140
                     self.match(ScheduleQueryConditionParser.T__4)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__5]:
+                elif token in [6]:
                     self.state = 141
                     self.match(ScheduleQueryConditionParser.T__5)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__6]:
+                elif token in [7]:
                     self.state = 142
                     self.match(ScheduleQueryConditionParser.T__6)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__7]:
+                elif token in [8]:
                     self.state = 143
                     self.match(ScheduleQueryConditionParser.T__7)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__8]:
+                elif token in [9]:
                     self.state = 144
                     self.match(ScheduleQueryConditionParser.T__8)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__12]:
+                elif token in [13]:
                     self.state = 145
                     self.match(ScheduleQueryConditionParser.T__12)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__13]:
+                elif token in [14]:
                     self.state = 146
                     self.match(ScheduleQueryConditionParser.T__13)
                     pass
-                elif token in [ScheduleQueryConditionParser.T__14]:
+                elif token in [15]:
                     self.state = 147
                     self.match(ScheduleQueryConditionParser.T__14)
                     pass
                 else:
                     raise NoViableAltException(self)
 
-                self.state = 150
+                self.state = 150 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << ScheduleQueryConditionParser.T__0) | (1 << ScheduleQueryConditionParser.T__1) | (1 << ScheduleQueryConditionParser.T__2) | (1 << ScheduleQueryConditionParser.T__3) | (1 << ScheduleQueryConditionParser.T__4) | (1 << ScheduleQueryConditionParser.T__5) | (1 << ScheduleQueryConditionParser.T__6) | (1 << ScheduleQueryConditionParser.T__7) | (1 << ScheduleQueryConditionParser.T__8) | (1 << ScheduleQueryConditionParser.T__9) | (1 << ScheduleQueryConditionParser.T__10) | (1 << ScheduleQueryConditionParser.T__11) | (1 << ScheduleQueryConditionParser.T__12) | (1 << ScheduleQueryConditionParser.T__13) | (1 << ScheduleQueryConditionParser.T__14) | (1 << ScheduleQueryConditionParser.WHERE) | (1 << ScheduleQueryConditionParser.AND) | (1 << ScheduleQueryConditionParser.OR) | (1 << ScheduleQueryConditionParser.OPERATOR) | (1 << ScheduleQueryConditionParser.NUMBER) | (1 << ScheduleQueryConditionParser.WHITESPACE) | (1 << ScheduleQueryConditionParser.WORD))) != 0)):
+                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & 374199353342) != 0)):
                     break
 
         except RecognitionException as re:
@@ -904,6 +896,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class OperatorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -949,6 +942,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class ThresholdContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -989,6 +983,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Resource_columnContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1042,6 +1037,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Resource_idContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1080,14 +1076,14 @@ class ScheduleQueryConditionParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 162
+            self.state = 162 
             self._errHandler.sync(self)
             _alt = 1
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt == 1:
                     self.state = 161
                     _la = self._input.LA(1)
-                    if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << ScheduleQueryConditionParser.T__0) | (1 << ScheduleQueryConditionParser.T__1) | (1 << ScheduleQueryConditionParser.T__2) | (1 << ScheduleQueryConditionParser.T__3) | (1 << ScheduleQueryConditionParser.T__4) | (1 << ScheduleQueryConditionParser.T__5) | (1 << ScheduleQueryConditionParser.T__6) | (1 << ScheduleQueryConditionParser.T__7) | (1 << ScheduleQueryConditionParser.T__8) | (1 << ScheduleQueryConditionParser.WHITESPACE) | (1 << ScheduleQueryConditionParser.WORD))) != 0)):
+                    if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 343597384702) != 0)):
                         self._errHandler.recoverInline(self)
                     else:
                         self._errHandler.reportMatch(self)
@@ -1095,7 +1091,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
                 else:
                     raise NoViableAltException(self)
-                self.state = 164
+                self.state = 164 
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,10,self._ctx)
 
@@ -1109,6 +1105,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class ResourceContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1154,6 +1151,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class ColumnContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1199,6 +1197,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Falling_periodContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1288,6 +1287,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class AtContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1333,6 +1333,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class LeastContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1378,6 +1379,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class ViolationsContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1423,6 +1425,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class OutContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1468,6 +1471,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class OfContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1513,6 +1517,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Min_timesContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1558,6 +1563,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class AggregatedContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1603,6 +1609,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class PointsContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1643,6 +1650,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Evaluation_periodContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1688,6 +1696,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class WhereContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1733,6 +1742,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class DimensionsContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1784,7 +1794,7 @@ class ScheduleQueryConditionParser ( Parser ):
             self.state = 218
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==ScheduleQueryConditionParser.T__7 or _la==ScheduleQueryConditionParser.AND:
+            while _la==8 or _la==29:
                 self.state = 213
                 self.dim_separator()
                 self.state = 214
@@ -1803,6 +1813,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class DimensionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1856,6 +1867,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Dim_separatorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1890,7 +1902,7 @@ class ScheduleQueryConditionParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 225
             _la = self._input.LA(1)
-            if not(_la==ScheduleQueryConditionParser.T__7 or _la==ScheduleQueryConditionParser.AND):
+            if not(_la==8 or _la==29):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -1907,6 +1919,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Dim_operatorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1944,7 +1957,7 @@ class ScheduleQueryConditionParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 228
             _la = self._input.LA(1)
-            if not(_la==ScheduleQueryConditionParser.INCLUDES or _la==ScheduleQueryConditionParser.EXCLUDES):
+            if not(_la==30 or _la==31):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -1961,6 +1974,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Dim_val_separatorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1995,7 +2009,7 @@ class ScheduleQueryConditionParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 231
             _la = self._input.LA(1)
-            if not(_la==ScheduleQueryConditionParser.T__7 or _la==ScheduleQueryConditionParser.OR):
+            if not(_la==8 or _la==32):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -2012,6 +2026,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Dim_nameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -2057,6 +2072,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Dim_valuesContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -2106,7 +2122,7 @@ class ScheduleQueryConditionParser ( Parser ):
                     self.state = 238
                     self.dim_val_separator()
                     self.state = 239
-                    self.dim_value()
+                    self.dim_value() 
                 self.state = 245
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,12,self._ctx)
@@ -2121,6 +2137,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
 
     class Dim_valueContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -2165,14 +2182,14 @@ class ScheduleQueryConditionParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 247
+            self.state = 247 
             self._errHandler.sync(self)
             _alt = 1
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt == 1:
                     self.state = 246
                     _la = self._input.LA(1)
-                    if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << ScheduleQueryConditionParser.T__1) | (1 << ScheduleQueryConditionParser.T__2) | (1 << ScheduleQueryConditionParser.T__4) | (1 << ScheduleQueryConditionParser.T__5) | (1 << ScheduleQueryConditionParser.T__6) | (1 << ScheduleQueryConditionParser.T__7) | (1 << ScheduleQueryConditionParser.T__8) | (1 << ScheduleQueryConditionParser.T__15) | (1 << ScheduleQueryConditionParser.T__16) | (1 << ScheduleQueryConditionParser.NUMBER) | (1 << ScheduleQueryConditionParser.WHITESPACE) | (1 << ScheduleQueryConditionParser.WORD))) != 0)):
+                    if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 360777450476) != 0)):
                         self._errHandler.recoverInline(self)
                     else:
                         self._errHandler.reportMatch(self)
@@ -2180,7 +2197,7 @@ class ScheduleQueryConditionParser ( Parser ):
 
                 else:
                     raise NoViableAltException(self)
-                self.state = 249
+                self.state = 249 
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,13,self._ctx)
 

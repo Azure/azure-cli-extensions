@@ -1,0 +1,392 @@
+interactions:
+- request:
+    body: '{"location": "eastus2", "properties": {"description": "My Test Network
+      Manager", "networkManagerScopeAccesses": ["SecurityAdmin"], "networkManagerScopes":
+      {"subscriptions": ["/subscriptions/00000000-0000-0000-0000-000000000000"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '231'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --description --scope-accesses --network-manager-scopes -l --resource-group
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_management000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2022-01-01
+  response:
+    body:
+      string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_management000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"description":"My
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin"],"resourceGuid":"0ef277ca-dc78-4029-ac97-f7d75e94bd07"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T07:50:17.7791232Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T07:50:17.7791232Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '870'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 28 Aug 2023 07:50:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/f723569c-0173-4034-9a4f-6ec5cf7d58cd
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"networkManagerId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_management000001/providers/Microsoft.Network/networkManagers/TestNetworkManager"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager connection management-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '218'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --connection-name --management-group-id --network-manager-id
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/CliMgmtGroup/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/CliMgmtGroup/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_management000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Pending","description":""},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T07:50:20.3175091Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T07:50:20.3175091Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '748'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 28 Aug 2023 07:50:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager connection management-group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --management-group-id --connection-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/CliMgmtGroup/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/CliMgmtGroup/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_management000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Pending","description":""},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T07:50:20.3175091Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T07:50:20.3175091Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '748'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 28 Aug 2023 07:50:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager connection management-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --management-group-id --connection-name --description
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/CliMgmtGroup/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/CliMgmtGroup/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_management000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Pending","description":""},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T07:50:20.3175091Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T07:50:20.3175091Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '748'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 28 Aug 2023 07:50:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "My Test Network Manager Connection", "networkManagerId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_management000001/providers/Microsoft.Network/networkManagers/TestNetworkManager"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager connection management-group update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '271'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --management-group-id --connection-name --description
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/CliMgmtGroup/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/CliMgmtGroup/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_management000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Pending","description":"My
+        Test Network Manager Connection"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T07:50:20.3175091Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T07:50:28.2029193Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '782'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 28 Aug 2023 07:50:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager connection management-group list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --management-group-id
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/CliMgmtGroup/providers/Microsoft.Network/networkManagerConnections?api-version=2022-01-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Management/managementGroups/CliMgmtGroup/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_management000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Pending","description":"My
+        Test Network Manager Connection"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T07:50:20.3175091Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T07:50:28.2029193Z"}}],"nextLink":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '808'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 28 Aug 2023 07:50:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager connection management-group delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --connection-name --management-group-id --yes
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/CliMgmtGroup/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 28 Aug 2023 07:50:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name --force --yes
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_management000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?force=true&api-version=2022-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 28 Aug 2023 07:50:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

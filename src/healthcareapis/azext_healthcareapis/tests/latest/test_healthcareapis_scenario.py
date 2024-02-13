@@ -9,119 +9,295 @@
 # --------------------------------------------------------------------------
 
 import os
+import unittest
 from azure.cli.testsdk import ScenarioTest
-from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
 from azure.cli.testsdk import StorageAccountPreparer
+from .example_steps import step_healthcareapis_acr_add
+from .example_steps import step_healthcareapis_acr_list
+from .example_steps import step_healthcareapis_acr_remove
+from .example_steps import step_healthcareapis_acr_reset
+from .example_steps import step_healthcareapiscreateminimalparameters
+from .example_steps import step_healthcareapiscreatemaximumparameters
+from .example_steps import step_healthcareapisupdatemaximumparameters
+from .example_steps import step_servicedelete
+from .example_steps import step_workspace_dicom_service_create
+from .example_steps import step_workspace_dicom_service_show
+from .example_steps import step_workspace_dicom_service_list
+from .example_steps import step_workspace_dicom_service_update
+from .example_steps import step_workspace_dicom_service_delete
+from .example_steps import step_workspace_fhir_service_create
+from .example_steps import step_workspace_fhir_service_show
+from .example_steps import step_workspace_fhir_service_list
+from .example_steps import step_workspace_fhir_service_update
+from .example_steps import step_workspace_fhir_service_delete
+from .example_steps import step_workspace_iot_connector_create
+from .example_steps import step_workspace_iot_connector_show
+from .example_steps import step_workspace_iot_connector_list
+from .example_steps import step_workspace_iot_connector_update
+from .example_steps import step_workspace_iot_connector_fhir_destination_create
+from .example_steps import step_workspace_iot_connector_fhir_destination_show
+from .example_steps import step_workspace_iot_connector_fhir_destination_list
+from .example_steps import step_workspace_iot_connector_fhir_destination_delete
+from .example_steps import step_workspace_iot_connector_delete
+from .example_steps import step_operation_result_show
+from .example_steps import step_private_endpoint_connection_create
+from .example_steps import step_private_endpoint_connection_show
+from .example_steps import step_private_endpoint_connection_list
+from .example_steps import step_private_endpoint_connection_delete
+from .example_steps import step_private_link_resource_show
+from .example_steps import step_private_link_resource_list
+from .example_steps import step_service_create
+from .example_steps import step_service_create2
+from .example_steps import step_service_show
+from .example_steps import step_service_list
+from .example_steps import step_service_list2
+from .example_steps import step_service_update
+from .example_steps import step_service_delete
+from .example_steps import step_workspace_create
+from .example_steps import step_workspace_show
+from .example_steps import step_workspace_list
+from .example_steps import step_workspace_list2
+from .example_steps import step_workspace_update
+from .example_steps import step_workspace_private_endpoint_connection_create
+from .example_steps import step_workspace_private_endpoint_connection_show
+from .example_steps import step_workspace_private_endpoint_connection_list
+from .example_steps import step_workspace_private_endpoint_connection_delete
+from .example_steps import step_workspace_private_link_resource_show
+from .example_steps import step_workspace_private_link_resource_list
+from .example_steps import step_workspace_delete
+from .. import (
+    try_manual,
+    raise_if,
+    calc_coverage
+)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-# Env setup
-@try_manual
-def setup(test, rg, rg_2):
-    pass
-
-
-# EXAMPLE: ServicePut
-@try_manual
-def step_serviceput(test, rg, rg_2):
-    # EXAMPLE NOT FOUND!
-    pass
-
-
-# EXAMPLE: OperationResultsGet
-@try_manual
-def step_operationresultsget(test, rg, rg_2):
-    # EXAMPLE NOT FOUND!
-    pass
-
-
-# EXAMPLE: ServiceGet
-@try_manual
-def step_serviceget(test, rg, rg_2):
-    # EXAMPLE NOT FOUND!
-    pass
-
-
-# EXAMPLE: ServiceListByResourceGroup
-@try_manual
-def step_servicelistbyresourcegroup(test, rg, rg_2):
-    # EXAMPLE NOT FOUND!
-    pass
-
-
-# EXAMPLE: ServiceList
-@try_manual
-def step_servicelist(test, rg, rg_2):
-    # EXAMPLE NOT FOUND!
-    pass
-
-
-# EXAMPLE: OperationsList
-@try_manual
-def step_operationslist(test, rg, rg_2):
-    # EXAMPLE NOT FOUND!
-    pass
-
-
-# EXAMPLE: ServicePatch
-@try_manual
-def step_servicepatch(test, rg, rg_2):
-    # EXAMPLE NOT FOUND!
-    pass
-
-
-# EXAMPLE: CheckNameAvailabilityPost
-@try_manual
-def step_checknameavailabilitypost(test, rg, rg_2):
-    # EXAMPLE NOT FOUND!
-    pass
-
-
-# EXAMPLE: ServiceDelete
-@try_manual
-def step_servicedelete(test, rg, rg_2):
-    # EXAMPLE NOT FOUND!
-    pass
-
-
-# Env cleanup
-@try_manual
-def cleanup(test, rg, rg_2):
-    pass
-
-
-# Testcase
-@try_manual
-def call_scenario(test, rg, rg_2):
-    setup(test, rg, rg_2)
-    step_serviceput(test, rg, rg_2)
-    step_operationresultsget(test, rg, rg_2)
-    step_serviceget(test, rg, rg_2)
-    step_servicelistbyresourcegroup(test, rg, rg_2)
-    step_servicelist(test, rg, rg_2)
-    step_operationslist(test, rg, rg_2)
-    step_servicepatch(test, rg, rg_2)
-    step_checknameavailabilitypost(test, rg, rg_2)
-    step_servicedelete(test, rg, rg_2)
-    cleanup(test, rg, rg_2)
-
-
-@try_manual
-class HealthcareApisManagementClientScenarioTest(ScenarioTest):
+class HealthcareApisScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rgname'[:7], key='rg', parameter_name='rg')
-    @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rg1'[:7], key='rg_2', parameter_name='rg_2')
-    @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sa',
-                            resource_group_parameter_name='rg')
-    def test_healthcareapis(self, rg, rg_2):
-
+    @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sg',
+                            resource_group_parameter_name='rg', parameter_name='sg')
+    def test_healthcare_acr(self):
         self.kwargs.update({
-            'myPrivateEndpointConnection': 'myConnection',
+            'keyvaultname': self.create_random_name(prefix='clikv', length=10),
+            'myAttachedDatabaseConfiguration3': 'default',
+            'fhirr4': 'fhir-R4',
+            'testingLocation': 'westus2',
+            'minimalParams': self.create_random_name(prefix='climinparams', length=18),
+            'maximumParams': self.create_random_name(prefix='climaxparams', length=24),
+            'service1': self.create_random_name(prefix='service1', length=18),
+            'service2': self.create_random_name(prefix='service2', length=18),
+            'myFhirService2': self.create_random_name(prefix='myfhirservice2', length=18),
         })
+        step_service_create(self)
+        step_healthcareapis_acr_add(self)
+        step_healthcareapis_acr_list(self)
+        step_healthcareapis_acr_remove(self)
+        step_healthcareapis_acr_reset(self)
+        step_service_delete(self)
 
-        call_scenario(self, rg, rg_2)
-        calc_coverage(__file__)
-        raise_if()
+    @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rgname'[:7], key='rg', parameter_name='rg')
+    @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sg',
+                            resource_group_parameter_name='rg', parameter_name='sg')
+    def test_healthcare_parameter(self):
+        self.kwargs.update({
+            'keyvaultname': self.create_random_name(prefix='clikv', length=10),
+            'myAttachedDatabaseConfiguration3': 'default',
+            'fhirr4': 'fhir-R4',
+            'testingLocation': 'westus2',
+            'minimalParams': self.create_random_name(prefix='climinparams', length=18),
+            'maximumParams': self.create_random_name(prefix='climaxparams', length=24),
+            'service1': self.create_random_name(prefix='service1', length=18),
+            'service2': self.create_random_name(prefix='service2', length=18),
+            'myFhirService2': self.create_random_name(prefix='myfhirservice2', length=18),
+        })
+        step_healthcareapiscreateminimalparameters(self)
+        step_healthcareapiscreatemaximumparameters(self)
+        step_healthcareapisupdatemaximumparameters(self)
+        step_servicedelete(self)
+
+    @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rgname'[:7], key='rg', parameter_name='rg')
+    @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sg',
+                            resource_group_parameter_name='rg', parameter_name='sg')
+    def test_healthcare_service(self):
+        self.kwargs.update({
+            'keyvaultname': self.create_random_name(prefix='clikv', length=10),
+            'myAttachedDatabaseConfiguration3': 'default',
+            'fhirr4': 'fhir-R4',
+            'testingLocation': 'westus2',
+            'minimalParams': self.create_random_name(prefix='climinparams', length=18),
+            'maximumParams': self.create_random_name(prefix='climaxparams', length=24),
+            'service1': self.create_random_name(prefix='service1', length=18),
+            'service2': self.create_random_name(prefix='service2', length=18),
+            'myFhirService2': self.create_random_name(prefix='myfhirservice2', length=18),
+        })
+        step_service_create(self)
+        step_service_create2(self)
+        step_service_show(self)
+        step_service_list(self)
+        step_service_list2(self)
+        step_service_update(self)
+        step_service_delete(self)
+
+    @unittest.skip('need create pending private endpoint through portal')
+    @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rgname'[:7], key='rg', parameter_name='rg')
+    @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sg',
+                            resource_group_parameter_name='rg', parameter_name='sg')
+    def test_healthcare_private(self):
+        self.kwargs.update({
+            'keyvaultname': self.create_random_name(prefix='clikv', length=10),
+            'myPrivateEndpointConnection': self.create_random_name(prefix='myconnection', length=18),
+            'myAttachedDatabaseConfiguration3': 'default',
+            'fhirr4': 'fhir-R4',
+            'testingLocation': 'westus2',
+            'minimalParams': self.create_random_name(prefix='climinparams', length=18),
+            'maximumParams': self.create_random_name(prefix='climaxparams', length=24),
+            'service1': self.create_random_name(prefix='service1', length=18),
+            'service2': self.create_random_name(prefix='service2', length=18),
+            'myFhirService2': self.create_random_name(prefix='myfhirservice2', length=18),
+        })
+        self.kwargs['operation_result_id'] = step_service_create(self).get_output_in_json()['id']
+        # first have to create the private endpoint in pending state through portal.
+        step_private_endpoint_connection_create(self)
+        step_private_endpoint_connection_show(self)
+        step_private_endpoint_connection_list(self)
+        step_private_endpoint_connection_delete(self)
+        step_private_link_resource_show(self)
+        step_private_link_resource_list(self)
+        step_service_delete(self)
+
+    @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rgname'[:7], key='rg', parameter_name='rg')
+    @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sg',
+                            resource_group_parameter_name='rg', parameter_name='sg')
+    def test_healthcare_workspace(self):
+        self.kwargs.update({
+            'myWorkspace': self.create_random_name(prefix='myworkspace', length=18),
+            'keyvaultname': self.create_random_name(prefix='clikv', length=10),
+            'myAttachedDatabaseConfiguration3': 'default',
+            'fhirr4': 'fhir-R4',
+            'testingLocation': 'westus2',
+            'minimalParams': self.create_random_name(prefix='climinparams', length=18),
+            'maximumParams': self.create_random_name(prefix='climaxparams', length=24),
+            'service1': self.create_random_name(prefix='service1', length=18),
+            'service2': self.create_random_name(prefix='service2', length=18),
+            'myFhirService2': self.create_random_name(prefix='myfhirservice2', length=18),
+        })
+        step_workspace_create(self)
+        step_workspace_show(self)
+        step_workspace_list(self)
+        step_workspace_list2(self)
+        step_workspace_update(self)
+        step_workspace_delete(self)
+
+    @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rgname'[:7], key='rg', parameter_name='rg')
+    @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sg',
+                            resource_group_parameter_name='rg', parameter_name='sg')
+    def test_healthcare_workspace_dicom(self):
+        self.kwargs.update({
+            'myWorkspace': self.create_random_name(prefix='myworkspace', length=18),
+            'myDicomService': self.create_random_name(prefix='mydicom', length=12),
+            'keyvaultname': self.create_random_name(prefix='clikv', length=10),
+            'myAttachedDatabaseConfiguration3': 'default',
+            'fhirr4': 'fhir-R4',
+            'testingLocation': 'westus2',
+            'minimalParams': self.create_random_name(prefix='climinparams', length=18),
+            'maximumParams': self.create_random_name(prefix='climaxparams', length=24),
+            'service1': self.create_random_name(prefix='service1', length=18),
+            'service2': self.create_random_name(prefix='service2', length=18),
+            'myFhirService2': self.create_random_name(prefix='myfhirservice2', length=18),
+        })
+        step_workspace_create(self)
+        step_workspace_dicom_service_create(self)
+        step_workspace_dicom_service_show(self)
+        step_workspace_dicom_service_list(self)
+        step_workspace_dicom_service_update(self)
+        step_workspace_dicom_service_delete(self)
+        step_workspace_delete(self)
+
+    @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rgname'[:7], key='rg', parameter_name='rg')
+    @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sg',
+                            resource_group_parameter_name='rg', parameter_name='sg')
+    def test_healthcare_workspace_fhir(self):
+        self.kwargs.update({
+            'myWorkspace': self.create_random_name(prefix='myworkspace', length=18),
+            'keyvaultname': self.create_random_name(prefix='clikv', length=10),
+            'myAttachedDatabaseConfiguration3': 'default',
+            'fhirr4': 'fhir-R4',
+            'testingLocation': 'westus2',
+            'minimalParams': self.create_random_name(prefix='climinparams', length=18),
+            'maximumParams': self.create_random_name(prefix='climaxparams', length=24),
+            'service1': self.create_random_name(prefix='service1', length=18),
+            'service2': self.create_random_name(prefix='service2', length=18),
+            'myFhirService2': self.create_random_name(prefix='myfhirservice2', length=18),
+        })
+        step_workspace_create(self)
+        step_workspace_fhir_service_create(self)
+        step_workspace_fhir_service_show(self)
+        step_workspace_fhir_service_list(self)
+        step_workspace_fhir_service_update(self)
+        step_workspace_fhir_service_delete(self)
+        step_workspace_delete(self)
+
+    @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rgname'[:7], key='rg', parameter_name='rg')
+    @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sg',
+                            resource_group_parameter_name='rg', parameter_name='sg')
+    def test_healthcare_workspace_iot_connector(self):
+        self.kwargs.update({
+            'myIotConnector': self.create_random_name(prefix='myiot', length=10),
+            'myWorkspace': self.create_random_name(prefix='myworkspace', length=18),
+            'myFhirDestination':  self.create_random_name(prefix='myfhirdest', length=18),
+            'keyvaultname': self.create_random_name(prefix='clikv', length=10),
+            'myAttachedDatabaseConfiguration3': 'default',
+            'fhirr4': 'fhir-R4',
+            'testingLocation': 'westus2',
+            'minimalParams': self.create_random_name(prefix='climinparams', length=18),
+            'maximumParams': self.create_random_name(prefix='climaxparams', length=24),
+            'service1': self.create_random_name(prefix='service1', length=18),
+            'service2': self.create_random_name(prefix='service2', length=18),
+            'myFhirService2': self.create_random_name(prefix='myfhirservice2', length=18),
+        })
+        step_workspace_create(self)
+        step_workspace_iot_connector_create(self)
+        step_workspace_iot_connector_show(self)
+        step_workspace_iot_connector_list(self)
+        step_workspace_iot_connector_update(self)
+        self.kwargs['myFhirResourceID'] = step_workspace_fhir_service_create(self).get_output_in_json()['id']
+        step_workspace_iot_connector_fhir_destination_create(self)
+        step_workspace_iot_connector_fhir_destination_show(self)
+        step_workspace_iot_connector_fhir_destination_list(self)
+        step_workspace_iot_connector_fhir_destination_delete(self)
+        step_workspace_iot_connector_delete(self)
+        step_workspace_fhir_service_delete(self)
+        step_workspace_delete(self)
+
+    @unittest.skip('need create pending private endpoint through portal')
+    @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rgname'[:7], key='rg', parameter_name='rg')
+    @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sg',
+                            resource_group_parameter_name='rg', parameter_name='sg')
+    def test_healthcare_workspace_private(self):
+        self.kwargs.update({
+            'myWorkspace': self.create_random_name(prefix='myworkspace', length=18),
+            'keyvaultname': self.create_random_name(prefix='clikv', length=10),
+            'myPrivateEndpointConnection': self.create_random_name(prefix='myconnection', length=18),
+            'myAttachedDatabaseConfiguration3': 'default',
+            'fhirr4': 'fhir-R4',
+            'testingLocation': 'westus2',
+            'minimalParams': self.create_random_name(prefix='climinparams', length=18),
+            'maximumParams': self.create_random_name(prefix='climaxparams', length=24),
+            'service1': self.create_random_name(prefix='service1', length=18),
+            'service2': self.create_random_name(prefix='service2', length=18),
+            'myFhirService2': self.create_random_name(prefix='myfhirservice2', length=18),
+        })
+        step_workspace_create(self)
+        # first have to create the private endpoint in pending state through portal.
+        step_workspace_private_endpoint_connection_create(self)
+        step_workspace_private_endpoint_connection_show(self)
+        step_workspace_private_endpoint_connection_list(self)
+        step_workspace_private_endpoint_connection_delete(self)
+        step_workspace_private_link_resource_show(self)
+        step_workspace_private_link_resource_list(self)
+        step_workspace_delete(self)

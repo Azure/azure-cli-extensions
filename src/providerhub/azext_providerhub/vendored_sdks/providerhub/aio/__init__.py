@@ -6,5 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._providerhub import Providerhub
-__all__ = ['Providerhub']
+from ._provider_hub import ProviderHub
+__all__ = ['ProviderHub']

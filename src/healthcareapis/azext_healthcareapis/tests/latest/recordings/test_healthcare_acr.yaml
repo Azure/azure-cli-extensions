@@ -1,0 +1,4658 @@
+interactions:
+- request:
+    body: '{"kind": "fhir-Stu3", "location": "westus2", "properties": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '62'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006","name":"service1000006","type":"Microsoft.HealthcareApis/services","etag":"\"0701880b-0000-0400-0000-627b50110000\"","location":"westus2","kind":"fhir-Stu3","properties":{"accessPolicies":[],"cosmosDbConfiguration":{"offerThroughput":1000},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","audience":"https://service1000006.azurehealthcareapis.com","smartProxyEnabled":false},"corsConfiguration":{"origins":[],"headers":[],"methods":[],"allowCredentials":false},"exportConfiguration":{},"acrConfiguration":{"loginServers":[]},"privateEndpointConnections":[],"provisioningState":"Creating"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '805'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 05:56:33 GMT
+      etag:
+      - '"0701880b-0000-0400-0000-627b50110000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-request-id:
+      - 9cbd9594343b6c4bad10326c4ef6222e
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19","name":"fde521da-169b-4468-a5e8-3edaf6256e19","status":"Running","startTime":"2022-05-11T05:56:33.3735034Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 05:57:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - f19564eecad2cf4d99672b5f4dcd4cb3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19","name":"fde521da-169b-4468-a5e8-3edaf6256e19","status":"Running","startTime":"2022-05-11T05:56:33.3735034Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 05:57:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 07502cbe4a871942aa6aecc13ed172cc
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19","name":"fde521da-169b-4468-a5e8-3edaf6256e19","status":"Running","startTime":"2022-05-11T05:56:33.3735034Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 05:58:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 8262ff385f77f043b10046412e3a9c05
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19","name":"fde521da-169b-4468-a5e8-3edaf6256e19","status":"Running","startTime":"2022-05-11T05:56:33.3735034Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 05:58:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - c9a035994179c24c947a9c2102a35e5f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19","name":"fde521da-169b-4468-a5e8-3edaf6256e19","status":"Running","startTime":"2022-05-11T05:56:33.3735034Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 05:59:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 03027e95f196d340b2f3865de9e81ef4
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19","name":"fde521da-169b-4468-a5e8-3edaf6256e19","status":"Running","startTime":"2022-05-11T05:56:33.3735034Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 05:59:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - ea7526f57126414ca21b6a04c8a34b88
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19","name":"fde521da-169b-4468-a5e8-3edaf6256e19","status":"Running","startTime":"2022-05-11T05:56:33.3735034Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:00:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 0bcd55a36a277c40ade36f103a382b70
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19","name":"fde521da-169b-4468-a5e8-3edaf6256e19","status":"Running","startTime":"2022-05-11T05:56:33.3735034Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:00:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 8db238b200d7a840a03e6ded04b96aef
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19","name":"fde521da-169b-4468-a5e8-3edaf6256e19","status":"Running","startTime":"2022-05-11T05:56:33.3735034Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:01:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - f56191714769024690388f8d26c398dc
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19","name":"fde521da-169b-4468-a5e8-3edaf6256e19","status":"Running","startTime":"2022-05-11T05:56:33.3735034Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:01:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 9680c813aa97cd43a110f2432a2be16e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/fde521da-169b-4468-a5e8-3edaf6256e19","name":"fde521da-169b-4468-a5e8-3edaf6256e19","status":"Succeeded","startTime":"2022-05-11T05:56:33.3735034Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '277'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:02:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - e7a360479a821e469ab0d698f514e603
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --kind --location
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006","name":"service1000006","type":"Microsoft.HealthcareApis/services","etag":"\"0701d231-0000-0400-0000-627b51460000\"","location":"westus2","kind":"fhir-Stu3","tags":{},"properties":{"accessPolicies":[],"cosmosDbConfiguration":{"offerThroughput":1000},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","audience":"https://service1000006.azurehealthcareapis.com","smartProxyEnabled":false},"corsConfiguration":{"origins":[],"headers":[],"methods":[],"allowCredentials":false},"exportConfiguration":{},"acrConfiguration":{"loginServers":[]},"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '848'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:02:08 GMT
+      etag:
+      - '"0701d231-0000-0400-0000-627b51460000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 5513d5eae1b96347bb699dc3551af214
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006","name":"service1000006","type":"Microsoft.HealthcareApis/services","etag":"\"0701d231-0000-0400-0000-627b51460000\"","location":"westus2","kind":"fhir-Stu3","tags":{},"properties":{"accessPolicies":[],"cosmosDbConfiguration":{"offerThroughput":1000},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","audience":"https://service1000006.azurehealthcareapis.com","smartProxyEnabled":false},"corsConfiguration":{"origins":[],"headers":[],"methods":[],"allowCredentials":false},"exportConfiguration":{},"acrConfiguration":{"loginServers":[]},"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '848'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:02:11 GMT
+      etag:
+      - '"0701d231-0000-0400-0000-627b51460000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - a4dd5c72f601ce4da24c66fdf9713b57
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"kind": "fhir-Stu3", "location": "westus2", "tags": {}, "etag": "\"0701d231-0000-0400-0000-627b51460000\"",
+      "properties": {"accessPolicies": [], "cosmosDbConfiguration": {"offerThroughput":
+      1000}, "authenticationConfiguration": {"authority": "https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a",
+      "audience": "https://service1000006.azurehealthcareapis.com", "smartProxyEnabled":
+      false}, "corsConfiguration": {"origins": [], "headers": [], "methods": [], "allowCredentials":
+      false}, "exportConfiguration": {}, "privateEndpointConnections": [], "publicNetworkAccess":
+      "Enabled", "acrConfiguration": {"loginServers": ["test1.azurecr.io"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '658'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006","name":"service1000006","type":"Microsoft.HealthcareApis/services","etag":"\"07013d36-0000-0400-0000-627b51640000\"","location":"westus2","kind":"fhir-Stu3","tags":{},"properties":{"accessPolicies":[],"cosmosDbConfiguration":{"offerThroughput":1000},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","audience":"https://service1000006.azurehealthcareapis.com","smartProxyEnabled":false},"corsConfiguration":{"origins":[],"headers":[],"methods":[],"allowCredentials":false},"exportConfiguration":{},"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","acrConfiguration":{"loginServers":["test1.azurecr.io"]},"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '865'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:02:13 GMT
+      etag:
+      - '"07013d36-0000-0400-0000-627b51640000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-request-id:
+      - 62c39b52ab941842b73b79199f7df269
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:02:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 063bfa2eecaa9b4fb24c5d814db135c6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:03:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - aa658e785af03d4480adad322c0a0f58
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:03:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 5b3cea937c676545b965874c39d490e6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:04:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 179e98334eebf94cb063a822be404294
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:04:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 54cbe3b8980ece448020512d52aa829d
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:05:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 24bf10a6fadcb541882261eb29ab46f3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:05:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 361d1c95b53cff41976d8b2adf2cd11f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:06:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 40a5897b53cd6342af11530439d5fe1b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:06:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 6cb7090b2848a3478acd62a3131f5bf3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:07:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 71e6fc41dac3fa4ea4ab0e04c5bd7dbc
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:07:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - e8fc7830bdb1794c81317c09f5f4e158
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:08:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 1e0fc0ff3c6c7e4a8ab65ac760b94f81
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:08:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 40fca39af638064c827081fe159f4648
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:09:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - adf023414e9a4840ab5322dad35e9fb7
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:09:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - a48c8797772b1a4eb4a05c20b863fa38
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:10:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 24925d70ca96fc43b92d35afbd1a9de7
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:10:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - cc3d407d3e75234daaa5f085b9b15ceb
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:11:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - e9f1cb565d8ea846981c90590348a20b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:11:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 726b3cf85c0ce6469fb4af69ddd345cb
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Running","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:12:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 7c7fae7c4eb78f4fbf519f57029a1984
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/44356fd4-cbde-4c6f-ae7b-27a586d79613","name":"44356fd4-cbde-4c6f-ae7b-27a586d79613","status":"Succeeded","startTime":"2022-05-11T06:02:13.9409771Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '277'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:12:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - a233750079c7064cb6647deac43528d4
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006","name":"service1000006","type":"Microsoft.HealthcareApis/services","etag":"\"0701f383-0000-0400-0000-627b53d10000\"","location":"westus2","kind":"fhir-Stu3","tags":{},"properties":{"accessPolicies":[],"cosmosDbConfiguration":{"offerThroughput":1000},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","audience":"https://service1000006.azurehealthcareapis.com","smartProxyEnabled":false},"corsConfiguration":{"origins":[],"headers":[],"methods":[],"allowCredentials":false},"exportConfiguration":{},"acrConfiguration":{"loginServers":["test1.azurecr.io"]},"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '866'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:12:51 GMT
+      etag:
+      - '"0701f383-0000-0400-0000-627b53d10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 2998d6445cbe2d4483e3aa346bdc886d
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006","name":"service1000006","type":"Microsoft.HealthcareApis/services","etag":"\"0701f383-0000-0400-0000-627b53d10000\"","location":"westus2","kind":"fhir-Stu3","tags":{},"properties":{"accessPolicies":[],"cosmosDbConfiguration":{"offerThroughput":1000},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","audience":"https://service1000006.azurehealthcareapis.com","smartProxyEnabled":false},"corsConfiguration":{"origins":[],"headers":[],"methods":[],"allowCredentials":false},"exportConfiguration":{},"acrConfiguration":{"loginServers":["test1.azurecr.io"]},"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '866'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:12:57 GMT
+      etag:
+      - '"0701f383-0000-0400-0000-627b53d10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 93c32460d8cd584fafc0182263b86573
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006","name":"service1000006","type":"Microsoft.HealthcareApis/services","etag":"\"0701f383-0000-0400-0000-627b53d10000\"","location":"westus2","kind":"fhir-Stu3","tags":{},"properties":{"accessPolicies":[],"cosmosDbConfiguration":{"offerThroughput":1000},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","audience":"https://service1000006.azurehealthcareapis.com","smartProxyEnabled":false},"corsConfiguration":{"origins":[],"headers":[],"methods":[],"allowCredentials":false},"exportConfiguration":{},"acrConfiguration":{"loginServers":["test1.azurecr.io"]},"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '866'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:12:58 GMT
+      etag:
+      - '"0701f383-0000-0400-0000-627b53d10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 990d512d9a849c4c9019836014926ad8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"kind": "fhir-Stu3", "location": "westus2", "tags": {}, "etag": "\"0701f383-0000-0400-0000-627b53d10000\"",
+      "properties": {"accessPolicies": [], "cosmosDbConfiguration": {"offerThroughput":
+      1000}, "authenticationConfiguration": {"authority": "https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a",
+      "audience": "https://service1000006.azurehealthcareapis.com", "smartProxyEnabled":
+      false}, "corsConfiguration": {"origins": [], "headers": [], "methods": [], "allowCredentials":
+      false}, "exportConfiguration": {}, "privateEndpointConnections": [], "publicNetworkAccess":
+      "Enabled", "acrConfiguration": {"loginServers": []}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '640'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006","name":"service1000006","type":"Microsoft.HealthcareApis/services","etag":"\"07019785-0000-0400-0000-627b53eb0000\"","location":"westus2","kind":"fhir-Stu3","tags":{},"properties":{"accessPolicies":[],"cosmosDbConfiguration":{"offerThroughput":1000},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","audience":"https://service1000006.azurehealthcareapis.com","smartProxyEnabled":false},"corsConfiguration":{"origins":[],"headers":[],"methods":[],"allowCredentials":false},"exportConfiguration":{},"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","acrConfiguration":{"loginServers":[]},"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '847'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:13:00 GMT
+      etag:
+      - '"07019785-0000-0400-0000-627b53eb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-request-id:
+      - e0113cd3260dfe4887b97d72fc6fb8ca
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:13:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - d6ae1975539ede46ba3e85595b4b4f18
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:14:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 65a0fc52fa5a854ca085d8625415cbef
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:14:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 01788bc846641246917dc72da291ef84
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:15:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 83df2064f636d74394bc1fcc7e27eb4b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:15:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 54ad42ffd4d8984b901ed5e2ea749ccd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:16:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 7ac2ecdc2bdbec47a62bce7febee3049
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:16:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 84ed57fbdc8971469d1bd54b0285e135
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:17:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 28b4693dc72364418e67fa9fb7a49972
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:17:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 4e3160bd8358554f9ff918dde635a228
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:18:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - bead4933d2ed8445af8dd6b737fa3820
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:18:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - e6186d9f267bb440a0b95196caea4b05
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:19:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - a02fc0acada91f4381c6b68684411ced
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:19:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 1bc2d27c2dd57f4ba7ac44d4c1bf2d53
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:20:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 811eb6a2518c1a40b22da7fdc3f7072f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:20:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 34e107da0fcf6e4498798c869ef80b84
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Running","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:21:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 0a5e7b74a603c349b42d819b622b3c45
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/267c56fd-c64a-4c7b-89f8-84c10357a1ff","name":"267c56fd-c64a-4c7b-89f8-84c10357a1ff","status":"Succeeded","startTime":"2022-05-11T06:13:01.3779296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '277'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:21:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 51e0056037eb9b4abf81ba0b94cb5ff8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006","name":"service1000006","type":"Microsoft.HealthcareApis/services","etag":"\"07019fc8-0000-0400-0000-627b55e30000\"","location":"westus2","kind":"fhir-Stu3","tags":{},"properties":{"accessPolicies":[],"cosmosDbConfiguration":{"offerThroughput":1000},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","audience":"https://service1000006.azurehealthcareapis.com","smartProxyEnabled":false},"corsConfiguration":{"origins":[],"headers":[],"methods":[],"allowCredentials":false},"exportConfiguration":{},"acrConfiguration":{"loginServers":[]},"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '848'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:21:38 GMT
+      etag:
+      - '"07019fc8-0000-0400-0000-627b55e30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 9e6b291f056c334eb5b1aa5a7f11bf12
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006","name":"service1000006","type":"Microsoft.HealthcareApis/services","etag":"\"07019fc8-0000-0400-0000-627b55e30000\"","location":"westus2","kind":"fhir-Stu3","tags":{},"properties":{"accessPolicies":[],"cosmosDbConfiguration":{"offerThroughput":1000},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","audience":"https://service1000006.azurehealthcareapis.com","smartProxyEnabled":false},"corsConfiguration":{"origins":[],"headers":[],"methods":[],"allowCredentials":false},"exportConfiguration":{},"acrConfiguration":{"loginServers":[]},"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '848'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:21:40 GMT
+      etag:
+      - '"07019fc8-0000-0400-0000-627b55e30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 4025e7628eccbb4dab8df89f073c7ce7
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"kind": "fhir-Stu3", "location": "westus2", "tags": {}, "etag": "\"07019fc8-0000-0400-0000-627b55e30000\"",
+      "properties": {"accessPolicies": [], "cosmosDbConfiguration": {"offerThroughput":
+      1000}, "authenticationConfiguration": {"authority": "https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a",
+      "audience": "https://service1000006.azurehealthcareapis.com", "smartProxyEnabled":
+      false}, "corsConfiguration": {"origins": [], "headers": [], "methods": [], "allowCredentials":
+      false}, "exportConfiguration": {}, "privateEndpointConnections": [], "publicNetworkAccess":
+      "Enabled", "acrConfiguration": {"loginServers": ["test1.azurecr.io"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '658'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006","name":"service1000006","type":"Microsoft.HealthcareApis/services","etag":"\"0701a3c9-0000-0400-0000-627b55f50000\"","location":"westus2","kind":"fhir-Stu3","tags":{},"properties":{"accessPolicies":[],"cosmosDbConfiguration":{"offerThroughput":1000},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","audience":"https://service1000006.azurehealthcareapis.com","smartProxyEnabled":false},"corsConfiguration":{"origins":[],"headers":[],"methods":[],"allowCredentials":false},"exportConfiguration":{},"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","acrConfiguration":{"loginServers":["test1.azurecr.io"]},"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '865'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:21:42 GMT
+      etag:
+      - '"0701a3c9-0000-0400-0000-627b55f50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-request-id:
+      - 1ae50695f78ecc47856bebbfd8b628e3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:22:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 3c1dae7f2497914cb0dee2c4b9060375
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:22:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 427650f4e1cbc546bda8a9a873e9c571
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:23:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 16b0c0c47b45f94ab4cfbe57bc31e0ed
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:23:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 145cd3de0e757040bd8bba6dadf128ca
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:24:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 01a7d3ce166365438797fc2b72f0075f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:24:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - d1707297985de447b9d5567fc16de6c9
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:25:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 83d24f2f4048c34f849142f68adde915
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:25:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 0522be77b9710e47a0ed042845b13a2e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:26:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - cc5a8661bf4221408bfe717df04d568b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:26:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 520476889ef76a4596ac24373a54b2fe
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:27:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - aa654211f5ffee4c9c07b062689a7ac7
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:27:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 8ebae3d867688a4d9ac3b5e41a4bbd66
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:28:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 78f11cf0197ebe49877dd0c140351a5d
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:28:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 6c0cb07c51522945a8e07553e5c10e54
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:29:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 38d11bb4edf58d42b8e9de9f62e06661
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Running","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:29:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 803fca821b9f374a87984367790ad274
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/0a8dba99-cf26-4940-8f75-131936ec5a58","name":"0a8dba99-cf26-4940-8f75-131936ec5a58","status":"Succeeded","startTime":"2022-05-11T06:21:42.5502196Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '277'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:30:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 10e8f18d26e5cf4c802461ea83753505
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis acr reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --login-servers
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006","name":"service1000006","type":"Microsoft.HealthcareApis/services","etag":"\"08010e12-0000-0400-0000-627b57e90000\"","location":"westus2","kind":"fhir-Stu3","tags":{},"properties":{"accessPolicies":[],"cosmosDbConfiguration":{"offerThroughput":1000},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","audience":"https://service1000006.azurehealthcareapis.com","smartProxyEnabled":false},"corsConfiguration":{"origins":[],"headers":[],"methods":[],"allowCredentials":false},"exportConfiguration":{},"acrConfiguration":{"loginServers":["test1.azurecr.io"]},"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '866'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:30:19 GMT
+      etag:
+      - '"08010e12-0000-0400-0000-627b57e90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - d506bad91e2b77439c98b054c5791708
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/services/service1000006?api-version=2021-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 11 May 2022 06:30:23 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-request-id:
+      - ed8d9deb39c7694da5c4433234062932
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:30:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 4105e289ec70fe4b9c6ecc67ef20a39b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:31:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 1e1d1e4d25637a418345e9c293b7e84d
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:31:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - db16fa309b7f5c44bf7dca2bf9fe7c2f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:32:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - fec8de421b1f5b46b1eb41ab25b6bff2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:32:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - b01aedd0b5c4374e857e6433f21d5cae
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:33:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 4b5b92684b055b48b7efe95d896eec36
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:33:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - c3a77da547eb8c40be8f8b5738c9f15e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:34:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 8e50c965ad693a41aa4eeb332f334551
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:34:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - e0398651fd83a84cbe56ef8b5e9a377c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:35:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 154ae6cefd04e84289da770a0fc14d44
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:35:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - d21ab1968d11c740bcbe93156f2842a6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:36:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 76e0e87ea127d34ebc176b125288e656
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:36:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 05b651b1a63f354ab437c0198fba9931
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:37:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 966c8c833284eb47b343b067037dbe33
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:37:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 9172688581ea4f47a3f1d6f357c53578
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:38:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 2b19809751e2214ba58a6ccc3aa79f23
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Running","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:39:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 7f202759cad60a46917e6f39c3bb93de
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/8381fcf9-9d35-448f-8616-c747a34d9373","name":"8381fcf9-9d35-448f-8616-c747a34d9373","status":"Succeeded","startTime":"2022-05-11T06:30:23.4007757Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '277'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:39:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 3c6f80e4bd741c4093fc01b8160598fe
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -8,116 +8,18 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
+# pylint: disable=unused-argument
 
 from azure.cli.core.util import sdk_no_wait
 
 
-def connectedmachine_list(client,
-                          resource_group_name=None):
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list_by_subscription()
-
-
-def connectedmachine_show(client,
-                          resource_group_name,
-                          machine_name):
-    return client.get(resource_group_name=resource_group_name,
-                      name=machine_name,
-                      expand="instanceView")
-
-
-def connectedmachine_delete(client,
-                            resource_group_name,
-                            machine_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         name=machine_name)
-
-
-def connectedmachine_extension_list(client,
-                                    resource_group_name,
-                                    machine_name,
-                                    expand=None):
-    return client.list(resource_group_name=resource_group_name,
-                       name=machine_name,
-                       expand=expand)
-
-
-def connectedmachine_extension_show(client,
-                                    resource_group_name,
-                                    machine_name,
-                                    name):
-    return client.get(resource_group_name=resource_group_name,
-                      name=machine_name,
-                      extension_name=name)
-
-
-def connectedmachine_extension_create(client,
-                                      resource_group_name,
-                                      machine_name,
-                                      name,
-                                      location,
-                                      tags=None,
-                                      force_update_tag=None,
-                                      publisher=None,
-                                      type_=None,
-                                      type_handler_version=None,
-                                      auto_upgrade_minor_version=None,
-                                      settings=None,
-                                      protected_settings=None,
-                                      no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       name=machine_name,
-                       extension_name=name,
-                       tags=tags,
-                       location=location,
-                       force_update_tag=force_update_tag,
-                       publisher=publisher,
-                       type_properties_type=type_,
-                       type_handler_version=type_handler_version,
-                       auto_upgrade_minor_version=auto_upgrade_minor_version,
-                       settings=settings,
-                       protected_settings=protected_settings,
-                       status=None)
-
-
-def connectedmachine_extension_update(client,
-                                      resource_group_name,
-                                      machine_name,
-                                      name,
-                                      tags=None,
-                                      force_update_tag=None,
-                                      publisher=None,
-                                      type_=None,
-                                      type_handler_version=None,
-                                      auto_upgrade_minor_version=None,
-                                      settings=None,
-                                      protected_settings=None,
-                                      no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_update,
-                       resource_group_name=resource_group_name,
-                       name=machine_name,
-                       extension_name=name,
-                       tags=tags,
-                       force_update_tag=force_update_tag,
-                       publisher=publisher,
-                       type=type_,
-                       type_handler_version=type_handler_version,
-                       auto_upgrade_minor_version=auto_upgrade_minor_version,
-                       settings=settings,
-                       protected_settings=protected_settings)
-
-
-def connectedmachine_extension_delete(client,
-                                      resource_group_name,
-                                      machine_name,
-                                      name,
-                                      no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       name=machine_name,
-                       extension_name=name)
+def connectedmachine_private_link_scope_update_tag(client,
+                                                   resource_group_name,
+                                                   scope_name,
+                                                   tags=None):
+    private_link_scope_tags = {}
+    if tags is not None:
+        private_link_scope_tags['tags'] = tags
+    return client.update_tags(resource_group_name=resource_group_name,
+                              scope_name=scope_name,
+                              private_link_scope_tags=private_link_scope_tags)

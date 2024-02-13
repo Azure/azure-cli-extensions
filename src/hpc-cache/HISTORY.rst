@@ -3,9 +3,17 @@
 Release History
 ===============
 
+0.1.5
+++++++
+* Migrate to track2 SDK
+
+0.1.4
+++++++
+* Fix #2695: Improve the help description of parameter `--nfs3-usage-model`.
+
 0.1.3
 ++++++
-* GA hpc-cache extension
+* GA hpc-cache extension.
 
 0.1.2
 ++++++

@@ -9,6 +9,7 @@
 from enum import Enum, EnumMeta
 from six import with_metaclass
 
+
 class _CaseInsensitiveEnumMeta(EnumMeta):
     def __getitem__(self, name):
         return super().__getitem__(name.upper())
@@ -26,15 +27,22 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
-class AggregationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The method for aggregating the metric.
+class ActionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Enum. Indicates the action type. "Internal" refers to actions that are for internal only APIs.
     """
 
-    AVERAGE = "Average"
-    MINIMUM = "Minimum"
-    MAXIMUM = "Maximum"
-    TOTAL = "Total"
-    COUNT = "Count"
+    INTERNAL = "Internal"
+
+
+class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of identity that created the resource.
+    """
+
+    USER = "User"
+    APPLICATION = "Application"
+    MANAGED_IDENTITY = "ManagedIdentity"
+    KEY = "Key"
+
 
 class KeyType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The keyType to regenerate. Must be either 'primary' or 'secondary'(case-insensitive).
@@ -42,6 +50,17 @@ class KeyType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     PRIMARY = "Primary"
     SECONDARY = "Secondary"
+
+
+class Origin(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The intended executor of the operation; as in Resource Based Access Control (RBAC) and audit
+    logs UX. Default value is "user,system"
+    """
+
+    USER = "user"
+    SYSTEM = "system"
+    USER_SYSTEM = "user,system"
+
 
 class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Provisioning state of the resource.
@@ -54,16 +73,5 @@ class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     RUNNING = "Running"
     CREATING = "Creating"
     UPDATING = "Updating"
-    DELETING = "Deleting"
-    MOVING = "Moving"
-
-class Status(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Provisioning state of the resource.
-    """
-
-    SUCCEEDED = "Succeeded"
-    FAILED = "Failed"
-    CANCELED = "Canceled"
-    CREATING = "Creating"
     DELETING = "Deleting"
     MOVING = "Moving"

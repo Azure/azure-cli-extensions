@@ -3,67 +3,21 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - application/xml
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - storage account keys list
+      - storage blob service-properties show
       Connection:
       - keep-alive
-      Content-Length:
-      - '0'
       ParameterSetName:
-      - -n -g --query -o
+      - --account-name --account-key
       User-Agent:
-      - AZURECLI/2.17.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2019-06-01&$expand=kerb
-  response:
-    body:
-      string: '{"keys":[{"keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '288'
-      content-type:
-      - application/json
-      date:
-      - Sat, 09 Jan 2021 11:40:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11999'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/xml
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-storage-blob/12.6.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.45.0 azsdk-python-storage-blob/12.12.0 Python/3.10.10 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Sat, 09 Jan 2021 11:40:34 GMT
+      - Tue, 04 Apr 2023 09:19:23 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2021-06-08'
     method: GET
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -74,13 +28,13 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Sat, 09 Jan 2021 11:40:37 GMT
+      - Tue, 04 Apr 2023 09:19:23 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2020-02-10'
+      - '2021-06-08'
     status:
       code: 200
       message: OK
@@ -91,14 +45,18 @@ interactions:
       - application/xml
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - storage blob service-properties update
       Connection:
       - keep-alive
+      ParameterSetName:
+      - --static-website --index-document --404-document --account-name --account-key
       User-Agent:
-      - azsdk-python-storage-blob/12.6.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.45.0 azsdk-python-storage-blob/12.15.0 Python/3.10.10 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Sat, 09 Jan 2021 11:40:37 GMT
+      - Tue, 04 Apr 2023 09:19:24 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2021-12-02'
     method: GET
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -109,13 +67,13 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Sat, 09 Jan 2021 11:40:37 GMT
+      - Tue, 04 Apr 2023 09:19:24 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2020-02-10'
+      - '2021-12-02'
     status:
       code: 200
       message: OK
@@ -126,21 +84,25 @@ interactions:
       /><DeleteRetentionPolicy><Enabled>false</Enabled></DeleteRetentionPolicy><StaticWebsite><Enabled>true</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>'
     headers:
       Accept:
-      - '*/*'
+      - application/xml
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - storage blob service-properties update
       Connection:
       - keep-alive
       Content-Length:
       - '792'
       Content-Type:
-      - application/xml; charset=utf-8
+      - application/xml
+      ParameterSetName:
+      - --static-website --index-document --404-document --account-name --account-key
       User-Agent:
-      - azsdk-python-storage-blob/12.6.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.45.0 azsdk-python-storage-blob/12.15.0 Python/3.10.10 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Sat, 09 Jan 2021 11:40:38 GMT
+      - Tue, 04 Apr 2023 09:19:25 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2021-12-02'
     method: PUT
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -150,11 +112,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 09 Jan 2021 11:40:38 GMT
+      - Tue, 04 Apr 2023 09:19:25 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
-      - '2020-02-10'
+      - '2021-12-02'
     status:
       code: 202
       message: Accepted
@@ -165,14 +127,18 @@ interactions:
       - application/xml
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - storage blob service-properties update
       Connection:
       - keep-alive
+      ParameterSetName:
+      - --static-website --index-document --404-document --account-name --account-key
       User-Agent:
-      - azsdk-python-storage-blob/12.6.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.45.0 azsdk-python-storage-blob/12.15.0 Python/3.10.10 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Sat, 09 Jan 2021 11:40:39 GMT
+      - Tue, 04 Apr 2023 09:19:26 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2021-12-02'
     method: GET
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -183,13 +149,13 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Sat, 09 Jan 2021 11:40:38 GMT
+      - Tue, 04 Apr 2023 09:19:25 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2020-02-10'
+      - '2021-12-02'
     status:
       code: 200
       message: OK
@@ -200,14 +166,18 @@ interactions:
       - application/xml
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - storage blob service-properties update
       Connection:
       - keep-alive
+      ParameterSetName:
+      - --delete-retention --delete-retention-period --account-name --account-key
       User-Agent:
-      - azsdk-python-storage-blob/12.6.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.45.0 azsdk-python-storage-blob/12.15.0 Python/3.10.10 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Sat, 09 Jan 2021 11:40:39 GMT
+      - Tue, 04 Apr 2023 09:19:26 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2021-12-02'
     method: GET
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -218,13 +188,13 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Sat, 09 Jan 2021 11:40:39 GMT
+      - Tue, 04 Apr 2023 09:19:27 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2020-02-10'
+      - '2021-12-02'
     status:
       code: 200
       message: OK
@@ -235,21 +205,25 @@ interactions:
       /><DeleteRetentionPolicy><Enabled>true</Enabled><Days>1</Days></DeleteRetentionPolicy><StaticWebsite><Enabled>true</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>'
     headers:
       Accept:
-      - '*/*'
+      - application/xml
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - storage blob service-properties update
       Connection:
       - keep-alive
       Content-Length:
       - '805'
       Content-Type:
-      - application/xml; charset=utf-8
+      - application/xml
+      ParameterSetName:
+      - --delete-retention --delete-retention-period --account-name --account-key
       User-Agent:
-      - azsdk-python-storage-blob/12.6.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.45.0 azsdk-python-storage-blob/12.15.0 Python/3.10.10 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Sat, 09 Jan 2021 11:40:40 GMT
+      - Tue, 04 Apr 2023 09:19:27 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2021-12-02'
     method: PUT
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -259,11 +233,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 09 Jan 2021 11:40:39 GMT
+      - Tue, 04 Apr 2023 09:19:28 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
-      - '2020-02-10'
+      - '2021-12-02'
     status:
       code: 202
       message: Accepted
@@ -274,14 +248,18 @@ interactions:
       - application/xml
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - storage blob service-properties update
       Connection:
       - keep-alive
+      ParameterSetName:
+      - --delete-retention --delete-retention-period --account-name --account-key
       User-Agent:
-      - azsdk-python-storage-blob/12.6.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.45.0 azsdk-python-storage-blob/12.15.0 Python/3.10.10 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Sat, 09 Jan 2021 11:40:40 GMT
+      - Tue, 04 Apr 2023 09:19:28 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2021-12-02'
     method: GET
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -292,13 +270,13 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Sat, 09 Jan 2021 11:40:40 GMT
+      - Tue, 04 Apr 2023 09:19:28 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2020-02-10'
+      - '2021-12-02'
     status:
       code: 200
       message: OK
@@ -309,14 +287,18 @@ interactions:
       - application/xml
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - storage blob service-properties show
       Connection:
       - keep-alive
+      ParameterSetName:
+      - --account-name --account-key
       User-Agent:
-      - azsdk-python-storage-blob/12.6.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.45.0 azsdk-python-storage-blob/12.12.0 Python/3.10.10 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Sat, 09 Jan 2021 11:40:41 GMT
+      - Tue, 04 Apr 2023 09:19:29 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2021-06-08'
     method: GET
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -327,13 +309,13 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Sat, 09 Jan 2021 11:40:41 GMT
+      - Tue, 04 Apr 2023 09:19:29 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2020-02-10'
+      - '2021-06-08'
     status:
       code: 200
       message: OK

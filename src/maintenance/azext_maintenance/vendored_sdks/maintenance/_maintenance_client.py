@@ -18,36 +18,41 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import MaintenanceClientConfiguration
-from .operations import PublicMaintenanceConfigurationOperations
-from .operations import ApplyUpdateOperations
-from .operations import ConfigurationAssignmentOperations
-from .operations import MaintenanceConfigurationOperations
-from .operations import OperationOperations
-from .operations import UpdateOperations
+from .operations import PublicMaintenanceConfigurationsOperations
+from .operations import ApplyUpdatesOperations
+from .operations import ConfigurationAssignmentsOperations
+from .operations import MaintenanceConfigurationsOperations
+from .operations import MaintenanceConfigurationsForResourceGroupOperations
+from .operations import ApplyUpdateForResourceGroupOperations
+from .operations import Operations
+from .operations import UpdatesOperations
 from . import models
 
 
 class MaintenanceClient(object):
-    """Maintenance Client.
+    """Azure Maintenance Management Client.
 
-    :ivar public_maintenance_configuration: PublicMaintenanceConfigurationOperations operations
-    :vartype public_maintenance_configuration: maintenance_client.operations.PublicMaintenanceConfigurationOperations
-    :ivar apply_update: ApplyUpdateOperations operations
-    :vartype apply_update: maintenance_client.operations.ApplyUpdateOperations
-    :ivar configuration_assignment: ConfigurationAssignmentOperations operations
-    :vartype configuration_assignment: maintenance_client.operations.ConfigurationAssignmentOperations
-    :ivar maintenance_configuration: MaintenanceConfigurationOperations operations
-    :vartype maintenance_configuration: maintenance_client.operations.MaintenanceConfigurationOperations
-    :ivar operation: OperationOperations operations
-    :vartype operation: maintenance_client.operations.OperationOperations
-    :ivar update: UpdateOperations operations
-    :vartype update: maintenance_client.operations.UpdateOperations
+    :ivar public_maintenance_configurations: PublicMaintenanceConfigurationsOperations operations
+    :vartype public_maintenance_configurations: maintenance_client.operations.PublicMaintenanceConfigurationsOperations
+    :ivar apply_updates: ApplyUpdatesOperations operations
+    :vartype apply_updates: maintenance_client.operations.ApplyUpdatesOperations
+    :ivar configuration_assignments: ConfigurationAssignmentsOperations operations
+    :vartype configuration_assignments: maintenance_client.operations.ConfigurationAssignmentsOperations
+    :ivar maintenance_configurations: MaintenanceConfigurationsOperations operations
+    :vartype maintenance_configurations: maintenance_client.operations.MaintenanceConfigurationsOperations
+    :ivar maintenance_configurations_for_resource_group: MaintenanceConfigurationsForResourceGroupOperations operations
+    :vartype maintenance_configurations_for_resource_group: maintenance_client.operations.MaintenanceConfigurationsForResourceGroupOperations
+    :ivar apply_update_for_resource_group: ApplyUpdateForResourceGroupOperations operations
+    :vartype apply_update_for_resource_group: maintenance_client.operations.ApplyUpdateForResourceGroupOperations
+    :ivar operations: Operations operations
+    :vartype operations: maintenance_client.operations.Operations
+    :ivar updates: UpdatesOperations operations
+    :vartype updates: maintenance_client.operations.UpdatesOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
     :type subscription_id: str
     :param str base_url: Service URL
-    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(
@@ -67,17 +72,21 @@ class MaintenanceClient(object):
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
-        self.public_maintenance_configuration = PublicMaintenanceConfigurationOperations(
+        self.public_maintenance_configurations = PublicMaintenanceConfigurationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.apply_update = ApplyUpdateOperations(
+        self.apply_updates = ApplyUpdatesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.configuration_assignment = ConfigurationAssignmentOperations(
+        self.configuration_assignments = ConfigurationAssignmentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.maintenance_configuration = MaintenanceConfigurationOperations(
+        self.maintenance_configurations = MaintenanceConfigurationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.operation = OperationOperations(
+        self.maintenance_configurations_for_resource_group = MaintenanceConfigurationsForResourceGroupOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.update = UpdateOperations(
+        self.apply_update_for_resource_group = ApplyUpdateForResourceGroupOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.updates = UpdatesOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

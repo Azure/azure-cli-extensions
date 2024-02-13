@@ -71,12 +71,15 @@ class DatadogAgreementResource(msrest.serialization.Model):
     :vartype type: str
     :param properties: Represents the properties of the resource.
     :type properties: ~microsoft_datadog_client.models.DatadogAgreementProperties
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~microsoft_datadog_client.models.SystemData
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'system_data': {'readonly': True},
     }
 
     _attribute_map = {
@@ -84,6 +87,7 @@ class DatadogAgreementResource(msrest.serialization.Model):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'DatadogAgreementProperties'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
     def __init__(
@@ -95,6 +99,7 @@ class DatadogAgreementResource(msrest.serialization.Model):
         self.name = None
         self.type = None
         self.properties = kwargs.get('properties', None)
+        self.system_data = None
 
 
 class DatadogAgreementResourceListResponse(msrest.serialization.Model):
@@ -320,39 +325,18 @@ class DatadogMonitorResource(msrest.serialization.Model):
     :vartype name: str
     :ivar type: The type of the monitor resource.
     :vartype type: str
+    :param sku:
+    :type sku: ~microsoft_datadog_client.models.ResourceSku
+    :param properties: Properties specific to the monitor resource.
+    :type properties: ~microsoft_datadog_client.models.MonitorProperties
+    :param identity:
+    :type identity: ~microsoft_datadog_client.models.IdentityProperties
     :param tags: A set of tags. Dictionary of :code:`<string>`.
     :type tags: dict[str, str]
     :param location: Required.
     :type location: str
-    :ivar principal_id: The identity ID.
-    :vartype principal_id: str
-    :ivar tenant_id: The tenant ID of resource.
-    :vartype tenant_id: str
-    :param type_identity_type:  Possible values include: "SystemAssigned", "UserAssigned".
-    :type type_identity_type: str or ~microsoft_datadog_client.models.ManagedIdentityTypes
-    :param provisioning_state:  Possible values include: "Accepted", "Creating", "Updating",
-     "Deleting", "Succeeded", "Failed", "Canceled", "Deleted", "NotSpecified".
-    :type provisioning_state: str or ~microsoft_datadog_client.models.ProvisioningState
-    :param monitoring_status: Flag specifying if the resource monitoring is enabled or disabled.
-     Possible values include: "Enabled", "Disabled".
-    :type monitoring_status: str or ~microsoft_datadog_client.models.MonitoringStatus
-    :param marketplace_subscription_status: Flag specifying the Marketplace Subscription Status of
-     the resource. If payment is not made in time, the resource will go in Suspended state. Possible
-     values include: "Active", "Suspended".
-    :type marketplace_subscription_status: str or
-     ~microsoft_datadog_client.models.MarketplaceSubscriptionStatus
-    :param datadog_organization_properties:
-    :type datadog_organization_properties:
-     ~microsoft_datadog_client.models.DatadogOrganizationProperties
-    :param user_info:
-    :type user_info: ~microsoft_datadog_client.models.UserInfo
-    :ivar liftr_resource_category:  Possible values include: "Unknown", "MonitorLogs".
-    :vartype liftr_resource_category: str or
-     ~microsoft_datadog_client.models.LiftrResourceCategories
-    :ivar liftr_resource_preference: The priority of the resource.
-    :vartype liftr_resource_preference: int
-    :param name_sku_name: Name of the SKU.
-    :type name_sku_name: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~microsoft_datadog_client.models.SystemData
     """
 
     _validation = {
@@ -360,29 +344,19 @@ class DatadogMonitorResource(msrest.serialization.Model):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'location': {'required': True},
-        'principal_id': {'readonly': True},
-        'tenant_id': {'readonly': True},
-        'liftr_resource_category': {'readonly': True},
-        'liftr_resource_preference': {'readonly': True},
+        'system_data': {'readonly': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
+        'sku': {'key': 'sku', 'type': 'ResourceSku'},
+        'properties': {'key': 'properties', 'type': 'MonitorProperties'},
+        'identity': {'key': 'identity', 'type': 'IdentityProperties'},
         'tags': {'key': 'tags', 'type': '{str}'},
         'location': {'key': 'location', 'type': 'str'},
-        'principal_id': {'key': 'identity.principalId', 'type': 'str'},
-        'tenant_id': {'key': 'identity.tenantId', 'type': 'str'},
-        'type_identity_type': {'key': 'identity.type', 'type': 'str'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'monitoring_status': {'key': 'properties.monitoringStatus', 'type': 'str'},
-        'marketplace_subscription_status': {'key': 'properties.marketplaceSubscriptionStatus', 'type': 'str'},
-        'datadog_organization_properties': {'key': 'properties.datadogOrganizationProperties', 'type': 'DatadogOrganizationProperties'},
-        'user_info': {'key': 'properties.userInfo', 'type': 'UserInfo'},
-        'liftr_resource_category': {'key': 'properties.liftrResourceCategory', 'type': 'str'},
-        'liftr_resource_preference': {'key': 'properties.liftrResourcePreference', 'type': 'int'},
-        'name_sku_name': {'key': 'sku.name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
     def __init__(
@@ -393,19 +367,12 @@ class DatadogMonitorResource(msrest.serialization.Model):
         self.id = None
         self.name = None
         self.type = None
+        self.sku = kwargs.get('sku', None)
+        self.properties = kwargs.get('properties', None)
+        self.identity = kwargs.get('identity', None)
         self.tags = kwargs.get('tags', None)
         self.location = kwargs['location']
-        self.principal_id = None
-        self.tenant_id = None
-        self.type_identity_type = kwargs.get('type_identity_type', None)
-        self.provisioning_state = kwargs.get('provisioning_state', None)
-        self.monitoring_status = kwargs.get('monitoring_status', None)
-        self.marketplace_subscription_status = kwargs.get('marketplace_subscription_status', None)
-        self.datadog_organization_properties = kwargs.get('datadog_organization_properties', None)
-        self.user_info = kwargs.get('user_info', None)
-        self.liftr_resource_category = None
-        self.liftr_resource_preference = None
-        self.name_sku_name = kwargs.get('name_sku_name', None)
+        self.system_data = None
 
 
 class DatadogMonitorResourceListResponse(msrest.serialization.Model):
@@ -434,16 +401,19 @@ class DatadogMonitorResourceListResponse(msrest.serialization.Model):
 class DatadogMonitorResourceUpdateParameters(msrest.serialization.Model):
     """The parameters for a PATCH request to a monitor resource.
 
+    :param properties: The set of properties that can be update in a PATCH request to a monitor
+     resource.
+    :type properties: ~microsoft_datadog_client.models.MonitorUpdateProperties
     :param tags: A set of tags. The new tags of the monitor resource.
     :type tags: dict[str, str]
-    :param monitoring_status: Flag specifying if the resource monitoring is enabled or disabled.
-     Possible values include: "Enabled", "Disabled".
-    :type monitoring_status: str or ~microsoft_datadog_client.models.MonitoringStatus
+    :param sku:
+    :type sku: ~microsoft_datadog_client.models.ResourceSku
     """
 
     _attribute_map = {
+        'properties': {'key': 'properties', 'type': 'MonitorUpdateProperties'},
         'tags': {'key': 'tags', 'type': '{str}'},
-        'monitoring_status': {'key': 'properties.monitoringStatus', 'type': 'str'},
+        'sku': {'key': 'sku', 'type': 'ResourceSku'},
     }
 
     def __init__(
@@ -451,12 +421,13 @@ class DatadogMonitorResourceUpdateParameters(msrest.serialization.Model):
         **kwargs
     ):
         super(DatadogMonitorResourceUpdateParameters, self).__init__(**kwargs)
+        self.properties = kwargs.get('properties', None)
         self.tags = kwargs.get('tags', None)
-        self.monitoring_status = kwargs.get('monitoring_status', None)
+        self.sku = kwargs.get('sku', None)
 
 
 class DatadogOrganizationProperties(msrest.serialization.Model):
-    """DatadogOrganizationProperties.
+    """Datadog organization properties.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -469,6 +440,12 @@ class DatadogOrganizationProperties(msrest.serialization.Model):
     :param linking_client_id: The client_id from an existing in exchange for an auth token to link
      organization.
     :type linking_client_id: str
+    :param redirect_uri: The redirect uri for linking.
+    :type redirect_uri: str
+    :param api_key: Api key associated to the Datadog organization.
+    :type api_key: str
+    :param application_key: Application key associated to the Datadog organization.
+    :type application_key: str
     :param enterprise_app_id: The Id of the Enterprise App used for Single sign on.
     :type enterprise_app_id: str
     """
@@ -483,6 +460,9 @@ class DatadogOrganizationProperties(msrest.serialization.Model):
         'id': {'key': 'id', 'type': 'str'},
         'linking_auth_code': {'key': 'linkingAuthCode', 'type': 'str'},
         'linking_client_id': {'key': 'linkingClientId', 'type': 'str'},
+        'redirect_uri': {'key': 'redirectUri', 'type': 'str'},
+        'api_key': {'key': 'apiKey', 'type': 'str'},
+        'application_key': {'key': 'applicationKey', 'type': 'str'},
         'enterprise_app_id': {'key': 'enterpriseAppId', 'type': 'str'},
     }
 
@@ -495,6 +475,9 @@ class DatadogOrganizationProperties(msrest.serialization.Model):
         self.id = None
         self.linking_auth_code = kwargs.get('linking_auth_code', None)
         self.linking_client_id = kwargs.get('linking_client_id', None)
+        self.redirect_uri = kwargs.get('redirect_uri', None)
+        self.api_key = kwargs.get('api_key', None)
+        self.application_key = kwargs.get('application_key', None)
         self.enterprise_app_id = kwargs.get('enterprise_app_id', None)
 
 
@@ -520,16 +503,27 @@ class DatadogSetPasswordLink(msrest.serialization.Model):
 class DatadogSingleSignOnProperties(msrest.serialization.Model):
     """DatadogSingleSignOnProperties.
 
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provisioning_state:  Possible values include: "Accepted", "Creating", "Updating",
+     "Deleting", "Succeeded", "Failed", "Canceled", "Deleted", "NotSpecified".
+    :vartype provisioning_state: str or ~microsoft_datadog_client.models.ProvisioningState
     :param single_sign_on_state: Various states of the SSO resource. Possible values include:
      "Initial", "Enable", "Disable", "Existing".
     :type single_sign_on_state: str or ~microsoft_datadog_client.models.SingleSignOnStates
     :param enterprise_app_id: The Id of the Enterprise App used for Single sign-on.
     :type enterprise_app_id: str
-    :param single_sign_on_url: The login URL specific to this Datadog Organization.
-    :type single_sign_on_url: str
+    :ivar single_sign_on_url: The login URL specific to this Datadog Organization.
+    :vartype single_sign_on_url: str
     """
 
+    _validation = {
+        'provisioning_state': {'readonly': True},
+        'single_sign_on_url': {'readonly': True},
+    }
+
     _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'single_sign_on_state': {'key': 'singleSignOnState', 'type': 'str'},
         'enterprise_app_id': {'key': 'enterpriseAppId', 'type': 'str'},
         'single_sign_on_url': {'key': 'singleSignOnUrl', 'type': 'str'},
@@ -540,9 +534,10 @@ class DatadogSingleSignOnProperties(msrest.serialization.Model):
         **kwargs
     ):
         super(DatadogSingleSignOnProperties, self).__init__(**kwargs)
+        self.provisioning_state = None
         self.single_sign_on_state = kwargs.get('single_sign_on_state', None)
         self.enterprise_app_id = kwargs.get('enterprise_app_id', None)
-        self.single_sign_on_url = kwargs.get('single_sign_on_url', None)
+        self.single_sign_on_url = None
 
 
 class DatadogSingleSignOnResource(msrest.serialization.Model):
@@ -558,12 +553,15 @@ class DatadogSingleSignOnResource(msrest.serialization.Model):
     :vartype type: str
     :param properties:
     :type properties: ~microsoft_datadog_client.models.DatadogSingleSignOnProperties
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~microsoft_datadog_client.models.SystemData
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'system_data': {'readonly': True},
     }
 
     _attribute_map = {
@@ -571,6 +569,7 @@ class DatadogSingleSignOnResource(msrest.serialization.Model):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'DatadogSingleSignOnProperties'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
     def __init__(
@@ -582,6 +581,7 @@ class DatadogSingleSignOnResource(msrest.serialization.Model):
         self.name = None
         self.type = None
         self.properties = kwargs.get('properties', None)
+        self.system_data = None
 
 
 class DatadogSingleSignOnResourceListResponse(msrest.serialization.Model):
@@ -607,35 +607,98 @@ class DatadogSingleSignOnResourceListResponse(msrest.serialization.Model):
         self.next_link = kwargs.get('next_link', None)
 
 
-class ErrorResponseBody(msrest.serialization.Model):
-    """ErrorResponseBody.
+class ErrorAdditionalInfo(msrest.serialization.Model):
+    """The resource management error additional info.
 
-    :param code:
-    :type code: str
-    :param message:
-    :type message: str
-    :param target:
-    :type target: str
-    :param details:
-    :type details: list[~microsoft_datadog_client.models.ErrorResponseBody]
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar type: The additional info type.
+    :vartype type: str
+    :ivar info: The additional info.
+    :vartype info: object
     """
 
+    _validation = {
+        'type': {'readonly': True},
+        'info': {'readonly': True},
+    }
+
     _attribute_map = {
-        'code': {'key': 'code', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
-        'target': {'key': 'target', 'type': 'str'},
-        'details': {'key': 'details', 'type': '[ErrorResponseBody]'},
+        'type': {'key': 'type', 'type': 'str'},
+        'info': {'key': 'info', 'type': 'object'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(ErrorResponseBody, self).__init__(**kwargs)
-        self.code = kwargs.get('code', None)
-        self.message = kwargs.get('message', None)
-        self.target = kwargs.get('target', None)
-        self.details = kwargs.get('details', None)
+        super(ErrorAdditionalInfo, self).__init__(**kwargs)
+        self.type = None
+        self.info = None
+
+
+class ErrorDetail(msrest.serialization.Model):
+    """The error detail.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar code: The error code.
+    :vartype code: str
+    :ivar message: The error message.
+    :vartype message: str
+    :ivar target: The error target.
+    :vartype target: str
+    :ivar details: The error details.
+    :vartype details: list[~microsoft_datadog_client.models.ErrorDetail]
+    :ivar additional_info: The error additional info.
+    :vartype additional_info: list[~microsoft_datadog_client.models.ErrorAdditionalInfo]
+    """
+
+    _validation = {
+        'code': {'readonly': True},
+        'message': {'readonly': True},
+        'target': {'readonly': True},
+        'details': {'readonly': True},
+        'additional_info': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'code': {'key': 'code', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
+        'target': {'key': 'target', 'type': 'str'},
+        'details': {'key': 'details', 'type': '[ErrorDetail]'},
+        'additional_info': {'key': 'additionalInfo', 'type': '[ErrorAdditionalInfo]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ErrorDetail, self).__init__(**kwargs)
+        self.code = None
+        self.message = None
+        self.target = None
+        self.details = None
+        self.additional_info = None
+
+
+class ErrorResponse(msrest.serialization.Model):
+    """Common error response for all Azure Resource Manager APIs to return error details for failed operations. (This also follows the OData error response format.).
+
+    :param error: The error object.
+    :type error: ~microsoft_datadog_client.models.ErrorDetail
+    """
+
+    _attribute_map = {
+        'error': {'key': 'error', 'type': 'ErrorDetail'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ErrorResponse, self).__init__(**kwargs)
+        self.error = kwargs.get('error', None)
 
 
 class FilteringTag(msrest.serialization.Model):
@@ -664,6 +727,40 @@ class FilteringTag(msrest.serialization.Model):
         self.name = kwargs.get('name', None)
         self.value = kwargs.get('value', None)
         self.action = kwargs.get('action', None)
+
+
+class IdentityProperties(msrest.serialization.Model):
+    """IdentityProperties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar principal_id: The identity ID.
+    :vartype principal_id: str
+    :ivar tenant_id: The tenant ID of resource.
+    :vartype tenant_id: str
+    :param type: Identity type. Possible values include: "SystemAssigned", "UserAssigned".
+    :type type: str or ~microsoft_datadog_client.models.ManagedIdentityTypes
+    """
+
+    _validation = {
+        'principal_id': {'readonly': True},
+        'tenant_id': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'tenant_id': {'key': 'tenantId', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(IdentityProperties, self).__init__(**kwargs)
+        self.principal_id = None
+        self.tenant_id = None
+        self.type = kwargs.get('type', None)
 
 
 class LinkedResource(msrest.serialization.Model):
@@ -706,6 +803,64 @@ class LinkedResourceListResponse(msrest.serialization.Model):
         super(LinkedResourceListResponse, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
         self.next_link = kwargs.get('next_link', None)
+
+
+class LogRules(msrest.serialization.Model):
+    """Set of rules for sending logs for the Monitor resource.
+
+    :param send_aad_logs: Flag specifying if AAD logs should be sent for the Monitor resource.
+    :type send_aad_logs: bool
+    :param send_subscription_logs: Flag specifying if Azure subscription logs should be sent for
+     the Monitor resource.
+    :type send_subscription_logs: bool
+    :param send_resource_logs: Flag specifying if Azure resource logs should be sent for the
+     Monitor resource.
+    :type send_resource_logs: bool
+    :param filtering_tags: List of filtering tags to be used for capturing logs. This only takes
+     effect if SendResourceLogs flag is enabled. If empty, all resources will be captured. If only
+     Exclude action is specified, the rules will apply to the list of all available resources. If
+     Include actions are specified, the rules will only include resources with the associated tags.
+    :type filtering_tags: list[~microsoft_datadog_client.models.FilteringTag]
+    """
+
+    _attribute_map = {
+        'send_aad_logs': {'key': 'sendAadLogs', 'type': 'bool'},
+        'send_subscription_logs': {'key': 'sendSubscriptionLogs', 'type': 'bool'},
+        'send_resource_logs': {'key': 'sendResourceLogs', 'type': 'bool'},
+        'filtering_tags': {'key': 'filteringTags', 'type': '[FilteringTag]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(LogRules, self).__init__(**kwargs)
+        self.send_aad_logs = kwargs.get('send_aad_logs', None)
+        self.send_subscription_logs = kwargs.get('send_subscription_logs', None)
+        self.send_resource_logs = kwargs.get('send_resource_logs', None)
+        self.filtering_tags = kwargs.get('filtering_tags', None)
+
+
+class MetricRules(msrest.serialization.Model):
+    """Set of rules for sending metrics for the Monitor resource.
+
+    :param filtering_tags: List of filtering tags to be used for capturing metrics. If empty, all
+     resources will be captured. If only Exclude action is specified, the rules will apply to the
+     list of all available resources. If Include actions are specified, the rules will only include
+     resources with the associated tags.
+    :type filtering_tags: list[~microsoft_datadog_client.models.FilteringTag]
+    """
+
+    _attribute_map = {
+        'filtering_tags': {'key': 'filteringTags', 'type': '[FilteringTag]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(MetricRules, self).__init__(**kwargs)
+        self.filtering_tags = kwargs.get('filtering_tags', None)
 
 
 class MonitoredResource(msrest.serialization.Model):
@@ -779,44 +934,25 @@ class MonitoringTagRules(msrest.serialization.Model):
     :vartype id: str
     :ivar type: The type of the rule set.
     :vartype type: str
-    :param filtering_tags_properties_metric_rules_filtering_tags: List of filtering tags to be used
-     for capturing metrics. If empty, all resources will be captured. If only Exclude action is
-     specified, the rules will apply to the list of all available resources. If Include actions are
-     specified, the rules will only include resources with the associated tags.
-    :type filtering_tags_properties_metric_rules_filtering_tags:
-     list[~microsoft_datadog_client.models.FilteringTag]
-    :param send_aad_logs: Flag specifying if AAD logs should be sent for the Monitor resource.
-    :type send_aad_logs: bool
-    :param send_subscription_logs: Flag specifying if Azure subscription logs should be sent for
-     the Monitor resource.
-    :type send_subscription_logs: bool
-    :param send_resource_logs: Flag specifying if Azure resource logs should be sent for the
-     Monitor resource.
-    :type send_resource_logs: bool
-    :param filtering_tags_properties_log_rules_filtering_tags: List of filtering tags to be used
-     for capturing logs. This only takes effect if SendResourceLogs flag is enabled. If empty, all
-     resources will be captured. If only Exclude action is specified, the rules will apply to the
-     list of all available resources. If Include actions are specified, the rules will only include
-     resources with the associated tags.
-    :type filtering_tags_properties_log_rules_filtering_tags:
-     list[~microsoft_datadog_client.models.FilteringTag]
+    :param properties: Definition of the properties for a TagRules resource.
+    :type properties: ~microsoft_datadog_client.models.MonitoringTagRulesProperties
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~microsoft_datadog_client.models.SystemData
     """
 
     _validation = {
         'name': {'readonly': True},
         'id': {'readonly': True},
         'type': {'readonly': True},
+        'system_data': {'readonly': True},
     }
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'id': {'key': 'id', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'filtering_tags_properties_metric_rules_filtering_tags': {'key': 'properties.metricRules.filteringTags', 'type': '[FilteringTag]'},
-        'send_aad_logs': {'key': 'properties.logRules.sendAadLogs', 'type': 'bool'},
-        'send_subscription_logs': {'key': 'properties.logRules.sendSubscriptionLogs', 'type': 'bool'},
-        'send_resource_logs': {'key': 'properties.logRules.sendResourceLogs', 'type': 'bool'},
-        'filtering_tags_properties_log_rules_filtering_tags': {'key': 'properties.logRules.filteringTags', 'type': '[FilteringTag]'},
+        'properties': {'key': 'properties', 'type': 'MonitoringTagRulesProperties'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
     def __init__(
@@ -827,11 +963,8 @@ class MonitoringTagRules(msrest.serialization.Model):
         self.name = None
         self.id = None
         self.type = None
-        self.filtering_tags_properties_metric_rules_filtering_tags = kwargs.get('filtering_tags_properties_metric_rules_filtering_tags', None)
-        self.send_aad_logs = kwargs.get('send_aad_logs', None)
-        self.send_subscription_logs = kwargs.get('send_subscription_logs', None)
-        self.send_resource_logs = kwargs.get('send_resource_logs', None)
-        self.filtering_tags_properties_log_rules_filtering_tags = kwargs.get('filtering_tags_properties_log_rules_filtering_tags', None)
+        self.properties = kwargs.get('properties', None)
+        self.system_data = None
 
 
 class MonitoringTagRulesListResponse(msrest.serialization.Model):
@@ -855,6 +988,119 @@ class MonitoringTagRulesListResponse(msrest.serialization.Model):
         super(MonitoringTagRulesListResponse, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
         self.next_link = kwargs.get('next_link', None)
+
+
+class MonitoringTagRulesProperties(msrest.serialization.Model):
+    """Definition of the properties for a TagRules resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provisioning_state:  Possible values include: "Accepted", "Creating", "Updating",
+     "Deleting", "Succeeded", "Failed", "Canceled", "Deleted", "NotSpecified".
+    :vartype provisioning_state: str or ~microsoft_datadog_client.models.ProvisioningState
+    :param log_rules: Set of rules for sending logs for the Monitor resource.
+    :type log_rules: ~microsoft_datadog_client.models.LogRules
+    :param metric_rules: Set of rules for sending metrics for the Monitor resource.
+    :type metric_rules: ~microsoft_datadog_client.models.MetricRules
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'log_rules': {'key': 'logRules', 'type': 'LogRules'},
+        'metric_rules': {'key': 'metricRules', 'type': 'MetricRules'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(MonitoringTagRulesProperties, self).__init__(**kwargs)
+        self.provisioning_state = None
+        self.log_rules = kwargs.get('log_rules', None)
+        self.metric_rules = kwargs.get('metric_rules', None)
+
+
+class MonitorProperties(msrest.serialization.Model):
+    """Properties specific to the monitor resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provisioning_state:  Possible values include: "Accepted", "Creating", "Updating",
+     "Deleting", "Succeeded", "Failed", "Canceled", "Deleted", "NotSpecified".
+    :vartype provisioning_state: str or ~microsoft_datadog_client.models.ProvisioningState
+    :param monitoring_status: Flag specifying if the resource monitoring is enabled or disabled.
+     Possible values include: "Enabled", "Disabled". Default value: "Enabled".
+    :type monitoring_status: str or ~microsoft_datadog_client.models.MonitoringStatus
+    :ivar marketplace_subscription_status: Flag specifying the Marketplace Subscription Status of
+     the resource. If payment is not made in time, the resource will go in Suspended state. Possible
+     values include: "Provisioning", "Active", "Suspended", "Unsubscribed".
+    :vartype marketplace_subscription_status: str or
+     ~microsoft_datadog_client.models.MarketplaceSubscriptionStatus
+    :param datadog_organization_properties: Datadog organization properties.
+    :type datadog_organization_properties:
+     ~microsoft_datadog_client.models.DatadogOrganizationProperties
+    :param user_info: User info.
+    :type user_info: ~microsoft_datadog_client.models.UserInfo
+    :ivar liftr_resource_category:  Possible values include: "Unknown", "MonitorLogs".
+    :vartype liftr_resource_category: str or
+     ~microsoft_datadog_client.models.LiftrResourceCategories
+    :ivar liftr_resource_preference: The priority of the resource.
+    :vartype liftr_resource_preference: int
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+        'marketplace_subscription_status': {'readonly': True},
+        'liftr_resource_category': {'readonly': True},
+        'liftr_resource_preference': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'monitoring_status': {'key': 'monitoringStatus', 'type': 'str'},
+        'marketplace_subscription_status': {'key': 'marketplaceSubscriptionStatus', 'type': 'str'},
+        'datadog_organization_properties': {'key': 'datadogOrganizationProperties', 'type': 'DatadogOrganizationProperties'},
+        'user_info': {'key': 'userInfo', 'type': 'UserInfo'},
+        'liftr_resource_category': {'key': 'liftrResourceCategory', 'type': 'str'},
+        'liftr_resource_preference': {'key': 'liftrResourcePreference', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(MonitorProperties, self).__init__(**kwargs)
+        self.provisioning_state = None
+        self.monitoring_status = kwargs.get('monitoring_status', "Enabled")
+        self.marketplace_subscription_status = None
+        self.datadog_organization_properties = kwargs.get('datadog_organization_properties', None)
+        self.user_info = kwargs.get('user_info', None)
+        self.liftr_resource_category = None
+        self.liftr_resource_preference = None
+
+
+class MonitorUpdateProperties(msrest.serialization.Model):
+    """The set of properties that can be update in a PATCH request to a monitor resource.
+
+    :param monitoring_status: Flag specifying if the resource monitoring is enabled or disabled.
+     Possible values include: "Enabled", "Disabled". Default value: "Enabled".
+    :type monitoring_status: str or ~microsoft_datadog_client.models.MonitoringStatus
+    """
+
+    _attribute_map = {
+        'monitoring_status': {'key': 'monitoringStatus', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(MonitorUpdateProperties, self).__init__(**kwargs)
+        self.monitoring_status = kwargs.get('monitoring_status', "Enabled")
 
 
 class OperationDisplay(msrest.serialization.Model):
@@ -938,27 +1184,74 @@ class OperationResult(msrest.serialization.Model):
         self.is_data_action = kwargs.get('is_data_action', None)
 
 
-class ResourceProviderDefaultErrorResponse(msrest.serialization.Model):
-    """ResourceProviderDefaultErrorResponse.
+class ResourceSku(msrest.serialization.Model):
+    """ResourceSku.
 
-    :param error:
-    :type error: ~microsoft_datadog_client.models.ErrorResponseBody
+    All required parameters must be populated in order to send to Azure.
+
+    :param name: Required. Name of the SKU.
+    :type name: str
     """
 
+    _validation = {
+        'name': {'required': True},
+    }
+
     _attribute_map = {
-        'error': {'key': 'error', 'type': 'ErrorResponseBody'},
+        'name': {'key': 'name', 'type': 'str'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(ResourceProviderDefaultErrorResponse, self).__init__(**kwargs)
-        self.error = kwargs.get('error', None)
+        super(ResourceSku, self).__init__(**kwargs)
+        self.name = kwargs['name']
+
+
+class SystemData(msrest.serialization.Model):
+    """Metadata pertaining to creation and last modification of the resource.
+
+    :param created_by: The identity that created the resource.
+    :type created_by: str
+    :param created_by_type: The type of identity that created the resource. Possible values
+     include: "User", "Application", "ManagedIdentity", "Key".
+    :type created_by_type: str or ~microsoft_datadog_client.models.CreatedByType
+    :param created_at: The timestamp of resource creation (UTC).
+    :type created_at: ~datetime.datetime
+    :param last_modified_by: The identity that last modified the resource.
+    :type last_modified_by: str
+    :param last_modified_by_type: The type of identity that last modified the resource. Possible
+     values include: "User", "Application", "ManagedIdentity", "Key".
+    :type last_modified_by_type: str or ~microsoft_datadog_client.models.CreatedByType
+    :param last_modified_at: The timestamp of resource last modification (UTC).
+    :type last_modified_at: ~datetime.datetime
+    """
+
+    _attribute_map = {
+        'created_by': {'key': 'createdBy', 'type': 'str'},
+        'created_by_type': {'key': 'createdByType', 'type': 'str'},
+        'created_at': {'key': 'createdAt', 'type': 'iso-8601'},
+        'last_modified_by': {'key': 'lastModifiedBy', 'type': 'str'},
+        'last_modified_by_type': {'key': 'lastModifiedByType', 'type': 'str'},
+        'last_modified_at': {'key': 'lastModifiedAt', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SystemData, self).__init__(**kwargs)
+        self.created_by = kwargs.get('created_by', None)
+        self.created_by_type = kwargs.get('created_by_type', None)
+        self.created_at = kwargs.get('created_at', None)
+        self.last_modified_by = kwargs.get('last_modified_by', None)
+        self.last_modified_by_type = kwargs.get('last_modified_by_type', None)
+        self.last_modified_at = kwargs.get('last_modified_at', None)
 
 
 class UserInfo(msrest.serialization.Model):
-    """UserInfo.
+    """User info.
 
     :param name: Name of the user.
     :type name: str

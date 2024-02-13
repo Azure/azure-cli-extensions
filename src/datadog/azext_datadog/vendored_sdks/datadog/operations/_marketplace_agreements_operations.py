@@ -64,7 +64,7 @@ class MarketplaceAgreementsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
+        api_version = "2021-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -76,7 +76,7 @@ class MarketplaceAgreementsOperations(object):
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -104,7 +104,7 @@ class MarketplaceAgreementsOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize(models.ResourceProviderDefaultErrorResponse, response)
+                error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
@@ -115,9 +115,9 @@ class MarketplaceAgreementsOperations(object):
         )
     list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Datadog/agreements'}  # type: ignore
 
-    def create(
+    def create_or_update(
         self,
-        properties=None,  # type: Optional["models.DatadogAgreementProperties"]
+        body=None,  # type: Optional["models.DatadogAgreementResource"]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.DatadogAgreementResource"
@@ -125,8 +125,8 @@ class MarketplaceAgreementsOperations(object):
 
         Create Datadog marketplace agreement in the subscription.
 
-        :param properties: Represents the properties of the resource.
-        :type properties: ~microsoft_datadog_client.models.DatadogAgreementProperties
+        :param body:
+        :type body: ~microsoft_datadog_client.models.DatadogAgreementResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DatadogAgreementResource, or the result of cls(response)
         :rtype: ~microsoft_datadog_client.models.DatadogAgreementResource
@@ -137,20 +137,20 @@ class MarketplaceAgreementsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        body = models.DatadogAgreementResource(properties=properties)
+        api_version = "2021-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
-        url = self.create.metadata['url']  # type: ignore
+        url = self.create_or_update.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
@@ -169,7 +169,7 @@ class MarketplaceAgreementsOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ResourceProviderDefaultErrorResponse, response)
+            error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('DatadogAgreementResource', pipeline_response)
@@ -178,4 +178,4 @@ class MarketplaceAgreementsOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Datadog/agreements/default'}  # type: ignore
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Datadog/agreements/default'}  # type: ignore

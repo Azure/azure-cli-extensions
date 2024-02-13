@@ -1,0 +1,342 @@
+interactions:
+- request:
+    body: '{"properties": {"template": {"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json",
+      "contentVersion": "1.0.0.0", "parameters": {"location": {"type": "string", "metadata":
+      {"description": "Location of the resources."}, "defaultValue": "eastus"}}, "resources":
+      [{"apiVersion": "2018-07-01-preview", "name": "helloWorldNetwork", "type": "Microsoft.ServiceFabricMesh/networks",
+      "location": "[parameters(''location'')]", "dependsOn": [], "properties": {"addressPrefix":
+      "10.0.0.4/22", "ingressConfig": {"layer4": [{"name": "helloWorldIngress", "publicPort":
+      "80", "applicationName": "helloWorldApp", "serviceName": "helloWorldService",
+      "endpointName": "helloWorldListener"}]}}}, {"apiVersion": "2018-07-01-preview",
+      "name": "helloWorldApp", "type": "Microsoft.ServiceFabricMesh/applications",
+      "location": "[parameters(''location'')]", "dependsOn": ["Microsoft.ServiceFabricMesh/networks/helloWorldNetwork"],
+      "properties": {"description": "Service Fabric Mesh HelloWorld Application!",
+      "services": [{"type": "Microsoft.ServiceFabricMesh/services", "name": "helloWorldService",
+      "properties": {"description": "Service Fabric Mesh Hello World Service.", "osType":
+      "linux", "codePackages": [{"name": "helloWorldCode", "image": "seabreeze/azure-mesh-helloworld:1.1-alpine",
+      "endpoints": [{"name": "helloWorldListener", "port": "80"}], "resources": {"requests":
+      {"cpu": "1", "memoryInGB": "1"}}}, {"name": "helloWorldSideCar", "image": "seabreeze/azure-mesh-helloworld-sidecar:1.0-alpine",
+      "resources": {"requests": {"cpu": "1", "memoryInGB": "1"}}}], "replicaCount":
+      "1", "networkRefs": [{"name": "[resourceId(''Microsoft.ServiceFabricMesh/networks'',
+      ''helloWorldNetwork'')]"}]}}]}}]}, "mode": "incremental"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh deployment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1736'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --template-file --name --no-wait
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/cli000002","name":"cli000002","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1634222566823060083","parameters":{"location":{"type":"String","value":"eastus"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2023-08-15T07:43:20.5019888Z","duration":"PT0.0001104S","correlationId":"56ca75bd-cd62-4605-9e75-243ef1917ff1","providers":[{"namespace":"Microsoft.ServiceFabricMesh","resourceTypes":[{"resourceType":"networks","locations":["eastus"]},{"resourceType":"applications","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/networks/helloWorldNetwork","resourceType":"Microsoft.ServiceFabricMesh/networks","resourceName":"helloWorldNetwork"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications/helloWorldApp","resourceType":"Microsoft.ServiceFabricMesh/applications","resourceName":"helloWorldApp"}]}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/cli000002/operationStatuses/08585095214866498482?api-version=2022-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1200'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Aug 2023 07:43:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh app list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications?api-version=2018-09-01-preview
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLITEST.RG000001/providers/Microsoft.ServiceFabricMesh/applications/HELLOWORLDAPP\"\
+        ,\r\n      \"name\": \"helloWorldApp\",\r\n      \"type\": \"Microsoft.ServiceFabricMesh/applications\"\
+        ,\r\n      \"tags\": {},\r\n      \"location\": \"eastus\",\r\n      \"properties\"\
+        : {\r\n        \"provisioningState\": \"Failed\",\r\n        \"description\"\
+        : \"Service Fabric Mesh HelloWorld Application!\",\r\n        \"serviceNames\"\
+        : [\r\n          \"helloWorldService\"\r\n        ],\r\n        \"status\"\
+        : \"Failed\",\r\n        \"statusDetails\": \"Insufficient capacity is available\
+        \ in this region. Please try again later or try a different region.\",\r\n\
+        \        \"healthState\": \"Ok\"\r\n      }\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '746'
+      content-type:
+      - application/json
+      date:
+      - Tue, 15 Aug 2023 07:43:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-atlas-response-duration:
+      - '47'
+      - '699'
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh app show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications/helloWorldApp?api-version=2018-09-01-preview
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLITEST.RG000001/providers/Microsoft.ServiceFabricMesh/applications/HELLOWORLDAPP\"\
+        ,\r\n  \"name\": \"helloWorldApp\",\r\n  \"type\": \"Microsoft.ServiceFabricMesh/applications\"\
+        ,\r\n  \"tags\": {},\r\n  \"location\": \"eastus\",\r\n  \"properties\": {\r\
+        \n    \"provisioningState\": \"Failed\",\r\n    \"description\": \"Service\
+        \ Fabric Mesh HelloWorld Application!\",\r\n    \"serviceNames\": [\r\n  \
+        \    \"helloWorldService\"\r\n    ],\r\n    \"status\": \"Failed\",\r\n  \
+        \  \"statusDetails\": \"Insufficient capacity is available in this region.\
+        \ Please try again later or try a different region.\",\r\n    \"healthState\"\
+        : \"Ok\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '653'
+      content-type:
+      - application/json
+      date:
+      - Tue, 15 Aug 2023 07:43:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-atlas-response-duration:
+      - '6'
+      - '521'
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh app show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --id
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLITEST.RG000001/providers/Microsoft.ServiceFabricMesh/applications/HELLOWORLDAPP?api-version=2018-09-01-preview
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLITEST.RG000001/providers/Microsoft.ServiceFabricMesh/applications/HELLOWORLDAPP\"\
+        ,\r\n  \"name\": \"helloWorldApp\",\r\n  \"type\": \"Microsoft.ServiceFabricMesh/applications\"\
+        ,\r\n  \"tags\": {},\r\n  \"location\": \"eastus\",\r\n  \"properties\": {\r\
+        \n    \"provisioningState\": \"Failed\",\r\n    \"description\": \"Service\
+        \ Fabric Mesh HelloWorld Application!\",\r\n    \"serviceNames\": [\r\n  \
+        \    \"helloWorldService\"\r\n    ],\r\n    \"status\": \"Failed\",\r\n  \
+        \  \"statusDetails\": \"Insufficient capacity is available in this region.\
+        \ Please try again later or try a different region.\",\r\n    \"healthState\"\
+        : \"Ok\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '653'
+      content-type:
+      - application/json
+      date:
+      - Tue, 15 Aug 2023 07:43:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-atlas-response-duration:
+      - '2'
+      - '477'
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh app delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --name --yes
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications/helloWorldApp?api-version=2018-09-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 15 Aug 2023 07:43:41 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications/helloWorldApp/operationResults/8581cad1-f7c2-42c9-9614-f04472495555?api-version=2018-09-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-atlas-response-duration:
+      - '890'
+      - '1561'
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh app list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications?api-version=2018-09-01-preview
+  response:
+    body:
+      string: "{\r\n  \"value\": []\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '19'
+      content-type:
+      - application/json
+      date:
+      - Tue, 15 Aug 2023 07:43:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-atlas-response-duration:
+      - '32'
+      - '503'
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

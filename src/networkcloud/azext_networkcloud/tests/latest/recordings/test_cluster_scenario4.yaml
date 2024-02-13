@@ -1,0 +1,56 @@
+interactions:
+- request:
+    body: '{"targetClusterVersion": "3.2.0-pr14470"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update-version
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '41'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --target-cluster-version --resource-group --no-wait
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-cluster-update-version-rg/providers/Microsoft.NetworkCloud/clusters/simulator/updateVersion?api-version=2023-10-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/96c95f66-50a3-4992-a317-ef0103bd72fb*7E7547744E99F15B76B71BC9370C2A54CD96627A96721E258F83935B2035FAFA?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 25 May 2023 20:14:02 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/96c95f66-50a3-4992-a317-ef0103bd72fb*7E7547744E99F15B76B71BC9370C2A54CD96627A96721E258F83935B2035FAFA?api-version=2023-10-01-preview
+      mise-correlation-id:
+      - 9c593280-5c6f-4338-8db8-42a039daa87f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+version: 1

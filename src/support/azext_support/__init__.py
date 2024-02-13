@@ -16,8 +16,8 @@ class SupportCommandsLoader(AzCommandsLoader):
         support_custom = CliCommandType(
             operations_tmpl='azext_support.custom#{}',
             client_factory=cf_support)
-        super(SupportCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                    custom_command_type=support_custom)
+        super().__init__(cli_ctx=cli_ctx,
+                         custom_command_type=support_custom)
 
     def load_command_table(self, args):
         from azext_support.commands import load_command_table

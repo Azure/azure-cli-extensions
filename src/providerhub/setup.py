@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 try:
     from azext_providerhub.manual.version import VERSION
 except ImportError:
@@ -45,10 +45,10 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='providerhub',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Providerhub Extension',
+    description='Microsoft Azure Command-Line Tools ProviderHub Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/providerhub',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/providerhub',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

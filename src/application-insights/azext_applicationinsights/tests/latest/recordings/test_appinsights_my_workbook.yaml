@@ -1,0 +1,46 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights my-workbook list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --category
+      User-Agent:
+      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_my_workbook000001/providers/Microsoft.Insights/myWorkbooks?category=performance&api-version=2021-03-08
+  response:
+    body:
+      string: '{"error":{"code":"InvalidResourceType","message":"Resource type ''myWorkbooks''
+        of provider namespace ''Microsoft.Insights'' was not found in global location
+        for api version ''2021-03-08''."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '186'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 Dec 2023 09:55:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 404
+      message: Not Found
+version: 1

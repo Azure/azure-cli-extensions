@@ -7,20 +7,17 @@
 
 from __future__ import print_function
 
+import logging
 import os
 import sys
 import tempfile
-import unittest
 import shutil
 import shlex
-from subprocess import check_output, check_call, CalledProcessError
 
-import mock
-from wheel.install import WHEEL_INFO_RE
-from six import with_metaclass
+from subprocess import check_output, CalledProcessError, run
+from util import SRC_PATH
 
-from util import get_ext_metadata, verify_dependency, SRC_PATH
-
+logger = logging.getLogger(__name__)
 
 ALL_TESTS = []
 
@@ -55,68 +52,56 @@ for src_d in os.listdir(SRC_PATH):
     if pkg_name and os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests')):
         ALL_TESTS.append((pkg_name, src_d_full))
 
-
-class TestExtensionSourceMeta(type):
-    def __new__(mcs, name, bases, _dict):
-
-        def gen_test(ext_path):
-            def test(self):
-                ext_install_dir = os.path.join(self.ext_dir, 'ext')
-                pip_args = [sys.executable, '-m', 'pip', 'install', '--upgrade', '--target',
-                            ext_install_dir, ext_path]
-                check_call(pip_args)
-                unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
-                env = os.environ.copy()
-                env['PYTHONPATH'] = ext_install_dir
-                env['AZURE_CORE_USE_COMMAND_INDEX'] = 'false'
-                check_call(unittest_args, env=env)
-            return test
-
-        for tname, ext_path in ALL_TESTS:
-            test_name = "test_%s" % tname
-            _dict[test_name] = gen_test(ext_path)
-        return type.__new__(mcs, name, bases, _dict)
+logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
+               f'ado_target_branch: {ado_target_branch}, '
+               f'ALL_TESTS: {ALL_TESTS}.')
 
 
-class TestExtensionSource(with_metaclass(TestExtensionSourceMeta, unittest.TestCase)):
-
-    def setUp(self):
-        self.ext_dir = tempfile.mkdtemp()
-        self.mock_env = mock.patch.dict(os.environ, {'AZURE_EXTENSION_DIR': self.ext_dir})
-        self.mock_env.start()
-
-    def tearDown(self):
-        self.mock_env.stop()
-        shutil.rmtree(self.ext_dir)
+def run_command(cmd, check_return_code=False, cwd=None):
+    logger.info(f'cmd: {cmd}')
+    out = run(cmd, check=True, cwd=cwd)
+    if check_return_code and out.returncode:
+        raise RuntimeError(f"{cmd} failed")
 
 
-class TestSourceWheels(unittest.TestCase):
+def test_extension():
+    for pkg_name, ext_path in ALL_TESTS:
+        ext_name = ext_path.split('/')[-1]
+        logger.info(f'installing extension: {ext_name}')
+        cmd = ['azdev', 'extension', 'add', ext_name]
+        run_command(cmd, check_return_code=True)
 
-    def test_source_wheels(self):
-        # Test we can build all sources into wheels and that metadata from the wheel is valid
-        built_whl_dir = tempfile.mkdtemp()
-        source_extensions = [os.path.join(SRC_PATH, n) for n in os.listdir(SRC_PATH)
-                             if os.path.isdir(os.path.join(SRC_PATH, n))]
-        for s in source_extensions:
-            if not os.path.isfile(os.path.join(s, 'setup.py')):
-                continue
-            try:
-                check_output(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir], cwd=s)
-            except CalledProcessError as err:
-                self.fail("Unable to build extension {} : {}".format(s, err))
-        for filename in os.listdir(built_whl_dir):
-            ext_file = os.path.join(built_whl_dir, filename)
-            ext_dir = tempfile.mkdtemp(dir=built_whl_dir)
-            ext_name = WHEEL_INFO_RE(filename).groupdict().get('name')
-            metadata = get_ext_metadata(ext_dir, ext_file, ext_name)
-            run_requires = metadata.get('run_requires')
-            if run_requires:
-                deps = run_requires[0]['requires']
-                self.assertTrue(all(verify_dependency(dep) for dep in deps),
-                                "Dependencies of {} use disallowed extension dependencies. "
-                                "Remove these dependencies: {}".format(filename, deps))
-        shutil.rmtree(built_whl_dir)
+        # Use azext_$ext_name, a unique long name for testing, to avoid the following error when the main module and extension name have the same name:
+        # 'containerapp' exists in both 'azext_containerapp' and 'containerapp'. Resolve using `azext_containerapp.containerapp` or `containerapp.containerapp`
+        # 'containerapp' not found. If newly added, re-run with --discover
+        # No tests selected to run.
+        # ----------------------------------------------------------------------
+        # For the recommended azdev test example, please refer to: `azdev test --help`
+        # `python -m azdev test --no-exitfirst --discover --verbose azext_containerapp`
+        test_args = [sys.executable, '-m', 'azdev', 'test', '--no-exitfirst', '--discover', '--verbose', pkg_name]
+        logger.warning(f'test_args: {test_args}')
+
+        run_command(test_args, check_return_code=True)
+        logger.info(f'uninstalling extension: {ext_name}')
+        cmd = ['azdev', 'extension', 'remove', ext_name]
+        run_command(cmd, check_return_code=True)
+
+
+def test_source_wheels():
+    # Test we can build all sources into wheels and that metadata from the wheel is valid
+    built_whl_dir = tempfile.mkdtemp()
+    source_extensions = [os.path.join(SRC_PATH, n) for n in os.listdir(SRC_PATH)
+                         if os.path.isdir(os.path.join(SRC_PATH, n))]
+    for s in source_extensions:
+        if not os.path.isfile(os.path.join(s, 'setup.py')):
+            continue
+        try:
+            check_output(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir], cwd=s)
+        except CalledProcessError as err:
+            raise("Unable to build extension {} : {}".format(s, err))
+    shutil.rmtree(built_whl_dir)
 
 
 if __name__ == '__main__':
-    unittest.main()
+    test_extension()
+    test_source_wheels()

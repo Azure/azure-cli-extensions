@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.0.0b1
+++++++
+* Migrate `az tsi access-policy/environment/reference-data-set` to CodeGen
+
+0.2.1
+++++++
+* Command group ``az tsi`` GA
+
 0.2.0
 ++++++
 * [BREAKING CHANGE] ``az timeseriesinsights`` is changed to ``az tsi``

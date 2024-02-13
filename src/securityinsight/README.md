@@ -1,5 +1,5 @@
-# Azure CLI sentinel Extension #
-This is the extension for sentinel
+# Azure CLI Sentinel Extension #
+This is an extension to Azure CLI to manage sentinel resources.
 
 ### How to use ###
 Install this extension using the below CLI command
@@ -11,174 +11,277 @@ az extension add --name sentinel
 #### sentinel alert-rule ####
 ##### Create #####
 ```
-az sentinel alert-rule create --etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" \
-    --logic-app-resource-id "/subscriptions/d0cfe6b2-9ac0-4464-9919-dccaee2e48c0/resourceGroups/myRg/providers/Microsoft.Logic/workflows/MyAlerts" \
-    --trigger-uri "https://prod-31.northcentralus.logic.azure.com:443/workflows/cd3765391efd48549fd7681ded1d48d7/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=signature" \
-    --action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" --resource-group "myRg" \
-    --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel alert-rule show --resource-group "myRg" --rule-id "myFirstFusionRule" --workspace-name "myWorkspace"
-```
-##### Show #####
-```
-az sentinel alert-rule show --resource-group "myRg" --rule-id "microsoftSecurityIncidentCreationRuleExample" \
-    --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel alert-rule show --resource-group "myRg" --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
-    --workspace-name "myWorkspace" 
+az sentinel alert-rule create -n myRule -w myWorkspace -g myRG \
+    --ms-security-incident "{product-filter:'Microsoft Cloud App Security',display-name:testing,enabled:true}"
 ```
 ##### List #####
 ```
-az sentinel alert-rule list --resource-group "myRg" --workspace-name "myWorkspace"
+az sentinel alert-rule list -w myWorkspace -g myRG
 ```
-##### Get-action #####
+##### Update #####
 ```
-az sentinel alert-rule get-action --action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" --resource-group "myRg" \
-    --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --workspace-name "myWorkspace" 
+az sentinel alert-rule update -n myRule -w myWorkspace -g myRG \
+    --ms-security-incident display-name=tested
+```
+##### Show #####
+```
+az sentinel alert-rule show -n myRule -w myWorkspace -g myRG
 ```
 ##### Delete #####
 ```
-az sentinel alert-rule delete --action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" --resource-group "myRg" \
-    --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --workspace-name "myWorkspace" 
+az sentinel alert-rule delete -n myRule -w myWorkspace -g myRG --yes
 ```
-#### sentinel action ####
+
+#### sentinel alert-rule template ####
 ##### List #####
 ```
-az sentinel action list --resource-group "myRg" --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
-    --workspace-name "myWorkspace" 
-```
-#### sentinel alert-rule-template ####
-##### List #####
-```
-az sentinel alert-rule-template list --resource-group "myRg" --workspace-name "myWorkspace"
+az sentinel alert-rule template list -w myWorkspace -g myRG
 ```
 ##### Show #####
 ```
-az sentinel alert-rule-template show --alert-rule-template-id "65360bb0-8986-4ade-a89d-af3cf44d28aa" \
-    --resource-group "myRg" --workspace-name "myWorkspace" 
+az sentinel alert-rule template show -n myTemplate -w myWorkspace -g myRG
 ```
+
+#### sentinel automation-rule ####
+##### Create #####
+```
+az sentinel automation-rule create -n myRule -w myWorkspace -g myRG \
+    --display-name 'High severity incidents escalation' --order 1 \
+    --actions "[{order:1,modify-properties:{action-configuration:{severity:High}}}]" \
+    --triggering-logic "{is-enabled:true,triggers-on:Incidents,triggers-when:Created}"
+```
+##### List #####
+```
+az sentinel automation-rule list -w myWorkspace -g myRG
+```
+##### Update #####
+```
+az sentinel automation-rule update -n myRule -w myWorkspace -g myRG \
+    --display-name 'New name'
+```
+##### Show #####
+```
+az sentinel automation-rule show -n myRule -w myWorkspace -g myRG
+```
+##### Delete #####
+```
+az sentinel automation-rule delete -n myRule -w myWorkspace -g myRG --yes
+```
+
 #### sentinel bookmark ####
 ##### Create #####
 ```
-az sentinel bookmark create --etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" --created "2019-01-01T13:15:30Z" \
-    --display-name "My bookmark" --labels "Tag1" --labels "Tag2" --notes "Found a suspicious activity" \
-    --query "SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)" \
-    --query-result "Security Event query result" --updated "2019-01-01T13:15:30Z" \
-    --bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel bookmark show --bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
+az sentinel bookmark create -n myBookmark -w myWorkspace -g myRG \
+    --query-content 'SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)' \
+    --query-result 'Security Event query result' --display-name 'My bookmark' --notes 'Found a suspicious activity' \
+    --entity-mappings "[{entity-type:Account,field-mappings:[{identifier:Fullname,value:johndoe@microsoft.com}]}]" \
+    --tactics "[Execution]" --techniques "[T1609]" --labels "[Tag1,Tag2]"
 ```
 ##### List #####
 ```
-az sentinel bookmark list --resource-group "myRg" --workspace-name "myWorkspace"
+az sentinel bookmark list -w myWorkspace -g myRG
+```
+##### Show #####
+```
+az sentinel bookmark show -n myBookmark -w myWorkspace -g myRG
 ```
 ##### Delete #####
 ```
-az sentinel bookmark delete --bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
+az sentinel bookmark delete -n myBookmark -w myWorkspace -g myRG --yes
 ```
-#### sentinel data-connector ####
+
+#### sentinel bookmark relation ####
 ##### Create #####
 ```
-az sentinel data-connector create \
-    --office-data-connector etag="\\"0300bf09-0000-0000-0000-5c37296e0000\\"" tenant-id="2070ecc9-b4d5-4ae4-adaa-936fa1954fa8" \
-    --data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel data-connector show --data-connector-id "763f9fa1-c2d3-4fa2-93e9-bccd4899aa12" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel data-connector show --data-connector-id "b96d014d-b5c2-4a01-9aba-a8058f629d42" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel data-connector show --data-connector-id "06b3ccb8-1384-4bcc-aec7-852f6d57161b" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel data-connector show --data-connector-id "c345bf40-8509-4ed2-b947-50cb773aaf04" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel data-connector show --data-connector-id "f0cd27d2-5f03-4c06-ba31-d2dc82dcb51d" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel data-connector show --data-connector-id "07e42cb3-e658-4e90-801c-efa0f29d3d44" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel data-connector show --data-connector-id "c345bf40-8509-4ed2-b947-50cb773aaf04" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel data-connector show --data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
+az sentinel bookmark relation create -n myRelation -w myWorkspace -g myRG \
+    --bookmark-id myBookmark --related-resource-id myIncident
 ```
 ##### List #####
 ```
-az sentinel data-connector list --resource-group "myRg" --workspace-name "myWorkspace"
+az sentinel bookmark relation list -w myWorkspace -g myRG \
+    --bookmark-id myBookmark
+```
+##### Show #####
+```
+az sentinel bookmark relation show -n myRelation -w myWorkspace -g myRG \
+    --bookmark-id myBookmark
 ```
 ##### Delete #####
 ```
-az sentinel data-connector delete --data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
+az sentinel bookmark relation delete -n myRelation -w myWorkspace -g myRG \
+    --bookmark-id myBookmark --yes
 ```
+
 #### sentinel incident ####
 ##### Create #####
 ```
-az sentinel incident create --etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" \
-    --description "This is a demo incident" --classification "FalsePositive" \
-    --classification-comment "Not a malicious activity" --classification-reason "IncorrectAlertLogic" \
-    --first-activity-time-utc "2019-01-01T13:00:30Z" --last-activity-time-utc "2019-01-01T13:05:30Z" \
-    --owner object-id="2046feea-040d-4a46-9e2b-91c2941bfa70" --severity "High" --status "Closed" --title "My incident" \
-    --incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel incident show --incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
+az sentinel incident create -n myIncident -w myWorkspace -g myRG \
+    --classification FalsePositive --classification-reason IncorrectAlertLogic \
+    --classification-comment 'Not a malicious activity' --first-activity-time-utc 2019-01-01T13:00:30Z \
+    --last-activity-time-utc 2019-01-01T13:05:30Z --severity High --status Closed --title 'My incident' \
+    --description 'This is a demo incident' \
+    --owner "{object-id:2046feea-040d-4a46-9e2b-91c2941bfa70}"
 ```
 ##### List #####
 ```
-az sentinel incident list --orderby "properties/createdTimeUtc desc" --top 1 --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
+az sentinel incident list -w myWorkspace -g myRG --orderby 'properties/createdTimeUtc desc' --top 1
+```
+##### Show #####
+```
+az sentinel incident show -n myIncident -w myWorkspace -g myRG
 ```
 ##### Delete #####
 ```
-az sentinel incident delete --incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
+az sentinel incident delete -n myIncident -w myWorkspace -g myRG --yes
 ```
-#### sentinel incident-comment ####
+
+#### sentinel incident relation ####
 ##### Create #####
 ```
-az sentinel incident-comment create --message "Some message" \
-    --incident-comment-id "4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014" --incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
-    --resource-group "myRg" --workspace-name "myWorkspace" 
-```
-##### Show #####
-```
-az sentinel incident-comment show --incident-comment-id "4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014" \
-    --incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" --workspace-name "myWorkspace" 
+az sentinel incident relation create -n myRelation -w myWorkspace -g myRG \
+    --incident-id myIncident --related-resource-id myBookmark
 ```
 ##### List #####
 ```
-az sentinel incident-comment list --incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" \
-    --workspace-name "myWorkspace" 
+az sentinel incident relation list -w myWorkspace -g myRG \
+    --incident-id myIncident
+```
+##### Show #####
+```
+az sentinel incident relation show -n myRelation -w myWorkspace -g myRG \
+    --incident-id myIncident
+```
+##### Delete #####
+```
+az sentinel incident relation delete -n myRelation -w myWorkspace -g myRG \
+    --incident-id myIncident --yes
+```
+
+#### sentinel incident comment ####
+##### Create #####
+```
+az sentinel incident comment create -n myComment -w myWorkspace -g myRG \
+    --incident-id myIncident --message 'Some message'
+```
+##### List #####
+```
+az sentinel incident comment list -w myWorkspace -g myRG \
+    --incident-id myIncident
+```
+##### Update #####
+```
+az sentinel incident comment update -n myComment -w myWorkspace -g myRG \
+    --incident-id myIncident --message 'Some messages'
+```
+##### Show #####
+```
+az sentinel incident comment show -n myComment -w myWorkspace -g myRG \
+    --incident-id myIncident
+```
+##### Delete #####
+```
+az sentinel incident comment delete -n myComment -w myWorkspace -g myRG \
+    --incident-id myIncident --yes
+```
+
+#### sentinel enrichment domain-whois ####
+##### Show #####
+```
+az sentinel enrichment domain-whois show -g myRG --domain microsoft.com
+```
+
+#### sentinel enrichment ip-geodata ####
+##### Show #####
+```
+az sentinel enrichment ip-geodata show -g myRG --ip-address 1.2.3.4
+```
+
+#### sentinel metadata ####
+##### Create #####
+```
+az sentinel metadata create -n myMetadata -w myWorkspace -g myRG \
+    --content-id myContent --parent-id myRule --kind AnalyticsRule
+```
+##### List #####
+```
+az sentinel metadata list -w myWorkspace -g myRG
+```
+##### Update #####
+```
+az sentinel metadata update -n myMetadata -w myWorkspace -g myRG \
+    --author "{name:cli,email:cli@microsoft.com}"
+```
+##### Show #####
+```
+az sentinel metadata show -n myMetadata -w myWorkspace -g myRG
+```
+##### Delete #####
+```
+az sentinel metadata delete -n myMetadata -w myWorkspace -g myRG --yes
+```
+
+#### sentinel onboarding-state ####
+##### Create #####
+```
+az sentinel onboarding-state create -n defalut -w myWorkspace -g myRG \
+    --customer-managed-key false
+```
+##### List #####
+```
+az sentinel onboarding-state list -w myWorkspace -g myRG
+```
+##### Show #####
+```
+az sentinel onboarding-state show -n defalut -w myWorkspace -g myRG
+```
+##### Delete #####
+```
+az sentinel onboarding-state delete -n defalut -w myWorkspace -g myRG --yes
+```
+
+#### sentinel threat-indicator ####
+##### Create #####
+```
+az sentinel threat-indicator create -w myWorkspace -g myRG \
+    --source 'Microsoft Sentinel' --display-name 'new schema' --confidence 78 --created-by-ref contoso@contoso.com \
+    --modified '' --pattern '[url:value = 'https://www.contoso.com']' --pattern-type url --revoked false \
+    --valid-from 2022-06-15T17:44:00.114052Z --valid-until '' --description 'debugging indicators' \
+    --threat-tags "['new schema']" --threat-types "[compromised]" --external-references "[]"
+```
+##### List #####
+```
+az sentinel threat-indicator list -w myWorkspace -g myRG
+```
+##### Show #####
+```
+az sentinel threat-indicator show -n myIndictor -w myWorkspace -g myRG
+```
+##### Delete #####
+```
+az sentinel threat-indicator delete -n myIndictor -w myWorkspace -g myRG --yes
+```
+
+#### sentinel watchlist ####
+##### Create #####
+```
+az sentinel watchlist create -n myWatchlist -w myWorkspace -g myRG \
+    --description 'Watchlist from CSV content' --display-name 'High Value Assets Watchlist'
+    --provider Microsoft --items-search-key header1
+```
+##### List #####
+```
+az sentinel watchlist list -w myWorkspace -g myRG
+```
+##### Update #####
+```
+az sentinel watchlist update -n myWatchlist -w myWorkspace -g myRG \
+    --display-name 'New name'
+```
+##### Show #####
+```
+az sentinel watchlist show -n myWatchlist -w myWorkspace -g myRG
+```
+##### Delete #####
+```
+az sentinel watchlist delete -n myWatchlist -w myWorkspace -g myRG --yes
 ```

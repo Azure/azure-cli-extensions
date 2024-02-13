@@ -13,7 +13,10 @@ def applicationinsights_data_plane_client(cli_ctx, _, subscription=None):
         resource=cli_ctx.cloud.endpoints.app_insights_resource_id,
         subscription_id=subscription
     )
-    return ApplicationInsightsDataClient(cred)
+    return ApplicationInsightsDataClient(
+        cred,
+        base_url=f'{cli_ctx.cloud.endpoints.app_insights_resource_id}/v1'
+    )
 
 
 def applicationinsights_mgmt_plane_client(cli_ctx, **kwargs):
@@ -39,17 +42,13 @@ def cf_components(cli_ctx, _):
     return applicationinsights_mgmt_plane_client(cli_ctx, api_version='2018-05-01-preview').components
 
 
-def cf_component_billing(cli_ctx, _):
-    return applicationinsights_mgmt_plane_client(cli_ctx).component_current_billing_features
-
-
 def cf_api_key(cli_ctx, _):
     return applicationinsights_mgmt_plane_client(cli_ctx).api_keys
 
 
-def cf_component_linked_storage_accounts(cli_ctx, _):
-    return applicationinsights_mgmt_plane_client(cli_ctx).component_linked_storage_accounts
-
-
 def cf_export_configuration(cli_ctx, _):
     return applicationinsights_mgmt_plane_client(cli_ctx).export_configurations
+
+
+def cf_web_test(cli_ctx, _):
+    return applicationinsights_mgmt_plane_client(cli_ctx, api_version='2022-06-15').web_tests

@@ -48,7 +48,7 @@ def _process_db_up_namespace(cmd, namespace, db_type=None):
     if _get_value(db_type, namespace, 'location', 'location') is None:
         try:
             get_default_location_from_resource_group(cmd, namespace)
-        except (CLIError, ValidationError):
+        except Exception:
             namespace.location = 'eastus'
     _set_value(db_type, namespace, 'location', 'location', default=namespace.location)
 
@@ -67,7 +67,7 @@ def _process_db_up_namespace(cmd, namespace, db_type=None):
         try:
             resource_client.resource_groups.get(namespace.resource_group_name)
             create_resource_group = False
-        except CloudError:  # throw exception when resource group name is invalid
+        except Exception:  # throw exception when resource group name is invalid
             pass
 
     if create_resource_group:

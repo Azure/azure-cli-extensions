@@ -6,41 +6,9 @@
 from __future__ import print_function
 
 from urllib.parse import quote
-from knack.util import CLIError
 from knack.log import get_logger
 
 logger = get_logger(__name__)
-
-
-def set_service_properties(client, parameters, delete_retention=None, days_retained=None, static_website=None,
-                           index_document=None, error_document_404_path=None):
-    # update
-    kwargs = {}
-    if any([delete_retention, days_retained]):
-        kwargs['delete_retention_policy'] = parameters.delete_retention_policy
-    if delete_retention is not None:
-        parameters.delete_retention_policy.enabled = delete_retention
-    if days_retained is not None:
-        parameters.delete_retention_policy.days = days_retained
-
-    if any([static_website, index_document, error_document_404_path]):
-        if getattr(parameters, 'static_website', None) is None:
-            raise CLIError('Static websites are only supported for StorageV2 (general-purpose v2) accounts.')
-        kwargs['static_website'] = parameters.static_website
-    if static_website is not None:
-        parameters.static_website.enabled = static_website
-    if index_document is not None:
-        parameters.static_website.index_document = index_document
-    if error_document_404_path is not None:
-        parameters.static_website.error_document_404_path = error_document_404_path
-
-    # checks
-    policy = parameters.delete_retention_policy
-    if policy.enabled and not policy.days:
-        raise CLIError("must specify days-retained")
-
-    client.set_blob_service_properties(**kwargs)
-    return client.get_blob_service_properties()
 
 
 def show_directory(client, container_name, directory_name, snapshot=None, lease_id=None,
@@ -52,25 +20,6 @@ def show_directory(client, container_name, directory_name, snapshot=None, lease_
         if_none_match=if_none_match, timeout=timeout)
 
     return directory
-
-
-def show_blob(cmd, client, container_name, blob_name, snapshot=None, lease_id=None,
-              if_modified_since=None, if_unmodified_since=None, if_match=None,
-              if_none_match=None, timeout=None):
-    blob = client.get_blob_properties(
-        container_name, blob_name, snapshot=snapshot, lease_id=lease_id,
-        if_modified_since=if_modified_since, if_unmodified_since=if_unmodified_since, if_match=if_match,
-        if_none_match=if_none_match, timeout=timeout)
-
-    page_ranges = None
-    if blob.properties.blob_type == cmd.get_models('blob.models#_BlobTypes').PageBlob:
-        page_ranges = client.get_page_ranges(
-            container_name, blob_name, snapshot=snapshot, lease_id=lease_id, if_modified_since=if_modified_since,
-            if_unmodified_since=if_unmodified_since, if_match=if_match, if_none_match=if_none_match, timeout=timeout)
-
-    blob.properties.page_ranges = page_ranges
-
-    return blob
 
 
 # pylint: disable=unused-variable,logging-format-interpolation
@@ -87,12 +36,6 @@ def delete_directory(client, container_name, directory_name):
         deleted, marker = client.delete_directory(container_name, directory_name, marker=marker, recursive=True)
         count += 1
     logger.info("Took {} call(s) to finish moving.".format(count))
-
-
-def list_blobs(client, container_name, prefix=None, num_results=None, include='mc',
-               delimiter=None, marker=None, timeout=None):
-    client.list_blobs(container_name, prefix, num_results, include,
-                      delimiter, marker, timeout)
 
 
 def list_directory(client, container_name, directory_path, prefix=None, num_results=None, include='mc',

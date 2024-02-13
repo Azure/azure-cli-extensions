@@ -5,5 +5,5 @@
 # -----------------------------------------------------------------------------
 
 # To run these tests from the command line:
-#   az account set -s 677fc922-91d0-4bf6-9b06-4274d319a0fa
+#   az account set -s 916dfd6d-030c-4bd9-b579-7bb6d1926e97
 #   azdev test quantum --live

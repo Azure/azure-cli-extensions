@@ -1,0 +1,352 @@
+{
+    "version": "0.3.3",
+    "hcsshim_config": {
+        "maxVersion": "1.0.0",
+        "minVersion": "0.0.1"
+    },
+    "version_api": "0.10.0",
+    "openGCS": {
+        "environmentVariables": [
+            {
+                "name": "TERM",
+                "value": "xterm",
+                "strategy": "string",
+                "required": false
+            }
+        ]
+    },
+    "fabric": {
+        "environmentVariables": [
+            {
+                "name": "(?i)(FABRIC)_.+",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            },
+            {
+                "name": "HOSTNAME",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            },
+            {
+                "name": "T(E)?MP",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            },
+            {
+                "name": "FabricPackageFileName",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            },
+            {
+                "name": "HostedServiceName",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            }
+        ]
+    },
+    "managedIdentity": {
+        "environmentVariables": [
+            {
+                "name": "IDENTITY_API_VERSION",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            },
+            {
+                "name": "IDENTITY_HEADER",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            },
+            {
+                "name": "IDENTITY_SERVER_THUMBPRINT",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            }
+        ]
+    },
+    "enableRestart": {
+        "environmentVariables": [
+            {
+                "name": "azurecontainerinstance_restarted_by",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            }
+        ]
+    },
+    "debugMode": {
+        "environmentVariables": [
+            {
+                "name": ".+",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            }
+        ],
+        "execProcesses": [
+            {
+                "command": [
+                    "/bin/sh"
+                ],
+                "signals": [],
+                "allow_stdio_access": true
+            },
+            {
+                "command": [
+                    "/bin/bash"
+                ],
+                "signals": [],
+                "allow_stdio_access": true
+            }
+        ],
+        "allowPropertiesAccess": true,
+        "allowDumpStacks": true,
+        "allowRuntimeLogging": true,
+        "allowEnvironmentVariableDropping": true,
+        "allowCapabilityDropping": true,
+        "allowUnencryptedScratch": false
+    },
+    "containerd": {
+        "defaultWorkingDir": "/"
+    },
+    "mount": {
+        "source_table": [
+            {
+                "mountType": "azureFile",
+                "source": "sandbox:///tmp/atlas/azureFileVolume/.+"
+            },
+            {
+                "mountType": "secret",
+                "source": "sandbox:///tmp/atlas/secretsVolume/.+"
+            },
+            {
+                "mountType": "secretsSource",
+                "source": "plan9://"
+            },
+            {
+                "mountType": "emptyDir",
+                "source": "sandbox:///tmp/atlas/emptydir/.+"
+            },
+            {
+                "mountType": "resolvconf",
+                "source": "sandbox:///tmp/atlas/resolvconf/.+"
+            },
+            {
+                "mountType": "gitRepo",
+                "source": "sandbox:///tmp/atlas/gitRepoVolume/.+"
+            }
+        ],
+        "default_policy": {
+            "type": "bind",
+            "options": [
+                "rbind",
+                "rshared",
+                "rw"
+            ]
+        },
+        "default_mounts_user": [
+            {
+                "name": "dns_resolve",
+                "mountType": "resolvconf",
+                "mountPath": "/etc/resolv.conf",
+                "readonly": false
+            }
+        ]
+    },
+    "sidecar_base_names": [
+        "mcr.microsoft.com/aci/msi-atlas-adapter",
+        "mcr.microsoft.com/aci/atlas-mount-azure-file-volume",
+        "mcr.microsoft.com/aci/atlas-mount-secrets-volume",
+        "mcr.microsoft.com/aci/atlas-netstats",
+        "mcr.microsoft.com/aci/atlas-mount-resolv-conf",
+        "mcr.microsoft.com/aci/atlas-mount-gitrepo-volume",
+        "k8s.gcr.io/pause",
+        "mcr.microsoft.com/aci/sc-proxy",
+        "mcr.microsoft.com/aci/vk-metrics-sidecar"
+    ],
+    "default_rego_fragments": [
+        {
+            "issuer": "did:x509:0:sha256:I__iuL25oXEVFdTP_aBLx_eT1RPHbCQ_ECBQfYZpt9s::eku:1.3.6.1.4.1.311.76.59.1.3",
+            "feed": "mcr.microsoft.com/aci/aci-cc-infra-fragment",
+            "minimum_svn": "1",
+            "includes": [
+                "containers",
+                "fragments"
+            ]
+        }
+    ],
+    "default_containers": [
+        {
+            "command": [
+                "/pause"
+            ],
+            "env_rules": [
+                {
+                    "pattern": "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                    "strategy": "string",
+                    "required": true
+                },
+                {
+                    "pattern": "TERM=xterm",
+                    "strategy": "string",
+                    "required": false
+                }
+            ],
+            "layers": [
+                "16b514057a06ad665f92c02863aca074fd5976c755d26bff16365299169e8415"
+            ],
+            "mounts": [],
+            "exec_processes": [],
+            "signals": [],
+            "allow_elevated": false,
+            "allow_stdio_access": true,
+            "working_dir": "/",
+            "no_new_privileges": false,
+            "seccomp_profile_sha256": "",
+            "user": {
+                "user_idname": {
+                    "pattern": "",
+                    "strategy": "any"
+                },
+                "group_idnames": [
+                    {
+                        "pattern": "",
+                        "strategy": "any"
+                    }
+                ],
+                "umask": "0022"
+            },
+            "capabilities": {
+                "bounding": [
+                    "CAP_CHOWN",
+                    "CAP_DAC_OVERRIDE",
+                    "CAP_FSETID",
+                    "CAP_FOWNER",
+                    "CAP_MKNOD",
+                    "CAP_NET_RAW",
+                    "CAP_SETGID",
+                    "CAP_SETUID",
+                    "CAP_SETFCAP",
+                    "CAP_SETPCAP",
+                    "CAP_NET_BIND_SERVICE",
+                    "CAP_SYS_CHROOT",
+                    "CAP_KILL",
+                    "CAP_AUDIT_WRITE"
+                ],
+                "effective": [
+                    "CAP_CHOWN",
+                    "CAP_DAC_OVERRIDE",
+                    "CAP_FSETID",
+                    "CAP_FOWNER",
+                    "CAP_MKNOD",
+                    "CAP_NET_RAW",
+                    "CAP_SETGID",
+                    "CAP_SETUID",
+                    "CAP_SETFCAP",
+                    "CAP_SETPCAP",
+                    "CAP_NET_BIND_SERVICE",
+                    "CAP_SYS_CHROOT",
+                    "CAP_KILL",
+                    "CAP_AUDIT_WRITE"
+                ],
+                "inheritable": [],
+                "permitted": [
+                    "CAP_CHOWN",
+                    "CAP_DAC_OVERRIDE",
+                    "CAP_FSETID",
+                    "CAP_FOWNER",
+                    "CAP_MKNOD",
+                    "CAP_NET_RAW",
+                    "CAP_SETGID",
+                    "CAP_SETUID",
+                    "CAP_SETFCAP",
+                    "CAP_SETPCAP",
+                    "CAP_NET_BIND_SERVICE",
+                    "CAP_SYS_CHROOT",
+                    "CAP_KILL",
+                    "CAP_AUDIT_WRITE"
+                ],
+                "ambient": []
+            }
+        }
+    ],
+    "default_user": {
+        "user_idname": {
+            "pattern": "",
+            "strategy": "any"
+        },
+        "group_idnames": [
+            {
+                "pattern": "",
+                "strategy": "any"
+            }
+        ],
+        "umask": "0022"
+    },
+    "default_unprivileged_capabilities": [
+        "CAP_CHOWN",
+        "CAP_DAC_OVERRIDE",
+        "CAP_FSETID",
+        "CAP_FOWNER",
+        "CAP_MKNOD",
+        "CAP_NET_RAW",
+        "CAP_SETGID",
+        "CAP_SETUID",
+        "CAP_SETFCAP",
+        "CAP_SETPCAP",
+        "CAP_NET_BIND_SERVICE",
+        "CAP_SYS_CHROOT",
+        "CAP_KILL",
+        "CAP_AUDIT_WRITE"
+    ],
+    "default_privileged_capabilities": [
+        "CAP_CHOWN",
+        "CAP_DAC_OVERRIDE",
+        "CAP_DAC_READ_SEARCH",
+        "CAP_FOWNER",
+        "CAP_FSETID",
+        "CAP_KILL",
+        "CAP_SETGID",
+        "CAP_SETUID",
+        "CAP_SETPCAP",
+        "CAP_LINUX_IMMUTABLE",
+        "CAP_NET_BIND_SERVICE",
+        "CAP_NET_BROADCAST",
+        "CAP_NET_ADMIN",
+        "CAP_NET_RAW",
+        "CAP_IPC_LOCK",
+        "CAP_IPC_OWNER",
+        "CAP_SYS_MODULE",
+        "CAP_SYS_RAWIO",
+        "CAP_SYS_CHROOT",
+        "CAP_SYS_PTRACE",
+        "CAP_SYS_PACCT",
+        "CAP_SYS_ADMIN",
+        "CAP_SYS_BOOT",
+        "CAP_SYS_NICE",
+        "CAP_SYS_RESOURCE",
+        "CAP_SYS_TIME",
+        "CAP_SYS_TTY_CONFIG",
+        "CAP_MKNOD",
+        "CAP_LEASE",
+        "CAP_AUDIT_WRITE",
+        "CAP_AUDIT_CONTROL",
+        "CAP_SETFCAP",
+        "CAP_MAC_OVERRIDE",
+        "CAP_MAC_ADMIN",
+        "CAP_SYSLOG",
+        "CAP_WAKE_ALARM",
+        "CAP_BLOCK_SUSPEND",
+        "CAP_AUDIT_READ",
+        "CAP_PERFMON",
+        "CAP_BPF",
+        "CAP_CHECKPOINT_RESTORE"
+    ]
+}

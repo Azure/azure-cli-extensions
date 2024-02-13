@@ -1,0 +1,741 @@
+interactions:
+- request:
+    body: '{"extendedLocation": {"name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc",
+      "type": "CustomLocation"}, "location": "eastus", "properties": {"additionalEgressEndpoints":
+      [{"category": "azure-resource-management", "endpoints": [{"domainName": "https://storageaccountex.blob.core.windows.net",
+      "port": 443}]}], "enableDefaultEgressEndpoints": "False"}, "tags": {"tag1":
+      "tag1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '506'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --extended-location --location --additional-egress-endpoints --enable-default-egress-endpoints
+        --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001","name":"cli-test-csn-000001","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T19:47:08.2788058Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-15T19:47:08.2788058Z"},"properties":{"provisioningState":"Accepted","additionalEgressEndpoints":[{"category":"azure-resource-management","endpoints":[{"domainName":"https://storageaccountex.blob.core.windows.net","port":443}]}],"enableDefaultEgressEndpoints":"False"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/9c38fd43-a5d2-42c0-9bed-d512b58f1bc5*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1001'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:47:09 GMT
+      etag:
+      - '"d1103cbf-0000-0100-0000-64628c3c0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 899a6b69-2bef-46bd-acec-def63889bda1
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --extended-location --location --additional-egress-endpoints --enable-default-egress-endpoints
+        --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/9c38fd43-a5d2-42c0-9bed-d512b58f1bc5*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/9c38fd43-a5d2-42c0-9bed-d512b58f1bc5*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","name":"9c38fd43-a5d2-42c0-9bed-d512b58f1bc5*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001","status":"Accepted","startTime":"2023-05-15T19:47:08.3817115Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '575'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:47:09 GMT
+      etag:
+      - '"b801809f-0000-0100-0000-64628c3c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --extended-location --location --additional-egress-endpoints --enable-default-egress-endpoints
+        --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/9c38fd43-a5d2-42c0-9bed-d512b58f1bc5*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/9c38fd43-a5d2-42c0-9bed-d512b58f1bc5*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","name":"9c38fd43-a5d2-42c0-9bed-d512b58f1bc5*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001","status":"Succeeded","startTime":"2023-05-15T19:47:08.3817115Z","endTime":"2023-05-15T19:47:15.7865176Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:47:39 GMT
+      etag:
+      - '"b8018b9f-0000-0100-0000-64628c430000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --extended-location --location --additional-egress-endpoints --enable-default-egress-endpoints
+        --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001","name":"cli-test-csn-000001","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T19:47:08.2788058Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T19:47:17.2730768Z"},"properties":{"provisioningState":"Succeeded","additionalEgressEndpoints":[{"category":"azure-resource-management","endpoints":[{"domainName":"https://storageaccountex.blob.core.windows.net","port":443}]}],"enableDefaultEgressEndpoints":"False","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1391'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:47:39 GMT
+      etag:
+      - '"d1102bc4-0000-0100-0000-64628c450000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"additionalEgressEndpoints": [{"category": "azure-resource-management",
+      "endpoints": [{"domainName": "https://storageaccountex.blob.core.windows.net",
+      "port": 443}]}], "enableDefaultEgressEndpoints": "False"}, "tags": {"tag1":
+      "tag1", "tag2": "tag2update"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '273'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --additional-egress-endpoints --enable-default-egress-endpoints --tags
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001?api-version=2023-10-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/56126b4f-ecbc-41f8-aaa6-1305f941d716*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:47:41 GMT
+      etag:
+      - '"d11001c9-0000-0100-0000-64628c5d0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/56126b4f-ecbc-41f8-aaa6-1305f941d716*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155?api-version=2023-10-01-preview
+      mise-correlation-id:
+      - c43ba95b-9dbe-4d3a-919d-b66ecba22332
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --additional-egress-endpoints --enable-default-egress-endpoints --tags
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/56126b4f-ecbc-41f8-aaa6-1305f941d716*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/56126b4f-ecbc-41f8-aaa6-1305f941d716*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","name":"56126b4f-ecbc-41f8-aaa6-1305f941d716*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001","status":"Accepted","startTime":"2023-05-15T19:47:41.0654812Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '575'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:47:41 GMT
+      etag:
+      - '"b80114a0-0000-0100-0000-64628c5d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --additional-egress-endpoints --enable-default-egress-endpoints --tags
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/56126b4f-ecbc-41f8-aaa6-1305f941d716*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/56126b4f-ecbc-41f8-aaa6-1305f941d716*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","name":"56126b4f-ecbc-41f8-aaa6-1305f941d716*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001","status":"Succeeded","startTime":"2023-05-15T19:47:41.0654812Z","endTime":"2023-05-15T19:47:48.995091Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:48:11 GMT
+      etag:
+      - '"b80119a0-0000-0100-0000-64628c640000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --additional-egress-endpoints --enable-default-egress-endpoints --tags
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001","name":"cli-test-csn-000001","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T19:47:08.2788058Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T19:47:49.7128407Z"},"properties":{"additionalEgressEndpoints":[{"category":"azure-resource-management","endpoints":[{"domainName":"https://storageaccountex.blob.core.windows.net","port":443}]}],"enableDefaultEgressEndpoints":"False","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1411'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:48:11 GMT
+      etag:
+      - '"d110bbca-0000-0100-0000-64628c650000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001","name":"cli-test-csn-000001","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T19:47:08.2788058Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T19:47:49.7128407Z"},"properties":{"additionalEgressEndpoints":[{"category":"azure-resource-management","endpoints":[{"domainName":"https://storageaccountex.blob.core.windows.net","port":443}]}],"enableDefaultEgressEndpoints":"False","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1411'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:48:11 GMT
+      etag:
+      - '"d110bbca-0000-0100-0000-64628c650000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/cloudServicesNetworks?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-596E8427/providers/Microsoft.NetworkCloud/cloudServicesNetworks/vmconsolecsn","name":"vmconsolecsn","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-596e8427/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-03-30T16:33:03.9106147Z","lastModifiedBy":"REDACTED","createdByType":"User","createdAt":"2023-05-03T21:57:32.8318455Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-03T21:57:45.4068869Z"},"properties":{"provisioningState":"Succeeded","additionalEgressEndpoints":[],"enableDefaultEgressEndpoints":"True","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cs1","name":"cs1","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-03T21:58:27.4139204Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T19:19:02.3314656Z"},"properties":{"provisioningState":"Succeeded","additionalEgressEndpoints":[],"enableDefaultEgressEndpoints":"True","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","interfaceName":"cloudservices"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/roytang-rg-east/providers/Microsoft.NetworkCloud/cloudServicesNetworks/testcsnecsqvgqqyl4o2","name":"testcsnecsqvgqqyl4o2","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cf6ad1968a64-HostedResources-3BA50481/providers/Microsoft.ExtendedLocation/customLocations/m15-cf6ad1968a64-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-resource-testing","CleanupFrequency":"Daily","Purpose":"QA"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-04T20:12:05.4816435Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-04T21:20:28.1071816Z"},"properties":{"provisioningState":"Failed","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-cf6ad1968a64","detailedStatusMessage":"all
+        resource creation succeeded","additionalEgressEndpoints":[{"category":"ubuntu","endpoints":[{"domainName":".ubuntu.com","port":443},{"domainName":".ubuntu.com","port":80},{"domainName":"aka.ms","port":80},{"domainName":"aka.ms","port":443},{"domainName":"packages.microsoft.com","port":80},{"domainName":"packages.microsoft.com","port":443}]}],"enableDefaultEgressEndpoints":"True","associatedResourceIds":[]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/cloudServicesNetworks/pipelinecsn","name":"pipelinecsn","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-9c522075177c-hostedresources-07abb5ff/providers/microsoft.extendedlocation/customlocations/m16-1-9c522075177c-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"cloudservicesnetwork","ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-05-09T06:05:38.7263088Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T19:25:23.7143192Z"},"properties":{"provisioningState":"Succeeded","associatedResourceIds":[],"hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/pipelinehaks-xEaZHs8atcaIPQ"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-9c522075177c","detailedStatusMessage":"all
+        resource creation succeeded","additionalEgressEndpoints":[{"category":"azure-resource-management","endpoints":[{"domainName":"https://storageaccountex.blob.core.windows.net","port":443}]},{"category":"other","endpoints":[{"domainName":".google.com","port":443},{"domainName":".nc-system.svc.networkcloud.local","port":443},{"domainName":".ubuntu.com","port":443},{"domainName":".ubuntu.com","port":80}]},{"category":"nccacheacr","endpoints":[{"domainName":".sophiehuangacr.azurecr.io","port":443},{"domainName":".sophiehuangacr.azurecr.io","port":80}]},{"category":"nccacheacr","endpoints":[{"domainName":".nccacheacr.azurecr.io","port":443},{"domainName":".nccacheacr.azurecr.io","port":80}]},{"category":"nccachepublicacr","endpoints":[{"domainName":".nccachepublicacr.azurecr.io","port":80},{"domainName":".nccachepublicacr.azurecr.io","port":443}]}],"enableDefaultEgressEndpoints":"True"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cloudservicesnetwork","name":"cloudservicesnetwork","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-9c522075177c-hostedresources-07abb5ff/providers/microsoft.extendedlocation/customlocations/m16-1-9c522075177c-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceType":"cloudservicesnetwork"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-09T12:16:24.1223228Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T16:03:41.8381682Z"},"properties":{"provisioningState":"Succeeded","additionalEgressEndpoints":[],"enableDefaultEgressEndpoints":"True","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-9c522075177c","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/cloudServicesNetworks/naks-csn","name":"naks-csn","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-9c522075177c-hostedresources-07abb5ff/providers/microsoft.extendedlocation/customlocations/m16-1-9c522075177c-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceType":"cloudservicesnetwork"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-11T20:48:36.1341701Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T16:52:55.2123619Z"},"properties":{"additionalEgressEndpoints":[{"category":"sophiehuangacr","endpoints":[{"domainName":".sophiehuangacr.azurecr.io","port":443},{"domainName":".sophiehuangacr.azurecr.io","port":80}]},{"category":"nccachepublicacr","endpoints":[{"domainName":".nccachepublicacr.azurecr.io","port":80},{"domainName":".nccachepublicacr.azurecr.io","port":443}]}],"enableDefaultEgressEndpoints":"True","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-9c522075177c","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/travisneely-sim-rg/providers/Microsoft.NetworkCloud/cloudServicesNetworks/csn-trav","name":"csn-trav","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-5a3087f7/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T14:27:48.8932573Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T17:39:19.8662971Z"},"properties":{"provisioningState":"Succeeded","additionalEgressEndpoints":[],"enableDefaultEgressEndpoints":"True","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/travisneely-sim-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/travisneely-sim-rg/providers/Microsoft.NetworkCloud/virtualMachines/testvm1230501"],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/travisneely-sim-rg/providers/Microsoft.NetworkCloud/virtualMachines/testvm1230501"],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest7swkhxujycqe2f343mg5eqmorffgiprrmaxcjlmjwbfh74t6cnaurr6enazyson2xyyn/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-fkku5bgwapz","name":"cli-test-csn-fkku5bgwapz","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T19:45:17.7876348Z","lastModifiedBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T19:47:08.2788058Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T19:47:49.7128407Z"},"properties":{"additionalEgressEndpoints":[{"category":"azure-resource-management","endpoints":[{"domainName":"https://storageaccountex.blob.core.windows.net","port":443}]}],"enableDefaultEgressEndpoints":"False","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/cloudServicesNetworks/rgcsn","name":"rgcsn","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-427177bf/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-04-20T14:42:17.0443909Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-06T02:31:41.9170079Z"},"properties":{"provisioningState":"Succeeded","additionalEgressEndpoints":[],"enableDefaultEgressEndpoints":"True","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/clusters/simulator","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/virtualMachines/rgvm15","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/virtualMachines/simvm"],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","interfaceName":"cloudservices"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/cloudServicesNetworks/rg-csn112","name":"rg-csn112","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-427177bf/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-04-25T15:45:32.4391673Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-06T02:31:40.331553Z"},"properties":{"provisioningState":"Succeeded","additionalEgressEndpoints":[{"category":"azure-resource-management","endpoints":[{"domainName":"","port":443}]}],"enableDefaultEgressEndpoints":"False","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/clusters/simulator","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/cloudServicesNetworks/pipelinecsn","name":"pipelinecsn","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"cloudservicesnetwork","ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-05-02T06:59:34.9788753Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-02T07:00:25.6962917Z"},"properties":{"provisioningState":"Succeeded","additionalEgressEndpoints":[],"enableDefaultEgressEndpoints":"True","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","associatedResourceIds":[],"hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/pipelinehaks-HjfxOFWK0XXjvw"],"virtualMachinesAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/virtualMachines/pipelinevmHjfxOFWK0XXjvw"],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/cloudServicesNetworks/testcsn","name":"testcsn","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceType":"cloudservicesnetwork"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-02T17:19:19.1346885Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-10T18:06:48.4775738Z"},"properties":{"additionalEgressEndpoints":[{"category":"azure-resource-management","endpoints":[{"domainName":"https://storageaccountex.blob.core.windows.net","port":443}]},{"category":"ubuntu","endpoints":[{"domainName":".ubuntu.com","port":443},{"domainName":".ubuntu.com","port":80}]},{"category":"microsoft","endpoints":[{"domainName":".microsoft.com","port":80},{"domainName":".microsoft.com","port":443},{"domainName":".azurecr.io","port":80},{"domainName":".azurecr.io","port":443},{"domainName":".aka.ms","port":80},{"domainName":".aka.ms","port":443}]}],"enableDefaultEgressEndpoints":"True","associatedResourceIds":[],"hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/mm2-test-haks","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/mm6-test-haks"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","detailedStatusMessage":"all
+        resource creation succeeded","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/cloudServicesNetworks/mattj-csn1","name":"mattj-csn1","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-03T16:00:57.8924442Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-05T15:42:32.596417Z"},"properties":{"provisioningState":"Succeeded","additionalEgressEndpoints":[{"category":"azure-resource-management","endpoints":[{"domainName":"https://storageaccountex.blob.core.windows.net","port":443}]},{"category":"ubuntu","endpoints":[{"domainName":".ubuntu.com","port":443},{"domainName":".ubuntu.com","port":80}]},{"category":"google","endpoints":[{"domainName":".google.com","port":80},{"domainName":".google.com","port":443}]},{"category":"ipinfo","endpoints":[{"domainName":".ipinfo.io","port":80},{"domainName":".ipinfo.io","port":443}]},{"category":"ubuntumirror","endpoints":[{"domainName":".mirror.wayne.edu","port":80},{"domainName":".mirror.wayne.edu","port":443}]},{"category":"docker.io","endpoints":[{"domainName":".docker.io","port":80},{"domainName":".docker.io","port":443}]},{"category":"docker.com","endpoints":[{"domainName":".docker.com","port":80},{"domainName":".docker.com","port":443}]},{"category":"packages.microsoft.com","endpoints":[{"domainName":"packages.microsoft.com","port":80},{"domainName":"packages.microsoft.com","port":443}]},{"category":"bitnami","endpoints":[{"domainName":".bitnami.com","port":80},{"domainName":".bitnami.com","port":443}]},{"category":"mattjdevacr","endpoints":[{"domainName":"mattjdevacr.azurecr.io","port":80},{"domainName":"mattjdevacr.azurecr.io","port":443},{"domainName":"mattjprivdevacr.azurecr.io","port":80},{"domainName":"mattjprivdevacr.azurecr.io","port":443}]}],"enableDefaultEgressEndpoints":"True","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","associatedResourceIds":[],"hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/mattjtest-haks2"],"virtualMachinesAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/virtualMachines/mattjtestvm1"],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cloudservicesnetwork-devkrb","name":"cloudservicesnetwork-devkrb","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceType":"cloudservicesnetwork"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-05T06:00:15.441869Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-05T06:08:03.1427579Z"},"properties":{"additionalEgressEndpoints":[{"category":"azcopy","endpoints":[{"domainName":".azureedge.net","port":443},{"domainName":".azureedge.net","port":80}]},{"category":"azcli","endpoints":[{"domainName":".microsoft.com","port":443},{"domainName":".microsoft.com","port":80}]},{"category":"azure","endpoints":[{"domainName":".azure.com","port":443},{"domainName":".azure.com","port":80}]},{"category":"kubectl","endpoints":[{"domainName":".googleapis.com","port":443},{"domainName":".googleapis.com","port":80}]},{"category":"ubuntu","endpoints":[{"domainName":".ubuntu.com","port":443},{"domainName":".ubuntu.com","port":80}]},{"category":"yq","endpoints":[{"domainName":".github.com","port":443},{"domainName":".github.com","port":80},{"domainName":".githubusercontent.com","port":443},{"domainName":".githubusercontent.com","port":80}]}],"enableDefaultEgressEndpoints":"True","associatedResourceIds":[],"hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/nc-resource-testing-krb"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","detailedStatusMessage":"all
+        resource creation succeeded","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/afo-sandbox-deploy-rg/providers/Microsoft.NetworkCloud/cloudServicesNetworks/asdfasdf","name":"asdfasdf","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j17-f0ca0b2a3feb-hostedresources-3f425ecb/providers/microsoft.extendedlocation/customlocations/j17-f0ca0b2a3feb-cstm-loc","type":"CustomLocation"},"tags":{},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-05T17:05:24.0796893Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-08T03:59:50.3353609Z"},"properties":{"provisioningState":"Succeeded","additionalEgressEndpoints":[{"category":"some-cat","endpoints":[{"domainName":"microsfot.com","port":5555}]}],"enableDefaultEgressEndpoints":"True","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j17-cluster/providers/Microsoft.NetworkCloud/clusters/j17-f0ca0b2a3feb","detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/cloudServicesNetworks/j18-csnet-21","name":"j18-csnet-21","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-10T17:05:56.0851217Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-10T17:06:13.5695352Z"},"properties":{"provisioningState":"Succeeded","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","additionalEgressEndpoints":[{"category":"azure-resource-management","endpoints":[{"domainName":"https://storageaccountex.blob.core.windows.net","port":443}]},{"category":"ubuntu","endpoints":[{"domainName":".ubuntu.com","port":443},{"domainName":".ubuntu.com","port":80}]},{"category":"smuggler","endpoints":[{"domainName":".smuggler.com","port":8280},{"domainName":".smuggler.com","port":4443}]}],"enableDefaultEgressEndpoints":"True","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","detailedStatusMessage":"all
+        resource creation succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '31124'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:48:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 9db37f0b-363e-49e5-b952-9646b8120bdd
+      - 1c51b92c-ea04-47b7-9682-0cf291162e5a
+      - 835aefae-b8b2-42ff-8e1b-37ab58467dba
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001","name":"cli-test-csn-000001","type":"microsoft.networkcloud/cloudservicesnetworks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T19:47:08.2788058Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T19:47:49.7128407Z"},"properties":{"additionalEgressEndpoints":[{"category":"azure-resource-management","endpoints":[{"domainName":"https://storageaccountex.blob.core.windows.net","port":443}]}],"enableDefaultEgressEndpoints":"False","interfaceName":"cloudservices","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1423'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:48:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 7a9ca868-9c58-4b58-9c5e-4b66c48ea43d
+      - d45be984-f3bd-482d-95e9-a14ba9f9e5c1
+      - de1da509-65b1-42d3-b4be-fc914039ae40
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001?api-version=2023-10-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/06fb3005-8ed0-40f9-9f51-c811c4811ff2*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:48:14 GMT
+      etag:
+      - '"d110c4d4-0000-0100-0000-64628c7e0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/06fb3005-8ed0-40f9-9f51-c811c4811ff2*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155?api-version=2023-10-01-preview
+      mise-correlation-id:
+      - fab46de7-43cf-42f8-8d73-72e2eeb37192
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/06fb3005-8ed0-40f9-9f51-c811c4811ff2*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/06fb3005-8ed0-40f9-9f51-c811c4811ff2*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","name":"06fb3005-8ed0-40f9-9f51-c811c4811ff2*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001","status":"Deleting","startTime":"2023-05-15T19:48:14.4337352Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '575'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:48:14 GMT
+      etag:
+      - '"b8012fa0-0000-0100-0000-64628c7e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/06fb3005-8ed0-40f9-9f51-c811c4811ff2*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/06fb3005-8ed0-40f9-9f51-c811c4811ff2*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","name":"06fb3005-8ed0-40f9-9f51-c811c4811ff2*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001","status":"Succeeded","startTime":"2023-05-15T19:48:14.4337352Z","endTime":"2023-05-15T19:48:24.9177953Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '635'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:48:44 GMT
+      etag:
+      - '"b80154a0-0000-0100-0000-64628c880000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cloudservicesnetwork delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/06fb3005-8ed0-40f9-9f51-c811c4811ff2*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/06fb3005-8ed0-40f9-9f51-c811c4811ff2*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","name":"06fb3005-8ed0-40f9-9f51-c811c4811ff2*BE6C60CD725B7AE2EB3660AF12A0B50352D56E2E0CE211FA27FA3C0435E00155","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cli-test-csn-000001","status":"Succeeded","startTime":"2023-05-15T19:48:14.4337352Z","endTime":"2023-05-15T19:48:24.9177953Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '635'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 19:48:44 GMT
+      etag:
+      - '"b80154a0-0000-0100-0000-64628c880000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -11,6 +11,10 @@
 
 from knack.help_files import helps
 
+helps['footprint'] = """
+    type: group
+    short-summary: Manage Footprint.
+"""
 
 helps['footprint profile'] = """
     type: group
