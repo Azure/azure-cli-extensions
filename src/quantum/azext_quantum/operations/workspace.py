@@ -22,7 +22,7 @@ from msrestazure.azure_exceptions import CloudError
 from .._client_factory import cf_workspaces, cf_quotas, cf_workspace, cf_offerings, _get_data_credentials
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
-from ..vendored_sdks.azure_mgmt_quantum.models import Provider, APIKeys
+from ..vendored_sdks.azure_mgmt_quantum.models import Provider, APIKeys, WorkspaceResourceProperties
 from ..vendored_sdks.azure_mgmt_quantum.models._enums import KeyType
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
@@ -229,6 +229,10 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+        properties = WorkspaceResourceProperties()
+        properties.providers = quantum_workspace.providers
+        properties.api_key_enabled = True
+        quantum_workspace.properties = properties
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
         while not poller.done():
             time.sleep(POLLING_TIME_DURATION)
@@ -435,7 +439,11 @@ def enable_keys(cmd, resource_group_name=None, workspace_name=None, enable_key=N
         raise InvalidArgumentValueError("Please set –-enable-api-key to be True/true or False/false.")
     
     ws = client.get(info.resource_group, info.name)
-    ws.properties.api_key_enabled = bool(enable_key)
+
+    if(enable_key == "True" or enable_key == "true"):
+        ws.properties.api_key_enabled = True
+    elif(enable_key == "False" or enable_key == "false"):
+        ws.properties.api_key_enabled = False
     ws = client.begin_create_or_update(info.resource_group, info.name, ws)
     if ws:
         info.save(cmd)
