@@ -6,7 +6,6 @@
 import os
 import unittest
 import uuid
-import sys
 from datetime import date, timedelta
 
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -417,6 +416,33 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(rsp.exit_code is not None)
         self.assertTrue(rsp.exit_code == exit_code)
 
+    def _build_chat_transcript_list_cmd(self, test_ticket_name):
+        cmd = "support in-subscription chat-transcript list "
+        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
+
+        return cmd
+
+    def _validate_chat_transcript_list_cmd(self, rsp, test_chat_transcript_name):
+        self.assertTrue(rsp is not None)
+        self.assertTrue("type" in rsp[0])
+        self.assertTrue(rsp[0]["type"] == "Microsoft.Support/chatTranscripts")
+        self.assertTrue("name" in rsp[0])
+        self.assertTrue(rsp[0]["name"] == test_chat_transcript_name)
+
+    def _build_chat_transcript_show_cmd(self, test_ticket_name, test_chat_transcript_name):
+        cmd = "support in-subscription chat-transcript show "
+        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--chat-transcript-name '{0}' ".format(test_chat_transcript_name)
+
+        return cmd
+
+    def _validate_chat_transcript_show_cmd(self, rsp, test_chat_transcript_name):
+        self.assertTrue(rsp is not None)
+        self.assertTrue("type" in rsp)
+        self.assertTrue(rsp["type"] == "Microsoft.Support/chatTranscripts")
+        self.assertTrue("name" in rsp)
+        self.assertTrue(rsp["name"] == test_chat_transcript_name)
+
     def test_support_file_attachment_no_subscription(self):
         # Create File workspace
         file_workspace_name = self.create_random_name(prefix='cli', length=20)
@@ -612,12 +638,3 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(show_file_result["chunkSize"] <= 1024 * 1024 * 2.5)
         self.assertTrue(show_file_result["fileSize"] <= 1024 * 1024 * 5.0)
         self.assertTrue(show_file_result["numberOfChunks"] <= 2.0)
-
-        
-
-        
-
-
-
-
-
