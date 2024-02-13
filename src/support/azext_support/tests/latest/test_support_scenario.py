@@ -627,7 +627,6 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(show_file_result["numberOfChunks"] <= 2.0)
 
     def _validate_create_file_workspace_account_in_subscription(self, file_workspace_name):
-        file_workspace_name = self.create_random_name(prefix='cli', length=20)
         create_file_workspace_result = self.cmd('support in-subscription file-workspace create --file-workspace-name ' + file_workspace_name).get_output_in_json()
         self.assertTrue(create_file_workspace_result is not None)
         self.assertTrue("type" in create_file_workspace_result)
@@ -687,6 +686,3 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(show_file_result["chunkSize"] <= 1024 * 1024 * 2.5)
         self.assertTrue(show_file_result["fileSize"] <= 1024 * 1024 * 5.0)
         self.assertTrue(show_file_result["numberOfChunks"] <= 2.0)
-
-        
-
