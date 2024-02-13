@@ -1,5 +1,12 @@
 Release History
 ===============
+1.19.3
+---
+* Add arguments `--refresh-interval` in `spring application-configuration-service create` and `spring application-configuration-service update`.
+
+1.19.2
+---
+* Add runtime version `Java_21`.
 
 1.19.1
 ---

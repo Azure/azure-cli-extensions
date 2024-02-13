@@ -686,6 +686,12 @@ def load_arguments(self, _):
             help="enable vertical pod autoscaler for cluster",
         )
         c.argument(
+            "enable_addon_autoscaling",
+            action="store_true",
+            is_preview=True,
+            help="enable addon autoscaling for cluster",
+        )
+        c.argument(
             "enable_node_restriction",
             action="store_true",
             is_preview=True,
@@ -774,6 +780,7 @@ def load_arguments(self, _):
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
+        c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
@@ -851,6 +858,7 @@ def load_arguments(self, _):
         c.argument("network_dataplane", arg_type=get_enum_type(network_dataplanes))
         c.argument("network_policy")
         c.argument("network_plugin", arg_type=get_enum_type(network_plugins))
+        c.argument("ip_families")
         c.argument("kube_proxy_config")
         c.argument(
             "auto_upgrade_channel", arg_type=get_enum_type(auto_upgrade_channels)
@@ -1095,6 +1103,18 @@ def load_arguments(self, _):
             help="disable vertical pod autoscaler for cluster",
         )
         c.argument(
+            "enable_addon_autoscaling",
+            action="store_true",
+            is_preview=True,
+            help="enable addon autoscaling for cluster",
+        )
+        c.argument(
+            "disable_addon_autoscaling",
+            action="store_true",
+            is_preview=True,
+            help="disable addon autoscaling for cluster",
+        )
+        c.argument(
             "cluster_snapshot_id",
             validator=validate_cluster_snapshot_id,
             is_preview=True,
@@ -1127,6 +1147,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument("disable_cost_analysis", is_preview=True, action="store_true")
+        c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
+        c.argument('disable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
@@ -1318,6 +1340,7 @@ def load_arguments(self, _):
             validator=validate_node_public_ip_tags,
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
+        c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1394,6 +1417,14 @@ def load_arguments(self, _):
             action=get_three_state_flag(),
             is_preview=True,
             help="delete an AKS nodepool by ignoring PodDisruptionBudget setting",
+        )
+
+    with self.argument_context("aks nodepool delete-machines") as c:
+        c.argument(
+            "machine_names",
+            nargs="+",
+            required=True,
+            help="Space-separated machine names to delete.",
         )
 
     with self.argument_context("aks machine") as c:
@@ -1891,8 +1922,8 @@ def load_arguments(self, _):
             "source_resource_id",
             options_list=[
                 "--source-resource-id",
-                "-r",
                 c.deprecate(target="-s", redirect="--source-resource-id", hide=True),
+                c.deprecate(target="-r", redirect="--source-resource-id", hide=True),
             ],
             help="The source resource id of the binding",
         )

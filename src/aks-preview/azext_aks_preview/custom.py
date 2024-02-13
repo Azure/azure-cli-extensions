@@ -95,6 +95,7 @@ from azure.cli.core.azclierror import (
     ClientRequestError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
+    RequiredArgumentMissingError,
 )
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -577,6 +578,7 @@ def aks_create(
     dns_zone_resource_ids=None,
     enable_keda=False,
     enable_vpa=False,
+    enable_addon_autoscaling=False,
     enable_node_restriction=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
@@ -605,6 +607,8 @@ def aks_create(
     enable_windows_recording_rules=False,
     # metrics profile
     enable_cost_analysis=False,
+    # AI toolchain operator
+    enable_ai_toolchain_operator=False,
     # azure container storage
     enable_azure_container_storage=None,
     storage_pool_name=None,
@@ -742,6 +746,7 @@ def aks_update(
     network_plugin_mode=None,
     network_policy=None,
     network_dataplane=None,
+    ip_families=None,
     pod_cidr=None,
     enable_pod_security_policy=False,
     disable_pod_security_policy=False,
@@ -775,6 +780,8 @@ def aks_update(
     disable_azure_monitor_metrics=False,
     enable_vpa=False,
     disable_vpa=False,
+    enable_addon_autoscaling=False,
+    disable_addon_autoscaling=False,
     cluster_snapshot_id=None,
     custom_ca_trust_certificates=None,
     # guardrails parameters
@@ -786,6 +793,9 @@ def aks_update(
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
+    # AI toolchain operator
+    enable_ai_toolchain_operator=False,
+    disable_ai_toolchain_operator=False,
     # azure container storage
     enable_azure_container_storage=None,
     disable_azure_container_storage=False,
@@ -1172,6 +1182,7 @@ def aks_agentpool_add(
     asg_ids=None,
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
+    skip_gpu_driver_install=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1537,6 +1548,49 @@ def aks_agentpool_operation_abort(cmd,   # pylint: disable=unused-argument
         cluster_name,
         nodepool_name,
         headers=headers,
+    )
+
+
+def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
+                                  client,
+                                  resource_group_name,
+                                  cluster_name,
+                                  nodepool_name,
+                                  machine_names,
+                                  no_wait=False):
+    agentpool_exists = False
+    instances = client.list(resource_group_name, cluster_name)
+    for agentpool_profile in instances:
+        if agentpool_profile.name.lower() == nodepool_name.lower():
+            agentpool_exists = True
+            break
+
+    if not agentpool_exists:
+        raise ResourceNotFoundError(
+            f"Node pool {nodepool_name} doesn't exist, "
+            "use 'az aks nodepool list' to get current node pool list"
+        )
+
+    if len(machine_names) == 0:
+        raise RequiredArgumentMissingError(
+            "--machine-names doesn't provide, "
+            "use 'az aks machine list' to get current machine list"
+        )
+
+    AgentPoolDeleteMachinesParameter = cmd.get_models(
+        "AgentPoolDeleteMachinesParameter",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
+    )
+
+    machines = AgentPoolDeleteMachinesParameter(machine_names=machine_names)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete_machines,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        machines,
     )
 
 
@@ -2981,7 +3035,7 @@ def _aks_mesh_update(
     )
 
     try:
-        mc = aks_update_decorator.update_mc_profile_default()
+        mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_azure_service_mesh_profile(mc)
     except DecoratorEarlyExitException:
         return None
@@ -3145,76 +3199,9 @@ def _aks_approuting_update(
     )
 
     try:
-        mc = aks_update_decorator.update_mc_profile_preview()
+        mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_app_routing_profile(mc)
     except DecoratorEarlyExitException:
         return None
 
-    poller = aks_update_decorator.update_mc(mc)
-    if keyvault_id:
-        return _keyvault_update(poller, cmd, keyvault_id=keyvault_id)
-    return poller
-
-
-def _keyvault_update(
-        poller,
-        cmd,
-        keyvault_id=None
-):
-
-    from msrestazure.tools import is_valid_resource_id, parse_resource_id
-    from azure.cli.command_modules.keyvault.custom import set_policy
-    from azext_aks_preview._client_factory import get_keyvault_client
-    from azext_aks_preview._roleassignments import add_role_assignment
-
-    while not poller.done():
-        poller.wait()
-
-    # Get the final result
-    mc = poller.result()
-
-    # check keyvault authorization sytem
-    if keyvault_id:
-        if not is_valid_resource_id(keyvault_id):
-            raise InvalidArgumentValueError("Please provide a valid keyvault ID")
-
-        if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
-            cmd.command_kwargs['operation_group'] = 'vaults'
-            keyvault_params = parse_resource_id(keyvault_id)
-            keyvault_subscription = keyvault_params['subscription']
-            keyvault_name = keyvault_params['name']
-            keyvault_rg = keyvault_params['resource_group']
-            keyvault_client = get_keyvault_client(cmd.cli_ctx, subscription_id=keyvault_subscription)
-            keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
-            managed_identity_object_id = mc.ingress_profile.web_app_routing.identity.object_id
-            is_service_principal = False
-
-            try:
-                if keyvault.properties.enable_rbac_authorization:
-                    if not add_role_assignment(
-                        cmd,
-                        "Key Vault Secrets User",
-                        managed_identity_object_id,
-                        is_service_principal,
-                        scope=keyvault_id,
-                    ):
-                        logger.warning(
-                            "Could not create a role assignment for App Routing. "
-                            "Are you an Owner on this subscription?"
-                        )
-                else:
-                    keyvault = set_policy(
-                        cmd,
-                        keyvault_client,
-                        keyvault_rg,
-                        keyvault_name,
-                        object_id=managed_identity_object_id,
-                        secret_permissions=["Get"],
-                        certificate_permissions=["Get"],
-                    )
-            except Exception as ex:
-                raise CLIError('Error in granting keyvault permissions to managed identity.\n') from ex
-        else:
-            raise CLIError('App Routing is not enabled.\n')
-
-    return mc
+    return aks_update_decorator.update_mc(mc)
