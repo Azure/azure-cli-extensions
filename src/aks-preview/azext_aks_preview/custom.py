@@ -52,6 +52,11 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
+    CONST_NODE_PROVISIONING_STATE_SUCCEEDED,
+    CONST_DEFAULT_NODE_OS_TYPE,
+    CONST_VIRTUAL_MACHINE_SCALE_SETS,
+    CONST_AVAILABILITY_SET,
+    CONST_MIN_NODE_IMAGE_VERSION,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
@@ -3260,6 +3265,35 @@ def _aks_run_command(
         raise HttpResponseError(f"Can not run command with returned exception {ex}") from ex
 
 
+def _aks_verify_resource(resource, resource_type):
+    if resource.provisioning_state != CONST_NODE_PROVISIONING_STATE_SUCCEEDED:
+        raise ValidationError(f"Node pool {resource.name} is in {resource.provisioning_state} state!")
+
+    node_image_version = ""
+    os_type = ""
+    if resource_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+        node_image_version = resource.node_image_version
+        os_type = resource.os_type
+    else:
+        node_image_version = resource.storage_profile.image_reference.id
+        os_type = resource.storage_profile.os_disk.os_type
+
+    if not os_type or os_type != CONST_DEFAULT_NODE_OS_TYPE:
+        raise ValidationError(f"Resource must be of type {CONST_DEFAULT_NODE_OS_TYPE}!")
+
+    if not node_image_version:
+        raise ValidationError(f"No image version found for {resource.name}! Cannot verify supported versions.")
+
+    if resource_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+        version = node_image_version.split("-")[-1]
+    else:
+        version = node_image_version.split("/")[-1]
+
+    if version < CONST_MIN_NODE_IMAGE_VERSION:
+        raise ValidationError(f"Node image version {version} is not supported! "
+                              f"Image version must be at least {CONST_MIN_NODE_IMAGE_VERSION}.")
+
+
 def _aks_get_node_name_vmss(
         cmd,
         resource_group,
@@ -3274,27 +3308,27 @@ def _aks_get_node_name_vmss(
         if not nodepool_list:
             raise ValidationError("No node pool found in the cluster!")
 
-        logger.debug("Get list of node pools in the cluster: %s", nodepool_list)
+        nodepool_name = ""
         for nodepool in nodepool_list:
-            logger.debug("Nodepool: %s", nodepool)
-            if nodepool.provisioning_state == "Succeeded" and nodepool.os_type == "Linux":
+            try:
+                _aks_verify_resource(nodepool, CONST_VIRTUAL_MACHINE_SCALE_SETS)
                 nodepool_name = nodepool.name
                 logger.debug("Select nodepool: %s", nodepool_name)
                 break
+            except ValidationError as ex:
+                logger.warning(ex)
+                continue
 
         if not nodepool_name:
-            raise ValidationError("No suitable node pool found in the cluster. Node pool must be of type Linux!")
+            raise ValidationError("No suitable node pool found in the cluster.")
 
         compute_client = get_compute_client(cmd.cli_ctx)
-
         vmss_list = compute_client.virtual_machine_scale_sets.list(managed_resource_group)
         if not vmss_list:
             raise ValidationError(f"No VMSS found in the managed resource group {managed_resource_group}!")
 
-        logger.debug("Get list of VMSS in the managed resource group: %s", vmss_list)
         for vmss in vmss_list:
             vmss_tag = vmss.tags.get("aks-managed-poolName")
-            logger.debug("Check tag of VMSS %s and node pool name %s", vmss_tag, nodepool_name)
             if vmss_tag and vmss_tag == nodepool_name:
                 vmss_name = vmss.name
                 logger.debug("Select VMSS: %s", vmss_name)
@@ -3325,19 +3359,25 @@ def _aks_get_node_name_as(
         managed_resource_group):
     if not node_name:
         print("No node name specified, will randomly select a node from the cluster")
+
         compute_client = get_compute_client(cmd.cli_ctx)
         vm_list = compute_client.virtual_machines.list(managed_resource_group)
         if not vm_list:
             raise ValidationError(f"No VM found in the managed resource group {managed_resource_group}!")
 
+        vm_name = ""
         for vm in vm_list:
-            logger.debug("OS Profile: %s", vm.os_profile)
-            if vm.os_profile.linux_configuration != "None" and vm.provisioning_state == "Succeeded":
+            try:
+                _aks_verify_resource(vm, CONST_AVAILABILITY_SET)
                 vm_name = vm.name
                 logger.debug("Select VM: %s", vm_name)
+                break
+            except ValidationError as ex:
+                logger.warning(ex)
+                continue
 
         if not vm_name:
-            raise ValidationError("No suitable VM found in the managed resource. VM must be of type Linux!")
+            raise ValidationError("No suitable VM found in the managed resource!")
     else:
         vm_name = node_name
 
@@ -3371,17 +3411,13 @@ def aks_check_network_outbound(
     managed_resource_group = f"MC_{resource_group}_{cluster_name}_{location}"
     logger.debug("Location: %s, Managed Resource Group: %s", location, managed_resource_group)
 
-    vmss_name = ""
-    instance_id = ""
-    vm_name = ""
-
-    if vm_set_type == "VirtualMachineScaleSets":
+    if vm_set_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
         vmss_name, instance_id = _aks_get_node_name_vmss(
             cmd, resource_group, cluster_name, node_name, managed_resource_group)
 
         print(f"Start checking outbound network for vmss: {vmss_name},"
               f" instance_id: {instance_id}, managed_resource_group: {managed_resource_group}")
-    elif vm_set_type == "AvailabilitySet":
+    elif vm_set_type == CONST_AVAILABILITY_SET:
         vm_name = _aks_get_node_name_as(
             cmd, node_name, managed_resource_group)
 
