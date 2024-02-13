@@ -323,13 +323,13 @@ def create_update_run(cmd,
 
     if upgrade_type in UPGRADE_TYPE_ERROR_MESSAGES:
         if (
-            ((upgrade_type == UPGRADE_TYPE_FULL or upgrade_type == UPGRADE_TYPE_CONTROLPLANEONLY) and kubernetes_version is None) or
+            ((upgrade_type in (UPGRADE_TYPE_FULL, UPGRADE_TYPE_CONTROLPLANEONLY)) and kubernetes_version is None) or  # pylint: disable=line-too-long
             (upgrade_type == UPGRADE_TYPE_NODEIMAGEONLY and kubernetes_version is not None)
         ):
             raise CLIError(UPGRADE_TYPE_ERROR_MESSAGES[upgrade_type])
     else:
         raise CLIError((f"The upgrade type parameter '{upgrade_type}' is not valid."
-                        f"Valid options are: '{UPGRADE_TYPE_FULL}', '{UPGRADE_TYPE_CONTROLPLANEONLY}', or '{UPGRADE_TYPE_NODEIMAGEONLY}'"))
+                        f"Valid options are: '{UPGRADE_TYPE_FULL}', '{UPGRADE_TYPE_CONTROLPLANEONLY}', or '{UPGRADE_TYPE_NODEIMAGEONLY}'"))  # pylint: disable=line-too-long
 
     if stages is not None and update_strategy_name is not None:
         raise CLIError("Cannot set stages when update strategy name is set.")
