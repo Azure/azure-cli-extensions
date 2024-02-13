@@ -136,7 +136,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
                     telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Release_Cleanup_Failed, summary="Error while executing cluster diagnostic checks Job")
                     return
 
-        chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, consts.Pre_Onboarding_Helm_Charts_Folder_Name, consts.Pre_Onboarding_Helm_Charts_Release_Name)
+        chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, consts.Pre_Onboarding_Helm_Charts_Folder_Name, consts.Pre_Onboarding_Helm_Charts_Release_Name, False)
 
         helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, kube_config, kube_context, helm_client_location)
 

@@ -172,7 +172,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                         e["value"] = ""
 
         update_map = {}
-        update_map['scale'] = self.get_argument_min_replicas() or self.get_argument_max_replicas() or self.get_argument_scale_rule_name()
+        update_map['scale'] = self.get_argument_min_replicas() is not None or self.get_argument_max_replicas() is not None or self.get_argument_scale_rule_name()
         update_map['container'] = self._need_update_container()
         update_map['ingress'] = self.get_argument_ingress() or self.get_argument_target_port()
         update_map['registry'] = self.get_argument_registry_server() or self.get_argument_registry_user() or self.get_argument_registry_pass()
@@ -615,6 +615,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         self.set_up_extended_location()
         self.set_up_source()
         self.set_up_repo()
+        if self.get_argument_max_inactive_revisions() is not None:
+            safe_set(self.containerapp_def, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
 
     def validate_arguments(self):
         super().validate_arguments()
@@ -636,9 +638,10 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
         if source:
             app, env = self._construct_app_and_env_for_source_or_repo()
+            build_env_vars = self.get_argument_build_env_vars()
             dockerfile = "Dockerfile"
             # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
-            app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=False, registry_server=self.get_argument_registry_server())
+            app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=False, registry_server=self.get_argument_registry_server())
             # Validate containers exist
             containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
             if containers is None or len(containers) == 0:
@@ -691,7 +694,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         # Get GitHub access token
         token = get_token(self.cmd, self.get_argument_repo(), self.get_argument_token())
         _create_github_action(app, env, self.get_argument_service_principal_client_id(), self.get_argument_service_principal_client_secret(),
-                              self.get_argument_service_principal_tenant_id(), self.get_argument_branch(), token, self.get_argument_repo(), self.get_argument_context_path())
+                              self.get_argument_service_principal_tenant_id(), self.get_argument_branch(), token, self.get_argument_repo(), self.get_argument_context_path(), self.get_argument_build_env_vars())
         cache_github_token(self.cmd, token, self.get_argument_repo())
         return self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
 
@@ -942,6 +945,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_artifact(self):
         return self.get_param("artifact")
 
+    def get_argument_build_env_vars(self):
+        return self.get_param("build_env_vars")
+
     def get_argument_repo(self):
         return self.get_param("repo")
 
@@ -963,6 +969,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_service_principal_tenant_id(self):
         return self.get_param("service_principal_tenant_id")
 
+    def get_argument_max_inactive_revisions(self):
+        return self.get_param("max_inactive_revisions")
 
 # decorator for preview update
 class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
@@ -990,6 +998,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_artifact(self):
         return self.get_param("artifact")
 
+    def get_argument_build_env_vars(self):
+        return self.get_param("build_env_vars")
+
     def validate_arguments(self):
         super().validate_arguments()
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
@@ -1001,12 +1012,15 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         self.set_up_service_bindings()
         self.set_up_unbind_service_bindings()
         self.set_up_source()
+        if self.get_argument_max_inactive_revisions() is not None:
+            safe_set(self.new_containerapp, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
 
         source = self.get_argument_source()
         artifact = self.get_argument_artifact()
+        build_env_vars = self.get_argument_build_env_vars()
         _validate_source_artifact_args(source, artifact)
         if artifact:
             # Artifact is mostly a convenience argument provided to use --source specifically with a single artifact file.
@@ -1025,11 +1039,11 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                 parsed = urlparse(registry_server)
                 registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
                 registry_user, registry_pass, _ = _get_acr_cred(self.cmd.cli_ctx, registry_name)
-                self._update_container_app_source(cmd=self.cmd, source=source, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+                self._update_container_app_source(cmd=self.cmd, source=source, build_env_vars=build_env_vars, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
             else:
-                self._update_container_app_source(cmd=self.cmd, source=source, registry_server=None, registry_user=None, registry_pass=None)
+                self._update_container_app_source(cmd=self.cmd, source=source, build_env_vars=build_env_vars, registry_server=None, registry_user=None, registry_pass=None)
 
-    def _update_container_app_source(self, cmd, source, registry_server, registry_user, registry_pass):
+    def _update_container_app_source(self, cmd, source, build_env_vars, registry_server, registry_user, registry_pass):
         from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details)
 
         ingress = self.get_argument_ingress()
@@ -1066,9 +1080,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
         # Fetch registry credentials
         _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
-
         # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
-        app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=False, registry_server=registry_server)
+        app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=False, registry_server=registry_server)
 
         # Validate an image associated with the container app exists
         containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
@@ -1165,6 +1178,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                     new_template["serviceBinds"] = [binding for binding in new_template["serviceBinds"] if
                                                     binding["name"] != item]
 
+    def get_argument_max_inactive_revisions(self):
+        return self.get_param("max_inactive_revisions")
 
 # decorator for preview list
 class ContainerAppPreviewListDecorator(BaseContainerAppDecorator):

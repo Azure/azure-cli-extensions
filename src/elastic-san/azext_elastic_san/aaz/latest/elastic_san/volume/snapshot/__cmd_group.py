@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "elastic-san volume snapshot",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage volume snapshot

@@ -14,7 +14,8 @@ from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
-BINDING_NAME="binding"
+BINDING_NAME = "binding"
+
 
 class TearDown(SpringSubResourceWrapper):
     def __init__(self,
@@ -30,17 +31,23 @@ class TearDown(SpringSubResourceWrapper):
         self.spring = self._get_spring(**kwargs)
 
     def remove_resource(self, *_, **__):
-        self._safe_exec('spring build-service builder buildpack-binding delete --name {} -g {} -s {} --yes'.format(BINDING_NAME, self.resource_group, self.spring))
-        self._safe_exec('spring build-service builder buildpack-binding delete --name {}-0 -g {} -s {} --yes'.format(BINDING_NAME, self.resource_group, self.spring))
+        self._safe_exec(
+            'spring build-service builder buildpack-binding delete --name {} -g {} -s {} --yes'.format(BINDING_NAME,
+                                                                                                       self.resource_group,
+                                                                                                       self.spring))
+        self._safe_exec(
+            'spring build-service builder buildpack-binding delete --name {}-0 -g {} -s {} --yes'.format(BINDING_NAME,
+                                                                                                         self.resource_group,
+                                                                                                         self.spring))
+
 
 class BuildpackBindingTest(ScenarioTest):
 
-    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
+    @SpringResourceGroupPreparer(
+        dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
     @TearDown()
     def test_buildpack_binding(self, resource_group, spring):
-        py_path = os.path.abspath(os.path.dirname(__file__))
-        
         self.kwargs.update({
             'serviceName': spring,
             'rg': resource_group,
@@ -53,27 +60,28 @@ class BuildpackBindingTest(ScenarioTest):
 
         self.cmd('spring build-service builder buildpack-binding create --name {bindingName} --type {bindingType} \
             --properties {properties} --secrets {secrets} -g {rg} -s {serviceName}',
-            checks=[
-                self.check('properties.provisioningState', 'Succeeded'),
-                self.check('properties.bindingType', 'ApplicationInsights'),
-                self.check('properties.launchProperties.properties', {'a': 'b', 'b': 'c'}),
-                self.check('properties.launchProperties.secrets', {'x': '*', 'y': '*'}),
-            ])
+                 checks=[
+                     self.check('properties.provisioningState', 'Succeeded'),
+                     self.check('properties.bindingType', 'ApplicationInsights'),
+                     self.check('properties.launchProperties.properties', {'a': 'b', 'b': 'c'}),
+                     self.check('properties.launchProperties.secrets', {'x': '*', 'y': '*'}),
+                 ])
 
         self.cmd('spring build-service builder buildpack-binding show --name {bindingName} -g {rg} -s {serviceName}',
-            checks=[
-                self.check('properties.provisioningState', 'Succeeded'),
-                self.check('properties.bindingType', 'ApplicationInsights'),
-            ])
+                 checks=[
+                     self.check('properties.provisioningState', 'Succeeded'),
+                     self.check('properties.bindingType', 'ApplicationInsights'),
+                 ])
 
         self.cmd('spring build-service builder buildpack-binding create --name {bindingName}-0 --type NewRelic \
             --properties {properties} --secrets {secrets} -g {rg} -s {serviceName}',
-            checks=[
-                self.check('properties.provisioningState', 'Succeeded'),
-                self.check('properties.bindingType', 'NewRelic'),
-                self.check('properties.launchProperties.properties', {'a': 'b', 'b': 'c'}),
-                self.check('properties.launchProperties.secrets', {'x': '*', 'y': '*'}),
-            ])
+                 checks=[
+                     self.check('properties.provisioningState', 'Succeeded'),
+                     self.check('properties.bindingType', 'NewRelic'),
+                     self.check('properties.launchProperties.properties', {'a': 'b', 'b': 'c'}),
+                     self.check('properties.launchProperties.secrets', {'x': '*', 'y': '*'}),
+                 ])
 
-        results = self.cmd('spring build-service builder buildpack-binding list -g {rg} -s {serviceName}').get_output_in_json()
+        results = self.cmd(
+            'spring build-service builder buildpack-binding list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertEqual(2, len(results))

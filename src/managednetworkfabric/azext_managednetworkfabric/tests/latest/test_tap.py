@@ -12,13 +12,16 @@ Network Tap tests scenarios
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
+
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
     pass
 
+
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
+
 
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
@@ -32,12 +35,14 @@ def call_scenario1(test):
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
+
 def step_create(test, checks=None):
     '''Network Tap create operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric tap create --resource-group {rg} --location {location} --resource-name {name} --network-packet-broker-id {npbId} --polling-type {pollingType} --destinations {destinations}', checks=checks)
+
 
 def step_show(test, checks=None):
     '''Network Tap show operation'''
@@ -46,12 +51,14 @@ def step_show(test, checks=None):
     test.cmd(
         'az networkfabric tap show --resource-name {name} --resource-group {rg}')
 
+
 def step_list_resource_group(test, checks=None):
     '''Network Tap list by resource group operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric tap list --resource-group {rg}')
+
 
 def step_list_subscription(test, checks=None):
     '''Network Tap list by subscription operation'''
@@ -60,12 +67,14 @@ def step_list_subscription(test, checks=None):
     test.cmd(
         'az networkfabric tap list')
 
+
 def step_update_admin_state_Enable(test, checks=None):
     '''Network Tap Update admin state operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {state_Enable}')
+
 
 def step_update_admin_state_Disable(test, checks=None):
     '''Network Tap Update admin state operation'''
@@ -74,12 +83,14 @@ def step_update_admin_state_Disable(test, checks=None):
     test.cmd(
         'az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {state_Disable}')
 
+
 def step_delete(test, checks=None):
     '''Network Tap delete operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric tap delete --resource-name {name} --resource-group {rg}')
+
 
 class GA_TapScenarioTest1(ScenarioTest):
     ''' Network Tap Scenario test'''

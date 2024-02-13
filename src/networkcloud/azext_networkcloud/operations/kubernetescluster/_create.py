@@ -35,7 +35,7 @@ class Create(_Create, CustomSshOptions):
 
         # Build Kubernetescluster Authentication args
         args_schema = CustomSshOptions.build_ssh_arg_schema(
-            args_schema, "AdministratorConfiguration"
+            args_schema, False, "AdministratorConfiguration"
         )
         # Build initial_agent_pool_configurations admin configuration(admin-username and ssh-key-values)
         _element = cls._args_schema.initial_agent_pool_configurations.Element
@@ -48,7 +48,7 @@ class Create(_Create, CustomSshOptions):
         # Build control_plane_node_configuration admin configuration(admin-username and ssh-key-values)
         args_schema.control_plane_node_configuration.ssh_key_values = AAZListArg(
             options=["ssh-key-values"],
-            help="The array of comma-separated SSH public keys.",
+            help="The array of comma-separated SSH public keys. If not sent, the top level cluster ssh keys will be used.",
         )
         args_schema.control_plane_node_configuration.ssh_key_values.Element = (
             AAZStrArg()
@@ -69,7 +69,7 @@ class Create(_Create, CustomSshOptions):
         ssh_keys = CustomSshOptions.add_ssh_config(args)
         if len(ssh_keys) == 0:
             logger.warning(
-                "No keys are selected for insertion into the Kubernetes cluster node. "
+                "No SSH keys are provided for the cluster administrator configuration. "
                 "The image will need to have keys or credentials "
                 "setup in order to access."
             )

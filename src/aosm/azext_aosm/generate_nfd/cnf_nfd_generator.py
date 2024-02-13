@@ -712,7 +712,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     # (This currently only supports a single type, not a list of types.
                     #  If a list is provided, we default to string.)
                     array_item_schema = node.get("items", {})
-                    if type(array_item_schema) is dict:
+                    if isinstance(array_item_schema, dict):
                         param_type = array_item_schema.get("type", None)
                     else:
                         logger.debug("Array item schema is not a dict (probably a list)")

@@ -27,7 +27,7 @@ helps['fleet create'] = """
           text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --enable-hub --tags "TagKey=TagValue"
         - name: Create a fleet with a system assigned managed service identity.
           text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --enable-managed-identity
-        - name: Create a fleet with a user provided managed service identity.
+        - name: Create a fleet with a user assigned managed service identity.
           text: az fleet create -g MyFleetResourceGroup -l MyLocation -n MyFleetName --enable-managed-identity --assign-identity "/subscription/00000000-0000-0000-0000-000000000000/resourcegroup/MyFleetResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity"
 """
 
@@ -84,6 +84,14 @@ helps['fleet get-credentials'] = """
           text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName
         - name: Get a fleet's hub cluster kubeconfig, and save it to a specific file.
           text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName -f ~/mykubeconfigfile.txt
+"""
+
+helps['fleet reconcile'] = """
+    type: command
+    short-summary: Reconciles a fleet.
+    examples:
+        - name: Reconcile a fleet.
+          text: az fleet reconcile -g MyFleetResourceGroup -n MyFleetName
 """
 
 helps['fleet wait'] = """
@@ -146,6 +154,14 @@ helps['fleet member delete'] = """
     examples:
         - name: Delete a specific fleet member.
           text: az fleet member delete -g MyFleetResourceGroup -f MyFleetName -n NameOfMember
+"""
+
+helps['fleet member reconcile'] = """
+    type: command
+    short-summary: Reconciles a member.
+    examples:
+        - name: Reconcile a member.
+          text: az fleet member reconcile -g MyFleetResourceGroup -f MyFleetName -n NameOfMember
 """
 
 helps['fleet member wait'] = """

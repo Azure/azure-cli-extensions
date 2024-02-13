@@ -52,13 +52,19 @@ def aks_machine_list_table_format(results):
 
 def aks_machine_show_table_format(result):
     def parser(entry):
-        ip_addresses = ""
+        ipv4_addresses = ""
+        ipv6_addresses = ""
         for k in entry["properties"]["network"]["ipAddresses"]:
-            ip_addresses += "ip:" + k["ip"] + "," + "family:" + k["family"] + ";"
-        entry["ip"] = ip_addresses
+            if k["family"].lower() == "ipv4":
+                ipv4_addresses += k["ip"] + ";"
+            elif k["family"].lower() == "ipv6":
+                ipv6_addresses += k["ip"] + ";"
+        entry["ipv4"] = ipv4_addresses
+        entry["ipv6"] = ipv6_addresses
         parsed = compile_jmes("""{
                 name: name,
-                ip: ip
+                ipv4: ipv4,
+                ipv6: ipv6
             }""")
         return parsed.search(entry, Options(dict_cls=OrderedDict))
     return parser(result)
@@ -136,28 +142,6 @@ def aks_upgrades_table_format(result):
     return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
 
 
-def aks_versions_table_format(result):
-    """Format get-versions results as a summary for display with "-o table"."""
-
-    # get preview orchestrator version
-    preview = {}
-
-    def find_preview_versions():
-        for orchestrator in result.get('orchestrators', []):
-            if orchestrator.get('isPreview', False):
-                preview[orchestrator['orchestratorVersion']] = True
-    find_preview_versions()
-
-    parsed = compile_jmes("""orchestrators[].{
-        kubernetesVersion: orchestratorVersion | set_preview(@),
-        upgrades: upgrades[].orchestratorVersion || [`None available`] | sort_versions(@) | set_preview_array(@) | join(`, `, @)
-    }""")
-    # use ordered dicts so headers are predictable
-    results = parsed.search(result, Options(
-        dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
-    return sorted(results, key=lambda x: version_to_tuple(x.get('kubernetesVersion')), reverse=True)
-
-
 def version_to_tuple(version):
     """Removes preview suffix"""
     if version.endswith('(preview)'):
@@ -181,7 +165,7 @@ def _custom_functions(preview_versions):
     class CustomFunctions(functions.Functions):  # pylint: disable=too-few-public-methods
 
         @ functions.signature({'types': ['array']})
-        def _func_sort_versions(self, versions):  # pylint: disable=no-self-use
+        def _func_sort_versions(self, versions):
             """Custom JMESPath `sort_versions` function that sorts an array of strings as software versions"""
             try:
                 return sorted(versions, key=version_to_tuple)
@@ -196,26 +180,26 @@ def _custom_functions(preview_versions):
                 for i, _ in enumerate(versions):
                     versions[i] = self._func_set_preview(versions[i])
                 return versions
-            except(TypeError, ValueError):
+            except (TypeError, ValueError):
                 return versions
 
         @ functions.signature({'types': ['string']})
-        def _func_set_preview(self, version):  # pylint: disable=no-self-use
+        def _func_set_preview(self, version):
             """Custom JMESPath `set_preview` function that suffixes preview version"""
             try:
                 if preview_versions.get(version, False):
                     return version + '(preview)'
                 return version
-            except(TypeError, ValueError):
+            except (TypeError, ValueError):
                 return version
 
         @ functions.signature({'types': ['object']})
-        def _func_pprint_labels(self, labels):  # pylint: disable=no-self-use
+        def _func_pprint_labels(self, labels):
             """Custom JMESPath `pprint_labels` function that pretty print labels"""
             if not labels:
                 return ''
             return ' '.join([
-                '{}={}'.format(k, labels[k])
+                f'{k}={labels[k]}'
                 for k in sorted(labels.keys())
             ])
 
@@ -318,7 +302,7 @@ def _aks_snapshot_table_format(result):
 
 def aks_mesh_revisions_table_format(result):
     """Format a list of mesh revisions as summary results for display with "-o table". """
-    revision_table = flatten_mesh_revision_table(result[0]['properties']['meshRevisions'])
+    revision_table = flatten_mesh_revision_table(result['meshRevisions'])
     parsed = compile_jmes("""[].{
         revision: revision,
         upgrades: upgrades || [`None available`] | sort_versions(@) | join(`, `, @),
@@ -343,7 +327,7 @@ def flatten_mesh_revision_table(revision_info):
 
 def aks_mesh_upgrades_table_format(result):
     """Format a list of mesh upgrades as summary results for display with "-o table". """
-    upgrades_table = _format_mesh_revision_entry(result[0]['properties'])
+    upgrades_table = _format_mesh_revision_entry(result)
     parsed = compile_jmes("""[].{
         revision: revision,
         upgrades: upgrades || [`None available`] | sort_versions(@) | join(`, `, @),

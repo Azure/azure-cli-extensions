@@ -2,6 +2,18 @@
 
 Release History
 ===============
+1.0.1
+++++++
+* Make some improvements to fix non-json output issue
+
+1.0.0
+++++++
+* Support function app
+
+0.3.13
+++++++
+* AAD rebranding and make some improvements
+
 0.3.12
 ++++++
 * make some improvements and support slot.

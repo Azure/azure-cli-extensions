@@ -11,6 +11,48 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Vendor new SDK and bump API version to 2023-11-02-preview.
+* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
+* Add `az aks nodepool delete-machines` command.
+
+1.0.0b5
++++++++
+* Add `--enable-ai-toolchain-operator` to `az aks create` and `az aks update`.
+* Add `--disable-ai-toolchain-operator` to the `az aks update` command.
+* Refactor azure service mesh related code to meet cli style requirements.
+
+1.0.0b4
++++++++
+* Fix for `az aks approuting update` command not working when `monitoring` addon is enabled.
+
+1.0.0b3
++++++++
+* Change the format for az aks machine commands to separate the ipv4, ipv6 columns
+* Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
+
+1.0.0b2
++++++++
+* Add --skip-gpu-driver-install option to node pool property in `az aks nodepool add`.
+
+1.0.0b1
++++++++
+* Add `--enable-addon-autoscaling` and `--disable-addon-autoscaling` to the `az aks update` command.
+* Add `--enable-addon-autoscaling` to the `az aks create` command.
+* Add `--ip-families` to the `az aks update` command.
+
+0.5.174
++++++++
+* Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`.
+* Fix for `az aks approuting update` command failing on granting keyvault permissions to managed identity.
+* Replace Workload Identity related functions with stable version.
+
+0.5.173
++++++++
+* Add warning when stopping a private link cluster.
+
+0.5.172
++++++++
+* Fix for regression issue with `az aks create --enable-addon` command for enabling App Routing
 * Vendor new SDK and bump API version to 2023-10-02-preview.
 * Update the enum for `--os-sku` in command `az aks nodepool update` to only accept the expected Ubuntu and AzureLinux OSSKUs.
 * Update description `az aks update` and remove description about outbound ip limit.
