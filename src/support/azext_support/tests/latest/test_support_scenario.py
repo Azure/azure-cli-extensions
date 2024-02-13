@@ -419,9 +419,6 @@ class SupportScenarioTest(ScenarioTest):
     def _build_chat_transcript_list_cmd(self, test_ticket_name):
         cmd = "support in-subscription chat-transcript list "
         cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
-    def _build_chat_transcript_list_cmd(self, test_ticket_name):
-        cmd = "support in-subscription chat-transcript list "
-        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
 
         return cmd
 
