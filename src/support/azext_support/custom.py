@@ -8,15 +8,35 @@
 
 import json
 from datetime import date, datetime, timedelta
-
-from azext_support._utils import (get_bearer_token, is_quota_ticket,
-                                  is_technical_ticket, parse_support_area_path)
 from knack.log import get_logger
+from azext_support._utils import (
+    get_bearer_token,
+    is_quota_ticket,
+    is_technical_ticket,
+    parse_support_area_path,
+    upload_file,
+)
+from .aaz.latest.support.in_subscription.tickets import (
+    Update as _Update,
+)
+from .aaz.latest.support.in_subscription.tickets import (
+    Create as _CreateTicket,
+)
+from .aaz.latest.support.in_subscription.communication import (
+    Create as _CreateCommunication,
+)
+from .aaz.latest.support.no_subscription.communication import (
+    Create as _CreateNoSubscriptionCommunication,
+)
+from .aaz.latest.support.in_subscription.file_workspace import (
+    Create as _CreateFileWorkspace,
+)
+from .aaz.latest.support.no_subscription.file_workspace import (
+    Create as _CreateNoSubscriptionFileWorkspace,
+)
 
-from .aaz.latest.support.in_subscription.tickets import Update as _Update
-from .aaz.latest.support.in_subscription.tickets import Create as _CreateTicket
-from .aaz.latest.support.in_subscription.communication import Create as _CreateCommunication
-from .aaz.latest.support.no_subscription.communication import Create as _CreateNoSubscriptionCommunication
+logger = get_logger(__name__)
+
 
 def list_support_tickets(cmd, client, filters=None):
     if filters is None:
@@ -28,19 +48,22 @@ def get_support_tickets(cmd, client, ticket_name=None):
     return client.get(support_ticket_name=ticket_name)
 
 
-def update_support_tickets(cmd, client,
-                           ticket_name=None,
-                           severity=None,
-                           status=None,
-                           contact_first_name=None,
-                           contact_last_name=None,
-                           contact_method=None,
-                           contact_email=None,
-                           contact_additional_emails=None,
-                           contact_phone_number=None,
-                           contact_timezone=None,
-                           contact_country=None,
-                           contact_language=None):
+def update_support_tickets(
+    cmd,
+    client,
+    ticket_name=None,
+    severity=None,
+    status=None,
+    contact_first_name=None,
+    contact_last_name=None,
+    contact_method=None,
+    contact_email=None,
+    contact_additional_emails=None,
+    contact_phone_number=None,
+    contact_timezone=None,
+    contact_country=None,
+    contact_language=None,
+):
     contactBody = {}
     contactBody["first_name"] = contact_first_name
     contactBody["last_name"] = contact_last_name
@@ -67,33 +90,40 @@ def list_support_tickets_communications(cmd, client, ticket_name=None, filters=N
     return client.list(support_ticket_name=ticket_name, filter=filters)
 
 
-def get_support_tickets_communications(cmd, client, ticket_name=None, communication_name=None):
-    return client.get(support_ticket_name=ticket_name, communication_name=communication_name)
+def get_support_tickets_communications(
+    cmd, client, ticket_name=None, communication_name=None
+):
+    return client.get(
+        support_ticket_name=ticket_name, communication_name=communication_name
+    )
 
 
-def create_support_tickets(cmd, client,
-                           ticket_name=None,
-                           problem_classification=None,
-                           title=None,
-                           description=None,
-                           severity=None,
-                           start_time=None,
-                           require_24_by_7_response=None,
-                           contact_first_name=None,
-                           contact_last_name=None,
-                           contact_method=None,
-                           contact_email=None,
-                           contact_additional_emails=None,
-                           contact_phone_number=None,
-                           contact_timezone=None,
-                           contact_country=None,
-                           contact_language=None,
-                           technical_resource=None,
-                           quota_change_version=None,
-                           quota_change_subtype=None,
-                           quota_change_regions=None,
-                           quota_change_payload=None,
-                           partner_tenant_id=None):
+def create_support_tickets(
+    cmd,
+    client,
+    ticket_name=None,
+    problem_classification=None,
+    title=None,
+    description=None,
+    severity=None,
+    start_time=None,
+    require_24_by_7_response=None,
+    contact_first_name=None,
+    contact_last_name=None,
+    contact_method=None,
+    contact_email=None,
+    contact_additional_emails=None,
+    contact_phone_number=None,
+    contact_timezone=None,
+    contact_country=None,
+    contact_language=None,
+    technical_resource=None,
+    quota_change_version=None,
+    quota_change_subtype=None,
+    quota_change_regions=None,
+    quota_change_payload=None,
+    partner_tenant_id=None,
+):
     service_name = parse_support_area_path(problem_classification)["service_name"]
     service = "/providers/Microsoft.Support/services/{0}".format(service_name)
 
@@ -115,7 +145,9 @@ def create_support_tickets(cmd, client,
     body["contact_details"] = contactBody
     body["title"] = title
     body["service_id"] = service
-    body["require24_x7_response"] = require_24_by_7_response if require_24_by_7_response is not None else False
+    body["require24_x7_response"] = (
+        require_24_by_7_response if require_24_by_7_response is not None else False
+    )
     start_date_time = start_time if start_time is not None else datetime.now()
     start_date_time = start_date_time.strftime("%Y-%m-%dT%H:%M:%SZ")
     body["problem_start_time"] = start_date_time
@@ -139,88 +171,164 @@ def create_support_tickets(cmd, client,
 
     if partner_tenant_id is not None:
         external_bearer_token = get_bearer_token(cmd, partner_tenant_id)
-        return client.begin_create(support_ticket_name=ticket_name, create_support_ticket_parameters=body,
-                                   headers={'x-ms-authorization-auxiliary': external_bearer_token})
+        return client.begin_create(
+            support_ticket_name=ticket_name,
+            create_support_ticket_parameters=body,
+            headers={"x-ms-authorization-auxiliary": external_bearer_token},
+        )
 
-    return client.begin_create(support_ticket_name=ticket_name, create_support_ticket_parameters=body)
+    return client.begin_create(
+        support_ticket_name=ticket_name, create_support_ticket_parameters=body
+    )
 
 
-def create_support_tickets_communications(cmd, client,
-                                          ticket_name=None,
-                                          communication_name=None,
-                                          communication_body=None,
-                                          communication_subject=None,
-                                          communication_sender=None):
+def create_support_tickets_communications(
+    cmd,
+    client,
+    ticket_name=None,
+    communication_name=None,
+    communication_body=None,
+    communication_subject=None,
+    communication_sender=None,
+):
     body = {}
     body["sender"] = communication_sender
     body["subject"] = communication_subject
     body["body"] = communication_body
 
-    return client.begin_create(support_ticket_name=ticket_name, communication_name=communication_name,
-                               create_communication_parameters=body)
+    return client.begin_create(
+        support_ticket_name=ticket_name,
+        communication_name=communication_name,
+        create_communication_parameters=body,
+    )
 
-languages = {"en-us" : "en-us", "es-es": "es-es", "fr-fr" : "fr-fr", "de-de" : "de-de", "it-it" : "it-it",
-             "ja-jp" : "ja-jp", "ko-kr":"ko-kr", "ru-ru": "ru-ru", "pt-br" : "pt-br", "zh-tw" : "zh-tw",
-             "zh-hans" : "zh-hans"}
 
-timezones = {"Afghanistan Standard Time" : "Afghanistan Standard Time", "Alaskan Standard Time" : "Alaskan Standard Time",
-             "Arab Standard Time" : "Arab Standard Time", "Arabian Standard Time" : "Arabian Standard Time",
-             "Arabic Standard Time" : "Arabic Standard Time", "Argentina Standard Time" : "Argentina Standard Time",
-             "Atlantic Standard Time" : "Atlantic Standard Time", "AUS Central Standard Time" : "AUS Central Standard Time",
-             "AUS Eastern Standard Time" : "AUS Eastern Standard Time", "Azerbaijan Standard Time" : "Azerbaijan Standard Time",
-             "Azores Standard Time" : "Azores Standard Time", "Canada Central Standard Time" : "Canada Central Standard Time",
-             "Cape Verde Standard Time" : "Cape Verde Standard Time", "Caucasus Standard Time" : "Caucasus Standard Time",
-             "Cen. Australia Standard Time" : "Cen. Australia Standard Time", "Central America Standard Time" : "Central America Standard Time",
-             "Central Asia Standard Time" : "Central Asia Standard Time", "Central Brazilian Standard Time" : "Central Brazilian Standard Time",
-             "Central Europe Standard Time" : "Central Europe Standard Time", "Central European Standard Time" : "Central European Standard Time",
-             "Central Pacific Standard Time" : "Central Pacific Standard Time", "Central Standard Time" : "Central Standard Time",
-             "Central Standard Time (Mexico)" : "Central Standard Time (Mexico)", "China Standard Time" : "China Standard Time",
-             "Dateline Standard Time" : "Dateline Standard Time", "E. Africa Standard Time" : "E. Africa Standard Time",
-             "E. Australia Standard Time" : "E. Australia Standard Time", "E. Europe Standard Time" : "E. Europe Standard Time",
-             "E. South America Standard Time" : "E. South America Standard Time", "Eastern Standard Time" : "Eastern Standard Time",
-             "Eastern Standard Time (Mexico)" : "Eastern Standard Time (Mexico)", "Egypt Standard Time" : "Egypt Standard Time",
-             "Ekaterinburg Standard Time" : "Ekaterinburg Standard Time", "Fiji Standard Time" : "Fiji Standard Time",
-             "FLE Standard Time" : "FLE Standard Time", "Georgian Standard Time" : "Georgian Standard Time", "GMT Standard Time" : "GMT Standard Time",
-             "Greenland Standard Time" : "Greenland Standard Time", "Greenwich Standard Time" : "Greenwich Standard Time",
-             "GTB Standard Time" : "GTB Standard Time", "Hawaiian Standard Time" : "Hawaiian Standard Time", "India Standard Time" : "India Standard Time",
-             "Iran Standard Time" : "Iran Standard Time", "Israel Standard Time" : "Israel Standard Time", "Jordan Standard Time" : "Jordan Standard Time",
-             "Korea Standard Time" : "Korea Standard Time", "Mauritius Standard Time" : "Mauritius Standard Time",
-             "Central Standard Time (Mexico)" : "Central Standard Time (Mexico)", "Mid-Atlantic Standard Time" : "Mid-Atlantic Standard Time",
-             "Middle East Standard Time" : "Middle East Standard Time", "Montevideo Standard Time" : "Montevideo Standard Time",
-             "Morocco Standard Time" : "Morocco Standard Time", "Mountain Standard Time" : "Mountain Standard Time",
-             "Mountain Standard Time (Mexico)" : "Mountain Standard Time (Mexico)", "Myanmar Standard Time" : "Myanmar Standard Time",
-             "N. Central Asia Standard Time" : "N. Central Asia Standard Time", "Namibia Standard Time" : "Namibia Standard Time",
-             "Nepal Standard Time" : "Nepal Standard Time", "New Zealand Standard Time" : "New Zealand Standard Time",
-             "Newfoundland Standard Time" : "Newfoundland Standard Time", "North Asia East Standard Time" : "North Asia East Standard Time",
-             "North Asia Standard Time" : "North Asia Standard Time", "Pacific SA Standard Time" : "Pacific SA Standard Time",
-             "Pacific Standard Time" : "Pacific Standard Time", "Pacific Standard Time (Mexico)" : "Pacific Standard Time (Mexico)",
-             "Pakistan Standard Time" : "Pakistan Standard Time", "Romance Standard Time" : "Romance Standard Time",
-             "Russian Standard Time" : "Russian Standard Time", "SA Eastern Standard Time" : "SA Eastern Standard Time",
-             "SA Pacific Standard Time" : "SA Pacific Standard Time", "SA Western Standard Time" : "SA Western Standard Time",
-             "Samoa Standard Time" : "Samoa Standard Time", "SE Asia Standard Time" : "SE Asia Standard Time",
-             "Singapore Standard Time" : "Singapore Standard Time", "South Africa Standard Time" : "South Africa Standard Time",
-             "Sri Lanka Standard Time" : "Sri Lanka Standard Time", "Taipei Standard Time" : "Taipei Standard Time",
-             "Tasmania Standard Time" : "Tasmania Standard Time", "Tokyo Standard Time" : "Tokyo Standard Time", "Tonga Standard Time" : "Tonga Standard Time",
-             "Turkey Standard Time" : "Turkey Standard Time", "US Eastern Standard Time" : "US Eastern Standard Time",
-             "US Mountain Standard Time" : "US Mountain Standard Time", "UTC" : "UTC", "Venezuela Standard Time" : "Venezuela Standard Time",
-             "Vladivostok Standard Time" : "Vladivostok Standard Time", "W. Australia Standard Time" : "W. Australia Standard Time",
-             "W. Central Africa Standard Time" : "W. Central Africa Standard Time", "W. Europe Standard Time" : "W. Europe Standard Time",
-             "West Asia Standard Time" : "West Asia Standard Time", "West Pacific Standard Time" : "West Pacific Standard Time",
-             "Yakutsk Standard Time" : "Yakutsk Standard Time"}
+languages = {
+    "en-us": "en-us",
+    "es-es": "es-es",
+    "fr-fr": "fr-fr",
+    "de-de": "de-de",
+    "it-it": "it-it",
+    "ja-jp": "ja-jp",
+    "ko-kr": "ko-kr",
+    "ru-ru": "ru-ru",
+    "pt-br": "pt-br",
+    "zh-tw": "zh-tw",
+    "zh-hans": "zh-hans",
+}
+
+timezones = {
+    "Afghanistan Standard Time": "Afghanistan Standard Time",
+    "Alaskan Standard Time": "Alaskan Standard Time",
+    "Arab Standard Time": "Arab Standard Time",
+    "Arabian Standard Time": "Arabian Standard Time",
+    "Arabic Standard Time": "Arabic Standard Time",
+    "Argentina Standard Time": "Argentina Standard Time",
+    "Atlantic Standard Time": "Atlantic Standard Time",
+    "AUS Central Standard Time": "AUS Central Standard Time",
+    "AUS Eastern Standard Time": "AUS Eastern Standard Time",
+    "Azerbaijan Standard Time": "Azerbaijan Standard Time",
+    "Azores Standard Time": "Azores Standard Time",
+    "Canada Central Standard Time": "Canada Central Standard Time",
+    "Cape Verde Standard Time": "Cape Verde Standard Time",
+    "Caucasus Standard Time": "Caucasus Standard Time",
+    "Cen. Australia Standard Time": "Cen. Australia Standard Time",
+    "Central America Standard Time": "Central America Standard Time",
+    "Central Asia Standard Time": "Central Asia Standard Time",
+    "Central Brazilian Standard Time": "Central Brazilian Standard Time",
+    "Central Europe Standard Time": "Central Europe Standard Time",
+    "Central European Standard Time": "Central European Standard Time",
+    "Central Pacific Standard Time": "Central Pacific Standard Time",
+    "Central Standard Time": "Central Standard Time",
+    "Central Standard Time (Mexico)": "Central Standard Time (Mexico)",
+    "China Standard Time": "China Standard Time",
+    "Dateline Standard Time": "Dateline Standard Time",
+    "E. Africa Standard Time": "E. Africa Standard Time",
+    "E. Australia Standard Time": "E. Australia Standard Time",
+    "E. Europe Standard Time": "E. Europe Standard Time",
+    "E. South America Standard Time": "E. South America Standard Time",
+    "Eastern Standard Time": "Eastern Standard Time",
+    "Eastern Standard Time (Mexico)": "Eastern Standard Time (Mexico)",
+    "Egypt Standard Time": "Egypt Standard Time",
+    "Ekaterinburg Standard Time": "Ekaterinburg Standard Time",
+    "Fiji Standard Time": "Fiji Standard Time",
+    "FLE Standard Time": "FLE Standard Time",
+    "Georgian Standard Time": "Georgian Standard Time",
+    "GMT Standard Time": "GMT Standard Time",
+    "Greenland Standard Time": "Greenland Standard Time",
+    "Greenwich Standard Time": "Greenwich Standard Time",
+    "GTB Standard Time": "GTB Standard Time",
+    "Hawaiian Standard Time": "Hawaiian Standard Time",
+    "India Standard Time": "India Standard Time",
+    "Iran Standard Time": "Iran Standard Time",
+    "Israel Standard Time": "Israel Standard Time",
+    "Jordan Standard Time": "Jordan Standard Time",
+    "Korea Standard Time": "Korea Standard Time",
+    "Mauritius Standard Time": "Mauritius Standard Time",
+    "Central Standard Time (Mexico)": "Central Standard Time (Mexico)",
+    "Mid-Atlantic Standard Time": "Mid-Atlantic Standard Time",
+    "Middle East Standard Time": "Middle East Standard Time",
+    "Montevideo Standard Time": "Montevideo Standard Time",
+    "Morocco Standard Time": "Morocco Standard Time",
+    "Mountain Standard Time": "Mountain Standard Time",
+    "Mountain Standard Time (Mexico)": "Mountain Standard Time (Mexico)",
+    "Myanmar Standard Time": "Myanmar Standard Time",
+    "N. Central Asia Standard Time": "N. Central Asia Standard Time",
+    "Namibia Standard Time": "Namibia Standard Time",
+    "Nepal Standard Time": "Nepal Standard Time",
+    "New Zealand Standard Time": "New Zealand Standard Time",
+    "Newfoundland Standard Time": "Newfoundland Standard Time",
+    "North Asia East Standard Time": "North Asia East Standard Time",
+    "North Asia Standard Time": "North Asia Standard Time",
+    "Pacific SA Standard Time": "Pacific SA Standard Time",
+    "Pacific Standard Time": "Pacific Standard Time",
+    "Pacific Standard Time (Mexico)": "Pacific Standard Time (Mexico)",
+    "Pakistan Standard Time": "Pakistan Standard Time",
+    "Romance Standard Time": "Romance Standard Time",
+    "Russian Standard Time": "Russian Standard Time",
+    "SA Eastern Standard Time": "SA Eastern Standard Time",
+    "SA Pacific Standard Time": "SA Pacific Standard Time",
+    "SA Western Standard Time": "SA Western Standard Time",
+    "Samoa Standard Time": "Samoa Standard Time",
+    "SE Asia Standard Time": "SE Asia Standard Time",
+    "Singapore Standard Time": "Singapore Standard Time",
+    "South Africa Standard Time": "South Africa Standard Time",
+    "Sri Lanka Standard Time": "Sri Lanka Standard Time",
+    "Taipei Standard Time": "Taipei Standard Time",
+    "Tasmania Standard Time": "Tasmania Standard Time",
+    "Tokyo Standard Time": "Tokyo Standard Time",
+    "Tonga Standard Time": "Tonga Standard Time",
+    "Turkey Standard Time": "Turkey Standard Time",
+    "US Eastern Standard Time": "US Eastern Standard Time",
+    "US Mountain Standard Time": "US Mountain Standard Time",
+    "UTC": "UTC",
+    "Venezuela Standard Time": "Venezuela Standard Time",
+    "Vladivostok Standard Time": "Vladivostok Standard Time",
+    "W. Australia Standard Time": "W. Australia Standard Time",
+    "W. Central Africa Standard Time": "W. Central Africa Standard Time",
+    "W. Europe Standard Time": "W. Europe Standard Time",
+    "West Asia Standard Time": "West Asia Standard Time",
+    "West Pacific Standard Time": "West Pacific Standard Time",
+    "Yakutsk Standard Time": "Yakutsk Standard Time",
+}
+
 
 class TicketUpdate(_Update):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZArgEnum
+
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.contact_language.enum = AAZArgEnum(languages)
         args_schema.contact_timezone.enum = AAZArgEnum(timezones)
         return args_schema
 
+
 class TicketCreate(_CreateTicket):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZArgEnum
+
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.contact_language.enum = AAZArgEnum(languages)
         args_schema.contact_timezone.enum = AAZArgEnum(timezones)
@@ -236,39 +344,117 @@ class TicketCreate(_CreateTicket):
         args_schema.contact_language._required = True
         args_schema.contact_method._required = True
         args_schema.contact_timezone._required = True
-        
+
         return args_schema
-    
+
     def pre_operations(self):
         from azext_support._validators import validate_tickets_create_new
+
         super().pre_operations()
         args = self.ctx.args
-        if hasattr(args, 'technical_resource'):
-            validate_tickets_create_new(self.cli_ctx, str(args.problem_classification), str(args.ticket_name), str(args.technical_resource))
+        if hasattr(args, "technical_resource"):
+            validate_tickets_create_new(
+                self.cli_ctx,
+                str(args.problem_classification),
+                str(args.ticket_name),
+                str(args.technical_resource),
+            )
         else:
-            validate_tickets_create_new(self.cli_ctx, str(args.problem_classification), str(args.ticket_name))
-            
+            validate_tickets_create_new(
+                self.cli_ctx, str(args.problem_classification), str(args.ticket_name)
+            )
+
     class SupportTicketsCreate(_CreateTicket.SupportTicketsCreate):
         @property
         def content(self):
             body = super().content
-            service_name = parse_support_area_path(body["properties"]["problemClassificationId"])["service_name"]
-            body["properties"]["serviceId"] = "/providers/Microsoft.Support/services/{0}".format(service_name)
-            if "problemStartTime" not in body["properties"]: 
+            service_name = parse_support_area_path(
+                body["properties"]["problemClassificationId"]
+            )["service_name"]
+            body["properties"][
+                "serviceId"
+            ] = "/providers/Microsoft.Support/services/{0}".format(service_name)
+            if "problemStartTime" not in body["properties"]:
                 start_time = datetime.utcnow().strftime(("%Y-%m-%dT%H:%M:%SZ"))
                 body["properties"]["problemStartTime"] = start_time
             return body
 
+
 class CommunicationCreate(_CreateCommunication):
     def pre_operations(self):
         from azext_support._validators import _check_name_availability_subscription
+
         super().pre_operations()
         args = self.ctx.args
-        _check_name_availability_subscription(self.cli_ctx, str(args.communication_name), "Microsoft.Support/communications")
+        _check_name_availability_subscription(
+            self.cli_ctx,
+            str(args.communication_name),
+            "Microsoft.Support/communications",
+        )
+
 
 class CommunicationNoSubscriptionCreate(_CreateNoSubscriptionCommunication):
     def pre_operations(self):
         from azext_support._validators import _check_name_availability_no_subscription
+
         super().pre_operations()
         args = self.ctx.args
-        _check_name_availability_no_subscription(self.cli_ctx, str(args.communication_name), "Microsoft.Support/communications")
+        _check_name_availability_no_subscription(
+            self.cli_ctx,
+            str(args.communication_name),
+            "Microsoft.Support/communications",
+        )
+
+
+class FileWorkspaceCreateNoSubscription(_CreateNoSubscriptionFileWorkspace):
+    def pre_operations(self):
+        from azext_support._validators import _check_name_availability_no_subscription
+
+        super().pre_operations()
+        args = self.ctx.args
+        _check_name_availability_no_subscription(
+            self.cli_ctx,
+            str(args.file_workspace_name),
+            "Microsoft.Support/fileWorkspaces",
+        )
+
+
+class FileWorkspaceCreateSubscription(_CreateFileWorkspace):
+    def pre_operations(self):
+        from azext_support._validators import _check_name_availability_subscription
+
+        super().pre_operations()
+        args = self.ctx.args
+        _check_name_availability_subscription(
+            self.cli_ctx,
+            str(args.file_workspace_name),
+            "Microsoft.Support/fileWorkspaces",
+        )
+
+
+def upload_files_no_subscription(cmd, file_path, file_workspace_name):
+    
+    from .aaz.latest.support.no_subscription.file import (
+        Create as Create,
+        Upload as Upload,
+    )
+
+    upload_file(cmd, file_path, file_workspace_name, False, Create, Upload)
+
+
+def upload_files_in_subscription(
+    cmd, file_path, file_workspace_name, subscription_id=None
+):
+    from .aaz.latest.support.in_subscription.file import (
+		Create as Create_Sub,
+		Upload as Upload_Sub,
+	)
+    upload_file(
+        cmd,
+        file_path,
+        file_workspace_name,
+        True,
+        Create_Sub,
+        Upload_Sub,
+        subscription_id,
+    )
