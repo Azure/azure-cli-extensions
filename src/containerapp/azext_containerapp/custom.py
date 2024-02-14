@@ -184,7 +184,7 @@ def delete_weaviate_service(cmd, service_name, resource_group_name, no_wait=Fals
 
 
 def create_milvus_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
-                            disable_warnings=True):
+                          disable_warnings=True):
     return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
                                           disable_warnings, DEV_MILVUS_IMAGE, DEV_MILVUS_SERVICE_TYPE,
                                           DEV_MILVUS_CONTAINER_NAME)
@@ -1962,6 +1962,7 @@ def init_dapr_components(cmd, resource_group_name, environment_name, statestore=
         }
     }
 
+
 def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     managed_env_def = None
@@ -2039,7 +2040,7 @@ def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=
                 payload["identity"]["type"] = "SystemAssigned,UserAssigned"
             if managed_env_def["identity"]["type"] == "UserAssigned" and assign_system_identity:
                 payload["identity"]["type"] = "SystemAssigned,UserAssigned"
-            
+
         else:
             if assign_system_identity and assign_user_identities:
                 payload["identity"]["type"] = "SystemAssigned,UserAssigned"
@@ -2057,6 +2058,7 @@ def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=
         return r["identity"]
     except Exception as e:
         handle_raw_exception(e)
+
 
 def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
@@ -2081,8 +2083,6 @@ def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=
 
     if not managed_env_def:
         raise ResourceNotFoundError("The containerapp env '{}' does not exist".format(name))
-
-    
     # If identity not returned
     try:
         managed_env_def["identity"]
@@ -2138,13 +2138,14 @@ def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=payload, no_wait=no_wait)
     except Exception as e:
         handle_raw_exception(e)
-    
+
     try:
         return r["identity"]
     except:
         r["identity"] = {}
         r["identity"]["type"] = "None"
         return r["identity"]
+
 
 def show_env_managed_identity(cmd, name, resource_group_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
