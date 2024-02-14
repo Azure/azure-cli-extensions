@@ -27,9 +27,8 @@ class FirmwareanalysisScenario(ScenarioTest):
                  '--resource-group {resource_group} '
                  '--workspace-name {workspace_name} '
                  '--firmware-id {firmware_id}',
-                checks=[
-                    self.check('length(@)', 1),
-                    self.check("url.contains(@, '{firmware_id}')", True)]).get_output_in_json()
+                 checks=[self.check('length(@)', 1),
+                         self.check("url.contains(@, '{firmware_id}')", True)]).get_output_in_json()
 
     @record_only()
     @AllowLargeResponse()
