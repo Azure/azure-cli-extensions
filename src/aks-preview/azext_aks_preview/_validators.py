@@ -30,6 +30,9 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_UNASSIGNED,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 from knack.log import get_logger
@@ -297,6 +300,17 @@ def validate_user(namespace):
         raise CLIError(
             "--user can only be clusterUser or clusterMonitoringUser")
 
+
+def validate_pod_ip_allocation_mode(namespace):
+    """Validates the pod ip allocation mode string."""
+    if namespace.pod_ip_allocation_mode is not None:
+        if namespace.pod_ip_allocation_mode not in (
+            CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
+            CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
+            CONST_NETWORK_POD_IP_ALLOCATION_MODE_UNASSIGNED,
+        ):
+            raise InvalidArgumentValueError("--pod-ip-allocation-mode can only be DynamicIndividual or StaticBlock")
+        
 
 def validate_vnet_subnet_id(namespace):
     _validate_subnet_id(namespace.vnet_subnet_id, "--vnet-subnet-id")

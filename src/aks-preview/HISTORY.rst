@@ -26,7 +26,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 * Add `--ssh-access` to the `az aks nodepool update` command.
 * Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
 * Add `az aks nodepool delete-machines` command.
-* Add `--pod-ip-allocation-mode` to `az aks create` and `az aks update`.
+* Add `--pod-ip-allocation-mode` to `az aks create` and `az aks nodepool` commands.
 
 1.0.0b5
 +++++++
