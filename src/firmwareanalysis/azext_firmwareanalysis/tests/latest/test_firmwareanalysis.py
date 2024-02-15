@@ -56,7 +56,7 @@ class FirmwareanalysisScenario(ScenarioTest):
                          self.check('fileSize', 1),
                          self.check('status', 'Pending'),
                          self.check('version', 'version_name'),
-                         self.check("id.contains(@, 'e8b0bf57-9ef4-4bc6-8a09-6a8bf22f6931')", True),
+                         self.check("id.contains(@, 'cd4e9671-72cf-4f78-9c9e-8e8bb2c5eaa4')", True),
                          self.check('model', 'fwid_model')]).get_output_in_json()
 
         self.cmd('az firmwareanalysis firmware  show '
