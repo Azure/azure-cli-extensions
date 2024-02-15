@@ -419,7 +419,8 @@ GitHubActionConfiguration = {
     "publishType": None,  # str
     "os": None,  # str
     "runtimeStack": None,  # str
-    "runtimeVersion": None  # str
+    "runtimeVersion": None,  # str
+    "buildEnvironmentVariables": None  # [EnvironmentVar]
 }
 
 RegistryInfo = {
@@ -523,4 +524,9 @@ ConnectedEnvironment = {
 ExtendedLocation = {
     "name": None,
     "type": None
+}
+
+ManagedServiceIdentity = {
+    "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
+    "userAssignedIdentities": None  # {string: UserAssignedIdentity}
 }

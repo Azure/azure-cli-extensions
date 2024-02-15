@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.1
+++++++
+* Make some improvements to fix non-json output issue
+
 1.0.0
 ++++++
 * Support function app

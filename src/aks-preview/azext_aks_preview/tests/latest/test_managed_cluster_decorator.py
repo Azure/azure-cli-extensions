@@ -6,6 +6,7 @@
 import datetime
 import importlib
 import unittest
+from unittest import mock
 from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
@@ -18,6 +19,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
     CONST_CONFCOM_ADDON_NAME,
     CONST_CUSTOM_CA_TEST_CERT,
     CONST_DEFAULT_NODE_OS_TYPE,
@@ -258,7 +260,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            guardrails_profile=self.models.GuardrailsProfile(
+            guardrails_profile=self.models.SafeguardsProfile(
                 level="Warning", excluded_namespaces=None, version=""
             ),
         )
@@ -283,7 +285,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            guardrails_profile=self.models.GuardrailsProfile(
+            guardrails_profile=self.models.SafeguardsProfile(
                 version="v1.0.0", level=None, excluded_namespaces=None
             ),
         )
@@ -308,7 +310,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            guardrails_profile=self.models.GuardrailsProfile(
+            guardrails_profile=self.models.SafeguardsProfile(
                 excluded_namespaces=["ns1", "ns2"], level=None, version=None
             ),
         )
@@ -3689,6 +3691,189 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_1.get_upgrade_override_until(), "2022-11-01T13:00:00Z")
 
+    def test_handle_enable_disable_asm(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_service_mesh": True,
+                    "revision": "asm-1-18"
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        old_profile = self.models.ServiceMeshProfile(
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+            istio=self.models.IstioServiceMesh(),
+        )
+        new_profile, updated = ctx_0._handle_enable_disable_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-18"])
+        ))
+
+    def test_handle_ingress_gateways_asm(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_service_mesh": True,
+                    "enable_ingress_gateway": True,
+                    "ingress_gateway_type": "Internal",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        old_profile = self.models.ServiceMeshProfile(
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+            istio=self.models.IstioServiceMesh(),
+        )
+        new_profile, updated = ctx_0._handle_ingress_gateways_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                components=self.models.IstioComponents(
+                    ingress_gateways=[
+                        self.models.IstioIngressGateway(
+                            mode="Internal",
+                            enabled=True,
+                        )
+                    ]
+                )
+            ),
+        ))
+        # ASM was never enabled on the cluster
+        old_profile = self.models.ServiceMeshProfile(
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+        )
+        new_profile, updated = ctx_0._handle_ingress_gateways_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                components=self.models.IstioComponents(
+                    ingress_gateways=[
+                        self.models.IstioIngressGateway(
+                            mode="Internal",
+                            enabled=True,
+                        )
+                    ]
+                )
+            ),
+        ))
+
+    def test_handle_egress_gateways_asm(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_service_mesh": True,
+                    "enable_egress_gateway": True,
+                    "egress_gateway_nodeselector": "istio=egress"
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        old_profile = self.models.ServiceMeshProfile(
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+            istio=self.models.IstioServiceMesh(),
+        )
+        new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                components=self.models.IstioComponents(
+                    egress_gateways=[
+                        self.models.IstioEgressGateway(
+                            enabled=True, nodeSelector={"istio": "egress"}
+                        )
+                    ]
+                )
+            ),
+        ))
+        # ASM was never enabled on the cluster
+        old_profile = self.models.ServiceMeshProfile(
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+        )
+        new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                components=self.models.IstioComponents(
+                    egress_gateways=[
+                        self.models.IstioEgressGateway(
+                            enabled=True, nodeSelector={"istio": "egress"}
+                        )
+                    ]
+                )
+            ),
+        ))
+
+    def test_handle_pluginca_asm(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_service_mesh": True,
+                    "key_vault_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+                    "ca_cert_object_name": "my-ca-cert",
+                    "ca_key_object_name": "my-ca-key",
+                    "root_cert_object_name": "my-root-cert",
+                    "cert_chain_object_name": "my-cert-chain",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        old_profile = self.models.ServiceMeshProfile(
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+            istio=self.models.IstioServiceMesh(),
+        )
+        new_profile, updated = ctx_0._handle_pluginca_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                certificate_authority=self.models.IstioCertificateAuthority(
+                    plugin=self.models.IstioPluginCertificateAuthority(
+                        key_vault_id="/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+                        cert_object_name="my-ca-cert",
+                        key_object_name="my-ca-key",
+                        root_cert_object_name="my-root-cert",
+                        cert_chain_object_name="my-cert-chain",
+                    )
+                )
+            ),
+        ))
+
+    def test_handle_upgrade_asm(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "mesh_upgrade_command": CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+                    "revision": "asm-1-18",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        old_profile = self.models.ServiceMeshProfile(
+            mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-17"])
+        )
+        new_profile, updated = ctx_0._handle_upgrade_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(revisions=["asm-1-17", "asm-1-18"]),
+        ))
+
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -3700,7 +3885,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.client = MockClient()
 
     def test_set_up_guardrails_profile(self):
-        # Base case - no options specified, GuardrailsProfile should be None
+        # Base case - no options specified, SafeguardsProfile should be None
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
         )
@@ -3711,7 +3896,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         gt_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, gt_mc_1)
 
-        # Make sure GuardrailsProfile is filled out appropriately
+        # Make sure SafeguardsProfile is filled out appropriately
         dec_2 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
@@ -3727,7 +3912,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.set_up_guardrails_profile(mc_2)
         gt_mc_2 = self.models.ManagedCluster(location="test_location")
-        gt_mc_2.guardrails_profile = self.models.GuardrailsProfile(
+        gt_mc_2.safeguards_profile = self.models.SafeguardsProfile(
             level="Warning", version="v1.0.0", excluded_namespaces=["ns1", "ns2"]
         )
         self.assertEqual(dec_mc_2, gt_mc_2)
@@ -7421,6 +7606,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
+    def _mock_get_keyvault_client(cli_ctx, subscription_id=None):
+        free_mock_client = mock.MagicMock()
+        return free_mock_client
+
+    @mock.patch('azext_aks_preview._client_factory.get_keyvault_client', _mock_get_keyvault_client)
     def test_update_app_routing_profile(self):
         # enable app routing
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -7640,6 +7830,97 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
+
+    def test_enable_disable_ai_toolchain_operator(self):
+        # Should not update mc if unset
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_ai_toolchain_operator(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Should error if both set
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_ai_toolchain_operator": True, "enable_ai_toolchain_operator": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_6.update_ai_toolchain_operator(mc_6)
+
+            # update app routing with key vault
+        from azure.cli.core.mock import DummyCli
+        from azure.cli.core.commands import AzCliCommand
+        from azure.cli.core import AzCommandsLoader
+
+        command_kwargs = {"operation_group": "vaults"}
+        cli_ctx = DummyCli()
+        self.cmd = AzCliCommand(AzCommandsLoader(cli_ctx), "mock-cmd", None, kwargs=command_kwargs)
+        dec_8 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_kv": True, "keyvault_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                )
+            ),
+            addon_profiles={
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=False,
+                )
+            }
+        )
+        mc_8.ingress_profile.web_app_routing.identity = self.models.UserAssignedIdentity(
+            resource_id="test_resource_id",
+            client_id="test_client_id",
+            object_id="test_object_id",
+        )
+        dec_8.context.attach_mc(mc_8)
+        dec_mc_8 = dec_8.update_app_routing_profile(mc_8)
+        ground_truth_mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_SECRET_ROTATION_ENABLED: "false",
+                        CONST_ROTATION_POLL_INTERVAL: "2m",
+                    },
+                )
+            },
+        )
+        ground_truth_mc_8.ingress_profile.web_app_routing.identity = self.models.UserAssignedIdentity(
+            resource_id="test_resource_id",
+            client_id="test_client_id",
+            object_id="test_object_id",
+        )
+
+        self.assertEqual(dec_mc_8, ground_truth_mc_8)
 
     def test_update_mc_profile_preview(self):
         import inspect

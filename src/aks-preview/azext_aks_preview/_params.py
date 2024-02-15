@@ -780,6 +780,7 @@ def load_arguments(self, _):
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
+        c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
@@ -1146,6 +1147,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument("disable_cost_analysis", is_preview=True, action="store_true")
+        c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
+        c.argument('disable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
@@ -1414,6 +1417,14 @@ def load_arguments(self, _):
             action=get_three_state_flag(),
             is_preview=True,
             help="delete an AKS nodepool by ignoring PodDisruptionBudget setting",
+        )
+
+    with self.argument_context("aks nodepool delete-machines") as c:
+        c.argument(
+            "machine_names",
+            nargs="+",
+            required=True,
+            help="Space-separated machine names to delete.",
         )
 
     with self.argument_context("aks machine") as c:

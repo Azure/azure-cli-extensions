@@ -66,16 +66,21 @@ def create_and_verify_containerapp_up(
             env_name = None,
             source_path = None,
             artifact_path = None,
+            build_env_vars = None,
             image = None,
             location = None,
             ingress = None,
             target_port = None,
             app_name = None,
-            requires_acr_prerequisite = False):
+            requires_acr_prerequisite = False,
+            no_log_destination = False):
         # Ensure that the Container App environment is created
         if env_name is None:
            env_name = test_cls.create_random_name(prefix='env', length=24)
-           test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
+           env_create_cmd = f'containerapp env create -g {resource_group} -n {env_name}'
+           if no_log_destination:
+               env_create_cmd += f" --logs-destination none"
+           test_cls.cmd(env_create_cmd)
 
         if app_name is None:
             # Generate a name for the Container App
@@ -87,6 +92,8 @@ def create_and_verify_containerapp_up(
             up_cmd += f" --source \"{source_path}\""
         if artifact_path:
             up_cmd += f" --artifact \"{artifact_path}\""
+        if build_env_vars:
+            up_cmd += f" --build-env-vars {build_env_vars}"
         if image:
             up_cmd += f" --image {image}"
         if ingress:
@@ -285,6 +292,7 @@ def create_and_verify_containerapp_create_and_update(
             env_name = None,
             source_path = None,
             artifact_path = None,
+            build_env_vars = None,
             image = None,
             ingress = None,
             target_port = None,
@@ -330,6 +338,8 @@ def create_and_verify_containerapp_create_and_update(
             create_cmd += f" --source \"{source_path}\""
         if artifact_path:
             create_cmd += f" --artifact \"{artifact_path}\""
+        if build_env_vars:
+            create_cmd += f" --build-env-vars {build_env_vars}"
         if image:
             create_cmd += f" --image {image}"
             image_name = registry_server + "/" + _reformat_image(image)

@@ -308,6 +308,32 @@ class ManagedEnvironmentPreviewClient(ManagedEnvironmentClient):
     api_version = PREVIEW_API_VERSION
 
     @classmethod
+    def update(cls, cmd, resource_group_name, name, managed_environment_envelope, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(managed_environment_envelope))
+
+        if no_wait:
+            return
+        elif r.status_code == 202:
+            operation_url = r.headers.get(HEADER_LOCATION)
+            response = poll_results(cmd, operation_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find a container app")
+            else:
+                return response
+
+        return r.json()
+
+    @classmethod
     def list_usages(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -783,7 +809,7 @@ class BuildClient():
     api_version = PREVIEW_API_VERSION
 
     @classmethod
-    def create(cls, cmd, builder_name, build_name, resource_group_name, location, no_wait=False):
+    def create(cls, cmd, builder_name, build_name, resource_group_name, location, build_env_vars, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/builders/{}/builds/{}?api-version={}"
@@ -796,7 +822,11 @@ class BuildClient():
             cls.api_version)
         body_data = {
             "location": location,
-            "properties": {}
+            "properties": {
+                "configuration": {
+                    "environmentVariables": build_env_vars
+                }
+            }
         }
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(body_data))

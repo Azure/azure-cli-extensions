@@ -470,7 +470,7 @@ def _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, locat
     """
     Submit a Q# project to run on Azure Quantum.
     """
-    _show_warning('The direct submission of Q# programs will soon be deprecated. Instead, you can submit QIR bitcode or LLVM. Modern QDK can be used to generate LLVM from Q#.')
+    _show_warning('The direct submission of Q# project folders will soon be fully deprecated. Instead, you can submit QIR bitcode or human-readable LLVM code. Modern QDK can be used to generate human-readable LLVM code from Q#.')
     # We first build and then call run.
     # Can't call run directly because it fails to understand the
     # `ExecutionTarget` property when passed in the command line
