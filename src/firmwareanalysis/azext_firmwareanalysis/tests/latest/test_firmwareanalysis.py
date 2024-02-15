@@ -18,7 +18,7 @@ class FirmwareanalysisScenario(ScenarioTest):
     def test_generate_upload_url(self):
         self.get_subscription_id()
         self.kwargs.update({
-            'firmware_id': 'f85ae8b6-79d9-4a84-9c53-56cd29d3a2f7',
+            'firmware_id': 'cd4e9671-72cf-4f78-9c9e-8e8bb2c5eaa4',
             'resource_group': 'FirmwareAnalysisRG',
             'workspace_name': 'default'
         })
@@ -36,7 +36,7 @@ class FirmwareanalysisScenario(ScenarioTest):
         self.get_subscription_id()
         self.kwargs.update({
             'resource_group': 'FirmwareAnalysisRG',
-            'firmware_id': 'e8b0bf57-9ef4-4bc6-8a09-6a8bf22f6931',
+            'firmware_id': 'cd4e9671-72cf-4f78-9c9e-8e8bb2c5eaa4',
             'workspace_name': 'default'
         })
 
@@ -82,7 +82,7 @@ class FirmwareanalysisScenario(ScenarioTest):
         self.get_subscription_id()
         self.kwargs.update({
             'resource_group': 'FirmwareAnalysisRG',
-            'firmware_id': '7795b9a8-97bb-ba4b-b21a-8dc6ae2dabb9',
+            'firmware_id': '80ac3a57-b985-888b-ae28-b6eb8c8393a4',
             'workspace_name': 'default'
         })
 
