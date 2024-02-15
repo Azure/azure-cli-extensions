@@ -55,6 +55,7 @@ from azext_aks_preview._consts import (
     CONST_NODE_PROVISIONING_STATE_SUCCEEDED,
     CONST_DEFAULT_NODE_OS_TYPE,
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
+    CONST_VIRTUAL_MACHINES,
     CONST_AVAILABILITY_SET,
     CONST_MIN_NODE_IMAGE_VERSION,
 )
@@ -3300,6 +3301,8 @@ def _aks_get_node_name_vmss(
         cluster_name,
         node_name,
         managed_resource_group):
+    compute_client = get_compute_client(cmd.cli_ctx)
+
     if not node_name:
         print("No node name specified, will randomly select a node from the cluster")
         agentpool_client = cf_agent_pools(cmd.cli_ctx)
@@ -3322,7 +3325,6 @@ def _aks_get_node_name_vmss(
         if not nodepool_name:
             raise ValidationError("No suitable node pool found in the cluster.")
 
-        compute_client = get_compute_client(cmd.cli_ctx)
         vmss_list = compute_client.virtual_machine_scale_sets.list(managed_resource_group)
         if not vmss_list:
             raise ValidationError(f"No VMSS found in the managed resource group {managed_resource_group}!")
@@ -3347,6 +3349,11 @@ def _aks_get_node_name_vmss(
         if index != -1:
             vmss_name = node_name[:index + 4]
             instance_id = int(node_name[index + 4:], base=36)
+            instance_info = compute_client.virtual_machine_scale_set_vms.get(
+                managed_resource_group, vmss_name, instance_id)
+            if not instance_info:
+                raise ValidationError(f"Instance id {instance_id} not found in VMSS {vmss_name}!")
+            _aks_verify_resource(instance_info, CONST_VIRTUAL_MACHINES)
         else:
             raise ValidationError(f"Node name {node_name} is invalid!")
 
@@ -3357,10 +3364,11 @@ def _aks_get_node_name_as(
         cmd,
         node_name,
         managed_resource_group):
+    compute_client = get_compute_client(cmd.cli_ctx)
+
     if not node_name:
         print("No node name specified, will randomly select a node from the cluster")
 
-        compute_client = get_compute_client(cmd.cli_ctx)
         vm_list = compute_client.virtual_machines.list(managed_resource_group)
         if not vm_list:
             raise ValidationError(f"No VM found in the managed resource group {managed_resource_group}!")
@@ -3368,7 +3376,7 @@ def _aks_get_node_name_as(
         vm_name = ""
         for vm in vm_list:
             try:
-                _aks_verify_resource(vm, CONST_AVAILABILITY_SET)
+                _aks_verify_resource(vm, CONST_VIRTUAL_MACHINES)
                 vm_name = vm.name
                 logger.debug("Select VM: %s", vm_name)
                 break
@@ -3380,6 +3388,10 @@ def _aks_get_node_name_as(
             raise ValidationError("No suitable VM found in the managed resource!")
     else:
         vm_name = node_name
+        vm_info = compute_client.virtual_machines.get(managed_resource_group, vm_name)
+        if not vm_info:
+            raise ValidationError(f"VM {vm_name} not found in the managed resource group {managed_resource_group}!")
+        _aks_verify_resource(vm_info, CONST_VIRTUAL_MACHINES)
 
     return vm_name
 
