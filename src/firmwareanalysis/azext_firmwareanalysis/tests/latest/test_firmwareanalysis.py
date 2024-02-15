@@ -16,7 +16,6 @@ from azure.cli.testsdk import ScenarioTest
 class FirmwareanalysisScenario(ScenarioTest):
     @record_only()
     def test_generate_upload_url(self):
-        self.get_subscription_id()
         self.kwargs.update({
             'firmware_id': 'cd4e9671-72cf-4f78-9c9e-8e8bb2c5eaa4',
             'resource_group': 'FirmwareAnalysisRG',
@@ -33,7 +32,6 @@ class FirmwareanalysisScenario(ScenarioTest):
     @record_only()
     @AllowLargeResponse()
     def test_firmware_commands(self):
-        self.get_subscription_id()
         self.kwargs.update({
             'resource_group': 'FirmwareAnalysisRG',
             'firmware_id': 'cd4e9671-72cf-4f78-9c9e-8e8bb2c5eaa4',
@@ -79,7 +77,6 @@ class FirmwareanalysisScenario(ScenarioTest):
     @record_only()
     @AllowLargeResponse()
     def test_analyser_commands(self):
-        self.get_subscription_id()
         self.kwargs.update({
             'resource_group': 'FirmwareAnalysisRG',
             'firmware_id': '80ac3a57-b985-888b-ae28-b6eb8c8393a4',
