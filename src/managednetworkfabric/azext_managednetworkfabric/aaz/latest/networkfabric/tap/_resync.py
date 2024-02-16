@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Resync(AAZCommand):
     """Implements the operation to the underlying resources.
+
+    :example: Resync Operation
+        az networkfabric tap resync --resource-group "example-rg" --network-tap-name "example-networktap"
     """
 
     _aaz_info = {

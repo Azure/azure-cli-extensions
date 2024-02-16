@@ -45,7 +45,7 @@ def step_update_s1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {updatedOptionAProperties} --network-to-network-interconnect-id {nni_Id} ', checks=checks)
+        'az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {updatedOptionAProperties} --nni-id {nni_Id} ', checks=checks)
 
 
 def step_list_resource_group(test, checks=None):
