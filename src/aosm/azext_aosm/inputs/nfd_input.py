@@ -73,8 +73,8 @@ class NFDInput(BaseInput):
         }
 
         if self.network_function_definition.properties and (
-            self.network_function_definition.properties.network_function_type
-            == "VirtualNetworkFunction"
+          self.network_function_definition.properties.network_function_template.nfvi_type
+          not in ("AzureArcKubernetes","AzureOperatorNexus")
         ):
             base_defaults["configObject"]["customLocationId"] = ""
 

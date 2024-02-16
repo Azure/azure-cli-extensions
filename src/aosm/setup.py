@@ -17,7 +17,7 @@ except ImportError:
 
 # Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = "1.0.0b5"
+VERSION = "1.0.0b7"
 
 
 # The full list of classifiers is available at
