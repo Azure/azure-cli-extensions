@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
+from re import match
 from typing import Dict, Any
 from urllib.parse import urlparse
 
@@ -1012,8 +1013,18 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         self.set_up_service_bindings()
         self.set_up_unbind_service_bindings()
         self.set_up_source()
+        self.set_up_containers_for_private_registry_image()
         if self.get_argument_max_inactive_revisions() is not None:
             safe_set(self.new_containerapp, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
+
+    def set_up_containers_for_private_registry_image(self):
+        containers = safe_get(self.new_containerapp, "properties", "template", "containers", default=[])
+        # Check for private registry image and if found remove the containers from the container app and ensure there is only one container with the build image.
+        for container in containers:
+            if match(r'^default/', container["image"]):
+                self.new_containerapp["properties"]["template"]["containers"] = [container]
+                break
+            self.new_containerapp["properties"]["template"]["containers"].append(container)
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
@@ -1084,7 +1095,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=False, registry_server=registry_server)
 
         # Validate an image associated with the container app exists
-        containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
+        containers = safe_get(self.new_containerapp, "properties", "template", "containers", default=[])
         if containers is None or len(containers) == 0:
             raise ValidationError(
                 "The container app '{}' does not have any containers. Please use --image to set the image for the container app".format(
