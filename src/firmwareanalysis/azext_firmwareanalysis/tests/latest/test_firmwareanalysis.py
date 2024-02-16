@@ -43,7 +43,7 @@ class FirmwareanalysisScenario(ScenarioTest):
             'fwid_model': 'fwid_model',
             'status': 'Pending',
             'file_size': 1,
-            'resource_type' : 'microsoft.iotfirmwaredefense/workspaces/firmwares'
+            'resource_type': 'microsoft.iotfirmwaredefense/workspaces/firmwares'
         })
 
         self.cmd('az firmwareanalysis firmware create '
