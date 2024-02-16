@@ -65,7 +65,7 @@ def load_arguments(self, _):
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
 
     with self.argument_context('containerapp env storage') as c:
-        c.argument('storage_type', arg_type = get_enum_type(['AzureFile', 'NfsAzureFile']), help="Type of the storage. Assumed to be AzureFile if not specified.", is_preview=True)
+        c.argument('storage_type', arg_type=get_enum_type(['AzureFile', 'NfsAzureFile']), help="Type of the storage. Assumed to be AzureFile if not specified.", is_preview=True)
         c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]),
                    help="Access mode for the AzureFile or nfs AzureFile storage.")
         c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "--file-share", "-f"],
