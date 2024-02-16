@@ -1284,7 +1284,7 @@ def _create_database_account(client,
         if source_backup_location is not None:
             restore_parameters.source_backup_location = source_backup_location
 
-        if time_to_live_policy is not None:
+        if disable_ttl is not None:
             restore_parameters.restore_with_ttl_disabled = disable_ttl
 
     params = DatabaseAccountCreateUpdateParameters(
