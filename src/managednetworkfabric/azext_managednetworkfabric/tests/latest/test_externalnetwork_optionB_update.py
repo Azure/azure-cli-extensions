@@ -26,9 +26,9 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
     setup_scenario1(test)
-    #step_update_s1(test, checks=[])
-    #step_show(test, checks=[])
-    #step_list_resource_group(test, checks=[])
+    # step_update_s1(test, checks=[])
+    # step_show(test, checks=[])
+    # step_list_resource_group(test, checks=[])
     cleanup_scenario1(test)
 
 
@@ -46,6 +46,7 @@ def step_update_s1(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s1_peering_option} --option-b-properties {updatedOptionBProperties} --network-to-network-interconnect-id {nni_Id}', checks=checks)
+
 
 def step_list_resource_group(test, checks=None):
     '''externalnetwork list by resource group operation'''

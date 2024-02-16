@@ -63,7 +63,7 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric externalnetwork delete --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
-    
+
 
 class GA_ExternalNetworkOptionAScenarioTest1(ScenarioTest):
     ''' External Network Scenario test'''

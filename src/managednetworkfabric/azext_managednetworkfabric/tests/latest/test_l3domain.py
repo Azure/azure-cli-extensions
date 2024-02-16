@@ -72,6 +72,7 @@ def step_list_subscription(test, checks=None):
         checks = []
     test.cmd('az networkfabric l3domain list')
 
+
 class GA_L3DomainScenarioTest1(ScenarioTest):
     ''' L3 Domain Scenario test'''
 

@@ -38,7 +38,6 @@ def step_resync(test, checks=None):
         'az networkfabric tap resync --resource-group {rg} --network-tap-name {name}', checks=checks)
 
 
-
 class GA_TapResyncScenarioTest1(ScenarioTest):
     ''' Network Tap Scenario test'''
 
@@ -47,7 +46,7 @@ class GA_TapResyncScenarioTest1(ScenarioTest):
         self.kwargs.update({
             'name': CONFIG.get('NETWORK_TAP', 'resync_name'),
             'rg': CONFIG.get('NETWORK_TAP', 'resync_resource_group'),
-            
+
         })
 
     def test_GA_tap_resync_scenario1(self):

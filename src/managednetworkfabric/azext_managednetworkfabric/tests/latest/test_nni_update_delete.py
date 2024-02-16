@@ -30,6 +30,7 @@ def call_scenario1(test):
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
+
 def step_update(test, checks=None):
     '''nni delete operation'''
     if checks is None:

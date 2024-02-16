@@ -29,6 +29,7 @@ def call_scenario1(test):
     step_resync(test, checks=[])
     cleanup_scenario1(test)
 
+
 def step_resync(test, checks=None):
     ''' Network Tap Rule resync operation'''
     if checks is None:

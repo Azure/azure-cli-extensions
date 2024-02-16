@@ -29,6 +29,7 @@ def call_scenario1(test):
     step_create(test, checks=[])
     cleanup_scenario1(test)
 
+
 def step_create(test, checks=None):
     '''nfc create operation'''
     if checks is None:

@@ -30,6 +30,7 @@ def call_scenario1(test):
     step_update_admin_state_Disable(test, checks=[])
     cleanup_scenario1(test)
 
+
 def step_update_admin_state_Enable(test, checks=None):
     '''l3domain Update admin state operation'''
     if checks is None:
@@ -44,6 +45,7 @@ def step_update_admin_state_Disable(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric l3domain update-admin-state --resource-group {rg} --resource-name {post_name} --state {state_Disable}')
+
 
 class GA_L3DomainEnableDisableScenarioTest1(ScenarioTest):
     ''' L3 Domain Scenario test'''

@@ -26,10 +26,10 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
     setup_scenario1(test)
-    #step_create_s1(test, checks=[])
-    #step_show(test, checks=[])
-    #step_list_resource_group(test, checks=[])
-    #step_delete(test, checks=[])
+    # step_create_s1(test, checks=[])
+    # step_show(test, checks=[])
+    # step_list_resource_group(test, checks=[])
+    # step_delete(test, checks=[])
     cleanup_scenario1(test)
 
 
@@ -39,6 +39,7 @@ def step_create_s1(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric externalnetwork create --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s1_peering_option} --option-b-properties {optionBProperties} --import-route-policy {importRoutePolicy} --export-route-policy {exportRoutePolicy}', checks=checks)
+
 
 def step_show(test, checks=None):
     '''externalnetwork show operation'''
