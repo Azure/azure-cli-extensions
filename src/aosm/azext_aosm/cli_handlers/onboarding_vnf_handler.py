@@ -42,7 +42,12 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
         return VNF_OUTPUT_FOLDER_FILENAME
 
     def build_artifact_list(self) -> ArtifactDefinitionElementBuilder:
-        """Build the artifact list."""
+        """Build the artifact list.
+
+        Gets list of artifacts to be including in the artifacts.json.
+        This is used during the publish command, to upload the artifacts correctly.
+
+        """
         logger.info("Creating artifacts list for artifacts.json")
         artifact_list = []
         # For each arm template, get list of artifacts and combine
@@ -62,7 +67,16 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
         )
 
     def build_resource_bicep(self) -> BicepDefinitionElementBuilder:
-        """Build the resource bicep file."""
+        """Build the resource bicep file.
+
+        Creates nfDefinition.bicep and its supporting files.
+
+        For each processor:
+        - Generates NF application for each processor
+        - Generates deploymentParameters (flattened to be one schema overall)
+        - Generates supporting parameters files (to avoid stringified JSON in template)
+        
+        """
         logger.info("Creating artifacts list for artifacts.json")
         arm_nf_application_list = []
         image_nf_application_list = []
