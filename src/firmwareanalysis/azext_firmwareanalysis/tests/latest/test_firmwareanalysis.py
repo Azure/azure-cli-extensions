@@ -35,44 +35,52 @@ class FirmwareanalysisScenario(ScenarioTest):
         self.kwargs.update({
             'resource_group': 'FirmwareAnalysisRG',
             'firmware_id': 'cd4e9671-72cf-4f78-9c9e-8e8bb2c5eaa4',
-            'workspace_name': 'default'
+            'workspace_name': 'default',
+            'file_name': 'file_name',
+            'vendor_name': 'vendor_name',
+            'version_name': 'version_name',
+            'fw_description': 'fw_description',
+            'fwid_model': 'fwid_model',
+            'status': 'Pending',
+            'file_size': 1,
+            'resource_type' : 'microsoft.iotfirmwaredefense/workspaces/firmwares'
         })
 
         self.cmd('az firmwareanalysis firmware create '
                  '--firmware-id {firmware_id} '
                  '--resource-group {resource_group} '
                  '--workspace-name {workspace_name} '
-                 '--file-name file_name '
-                 '--file-size 1 '
-                 '--vendor vendor_name '
-                 '--status Pending '
-                 '--version version_name '
-                 '--description fw_description '
-                 '--model fwid_model ',
+                 '--file-name {file_name} '
+                 '--file-size {file_size} '
+                 '--vendor {vendor_name} '
+                 '--status  {status} '
+                 '--version {version_name} '
+                 '--description {fw_description} '
+                 '--model {fwid_model} ',
                  checks=[self.greater_than('length(@)', 1),
-                         self.check('description', 'fw_description'),
-                         self.check('vendor', 'vendor_name'),
-                         self.check('fileName', 'file_name'),
-                         self.check('fileSize', 1),
-                         self.check('status', 'Pending'),
-                         self.check('version', 'version_name'),
-                         self.check("id.contains(@, 'cd4e9671-72cf-4f78-9c9e-8e8bb2c5eaa4')", True),
-                         self.check('model', 'fwid_model')]).get_output_in_json()
+                         self.check('description', '{fw_description}'),
+                         self.check('vendor', '{vendor_name}'),
+                         self.check('fileName', '{file_name}'),
+                         self.check('fileSize', '{file_size}'),
+                         self.check('status', '{status}'),
+                         self.check('version', '{version_name}'),
+                         self.check("id.contains(@, '{firmware_id}')", True),
+                         self.check('model', '{fwid_model}')]).get_output_in_json()
 
         self.cmd('az firmwareanalysis firmware  show '
                  '--resource-group {resource_group} '
                  '--firmware-id {firmware_id} '
                  '--workspace-name {workspace_name} ',
                  checks=[self.greater_than('length(@)', 1),
-                         self.check('type', 'microsoft.iotfirmwaredefense/workspaces/firmwares'),
-                         self.check('resourceGroup', 'FirmwareAnalysisRG')]).get_output_in_json()
+                         self.check('type', '{resource_type}'),
+                         self.check('resourceGroup', '{resource_group}')]).get_output_in_json()
 
         self.cmd('az firmwareanalysis firmware  list '
                  '--resource-group {resource_group} '
                  '--workspace-name {workspace_name} ',
                  checks=[self.greater_than('length(@)', 1),
-                         self.check('[0].type', 'microsoft.iotfirmwaredefense/workspaces/firmwares'),
-                         self.check('[0].resourceGroup', 'FirmwareAnalysisRG')]).get_output_in_json()
+                         self.check('[0].type', '{resource_type}'),
+                         self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
     @record_only()
     @AllowLargeResponse()
@@ -89,7 +97,7 @@ class FirmwareanalysisScenario(ScenarioTest):
                  '--firmware-id {firmware_id}',
                  checks=[self.greater_than('length(@)', 1),
                          self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/binaryHardeningResults'),
-                         self.check('[0].resourceGroup', 'FirmwareAnalysisRG')]).get_output_in_json()
+                         self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
         self.cmd('az firmwareanalysis firmware  sbom-component '
                  '--resource-group {resource_group} '
@@ -97,7 +105,7 @@ class FirmwareanalysisScenario(ScenarioTest):
                  '--firmware-id {firmware_id}',
                  checks=[self.greater_than('length(@)', 1),
                          self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/sbomComponents'),
-                         self.check('[0].resourceGroup', 'FirmwareAnalysisRG')]).get_output_in_json()
+                         self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
         self.cmd('az firmwareanalysis firmware  cve '
                  '--resource-group {resource_group} '
@@ -105,7 +113,7 @@ class FirmwareanalysisScenario(ScenarioTest):
                  '--firmware-id {firmware_id}',
                  checks=[self.greater_than('length(@)', 1),
                          self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/cves'),
-                         self.check('[0].resourceGroup', 'FirmwareAnalysisRG')]).get_output_in_json()
+                         self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
         self.cmd('az firmwareanalysis firmware  crypto-certificate '
                  '--resource-group {resource_group} '
@@ -113,7 +121,7 @@ class FirmwareanalysisScenario(ScenarioTest):
                  '--firmware-id {firmware_id}',
                  checks=[self.greater_than('length(@)', 1),
                          self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/cryptoCertificates'),
-                         self.check('[0].resourceGroup', 'FirmwareAnalysisRG')]).get_output_in_json()
+                         self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
         self.cmd('az firmwareanalysis firmware  crypto-key '
                  '--resource-group {resource_group} '
@@ -121,7 +129,7 @@ class FirmwareanalysisScenario(ScenarioTest):
                  '--firmware-id {firmware_id}',
                  checks=[self.greater_than('length(@)', 1),
                          self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/cryptoKeys'),
-                         self.check('[0].resourceGroup', 'FirmwareAnalysisRG')]).get_output_in_json()
+                         self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
         self.cmd('az firmwareanalysis firmware  password-hash '
                  '--resource-group {resource_group} '
@@ -129,4 +137,4 @@ class FirmwareanalysisScenario(ScenarioTest):
                  '--firmware-id {firmware_id}',
                  checks=[self.greater_than('length(@)', 1),
                          self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/passwordHashes'),
-                         self.check('[0].resourceGroup', 'FirmwareAnalysisRG')]).get_output_in_json()
+                         self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
