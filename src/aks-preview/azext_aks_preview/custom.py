@@ -3423,6 +3423,9 @@ def aks_check_network_outbound(
     managed_resource_group = f"MC_{resource_group}_{cluster_name}_{location}"
     logger.debug("Location: %s, Managed Resource Group: %s", location, managed_resource_group)
 
+    vmss_name = ""
+    instance_id = ""
+    vm_name = ""
     if vm_set_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
         vmss_name, instance_id = _aks_get_node_name_vmss(
             cmd, resource_group, cluster_name, node_name, managed_resource_group)
