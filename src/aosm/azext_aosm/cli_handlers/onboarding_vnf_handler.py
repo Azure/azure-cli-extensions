@@ -21,6 +21,8 @@ from azext_aosm.common.constants import (
     VNF_INPUT_FILENAME,
     VNF_OUTPUT_FOLDER_FILENAME,
     VNF_TEMPLATE_FOLDER_NAME,
+    MANIFEST_FOLDER_NAME,
+    VNF_MANIFEST_TEMPLATE_FILENAME
 )
 
 logger = get_logger(__name__)
@@ -108,10 +110,47 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
         )
         return bicep_file
 
+    def build_manifest_bicep(self) -> BicepDefinitionElementBuilder:
+        """Build the manifest bicep file."""
+        acr_artifact_list = []
+        sa_artifact_list = []
+
+        logger.info("Creating artifact manifest bicep")
+
+        for processor in self.processors:
+            (arm_artifact, sa_artifact) = self._generate_type_specific_artifact_manifest(processor)
+            acr_artifact_list.extend(arm_artifact)
+            sa_artifact_list.extend(sa_artifact)
+
+        # Build manifest bicep contents, with j2 template
+        template_path = get_template_path(
+            VNF_TEMPLATE_FOLDER_NAME, VNF_MANIFEST_TEMPLATE_FILENAME
+        )
+        params = {
+            "acr_artifacts": acr_artifact_list,
+            "sa_artifacts": sa_artifact_list
+        }
+        bicep_contents = render_bicep_contents_from_j2(
+            template_path, params
+        )
+
+        # Create Bicep element with manifest contents
+        bicep_file = BicepDefinitionElementBuilder(
+            Path(VNF_OUTPUT_FOLDER_FILENAME, MANIFEST_FOLDER_NAME),
+            bicep_contents,
+        )
+
+        logger.info("Created artifact manifest bicep element")
+        return bicep_file
+
     @abstractmethod
     def _get_nfd_template_params(self, arm_nf_application_list, image_nf_application_list):
         return NotImplementedError
 
     @abstractmethod
     def _generate_type_specific_nf_application(self, processor):
+        return NotImplementedError
+
+    @abstractmethod
+    def _generate_type_specific_artifact_manifest(self, processor):
         return NotImplementedError

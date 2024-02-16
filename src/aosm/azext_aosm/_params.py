@@ -37,7 +37,7 @@ def load_arguments(self: AzCommandsLoader, _):
         c.argument(
             "definition_type",
             arg_type=definition_type,
-            help="Type of AOSM definition.",
+            help="Type of AOSM definition to be published.",
             required=True,
         )
         c.argument(

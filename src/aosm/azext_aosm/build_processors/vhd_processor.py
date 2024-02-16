@@ -136,7 +136,8 @@ class VHDProcessor(BaseInputProcessor):
 
         :raises NotImplementedError: NSDs do not support deployment of VHDs.
         """
-        raise NotImplementedError("NSDs do not support deployment of VHDs.")
+        raise NotImplementedError("NSDs do not support deployment of VHDs directly, "
+                                  "they must be provided in the NF.")
 
     def _generate_artifact_profile(self) -> AzureCoreVhdImageArtifactProfile:
         """

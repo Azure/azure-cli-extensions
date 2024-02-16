@@ -119,7 +119,7 @@ class BaseArmBuildProcessor(BaseInputProcessor):
     def generate_resource_element_template(self) -> ResourceElementTemplate:
         """Generate the resource element template.
 
-        Note: There is no Nexus specific RET, arm RET can deploy anything (except NFs)
+        Note: There is no Nexus specific RET
         """
         parameter_values = self.generate_values_mappings(
             self.input_artifact.get_schema(), self.input_artifact.get_defaults(), True
@@ -161,10 +161,9 @@ class BaseArmBuildProcessor(BaseInputProcessor):
             json.dumps(json.loads(params), indent=4),
         )
 
-    def _generate_mapping_rule_profile(
-        self,
-    ):
-        raise NotImplementedError("This method must be implemented in a subclass.")
+    @abstractmethod
+    def _generate_mapping_rule_profile(self):
+        pass
 
 
 class AzureCoreArmBuildProcessor(BaseArmBuildProcessor):

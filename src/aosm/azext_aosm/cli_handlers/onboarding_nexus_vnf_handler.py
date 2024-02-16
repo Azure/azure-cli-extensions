@@ -106,40 +106,6 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
         )
         return bicep_file
 
-    def build_manifest_bicep(self) -> BicepDefinitionElementBuilder:
-        """Build the manifest bicep file."""
-        acr_artifact_list = []
-
-        logger.info("Creating artifact manifest bicep")
-
-        for processor in self.processors:
-            acr_artifact_list.extend(processor.get_artifact_manifest_list())
-            logger.debug(
-                "Created list of artifacts from arm template(s) and image files(s) provided: %s",
-                acr_artifact_list,
-            )
-
-        # Build manifest bicep contents, with j2 template
-        template_path = get_template_path(
-            VNF_TEMPLATE_FOLDER_NAME, VNF_MANIFEST_TEMPLATE_FILENAME
-        )
-        params = {
-            "acr_artifacts": acr_artifact_list,
-            "sa_artifacts": []
-        }
-        bicep_contents = render_bicep_contents_from_j2(
-            template_path, params
-        )
-
-        # Create Bicep element with manifest contents
-        bicep_file = BicepDefinitionElementBuilder(
-            Path(VNF_OUTPUT_FOLDER_FILENAME, MANIFEST_FOLDER_NAME),
-            bicep_contents,
-        )
-
-        logger.info("Created artifact manifest bicep element")
-        return bicep_file
-
     def build_all_parameters_json(self) -> JSONDefinitionElementBuilder:
         """Build the all parameters json file."""
         params_content = {
@@ -176,6 +142,13 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             raise TypeError(f"Type: {type(processor)} is not valid")
         logger.debug("Created nf application %s", nf_application.name)
         return (arm_nf, image_nf)
+
+    def _generate_type_specific_artifact_manifest(self, processor):
+        """Generate the type specific artifact manifest list"""
+        arm_manifest = processor.get_artifact_manifest_list()
+        sa_manifest = []
+
+        return (arm_manifest, sa_manifest)
 
     def _get_nfd_template_params(
             self, arm_nf_application_list, image_nf_application_list) -> Dict[str, Any]:

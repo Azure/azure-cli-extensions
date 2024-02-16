@@ -12,10 +12,8 @@ from azext_aosm.build_processors.vhd_processor import VHDProcessor
 from azext_aosm.build_processors.base_processor import BaseInputProcessor
 from azext_aosm.common.constants import (
     BASE_FOLDER_NAME,
-    MANIFEST_FOLDER_NAME,
     VNF_CORE_BASE_TEMPLATE_FILENAME,
     VNF_TEMPLATE_FOLDER_NAME,
-    VNF_MANIFEST_TEMPLATE_FILENAME,
     VNF_OUTPUT_FOLDER_FILENAME,
     DEPLOYMENT_PARAMETERS_FILENAME,
     VHD_PARAMETERS_FILENAME,
@@ -108,48 +106,6 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         )
         return bicep_file
 
-    def build_manifest_bicep(self) -> BicepDefinitionElementBuilder:
-        """Build the manifest bicep file."""
-        acr_artifact_list = []
-
-        logger.info("Creating artifact manifest bicep")
-
-        for processor in self.processors:
-            if isinstance(processor, AzureCoreArmBuildProcessor):
-                acr_artifact_list.extend(processor.get_artifact_manifest_list())
-                logger.debug(
-                    "Created list of artifacts from %s arm template(s) provided: %s",
-                    len(self.config.arm_templates),
-                    acr_artifact_list,
-                )
-            elif isinstance(processor, VHDProcessor):
-                sa_artifact_list = processor.get_artifact_manifest_list()
-                logger.debug(
-                    "Created list of artifacts from vhd image provided: %s",
-                    sa_artifact_list,
-                )
-
-        # Build manifest bicep contents, with j2 template
-        template_path = get_template_path(
-            VNF_TEMPLATE_FOLDER_NAME, VNF_MANIFEST_TEMPLATE_FILENAME
-        )
-        params = {
-            "acr_artifacts": acr_artifact_list,
-            "sa_artifacts": sa_artifact_list,
-        }
-        bicep_contents = render_bicep_contents_from_j2(
-            template_path, params
-        )
-
-        # Create Bicep element with manifest contents
-        bicep_file = BicepDefinitionElementBuilder(
-            Path(VNF_OUTPUT_FOLDER_FILENAME, MANIFEST_FOLDER_NAME),
-            bicep_contents,
-        )
-
-        logger.info("Created artifact manifest bicep element")
-        return bicep_file
-
     def build_all_parameters_json(self) -> JSONDefinitionElementBuilder:
         """Create object for all_parameters.json."""
         params_content = {
@@ -198,6 +154,27 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             raise TypeError(f"Type: {type(processor)} is not valid")
         logger.debug("Created nf application %s", nf_application.name)
         return (arm_nf, image_nf)
+
+    def _generate_type_specific_artifact_manifest(self, processor):
+        """Generate the type specific artifact manifest list."""
+        arm_artifacts = []
+        sa_artifacts = []
+
+        if isinstance(processor, AzureCoreArmBuildProcessor):
+            arm_artifacts = processor.get_artifact_manifest_list()
+            logger.debug(
+                "Created list of artifacts from %s arm template(s) provided: %s",
+                len(self.config.arm_templates),
+                arm_artifacts,
+            )
+        elif isinstance(processor, VHDProcessor):
+            sa_artifacts = processor.get_artifact_manifest_list()
+            logger.debug(
+                "Created list of artifacts from vhd image provided: %s",
+                sa_artifacts,
+            )
+
+        return (arm_artifacts, sa_artifacts)
 
     def _get_nfd_template_params(
             self, arm_nf_application_list, image_nf_application_list) -> Dict[str, Any]:

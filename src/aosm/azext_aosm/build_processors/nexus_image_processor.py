@@ -109,7 +109,8 @@ class NexusImageProcessor(BaseInputProcessor):
 
         :raises NotImplementedError: NSDs do not support deployment of Nexus images.
         """
-        raise NotImplementedError("NSDs do not support deployment of Nexus images.")
+        raise NotImplementedError("NSDs do not support deployment of Nexus images directly, "
+                                  "they must be provided in the NF.")
 
     def _generate_artifact_profile(self) -> AzureOperatorNexusImageArtifactProfile:
         """
