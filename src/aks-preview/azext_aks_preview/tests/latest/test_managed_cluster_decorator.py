@@ -260,7 +260,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            guardrails_profile=self.models.GuardrailsProfile(
+            guardrails_profile=self.models.SafeguardsProfile(
                 level="Warning", excluded_namespaces=None, version=""
             ),
         )
@@ -285,7 +285,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            guardrails_profile=self.models.GuardrailsProfile(
+            guardrails_profile=self.models.SafeguardsProfile(
                 version="v1.0.0", level=None, excluded_namespaces=None
             ),
         )
@@ -310,7 +310,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            guardrails_profile=self.models.GuardrailsProfile(
+            guardrails_profile=self.models.SafeguardsProfile(
                 excluded_namespaces=["ns1", "ns2"], level=None, version=None
             ),
         )
@@ -3745,6 +3745,25 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 )
             ),
         ))
+        # ASM was never enabled on the cluster
+        old_profile = self.models.ServiceMeshProfile(
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+        )
+        new_profile, updated = ctx_0._handle_ingress_gateways_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                components=self.models.IstioComponents(
+                    ingress_gateways=[
+                        self.models.IstioIngressGateway(
+                            mode="Internal",
+                            enabled=True,
+                        )
+                    ]
+                )
+            ),
+        ))
 
     def test_handle_egress_gateways_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -3762,6 +3781,24 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         old_profile = self.models.ServiceMeshProfile(
             mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
             istio=self.models.IstioServiceMesh(),
+        )
+        new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                components=self.models.IstioComponents(
+                    egress_gateways=[
+                        self.models.IstioEgressGateway(
+                            enabled=True, nodeSelector={"istio": "egress"}
+                        )
+                    ]
+                )
+            ),
+        ))
+        # ASM was never enabled on the cluster
+        old_profile = self.models.ServiceMeshProfile(
+            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
         )
         new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
@@ -3848,7 +3885,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.client = MockClient()
 
     def test_set_up_guardrails_profile(self):
-        # Base case - no options specified, GuardrailsProfile should be None
+        # Base case - no options specified, SafeguardsProfile should be None
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
         )
@@ -3859,7 +3896,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         gt_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, gt_mc_1)
 
-        # Make sure GuardrailsProfile is filled out appropriately
+        # Make sure SafeguardsProfile is filled out appropriately
         dec_2 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
@@ -3875,7 +3912,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.set_up_guardrails_profile(mc_2)
         gt_mc_2 = self.models.ManagedCluster(location="test_location")
-        gt_mc_2.guardrails_profile = self.models.GuardrailsProfile(
+        gt_mc_2.safeguards_profile = self.models.SafeguardsProfile(
             level="Warning", version="v1.0.0", excluded_namespaces=["ns1", "ns2"]
         )
         self.assertEqual(dec_mc_2, gt_mc_2)
