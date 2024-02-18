@@ -2,7 +2,7 @@
 
 Release History
 ===============
-<VERSION PLACEHOLDER(Candidate Version: 1.0.0)>
+1.0.0
 ++++++
 * `az automation account list-keys`: Add new command to retrieve the automation keys for an account.
 * `az automation account show-linked-workspace`: Add new command to get the linked workspace.
