@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListKeys(AAZCommand):
     """Retrieve the automation keys for an account.
+
+    :example: Retrieve the automation keys
+        az automation account list-keys --resource-group myResouceGroup --name myAutomationAccount
     """
 
     _aaz_info = {

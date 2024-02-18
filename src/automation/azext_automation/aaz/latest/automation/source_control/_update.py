@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a source control.
+
+    :example: Update source control properties
+        az automation source-control update -g rg --automation-account-name myAutomationAccount --name sourceControl --access-token ghp_GITHUB_TOKEN --token-type PersonalAccessToken --publish-runbook True
     """
 
     _aaz_info = {

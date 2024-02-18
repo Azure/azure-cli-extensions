@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a source control.
+
+    :example: Create source control
+        az automation source-control create -g rg --automation-account-name myAutomationAccount --name source-control --repo-url https://github.com/myAccount/myRepo.git --branch master --source-type GitHub --folder-path / --access-token ghp_MOCKED_GITHUB_TOKEN --token-type PersonalAccessToken --publish-runbook false
     """
 
     _aaz_info = {

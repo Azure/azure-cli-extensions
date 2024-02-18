@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create the sync job for a source control.
+
+    :example: Create source control sync job
+        az automation source-control sync-job create -g rg --automation-account-name myAutomationAccount --source-control-name sourceControl --job-id abcdef01-2345-6789-9bed-a01234567890 --commit-id ""
     """
 
     _aaz_info = {

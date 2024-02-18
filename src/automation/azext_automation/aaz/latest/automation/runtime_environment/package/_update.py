@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the package identified by package name.
+
+    :example: Update the package
+        az automation runtime-environment package update -g rg --automation-account-name myAutomationAccount --runtime-environment-name rt --name rt-package --uri https://teststorage.blob.core.windows.net/mycontainer/MyModule.zip --content-version 1.0.0.0
     """
 
     _aaz_info = {

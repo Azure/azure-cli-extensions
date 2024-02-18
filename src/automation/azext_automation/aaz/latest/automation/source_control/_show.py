@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the source control identified by source control name.
+
+    :example: Get information about the source control
+        az automation source-control show -g rg --automation-account-name myAutomationAccount --name sourceControl
     """
 
     _aaz_info = {

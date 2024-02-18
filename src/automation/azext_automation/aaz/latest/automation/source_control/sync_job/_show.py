@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the source control sync job identified by job id.
+
+    :example: Get information about the sync job
+        az automation source-control sync-job show -g rg --automation-account-name myAutomationAccount --source-control-name sourceControl --job-id abcdef01-2345-6789-9bed-a01234567890
     """
 
     _aaz_info = {

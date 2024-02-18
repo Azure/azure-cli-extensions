@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List a list of sync job streams identified by sync job id.
+
+    :example: List sync job streams
+        az automation source-control sync-job stream list -g rg --automation-account-name myAutomationAccount --source-control-name sourceControl --sync-job-id abcdef01-2345-6789-9bed-a01234567890
     """
 
     _aaz_info = {

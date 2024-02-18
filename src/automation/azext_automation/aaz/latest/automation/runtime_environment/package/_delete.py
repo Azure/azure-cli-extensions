@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the package by name.
+
+    :example: Delete the package
+        az automation runtime-environment package delete -g rg --automation-account-name myAutomationAccount --runtime-environment-name rt --name rt-package
     """
 
     _aaz_info = {

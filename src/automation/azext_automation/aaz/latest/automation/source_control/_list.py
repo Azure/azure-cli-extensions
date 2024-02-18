@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List a list of source controls.
+
+    :example: List source control
+        az automation source-control list -g rg --automation-account-name myAutomationAccount
     """
 
     _aaz_info = {

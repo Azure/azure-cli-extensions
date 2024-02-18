@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create Runtime Environment.
+
+    :example: Create Runtime Environment
+        az automation runtime-environment create -g rg --automation-account-name myAutomationAccount --name rt --location westus2 --language PowerShell --version 7.1 --default-packages "{Az:7.3.2}"
     """
 
     _aaz_info = {

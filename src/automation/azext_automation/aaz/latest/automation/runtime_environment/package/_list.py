@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the a list of Packages
+
+    :example: List packages in Runtime Environment
+        az automation runtime-environment package list -g rg --automation-account-name myAutomationAccount --runtime-environment-name rt
     """
 
     _aaz_info = {

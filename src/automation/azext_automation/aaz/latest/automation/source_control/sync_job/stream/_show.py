@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a sync job stream identified by stream id.
+
+    :example: Show detail of sync job stream
+        az automation source-control sync-job stream show -g rg --automation-account-name myAutomationAccount --source-control-name sourceControl --sync-job-id abcdef01-2345-6789-9bed-a01234567890 --stream-id b86c5c31-e9fd-4734-8764-ddd6c101e706_00636596855139029522_00000000000000000007
     """
 
     _aaz_info = {

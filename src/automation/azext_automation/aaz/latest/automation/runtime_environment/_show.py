@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about the Runtime Environment.
+
+    :example: Get information about the Runtime Environment
+        az automation runtime-environment show -g rg --automation-account-name myAutomationAccount --name rt
     """
 
     _aaz_info = {

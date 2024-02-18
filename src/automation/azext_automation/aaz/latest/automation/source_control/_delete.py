@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the source control.
+
+    :example: Delete the source control
+        az automation source-control delete -g rg --automation-account-name myAutomationAccount --name sourceControl -y
     """
 
     _aaz_info = {

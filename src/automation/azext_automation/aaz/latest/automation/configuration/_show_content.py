@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ShowContent(AAZCommand):
     """Get the configuration script identified by configuration name.
+
+    :example: Show the script content of DSC Configuration
+        az automation configuration show-content -g rg --automation-account-name myAutomationAccount -n SetupServer
     """
 
     _aaz_info = {

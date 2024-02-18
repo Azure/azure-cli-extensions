@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the Runtime Environment.
+
+    :example: Delete the Runtime Environment
+        az automation runtime-environment delete -g rg --automation-account-name myAutomationAccount --name rt -y
     """
 
     _aaz_info = {

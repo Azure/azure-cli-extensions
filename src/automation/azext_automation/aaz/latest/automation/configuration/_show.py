@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the configuration identified by configuration name.
+
+    :example: Get the configuration by its name
+        az automation configuration show -g rg --automation-account-name myAutomationAccount -n SetupServer
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the Package identified by Package name.
+
+    :example: Get the information about the package
+        az automation runtime-environment package show -g rg --automation-account-name myAutomationAccount --runtime-environment-name rt --name rt-package
     """
 
     _aaz_info = {

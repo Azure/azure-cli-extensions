@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List a list of configurations.
+
+    :example: List all DSC Configurations
+        az automation configuration list -g rg --automation-account-name myAutomationAccount
     """
 
     _aaz_info = {

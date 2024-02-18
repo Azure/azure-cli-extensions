@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the dsc configuration identified by configuration name.
+
+    :example: Delete the DSC Configuration
+        az automation configuration list -g rg --automation-account-name myAutomationAccount
     """
 
     _aaz_info = {

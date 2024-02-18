@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ShowLinkedWorkspace(AAZCommand):
     """Get the linked workspace for the account id.
+
+    :example: Get the linked workspace id
+        az automation account show-linked-workspace --resource-group myResourceGroup --name myAutomationAccount
     """
 
     _aaz_info = {

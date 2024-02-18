@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update Runtime Environment.
+
+    :example: Update Runtime Environment
+        az automation runtime-environment update -g rg --automation-account-name myAutomationAccount --name rt --default-packages "{Az:8.0.0}"
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create the configuration identified by configuration name.
+
+    :example: Create DSC Configuration that setups a server
+        az automation configuration create -g rg --automation-account-name myAutomationAccount -n SetupServer --location westus2 --source-type embeddedContent --source "Configuration SetupServer {\r\n    Node localhost {\r\n                               WindowsFeature IIS {\r\n                               Name = "Web-Server";\r\n            Ensure = "Present"\r\n        }\r\n    }\r\n}"
     """
 
     _aaz_info = {

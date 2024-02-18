@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the configuration identified by configuration name.
+
+    :example: Update script in DSC Configuration
+        az automation configuration update -g rg --automation-account-name myAutomationAccount -n SetupServer --location westus2 --source-type embeddedContent --source "Configuration SetupServer {\r\n    Node localhostServer {\r\n                               WindowsFeature IIS {\r\n                               Name = "Web-Server";\r\n            Ensure = "Present"\r\n        }\r\n    }\r\n}"
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List a list of source control sync jobs.
+
+    :example: List sync jobs
+        az automation source-control sync-job list -g rg --automation-account-name myAutomationAccount --source-control-name sourceControl
     """
 
     _aaz_info = {
