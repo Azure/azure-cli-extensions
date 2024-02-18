@@ -2205,6 +2205,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # if a gateway is enabled, enable the mesh
             if enable_egress_gateway:
                 new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+                if new_profile.istio is None:
+                    new_profile.istio = self.models.IstioServiceMesh()  # pylint: disable=no-member
                 updated = True
 
             # ensure necessary fields
@@ -2259,6 +2261,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # if an ingress gateway is enabled, enable the mesh
             if enable_ingress_gateway:
                 new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+                if new_profile.istio is None:
+                    new_profile.istio = self.models.IstioServiceMesh()  # pylint: disable=no-member
                 updated = True
 
             if not ingress_gateway_type:
@@ -4252,9 +4256,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = setup_common_guardrails_profile(level, version, excludedNamespaces, mc, self.models)
 
         if level is not None:
-            mc.guardrails_profile.level = level
+            mc.safeguards_profile.level = level
         if version is not None:
-            mc.guardrails_profile.version = version
+            mc.safeguards_profile.version = version
 
         return mc
 
