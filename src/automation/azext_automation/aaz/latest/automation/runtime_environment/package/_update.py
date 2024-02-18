@@ -44,7 +44,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.automation_account_name = AAZStrArg(
-            options=["--automation-account-name"],
+            options=["--account", "--automation-account-name"],
             help="The name of the automation account.",
             required=True,
             id_part="name",
@@ -59,7 +59,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.runtime_environment_name = AAZStrArg(
-            options=["--runtime-environment-name"],
+            options=["--environment", "--runtime-environment-name"],
             help="The name of the Runtime Environment.",
             required=True,
             id_part="child_name_1",

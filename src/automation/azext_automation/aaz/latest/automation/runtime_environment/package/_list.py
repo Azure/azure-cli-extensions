@@ -43,7 +43,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.automation_account_name = AAZStrArg(
-            options=["--automation-account-name"],
+            options=["--account", "--automation-account-name"],
             help="The name of the automation account.",
             required=True,
         )
@@ -51,7 +51,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.runtime_environment_name = AAZStrArg(
-            options=["--runtime-environment-name"],
+            options=["--environment", "--runtime-environment-name"],
             help="The name of the Runtime Environment.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -62,7 +62,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PackagesListByRuntimeEnvironment(ctx=self.ctx)()
+        self.PackageListByRuntimeEnvironment(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -78,7 +78,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class PackagesListByRuntimeEnvironment(AAZHttpOperation):
+    class PackageListByRuntimeEnvironment(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):

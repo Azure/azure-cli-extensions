@@ -42,7 +42,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.automation_account_name = AAZStrArg(
-            options=["--automation-account-name"],
+            options=["--account", "--automation-account-name"],
             help="The name of the automation account.",
             required=True,
             id_part="name",
