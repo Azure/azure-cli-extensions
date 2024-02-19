@@ -69,7 +69,7 @@ class NFDProcessor(BaseInputProcessor):
         # Path is relative to NSD_OUTPUT_FOLDER_FILENAME as this artifact is stored in the NSD output folder
         artifact_details = LocalFileACRArtifact(
             artifact_name=self.input_artifact.artifact_name,
-            artifact_type=ArtifactType.OCI_ARTIFACT.value,
+            artifact_type=ArtifactType.ARM_TEMPLATE.value,
             artifact_version=self.input_artifact.artifact_version,
             file_path=self.input_artifact.arm_template_output_path.relative_to(
                 Path(NSD_OUTPUT_FOLDER_FILENAME)

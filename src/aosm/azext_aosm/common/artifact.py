@@ -20,6 +20,7 @@ from azext_aosm.vendored_sdks.azure_storagev2.blob.v2022_11_02 import (
     BlobClient,
     BlobType,
 )
+from azext_aosm.vendored_sdks.models import ArtifactType
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from azext_aosm.common.command_context import CommandContext
 from azext_aosm.common.utils import convert_bicep_to_arm
@@ -186,32 +187,108 @@ class LocalFileACRArtifact(BaseACRArtifact):
         target_acr = self._get_acr(oras_client)
         target = f"{target_acr}/{self.artifact_name}:{self.artifact_version}"
         logger.debug("Uploading %s to %s", self.file_path, target)
-        retries = 0
-        while True:
-            try:
-                oras_client.push(files=[self.file_path], target=target)
-                break
-            except ValueError as error:
-                if retries < 20:
-                    logger.info(
-                        "Retrying pushing local artifact to ACR. Retries so far: %s",
-                        retries,
+
+        if self.artifact_type == ArtifactType.ARM_TEMPLATE.value:
+            retries = 0
+            while True:
+                try:
+                    oras_client.push(files=[self.file_path], target=target)
+                    break
+                except ValueError as error:
+                    if retries < 20:
+                        logger.info(
+                            "Retrying pushing local artifact to ACR. Retries so far: %s",
+                            retries,
+                        )
+                        retries += 1
+                        sleep(3)
+                        continue
+
+                    logger.error(
+                        "Failed to upload %s to %s. Check if this image exists in the"
+                        " source registry %s.",
+                        self.file_path,
+                        target,
+                        target_acr,
                     )
-                    retries += 1
-                    sleep(3)
-                    continue
+                    logger.debug(error, exc_info=True)
+                    raise error
 
-                logger.error(
-                    "Failed to upload %s to %s. Check if this image exists in the"
-                    " source registry %s.",
+            logger.info("LocalFileACRArtifact uploaded %s to %s using oras push", self.file_path, target)
+
+        elif self.artifact_type == ArtifactType.OCI_ARTIFACT.value:
+
+            target_acr_name = target_acr.replace(".azurecr.io", "")
+            target_acr_with_protocol = f"oci://{target_acr}"
+            username = manifest_credentials["username"]
+            password = manifest_credentials["acr_token"]
+
+            # TODO: Maybe port over the "if not use_manifest_permissions" feature which means you don't need to
+            #       install docker. Although not having to install docker feels like a marginal enhancement, as most
+            #       people playing with containers will have docker, or won't mind installing it. Note that
+            #       use_manifest_permissions is now in command_context.cli_options['no_subscription_permissions']
+
+            self._check_tool_installed("docker")
+            self._check_tool_installed("helm")
+
+            # TODO: don't just dump this in /tmp
+            if self.file_path.is_dir():
+                helm_package_cmd = [
+                    str(shutil.which("helm")),
+                    "package",
                     self.file_path,
-                    target,
-                    target_acr,
-                )
-                logger.debug(error, exc_info=True)
-                raise error
+                    "--destination",
+                    "/tmp",
+                ]
+                self._call_subprocess_raise_output(helm_package_cmd)
 
-        logger.info("LocalFileACRArtifact uploaded %s to %s", self.file_path, target)
+            # This seems to prevent occasional helm login failures
+            acr_login_cmd = [
+                str(shutil.which("az")),
+                "acr",
+                "login",
+                "--name",
+                target_acr_name,
+                "--username",
+                username,
+                "--password",
+                password,
+            ]
+            self._call_subprocess_raise_output(acr_login_cmd)
+
+            try:
+                helm_login_cmd = [
+                    str(shutil.which("helm")),
+                    "registry",
+                    "login",
+                    target_acr,
+                    "--username",
+                    username,
+                    "--password",
+                    password,
+                ]
+                self._call_subprocess_raise_output(helm_login_cmd)
+
+                push_command = [
+                    str(shutil.which("helm")),
+                    "push",
+                    f"/tmp/{self.artifact_name}-{self.artifact_version}.tgz",  # TODO: fix up helm package to use non-tmp path
+                    target_acr_with_protocol,
+                ]
+                self._call_subprocess_raise_output(push_command)
+            finally:
+                helm_logout_cmd = [
+                    str(shutil.which("helm")),
+                    "registry",
+                    "logout",
+                    target_acr,
+                ]
+                self._call_subprocess_raise_output(helm_logout_cmd)
+
+            logger.info("LocalFileACRArtifact uploaded %s to %s using helm push", self.file_path, target)
+
+        else:  # TODO: Make this one of the allowed Azure CLI exceptions
+            raise ValueError(f"Unexpected artifact type. Got {self.artifact_type}. Expected {ArtifactType.ARM_TEMPLATE.value} or {ArtifactType.OCI_ARTIFACT.value}")
 
 
 class RemoteACRArtifact(BaseACRArtifact):
