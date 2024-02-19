@@ -973,6 +973,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_max_inactive_revisions(self):
         return self.get_param("max_inactive_revisions")
 
+
 # decorator for preview update
 class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_service_bindings(self):
@@ -1013,18 +1014,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         self.set_up_service_bindings()
         self.set_up_unbind_service_bindings()
         self.set_up_source()
-        self.set_up_containers_for_private_registry_image()
         if self.get_argument_max_inactive_revisions() is not None:
             safe_set(self.new_containerapp, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
-
-    def set_up_containers_for_private_registry_image(self):
-        containers = safe_get(self.new_containerapp, "properties", "template", "containers", default=[])
-        # Check for private registry image and if found remove the containers from the container app and ensure there is only one container with the build image.
-        for container in containers:
-            if match(r'^default/', container["image"]):
-                self.new_containerapp["properties"]["template"]["containers"] = [container]
-                break
-            self.new_containerapp["properties"]["template"]["containers"].append(container)
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
@@ -1191,6 +1182,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
     def get_argument_max_inactive_revisions(self):
         return self.get_param("max_inactive_revisions")
+
 
 # decorator for preview list
 class ContainerAppPreviewListDecorator(BaseContainerAppDecorator):
