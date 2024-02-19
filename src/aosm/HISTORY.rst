@@ -5,6 +5,9 @@ Release History
 
 Unreleased
 
+1.0.0b8
+++++++++
+
 1.0.0b7
 ++++++++
 * Fixed: customLocation missing from Nexus
