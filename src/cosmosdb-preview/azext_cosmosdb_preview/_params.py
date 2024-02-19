@@ -340,7 +340,7 @@ def load_arguments(self, _):
             c.argument('enable_burst_capacity', arg_type=get_three_state_flag(), help="Flag to enable burst capacity on the account.", is_preview=True)
             c.argument('enable_priority_based_execution', options_list=['--enable-priority-based-execution', '--enable-pbe'], arg_type=get_three_state_flag(), help="Flag to enable priority based execution on the account.", is_preview=True)
             c.argument('default_priority_level', arg_type=get_enum_type(DefaultPriorityLevel), help="Default Priority Level of Request if not specified.", is_preview=True)
-            c.argument('enable_perregion_perpartition_autoscale', options_list=['--enable_perregion_perpartition_autoscale', '-e'], arg_type=get_three_state_flag(), help="Enable or disable PerRegionPerPartitionAutoscale.")
+            c.argument('enable_per_region_per_partition_autoscale', arg_type=get_three_state_flag(), help="Enable or disable PerRegionPerPartitionAutoscale.", is_preview=True)
 
     with self.argument_context('cosmosdb update') as c:
         c.argument('key_uri', help="The URI of the key vault", is_preview=True)
