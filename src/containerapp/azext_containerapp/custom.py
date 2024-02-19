@@ -46,6 +46,8 @@ from knack.prompting import prompt_y_n
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
+from .containerapp_env_certificate_decorator import ContainerappEnvCertificateListDecorator, \
+    ContainerappEnvCertificateUploadDecorator
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
@@ -1236,8 +1238,33 @@ def create_managed_certificate(cmd, name, resource_group_name, hostname, validat
 
 
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):
-    from azure.cli.command_modules.containerapp.custom import list_certificates_logic
-    return list_certificates_logic(cmd, name, resource_group_name, location, certificate, thumbprint, managed_certificates_only=managed_certificates_only, private_key_certificates_only=private_key_certificates_only)
+    raw_parameters = locals()
+
+    containerapp_env_certificate_list_decorator = ContainerappEnvCertificateListDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_certificate_list_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_env_certificate_list_decorator.validate_arguments()
+
+    return containerapp_env_certificate_list_decorator.list()
+
+
+def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+    raw_parameters = locals()
+
+    containerapp_env_certificate_upload_decorator = ContainerappEnvCertificateUploadDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_certificate_upload_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_env_certificate_upload_decorator.construct_payload()
+
+    return containerapp_env_certificate_upload_decorator.create_or_update()
 
 
 def delete_certificate(cmd, resource_group_name, name, location=None, certificate=None, thumbprint=None):
