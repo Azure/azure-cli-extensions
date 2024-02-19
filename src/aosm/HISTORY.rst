@@ -7,7 +7,8 @@ Unreleased
 
 1.0.0b7
 ++++++++
-* Fixed customLocation missing from Nexus
+* Fixed: customLocation missing from Nexus
+* Fixed: helm charts not uploading correctly
 
 ++++++++
 1.0.0b6
