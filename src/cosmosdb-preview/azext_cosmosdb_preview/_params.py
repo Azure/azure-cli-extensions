@@ -471,7 +471,8 @@ def load_arguments(self, _):
             'cosmosdb copy show',
             'cosmosdb copy pause',
             'cosmosdb copy resume',
-            'cosmosdb copy cancel']:
+            'cosmosdb copy cancel',
+            'cosmosdb copy complete']:
         with self.argument_context(scope) as c:
             c.argument('account_name', options_list=["--account-name", "-a"], id_part=None, required=True, help='Azure Cosmos DB account name where the job is created. Use --dest-account value from create job command.')
 
@@ -479,7 +480,8 @@ def load_arguments(self, _):
             'cosmosdb copy show',
             'cosmosdb copy pause',
             'cosmosdb copy resume',
-            'cosmosdb copy cancel']:
+            'cosmosdb copy cancel',
+            'cosmosdb copy complete']:
         with self.argument_context(scope) as c:
             c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the container copy job.', required=True)
 
