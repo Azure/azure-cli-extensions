@@ -245,7 +245,14 @@ class DaprComponentResiliencyTests(ScenarioTest):
         self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retries 5 --out-cb-interval 1'.format(resil_name, dapr_comp_name, env_name, resource_group), expect_failure=True)
 
         #Create dapr component resiliency using flags
-        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retries 5 --in-cb-timeout 5 --in-cb-sequential-err 3'.format(resil_name, dapr_comp_name, env_name, resource_group))
+        self.cmd('containerapp env dapr-component resiliency create -n {} --dapr-component-name {} --environment {} -g {} --in-timeout 15 --in-http-retries 5 --in-cb-timeout 5 --in-cb-sequential-err 3'.format(resil_name, dapr_comp_name, env_name, resource_group), checks=[
+            JMESPathCheck("properties.inboundPolicy.httpRetryPolicy.maxRetries", "5"),
+            JMESPathCheck("properties.inboundPolicy.httpRetryPolicy.retryBackOff.initialDelayInMilliseconds", "1000"),
+            JMESPathCheck("properties.inboundPolicy.httpRetryPolicy.retryBackOff.maxIntervalInMilliseconds", "10000"),
+            JMESPathCheck("properties.inboundPolicy.timeoutPolicy.responseTimeoutInSeconds", "15"),
+            JMESPathCheck("properties.inboundPolicy.circuitBreakerPolicy.consecutiveErrors", "3"),
+            JMESPathCheck("properties.inboundPolicy.circuitBreakerPolicy.timeoutInSeconds", "5"),
+        ])
 
         #Show dapr component resiliency
         self.cmd('containerapp env dapr-component resiliency show -n {} --dapr-component-name {} --environment {} -g {}'.format(resil_name, dapr_comp_name, env_name, resource_group), checks=[

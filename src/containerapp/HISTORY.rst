@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
 
 0.3.47
 ++++++
@@ -17,7 +18,6 @@ upcoming
 * 'az containerapp env identity': support for container app environment assign/remove/show commands
 * 'az containerapp env storage set': Support create or update managed environment storage with NFS Azure File.
 * 'az containerapp up': Update the Docker error string used to identify unauthorized push.
-* 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
 
 0.3.46
 ++++++
