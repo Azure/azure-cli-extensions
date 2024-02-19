@@ -884,6 +884,15 @@ helps['cosmosdb copy cancel'] = """
                az cosmosdb copy cancel -g "rg1" --account-name "acc1" --job-name "j1"
 """
 
+helps['cosmosdb copy complete'] = """
+    type: command
+    short-summary: "Completes an online container copy job."
+    examples:
+      - name: Complete job j1
+        text: |-
+               az cosmosdb copy complete -g "rg1" --account-name "acc1" --job-name "j1"
+"""
+
 helps['cosmosdb sql container merge'] = """
     type: command
     short-summary: "Merges the partitions of a sql container."
