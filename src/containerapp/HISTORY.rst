@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
 
 0.3.47
 ++++++
