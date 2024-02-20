@@ -74,7 +74,7 @@ class AutomationScenarioTest(ScenarioTest):
             'runbook_name': self.create_random_name(prefix='test-runbook-', length=24),
             'runbook_content': RUNBOOK_CONTENT,
             'python3Package_name': self.create_random_name(prefix='py3-package-', length=24),
-            'python3PackageContentUri':'uri=https://files.pythonhosted.org/packages/7f/e2/85dfb9f7364cbd7a9213caea0e91fc948da3c912a2b222a3e43bc9cc6432/requires.io-0.2.6-py2.py3-none-any.whl'
+            'python3PackageContentUri': 'uri=https://files.pythonhosted.org/packages/7f/e2/85dfb9f7364cbd7a9213caea0e91fc948da3c912a2b222a3e43bc9cc6432/requires.io-0.2.6-py2.py3-none-any.whl'
         })
         self.cmd('automation account create --resource-group {rg} --name {account_name} --location "West US 2"',
                  checks=[self.check('name', '{account_name}')])
@@ -120,16 +120,16 @@ class AutomationScenarioTest(ScenarioTest):
                  '--name {runbook_name}')
 
         self.cmd('automation python3-package  create --resource-group {rg} --automation-account-name {account_name} --name {python3Package_name} --content-link {python3PackageContentUri}',
-        checks=[self.check('name', '{python3Package_name}')])
+                 checks=[self.check('name', '{python3Package_name}')])
 
         self.cmd('automation python3-package  update --resource-group {rg} --automation-account-name {account_name} --name {python3Package_name} --content-link {python3PackageContentUri}',
-        checks=[self.check('name', '{python3Package_name}')])
+                 checks=[self.check('name', '{python3Package_name}')])
 
         self.cmd('automation python3-package  show --resource-group {rg} --automation-account-name {account_name} --name {python3Package_name}',
-        checks=[self.check('name', '{python3Package_name}')])
+                 checks=[self.check('name', '{python3Package_name}')])
 
         self.cmd('automation python3-package  list --resource-group {rg} --automation-account-name {account_name} ',
-        checks=[self.check('length(@)', 1)])
+                 checks=[self.check('length(@)', 1)])
 
         self.cmd('automation python3-package delete --resource-group {rg} --automation-account-name {account_name} --name {python3Package_name} --yes')
 
@@ -169,16 +169,16 @@ class AutomationScenarioTest(ScenarioTest):
                  checks=[self.check('name', '{account}')])
 
         self.cmd('automation hrwg create --resource-group {rg} --automation-account-name {account} --name {hrwg}',
-        checks=[self.check('name', '{hrwg}')])
+                 checks=[self.check('name', '{hrwg}')])
 
         self.cmd('automation hrwg show --resource-group {rg} --automation-account-name {account} --name {hrwg}',
-        checks=[self.check('name', '{hrwg}')])
+                 checks=[self.check('name', '{hrwg}')])
 
         self.cmd('automation hrwg list --resource-group {rg} --automation-account-name {account}',
-        checks=[self.check('length(@)', 1)])
+                 checks=[self.check('length(@)', 1)])
 
         self.cmd('automation hrwg hrw list --automation-account-name {account} --hybrid-runbook-worker-group-name {hrwg} -g {rg}',
-        checks=[self.check('length(@)', 0)])
+                 checks=[self.check('length(@)', 0)])
 
         self.kwargs['vm_id'] = self.cmd('vm create -g {rg} -n {vm} --image Ubuntu2204 --generate-ssh-key').get_output_in_json()['id']
 
@@ -191,12 +191,12 @@ class AutomationScenarioTest(ScenarioTest):
         ])
 
         self.cmd('automation hrwg create --resource-group {rg} --automation-account-name {account} --name {hrwg2}',
-        checks=[self.check('name', '{hrwg2}')])
+                 checks=[self.check('name', '{hrwg2}')])
 
         self.cmd('automation hrwg hrw move -g {rg} --automation-account-name {account} --hybrid-runbook-worker-group-name {hrwg} -n {hrw} --target-hybrid-runbook-worker-group-name {hrwg2}')
 
         self.cmd('automation hrwg hrw list --automation-account-name {account} --hybrid-runbook-worker-group-name {hrwg} -g {rg}',
-        checks=[self.check('length(@)', 0)])
+                 checks=[self.check('length(@)', 0)])
         self.cmd('automation hrwg hrw list --automation-account-name {account} --hybrid-runbook-worker-group-name {hrwg2} -g {rg}', checks=[
             self.check('length(@)', 1)
         ])
@@ -252,7 +252,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.kwargs.update({
             'account_name': self.create_random_name('account-', 15),
             'conf_name': self.create_random_name('conf-', 15),
-            'vm_name':self.create_random_name('vm-', 15),
+            'vm_name': self.create_random_name('vm-', 15),
         })
 
         sub = '/subscriptions/' + self.get_subscription_id()
@@ -280,7 +280,7 @@ class AutomationScenarioTest(ScenarioTest):
             self.check('updateConfiguration.operatingSystem', 'Windows'),
             self.check('updateConfiguration.targets.azureQueries[0].locations', ['eastus', 'westus']),
             self.check('updateConfiguration.targets.azureQueries[0].scope', [sub]),
-            self.check('updateConfiguration.targets.azureQueries[0].tagSettings.tags.tag',  ['tag1','tag2']),
+            self.check('updateConfiguration.targets.azureQueries[0].tagSettings.tags.tag', ['tag1', 'tag2']),
             self.check('updateConfiguration.windows.excludedKbNumbers', ['16800', '16800']),
             self.check('updateConfiguration.windows.includedKbNumbers', ['15000', '15000']),
             self.check('updateConfiguration.windows.includedUpdateClassifications', 'Critical'),
@@ -345,9 +345,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation account create -n {account} -g {rg} --location {location}')
         self.cmd('automation configuration create -g {rg} --automation-account-name {account} -n {config} --location {location} '
                  '--source-type embeddedContent --source {source_content}',
-                 checks=[
-                    self.check('name', '{config}')
-                 ])
+                 checks=[self.check('name', '{config}')])
 
         self.cmd('automation configuration list -g {rg} --automation-account-name {account}', checks=[
             self.check('[0].name', '{config}'),
