@@ -74,7 +74,6 @@ class ContainerappEnvCertificateDecorator(BaseResource):
 
 
 class ContainerappEnvCertificateListDecorator(ContainerappEnvCertificateDecorator):
-
     def list(self):
         if self.get_argument_certificate() and is_valid_resource_id(self.get_argument_certificate()):
             certificate_name = parse_resource_id(self.get_argument_certificate())["resource_name"]

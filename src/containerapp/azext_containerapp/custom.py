@@ -46,7 +46,7 @@ from knack.prompting import prompt_y_n
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
-from .containerapp_env_certificate_decorator import ContainerappEnvCertificateListDecorator, \
+from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
     ContainerappEnvCertificateUploadDecorator
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
@@ -1240,7 +1240,7 @@ def create_managed_certificate(cmd, name, resource_group_name, hostname, validat
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):
     raw_parameters = locals()
 
-    containerapp_env_certificate_list_decorator = ContainerappEnvCertificateListDecorator(
+    containerapp_env_certificate_list_decorator = ContainerappPreviewEnvCertificateListDecorator(
         cmd=cmd,
         client=ManagedEnvironmentPreviewClient,
         raw_parameters=raw_parameters,
