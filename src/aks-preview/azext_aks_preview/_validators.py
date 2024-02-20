@@ -856,4 +856,4 @@ def validate_custom_endpoints(namespace):
     endpoint_list = [endpoint.strip() for endpoint in namespace.custom_endpoints.split(",")]
     for endpoint in endpoint_list:
         if "://" in endpoint:
-            raise CLIError(f"Custom endpoint {endpoint} should not contain protocol.")
+            raise InvalidArgumentValueError(f"Custom endpoint {endpoint} should not contain protocol.")

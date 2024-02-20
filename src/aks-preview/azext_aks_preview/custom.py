@@ -3239,7 +3239,7 @@ def _aks_run_command(
 
         compute_client = get_compute_client(cmd.cli_ctx)
 
-        if vm_set_type == "VirtualMachineScaleSets":
+        if vm_set_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
             RunCommandInput = cmd.get_models('RunCommandInput',
                                              resource_type=ResourceType.MGMT_COMPUTE,
                                              operation_group="virtual_machine_scale_sets")
@@ -3247,7 +3247,7 @@ def _aks_run_command(
                 compute_client.virtual_machine_scale_set_vms.begin_run_command(
                     managed_resource_group, vmss_name, instance_id,
                     RunCommandInput(command_id="RunShellScript", script=[command])))
-        elif vm_set_type == "AvailabilitySet":
+        elif vm_set_type == CONST_AVAILABILITY_SET:
             RunCommandInput = cmd.get_models('RunCommandInput',
                                              resource_type=ResourceType.MGMT_COMPUTE,
                                              operation_group="virtual_machine_run_commands")
@@ -3255,6 +3255,8 @@ def _aks_run_command(
                 compute_client.virtual_machines.begin_run_command(
                     managed_resource_group, vm_name,
                     RunCommandInput(command_id="RunShellScript", script=[command])))
+        else:
+            raise ValidationError(f"VM set type {vm_set_type} is not supported!")
 
         display_status = command_result.value[0].display_status
         message = command_result.value[0].message
