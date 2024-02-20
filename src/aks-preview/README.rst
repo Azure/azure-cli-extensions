@@ -48,7 +48,7 @@ Released version and adopted API version
 ========================================
 
 .. list-table::
-    :widths: 50 50
+    :widths: 35 35 30
     :header-rows: 1
 
     * - aks-preview
