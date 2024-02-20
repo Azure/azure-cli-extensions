@@ -5,6 +5,8 @@ Release History
 upcoming
 ++++++
 * 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
+* 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
+* 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
 
 0.3.47
 ++++++

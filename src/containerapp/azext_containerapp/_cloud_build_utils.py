@@ -129,28 +129,34 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         thread.join()
 
         # Source code compression
-        done_spinner = False
-        thread = display_spinner(f"Compressing data: {font_bold}{source}{font_default}")
-        tar_file_path = os.path.join(tempfile.gettempdir(), f"{build_name}.tar.gz")
-        archive_source_code(tar_file_path, source)
-        done_spinner = True
-        thread.join()
+        data_file_path = source
+        source_is_folder = os.path.isdir(source)
+        if source_is_folder:
+            done_spinner = False
+            thread = display_spinner(f"Compressing data: {font_bold}{source}{font_default}")
+            data_file_path = os.path.join(tempfile.gettempdir(), f"{build_name}.tar.gz")
+            archive_source_code(data_file_path, source)
+            done_spinner = True
+            thread.join()
 
         # File upload
         done_spinner = False
-        thread = display_spinner("Uploading compressed data")
+        thread = display_spinner("Uploading data")
         headers = {'Authorization': 'Bearer ' + token}
         try:
-            tar_file = open(tar_file_path, "rb")
-            files = [("file", ("build_data.tar.gz", tar_file, "application/x-tar"))]
+            data_file = open(data_file_path, "rb")
+            file_name = os.path.basename(data_file_path)
+            files = [("file", (file_name, data_file))]
             response_file_upload = requests.post(
                 upload_endpoint,
                 files=files,
                 headers=headers)
         finally:
-            # Close and delete the file now that it was uploaded.
-            tar_file.close()
-            os.unlink(tar_file_path)
+            # Close the file now that it was uploaded.
+            data_file.close()
+            # if customer uploaded source file is a folder, delete the temp compressed file
+            if source_is_folder:
+                os.unlink(data_file_path)
         if not response_file_upload.ok:
             raise ValidationError(f"Error when uploading the file, request exited with {response_file_upload.status_code}")
         done_spinner = True
