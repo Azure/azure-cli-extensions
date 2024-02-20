@@ -35,10 +35,10 @@ def step_upgrade(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric fabric upgrade  --resource-name {upgradeNFName} --resource-group {upgradeNFRGName} --action {upgradeAction} --version {upgradeVersion}')
+        'az networkfabric fabric upgrade  --resource-name {upgradeNFName} --resource-group {upgradeNFRGName} --action {upgradeActionStart} --version {upgradeVersion}')
 
 
-class GA_NFUpgradeScenarioTest1(ScenarioTest):
+class GA_NFUpgradeStartScenarioTest1(ScenarioTest):
     ''' NFScenario test'''
 
     def __init__(self, *args, **kwargs):
@@ -46,10 +46,10 @@ class GA_NFUpgradeScenarioTest1(ScenarioTest):
         self.kwargs.update({
             'upgradeNFRGName': CONFIG.get('NETWORK_FABRIC', 'upgrade_nf_resource_group'),
             'upgradeNFName': CONFIG.get('NETWORK_FABRIC', 'upgrade_nf_name'),
-            'upgradeAction': CONFIG.get('NETWORK_FABRIC', 'upgrade_action'),
+            'upgradeActionStart': CONFIG.get('NETWORK_FABRIC', 'upgrade_action_start'),
             'upgradeVersion': CONFIG.get('NETWORK_FABRIC', 'upgrade_version')
         })
 
-    def test_GA_nf_upgrade_scenario1(self):
+    def test_GA_nf_upgrade_start_scenario1(self):
         ''' test scenario for NF commit operations'''
         call_scenario1(self)
