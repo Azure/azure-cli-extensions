@@ -306,7 +306,13 @@ def create_dapr_component_resiliency(cmd, name, resource_group_name, dapr_compon
                                      in_http_retry_delay_in_milliseconds=None,
                                      out_http_retry_delay_in_milliseconds=None,
                                      in_http_retry_interval_in_milliseconds=None,
-                                     out_http_retry_interval_in_milliseconds=None):
+                                     out_http_retry_interval_in_milliseconds=None,
+                                     in_circuit_breaker_consecutive_errors=None,
+                                     out_circuit_breaker_consecutive_errors=None,
+                                     in_circuit_breaker_interval=None,
+                                     out_circuit_breaker_interval=None,
+                                     in_circuit_breaker_timeout=None,
+                                     out_circuit_breaker_timeout=None):
     raw_parameters = locals()
     component_resiliency_create_decorator = DaprComponentResiliencyPreviewCreateDecorator(
         cmd=cmd,
@@ -330,7 +336,13 @@ def update_dapr_component_resiliency(cmd, name, resource_group_name, dapr_compon
                                      in_http_retry_delay_in_milliseconds=None,
                                      out_http_retry_delay_in_milliseconds=None,
                                      in_http_retry_interval_in_milliseconds=None,
-                                     out_http_retry_interval_in_milliseconds=None):
+                                     out_http_retry_interval_in_milliseconds=None,
+                                     in_circuit_breaker_consecutive_errors=None,
+                                     out_circuit_breaker_consecutive_errors=None,
+                                     in_circuit_breaker_interval=None,
+                                     out_circuit_breaker_interval=None,
+                                     in_circuit_breaker_timeout=None,
+                                     out_circuit_breaker_timeout=None):
 
     raw_parameters = locals()
     component_resiliency_update_decorator = DaprComponentResiliencyPreviewUpdateDecorator(

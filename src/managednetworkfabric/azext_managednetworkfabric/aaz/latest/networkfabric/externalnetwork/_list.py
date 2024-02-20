@@ -203,7 +203,6 @@ class List(AAZCommand):
             )
             properties.network_to_network_interconnect_id = AAZStrType(
                 serialized_name="networkToNetworkInterconnectId",
-                flags={"read_only": True},
             )
             properties.option_a_properties = AAZObjectType(
                 serialized_name="optionAProperties",
