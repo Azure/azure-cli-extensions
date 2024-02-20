@@ -235,7 +235,9 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
     logger.debug("Platform OS: %s", operating_system)
     logger.debug("Platform architecture: %s", machine)
 
-    if machine.endswith('64') and 'ARM' not in machine.upper():
+    if "arm64" in machine.lower() or "aarch64" in machine.lower():
+        architecture = 'arm64'
+    elif machine.endswith('64'):
         architecture = 'amd64'
     elif machine.endswith('86'):
         architecture = '386'
