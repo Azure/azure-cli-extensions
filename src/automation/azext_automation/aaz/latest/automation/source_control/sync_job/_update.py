@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the sync job for a source control.
+
+    :example: Update source control sync job properties
+        az automation source-control sync-job update -g rg --automation-account-name myAutomationAccount --source-control-name sourceControl --job-id abcdef01-2345-6789-9bed-a01234567890 --commit-id ""
     """
 
     _aaz_info = {
