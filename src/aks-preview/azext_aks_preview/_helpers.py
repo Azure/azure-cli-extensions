@@ -323,7 +323,7 @@ def setup_common_guardrails_profile(level, version, excludedNamespaces, mc: Mana
     return mc
 
 
-def process_message(message):
+def process_message_for_run_command(message):
     result = message.split("\n")
     if result[-2] != "[stderr]":
         raise CLIError("Error: " + result[-2])

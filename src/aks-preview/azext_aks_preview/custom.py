@@ -65,7 +65,7 @@ from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
     get_nodepool_snapshot_by_snapshot_id,
     print_or_merge_credentials,
-    process_message,
+    process_message_for_run_command,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -3269,7 +3269,7 @@ def _aks_run_command(
         if display_status != "Provisioning succeeded":
             raise InvalidArgumentValueError(
                 f"Can not run command with returned code {display_status} and message {message}")
-        return process_message(message)
+        return process_message_for_run_command(message)
     except Exception as ex:
         raise HttpResponseError(f"Can not run command with returned exception {ex}") from ex
 
