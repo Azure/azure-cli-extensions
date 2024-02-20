@@ -167,7 +167,7 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
 
     if all(param is None for param in (api_key_and_service_account, deterministic_outbound_ip, public_network_access,
                                        smtp, host, user, password, start_tls_policy, skip_verify, from_address,
-                                       from_name, major_version, resource_group_name, tags)):
+                                       from_name, major_version, tags)):
         raise ArgumentUsageError("Please supply at least one parameter value to update the Grafana workspace")
 
     client = cf_amg(cmd.cli_ctx, subscription=None)
