@@ -163,13 +163,11 @@ def list_grafana(cmd, resource_group_name=None):
 def update_grafana(cmd, grafana_name, api_key_and_service_account=None, deterministic_outbound_ip=None,
                    public_network_access=None, smtp=None, host=None, user=None, password=None,
                    start_tls_policy=None, skip_verify=None, from_address=None, from_name=None,
-                   resource_group_name=None, tags=None):
+                   major_version=None, resource_group_name=None, tags=None):
 
-    # pylint: disable=too-many-boolean-expressions, too-many-boolean-expressions
-
-    if (not api_key_and_service_account and not deterministic_outbound_ip and not public_network_access and not tags
-            and not smtp and not host and not user and not password and not start_tls_policy and not from_address
-            and not from_name and skip_verify is None):
+    if all(param is None for param in (api_key_and_service_account, deterministic_outbound_ip, public_network_access,
+                                       smtp, host, user, password, start_tls_policy, skip_verify, from_address,
+                                       from_name, major_version, resource_group_name, tags)):
         raise ArgumentUsageError("Please supply at least one parameter value to update the Grafana workspace")
 
     client = cf_amg(cmd.cli_ctx, subscription=None)
@@ -186,6 +184,9 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
 
     if public_network_access:
         resourceProperties["publicNetworkAccess"] = public_network_access
+
+    if major_version:
+        resourceProperties["grafanaMajorVersion"] = major_version
 
     if tags:
         resource["tags"] = tags

@@ -26,7 +26,7 @@ def load_arguments(self, _):
                                "numeric value and is only unique per Grafana install."))
         c.argument("folder", help="id, uid, title which can identify a folder. CLI will search in the order of id, uid, and title, till finds a match")
         c.argument("api_key_or_token", options_list=["--api-key", "--token", '-t'],
-                   help="api key or service account token, a randomly generated string used to interact with Grafana endpoint; if missing, CLI will use logon user's credentials")
+                   help="api key or service account token, a randomly generated string used to interact with Grafana endpoint; if missing, CLI will use current logged-in user's credentials")
         c.argument("components", get_enum_type(["dashboards", "datasources", "folders", "snapshots", "annotations"]), nargs='+', options_list=["-c", "--components"], help="grafana artifact types to backup")
         c.argument("folders_to_include", nargs='+', options_list=["-i", "--folders-to-include"], help="folders to include in backup or sync")
         c.argument("folders_to_exclude", nargs='+', options_list=["-e", "--folders-to-exclude"], help="folders to exclude in backup or sync")
@@ -39,20 +39,21 @@ def load_arguments(self, _):
                    help="If enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources. Default: Disabled")
         c.argument("skip_system_assigned_identity", options_list=["-s", "--skip-system-assigned-identity"], arg_type=get_three_state_flag(), help="Do not enable system assigned identity")
         c.argument("skip_role_assignments", arg_type=get_three_state_flag(), help="Do not create role assignments for managed identity and the current login user")
-        c.argument("principal_ids", nargs="+", help="space-separated Azure AD object ids for users, groups, etc to be made as Grafana Admins. Once provided, CLI won't make the current logon user as Grafana Admin")
+        c.argument("principal_ids", nargs="+", help="space-separated Azure AD object ids for users, groups, etc to be made as Grafana Admins. Once provided, CLI won't make the current logged-in user as Grafana Admin")
         c.argument("principal_types", get_enum_type(["User", "Group", "ServicePrincipal"]), nargs="+", help="space-separated Azure AD principal types to pair with --principal-ids")
 
     with self.argument_context("grafana update") as c:
         c.argument("api_key_and_service_account", get_enum_type(["Enabled", "Disabled"]), options_list=['--api-key', '--service-account'],
-                   help="If enabled, you will be able to configur Grafana api keys and service accounts")
+                   help="If enabled, you will be able to configure Grafana API keys and service accounts")
         c.argument("deterministic_outbound_ip", get_enum_type(["Enabled", "Disabled"]), options_list=["-i", "--deterministic-outbound-ip"],
                    help="If enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources")
+        c.argument("major_version", options_list=["--major-version"], help="Grafana major version number")
         c.argument("public_network_access", get_enum_type(["Enabled", "Disabled"]), options_list=["-p", "--public-network-access"],
                    help="allow public network access")
         c.argument("smtp", get_enum_type(["Enabled", "Disabled"]), arg_group='SMTP', help="allow Grafana to send email")
-        c.argument("host", arg_group='SMTP', help="Smtp server url(port included)")
-        c.argument("user", arg_group='SMTP', help="Smtp server user name")
-        c.argument("password", arg_group='SMTP', help="Smtp server user password")
+        c.argument("host", arg_group='SMTP', help="SMTP server url (port included)")
+        c.argument("user", arg_group='SMTP', help="SMTP server user name")
+        c.argument("password", arg_group='SMTP', help="SMTP server user password")
         c.argument("from_address", arg_group='SMTP', help="Address used when sending out emails")
         c.argument("from_name", arg_group='SMTP', help="Name to be used when sending out emails")
         c.argument("start_tls_policy", get_enum_type(["OpportunisticStartTLS", "MandatoryStartTLS", "NoStartTLS"]), arg_group='SMTP', help="TLS policy")
