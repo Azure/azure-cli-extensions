@@ -2205,6 +2205,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # if a gateway is enabled, enable the mesh
             if enable_egress_gateway:
                 new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+                if new_profile.istio is None:
+                    new_profile.istio = self.models.IstioServiceMesh()  # pylint: disable=no-member
                 updated = True
 
             # ensure necessary fields
@@ -2259,6 +2261,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # if an ingress gateway is enabled, enable the mesh
             if enable_ingress_gateway:
                 new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+                if new_profile.istio is None:
+                    new_profile.istio = self.models.IstioServiceMesh()  # pylint: disable=no-member
                 updated = True
 
             if not ingress_gateway_type:
@@ -2629,6 +2633,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # Note: No need to check for mutually exclusive parameter with enable-ai-toolchain-operator here
         # because it's already checked in get_ai_toolchain_operator
         return self.raw_param.get("disable_ai_toolchain_operator")
+
+    def get_ssh_access(self) -> Union[str, None]:
+        """Obtain the value of ssh_access.
+        """
+        return self.raw_param.get("ssh_access")
 
 
 # pylint: disable=too-many-public-methods
@@ -3225,6 +3234,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # Default is disabled so no need to worry about that here
         return mc
 
+    def set_up_agentpool_profile_ssh_access(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        ssh_access = self.context.get_ssh_access()
+        if ssh_access is not None:
+            for agent_pool_profile in mc.agent_pool_profiles:
+                if agent_pool_profile.security_profile is None:
+                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+                agent_pool_profile.security_profile.ssh_access = ssh_access
+        return mc
+
     # pylint: disable=unused-argument
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
@@ -3283,6 +3303,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_container_storage(mc)
         # set up node provisioning profile
         mc = self.set_up_node_provisioning_profile(mc)
+        # set up agentpool profile ssh access
+        mc = self.set_up_agentpool_profile_ssh_access(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -4555,7 +4577,23 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if mc.ai_toolchain_operator_profile is None:
                 mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile()  # pylint: disable=no-member
             mc.ai_toolchain_operator_profile.enabled = False
+        return mc
 
+    def update_agentpool_profile_ssh_access(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        ssh_access = self.context.get_ssh_access()
+        if ssh_access is not None:
+            msg = (
+                f"You're going to update ALL agentpool ssh access to '{ssh_access}' "
+                "This change will take effect after you upgrade the nodepool. Proceed?"
+            )
+            if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
+                raise DecoratorEarlyExitException()
+            for agent_pool_profile in mc.agent_pool_profiles:
+                if agent_pool_profile.security_profile is None:
+                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+                agent_pool_profile.security_profile.ssh_access = ssh_access
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
@@ -4625,6 +4663,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_azure_container_storage(mc)
         # update node provisioning profile
         mc = self.update_node_provisioning_profile(mc)
+        # update agentpool profile ssh access
+        mc = self.update_agentpool_profile_ssh_access(mc)
 
         return mc
 

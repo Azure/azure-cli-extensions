@@ -4,6 +4,10 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
+
+0.3.47
+++++++
 * 'az containerapp add-on' : support for add-on milvus create and delete commands
 * [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.59.0
 * 'az containerapp add-on' : support for add-on weaviate create and delete commands

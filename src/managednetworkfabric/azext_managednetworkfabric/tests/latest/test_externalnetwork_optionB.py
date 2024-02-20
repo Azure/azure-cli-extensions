@@ -23,38 +23,14 @@ def cleanup_scenario1(test):
     pass
 
 
-def setup_scenario2(test):
-    ''' Env setup_scenario1 '''
-    pass
-
-
-def cleanup_scenario2(test):
-    '''Env cleanup_scenario1 '''
-    pass
-
-
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
     setup_scenario1(test)
-    step_create_s1(test, checks=[])
-    step_update_s1(test, checks=[])
-    common_methods(test)
+    # step_create_s1(test, checks=[])
+    # step_show(test, checks=[])
+    # step_list_resource_group(test, checks=[])
+    # step_delete(test, checks=[])
     cleanup_scenario1(test)
-
-
-def call_scenario2(test):
-    ''' # Testcase: scenario2'''
-    setup_scenario2(test)
-    step_create_s2(test, checks=[])
-    step_update_s2(test, checks=[])
-    common_methods(test)
-    cleanup_scenario2(test)
-
-
-def common_methods(test):
-    step_show(test, checks=[])
-    step_list_resource_group(test, checks=[])
-    step_delete(test, checks=[])
 
 
 def step_create_s1(test, checks=None):
@@ -65,36 +41,12 @@ def step_create_s1(test, checks=None):
         'az networkfabric externalnetwork create --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s1_peering_option} --option-b-properties {optionBProperties} --import-route-policy {importRoutePolicy} --export-route-policy {exportRoutePolicy}', checks=checks)
 
 
-def step_create_s2(test, checks=None):
-    '''externalnetwork create operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric externalnetwork create --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {optionAProperties} --import-route-policy {importRoutePolicy} --export-route-policy {exportRoutePolicy}', checks=checks)
-
-
 def step_show(test, checks=None):
     '''externalnetwork show operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric externalnetwork show --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
-
-
-def step_update_s1(test, checks=None):
-    '''externalnetwork update operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s1_peering_option} --option-b-properties {updatedOptionBProperties}', checks=checks)
-
-
-def step_update_s2(test, checks=None):
-    '''externalnetwork update operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {updatedOptionAProperties}', checks=checks)
 
 
 def step_list_resource_group(test, checks=None):
@@ -113,7 +65,7 @@ def step_delete(test, checks=None):
         'az networkfabric externalnetwork delete --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
 
 
-class GA_ExternalNetworkScenarioTest1(ScenarioTest):
+class GA_ExternalNetworkOptionBScenarioTest1(ScenarioTest):
     ''' External Network Scenario test'''
 
     def __init__(self, *args, **kwargs):
@@ -129,11 +81,11 @@ class GA_ExternalNetworkScenarioTest1(ScenarioTest):
             'optionBProperties': CONFIG.get('EXTERNAL_NETWORK', 'option_b_properties'),
             'updatedOptionBProperties': CONFIG.get('EXTERNAL_NETWORK', 'updated_option_b_properties'),
             'optionAProperties': CONFIG.get('EXTERNAL_NETWORK', 'option_a_properties'),
-            'updatedOptionAProperties': CONFIG.get('EXTERNAL_NETWORK', 'updated_option_a_properties')
+            'updatedOptionAProperties': CONFIG.get('EXTERNAL_NETWORK', 'updated_option_a_properties'),
+            'nni_Id': CONFIG.get('EXTERNAL_NETWORK', 'nni_Id')
 
         })
 
-    def test_GA_externalnetwork_scenario1(self):
+    def test_GA_externalnetwork_optionB_scenario1(self):
         ''' test scenario for externalnetwork CRUD operations'''
         call_scenario1(self)
-        call_scenario2(self)
