@@ -83,37 +83,6 @@ class ContainerappEnvCertificateListDecorator(ContainerappEnvCertificateDecorato
         return self.get_private_certificates(certificate_name)
 
 
-class ContainerappPreviewEnvCertificateListDecorator(ContainerappEnvCertificateListDecorator):
-    def get_argument_managed_certificates_only(self):
-        return self.get_param("managed_certificates_only")
-
-    def get_argument_private_key_certificates_only(self):
-        return self.get_param("private_key_certificates_only")
-
-    def validate_arguments(self):
-        if self.get_argument_managed_certificates_only() and self.get_argument_private_key_certificates_only():
-            raise MutuallyExclusiveArgumentError(
-                "Use either '--managed-certificates-only' or '--private-key-certificates-only'.")
-        if self.get_argument_managed_certificates_only() and self.get_argument_thumbprint():
-            raise MutuallyExclusiveArgumentError("'--thumbprint' not supported for managed certificates.")
-
-    def list(self):
-        if self.get_argument_certificate() and is_valid_resource_id(self.get_argument_certificate()):
-            certificate_name = parse_resource_id(self.get_argument_certificate())["resource_name"]
-            certificate_type = parse_resource_id(self.get_argument_certificate())["resource_type"]
-        else:
-            certificate_name = self.get_argument_certificate()
-            certificate_type = PRIVATE_CERTIFICATE_RT if self.get_argument_private_key_certificates_only() or self.get_argument_thumbprint() else (MANAGED_CERTIFICATE_RT if self.get_argument_managed_certificates_only() else None)
-
-        if certificate_type == MANAGED_CERTIFICATE_RT:
-            return self.get_managed_certificates(certificate_name)
-        if certificate_type == PRIVATE_CERTIFICATE_RT:
-            return self.get_private_certificates(certificate_name)
-        managed_certs = self.get_managed_certificates(certificate_name)
-        private_certs = self.get_private_certificates(certificate_name)
-        return managed_certs + private_certs
-
-
 class ContainerappEnvCertificateUploadDecorator(ContainerappEnvCertificateDecorator):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
@@ -190,3 +159,35 @@ class ContainerappEnvCertificateUploadDecorator(ContainerappEnvCertificateDecora
             return r
         except Exception as e:
             handle_raw_exception(e)
+
+
+# Decorators for preview Feature
+class ContainerappPreviewEnvCertificateListDecorator(ContainerappEnvCertificateListDecorator):
+    def get_argument_managed_certificates_only(self):
+        return self.get_param("managed_certificates_only")
+
+    def get_argument_private_key_certificates_only(self):
+        return self.get_param("private_key_certificates_only")
+
+    def validate_arguments(self):
+        if self.get_argument_managed_certificates_only() and self.get_argument_private_key_certificates_only():
+            raise MutuallyExclusiveArgumentError(
+                "Use either '--managed-certificates-only' or '--private-key-certificates-only'.")
+        if self.get_argument_managed_certificates_only() and self.get_argument_thumbprint():
+            raise MutuallyExclusiveArgumentError("'--thumbprint' not supported for managed certificates.")
+
+    def list(self):
+        if self.get_argument_certificate() and is_valid_resource_id(self.get_argument_certificate()):
+            certificate_name = parse_resource_id(self.get_argument_certificate())["resource_name"]
+            certificate_type = parse_resource_id(self.get_argument_certificate())["resource_type"]
+        else:
+            certificate_name = self.get_argument_certificate()
+            certificate_type = PRIVATE_CERTIFICATE_RT if self.get_argument_private_key_certificates_only() or self.get_argument_thumbprint() else (MANAGED_CERTIFICATE_RT if self.get_argument_managed_certificates_only() else None)
+
+        if certificate_type == MANAGED_CERTIFICATE_RT:
+            return self.get_managed_certificates(certificate_name)
+        if certificate_type == PRIVATE_CERTIFICATE_RT:
+            return self.get_private_certificates(certificate_name)
+        managed_certs = self.get_managed_certificates(certificate_name)
+        private_certs = self.get_private_certificates(certificate_name)
+        return managed_certs + private_certs
