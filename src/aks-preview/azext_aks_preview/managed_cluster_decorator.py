@@ -30,6 +30,8 @@ from azext_aks_preview._consts import (
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
     CONST_ROTATION_POLL_INTERVAL,
     CONST_SECRET_ROTATION_ENABLED,
+    CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE,
+    CONST_DNS_ZONE_CONTRIBUTOR_ROLE,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -4498,7 +4500,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                                 is_private_dns_zone = (
                                     parse_resource_id(dns_zone_id).get("type").lower() == "privatednszones"
                                 )
-                                role = "Private DNS Zone Contributor" if is_private_dns_zone else "DNS Zone Contributor"
+                                role = CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE if is_private_dns_zone else CONST_DNS_ZONE_CONTRIBUTOR_ROLE
                                 if not add_role_assignment(
                                     self.cmd,
                                     role,
@@ -4527,7 +4529,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     try:
                         for dns_zone in dns_zone_resource_ids:
                             is_private_dns_zone = parse_resource_id(dns_zone).get("type").lower() == "privatednszones"
-                            role = "Private DNS Zone Contributor" if is_private_dns_zone else "DNS Zone Contributor"
+                            role = CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE if is_private_dns_zone else CONST_DNS_ZONE_CONTRIBUTOR_ROLE
                             if not add_role_assignment(
                                 self.cmd,
                                 role,
