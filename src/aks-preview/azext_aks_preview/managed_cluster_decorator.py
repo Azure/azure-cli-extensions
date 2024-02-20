@@ -4672,8 +4672,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: None
         """
         super().postprocessing_after_mc_created(cluster)
-        print("inside postprocessing_after_mc_created")
-        print("dns_zone_resource_ids: ", cluster.ingress_profile.web_app_routing.dns_zone_resource_ids)
         enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage")
         disable_azure_container_storage = self.context.get_intermediate("disable_azure_container_storage")
 
