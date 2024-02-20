@@ -30,6 +30,16 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
 operation_request_map = {"DisableMUA": "/deleteResourceGuardProxyRequests/default",
                          "DeleteBackupInstance": "/deleteBackupInstanceRequests/default"}
 
+datasource_map = {
+    "AzureDisk": "Microsoft.Compute/disks",
+    "AzureBlob": "Microsoft.Storage/storageAccounts/blobServices",
+    "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases",
+    "AzureKubernetesService": "Microsoft.ContainerService/managedClusters"
+}
+
+# This is ideally temporary, as Backup Vault contains secondary region information. But in some cases 
+# (seen mostly in centraluseuap and eastus2euap), this information is missing - this is provided as a
+# fallback option.
 secondary_region_map = {
     "australiacentral": "australiacentral2",
     "australiacentral2": "australiacentral",
@@ -319,6 +329,14 @@ def validate_and_set_datasource_id_in_restore_request(cmd, target_resource_id, b
                                              "or backup-instance-id (for original location restore).")
 
     return datasource_id
+
+
+def get_restore_target_info_basics(restore_object_type, restore_location):
+    return {
+        "object_type": restore_object_type,
+        "restore_location": restore_location,
+        "recovery_option": "FailIfExists"
+    }
 
 
 def get_resource_criteria_list(datasource_type, restore_configuration, container_list, from_prefix_pattern, to_prefix_pattern):

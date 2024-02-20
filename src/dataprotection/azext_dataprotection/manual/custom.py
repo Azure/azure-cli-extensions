@@ -902,10 +902,7 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
     restore_request = helper.validate_and_set_source_datastore_type_in_restore_request(source_datastore, datasource_type,
                                                                                        restore_request, manifest)
 
-    restore_request["restore_target_info"] = {}
-    restore_request["restore_target_info"]["object_type"] = "RestoreTargetInfo"
-    restore_request["restore_target_info"]["restore_location"] = restore_location
-    restore_request["restore_target_info"]["recovery_option"] = "FailIfExists"
+    restore_request["restore_target_info"] = helper.get_restore_target_info_basics("RestoreTargetInfo", restore_location)
 
     # The datasource ID is set either from Backup instance ID or Target Resource Id, depending on restore type
     datasource_id = helper.validate_and_set_datasource_id_in_restore_request(cmd, target_resource_id, backup_instance_id)
@@ -936,7 +933,7 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
 
     # Workload should allow for Recover as files
     if manifest is not None and "RestoreAsFiles" not in manifest["allowedRestoreTargetTypes"]:
-        raise InvalidArgumentValueError("Specified DatasourceType " + datasource_type + " doesn't support Item Level Recovery")
+        raise InvalidArgumentValueError("Specified DatasourceType " + datasource_type + " doesn't support Recovery as Files")
 
     # Setting up restore request according to Recovery-Point/Point-in-time style of restore
     restore_request, restore_mode = helper.validate_and_set_restore_mode_in_restore_request(recovery_point_id, point_in_time, restore_request)
@@ -952,12 +949,9 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
                                                                                        restore_request, manifest)
 
     # Constructing the rest of the restore request object. No further validation is being done.
-    # Currently, restore_target_info.target_details.restore_target_location_type is fixed to AzureBlobs
-    restore_request["restore_target_info"] = {}
-    restore_request["restore_target_info"]["object_type"] = "RestoreFilesTargetInfo"
-    restore_request["restore_target_info"]["restore_location"] = restore_location
-    restore_request["restore_target_info"]["recovery_option"] = "FailIfExists"
+    restore_request["restore_target_info"] = helper.get_restore_target_info_basics("RestoreFilesTargetInfo", restore_location)
 
+    # Currently, restore_target_info.target_details.restore_target_location_type is fixed to AzureBlobs
     restore_request["restore_target_info"]["target_details"] = {}
     restore_request["restore_target_info"]["target_details"]["url"] = target_blob_container_url
     restore_request["restore_target_info"]["target_details"]["file_prefix"] = target_file_name
@@ -992,10 +986,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                                                                                        restore_request, manifest)
 
     # Constructing the rest of the restore request object. No further validation is being done.
-    restore_request["restore_target_info"] = {}
-    restore_request["restore_target_info"]["object_type"] = "ItemLevelRestoreTargetInfo"
-    restore_request["restore_target_info"]["restore_location"] = restore_location
-    restore_request["restore_target_info"]["recovery_option"] = "FailIfExists"
+    restore_request["restore_target_info"] = helper.get_restore_target_info_basics("ItemLevelRestoreTargetInfo", restore_location)
 
     # The datasource ID is set either from Backup instance ID or Target Resource Id, depending on restore type
     datasource_id = helper.validate_and_set_datasource_id_in_restore_request(cmd, target_resource_id, backup_instance_id)
