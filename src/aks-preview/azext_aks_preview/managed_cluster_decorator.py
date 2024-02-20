@@ -4500,7 +4500,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                                 is_private_dns_zone = (
                                     parse_resource_id(dns_zone_id).get("type").lower() == "privatednszones"
                                 )
-                                role = CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE if is_private_dns_zone else CONST_DNS_ZONE_CONTRIBUTOR_ROLE
+                                role = CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE if is_private_dns_zone else \
+                                    CONST_DNS_ZONE_CONTRIBUTOR_ROLE
                                 if not add_role_assignment(
                                     self.cmd,
                                     role,
@@ -4529,7 +4530,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     try:
                         for dns_zone in dns_zone_resource_ids:
                             is_private_dns_zone = parse_resource_id(dns_zone).get("type").lower() == "privatednszones"
-                            role = CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE if is_private_dns_zone else CONST_DNS_ZONE_CONTRIBUTOR_ROLE
+                            role = CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE if is_private_dns_zone else \
+                                CONST_DNS_ZONE_CONTRIBUTOR_ROLE
                             if not add_role_assignment(
                                 self.cmd,
                                 role,
