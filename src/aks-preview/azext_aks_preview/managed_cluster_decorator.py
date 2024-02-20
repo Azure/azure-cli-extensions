@@ -30,6 +30,8 @@ from azext_aks_preview._consts import (
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
     CONST_ROTATION_POLL_INTERVAL,
     CONST_SECRET_ROTATION_ENABLED,
+    CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE,
+    CONST_DNS_ZONE_CONTRIBUTOR_ROLE,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -96,6 +98,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
 from msrestazure.tools import is_valid_resource_id
+from msrestazure.tools import parse_resource_id
 
 
 logger = get_logger(__name__)
@@ -2567,15 +2570,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: list of str or None
         """
-        dns_zone_resource_ids = self.raw_param.get("dns_zone_resource_ids")
-        dns_zone_resource_ids = [
-            x.strip()
-            for x in (
-                dns_zone_resource_ids.split(",")
-                if dns_zone_resource_ids
-                else []
-            )
-        ]
+        dns_zone_resource_ids_input = self.raw_param.get("dns_zone_resource_ids")
+        dns_zone_resource_ids = []
+
+        if dns_zone_resource_ids_input:
+            for dns_zone in dns_zone_resource_ids_input.split(","):
+                dns_zone = dns_zone.strip()
+                if dns_zone and is_valid_resource_id(dns_zone):
+                    dns_zone_resource_ids.append(dns_zone)
+                else:
+                    raise CLIError(dns_zone, " is not a valid Azure DNS Zone resource ID.")
 
         return dns_zone_resource_ids
 
@@ -4503,24 +4507,31 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
             if add_dns_zone:
-                if mc.ingress_profile.web_app_routing.dns_zone_resource_ids is None:
-                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids = []
-                mc.ingress_profile.web_app_routing.dns_zone_resource_ids.extend(dns_zone_resource_ids)
-                if attach_zones:
-                    try:
-                        for dns_zone in dns_zone_resource_ids:
-                            if not add_role_assignment(
-                                self.cmd,
-                                "DNS Zone Contributor",
-                                mc.ingress_profile.web_app_routing.identity.object_id,
-                                False,
-                                scope=dns_zone
-                            ):
-                                logger.warning(
-                                    'Could not create a role assignment for App Routing. '
-                                    'Are you an Owner on this subscription?')
-                    except Exception as ex:
-                        raise CLIError('Error in granting dns zone permisions to managed identity.\n') from ex
+                mc.ingress_profile.web_app_routing.dns_zone_resource_ids = (
+                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids or []
+                )
+                for dns_zone_id in dns_zone_resource_ids:
+                    if dns_zone_id not in mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
+                        mc.ingress_profile.web_app_routing.dns_zone_resource_ids.append(dns_zone_id)
+                        if attach_zones:
+                            try:
+                                is_private_dns_zone = (
+                                    parse_resource_id(dns_zone_id).get("type").lower() == "privatednszones"
+                                )
+                                role = CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE if is_private_dns_zone else \
+                                    CONST_DNS_ZONE_CONTRIBUTOR_ROLE
+                                if not add_role_assignment(
+                                    self.cmd,
+                                    role,
+                                    mc.ingress_profile.web_app_routing.identity.object_id,
+                                    False,
+                                    scope=dns_zone_id
+                                ):
+                                    logger.warning(
+                                        'Could not create a role assignment for App Routing. '
+                                        'Are you an Owner on this subscription?')
+                            except Exception as ex:
+                                raise CLIError('Error in granting dns zone permissions to managed identity.\n') from ex
             elif delete_dns_zone:
                 if mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
                     dns_zone_resource_ids = [
@@ -4536,9 +4547,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 if attach_zones:
                     try:
                         for dns_zone in dns_zone_resource_ids:
+                            is_private_dns_zone = parse_resource_id(dns_zone).get("type").lower() == "privatednszones"
+                            role = CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE if is_private_dns_zone else \
+                                CONST_DNS_ZONE_CONTRIBUTOR_ROLE
                             if not add_role_assignment(
                                 self.cmd,
-                                "DNS Zone Contributor",
+                                role,
                                 mc.ingress_profile.web_app_routing.identity.object_id,
                                 False,
                                 scope=dns_zone,
@@ -4754,7 +4768,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
 
         # attach keyvault to app routing addon
-        from msrestazure.tools import parse_resource_id
         from azure.cli.command_modules.keyvault.custom import set_policy
         from azext_aks_preview._client_factory import get_keyvault_client
         keyvault_id = self.context.get_keyvault_id()
@@ -4779,12 +4792,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     keyvault_client = get_keyvault_client(self.cmd.cli_ctx, subscription_id=keyvault_subscription)
                     keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
                     managed_identity_object_id = cluster.ingress_profile.web_app_routing.identity.object_id
-                    print("managed_identity_object_id", managed_identity_object_id)
                     is_service_principal = False
 
                     try:
                         if keyvault.properties.enable_rbac_authorization:
-                            print("within if block")
                             if not self.context.external_functions.add_role_assignment(
                                 self.cmd,
                                 "Key Vault Secrets User",
@@ -4797,7 +4808,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                                     "Are you an Owner on this subscription?"
                                 )
                         else:
-                            print("within else block")
                             keyvault = set_policy(
                                 self.cmd,
                                 keyvault_client,

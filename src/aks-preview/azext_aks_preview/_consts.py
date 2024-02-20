@@ -288,3 +288,7 @@ CONST_NODE_PROVISIONING_MODE_AUTO = "Auto"
 # SSH Access Consts
 CONST_SSH_ACCESS_DISABLED = "disabled"
 CONST_SSH_ACCESS_LOCALUSER = "localuser"
+
+# Dns zone contributor role
+CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE = "Private DNS Zone Contributor"
+CONST_DNS_ZONE_CONTRIBUTOR_ROLE = "DNS Zone Contributor"
