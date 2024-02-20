@@ -11,8 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
-* Add `az aks nodepool delete-machines` command.
+* Vendor new SDK and bump API version to 2024-01-02-preview.
 
 1.0.0b6
 +++++++
@@ -21,6 +20,8 @@ Pending
 * Add `--ssh-access` to the `az aks update` command.
 * Add `--ssh-access` to the `az aks nodepool add` command.
 * Add `--ssh-access` to the `az aks nodepool update` command.
+* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
+* Add `az aks nodepool delete-machines` command.
 
 1.0.0b5
 +++++++
