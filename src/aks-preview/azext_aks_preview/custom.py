@@ -52,6 +52,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
+    CONST_SSH_ACCESS_LOCALUSER,
     CONST_NODE_PROVISIONING_STATE_SUCCEEDED,
     CONST_DEFAULT_NODE_OS_TYPE,
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
@@ -629,6 +630,7 @@ def aks_create(
     storage_pool_sku=None,
     storage_pool_option=None,
     node_provisioning_mode=None,
+    ssh_access=CONST_SSH_ACCESS_LOCALUSER,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -818,6 +820,7 @@ def aks_update(
     storage_pool_option=None,
     azure_container_storage_nodepools=None,
     node_provisioning_mode=None,
+    ssh_access=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1196,6 +1199,7 @@ def aks_agentpool_add(
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     skip_gpu_driver_install=False,
+    ssh_access=CONST_SSH_ACCESS_LOCALUSER,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1249,6 +1253,8 @@ def aks_agentpool_update(
     asg_ids=None,
     enable_artifact_streaming=False,
     os_sku=None,
+    ssh_access=None,
+    yes=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

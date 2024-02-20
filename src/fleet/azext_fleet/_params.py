@@ -59,7 +59,7 @@ def load_arguments(self, _):
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
 
     with self.argument_context('fleet updaterun create') as c:
-        c.argument('upgrade_type', arg_type=get_enum_type(['Full', 'NodeImageOnly']))
+        c.argument('upgrade_type', arg_type=get_enum_type(['Full', 'NodeImageOnly', 'ControlPlaneOnly']))
         c.argument('kubernetes_version', validator=validate_kubernetes_version)
         c.argument('node_image_selection', arg_type=get_enum_type(['Latest', 'Consistent']), help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded')
         c.argument('stages', type=file_type, completer=FilesCompleter(), help='Path to a json file that defines stages to upgrade a fleet. See examples for further reference.')
