@@ -29,14 +29,11 @@ class ContainerappEnvCertificateDecorator(BaseResource):
     def get_argument_thumbprint(self):
         return self.get_param("thumbprint")
 
+    def set_argument_thumbprint(self, thumbprint):
+        return self.set_param("thumbprint", thumbprint)
+
     def get_argument_certificate(self):
         return self.get_param("certificate")
-
-    def get_argument_managed_certificates_only(self):
-        return self.get_param("managed_certificates_only")
-
-    def get_argument_private_key_certificates_only(self):
-        return self.get_param("private_key_certificates_only")
 
     def check_cert_name_availability(self, resource_group_name, name, cert_name):
         name_availability_request = {"name": cert_name, "type": CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE}
@@ -77,6 +74,23 @@ class ContainerappEnvCertificateDecorator(BaseResource):
 
 
 class ContainerappEnvCertificateListDecorator(ContainerappEnvCertificateDecorator):
+
+    def list(self):
+        if self.get_argument_certificate() and is_valid_resource_id(self.get_argument_certificate()):
+            certificate_name = parse_resource_id(self.get_argument_certificate())["resource_name"]
+        else:
+            certificate_name = self.get_argument_certificate()
+
+        return self.get_private_certificates(certificate_name)
+
+
+class ContainerappPreviewEnvCertificateListDecorator(ContainerappEnvCertificateListDecorator):
+    def get_argument_managed_certificates_only(self):
+        return self.get_param("managed_certificates_only")
+
+    def get_argument_private_key_certificates_only(self):
+        return self.get_param("private_key_certificates_only")
+
     def validate_arguments(self):
         if self.get_argument_managed_certificates_only() and self.get_argument_private_key_certificates_only():
             raise MutuallyExclusiveArgumentError(
@@ -120,8 +134,14 @@ class ContainerappEnvCertificateUploadDecorator(ContainerappEnvCertificateDecora
         return self.get_param("prompt")
 
     def construct_payload(self):
-        blob, thumbprint = load_cert_file(self.get_argument_certificate_file(), self.get_argument_certificate_password())
+        self.set_up_certificate_value()
 
+        self.set_up_cert_name()
+        if self.get_argument_certificate_password():
+            self.certificate["properties"]["password"] = self.get_argument_certificate_password()
+        self.set_up_certificate_location()
+
+    def set_up_cert_name(self):
         if self.get_argument_certificate_name():
             name_availability = self.check_cert_name_availability(self.get_argument_resource_group_name(), self.get_argument_name(), self.get_argument_certificate_name())
             if not name_availability["nameAvailable"]:
@@ -141,16 +161,23 @@ class ContainerappEnvCertificateUploadDecorator(ContainerappEnvCertificateDecora
                 self.cert_name = self.get_argument_certificate_name()
 
         while not self.cert_name:
-            random_name = generate_randomized_cert_name(thumbprint, self.get_argument_name(), self.get_argument_resource_group_name())
+            random_name = generate_randomized_cert_name(self.get_argument_thumbprint(), self.get_argument_name(), self.get_argument_resource_group_name())
             check_result = self.check_cert_name_availability(self.get_argument_resource_group_name(), self.get_argument_name(), random_name)
             if check_result["nameAvailable"]:
                 self.cert_name = random_name
             elif not check_result["nameAvailable"] and (check_result["reason"] == NAME_INVALID):
                 raise ValidationError(check_result["message"])
 
-        self.certificate["properties"]["password"] = self.get_argument_certificate_password()
-        self.certificate["properties"]["value"] = blob
+    def set_up_certificate_value(self):
+        if self.get_argument_certificate_file():
+            blob, thumbprint = load_cert_file(self.get_argument_certificate_file(),
+                                              self.get_argument_certificate_password())
+            self.certificate["properties"]["value"] = blob
+            self.set_argument_thumbprint(thumbprint)
+
+    def set_up_certificate_location(self):
         self.certificate["location"] = self.get_argument_location()
+
         if not self.certificate["location"]:
             try:
                 managed_env = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
