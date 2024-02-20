@@ -8,7 +8,7 @@ az extension add --name firmwareanalysis
 ```
 
 ### Included Features
-##### Create a workspace
+##### Create a workspace.
 ```
 az firmwareanalysis workspace create \
     --resource-group my-rg \
@@ -17,20 +17,20 @@ az firmwareanalysis workspace create \
     --tags {key:value}
 ```
 
-##### Show a workspace
+##### Show a workspace.
 ```
 az firmwareanalysis workspace show \
     --resource-group my-rg \
     --workspace-name my-workspace
 ```
 
-##### List all workspaces
+##### List all workspaces.
 ```
 az firmwareanalysis workspace list \
     --resource-group my-rg
 ```
 
-##### Delete a workspace
+##### Delete a workspace.
 ```
 az firmwareanalysis workspace delete \
     --resource-group my-rg \
@@ -45,7 +45,7 @@ az firmwareanalysis workspace generate-upload-url \
     --firmware-id firmware-id
 ```
 
-##### Create a firmware
+##### Create a firmware.
 ```
 az firmwareanalysis firmware create \
     --resource-group my-rg \
