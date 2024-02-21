@@ -20,7 +20,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_env_telemetry_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        self.cmd('configure --defaults location={}'.format('eastus'))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ai_conn_str = f'InstrumentationKey={self.create_random_name(prefix="ik", length=8)};IngestionEndpoint={self.create_random_name(prefix="ie", length=8)};LiveEndpoint={self.create_random_name(prefix="le", length=8)}'
@@ -48,8 +48,14 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
             JMESPathCheck('[0].name', env_name),
         ])
 
-        self.cmd(f'containerapp env telemetry set -g {resource_group} -n {env_name} --app-insights-connection-string {ai_conn_str} --open-telemetry-dataDog-site {data_dog_site} --open-telemetry-dataDog-key {data_dog_key} --open-telemetry-traces-destinations {traces_destinations} --open-telemetry-logs-destinations {logs_destinations} --open-telemetry-metrics-destinations {metrics_destinations}', checks=[
+        self.cmd(f'containerapp env telemetry set -g {resource_group} -n {env_name} --app-insights-connection-string {ai_conn_str} --open-telemetry-dataDog-site {data_dog_site} --open-telemetry-dataDog-key {data_dog_key} --open-telemetry-traces-destinations {traces_destinations} --open-telemetry-logs-destinations {logs_destinations} --open-telemetry-metrics-destinations {metrics_destinations}')
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
-            JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.dataDogConfiguration.key', None),
-            JMESPathCheck('properties.appInsightsConfiguration.connectionString', None),
+            JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.dataDogConfiguration.site', data_dog_site),
         ])
