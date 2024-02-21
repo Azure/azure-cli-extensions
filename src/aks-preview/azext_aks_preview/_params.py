@@ -2023,8 +2023,6 @@ def load_arguments(self, _):
     with self.argument_context('aks check-network outbound') as c:
         c.argument('cluster_name', options_list=['--name', '-n'],
                    required=True, help='Name of the managed cluster.')
-        c.argument('resource_group', options_list=['--resource-group', '-g'],
-                   required=True, help='Name of the resource group.')
         c.argument('node_name', help='Name of the node to perform the connectivity check.')
         c.argument('custom_endpoints',
                    help='Additional endpoint(s) to perform the connectivity check, separated by comma.',

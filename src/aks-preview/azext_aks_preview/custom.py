@@ -3407,12 +3407,12 @@ def _aks_get_node_name_as(
 def aks_check_network_outbound(
         cmd,
         client,
-        resource_group,
+        resource_group_name,
         cluster_name,
         node_name=None,
         custom_endpoints=None):
     fqdn = ""
-    cluster = aks_show(cmd, client, resource_group, cluster_name, None)
+    cluster = aks_show(cmd, client, resource_group_name, cluster_name, None)
     if not cluster:
         logger.warning("Can not get cluster information!")
     else:
@@ -3427,8 +3427,8 @@ def aks_check_network_outbound(
             raise ValidationError("Can not get VM set type of the cluster!")
         print("Get node pool VM set type:", vm_set_type)
 
-    location = get_rg_location(cmd.cli_ctx, resource_group)
-    managed_resource_group = f"MC_{resource_group}_{cluster_name}_{location}"
+    location = get_rg_location(cmd.cli_ctx, resource_group_name)
+    managed_resource_group = f"MC_{resource_group_name}_{cluster_name}_{location}"
     logger.debug("Location: %s, Managed Resource Group: %s", location, managed_resource_group)
 
     vmss_name = ""
@@ -3436,7 +3436,7 @@ def aks_check_network_outbound(
     vm_name = ""
     if vm_set_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
         vmss_name, instance_id = _aks_get_node_name_vmss(
-            cmd, resource_group, cluster_name, node_name, managed_resource_group)
+            cmd, resource_group_name, cluster_name, node_name, managed_resource_group)
 
         print(f"Start checking outbound network for vmss: {vmss_name},"
               f" instance_id: {instance_id}, managed_resource_group: {managed_resource_group}")
