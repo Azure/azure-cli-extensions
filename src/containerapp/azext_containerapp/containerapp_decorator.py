@@ -617,9 +617,6 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def set_argument_service_connectors_def_list(self, service_connectors_def_list):
         self.set_param("service_connectors_def_list", service_connectors_def_list)
 
-    def get_argument_use_default_container_registry(self):
-        return self.get_param("use_default_container_registry")
-
     def construct_payload(self):
         super().construct_payload()
         self.set_up_service_type()
@@ -1013,6 +1010,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
     def get_argument_build_env_vars(self):
         return self.get_param("build_env_vars")
+
+    def get_argument_use_default_container_registry(self):
+        return self.get_param("use_default_container_registry")
 
     def validate_arguments(self):
         super().validate_arguments()
