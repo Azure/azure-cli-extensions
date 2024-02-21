@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER
+from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_SSH_ACCESS_LOCALUSER
 from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
     AKSPreviewAgentPoolContext,
@@ -775,6 +775,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
             dec_agentpool_1 = dec_1.construct_agentpool_profile_preview()
 
         ground_truth_upgrade_settings_1 = self.models.AgentPoolUpgradeSettings()
+        # CLI will create sshAccess=localuser by default
+        ground_truth_security_profile = self.models.AgentPoolSecurityProfile()
+        ground_truth_security_profile.ssh_access = CONST_SSH_ACCESS_LOCALUSER
         ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
             nodepool_name="test_nodepool_name",
             vm_size=CONST_DEFAULT_NODE_VM_SIZE,
@@ -794,6 +797,7 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             enable_custom_ca_trust=False,
             network_profile=self.models.AgentPoolNetworkProfile(),
+            security_profile=ground_truth_security_profile,
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
@@ -878,6 +882,9 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
             dec_agentpool_1 = dec_1.construct_agentpool_profile_preview()
 
         upgrade_settings_1 = self.models.AgentPoolUpgradeSettings()
+        # CLI will create sshAccess=localuser by default
+        ground_truth_security_profile = self.models.AgentPoolSecurityProfile()
+        ground_truth_security_profile.ssh_access = CONST_SSH_ACCESS_LOCALUSER
         ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
             nodepool_name="nodepool1",
             orchestrator_version="",
@@ -897,6 +904,7 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             enable_custom_ca_trust=False,
             network_profile=self.models.AgentPoolNetworkProfile(),
+            security_profile=ground_truth_security_profile,
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
