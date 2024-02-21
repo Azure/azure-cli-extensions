@@ -389,17 +389,16 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """Get the value of pod_ip_allocation_mode.
         :return: str or None
         """
-        # overwrite if provided by user
-        pod_ip_allocation_mode = self.raw_param.get("pod_ip_allocation_mode")
-        # If the raw_param does not exist, try to read the property value corresponding to the parameter from the `agentpool` object
-        # if the agentpool property is specified then the property value will be used.
-        if (pod_ip_allocation_mode is None):
-            if (
-                self.agentpool and
-                self.agentpool.network_profile is not None and
+        # Initialize the value of pod_ip_allocation_mode from the agentpool.network_profile.pod_ip_allocation_mode if it exists
+        pod_ip_allocation_mode = None
+        if (
+                self.agentpool and self.agentpool.network_profile and
                 self.agentpool.network_profile.pod_ip_allocation_mode is not None
             ):
                 pod_ip_allocation_mode = self.agentpool.network_profile.pod_ip_allocation_mode
+
+        # overwrite if provided by user in the command
+        pod_ip_allocation_mode = self.raw_param.get("pod_ip_allocation_mode")
 
         return pod_ip_allocation_mode
     
