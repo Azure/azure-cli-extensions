@@ -148,7 +148,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             safe_set(self.new_containerapp, "properties", "template", value=r["properties"]["template"])
 
     def _need_update_container(self):
-        return self.get_argument_image() or self.get_argument_use_default_registry() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None or self.get_argument_secret_volume_mount() is not None
+        return self.get_argument_image() or self.get_argument_use_default_container_registry() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None or self.get_argument_secret_volume_mount() is not None
 
     def construct_payload(self):
         # construct from yaml
