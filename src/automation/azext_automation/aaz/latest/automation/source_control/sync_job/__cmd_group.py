@@ -8,3 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "automation source-control sync-job",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage source control sync jobs.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

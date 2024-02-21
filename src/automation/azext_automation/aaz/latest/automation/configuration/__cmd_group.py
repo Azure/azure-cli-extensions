@@ -8,3 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "automation configuration",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage Dsc Configuration.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

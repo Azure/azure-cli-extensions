@@ -8,3 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "automation account",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Automation Account.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

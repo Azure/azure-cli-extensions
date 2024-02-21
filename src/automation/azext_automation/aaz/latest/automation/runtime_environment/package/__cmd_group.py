@@ -8,3 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "automation runtime-environment package",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage Package for Runtime Environment.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
