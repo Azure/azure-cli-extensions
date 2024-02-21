@@ -68,8 +68,8 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="The managed service identities assigned to this resource.",
         )
-        _args_schema.partner_organization_properties = AAZObjectArg(
-            options=["--partner-organization-properties"],
+        _args_schema.partner_organization = AAZObjectArg(
+            options=["--partner-organization"],
             arg_group="Properties",
             help="Organization properties",
         )
@@ -101,12 +101,12 @@ class Update(AAZCommand):
             blank={},
         )
 
-        partner_organization_properties = cls._args_schema.partner_organization_properties
-        partner_organization_properties.organization_id = AAZStrArg(
+        partner_organization = cls._args_schema.partner_organization
+        partner_organization.organization_id = AAZStrArg(
             options=["organization-id"],
             help="Organization Id in partner's system",
         )
-        partner_organization_properties.organization_name = AAZStrArg(
+        partner_organization.organization_name = AAZStrArg(
             options=["organization-name"],
             help="Organization name in partner's system",
             fmt=AAZStrArgFormat(
@@ -115,15 +115,15 @@ class Update(AAZCommand):
                 min_length=1,
             ),
         )
-        partner_organization_properties.single_sign_on_properties = AAZObjectArg(
+        partner_organization.single_sign_on_properties = AAZObjectArg(
             options=["single-sign-on-properties"],
             help="Single Sign On properties for the organization",
         )
-        partner_organization_properties.workspace_id = AAZStrArg(
+        partner_organization.workspace_id = AAZStrArg(
             options=["workspace-id"],
             help="Workspace Id in partner's system",
         )
-        partner_organization_properties.workspace_name = AAZStrArg(
+        partner_organization.workspace_name = AAZStrArg(
             options=["workspace-name"],
             help="Workspace name in partner's system",
             fmt=AAZStrArgFormat(
@@ -133,7 +133,7 @@ class Update(AAZCommand):
             ),
         )
 
-        single_sign_on_properties = cls._args_schema.partner_organization_properties.single_sign_on_properties
+        single_sign_on_properties = cls._args_schema.partner_organization.single_sign_on_properties
         single_sign_on_properties.aad_domains = AAZListArg(
             options=["aad-domains"],
             help="List of AAD domains fetched from Microsoft Graph for user.",
@@ -152,7 +152,7 @@ class Update(AAZCommand):
             help="URL for SSO to be used by the partner to redirect the user to their system",
         )
 
-        aad_domains = cls._args_schema.partner_organization_properties.single_sign_on_properties.aad_domains
+        aad_domains = cls._args_schema.partner_organization.single_sign_on_properties.aad_domains
         aad_domains.Element = AAZStrArg()
 
         user = cls._args_schema.user
@@ -305,7 +305,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("partnerOrganizationProperties", AAZObjectType, ".partner_organization_properties")
+                properties.set_prop("partnerOrganizationProperties", AAZObjectType, ".partner_organization")
                 properties.set_prop("user", AAZObjectType, ".user")
 
             partner_organization_properties = _builder.get(".properties.partnerOrganizationProperties")
