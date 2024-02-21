@@ -209,7 +209,7 @@ def create_and_verify_containerapp_up_for_default_registry_image(
             location = TEST_LOCATION
 
         # Create the environment
-        test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name} -l {location}')
+        test_cls.cmd(f"containerapp env create -g {resource_group} -n {env_name} -l {location}")
 
         # Construct the 'az containerapp create' command
         create_cmd = f"containerapp create -g {resource_group} -n {app_name} --environment {env_name} --image {image} --container-name {container_name} --cpu {cpu} --memory {memory} --target-port {target_port} --ingress {ingress}"
