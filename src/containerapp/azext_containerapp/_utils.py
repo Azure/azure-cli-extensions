@@ -158,6 +158,12 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
     service_bindings_def_list = []
     service_connector_def_list = []
 
+    parsed_managed_env = parse_resource_id(environment_id)
+    managed_env_name = parsed_managed_env['name']
+    managed_env_rg = parsed_managed_env['resource_group']
+    java_component_list = JavaComponentPreviewClient.list(cmd, managed_env_rg, managed_env_name)
+    java_component_name_set = {java_component["name"] for java_component in java_component_list}
+
     for service_binding_str in service_bindings_list:
         parts = service_binding_str.split(",")
         arg_dict = {}
@@ -178,6 +184,9 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
             binding_name = service_name
         else:
             binding_name = service_binding[1]
+
+        if service_name in java_component_name_set and '-' in binding_name:
+            binding_name = binding_name.replace('-', '_')
 
         if not validate_binding_name(binding_name):
             raise InvalidArgumentValueError("The Binding Name can only contain letters, numbers (0-9), periods ('.'), "
@@ -206,11 +215,6 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
         subscription_id = get_subscription_id(cmd.cli_ctx)
 
         # Add Java component into the resource_list
-        parsed_managed_env = parse_resource_id(environment_id)
-        managed_env_name = parsed_managed_env['name']
-        managed_env_rg = parsed_managed_env['resource_group']
-
-        java_component_list = JavaComponentPreviewClient.list(cmd, managed_env_rg, managed_env_name)
         for java_component in java_component_list:
             resource_list.append({"name": java_component["name"], "type": java_component["type"], "id": java_component["id"]})
 
