@@ -601,7 +601,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return network_plugin_mode
-    
     def get_network_policy(self) -> Union[str, None]:
         """Get the value of network_dataplane.
 

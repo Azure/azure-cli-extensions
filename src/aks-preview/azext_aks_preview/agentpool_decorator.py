@@ -391,9 +391,9 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         # overwrite if provided by user
         pod_ip_allocation_mode = self.raw_param.get("pod_ip_allocation_mode")
-        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
-        # if the agentpool property is specified then the property value will be used and cannot be mutated
-        if self.decorator_mode == DecoratorMode.CREATE:
+        # If the raw_param does not exist, try to read the property value corresponding to the parameter from the `agentpool` object
+        # if the agentpool property is specified then the property value will be used.
+        if (pod_ip_allocation_mode is None):
             if (
                 self.agentpool and
                 self.agentpool.network_profile is not None and
