@@ -34,3 +34,11 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         from azext_logic.custom import IdentityAssign, IdentityRemove
         self.command_table['logic workflow identity assign'] = IdentityAssign(loader=self)
         self.command_table['logic workflow identity remove'] = IdentityRemove(loader=self)
+
+    with self.command_group('logic integration-account partner'):
+        from azext_logic.custom import PartnerList
+        self.command_table['logic integration-account partner list'] = PartnerList(loader=self)
+
+    with self.command_group('logic integration-account session'):
+        from azext_logic.custom import SessionList
+        self.command_table['logic integration-account session list'] = SessionList(loader=self)

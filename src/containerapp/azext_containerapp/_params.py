@@ -11,7 +11,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
                                                 get_three_state_flag, get_enum_type, tags_type)
 
 from .action import AddCustomizedKeys
-from ._validators import (validate_env_name_or_id,
+from ._validators import (validate_env_name_or_id, validate_build_env_vars,
                           validate_custom_location_name_or_id, validate_env_name_or_id_for_up)
 from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH
 
@@ -23,6 +23,9 @@ def load_arguments(self, _):
     with self.argument_context('containerapp create') as c:
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://aka.ms/SourceToCloudSupportedVersions.", is_preview=True)
         c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)
+        c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
+                   validator=validate_build_env_vars, is_preview=True)
+        c.argument('max_inactive_revisions', type=int, help="Max inactive revisions a Container App can have.", is_preview=True)
 
     # Springboard
     with self.argument_context('containerapp create', arg_group='Service Binding', is_preview=True) as c:
@@ -44,6 +47,9 @@ def load_arguments(self, _):
     with self.argument_context('containerapp update') as c:
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://aka.ms/SourceToCloudSupportedVersions.", is_preview=True)
         c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)
+        c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
+                   validator=validate_build_env_vars, is_preview=True)
+        c.argument('max_inactive_revisions', type=int, help="Max inactive revisions a Container App can have.", is_preview=True)
 
     # Springboard
     with self.argument_context('containerapp update', arg_group='Service Binding', is_preview=True) as c:
@@ -67,6 +73,15 @@ def load_arguments(self, _):
         c.argument('open_telemetry_dataDog_site', options_list=['--open-telemetry-dataDog-site', '--dataDog-site'], help='Specify the data dog site', is_preview=True)
         c.argument('open_telemetry_dataDog_key', options_list=['--open-telemetry-dataDog-key', '--dataDog-key'], help='Specify the data dog api key', is_preview=True)
 
+    with self.argument_context('containerapp env storage') as c:
+        c.argument('storage_type', arg_type = get_enum_type(['AzureFile', 'NfsAzureFile']), help="Type of the storage. Assumed to be AzureFile if not specified.", is_preview=True)
+        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]),
+                   help="Access mode for the AzureFile or nfs AzureFile storage.")
+        c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "--file-share", "-f"],
+                   help="Name of the share on the AzureFile or nfs AzureFile storage.")
+        c.argument('server', options_list=["--server", "-s"],
+                   help="Server of the NfsAzureFile storage account.", is_preview=True)
+        
     # App Resiliency
     with self.argument_context('containerapp resiliency') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
@@ -116,6 +131,10 @@ def load_arguments(self, _):
         c.argument('enable_dedicated_gpu', arg_type=get_three_state_flag(), options_list=["--enable-dedicated-gpu"],
                    help="Boolean indicating if the environment is enabled to have dedicated gpu", is_preview=True)
 
+    with self.argument_context('containerapp env create', arg_group='Identity', is_preview=True) as c:
+        c.argument('system_assigned', options_list=['--mi-system-assigned'], help='Boolean indicating whether to assign system-assigned identity.', action='store_true')
+        c.argument('user_assigned', options_list=['--mi-user-assigned'], nargs='+', help='Space-separated user identities to be assigned.')
+
     with self.argument_context('containerapp env certificate create') as c:
         c.argument('hostname', options_list=['--hostname'], help='The custom domain name.')
         c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the managed certificate which should be unique within the Container Apps environment.')
@@ -140,6 +159,11 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Inbound Timeout Policy') as c:
         c.argument('in_timeout_response_in_seconds', type=int, options_list=['--in-timeout'], help='Specify the response timeout in seconds for the inbound policy. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries.')
 
+    with self.argument_context('containerapp env dapr-component resiliency', arg_group='Inbound Circuit Breaker Policy') as c:
+        c.argument('in_circuit_breaker_consecutive_errors', type=int, options_list=['--in-cb-sequential-err'], help='The number of consecutive errors before the circuit is opened.')
+        c.argument('in_circuit_breaker_interval', type=int, options_list=['--in-cb-interval'], help='The optional interval in seconds after which the error count resets to 0. An interval of 0 will never reset. If not specified, the timeout value will be used.')
+        c.argument('in_circuit_breaker_timeout', type=int, options_list=['--in-cb-timeout'], help='The interval in seconds until a retry attempt is made after the circuit is opened.')
+
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound HTTP Retry Policy') as c:
         c.argument('out_http_retry_max', type=int, options_list=['--out-http-retries'], help='Specify the max number of retries for the outbound policy. Default: 3.')
         c.argument('out_http_retry_delay_in_milliseconds', type=int, options_list=['--out-http-delay'], help='Specify the base interval in milliseconds between retries for the outbound policy. Default: 1000.')
@@ -148,13 +172,27 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound Timeout Policy') as c:
         c.argument('out_timeout_response_in_seconds', type=int, options_list=['--out-timeout'], help='Specify the response timeout in seconds for the outbound policy. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries.')
 
+    with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound Circuit Breaker Policy') as c:
+        c.argument('out_circuit_breaker_consecutive_errors', type=int, options_list=['--out-cb-sequential-err'], help='The number of consecutive errors before the circuit is opened.')
+        c.argument('out_circuit_breaker_interval', type=int, options_list=['--out-cb-interval'], help='The optional interval in seconds after which the error count resets to 0. An interval of 0 will never reset. If not specified, the timeout value will be used.')
+        c.argument('out_circuit_breaker_timeout', type=int, options_list=['--out-cb-timeout'], help='The interval in seconds until a retry attempt is made after the circuit is opened.')
+
     with self.argument_context('containerapp env dapr-component init') as c:
         c.argument('statestore', help="The state store component and dev service to create.")
         c.argument('pubsub', help="The pubsub component and dev service to create.")
+    
+    with self.argument_context('containerapp env identity', is_preview=True) as c:
+        c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
+        c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.", action='store_true')
+
+    with self.argument_context('containerapp env identity remove', is_preview=True) as c:
+        c.argument('user_assigned', nargs='*', help="Space-separated user identities. If no user identities are specified, all user identities will be removed.")
 
     with self.argument_context('containerapp up') as c:
         c.argument('environment', validator=validate_env_name_or_id_for_up, options_list=['--environment'], help="Name or resource ID of the container app's managed environment or connected environment.")
         c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)
+        c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
+                   validator=validate_build_env_vars, is_preview=True)
         c.argument('custom_location_id', options_list=['--custom-location'], help="Resource ID of custom location. List using 'az customlocation list'.", is_preview=True)
         c.argument('connected_cluster_id', help="Resource ID of connected cluster. List using 'az connectedk8s list'.", configured_default='connected_cluster_id', is_preview=True)
 
@@ -256,3 +294,7 @@ def load_arguments(self, _):
         c.argument('dapr_component_name', help="The Dapr component name.")
         c.argument('environment_name', options_list=['--name', '-n'], help="The environment name.")
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a Dapr component. All other parameters will be ignored. For an example, see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema')
+
+    with self.argument_context('containerapp github-action add') as c:
+        c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
+                   validator=validate_build_env_vars, is_preview=True)

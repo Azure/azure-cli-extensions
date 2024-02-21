@@ -5,10 +5,16 @@ Release History
 upcoming
 ++++++
 * 'az containerapp add-on' : support for add-on milvus create and delete commands
-* [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.56.1
+* [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.59.0
 * 'az containerapp add-on' : support for add-on weaviate create and delete commands
 * Upgrade api-version to 2023-11-02-preview
 * 'az containerapp env telemetry set': support update a environment telemetry configuration with --app-insights-connection-string, --open-telemetry-dataDog-site, --open-telemetry-dataDog-key, --open-telemetry-traces-destinations --open-telemetry-logs-destinations and --open-telemetry-metrics-destinations
+* 'az containerapp create/update/up': support --build-env-vars to set environment variables for build
+* 'az containerapp create/update': support --max-inactive-revisions
+* 'az containerapp env create': support --mi-system-assigned and --mi-user-assigned for environment create commands
+* 'az containerapp env identity': support for container app environment assign/remove/show commands
+* 'az containerapp env storage set': Support create or update managed environment storage with NFS Azure File.
+* 'az containerapp up': Update the Docker error string used to identify unauthorized push.
 
 0.3.46
 ++++++

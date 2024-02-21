@@ -9,12 +9,170 @@ import yaml
 from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists, live_only, StorageAccountPreparer)
 
 from .common import TEST_LOCATION, STAGE_LOCATION
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+class ContainerappEnvIdentityTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_identity_e2e(self, resource_group):
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus2euap"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        user_identity_name1 = self.create_random_name(prefix='env-msi1', length=24)
+        user_identity_name2 = self.create_random_name(prefix='env-msi2', length=24)
+        user_identity_id1 = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name1)).get_output_in_json()["id"]
+        user_identity_id2 = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name2)).get_output_in_json()["id"]
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --mi-user-assigned {} {} --logs-destination none'.format(resource_group, env_name, user_identity_id1, user_identity_id2))
+        
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env identity show -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('type', 'SystemAssigned, UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
+        ])
+
+        self.cmd('containerapp env identity remove --user-assigned {} -g {} -n {}'.format(user_identity_name1, resource_group, env_name), checks=[
+            JMESPathCheck('type', 'SystemAssigned, UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
+        ])
+
+        self.cmd('containerapp env identity remove --system-assigned --user-assigned {} -g {} -n {}'.format(user_identity_name2, resource_group, env_name), checks=[
+            JMESPathCheck('type', 'None'),
+        ])
+
+        self.cmd('containerapp env identity assign --system-assigned --user-assigned {} {} -g {} -n {}'.format(user_identity_name1, user_identity_name2, resource_group, env_name), checks=[
+            JMESPathCheck('type', 'SystemAssigned, UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
+        ])
+
+        self.cmd('containerapp env identity remove --system-assigned -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('type', 'UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
+        ])
+
+        self.cmd('containerapp env identity assign --system-assigned -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('type', 'SystemAssigned, UserAssigned'),
+        ])
+
+        self.cmd('containerapp env identity remove --user-assigned {} {} -g {} -n {}'.format(user_identity_name1, user_identity_name2, resource_group, env_name), checks=[
+            JMESPathCheck('type', 'SystemAssigned'),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_identity_system(self, resource_group):
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus2euap"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        
+        self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --logs-destination none'.format(resource_group, env_name))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env identity show -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('type', 'SystemAssigned'),
+        ])
+
+        self.cmd('containerapp env identity remove --system-assigned -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('type', 'None'),
+        ])
+
+        self.cmd('containerapp env identity assign --system-assigned -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('type', 'SystemAssigned'),
+        ])
+
+        self.cmd('containerapp env identity remove --system-assigned -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('type', 'None'),
+        ])
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_identity_user(self, resource_group):
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus2euap"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        user_identity_name1 = self.create_random_name(prefix='env-msi1', length=24)
+        user_identity_name2 = self.create_random_name(prefix='env-msi2', length=24)
+        user_identity_id1 = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name1)).get_output_in_json()["id"]
+        user_identity_id2 = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name2)).get_output_in_json()["id"]
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        self.cmd('containerapp env create -g {} -n {} --mi-user-assigned {} {} --logs-destination none'.format(resource_group, env_name, user_identity_id1, user_identity_id2))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env identity show -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('type', 'UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
+        ])
+
+        self.cmd('containerapp env identity assign --system-assigned -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('type', 'SystemAssigned, UserAssigned'),
+        ])
+        
+        self.cmd('containerapp env identity remove --user-assigned {} -g {} -n {}'.format(user_identity_name1, resource_group, env_name), checks=[
+            JMESPathCheck('type', 'SystemAssigned, UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
+        ])
+        
+        self.cmd('containerapp env identity remove --user-assigned {} -g {} -n {}'.format(user_identity_name2, resource_group, env_name), checks=[
+            JMESPathCheck('type', 'SystemAssigned'),
+        ])
+
+        self.cmd('containerapp env identity remove --system-assigned -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('type', 'None'),
+        ])
+
+        self.cmd('containerapp env identity show -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('type', 'None'),
+        ])
+
+        self.cmd('containerapp env identity assign --user-assigned {} -g {} -n {}'.format(user_identity_name1, resource_group, env_name), checks=[
+            JMESPathCheck('type', 'UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"')
+        ])
+
+        self.cmd('containerapp env identity show -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('type', 'UserAssigned'),
+            JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id1}"')
+        ])
 
 class ContainerappEnvScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -754,3 +912,81 @@ class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
         self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
+
+    @ResourceGroupPreparer(location="southcentralus")
+    def test_containerapp_env_certificate_upload_with_certificate_name(self, resource_group):
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, env_name))
+        self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        # test that non pfx or pem files are not supported
+        txt_file = os.path.join(TEST_DIR, 'cert.txt')
+        self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, txt_file), expect_failure=True)
+
+        # test pfx file with password
+        pfx_file = os.path.join(TEST_DIR, 'cert.pfx')
+        pfx_password = 'test12'
+        cert_pfx_name = self.create_random_name(prefix='cert-pfx', length=24)
+        cert = self.cmd(
+            'containerapp env certificate upload -g {} -n {} -c {} --certificate-file "{}" --password {}'.format(
+                resource_group, env_name, cert_pfx_name, pfx_file, pfx_password), checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('name', cert_pfx_name),
+                JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
+            ]).get_output_in_json()
+
+        cert_name = cert["name"]
+        cert_id = cert["id"]
+        cert_thumbprint = cert["properties"]["thumbprint"]
+
+        self.cmd('containerapp env certificate list -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
+            JMESPathCheck('[0].name', cert_name),
+            JMESPathCheck('[0].id', cert_id),
+        ])
+
+        # upload without password will fail
+        self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, pfx_file), expect_failure=True)
+
+        self.cmd(
+            'containerapp env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group,
+                                                                                    cert_name), checks=[
+                JMESPathCheck('length(@)', 1),
+                JMESPathCheck('[0].name', cert_name),
+                JMESPathCheck('[0].id', cert_id),
+                JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
+            ])
+
+        self.cmd(
+            'containerapp env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group,
+                                                                                    cert_id), checks=[
+                JMESPathCheck('length(@)', 1),
+                JMESPathCheck('[0].name', cert_name),
+                JMESPathCheck('[0].id', cert_id),
+                JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
+            ])
+
+        self.cmd(
+            'containerapp env certificate list -n {} -g {} --thumbprint {}'.format(env_name, resource_group,
+                                                                                   cert_thumbprint), checks=[
+                JMESPathCheck('length(@)', 1),
+                JMESPathCheck('[0].name', cert_name),
+                JMESPathCheck('[0].id', cert_id),
+                JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
+            ])
+
+        self.cmd('containerapp env certificate delete -n {} -g {} --thumbprint {} --certificate {} --yes'.format(
+            env_name, resource_group, cert_thumbprint, cert_name), expect_failure=False)
+        self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+        self.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, env_name), expect_failure=False)

@@ -305,6 +305,11 @@ DaprComponentResiliency = {
                     "maxIntervalInMilliseconds": None,
                 }
             },
+            "circuitBreakerPolicy": {
+                "consecutiveErrors": None,
+                "timeoutInSeconds": None,
+                "intervalInSeconds": None
+            }
         },
         "outboundPolicy": {
             "timeoutPolicy": {
@@ -317,6 +322,11 @@ DaprComponentResiliency = {
                     "maxIntervalInMilliseconds": None,
                 }
             },
+            "circuitBreakerPolicy": {
+                "consecutiveErrors": None,
+                "timeoutInSeconds": None,
+                "intervalInSeconds": None
+            }
         }
     }
 }
@@ -420,7 +430,8 @@ GitHubActionConfiguration = {
     "publishType": None,  # str
     "os": None,  # str
     "runtimeStack": None,  # str
-    "runtimeVersion": None  # str
+    "runtimeVersion": None,  # str
+    "buildEnvironmentVariables": None  # [EnvironmentVar]
 }
 
 RegistryInfo = {
@@ -556,4 +567,9 @@ LogsConfiguration = {
 
 MetricsConfiguration = {
     "destinations": []
+}
+
+ManagedServiceIdentity = {
+    "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
+    "userAssignedIdentities": None  # {string: UserAssignedIdentity}
 }

@@ -421,6 +421,10 @@ class _UpdateHelper:
         )
 
         properties = _schema_service_read.properties
+        properties.data_api_hostname = AAZStrType(
+            serialized_name="dataApiHostname",
+            flags={"read_only": True},
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
