@@ -8,7 +8,7 @@ import unittest
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
-from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_up, create_and_verify_containerapp_up_with_multiple_environments, create_and_verify_containerapp_up_for_private_registry_image
+from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_up, create_and_verify_containerapp_up_with_multiple_environments, create_and_verify_containerapp_up_for_default_registry_image
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -67,11 +67,11 @@ class ContainerAppUpImageTest(ScenarioTest):
         create_and_verify_containerapp_up_with_multiple_environments(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port, location="eastus2")
 
     @ResourceGroupPreparer(location="eastus2")
-    def test_containerapp_up_source_with_private_registry_image(self, resource_group):
+    def test_containerapp_up_source_with_default_registry_image(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_source_to_cloud"))
         ingress = 'external'
         target_port = '80'
         container_name = "test-container-name"
         cpu = 0.5
         memory = "1Gi"
-        create_and_verify_containerapp_up_for_private_registry_image(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port, location="eastus2", container_name=container_name, cpu=cpu, memory=memory)
+        create_and_verify_containerapp_up_for_default_registry_image(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port, location="eastus2", container_name=container_name, cpu=cpu, memory=memory)

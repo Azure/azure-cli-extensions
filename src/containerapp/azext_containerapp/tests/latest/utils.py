@@ -184,7 +184,7 @@ def create_and_verify_containerapp_up_with_multiple_environments(
         test_cls.cmd('containerapp delete -g {} -n {} --yes --no-wait'.format(resource_group, app_name))
         test_cls.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, first_env_name))
 
-def create_and_verify_containerapp_up_for_private_registry_image(
+def create_and_verify_containerapp_up_for_default_registry_image(
             test_cls,
             resource_group,
             source_path = None,

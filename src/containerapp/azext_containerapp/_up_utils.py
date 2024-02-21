@@ -527,7 +527,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         run_full_id = uuid.uuid4().hex
         logs_file_path = os.path.join(tempfile.gettempdir(), f"{'build{}'.format(run_full_id)[:12]}.txt")
-        logs_file = open(logs_file_path, "w")
+        logs_file = open(logs_file_path, "w", encoding="utf-8")
 
         try:
             resource_group_name = self.resource_group.name

@@ -227,10 +227,10 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             # Check if updating existing container
             updating_existing_container = False
             if self.get_argument_use_default_container_registry():
-                        # Remove n-1 containers where n is the number of containers in the containerapp and replace with the new container
-                        # Fails if all containers are removed
-                        while(len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
-                            self.new_containerapp["properties"]["template"]["containers"].pop()
+                # Remove n-1 containers where n is the number of containers in the containerapp and replace with the new container
+                # Fails if all containers are removed
+                while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
+                    self.new_containerapp["properties"]["template"]["containers"].pop()
             for c in self.new_containerapp["properties"]["template"]["containers"]:
                 if c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_use_default_container_registry():
                     updating_existing_container = True

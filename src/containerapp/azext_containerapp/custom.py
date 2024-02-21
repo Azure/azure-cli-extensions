@@ -2001,6 +2001,7 @@ def init_dapr_components(cmd, resource_group_name, environment_name, statestore=
         }
     }
 
+
 def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     managed_env_def = None
@@ -2097,6 +2098,7 @@ def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=
     except Exception as e:
         handle_raw_exception(e)
 
+
 def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -2120,7 +2122,6 @@ def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=
 
     if not managed_env_def:
         raise ResourceNotFoundError("The containerapp env '{}' does not exist".format(name))
-
 
     # If identity not returned
     try:
@@ -2184,6 +2185,7 @@ def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=
         r["identity"] = {}
         r["identity"]["type"] = "None"
         return r["identity"]
+
 
 def show_env_managed_identity(cmd, name, resource_group_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
