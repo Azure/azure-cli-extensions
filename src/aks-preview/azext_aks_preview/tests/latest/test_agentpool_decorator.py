@@ -498,6 +498,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
 
+    def test_get_pod_ip_allocation_mode(self):
+        self.common_get_pod_ip_allocation_mode()
+
     def test_get_os_sku(self):
         self.common_get_os_sku()
 
@@ -542,6 +545,9 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
+
+    def test_get_pod_ip_allocation_mode(self):
+        self.common_get_pod_ip_allocation_mode()
 
     def test_get_os_sku(self):
         self.common_get_os_sku()
