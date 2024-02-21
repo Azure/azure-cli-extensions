@@ -194,7 +194,7 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
     if (smtp or host or user or password or start_tls_policy
             or from_address or from_name or skip_verify is not None):
 
-        from azext_amg.vendored_sdks.models import GrafanaConfigurations, Smtp
+        from azure.mgmt.dashboard.models import GrafanaConfigurations, Smtp
         resourceProperties["grafanaConfigurations"] = GrafanaConfigurations()
 
         if not instance.properties.grafana_configurations.smtp:
