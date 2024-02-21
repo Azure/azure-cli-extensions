@@ -3,7 +3,8 @@
 Release History
 ===============
 0.27.0
-* Add online mode for container copy job.
+* Add support for Per-Region Per-Partition Autoscale. '--enable-per-region-per-partition-autoscale' parameter can be used during account create/update.
+* Add support for online mode in container copy job.
 
 ++++++
 0.26.0
