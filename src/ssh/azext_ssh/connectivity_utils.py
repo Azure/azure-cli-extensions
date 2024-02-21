@@ -224,6 +224,8 @@ def get_client_side_proxy(arc_proxy_folder):
         os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
         print_styled_text((Style.SUCCESS, f"SSH Client Proxy saved to {install_location}"))
 
+        _download_proxy_license()
+
     return install_location
 
 
@@ -269,6 +271,41 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
 
     return request_uri, install_location, older_location
 
+
+def _download_proxy_license():
+    license_uri = f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}/LICENSE.txt"
+    license_install_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", "LICENSE.txt")))
+
+    third_party_notices_uri = f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}/ThirdPartyNotice.txt"
+    third_party_notice_install_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", "ThirdPartyNotice.txt")))
+
+    try:
+        license_content = _download_from_uri(license_uri)
+    except Exception as e:
+        logger.warning("Failed to download proxy license file from %s. Error: %s", license_uri, str(e))
+
+    try:
+        third_party_notice_content = _download_from_uri(third_party_notices_uri)
+    except Exception as e:
+        logger.warning("Failed to download proxy third party notice file from %s. Error: %s", third_party_notices_uri, str(e))
+       
+    file_utils.write_to_file(license_install_location, 'wb', license_content, "Failed to create proxy license file. ")
+    file_utils.write_to_file(third_party_notice_install_location, 'wb', third_party_notice_content, "Failed to create proxy third party notice file. ")
+
+    print_styled_text((Style.SUCCESS, f"SSH Client Proxy License and Third Party Notice saved to {license_install_location} and {third_party_notice_install_location}"))
+
+
+def _download_from_uri(request_uri):
+    response_content = None
+    with urllib.request.urlopen(request_uri) as response:
+        response_content = response.read()
+        response.close()
+
+    if response_content is None:
+        raise azclierror.ClientRequestError(f"Failed to download file from {request_uri}")    
+    
+    return response_content
+ 
 
 def format_relay_info_string(relay_info):
     relay_info_string = json.dumps(
