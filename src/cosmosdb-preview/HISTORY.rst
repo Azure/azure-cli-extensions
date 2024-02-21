@@ -3,6 +3,7 @@
 Release History
 ===============
 0.27.0
+* Add online mode for container copy job.
 
 ++++++
 0.26.0
