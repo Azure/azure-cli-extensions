@@ -115,6 +115,9 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
     def get_argument_from_revision(self):
         return self.get_param("from_revision")
 
+    def get_argument_use_default_container_registry(self):
+        return self.get_param("use_default_container_registry")
+
     def validate_arguments(self):
         validate_revision_suffix(self.get_argument_revision_suffix())
         # Validate that max_replicas is set to 0-1000
@@ -145,7 +148,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             safe_set(self.new_containerapp, "properties", "template", value=r["properties"]["template"])
 
     def _need_update_container(self):
-        return self.get_argument_image() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None or self.get_argument_secret_volume_mount() is not None
+        return self.get_argument_image() or self.get_argument_use_default_registry() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None or self.get_argument_secret_volume_mount() is not None
 
     def construct_payload(self):
         # construct from yaml
@@ -223,8 +226,13 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
             # Check if updating existing container
             updating_existing_container = False
+            if self.get_argument_use_default_container_registry():
+                        # Remove n-1 containers where n is the number of containers in the containerapp and replace with the new container
+                        # Fails if all containers are removed
+                        while(len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
+                            self.new_containerapp["properties"]["template"]["containers"].pop()
             for c in self.new_containerapp["properties"]["template"]["containers"]:
-                if c["name"].lower() == self.get_argument_container_name().lower():
+                if c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_use_default_container_registry():
                     updating_existing_container = True
 
                     if self.get_argument_image() is not None:

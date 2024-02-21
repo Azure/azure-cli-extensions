@@ -502,7 +502,8 @@ def update_containerapp_logic(cmd,
                               source=None,
                               artifact=None,
                               build_env_vars=None,
-                              max_inactive_revisions=None):
+                              max_inactive_revisions=None,
+                              use_default_container_registry=False):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -1191,6 +1192,7 @@ def containerapp_up(cmd,
     used_default_container_registry = False
     if source:
         used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=True, registry_server=registry_server)
+        app._set_use_default_container_registry(used_default_container_registry)
     else:
         app.create_acr_if_needed()
 
@@ -1206,7 +1208,7 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None):
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, use_default_container_registry=False):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -1215,7 +1217,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
 
     if containerapp_def:
         return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port,
-                                         registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name)
+                                         registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name, use_default_container_registry=use_default_container_registry)
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type)
 
 
@@ -2037,7 +2039,7 @@ def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=
                 payload["identity"]["type"] = "SystemAssigned,UserAssigned"
             if managed_env_def["identity"]["type"] == "UserAssigned" and assign_system_identity:
                 payload["identity"]["type"] = "SystemAssigned,UserAssigned"
-            
+
         else:
             if assign_system_identity and assign_user_identities:
                 payload["identity"]["type"] = "SystemAssigned,UserAssigned"
@@ -2080,7 +2082,7 @@ def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=
     if not managed_env_def:
         raise ResourceNotFoundError("The containerapp env '{}' does not exist".format(name))
 
-    
+
     # If identity not returned
     try:
         managed_env_def["identity"]
@@ -2136,7 +2138,7 @@ def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=payload, no_wait=no_wait)
     except Exception as e:
         handle_raw_exception(e)
-    
+
     try:
         return r["identity"]
     except:

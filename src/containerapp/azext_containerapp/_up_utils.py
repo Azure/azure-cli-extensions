@@ -410,6 +410,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         env_vars=None,
         workload_profile_name=None,
         ingress=None,
+        use_default_container_registry=None
     ):
 
         super().__init__(cmd, name, resource_group, exists)
@@ -422,6 +423,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.env_vars = env_vars
         self.ingress = ingress
         self.workload_profile_name = workload_profile_name
+        self.use_default_container_registry = use_default_container_registry
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -453,8 +455,12 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             env_vars=self.env_vars,
             workload_profile_name=self.workload_profile_name,
             ingress=self.ingress,
-            environment_type=CONNECTED_ENVIRONMENT_TYPE if self.env.is_connected_environment() else MANAGED_ENVIRONMENT_TYPE
+            environment_type=CONNECTED_ENVIRONMENT_TYPE if self.env.is_connected_environment() else MANAGED_ENVIRONMENT_TYPE,
+            use_default_container_registry=self.use_default_container_registry
         )
+
+    def _set_use_default_container_registry(self, use_default_container_registry):
+        self.use_default_container_registry = use_default_container_registry
 
     def create_acr_if_needed(self):
         if self.should_create_acr:
@@ -716,12 +722,6 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             location = self.env.location
         if self.should_create_acr:
             # No container registry provided. Let's use the default container registry through Cloud Build.
-            containerapp_def = ContainerAppPreviewClient.show(cmd=self.cmd, resource_group_name=self.resource_group, name=self.name)
-            logger.warning("containerapp_def", containerapp_def)
-            if containerapp_def:
-                containers = safe_get(containerapp_def, "properties", "template", "containers", default=[])
-                if containers:
-                    containers = []
             self.image = self.build_container_from_source_with_cloud_build_service(source, build_env_vars, location)
             return True
 
