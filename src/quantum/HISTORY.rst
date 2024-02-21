@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.1
+1.0.0b2
 ++++++
 * [2024-02-14] Version intended to work with QDK version 0.29.0
 * Add azure quantum connection string/ api key functionalities.

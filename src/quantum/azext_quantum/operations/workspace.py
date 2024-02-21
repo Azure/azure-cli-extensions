@@ -431,14 +431,14 @@ def enable_keys(cmd, resource_group_name=None, workspace_name=None, enable_key=N
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
 
-    if (enable_key != "True") and (enable_key != "true") and (enable_key != "False") and (enable_key != "false"):
+    if enable_key not in ["True", "true", "False", "false"]:
         raise InvalidArgumentValueError("Please set –-enable-api-key to be True/true or False/false.")
 
     ws = client.get(info.resource_group, info.name)
 
-    if (enable_key == "True" or enable_key == "true"):
+    if (enable_key in ["True", "true"]):
         ws.properties.api_key_enabled = True
-    elif (enable_key == "False" or enable_key == "false"):
+    elif (enable_key in ["False", "false"]):
         ws.properties.api_key_enabled = False
     ws = client.begin_create_or_update(info.resource_group, info.name, ws)
     if ws:

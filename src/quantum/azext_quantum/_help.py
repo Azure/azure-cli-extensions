@@ -286,7 +286,7 @@ helps['quantum workspace show'] = """
 
 helps['quantum workspace update'] = """
     type: command
-    short-summary: Enable or disable Azure Quantum workspace api keys.
+    short-summary: Update the given (or current) Azure Quantum workspace.
     examples:
       - name: Enable a provided Azure Quantum workspace api keys.
         text: |-
@@ -298,7 +298,7 @@ helps['quantum workspace update'] = """
 
 helps['quantum workspace keys list'] = """
     type: command
-    short-summary: Display Azure Quantum workspace api keys.
+    short-summary: List api keys for the given (or current) Azure Quantum workspace.
     examples:
       - name: Show the currently selected default Azure Quantum workspace api keys.
         text: |-
@@ -307,7 +307,7 @@ helps['quantum workspace keys list'] = """
 
 helps['quantum workspace keys regenerate'] = """
     type: command
-    short-summary: Regenerate Azure Quantum workspace api key.
+    short-summary: Regenerate api key for the given (or current) Azure Quantum workspace.
     examples:
       - name: Regenerate the currently selected default Azure Quantum workspace primary api key.
         text: |-
