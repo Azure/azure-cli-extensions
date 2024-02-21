@@ -4,11 +4,17 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
+* 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
+* 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
+* 'az containerapp env telemetry set': support update a environment telemetry configuration with --app-insights-connection-string, --open-telemetry-dataDog-site, --open-telemetry-dataDog-key, --open-telemetry-traces-destinations --open-telemetry-logs-destinations and --open-telemetry-metrics-destinations
+
+0.3.47
+++++++
 * 'az containerapp add-on' : support for add-on milvus create and delete commands
 * [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.59.0
 * 'az containerapp add-on' : support for add-on weaviate create and delete commands
 * Upgrade api-version to 2023-11-02-preview
-* 'az containerapp env telemetry set': support update a environment telemetry configuration with --app-insights-connection-string, --open-telemetry-dataDog-site, --open-telemetry-dataDog-key, --open-telemetry-traces-destinations --open-telemetry-logs-destinations and --open-telemetry-metrics-destinations
 * 'az containerapp create/update/up': support --build-env-vars to set environment variables for build
 * 'az containerapp create/update': support --max-inactive-revisions
 * 'az containerapp env create': support --mi-system-assigned and --mi-user-assigned for environment create commands
