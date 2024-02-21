@@ -273,26 +273,29 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
 
 
 def _download_proxy_license():
+    proxy_dir = os.path.join('~', ".clientsshproxy")
     license_uri = f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}/LICENSE.txt"
-    license_install_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", "LICENSE.txt")))
+    license_install_location = os.path.expanduser(os.path.join(proxy_dir, "LICENSE.txt"))
 
-    third_party_notices_uri = f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}/ThirdPartyNotice.txt"
-    third_party_notice_install_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", "ThirdPartyNotice.txt")))
+    notice_uri = f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}/ThirdPartyNotice.txt"
+    notice_install_location = os.path.expanduser(os.path.join(proxy_dir, "ThirdPartyNotice.txt"))
 
+    _get_and_write_proxy_license_files(license_uri, license_install_location, "License")
+    _get_and_write_proxy_license_files(notice_uri, notice_install_location, "Third Party Notice")
+
+
+def _get_and_write_proxy_license_files(uri, install_location, target_name):
     try:
-        license_content = _download_from_uri(license_uri)
-    except Exception as e:
-        logger.warning("Failed to download proxy license file from %s. Error: %s", license_uri, str(e))
+        license_content = _download_from_uri(uri)
+        file_utils.write_to_file(file_path=install_location,
+                                 mode='wb',
+                                 content=license_content,
+                                 error_message=f"Failed to create {target_name} file at {install_location}.")
+    # pylint: disable=broad-except
+    except Exception:
+        logger.warning("Failed to download Connection Proxy %s file from %s.", target_name, uri)
 
-    try:
-        third_party_notice_content = _download_from_uri(third_party_notices_uri)
-    except Exception as e:
-        logger.warning("Failed to download proxy third party notice file from %s. Error: %s", third_party_notices_uri, str(e))
-       
-    file_utils.write_to_file(license_install_location, 'wb', license_content, "Failed to create proxy license file. ")
-    file_utils.write_to_file(third_party_notice_install_location, 'wb', third_party_notice_content, "Failed to create proxy third party notice file. ")
-
-    print_styled_text((Style.SUCCESS, f"SSH Client Proxy License and Third Party Notice saved to {license_install_location} and {third_party_notice_install_location}"))
+    print_styled_text((Style.SUCCESS, f"SSH Connection Proxy {target_name} saved to {install_location}."))
 
 
 def _download_from_uri(request_uri):
@@ -302,10 +305,10 @@ def _download_from_uri(request_uri):
         response.close()
 
     if response_content is None:
-        raise azclierror.ClientRequestError(f"Failed to download file from {request_uri}")    
-    
+        raise azclierror.ClientRequestError(f"Failed to download file from {request_uri}")
+
     return response_content
- 
+
 
 def format_relay_info_string(relay_info):
     relay_info_string = json.dumps(
