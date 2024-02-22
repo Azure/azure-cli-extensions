@@ -13260,8 +13260,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.networkPlugin", "azure"),
-                self.check("agentPoolProfiles[0].podSubnetID", {pod_subnet_id}),
-                self.check("agentPoolProfiles[0].podIPAllocationMode", {pod_ip_allocation_mode}),
+                self.check("agentPoolProfiles[0].podSubnetId", {pod_subnet_id}),
+                self.check("agentPoolProfiles[0].podIpAllocationMode", {pod_ip_allocation_mode}),
             ],
         )
 
