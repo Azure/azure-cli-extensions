@@ -543,12 +543,6 @@ ManagedServiceIdentity = {
 
 JavaComponent = {
     "properties": {
-        "componentType": None,
-        "configurations": None  # list of JavaComponentConfiguration
+        "componentType": None
     }
-}
-
-JavaComponentConfiguration = {
-    "propertyName": None,
-    "value": None
 }
