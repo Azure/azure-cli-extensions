@@ -13,6 +13,7 @@ from typing import Any, Dict
 
 logger = get_logger(__name__)
 
+
 class ContainerappEnvTelemetryPreviewSetDecorator(BaseResource):
 
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
@@ -50,8 +51,8 @@ class ContainerappEnvTelemetryPreviewSetDecorator(BaseResource):
         safe_set(self.managed_env_def, "location", value=r["location"])  # required for API
 
         self.set_up_app_insights_connection_string()
-        self.set_up_open_telemetry_dataDog_site()
-        self.set_up_open_telemetry_dataDog_key()
+        self.set_up_open_telemetry_data_dog_site()
+        self.set_up_open_telemetry_data_dog_key()
         self.set_up_open_telemetry_traces_destinations()
         self.set_up_open_telemetry_logs_destinations()
         self.set_up_open_telemetry_metrics_destinations()
@@ -60,11 +61,11 @@ class ContainerappEnvTelemetryPreviewSetDecorator(BaseResource):
         if self.get_argument_app_insights_connection_string() and self.get_argument_app_insights_connection_string() is not None:
             safe_set(self.managed_env_def, "properties", "appInsightsConfiguration", "connectionString", value=self.get_argument_app_insights_connection_string())
     
-    def set_up_open_telemetry_dataDog_site(self):
+    def set_up_open_telemetry_data_dog_site(self):
         if self.get_argument_open_telemetry_data_dog_site() and self.get_argument_open_telemetry_data_dog_site() is not None:
             safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site", value=self.get_argument_open_telemetry_data_dog_site())
     
-    def set_up_open_telemetry_dataDog_key(self):
+    def set_up_open_telemetry_data_dog_key(self):
         if self.get_argument_open_telemetry_data_dog_key() and self.get_argument_open_telemetry_data_dog_key() is not None:
             safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "key", value=self.get_argument_open_telemetry_data_dog_key())
 
