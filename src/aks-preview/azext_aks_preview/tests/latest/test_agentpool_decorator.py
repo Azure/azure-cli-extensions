@@ -320,7 +320,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
             self.cmd,
-            AKSAgentPoolParamDict(),
+            AKSAgentPoolParamDict({"pod_ip_allocation_mode": None}),
             self.models,
             DecoratorMode.CREATE,
             self.agentpool_decorator_mode,

@@ -13206,32 +13206,38 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         vnet = self.cmd(
             create_vnet, checks=[self.check("newVNet.provisioningState", "Succeeded")]
         ).get_output_in_json()
+        vnet_id = vnet["newVNet"]["id"]
+        assert vnet_id is not None
 
         # create node subnet
         create_node_subnet = (
             "network vnet subnet create -n nodeSubnet --resource-group={resource_group} --vnet-name {vnet_name} "
-            "--address-prefixes 10.240.0.0/16  -o json"
+            "--address-prefixes 10.240.0.0/16"
         )
-        node_subnet = self.cmd(
-            create_node_subnet, checks=[self.check("provisioningState", "Succeeded")]
-        ).get_output_in_json()
+        show_node_subnet_cmd = "network vnet subnet show \
+            --resource-group={resource_group} \
+            --vnet-name={vnet_name} \
+            --name nodeSubnet"
+        node_subnet = self.cmd(create_node_subnet, checks=[self.check("provisioningState", "Succeeded")])
+        node_subnet_output = self.cmd(show_node_subnet_cmd).get_output_in_json()
+        node_subnet_id = node_subnet_output["id"]
+        assert node_subnet_id is not None
 
         # create pod subnet
         create_pod_subnet = (
             "network vnet subnet create -n podSubnet --resource-group={resource_group} --vnet-name {vnet_name} "
-            "--address-prefixes 10.40.0.0/13  -o json"
+            "--address-prefixes 10.40.0.0/13"
         )
-        pod_subnet = self.cmd(
-            create_pod_subnet, checks=[self.check("provisioningState", "Succeeded")]
-        ).get_output_in_json()
-
-        vnet_id = vnet["newVNet"]["id"]
-        node_subnet_id = node_subnet["id"]
-        pod_subnet_id = pod_subnet["id"]
-        pod_ip_allocation_mode = "StaticBlock"
-        assert vnet_id is not None
-        assert node_subnet_id is not None
+        show_pod_subnet_cmd = "network vnet subnet show \
+            --resource-group={resource_group} \
+            --vnet-name={vnet_name} \
+            --name podSubnet"
+        pod_subnet = self.cmd(create_pod_subnet, checks=[self.check("provisioningState", "Succeeded")])
+        pod_subnet_output = self.cmd(show_pod_subnet_cmd).get_output_in_json()
+        pod_subnet_id = pod_subnet_output["id"]
         assert pod_subnet_id is not None
+
+        pod_ip_allocation_mode = "StaticBlock"
         self.kwargs.update(
             {
                 "vnet_id": vnet_id,
