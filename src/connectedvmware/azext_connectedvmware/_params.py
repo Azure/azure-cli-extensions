@@ -430,3 +430,55 @@ def load_arguments(self, _):
         c.argument('vm_name', type=str, help='The name of the vm where the extension '
                    'should be deleted.', id_part='name')
         c.argument('name', type=str, help='The name of the vm extension.', id_part='child_name_1')
+
+    with self.argument_context('connectedvmware onboard') as c:
+        c.argument(
+            'location',
+            validator=get_default_location_from_resource_group,
+        )
+        c.argument(
+            'appliance_subscription_id',
+            options_list=['--appliance-subscription-id'],
+            help="Subscription ID of the appliance."
+        )
+        c.argument(
+            'appliance_rg', options_list=['--appliance-rg'], help="Name of the appliance resource group."
+        )
+        c.argument(
+            'appliance_name', options_list=['--appliance-name'], help="Name of the appliance."
+        )
+        c.argument(
+            'custom_location_subscription_id',
+            options_list=['--custom-location-subscription-id'],
+            help="Subscription ID of the custom location."
+        )
+        c.argument(
+            'custom_location_rg',
+            options_list=['--custom-location-rg'],
+            help="Name of the custom location resource group."
+        )
+        c.argument(
+            'custom_location_name',
+            options_list=['--custom-location-name'],
+            help="Name of the custom location."
+        )
+        c.argument(
+            'vcenter_subscription_id',
+            options_list=['--vcenter-subscription-id'],
+            help="Subscription ID of the vCenter."
+        )
+        c.argument(
+            'vcenter_rg', options_list=['--vcenter-rg'], help="Name of the vCenter resource group."
+        )
+        c.argument(
+            'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter."
+        )
+        c.argument(
+            'dir_path', options_list=['--dir-path'], help="Directory path of the output and log files.",
+        )
+        c.argument(
+            'logfile_name', options_list=['--logfile'], help="Name of the log file in the dir-path.",
+        )
+        c.argument(
+            'force', action='store_true', help="Force delete the existing appliance and re-onboard."
+        )

@@ -5,6 +5,8 @@
 # pylint: disable= too-many-lines, too-many-locals, unused-argument, too-many-branches, too-many-statements
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
+import os
+from typing import Union
 from azure.cli.command_modules.acs._client_factory import get_resources_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (
@@ -17,6 +19,7 @@ from azure.cli.core.azclierror import (
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
 from msrestazure.tools import is_valid_resource_id
 
+from .admin.onboard import Onboard
 from .pwinput import pwinput
 from .vmware_utils import get_resource_id
 from .vmware_constants import (
@@ -2124,5 +2127,52 @@ def connectedvmware_extension_delete(
                        machine_name=vm_name,
                        extension_name=name)
 
+
+# endregion
+
+# region onboard
+
+def onboard_vcenter(
+    client: VCentersOperations,
+    location: str,
+    appliance_rg: str,
+    appliance_name: str,
+    custom_location_name: str,
+    vcenter_name: str,
+    appliance_subscription_id: str,
+    custom_location_subscription_id: Union[str, None]=None,
+    vcenter_subscription_id: Union[str, None]=None,
+    custom_location_rg: Union[str, None]=None,
+    vcenter_rg: Union[str, None]=None,
+    dir_path: Union[str, None]=None,
+    logfile_name: str="arcvmware-output.log",
+    force: bool=False,
+):
+    custom_location_subscription_id = custom_location_subscription_id or appliance_subscription_id
+    vcenter_subscription_id = vcenter_subscription_id or appliance_subscription_id
+    custom_location_rg = custom_location_rg or appliance_rg
+    vcenter_rg = vcenter_rg or appliance_rg
+
+    if dir_path is None:
+        dir_path = os.getcwd()
+
+    onboard = Onboard(
+        location=location,
+        appliance_rg=appliance_rg,
+        appliance_name=appliance_name,
+        custom_location_name=custom_location_name,
+        vcenter_name=vcenter_name,
+        appliance_subscription_id=appliance_subscription_id,
+        custom_location_subscription_id=custom_location_subscription_id,
+        vcenter_subscription_id=vcenter_subscription_id,
+        custom_location_rg=custom_location_rg,
+        vcenter_rg=vcenter_rg,
+        dir_path=dir_path,
+        logfile_name=logfile_name,
+        force=force,
+    )
+
+    onboard.run()
+    
 
 # endregion

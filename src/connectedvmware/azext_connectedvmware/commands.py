@@ -129,5 +129,5 @@ def load_command_table(self: AzCommandsLoader, _):
         g.custom_command('update', 'connectedvmware_extension_update', supports_no_wait=True)
         g.custom_command('delete', 'connectedvmware_extension_delete', supports_no_wait=True, confirmation=True)
 
-    with self.command_group('connectedvmware', is_preview=False):
-        pass
+    with self.command_group('connectedvmware', is_preview=False) as g:
+        g.custom_command('onboard', 'onboard_vcenter')
