@@ -14,7 +14,6 @@ from azure.cli.testsdk import (
 )
 
 
-
 class CommunicationClientTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_communication', location='eastus')
     def test_communication_identity(self):
@@ -41,4 +40,3 @@ class CommunicationClientTest(ScenarioTest):
         self.cmd('communication identity remove -n {resource_name} -g {rg} --system-assigned', checks={
             self.check('type', "UserAssigned")
         })
-
