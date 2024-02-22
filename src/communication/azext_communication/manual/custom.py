@@ -373,8 +373,8 @@ def communication_email_send(client,
         else:
             all_attachments = attachments[0].split(',')
             all_attachment_types = attachment_types[0].split(',')
-            for i in range(len(all_attachments)):
-                attachments_list.append(__get_attachment_content(all_attachments[i], all_attachment_types[i]))
+            for i, attachment in enumerate(all_attachments):
+                attachments_list.append(__get_attachment_content(attachment, all_attachment_types[i]))
 
         message = {
             "content": {
@@ -391,8 +391,8 @@ def communication_email_send(client,
                                                             for recipient in recipients_bcc[0].split(',')]
             },
             "replyTo": None if reply_to is None else [{"address": reply_to}],
-            "attachments": None if attachments_list is None else [json.loads(attachment)
-                                                                  for attachment in attachments_list],
+            "attachments": [] if attachments_list is None else [json.loads(attachment)
+                                                                for attachment in attachments_list],
             "senderAddress": sender,
             "userEngagementTrackingDisabled": disable_tracking,
             "headers": {
