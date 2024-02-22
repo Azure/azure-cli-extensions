@@ -193,18 +193,20 @@ def create_dictionary_from_arg_string(values, option_string=None):
 
 class ColoredFormatter(logging.Formatter):
     default_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
-    def __init__(self, format: str=default_format):
+
+    def __init__(self, fmt: str = default_format):
+        super().__init__()
         grey = "\x1b[38;20m"
         yellow = "\x1b[33;20m"
         red = "\x1b[31;20m"
         bold_red = "\x1b[31;1m"
         reset = "\x1b[0m"
         self.FORMATS = {
-            logging.DEBUG: grey + format + reset,
-            logging.INFO: grey + format + reset,
-            logging.WARNING: yellow + format + reset,
-            logging.ERROR: red + format + reset,
-            logging.CRITICAL: bold_red + format + reset
+            logging.DEBUG: grey + fmt + reset,
+            logging.INFO: grey + fmt + reset,
+            logging.WARNING: yellow + fmt + reset,
+            logging.ERROR: red + fmt + reset,
+            logging.CRITICAL: bold_red + fmt + reset
         }
 
     def format(self, record):
@@ -214,14 +216,15 @@ class ColoredFormatter(logging.Formatter):
 
 
 def get_logger(name: str, file_path: Union[str, None] = None):
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger(name)
     if file_path is not None:
         fh = logging.FileHandler(file_path)
         fh.setFormatter(
             logging.Formatter(
                 fmt='%(asctime)s %(levelname)-8s %(name)-12s.%(lineno)-5d %(message)s',
                 datefmt='%Y-%m-%dT%H:%M:%S',
-        ))
+            )
+        )
         fh.setLevel(logging.DEBUG)
         logger.addHandler(fh)
     sh = logging.StreamHandler()

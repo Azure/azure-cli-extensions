@@ -5,7 +5,7 @@
 # pylint: disable= too-many-lines, too-many-locals, unused-argument, too-many-branches, too-many-statements
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
-from typing import Dict, List
+from collections import defaultdict
 from azure.cli.command_modules.acs._client_factory import get_resources_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (
@@ -16,8 +16,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
-from azure.mgmt.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse
-from collections import defaultdict
+from azure.mgmt.resourcegraph.models import QueryRequest, QueryRequestOptions
 from msrestazure.tools import is_valid_resource_id
 
 from .pwinput import pwinput
@@ -816,14 +815,14 @@ def create_from_machines(
             "using --vcenter-id."
         )
     assert isinstance(vcenter_id, str)
-    
+
     logger = get_logger(__name__)
     arg_client = cf_resource_graph(cmd.cli_ctx)
 
     vcenter_sub = vcenter_id.split("/")[2]
     resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
     vcenter = resources_client.get_by_id(vcenter_id, VCENTER_KIND_GET_API_VERSION)
-    logger.info(f"Searching for machines in the vCenter {vcenter.name}...")
+    logger.info("Searching for machines in the vCenter %s ...", vcenter.name)
 
     query = f"""
 Resources
@@ -843,18 +842,18 @@ Resources
 | project machineId=id, name, vmUuidRev
 | join kind=inner (
 ConnectedVMwareVsphereResources
-| where type =~ 'Microsoft.ConnectedVMwareVsphere/VCenters/InventoryItems' 
+| where type =~ 'Microsoft.ConnectedVMwareVsphere/VCenters/InventoryItems'
 | where kind =~ 'VirtualMachine'
 | where id startswith '{vcenter.id}/InventoryItems'
 | extend p=parse_json(properties)
 | extend biosId = tolower(tostring(p['smbiosUuid']))
 | extend managedResourceId=tolower(tostring(p['managedResourceId']))
-| project inventoryId=id, biosId, managedResourceId 
+| project inventoryId=id, biosId, managedResourceId
 ) on $left.vmUuidRev == $right.biosId
 | project-away vmUuidRev
 """
     query = " ".join(query.splitlines())
-    
+
     # https://github.com/wpbrown/azmeta-libs/blob/4495d2d55f052032fe11416f5c59e2f2e79c2d73/azmeta/src/azmeta/access/resource_graph.py
     skip_token = None
     vm_list = []
@@ -872,7 +871,7 @@ ConnectedVMwareVsphereResources
         skip_token = query_response.skip_token
         if skip_token is None:
             break
-    logger.info(f"{len(vm_list)} machines will be attempted to be linked to the vCenter {vcenter.name}...")
+    logger.info("%s machines will be attempted to be linked to the vCenter %s ...", len(vm_list), vcenter.name)
     failed = 0
     linked = 0
     biosId2VM = defaultdict(list)
@@ -886,22 +885,32 @@ ConnectedVMwareVsphereResources
         managedResourceId = vm["managedResourceId"]
         biosId = vm["biosId"]
         if len(biosId2VM[biosId]) > 1:
-            logger.warning(f"{prefix} Skipping machine {machineName} with biosId {biosId} as there are multiple machines with the same biosId: {biosId2VM[biosId]}.")
+            logger.warning(
+                "%s Skipping machine %s with biosId %s "
+                "because there are multiple machines with the same biosId: %s .",
+                prefix, machineName, biosId, biosId2VM[biosId])
             continue
         if managedResourceId:
             if VMWARE_NAMESPACE in managedResourceId:
-                logger.info(f"{prefix} Machine {machineName} is already linked to managed resource {managedResourceId}.")
+                logger.info(
+                    "%s Machine %s is already linked to managed resource %s .",
+                    prefix, machineName, managedResourceId)
                 continue
             if managedResourceId.lower() != machineId.lower():
-                logger.warning(f"{prefix} Skipping machine {machineName} as the inventory item is linked to a different resource: {managedResourceId}.")
+                logger.warning(
+                    "%s Skipping machine %s because the inventory item "
+                    "is linked to a different resource: %s .",
+                    prefix, machineName, managedResourceId)
                 continue
-        logger.info(f"{prefix} Linking machine {machineName} to vCenter {vcenter.name} with inventoryId: {inventoryId} ...")
+        logger.info(
+            "%s Linking machine %s to vCenter %s with inventoryId: %s ...",
+            prefix, machineName, vcenter.name, inventoryId)
         vm = VirtualMachineInstance(
             extended_location=ExtendedLocation(
                 type=EXTENDED_LOCATION_TYPE,
                 name=vcenter.extended_location.name,
             ),
-            infrastructure_profile = InfrastructureProfile(
+            infrastructure_profile=InfrastructureProfile(
                 inventory_item_id=inventoryId,
             ),
         )
@@ -910,12 +919,20 @@ ConnectedVMwareVsphereResources
                 machineId, vm
             ).result()
             linked += 1
-        except Exception as e:
-            logger.warning(f"{prefix} Failed to link machine {machineName} to vCenter {vcenter.name}. Error: {e}")
+        except Exception as e:  # pylint: disable=broad-except
+            logger.warning(
+                "%s Failed to link machine %s to vCenter %s. Error: %s",
+                prefix, machineName, vcenter.name, e)
             failed += 1
-    logger.info(f"[{linked}/{len(vm_list)}] machines were successfully linked to the vCenter {vcenter.name}.")
-    logger.info(f"[{failed}/{len(vm_list)}] machines failed to be linked to the vCenter {vcenter.name}.")
-    logger.info(f"[{len(vm_list)-linked-failed}/{len(vm_list)}] machines were skipped.")
+    logger.info(
+        "[%s/%s] machines were successfully linked to the vCenter %s .",
+        linked, len(vm_list), vcenter.name)
+    logger.info(
+        "[%s/%s] machines failed to be linked to the vCenter %s .",
+        failed, len(vm_list), vcenter.name)
+    logger.info(
+        "[%s/%s] machines were skipped.",
+        len(vm_list) - linked - failed, len(vm_list))
 
 
 def create_vm(
