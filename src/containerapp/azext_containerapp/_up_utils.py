@@ -410,7 +410,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         env_vars=None,
         workload_profile_name=None,
         ingress=None,
-        use_default_container_registry=None
+        force_single_container_updates=None
     ):
 
         super().__init__(cmd, name, resource_group, exists)
@@ -423,7 +423,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.env_vars = env_vars
         self.ingress = ingress
         self.workload_profile_name = workload_profile_name
-        self.use_default_container_registry = use_default_container_registry
+        self.force_single_container_updates = force_single_container_updates
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -456,11 +456,11 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             workload_profile_name=self.workload_profile_name,
             ingress=self.ingress,
             environment_type=CONNECTED_ENVIRONMENT_TYPE if self.env.is_connected_environment() else MANAGED_ENVIRONMENT_TYPE,
-            use_default_container_registry=self.use_default_container_registry
+            force_single_container_updates=self.force_single_container_updates
         )
 
-    def _set_use_default_container_registry(self, use_default_container_registry):
-        self.use_default_container_registry = use_default_container_registry
+    def _set_force_single_container_updates(self, force_single_container_updates):
+        self.force_single_container_updates = force_single_container_updates
 
     def create_acr_if_needed(self):
         if self.should_create_acr:

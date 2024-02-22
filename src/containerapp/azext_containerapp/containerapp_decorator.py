@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
-from re import match
 from typing import Dict, Any
 from urllib.parse import urlparse
 
@@ -115,8 +114,8 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
     def get_argument_from_revision(self):
         return self.get_param("from_revision")
 
-    def get_argument_use_default_container_registry(self):
-        return self.get_param("use_default_container_registry")
+    def get_argument_force_single_container_updates(self):
+        return self.get_param("force_single_container_updates")
 
     def validate_arguments(self):
         validate_revision_suffix(self.get_argument_revision_suffix())
@@ -148,7 +147,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             safe_set(self.new_containerapp, "properties", "template", value=r["properties"]["template"])
 
     def _need_update_container(self):
-        return self.get_argument_image() or self.get_argument_use_default_container_registry() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None or self.get_argument_secret_volume_mount() is not None
+        return self.get_argument_image() or self.get_argument_force_single_container_updates() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None or self.get_argument_secret_volume_mount() is not None
 
     def construct_payload(self):
         # construct from yaml
@@ -226,13 +225,13 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
             # Check if updating existing container
             updating_existing_container = False
-            if self.get_argument_use_default_container_registry():
-                # Remove n-1 containers where n is the number of containers in the containerapp and replace with the new container
+            if self.get_argument_force_single_container_updates():
+                # Remove n-1 containers where n is the number of containers in the containerapp and replace remaining container with the new container
                 # Fails if all containers are removed
                 while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
                     self.new_containerapp["properties"]["template"]["containers"].pop()
             for c in self.new_containerapp["properties"]["template"]["containers"]:
-                if c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_use_default_container_registry():
+                if c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_force_single_container_updates():
                     updating_existing_container = True
 
                     if self.get_argument_image() is not None:
@@ -1011,8 +1010,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_build_env_vars(self):
         return self.get_param("build_env_vars")
 
-    def get_argument_use_default_container_registry(self):
-        return self.get_param("use_default_container_registry")
+    def get_argument_force_single_container_updates(self):
+        return self.get_param("force_single_container_updates")
 
     def validate_arguments(self):
         super().validate_arguments()
