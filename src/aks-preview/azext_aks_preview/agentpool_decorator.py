@@ -385,11 +385,12 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 enable_artifact_streaming = self.agentpool.artifact_streaming_profile.enabled
         return enable_artifact_streaming
 
-    def get_pod_ip_allocation_mode(self, read_only: bool = False) -> Union[str, None]:
+    def get_pod_ip_allocation_mode(self: bool = False) -> Union[str, None]:
         """Get the value of pod_ip_allocation_mode.
         :return: str or None
         """
-        # Initialize the value of pod_ip_allocation_mode from the agentpool.network_profile.pod_ip_allocation_mode if it exists
+        # Initialize the value of pod_ip_allocation_mode from the 
+        # agentpool.network_profile.pod_ip_allocation_mode if it exists
         pod_ip_allocation_mode = None
         if (
                 self.agentpool and self.agentpool.network_profile and
