@@ -16,7 +16,8 @@ from azure.communication.phonenumbers import (
     PhoneNumberCapabilities
 )
 from azure.communication.identity import CommunicationIdentityClient
-import uuid, os
+import uuid
+import os
 
 TEST_RESOURCE_IDENTIFIER = "sanitized"
 TEST_SOURCE_PHONENUMBER_DEFAULT = "sanitized"
@@ -54,7 +55,7 @@ def get_test_recipient_phonenumber(is_live, in_recording):
 def get_new_phonenumber(connection_string):
     try:
         phone_numbers_client = PhoneNumbersClient.from_connection_string(connection_string)
-        
+
         capabilities = PhoneNumberCapabilities(
             calling=PhoneNumberCapabilityType.INBOUND,
             sms=PhoneNumberCapabilityType.INBOUND_OUTBOUND
@@ -77,7 +78,7 @@ def get_new_phonenumber(connection_string):
             for phone_number in phone_number_list:
                 return phone_number
 
-    except Exception as ex:
+    except Exception:
         return TEST_RECIPIENT_PHONENUMBER_DEFAULT
 
 
@@ -96,7 +97,7 @@ def _get_content_type(entity):
             content_type = content_type.split(";")[0].lower()
     return content_type
 
-    
+
 def is_text_payload(entity):
     text_content_list = ['application/json', 'application/xml', 'text/', 'application/test-content']
 
