@@ -108,7 +108,7 @@ def load_arguments(self, _):
     with self.argument_context('connectedvmware vm-template delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
-    with self.argument_context('connectedvmware vm link-to-vcenter') as c:
+    with self.argument_context('connectedvmware vm create-from-machines') as c:
         c.argument(
             'rg_name', options_list=['--resource-group', '-g'],
             help=(
@@ -119,7 +119,13 @@ def load_arguments(self, _):
         )
         c.argument(
             'resource_name', resource_name, options_list=['--name', '-n'],
-            help="Name of the Microsoft.HybridCompute Machine resource.",
+            help="Name of the Microsoft.HybridCompute Machine resource. "
+            "Provide this parameter if you want to "
+            "convert a single machine to VMware VM."
+        )
+        c.argument(
+            'vcenter', vcenter, options_list=['--vcenter-id', '-v'],
+            help="ARM ID of the vCenter to which the machines will be linked."
         )
 
     with self.argument_context('connectedvmware vm create') as c:

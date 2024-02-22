@@ -17,6 +17,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
 from azure.mgmt.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse
+from collections import defaultdict
 from msrestazure.tools import is_valid_resource_id
 
 from .pwinput import pwinput
@@ -788,37 +789,33 @@ def reverseEndianLeftHalf(biosId: str):
     )
 
 
-def link_vm_to_vcenter(
+def create_from_machines(
     cmd,
     client: VirtualMachineInstancesOperations,
     vcenter,
     rg_name=None,
     resource_name=None,
-    no_wait=False,
 ):
     vcenter_id = vcenter
-    if rg_name is None and resource_name is not None:
-        raise RequiredArgumentMissingError(
-            "resource_group_name is required when machine_name is provided."
+    machine_id = resource_name
+    if resource_name is not None:
+        if rg_name is None:
+            raise RequiredArgumentMissingError(
+                "--resource-group is required when --machine-name is provided."
+            )
+        machine_id = get_resource_id(
+            cmd,
+            rg_name,
+            HCRP_NAMESPACE,
+            MACHINES_RESOURCE_TYPE,
+            resource_name,
         )
     if not is_valid_resource_id(vcenter_id):
-        if not rg_name:
-            raise RequiredArgumentMissingError(
-                "Cannot determine vCenter ID. " +
-                "Resource group name is required when vCenter name is specified."
-            )
-        vcenter_id = get_resource_id(
-            cmd, rg_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter)
-    assert vcenter_id is not None
-    if resource_name is not None:
-        return create_vm(
-            cmd,
-            client,
-            resource_group_name=rg_name,
-            resource_name=resource_name,
-            vcenter=vcenter,
-            no_wait=no_wait,
+        raise InvalidArgumentValueError(
+            "Please provide a valid vcenter resource id "
+            "using --vcenter-id."
         )
+    assert isinstance(vcenter_id, str)
     
     logger = get_logger(__name__)
     arg_client = cf_resource_graph(cmd.cli_ctx)
@@ -830,8 +827,10 @@ def link_vm_to_vcenter(
 
     query = f"""
 Resources
+{rg_name and "| where resourceGroup == '{}'".format(rg_name) or ""}
+{machine_id and "| where id == '{}'".format(machine_id) or ""}
 | where type =~ 'Microsoft.HybridCompute/machines'
-| where kind =~ "{vcenter.kind}" or isempty(kind)
+| where isempty(kind) or kind =~ '{vcenter.kind}'
 | extend p=parse_json(properties)
 | extend u = tolower(tostring(p['vmUuid']))
 | where isnotempty(u)
@@ -854,8 +853,7 @@ ConnectedVMwareVsphereResources
 ) on $left.vmUuidRev == $right.biosId
 | project-away vmUuidRev
 """
-    print(query)
-    from time import sleep; sleep(10)
+    query = " ".join(query.splitlines())
     
     # https://github.com/wpbrown/azmeta-libs/blob/4495d2d55f052032fe11416f5c59e2f2e79c2d73/azmeta/src/azmeta/access/resource_graph.py
     skip_token = None
@@ -876,16 +874,28 @@ ConnectedVMwareVsphereResources
             break
     logger.info(f"{len(vm_list)} machines will be attempted to be linked to the vCenter {vcenter.name}...")
     failed = 0
+    linked = 0
+    biosId2VM = defaultdict(list)
+    for vm in vm_list:
+        biosId2VM[vm["biosId"]].append(vm)
     for i, vm in enumerate(vm_list):
         prefix = f"[{i+1}/{len(vm_list)}]"
         machineId = vm["machineId"]
         machineName = vm["name"]
         inventoryId = vm["inventoryId"]
         managedResourceId = vm["managedResourceId"]
-        if VMWARE_NAMESPACE in managedResourceId:
-            logger.info(f"{prefix} Machine {machineName} is already linked to managed resource {managedResourceId}.")
+        biosId = vm["biosId"]
+        if len(biosId2VM[biosId]) > 1:
+            logger.warning(f"{prefix} Skipping machine {machineName} with biosId {biosId} as there are multiple machines with the same biosId: {biosId2VM[biosId]}.")
             continue
-        logger.info(f"{prefix} Linking machine {machineName} to vCenter {vcenter.name}...")
+        if managedResourceId:
+            if VMWARE_NAMESPACE in managedResourceId:
+                logger.info(f"{prefix} Machine {machineName} is already linked to managed resource {managedResourceId}.")
+                continue
+            if managedResourceId.lower() != machineId.lower():
+                logger.warning(f"{prefix} Skipping machine {machineName} as the inventory item is linked to a different resource: {managedResourceId}.")
+                continue
+        logger.info(f"{prefix} Linking machine {machineName} to vCenter {vcenter.name} with inventoryId: {inventoryId} ...")
         vm = VirtualMachineInstance(
             extended_location=ExtendedLocation(
                 type=EXTENDED_LOCATION_TYPE,
@@ -896,16 +906,16 @@ ConnectedVMwareVsphereResources
             ),
         )
         try:
-            vmRes = client.begin_create_or_update(
+            _ = client.begin_create_or_update(
                 machineId, vm
             ).result()
+            linked += 1
         except Exception as e:
             logger.warning(f"{prefix} Failed to link machine {machineName} to vCenter {vcenter.name}. Error: {e}")
             failed += 1
-        # TODO: Remove this once we've verified
-        if i == 3:
-            break
-    logger.info(f"[{len(vm_list) - failed}/{len(vm_list)}] machines were successfully linked to the vCenter {vcenter.name}.")
+    logger.info(f"[{linked}/{len(vm_list)}] machines were successfully linked to the vCenter {vcenter.name}.")
+    logger.info(f"[{failed}/{len(vm_list)}] machines failed to be linked to the vCenter {vcenter.name}.")
+    logger.info(f"[{len(vm_list)-linked-failed}/{len(vm_list)}] machines were skipped.")
 
 
 def create_vm(
