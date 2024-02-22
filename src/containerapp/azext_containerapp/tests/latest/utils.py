@@ -209,8 +209,7 @@ def create_and_verify_containerapp_up_for_default_registry_image(
             location = TEST_LOCATION
 
         # Create the environment
-        env_create_cmd = f"containerapp env create -g {resource_group} -n {env_name} -l {location}"
-        test_cls.cmd(env_create_cmd)
+        create_containerapp_env(test_cls=test_cls,resource_group=resource_group, env_name=env_name, location=location)
 
         # Construct the 'az containerapp create' command
         create_cmd = f"containerapp create -g {resource_group} -n {app_name} --environment {env_name} --image {image} --container-name {container_name} --cpu {cpu} --memory {memory} --target-port {target_port} --ingress {ingress}"
@@ -245,6 +244,11 @@ def create_and_verify_containerapp_up_for_default_registry_image(
         url = url if url.startswith("http") else f"http://{url}"
         resp = requests.get(url)
         test_cls.assertTrue(resp.ok)
+
+        test_cls.cmd('containerapp delete -g {} -n {} --yes'.format(resource_group, app_name))
+        test_cls.cmd('containerapp list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
 
 
 def create_extension_and_custom_location(test_cls, resource_group, connected_cluster_name, custom_location_name):
