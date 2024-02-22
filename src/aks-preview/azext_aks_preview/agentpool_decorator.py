@@ -389,7 +389,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """Get the value of pod_ip_allocation_mode.
         :return: str or None
         """
-        # Initialize the value of pod_ip_allocation_mode from the 
+        # Initialize the value of pod_ip_allocation_mode from the
         # agentpool.network_profile.pod_ip_allocation_mode if it exists
         pod_ip_allocation_mode = None
         if (
