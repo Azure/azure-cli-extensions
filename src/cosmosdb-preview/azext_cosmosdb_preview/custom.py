@@ -1174,7 +1174,7 @@ def _create_database_account(client,
                              source_backup_location=None,
                              enable_priority_based_execution=None,
                              default_priority_level=None,
-                             enable_per_region_per_partition_autoscale=None):
+                             enable_per_region_per_partition_autoscale=None,
                              disable_ttl=None):
     consistency_policy = None
     if default_consistency_level is not None:
