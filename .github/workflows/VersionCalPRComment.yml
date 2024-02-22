@@ -43,7 +43,13 @@ jobs:
             git log --oneline | head -n 30
             echo git branch -a
             git branch -a
-            git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} > changed_files
+            echo git checkout ${{ github.event.pull_request.base.ref }}
+            git checkout ${{ github.event.pull_request.base.ref }}
+            git log --oneline | head -n 30
+            echo git checkout ${{ github.event.pull_request.head.ref }}
+            git checkout ${{ github.event.pull_request.head.ref }}
+            git log --oneline | head -n 30
+            git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.ref }} > changed_files
             cat changed_files
             cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq > changed_modules
             echo "changed_module_list=$(cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq | xargs)" >> $GITHUB_ENV
