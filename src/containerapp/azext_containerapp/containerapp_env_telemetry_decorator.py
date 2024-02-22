@@ -25,10 +25,10 @@ class ContainerappEnvTelemetryPreviewSetDecorator(BaseResource):
         return self.get_param("open_telemetry_include_system_telemetry")
     
     def get_argument_open_telemetry_dataDog_site(self):
-        return self.get_param("open_telemetry_dataDog_site")
+        return self.get_param("open_telemetry_data_dog_site")
     
     def get_argument_open_telemetry_dataDog_key(self):
-        return self.get_param("open_telemetry_dataDog_key")
+        return self.get_param("open_telemetry_data_dog_key")
     
     def get_argument_open_telemetry_traces_destinations(self):
         return self.get_param("open_telemetry_traces_destinations")
