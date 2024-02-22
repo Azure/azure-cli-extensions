@@ -308,7 +308,7 @@ def validate_pod_ip_allocation_mode(namespace):
             CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
         ):
             raise InvalidArgumentValueError("--pod-ip-allocation-mode can only be DynamicIndividual or StaticBlock")
-        
+
 
 def validate_vnet_subnet_id(namespace):
     _validate_subnet_id(namespace.vnet_subnet_id, "--vnet-subnet-id")

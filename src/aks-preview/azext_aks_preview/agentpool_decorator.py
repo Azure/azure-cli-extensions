@@ -384,7 +384,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             ):
                 enable_artifact_streaming = self.agentpool.artifact_streaming_profile.enabled
         return enable_artifact_streaming
-    
+
     def get_pod_ip_allocation_mode(self, read_only: bool = False) -> Union[str, None]:
         """Get the value of pod_ip_allocation_mode.
         :return: str or None
@@ -394,14 +394,13 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         if (
                 self.agentpool and self.agentpool.network_profile and
                 self.agentpool.network_profile.pod_ip_allocation_mode is not None
-            ):
-                pod_ip_allocation_mode = self.agentpool.network_profile.pod_ip_allocation_mode
+        ):
+            pod_ip_allocation_mode = self.agentpool.network_profile.pod_ip_allocation_mode
 
         # overwrite if provided by user in the command
         pod_ip_allocation_mode = self.raw_param.get("pod_ip_allocation_mode")
 
         return pod_ip_allocation_mode
-    
 
     def get_ssh_access(self) -> Union[str, None]:
         """Obtain the value of ssh_access.
