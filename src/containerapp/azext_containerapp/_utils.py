@@ -114,6 +114,11 @@ def validate_binding_name(binding_name):
     return bool(re.match(pattern, binding_name))
 
 
+def is_valid_java_component_resource_id(resource_id):
+    pattern = r'^/subscriptions/[^/]+/resourceGroups/[^/]+/providers/Microsoft\.App/managedEnvironments/[^/]+/javaComponents/[^/]+$'
+    return bool(re.match(pattern, resource_id))
+
+
 def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def_list, resource_group_name, name):
     linker_client = get_linker_client(cmd)
     containerapp_def = None

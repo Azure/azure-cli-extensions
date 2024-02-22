@@ -53,7 +53,7 @@ from ._models import (
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file)
-from ._utils import parse_service_bindings, check_unique_bindings
+from ._utils import parse_service_bindings, check_unique_bindings, is_valid_java_component_resource_id
 from ._validators import validate_create
 
 from ._constants import (HELLO_WORLD_IMAGE,
@@ -1175,11 +1175,17 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                 new_template["serviceBinds"] = existing_template.get("serviceBinds", [])
 
             service_bindings_dict = {}
+            java_component_name_set = {}
             if new_template["serviceBinds"]:
                 service_bindings_dict = {service_binding["name"]: index for index, service_binding in
                                          enumerate(new_template.get("serviceBinds", []))}
+                java_component_name_set = {binding["name"].replace('_', '-') for binding in new_template["serviceBinds"]
+                                           if is_valid_java_component_resource_id(binding["serviceId"])}
 
             for item in self.get_argument_unbind_service_bindings():
+                if item in java_component_name_set and '-' in item:
+                    item = item.replace('-', '_')
+
                 if item in service_bindings_dict:
                     new_template["serviceBinds"] = [binding for binding in new_template["serviceBinds"] if
                                                     binding["name"] != item]
