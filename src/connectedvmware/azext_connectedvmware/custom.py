@@ -16,7 +16,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
-from azure.mgmt.resourcegraph.models import QueryRequest, QueryRequestOptions
+from azure.mgmt.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse
 from msrestazure.tools import is_valid_resource_id
 
 from .pwinput import pwinput
@@ -864,7 +864,7 @@ ConnectedVMwareVsphereResources
             query=query,
             options=query_options,
         )
-        query_response = arg_client.resources(query_request)
+        query_response: QueryResponse = arg_client.resources(query_request, subscription_id=vcenter_sub) #type: ignore
         if not isinstance(query_response.data, list):
             query_response.data = [query_response.data]
         vm_list.extend(query_response.data)
@@ -915,10 +915,11 @@ ConnectedVMwareVsphereResources
             ),
         )
         try:
-            _ = client.begin_create_or_update(
-                machineId, vm
-            ).result()
+            # _ = client.begin_create_or_update(
+            #     machineId, vm
+            # ).result()
             linked += 1
+            from time import sleep; sleep(1)
         except Exception as e:  # pylint: disable=broad-except
             logger.warning(
                 "%s Failed to link machine %s to vCenter %s. Error: %s",

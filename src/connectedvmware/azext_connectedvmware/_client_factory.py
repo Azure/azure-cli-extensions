@@ -3,13 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.mgmt.resourcegraph import ResourceGraphClient
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core import AzCli
 # Client factory for vmware clients.
 from .vendored_sdks.connectedvmware import AzureArcVMwareManagementServiceAPI
 from .vendored_sdks.hybridcompute import HybridComputeManagementClient
-
+from .vendored_sdks.resourcegraph import ResourceGraphClient
 
 def cf_connectedvmware(cli_ctx: AzCli, *_) -> AzureArcVMwareManagementServiceAPI:
     return get_mgmt_service_client(cli_ctx, AzureArcVMwareManagementServiceAPI)

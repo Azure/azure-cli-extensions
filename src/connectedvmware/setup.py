@@ -36,9 +36,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = [
-    "azure-mgmt-resourcegraph>=8.0.0",
-]
+DEPENDENCIES = []
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()
