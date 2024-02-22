@@ -13244,7 +13244,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={aks_name} --location={location} "
-            "--network-plugin azure --ssh-key-value={ssh_key_value} -max-pods 80 "
+            "--network-plugin azure --ssh-key-value={ssh_key_value} --max-pods 80 "
             "--vnet-subnet-id ${node_subnet_id} --pod-subnet-id ${pod_subnet_id} --node-count 3 "
             "--pod-ip-allocation-mode={pod_ip_allocation_mode} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureVnetScalePreview"
