@@ -21,6 +21,7 @@ def get_yes_or_no_option(option_description):
         option = input("This option can only be Yes or No, please input again: ")
     return option in yes_options
 
+
 def create_datasource_mapping(source_data_sources, destination_data_sources):
     uid_mapping = {}
     for s in source_data_sources:
