@@ -11,7 +11,6 @@ from azext_containerapp._client_factory import ex_handler_factory
 from ._transformers import (transform_usages_output,
                             transform_sensitive_values)
 
-
 def load_command_table(self, _):
     with self.command_group('containerapp') as g:
         g.custom_show_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
@@ -51,7 +50,7 @@ def load_command_table(self, _):
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('init', 'init_dapr_components', is_preview=True)
 
-    with self.command_group('containerapp env identity',is_preview=True) as g:
+    with self.command_group('containerapp env identity', is_preview=True) as g:
         g.custom_command('assign', 'assign_env_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('remove', 'remove_env_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_env_managed_identity')
@@ -62,30 +61,24 @@ def load_command_table(self, _):
         g.custom_command('set', 'create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('remove', 'remove_storage', confirmation=True, exception_handler=ex_handler_factory())
 
-
     with self.command_group('containerapp add-on', is_preview=True) as g:
         g.custom_command('list', 'list_all_services')
-
 
     with self.command_group('containerapp add-on redis') as g:
         g.custom_command('create', 'create_redis_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_redis_service', confirmation=True, supports_no_wait=True)
 
-
     with self.command_group('containerapp add-on postgres') as g:
         g.custom_command('create', 'create_postgres_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_postgres_service', confirmation=True, supports_no_wait=True)
-
 
     with self.command_group('containerapp add-on kafka') as g:
         g.custom_command('create', 'create_kafka_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_kafka_service', confirmation=True, supports_no_wait=True)
 
-
     with self.command_group('containerapp add-on mariadb') as g:
         g.custom_command('create', 'create_mariadb_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_mariadb_service', confirmation=True, supports_no_wait=True)
-
 
     with self.command_group('containerapp add-on qdrant') as g:
         g.custom_command('create', 'create_qdrant_service', supports_no_wait=True)
