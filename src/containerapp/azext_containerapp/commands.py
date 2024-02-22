@@ -11,6 +11,7 @@ from azext_containerapp._client_factory import ex_handler_factory
 from ._transformers import (transform_usages_output,
                             transform_sensitive_values)
 
+
 def load_command_table(self, _):
     with self.command_group('containerapp') as g:
         g.custom_show_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
