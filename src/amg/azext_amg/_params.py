@@ -47,7 +47,7 @@ def load_arguments(self, _):
                    help="If enabled, you will be able to configure Grafana API keys and service accounts")
         c.argument("deterministic_outbound_ip", get_enum_type(["Enabled", "Disabled"]), options_list=["-i", "--deterministic-outbound-ip"],
                    help="If enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources")
-        c.argument("major_version", options_list=["--major-version"], help="Grafana major version number")
+        c.argument("major_version", get_enum_type(["9", "10"]), options_list=["--major-version"], help="Grafana major version number")
         c.argument("public_network_access", get_enum_type(["Enabled", "Disabled"]), options_list=["-p", "--public-network-access"],
                    help="allow public network access")
         c.argument("smtp", get_enum_type(["Enabled", "Disabled"]), arg_group='SMTP', help="allow Grafana to send email")

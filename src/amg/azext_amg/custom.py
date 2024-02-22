@@ -18,6 +18,7 @@ from azure.cli.core.util import should_disable_connection_verify
 from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
 
 from ._client_factory import cf_amg
+from .utils import get_yes_or_no_option
 
 logger = get_logger(__name__)
 
@@ -185,7 +186,15 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
     if public_network_access:
         resourceProperties["publicNetworkAccess"] = public_network_access
 
-    if major_version:
+    if major_version == "10":
+        # prompt for confirmation, cancel operation if not confirmed
+        if (not get_yes_or_no_option("You are trying to upgrade this workspace to Grafana version 10. By "
+                                     "proceeding, you acknowledge that upgrading to Grafana version 10 is a "
+                                     "permanent and irreversible operation and Grafana legacy alerting has been "
+                                     "deprecated and any migrated legacy alert may require manual adjustments "
+                                     "to function properly under the new alerting system. Do you wish to proceed? "
+                                     "(Y/N): ")):
+            return
         resourceProperties["grafanaMajorVersion"] = major_version
 
     if tags:
