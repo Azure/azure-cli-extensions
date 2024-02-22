@@ -66,12 +66,12 @@ def load_arguments(self, _):
         
     # Telemetry 
     with self.argument_context('containerapp env telemetry set', arg_group='Telemetry') as c:
-        c.argument('app_insights_connection_string', options_list=['--app-insights-connection-string', '--ai-connection-string'], help='Application Insights connection string used by container apps environment', is_preview=True)
-        c.argument('open_telemetry_traces_destinations', options_list=['--open-telemetry-traces-destinations', '--traces-destinations'], nargs='+', help='Specify the destinations of open telemetry trace signal', is_preview=True)
-        c.argument('open_telemetry_logs_destinations', options_list=['--open-telemetry-logs-destinations', '--logs-destinations'], nargs='+', help='Specify the destinations of open telemetry log signal', is_preview=True)
-        c.argument('open_telemetry_metrics_destinations', options_list=['--open-telemetry-metrics-destinations', '--metrics-destinations'], nargs='+', help='Specify the destinations of open telemetry metric signal', is_preview=True)
-        c.argument('open_telemetry_dataDog_site', options_list=['--open-telemetry-dataDog-site', '--dataDog-site'], help='Specify the data dog site', is_preview=True)
-        c.argument('open_telemetry_dataDog_key', options_list=['--open-telemetry-dataDog-key', '--dataDog-key'], help='Specify the data dog api key', is_preview=True)
+        c.argument('app_insights_connection_string', options_list=['--app-insights-connection-string', '--ai-connection-string'], help='Application Insights connection string used by container apps environment')
+        c.argument('open_telemetry_traces_destinations', options_list=['--open-telemetry-traces-destinations', '--traces-destinations'], nargs='+', help='Specify the destinations of open telemetry trace signal')
+        c.argument('open_telemetry_logs_destinations', options_list=['--open-telemetry-logs-destinations', '--logs-destinations'], nargs='+', help='Specify the destinations of open telemetry log signal')
+        c.argument('open_telemetry_metrics_destinations', options_list=['--open-telemetry-metrics-destinations', '--metrics-destinations'], nargs='+', help='Specify the destinations of open telemetry metric signal')
+        c.argument('open_telemetry_dataDog_site', options_list=['--open-telemetry-dataDog-site', '--dataDog-site'], help='Specify the data dog site')
+        c.argument('open_telemetry_dataDog_key', options_list=['--open-telemetry-dataDog-key', '--dataDog-key'], help='Specify the data dog api key')
 
     with self.argument_context('containerapp env storage') as c:
         c.argument('storage_type', arg_type = get_enum_type(['AzureFile', 'NfsAzureFile']), help="Type of the storage. Assumed to be AzureFile if not specified.", is_preview=True)

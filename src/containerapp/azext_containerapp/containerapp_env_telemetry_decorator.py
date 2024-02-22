@@ -48,34 +48,34 @@ class ContainerappEnvTelemetryPreviewSetDecorator(BaseResource):
         # General setup
         safe_set(self.managed_env_def, "location", value=r["location"])  # required for API
 
-        self.set_argument_app_insights_connection_string()
-        self.set_argument_open_telemetry_dataDog_site()
-        self.set_argument_open_telemetry_dataDog_key()
-        self.set_argument_open_telemetry_traces_destinations()
-        self.set_argument_open_telemetry_logs_destinations()
-        self.set_argument_open_telemetry_metrics_destinations()
+        self.set_up_app_insights_connection_string()
+        self.set_up_open_telemetry_dataDog_site()
+        self.set_up_open_telemetry_dataDog_key()
+        self.set_up_open_telemetry_traces_destinations()
+        self.set_up_open_telemetry_logs_destinations()
+        self.set_up_open_telemetry_metrics_destinations()
 
-    def set_argument_app_insights_connection_string(self):
+    def set_up_app_insights_connection_string(self):
         if self.get_argument_app_insights_connection_string() and self.get_argument_app_insights_connection_string() is not None:
             safe_set(self.managed_env_def, "properties", "appInsightsConfiguration", "connectionString", value=self.get_argument_app_insights_connection_string())
     
-    def set_argument_open_telemetry_dataDog_site(self):
+    def set_up_open_telemetry_dataDog_site(self):
         if self.get_argument_open_telemetry_dataDog_site() and self.get_argument_open_telemetry_dataDog_site() is not None:
             safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site", value=self.get_argument_open_telemetry_dataDog_site())
     
-    def set_argument_open_telemetry_dataDog_key(self):
+    def set_up_open_telemetry_dataDog_key(self):
         if self.get_argument_open_telemetry_dataDog_key() and self.get_argument_open_telemetry_dataDog_key() is not None:
             safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "key", value=self.get_argument_open_telemetry_dataDog_key())
 
-    def set_argument_open_telemetry_traces_destinations(self):
+    def set_up_open_telemetry_traces_destinations(self):
         if self.get_argument_open_telemetry_traces_destinations() and self.get_argument_open_telemetry_traces_destinations() is not None:
             safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=self.get_argument_open_telemetry_traces_destinations())
 
-    def set_argument_open_telemetry_logs_destinations(self):
+    def set_up_open_telemetry_logs_destinations(self):
         if self.get_argument_open_telemetry_logs_destinations() and self.get_argument_open_telemetry_logs_destinations() is not None:
             safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=self.get_argument_open_telemetry_logs_destinations())
 
-    def set_argument_open_telemetry_metrics_destinations(self):
+    def set_up_open_telemetry_metrics_destinations(self):
         if self.get_argument_open_telemetry_metrics_destinations() and self.get_argument_open_telemetry_metrics_destinations() is not None:
             safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=self.get_argument_open_telemetry_metrics_destinations())
 
