@@ -2201,15 +2201,16 @@ def show_env_managed_identity(cmd, name, resource_group_name):
         r["identity"]["type"] = "None"
         return r["identity"]
 
+
 def set_environment_telemetry(cmd,
-                                 name,
-                                 resource_group_name,
-                                 app_insights_connection_string = None,
-                                 open_telemetry_traces_destinations = None,
-                                 open_telemetry_logs_destinations = None,
-                                 open_telemetry_metrics_destinations = None,
-                                 open_telemetry_dataDog_site = None,
-                                 open_telemetry_dataDog_key = None):
+                              name,
+                              resource_group_name,
+                              app_insights_connection_string = None,
+                              open_telemetry_traces_destinations = None,
+                              open_telemetry_logs_destinations = None,
+                              open_telemetry_metrics_destinations = None,
+                              open_telemetry_data_dog_site = None,
+                              open_telemetry_data_dog_key = None):
     raw_parameters = locals()
     containerapp_env_telemetry_decorator = ContainerappEnvTelemetryPreviewSetDecorator(
         cmd=cmd,
