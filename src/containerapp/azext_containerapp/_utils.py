@@ -38,7 +38,7 @@ from ._models import OryxRunImageTagProperty
 from ._constants import (CONTAINER_APP_EXTENSION_TYPE,
                          CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, DEV_SERVICE_LIST,
                          MANAGED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APPS_RP, CONNECTED_CLUSTER_TYPE,
-                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE)
+                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE, JAVA_COMPONENT_RESOURCE_TYPE)
 
 logger = get_logger(__name__)
 
@@ -115,8 +115,8 @@ def validate_binding_name(binding_name):
 
 
 def is_valid_java_component_resource_id(resource_id):
-    pattern = r'^/subscriptions/[^/]+/resourceGroups/[^/]+/providers/Microsoft\.App/managedEnvironments/[^/]+/javaComponents/[^/]+$'
-    return bool(re.match(pattern, resource_id))
+    java_component_dict = parse_resource_id(resource_id)
+    return java_component_dict.get("resource_type") == JAVA_COMPONENT_RESOURCE_TYPE
 
 
 def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def_list, resource_group_name, name):
@@ -190,7 +190,9 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
         else:
             binding_name = service_binding[1]
 
+        # If resource is Java component, will automatically change the '-' in binding name to '_'
         if service_name in java_component_name_set and '-' in binding_name:
+            logger.info("automatically change the '-' in binding name of Java component to '_'.")
             binding_name = binding_name.replace('-', '_')
 
         if not validate_binding_name(binding_name):

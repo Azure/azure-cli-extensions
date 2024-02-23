@@ -1183,7 +1183,10 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                                            if is_valid_java_component_resource_id(binding["serviceId"])}
 
             for item in self.get_argument_unbind_service_bindings():
+
+                # If resource is Java component, will automatically change the '-' in binding name to '_'
                 if item in java_component_name_set and '-' in item:
+                    logger.info("automatically change the '-' in binding name of Java component to '_'.")
                     item = item.replace('-', '_')
 
                 if item in service_bindings_dict:
