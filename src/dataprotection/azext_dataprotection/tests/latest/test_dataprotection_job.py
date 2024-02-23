@@ -18,11 +18,17 @@ class JobScenarioTest(ScenarioTest):
             'rg': 'clitest-dpp-rg',
             'vaultName': 'clitest-bkp-vault-persistent-bi-donotdelete',
             'dataSourceType': 'AzureDisk',
-            'dataSourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-persistent-bi-donotdelete'
+            'dataSourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-persistent-bi-donotdelete',
+            # 'crrVaultName': 'clitest-bkp-vault-crr-donotdelete',
         })
         test.cmd('az dataprotection job list -g "{rg}" --vault-name "{vaultName}"', checks=[
             test.greater_than('length([])', 0)
         ])
+
+        # # Test --use-secondary-region for job list command
+        # test.cmd('az dataprotection job list -g "{rg}" -v "{crrVaultName}" --use-secondary-region', checks=[
+        #     test.greater_than('length([])', 0)
+        # ])
 
         datasource_job_list = test.cmd('az dataprotection job list-from-resourcegraph --datasource-type "{dataSourceType}" --datasource-id "{dataSourceId}"', checks=[
             test.greater_than('length([])', 0),

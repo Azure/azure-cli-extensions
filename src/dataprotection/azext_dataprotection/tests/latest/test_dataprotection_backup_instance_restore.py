@@ -11,6 +11,9 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from ..utils import track_job_to_completion, wait_for_job_exclusivity_on_datasource, get_midpoint_of_time_range
 
 
+# Using persistent datasources - the assumption here is that the backup already exists, we just need to fetch the latest recoverypoint,
+# create a restore request object, validate it, and then trigger it (we don't need to track it to completion)
+
 class BackupInstanceRestoreScenarioTest(ScenarioTest):
 
     def setUp(test):
@@ -107,3 +110,54 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
             test.check('properties.dataSourceName', "{dataSourceName}"),
             test.exists('properties.extendedInfo.recoveryDestination')
         ])
+
+    # @AllowLargeResponse
+    # def test_dataprotection_cross_region_restore(test):
+    #     test.kwargs.update({
+    #         'datasourceType': 'AzureDatabaseForPostgreSQL',
+    #         'sourceDataStore': 'VaultStore',
+    #         'restoreLocation': 'centraluseuap',
+    #         'originalLocation': 'eastus2euap',
+    #         'secretStoreType': 'AzureKeyVault',
+    #         'secretStoreUri': 'https://oss-clitest-keyvault.vault.azure.net/secrets/oss-clitest-secret',
+    #         'crrVaultName': 'clitest-bkp-vault-crr-donotdelete',
+    #         'sourceBackupInstanceName': '',
+    #         'sourceBackupInstanceId': '',
+    #         'sourceDSName': '',
+    #         'targetDSName': '',
+    #         'targetResourceId': '',
+    #     })
+
+    #     recovery_point = test.cmd('az dataprotection recovery-point list -g {rg} -v {vaultName} '
+    #                                '--backup-instance-name {sourceBackupInstanceName} --use-secondary-region',
+    #                                checks=[
+    #                                    test.greater_than('length([])', 0)
+    #                                 ]).get_output_in_json()
+    #     test.kwargs.update({
+    #         'recoveryPointId': recovery_point[0]['name']
+    #     })
+
+    #     # Add ds deletion to cleanup tasks
+    #     # test.addCleanup(test.cmd, 'az disk delete --name "{targetDSName}" --resource-group "{rg}" --yes --no-wait')
+    #     # As a failsafe, ensure restored disk from previous run is deleted
+    #     # test.cmd('az disk delete --name "{targetDSName}" --resource-group "{rg}" --yes')
+
+    #     restore_request = test.cmd('az dataprotection backup-instance restore  initialize-for-data-recovery '
+    #                                '--datasource-type "{dataSourceType}" --restore-location "{restoreLocation}" --source-datastore "{sourceDataStore}" '
+    #                                '--recovery-point-id "{recoveryPointId}" --target-resource-id "{targetResourceId}"').get_output_in_json()
+    #     test.kwargs.update({"restoreRequest": restore_request})
+
+    #     # Ensure no other jobs running on datasource. Required to avoid operation clashes.
+    #     wait_for_job_exclusivity_on_datasource(test)
+
+    #     test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" -v "{vaultName}" -n "{backupInstanceName}" '
+    #              '--restore-request-object "{restoreRequest}" --use-secondary-region')
+    #     restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" -v "{vaultName}" '
+    #                                     '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}" '
+    #                                     '--use-secondary-region').get_output_in_json()
+    #     test.kwargs.update({"jobId": restore_trigger_json["jobId"]})
+
+    #     test.cmd('az dataprotection job show --ids "{jobId}"', checks=[
+    #         test.check('properties.dataSourceName', "{dataSourceName}"),
+    #         test.exists('properties.extendedInfo.recoveryDestination')
+    #     ])
