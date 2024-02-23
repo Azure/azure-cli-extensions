@@ -13218,7 +13218,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             --resource-group={resource_group} \
             --vnet-name={vnet_name} \
             --name nodeSubnet"
-        node_subnet = self.cmd(create_node_subnet, checks=[self.check("provisioningState", "Succeeded")])
+        self.cmd(create_node_subnet, checks=[self.check("provisioningState", "Succeeded")])
         node_subnet_output = self.cmd(show_node_subnet_cmd).get_output_in_json()
         node_subnet_id = node_subnet_output["id"]
         assert node_subnet_id is not None
@@ -13232,7 +13232,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             --resource-group={resource_group} \
             --vnet-name={vnet_name} \
             --name podSubnet"
-        pod_subnet = self.cmd(create_pod_subnet, checks=[self.check("provisioningState", "Succeeded")])
+        self.cmd(create_pod_subnet, checks=[self.check("provisioningState", "Succeeded")])
         pod_subnet_output = self.cmd(show_pod_subnet_cmd).get_output_in_json()
         pod_subnet_id = pod_subnet_output["id"]
         assert pod_subnet_id is not None
@@ -13260,8 +13260,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.networkPlugin", "azure"),
-                self.check("agentPoolProfiles[0].podSubnetId", {pod_subnet_id}),
-                self.check("agentPoolProfiles[0].podIpAllocationMode", {pod_ip_allocation_mode}),
+                self.check("agentPoolProfiles[0].podSubnetId", pod_subnet_id),
+                self.check("agentPoolProfiles[0].podIpAllocationMode", pod_ip_allocation_mode),
             ],
         )
 
