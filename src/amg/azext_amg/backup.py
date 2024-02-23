@@ -139,6 +139,10 @@ def _get_individual_dashboard_setting_and_save(dashboards, folder_path, log_file
 
                 (status, content) = get_dashboard(board_uri, grafana_url, http_headers)
                 if status == 200:
+                    # do not back up provisioned dashboards
+                    if content['meta']['provisioned']:
+                        logger.warning("Dashboard: \"%s\" is provisioned, skipping...", board['title'])
+                        continue
                     _save_dashboard_setting(
                         board['title'],
                         board_uri,
